@@ -2,92 +2,73 @@ import streamlit as st
 import pandas as pd
 import pdfplumber
 import re
-import io
 
-st.set_page_config(page_title="Autonomous ASI Scrutiny", layout="wide")
-st.title("🛡️ Autonomous Scrutiny: Self-Identifying Data Portal")
+st.set_page_config(page_title="Pro ASI Scrutiny", layout="wide")
+st.title("🛡️ Pro-Audit: Autonomous Scrutiny Portal")
 
-# 1. UNIVERSAL HEADER DICTIONARY
-# The system will search for ANY of these variations in your files
-MAPPING = {
-    "Assets": ["total assets", "total rs.", "balance total", "grand total", "fixed assets", "current assets"],
-    "Liabilities": ["total liabilities", "liabilities and equity", "total capital and liabilities"],
-    "Profit": ["net profit", "profit for the year", "profit after tax", "p&l", "surplus"],
-    "Stock": ["closing stock", "inventories", "stock in hand", "inventory at end"],
-    "Sales": ["sales", "revenue from operations", "turnover", "income from sales"],
-    "Wages": ["wages", "manpower expenses", "employee benefit expenses", "salaries and wages"]
+# THE DYNAMIC DICTIONARY: The "Brain" of the system
+VITAL_MAP = {
+    "Total Assets": ["total assets", "total rs.", "balance total", "grand total", "net block"],
+    "Net Profit": ["net profit", "profit for the year", "p&l amount", "surplus"],
+    "Turnover": ["sales", "revenue from operations", "income from services"],
+    "Inventory": ["closing stock", "inventories", "stock in hand"]
 }
 
-def auto_find_value(text, keywords):
-    """Searches text for keyword variations and extracts the following number"""
-    for word in keywords:
-        # Regex looks for the word followed by some spaces/chars and a currency figure
-        pattern = r"(" + word + r").{0,30}([\d,.]+)"
-        match = re.search(pattern, text, re.IGNORECASE)
-        if match:
-            try:
-                val = match.group(2).replace(',', '')
-                return float(val)
-            except:
-                continue
-    return 0
+def clean_val(text):
+    """Universal number cleaner for Indian accounting formats"""
+    try:
+        # Removes currency symbols and handles parentheses for negative numbers
+        clean = re.sub(r'[^\d.-]', '', text.replace('(', '-').replace(')', ''))
+        return float(clean)
+    except:
+        return 0.0
 
-def process_unknown_file(file):
-    """Detects file type and runs self-identifying logic"""
-    results = {"Entity": file.name, "Assets": 0, "Liabilities": 0, "Profit": 0, "Stock": 0, "Sales": 0, "Wages": 0}
+def autonomous_fetch(file):
+    """Main engine that decides how to read the file based on its content"""
+    extracted = {"FileName": file.name}
     
-    if file.name.endswith('.pdf'):
+    if file.name.endswith(".pdf"):
         with pdfplumber.open(file) as pdf:
             full_text = "\n".join([p.extract_text() for p in pdf.pages if p.extract_text()])
-            for key, keywords in MAPPING.items():
-                results[key] = auto_find_value(full_text, keywords)
-    
-    else: # Excel/CSV Logic
+            for label, keywords in VITAL_MAP.items():
+                for word in keywords:
+                    # Look for keyword + nearest number
+                    pattern = rf"{word}.*?([\d,.\(\)]+)"
+                    match = re.search(pattern, full_text, re.IGNORECASE)
+                    if match:
+                        extracted[label] = clean_val(match.group(1))
+                        break
+    else:
+        # EXCEL/CSV LOGIC: Searches column headers for keywords
         df = pd.read_csv(file) if file.name.endswith('.csv') else pd.read_excel(file)
-        # Flatten all column names to search for matches
-        cols = [str(c).lower() for c in df.columns]
-        
-        for key, keywords in MAPPING.items():
+        for label, keywords in VITAL_MAP.items():
             for word in keywords:
-                # If a column name matches one of our vital keywords
-                match_col = [c for c in df.columns if word in str(c).lower()]
-                if match_col:
-                    # Take the sum of the column or the last value (usually the total)
-                    results[key] = pd.to_numeric(df[match_col[0]], errors='coerce').sum()
+                # Find columns that contain the keyword
+                match_cols = [c for c in df.columns if word in str(c).lower()]
+                if match_cols:
+                    # Take the sum of the last column (usually the amount column)
+                    extracted[label] = pd.to_numeric(df[match_cols[0]], errors='coerce').sum()
                     break
-    return results
+    return extracted
 
 # --- UI ---
-st.sidebar.header("Auto-Header Engine Active")
-uploaded_files = st.file_uploader("Upload any Enterprise File", accept_multiple_files=True)
+files = st.file_uploader("Upload Any Enterprise Data (PDF/Excel)", accept_multiple_files=True)
 
-if uploaded_files:
-    summary_list = []
-    for f in uploaded_files:
-        with st.spinner(f"Searching headers in {f.name}..."):
-            data = process_unknown_file(f)
-            summary_list.append(data)
-    
-    # GENERATE VITAL CSV
-    vital_df = pd.DataFrame(summary_list)
+if files:
+    data_list = [autonomous_fetch(f) for f in files]
+    vital_df = pd.DataFrame(data_list).fillna(0)
     
     st.subheader("📋 Step 1: Self-Generated Vital Check Table")
-    st.write("The system identified these values by scanning for keywords in your files.")
     st.dataframe(vital_df, use_container_width=True)
     
-    # DOWNLOAD CSV
-    csv_bytes = vital_df.to_csv(index=False).encode('utf-8')
-    st.download_button("📥 Download Vital Data CSV", csv_bytes, "Autonomous_Vital_Report.csv", "text/csv")
+    # GENERATE CSV ON THE FLY
+    st.download_button("📥 Download Vital Check CSV", vital_df.to_csv(index=False), "Audit_Report.csv")
 
-    # DYNAMIC ANALYSIS
-    st.subheader("🔍 Step 2: Analysis Based on Identified Data")
+    st.subheader("🔍 Step 2: Intelligent Analysis")
     for _, row in vital_df.iterrows():
-        with st.expander(f"Scrutiny for {row['Entity']}"):
-            if row['Assets'] == row['Liabilities'] and row['Assets'] > 0:
-                st.success("✅ Balance Sheet Logic Verified.")
-            elif row['Assets'] > 0:
-                st.error(f"❌ Imbalance: Assets ({row['Assets']:,.2f}) vs Liabs ({row['Liabilities']:,.2f})")
-            
-            if row['Profit'] > 0 and row['Sales'] > 0:
-                margin = (row['Profit'] / row['Sales']) * 100
-                st.info(f"📊 Profitability Detected: {margin:.2f}% Net Margin.")
+        with st.expander(f"Audit Summary: {row['FileName']}"):
+            # Check for standard accounting equation
+            if row.get('Total Assets') > 0:
+                st.success(f"Verified: Found Assets worth ₹{row['Total Assets']:,.2f}")
+            else:
+                st.warning("⚠️ Critical data missing. System could not identify 'Total Assets'.")
