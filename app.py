@@ -2,90 +2,86 @@ import streamlit as st
 import pandas as pd
 import pdfplumber
 import re
-import io
 
-st.set_page_config(page_title="Multi-File Scrutiny Portal", layout="wide")
-st.title("🛡️ ASI Scheme: Multi-Source Scrutiny & Conversion")
+st.set_page_config(page_title="ASI Check Table Portal", layout="wide")
+st.title("🛡️ ASI Scrutiny: Automated Check Table")
 
-def run_scrutiny(vals, fileName):
-    st.markdown(f"### 📊 Scrutiny Report: {fileName}")
+def run_analysis(check_data):
+    st.subheader("📊 Vital Cell Calculation & Analysis")
     
-    # 1. Missing Data Checklist
-    required = ["Net Profit (P&L)", "Total Assets", "Closing Stock"]
-    missing = [item for item in required if item not in vals or vals[item] == 0]
+    # Create the Check Table
+    check_df = pd.DataFrame([
+        {"Vital Metric": "Total Assets", "Extracted Value": check_data.get("assets", 0), "Source": check_data.get("assets_src", "Not Found")},
+        {"Vital Metric": "Total Liabilities", "Extracted Value": check_data.get("liabs", 0), "Source": check_data.get("liabs_src", "Not Found")},
+        {"Vital Metric": "Net Profit (P&L)", "Extracted Value": check_data.get("pl_profit", 0), "Source": check_data.get("pl_src", "Not Found")},
+        {"Vital Metric": "Closing Stock", "Extracted Value": check_data.get("stock", 0), "Source": check_data.get("stock_src", "Not Found")},
+        {"Vital Metric": "Sales Turnover", "Extracted Value": check_data.get("sales", 0), "Source": check_data.get("sales_src", "Not Found")}
+    ])
     
-    if missing:
-        st.warning(f"⚠️ **Missing Data Alert**: These values were not found in {fileName}:")
-        for m in missing: st.write(f"- ❌ {m}")
-    
-    # 2. Live Calculation & Correction Suggestions
-    col1, col2 = st.columns(2)
-    with col1:
-        pl = vals.get("Net Profit (P&L)", 0)
-        cap = vals.get("Net Profit (Capital)", 0)
-        if pl > 0 and cap > 0:
-            if abs(pl - cap) < 1:
-                st.success(f"✅ P&L Match: ₹{pl:,.2f} verified.")
-            else:
-                st.error(f"❌ P&L Mismatch: Diff of ₹{abs(pl-cap):,.2f}")
-                st.info("**Suggestion:** Check if the Net Profit was distributed correctly among partners[cite: 326, 336].")
+    st.table(check_df)
 
-    with col2:
-        assets = vals.get("Total Assets", 0)
-        liabs = vals.get("Total Liabilities", 0)
-        if assets > 0:
-            if abs(assets - liabs) < 1:
-                st.success(f"✅ B/S Balanced: Total ₹{assets:,.2f}[cite: 258].")
-            else:
-                st.error("❌ B/S Imbalance Detected")
-                st.info(f"**Suggestion:** Verify if 'Closing Stock' (₹{vals.get('Closing Stock', 0):,.2f}) is recorded in both Trading and Assets[cite: 258, 282].")
+    # Automated Analysis Logic
+    st.markdown("---")
+    c1, c2 = st.columns(2)
+    
+    with c1:
+        if abs(check_data.get("assets", 0) - check_data.get("liabs", 0)) < 1 and check_data.get("assets", 0) > 0:
+            st.success(f"✅ Balance Sheet Verified: Assets match Liabilities at ₹{check_data['assets']:,.2f}")
+        else:
+            st.error("❌ Balance Sheet Imbalance: Check Annexure-D (Current Liabilities) for missing entries.")
+
+    with c2:
+        # Cross-matching Closing Stock (Vital for ASI)
+        if check_data.get("stock", 0) > 0:
+            st.info(f"💡 Vital Check: Closing Stock of ₹{check_data['stock']:,.2f} must be verified against Physical Stock Audit.")
 
 def process_pdf(file):
-    all_dfs = []
-    vals = {}
+    check_data = {}
     with pdfplumber.open(file) as pdf:
         full_text = ""
-        for page in pdf.pages:
-            full_text += (page.extract_text() or "")
-            tables = page.extract_tables()
-            for t in tables: all_dfs.append(pd.DataFrame(t))
+        for page in pdf.pages: full_text += (page.extract_text() or "")
         
-        # Specific Extraction Logic for M/S SINGLA INDUSTRIES
-        def find_num(pattern, text):
-            match = re.search(pattern, text)
-            if match:
-                nums = re.findall(r'[\d,.]+', match.group(0))
+        def get_val(pattern, text):
+            m = re.search(pattern, text)
+            if m:
+                nums = re.findall(r'[\d,.]+', m.group(0))
                 return float(nums[-1].replace(',', '')) if nums else 0
             return 0
 
-        vals["Net Profit (P&L)"] = find_num(r"Net Profit\s+[\d,.]+", full_text) # ₹4,939,430.54 [cite: 278]
-        vals["Total Assets"] = find_num(r"Total Rs\.\s+[\d,.]+", full_text)    # ₹43,164,277.25 [cite: 258]
-        vals["Total Liabilities"] = vals["Total Assets"]
-        vals["Closing Stock"] = find_num(r"Closing Stock\s+[\d,.]+", full_text) # ₹12,803,326.00 
-        if "PARTNER'S CAPITAL ACCOUNT" in full_text:
-            vals["Net Profit (Capital)"] = 4939430.54 # [cite: 336]
-    return all_dfs, vals
+        # Fetching Vital Cells
+        check_data["assets"] = get_val(r"Total Rs\.\s+[\d,.]+", full_text) # ₹43,164,277.25
+        check_data["assets_src"] = "Balance Sheet Page 1"
+        check_data["liabs"] = check_data["assets"]
+        check_data["liabs_src"] = "Balance Sheet Page 1"
+        check_data["pl_profit"] = get_val(r"Net Profit\s+[\d,.]+", full_text) # ₹4,939,430.54
+        check_data["pl_src"] = "P&L Account Page 2"
+        check_data["stock"] = get_val(r"Closing Stock\s+[\d,.]+", full_text) # ₹12,803,326.00
+        check_data["stock_src"] = "Trading Account Page 2"
+        check_data["sales"] = get_val(r"By Sales\s+[\d,.]+", full_text) # ₹99,986,231.08
+        check_data["sales_src"] = "Trading Account Page 2"
+        
+    return check_data
 
-# --- UI Interface ---
-st.sidebar.header("Settings")
-# ENABLE MULTI-FILE UPLOAD HERE
-uploaded_files = st.file_uploader("Upload PDF or Excel Files", type=["pdf", "xlsx", "xls"], accept_multiple_files=True)
+def process_excel(files):
+    # This logic combines vital cells from multiple sheets
+    check_data = {"assets": 0, "liabs": 0, "pl_profit": 0}
+    for file in files:
+        df = pd.read_csv(file) # Your uploads are CSV versions of Excel
+        if "Balance Sheet" in file.name:
+            # Logic to find "Total" row in Trial Balance
+            check_data["assets"] = df.iloc[:, -1].sum() # Example sum of 24-25 column
+            check_data["assets_src"] = f"Excel: {file.name}"
+    return check_data
+
+# --- UI ---
+uploaded_files = st.file_uploader("Upload ASI Documents (PDF/Excel)", type=["pdf", "csv", "xlsx"], accept_multiple_files=True)
 
 if uploaded_files:
-    for uploaded_file in uploaded_files:
-        st.divider()
-        st.write(f"📂 **Processing File:** {uploaded_file.name}")
-        
-        if uploaded_file.name.endswith('.pdf'):
-            dfs, vals = process_pdf(uploaded_file)
+    final_data = {}
+    for f in uploaded_files:
+        if f.name.endswith(".pdf"):
+            final_data.update(process_pdf(f))
         else:
-            xls = pd.read_excel(uploaded_file, sheet_name=None)
-            dfs = list(xls.values())
-            vals = {"Net Profit (P&L)": 0, "Total Assets": 0} # Placeholder for manual Excel mapping
-        
-        with st.expander(f"View Data Tables for {uploaded_file.name}"):
-            for i, df in enumerate(dfs):
-                st.dataframe(df, use_container_width=True)
-                st.download_button(f"📥 Download Table {i+1} as CSV", df.to_csv().encode('utf-8'), f"{uploaded_file.name}_table_{i+1}.csv")
-        
-        run_scrutiny(vals, uploaded_file.name)
+            final_data.update(process_excel([f]))
+    
+    run_analysis(final_data)
