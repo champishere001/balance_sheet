@@ -1,74 +1,63 @@
 import streamlit as st
-import pandas as pd
 import pdfplumber
-import re
+import pandas as pd
+import io
 
-st.set_page_config(page_title="Pro ASI Scrutiny", layout="wide")
-st.title("🛡️ Pro-Audit: Autonomous Scrutiny Portal")
+st.set_page_config(page_title="PDF to Multi-CSV Converter", layout="wide")
+st.title("📂 PDF Table Segmenter & CSV Converter")
 
-# THE DYNAMIC DICTIONARY: The "Brain" of the system
-VITAL_MAP = {
-    "Total Assets": ["total assets", "total rs.", "balance total", "grand total", "net block"],
-    "Net Profit": ["net profit", "profit for the year", "p&l amount", "surplus"],
-    "Turnover": ["sales", "revenue from operations", "income from services"],
-    "Inventory": ["closing stock", "inventories", "stock in hand"]
-}
-
-def clean_val(text):
-    """Universal number cleaner for Indian accounting formats"""
-    try:
-        # Removes currency symbols and handles parentheses for negative numbers
-        clean = re.sub(r'[^\d.-]', '', text.replace('(', '-').replace(')', ''))
-        return float(clean)
-    except:
-        return 0.0
-
-def autonomous_fetch(file):
-    """Main engine that decides how to read the file based on its content"""
-    extracted = {"FileName": file.name}
+def convert_pdf_to_multi_csv(uploaded_file):
+    all_tables = []
     
-    if file.name.endswith(".pdf"):
-        with pdfplumber.open(file) as pdf:
-            full_text = "\n".join([p.extract_text() for p in pdf.pages if p.extract_text()])
-            for label, keywords in VITAL_MAP.items():
-                for word in keywords:
-                    # Look for keyword + nearest number
-                    pattern = rf"{word}.*?([\d,.\(\)]+)"
-                    match = re.search(pattern, full_text, re.IGNORECASE)
-                    if match:
-                        extracted[label] = clean_val(match.group(1))
-                        break
+    with pdfplumber.open(uploaded_file) as pdf:
+        for i, page in enumerate(pdf.pages):
+            tables = page.extract_tables()
+            for j, table in enumerate(tables):
+                # Convert raw table to Clean DataFrame
+                df = pd.DataFrame(table)
+                
+                # Basic Cleaning: Use first row as header if it looks like text
+                if not df.empty:
+                    df.columns = df.iloc[0]
+                    df = df[1:]
+                    
+                    # Identify the table type by scanning content
+                    table_text = df.to_string().lower()
+                    name = f"Table_{i+1}_{j+1}"
+                    if "opening stock" in table_text or "sales" in table_text:
+                        name = "Trading_Account"
+                    elif "depreciation" in table_text or "block" in table_text:
+                        name = "Fixed_Assets_Schedule"
+                    elif "capital" in table_text or "liabilities" in table_text:
+                        name = "Balance_Sheet"
+                    
+                    all_tables.append({"name": name, "df": df})
+    return all_tables
+
+# --- UI Interface ---
+file = st.file_uploader("Upload ASI PDF Document", type="pdf")
+
+if file:
+    with st.spinner("Extracting segments..."):
+        segments = convert_pdf_to_multi_csv(file)
+    
+    if segments:
+        st.success(f"Found {len(segments)} distinct tables/sections!")
+        
+        # Display and provide download for each
+        for item in segments:
+            with st.expander(f"📥 {item['name']}"):
+                st.dataframe(item['df'], use_container_width=True)
+                
+                # Individual CSV Conversion
+                csv_buffer = io.StringIO()
+                item['df'].to_csv(csv_buffer, index=False)
+                
+                st.download_button(
+                    label=f"Download {item['name']}.csv",
+                    data=csv_buffer.getvalue(),
+                    file_name=f"{item['name']}.csv",
+                    mime="text/csv"
+                )
     else:
-        # EXCEL/CSV LOGIC: Searches column headers for keywords
-        df = pd.read_csv(file) if file.name.endswith('.csv') else pd.read_excel(file)
-        for label, keywords in VITAL_MAP.items():
-            for word in keywords:
-                # Find columns that contain the keyword
-                match_cols = [c for c in df.columns if word in str(c).lower()]
-                if match_cols:
-                    # Take the sum of the last column (usually the amount column)
-                    extracted[label] = pd.to_numeric(df[match_cols[0]], errors='coerce').sum()
-                    break
-    return extracted
-
-# --- UI ---
-files = st.file_uploader("Upload Any Enterprise Data (PDF/Excel)", accept_multiple_files=True)
-
-if files:
-    data_list = [autonomous_fetch(f) for f in files]
-    vital_df = pd.DataFrame(data_list).fillna(0)
-    
-    st.subheader("📋 Step 1: Self-Generated Vital Check Table")
-    st.dataframe(vital_df, use_container_width=True)
-    
-    # GENERATE CSV ON THE FLY
-    st.download_button("📥 Download Vital Check CSV", vital_df.to_csv(index=False), "Audit_Report.csv")
-
-    st.subheader("🔍 Step 2: Intelligent Analysis")
-    for _, row in vital_df.iterrows():
-        with st.expander(f"Audit Summary: {row['FileName']}"):
-            # Check for standard accounting equation
-            if row.get('Total Assets') > 0:
-                st.success(f"Verified: Found Assets worth ₹{row['Total Assets']:,.2f}")
-            else:
-                st.warning("⚠️ Critical data missing. System could not identify 'Total Assets'.")
+        st.error("No tables detected. The PDF might be an image/scan. Try OCR-enabled PDF.")
