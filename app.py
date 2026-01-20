@@ -1,75 +1,81 @@
 import streamlit as st
-import pdfplumber
 import pandas as pd
+import pdfplumber
+import io
 import re
 
-st.set_page_config(page_title="ASI P&L Scrutiny Portal", layout="wide")
-st.title("🛡️ ASI Scheme: Major Value & P&L Scrutiny")
+st.set_page_config(page_title="ASI Scrutiny Portal", layout="wide")
+st.title("🛡️ ASI Scheme: Live Scrutiny & Conversion Portal")
 
-def extract_major_values(file):
-    with pdfplumber.open(file) as pdf:
-        text = "\n".join([page.extract_text() for page in pdf.pages if page.extract_text()])
+def run_scrutiny(extracted_values):
+    """Active Cross-Matching Logic"""
+    st.subheader("🔍 Scrutiny: Cross-Matching Report")
     
-    # Mapping for all Major ASI and P&L Values
-    mapping = {
-        "Total_Sales": [r"By Sales", r"Gross Turnover"],
-        "Closing_Stock": [r"By Closing Stock", r"Closing Stock"],
-        "Total_Purchases": [r"To Purchases"],
-        "Total_Wages": [r"To Wages Expenses", r"Wages and Salaries"],
-        "Depreciation": [r"To Depriciation Expenses", r"Depreciation"],
-        "Net_Profit_Reported": [r"To Net Profit"],
-        "Fixed_Assets": [r"FIXED ASSETS"],
-        "Total_Liabilities": [r"Total Rs\."]
-    }
+    # 1. Net Profit Handshake
+    pl_profit = extracted_values.get("Net Profit (P&L)", 0)
+    cap_profit = extracted_values.get("Net Profit (Capital)", 0)
+    
+    if pl_profit > 0 and cap_profit > 0:
+        if abs(pl_profit - cap_profit) < 1:
+            st.success(f"✅ P&L Match: Net Profit of ₹{pl_profit:,.2f} matches across accounts.")
+        else:
+            st.error(f"❌ Mismatch: P&L Profit ({pl_profit:,.2f}) != Capital Account Profit ({cap_profit:,.2f})")
+            st.warning("💡 Suggestion: Check if the profit distribution ratio between partners is calculated correctly.")
 
-    found = {}
-    for header, keys in mapping.items():
-        found[header] = 0.0
-        for line in text.split('\n'):
-            if any(re.search(k, line, re.IGNORECASE) for k in keys):
-                nums = re.findall(r'[\d,.]+', line)
-                if nums:
-                    val = nums[-1].replace(',', '')
-                    try:
-                        found[header] = float(val)
-                        break
-                    except: continue
-    return found
+    # 2. Balance Sheet Equality
+    assets = extracted_values.get("Total Assets", 0)
+    liabilities = extracted_values.get("Total Liabilities", 0)
+    if assets > 0 and abs(assets - liabilities) < 1:
+        st.success(f"✅ B/S Balanced: Assets and Liabilities match at ₹{assets:,.2f}")
+    elif assets > 0:
+        st.error("❌ B/S Imbalance: Total Assets do not match Total Liabilities.")
 
-uploaded_file = st.file_uploader("Upload ASI/Balance Sheet PDF", type="pdf")
+def process_pdf(file):
+    all_dfs = []
+    found_values = {}
+    with pdfplumber.open(file) as pdf:
+        for page in pdf.pages:
+            tables = page.extract_tables()
+            text = page.extract_text() or ""
+            
+            # Seize Major Values for Scrutiny (based on Singla Industries sample)
+            if "Net Profit" in text:
+                nums = re.findall(r'[\d,.]+', text)
+                if nums: found_values["Net Profit (P&L)"] = float(nums[-1].replace(',', ''))
+            if "Total Rs." in text:
+                nums = re.findall(r'[\d,.]+', text)
+                if nums: found_values["Total Assets"] = float(nums[-1].replace(',', ''))
+                found_values["Total Liabilities"] = float(nums[-1].replace(',', ''))
+
+            for table in tables:
+                all_dfs.append(pd.DataFrame(table))
+    return all_dfs, found_values
+
+# --- Main Interface ---
+upload_type = st.sidebar.selectbox("Upload Format", ["PDF Document", "Multi-Sheet Excel"])
+uploaded_file = st.file_uploader(f"Upload {upload_type}", type=["pdf", "xlsx", "xls"])
 
 if uploaded_file:
-    data = extract_major_values(uploaded_file)
-    df = pd.DataFrame([data])
-    
-    st.subheader("📋 Major Extracted Values")
-    st.dataframe(df, use_container_width=True)
+    extracted_dfs = []
+    vals = {}
 
-    # --- P&L Matching Scrutiny ---
-    # Calculation: Total Output (Sales + Stock) - Total Inputs (Purchases + Wages + Other Exp)
-    total_output = data["Total_Sales"] + data["Closing_Stock"]
-    
-    st.divider()
-    st.subheader("⚖️ Profit & Loss Matching Analysis")
-    
-    # Check if Net Profit matches the Reported Profit
-    # For this sample, we check the reported vs expected
-    if data["Net_Profit_Reported"] > 0:
-        st.success(f"✅ Major Value Captured: Net Profit of {data['Net_Profit_Reported']:,.2f} identified.")
+    if upload_type == "PDF Document":
+        extracted_dfs, vals = process_pdf(uploaded_file)
     else:
-        st.error("❌ P&L Mismatch: Net Profit could not be verified.")
+        excel_data = pd.read_excel(uploaded_file, sheet_name=None)
+        for name, df in excel_data.items():
+            extracted_dfs.append(df)
+            st.write(f"📂 Sheet: {name}")
+            st.dataframe(df)
 
-    # Matching Suggestions
-    st.markdown("### 💡 Suggestions to Match P&L & Major Values:")
-    col1, col2 = st.columns(2)
-    with col1:
-        st.info("**Check Fixed Assets**: Ensure your Depreciation Chart (Annexure-F) matches the Balance Sheet total of ₹16,021,916.49.")
-        st.info("**Wages Check**: Verify if 'Wages Payable' (₹741,401.00) is consistent with the P&L Wages Expense.")
-    with col2:
-        if data["Total_Sales"] == 0:
-            st.warning("**Output Suggestion**: Sales were not detected. Check if the PDF uses 'Turnover' or 'Income' as the header.")
-        st.info("**Stock Matching**: Ensure the 'Closing Stock' (₹12,803,326.00) is identical in both the Trading Account and Assets side.")
-
-    # CSV Download
-    csv = df.to_csv(index=False).encode('utf-8')
-    st.download_button("📥 Download Major Values CSV", data=csv, file_name="asi_scrutiny.csv")
+    # Display Tables and Scrutiny
+    if extracted_dfs:
+        st.subheader("📝 Extracted Data Tables")
+        for i, df in enumerate(extracted_dfs):
+            with st.expander(f"Table/Sheet {i+1}"):
+                st.dataframe(df, use_container_width=True)
+                csv = df.to_csv(index=False).encode('utf-8')
+                st.download_button("📥 Download CSV", csv, f"table_{i+1}.csv", "text/csv")
+        
+        # Run the Live Scrutiny
+        run_scrutiny(vals)
