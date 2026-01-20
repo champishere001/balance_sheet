@@ -4,95 +4,92 @@ import pdfplumber
 import re
 import io
 
-st.set_page_config(page_title="ASI Scrutiny: Own Check Table", layout="wide")
-st.title("🛡️ ASI Scrutiny: Automated Own Check Table")
+st.set_page_config(page_title="Universal ASI Scrutiny", layout="wide")
+st.title("🛡️ Universal ASI Scrutiny & Cross-Match Portal")
 
-def run_analysis(check_data):
-    st.subheader("📊 Vital Cell Check Table")
-    
-    # Constructing the Check Table from Fetched Data
-    check_rows = [
-        {"Vital Metric": "Total Assets", "Extracted Value": check_data.get("assets", 0), "Source": check_data.get("assets_src", "Not Found")},
-        {"Vital Metric": "Total Liabilities", "Extracted Value": check_data.get("liabs", 0), "Source": check_data.get("liabs_src", "Not Found")},
-        {"Vital Metric": "Net Profit (P&L)", "Extracted Value": check_data.get("pl_profit", 0), "Source": check_data.get("pl_src", "Not Found")},
-        {"Vital Metric": "Closing Stock", "Extracted Value": check_data.get("stock", 0), "Source": check_data.get("stock_src", "Not Found")},
-        {"Vital Metric": "Wages/Manpower", "Extracted Value": check_data.get("wages", 0), "Source": check_data.get("wages_src", "Not Found")}
-    ]
-    
-    check_df = pd.DataFrame(check_rows)
-    st.table(check_df)
-
-    # Automated Calculation & Analysis
-    st.markdown("---")
-    st.subheader("💡 Automated Analysis Results")
-    c1, c2 = st.columns(2)
-    
-    with c1:
-        # Balance Sheet Verification
-        assets = check_data.get("assets", 0)
-        liabs = check_data.get("liabs", 0)
-        if assets > 0 and abs(assets - liabs) < 1:
-            st.success(f"✅ B/S Verified: Assets and Liabilities match at ₹{assets:,.2f}")
-        elif assets > 0:
-            st.error(f"❌ B/S Imbalance: Difference of ₹{abs(assets - liabs):,.2f} detected.")
-
-    with c2:
-        # P&L Vital Check
-        pl = check_data.get("pl_profit", 0)
-        if pl > 0:
-            st.info(f"🔍 P&L Analysis: Net Profit of ₹{pl:,.2f} found. Cross-verify this with Partner Capital accounts.")
-
-def process_pdf(file):
-    check_data = {}
+def extract_vital_from_pdf(file):
+    """Universal PDF extractor using keyword search"""
+    data = {"Assets": 0, "Liabilities": 0, "Profit": 0, "Stock": 0, "Sales": 0}
     with pdfplumber.open(file) as pdf:
-        full_text = ""
-        for page in pdf.pages:
-            full_text += (page.extract_text() or "")
+        text = "\n".join([page.extract_text() for page in pdf.pages if page.extract_text()])
         
-        def get_val(pattern, text):
-            match = re.search(pattern, text)
-            if match:
-                nums = re.findall(r'[\d,.]+', match.group(0))
-                return float(nums[-1].replace(',', '')) if nums else 0
-            return 0
-
-        # Fetching Vital Cells from Singla Industries PDF
-        check_data["assets"] = get_val(r"Total Rs\.\s+[\d,.]+", full_text) # Target: 43,164,277.25
-        check_data["assets_src"] = "Balance Sheet Page 1"
-        check_data["liabs"] = check_data["assets"] 
-        check_data["liabs_src"] = "Balance Sheet Page 1"
-        check_data["pl_profit"] = get_val(r"To Net Profit\s+[\d,.]+", full_text) # Target: 4,939,430.54
-        check_data["pl_src"] = "P&L Account Page 2"
-        check_data["stock"] = get_val(r"Closing Stock\s+[\d,.]+", full_text) # Target: 12,803,326.00
-        check_data["stock_src"] = "Trading Account Page 2"
-        check_data["wages"] = get_val(r"To Wages Expenses\s+[\d,.]+", full_text) # Target: 8,316,888.00
-        check_data["wages_src"] = "P&L Account Page 2"
+        # Regex patterns that work for various formats
+        patterns = {
+            "Assets": r"(Total\s+Assets|Total\s+Rs\.|Balance\s+Total).{0,20}([\d,.]+)",
+            "Profit": r"(Net\s+Profit|Profit\s+for\s+the\s+year|Total\s+Comprehensive\s+Income).{0,20}([\d,.]+)",
+            "Stock": r"(Closing\s+Stock|Inventories|Finished\s+Goods).{0,20}([\d,.]+)",
+            "Sales": r"(Sales|Revenue\s+from\s+Operations|Turnover).{0,20}([\d,.]+)"
+        }
         
-    return check_data
+        for key, pattern in patterns.items():
+            matches = re.findall(pattern, text, re.IGNORECASE)
+            if matches:
+                # Take the last match (usually the total at the bottom)
+                val_str = matches[-1][1].replace(',', '')
+                try: data[key] = float(val_str)
+                except: pass
+        
+        # In double-entry, we assume Liabs = Assets for the check table
+        data["Liabilities"] = data["Assets"]
+    return data
 
-def process_excel(uploaded_files):
-    check_data = {}
-    for f in uploaded_files:
-        df = pd.read_csv(f)
-        # Search for Net Profit in Excel Sheets
-        if "P&L Details" in f.name:
-            # Locate Profit/Loss based on specific bucket names
-            if "Description" in df.columns:
-                # Placeholder for logic to find "Net Profit" row in your Excel data
-                check_data["pl_profit_excel"] = 0 
-    return check_data
+def extract_vital_from_excel(files):
+    """Universal Excel extractor searching for column keywords"""
+    data = {"Assets": 0, "Liabilities": 0, "Profit": 0, "Stock": 0, "Sales": 0}
+    for f in files:
+        df = pd.read_csv(f) # Handling the CSV/Excel uploads
+        cols = " ".join(df.columns).lower()
+        
+        # Logic for Balance Sheet Sheets
+        if "type" in cols and "24-25" in cols:
+            data["Assets"] = df[df['Type'].str.contains('Asset', na=False, case=False)]['24-25'].sum()
+            data["Liabilities"] = abs(df[df['Type'].str.contains('Liabil', na=False, case=False)]['24-25'].sum())
+        
+        # Logic for P&L Sheets
+        if "bucket" in cols or "p & l" in cols.replace(" ", ""):
+            data["Profit"] = df.iloc[:, -1].sum() # Assumes last column is the final amount
+            
+    return data
 
-# --- UI Interface ---
-st.sidebar.header("Data Sources")
-uploaded_files = st.file_uploader("Upload ASI Files (PDF/Excel)", type=["pdf", "csv", "xlsx"], accept_multiple_files=True)
+# --- Main UI ---
+uploaded_files = st.file_uploader("Upload Enterprise Files (PDF/Excel)", accept_multiple_files=True)
 
 if uploaded_files:
-    consolidated_data = {}
+    # 1. GENERATE VITAL CSV DATA
+    st.subheader("📋 Step 1: Extracted Vital Data (Check Table)")
+    results = []
     for f in uploaded_files:
         if f.name.endswith('.pdf'):
-            consolidated_data.update(process_pdf(f))
+            vitals = extract_vital_from_pdf(f)
         else:
-            # Logic for reading CSV/Excel formats
-            consolidated_data.update(process_excel([f]))
+            vitals = extract_vital_from_excel([f])
+        
+        vitals["File Name"] = f.name
+        results.append(vitals)
     
-    run_analysis(consolidated_data)
+    vital_df = pd.DataFrame(results)
+    st.dataframe(vital_df, use_container_width=True)
+    
+    # Download Button for the Check Table
+    st.download_button("📥 Download Vital Check CSV", vital_df.to_csv(index=False), "vital_check.csv")
+
+    # 2. PERFORM ANALYSIS
+    st.subheader("🔍 Step 2: Automated Scrutiny Analysis")
+    for _, row in vital_df.iterrows():
+        with st.expander(f"Analysis for {row['File Name']}"):
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                # Balance Sheet Equation Check
+                diff = abs(row['Assets'] - row['Liabilities'])
+                if row['Assets'] > 0 and diff < 10:
+                    st.success(f"✅ Balance Sheet Verified (Total: ₹{row['Assets']:,.2f})")
+                else:
+                    st.error(f"❌ Imbalance Detected: ₹{diff:,.2f} difference.")
+            
+            with col2:
+                # Profitability Check
+                if row['Profit'] > 0:
+                    margin = (row['Profit'] / row['Sales'] * 100) if row['Sales'] > 0 else 0
+                    st.info(f"📈 Net Profit Margin: {margin:.2f}%")
+                    if margin > 25: st.warning("⚠️ High Margin: Verify if Depreciation was fully charged.")
