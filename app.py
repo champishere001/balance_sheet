@@ -4,70 +4,90 @@ import pdfplumber
 import re
 import io
 
-st.set_page_config(page_title="ASI Vital Check Portal", layout="wide")
-st.title("🛡️ ASI Universal Scrutiny & CSV Generator")
+st.set_page_config(page_title="Autonomous ASI Scrutiny", layout="wide")
+st.title("🛡️ Autonomous Scrutiny: Self-Identifying Data Portal")
 
-def universal_extractor(file):
-    """Detects file type and fetches vital ASI data using fuzzy keywords"""
-    vitals = {"Entity": "Unknown", "Total Assets": 0, "Net Profit": 0, "Sales": 0, "Wages": 0}
+# 1. UNIVERSAL HEADER DICTIONARY
+# The system will search for ANY of these variations in your files
+MAPPING = {
+    "Assets": ["total assets", "total rs.", "balance total", "grand total", "fixed assets", "current assets"],
+    "Liabilities": ["total liabilities", "liabilities and equity", "total capital and liabilities"],
+    "Profit": ["net profit", "profit for the year", "profit after tax", "p&l", "surplus"],
+    "Stock": ["closing stock", "inventories", "stock in hand", "inventory at end"],
+    "Sales": ["sales", "revenue from operations", "turnover", "income from sales"],
+    "Wages": ["wages", "manpower expenses", "employee benefit expenses", "salaries and wages"]
+}
+
+def auto_find_value(text, keywords):
+    """Searches text for keyword variations and extracts the following number"""
+    for word in keywords:
+        # Regex looks for the word followed by some spaces/chars and a currency figure
+        pattern = r"(" + word + r").{0,30}([\d,.]+)"
+        match = re.search(pattern, text, re.IGNORECASE)
+        if match:
+            try:
+                val = match.group(2).replace(',', '')
+                return float(val)
+            except:
+                continue
+    return 0
+
+def process_unknown_file(file):
+    """Detects file type and runs self-identifying logic"""
+    results = {"Entity": file.name, "Assets": 0, "Liabilities": 0, "Profit": 0, "Stock": 0, "Sales": 0, "Wages": 0}
     
     if file.name.endswith('.pdf'):
         with pdfplumber.open(file) as pdf:
-            text = "\n".join([p.extract_text() for p in pdf.pages if p.extract_text()])
-            vitals["Entity"] = text.split('\n')[0][:50] # Captures top line as name
-            # Keyword regex for various formats
-            vitals["Total Assets"] = find_val(r"(Total\s+Assets|Total\s+Rs\.)", text)
-            vitals["Net Profit"] = find_val(r"(Net\s+Profit|Profit\s+for\s+the\s+year)", text)
-            vitals["Sales"] = find_val(r"(Sales|Revenue|Turnover)", text)
-            vitals["Wages"] = find_val(r"(Wages|Manpower|Salaries)", text)
-            
+            full_text = "\n".join([p.extract_text() for p in pdf.pages if p.extract_text()])
+            for key, keywords in MAPPING.items():
+                results[key] = auto_find_value(full_text, keywords)
+    
     else: # Excel/CSV Logic
         df = pd.read_csv(file) if file.name.endswith('.csv') else pd.read_excel(file)
-        vitals["Entity"] = file.name
-        # Search columns for keywords
-        col_str = " ".join(df.columns).lower()
-        if '24-25' in col_str or 'final' in col_str:
-            vitals["Total Assets"] = df.iloc[:, -1].sum() if "asset" in col_str else 0
-            vitals["Net Profit"] = df.iloc[:, -1].sum() if "p&l" in col_str.lower() else 0
+        # Flatten all column names to search for matches
+        cols = [str(c).lower() for c in df.columns]
+        
+        for key, keywords in MAPPING.items():
+            for word in keywords:
+                # If a column name matches one of our vital keywords
+                match_col = [c for c in df.columns if word in str(c).lower()]
+                if match_col:
+                    # Take the sum of the column or the last value (usually the total)
+                    results[key] = pd.to_numeric(df[match_col[0]], errors='coerce').sum()
+                    break
+    return results
 
-    return vitals
+# --- UI ---
+st.sidebar.header("Auto-Header Engine Active")
+uploaded_files = st.file_uploader("Upload any Enterprise File", accept_multiple_files=True)
 
-def find_val(term, text):
-    match = re.search(term + r".{0,25}([\d,.]+)", text, re.IGNORECASE)
-    if match:
-        try: return float(match.group(2).replace(',', ''))
-        except: return 0
-    return 0
-
-# --- UI Interface ---
-files = st.file_uploader("Upload All Enterprise Files", accept_multiple_files=True)
-
-if files:
-    all_vitals = []
-    for f in files:
-        data = universal_extractor(f)
-        all_vitals.append(data)
+if uploaded_files:
+    summary_list = []
+    for f in uploaded_files:
+        with st.spinner(f"Searching headers in {f.name}..."):
+            data = process_unknown_file(f)
+            summary_list.append(data)
     
-    # Create the Vital DataFrame
-    vital_df = pd.DataFrame(all_vitals)
+    # GENERATE VITAL CSV
+    vital_df = pd.DataFrame(summary_list)
     
-    # DISPLAY TABLE
-    st.subheader("📊 Fetched Vital Data Table")
+    st.subheader("📋 Step 1: Self-Generated Vital Check Table")
+    st.write("The system identified these values by scanning for keywords in your files.")
     st.dataframe(vital_df, use_container_width=True)
     
-    # THE DOWNLOAD BUTTON (This solves your 'not generating' issue)
-    csv_data = vital_df.to_csv(index=False).encode('utf-8')
-    st.download_button(
-        label="📥 Download Vital Data CSV",
-        data=csv_data,
-        file_name="ASI_Vital_Check_Report.csv",
-        mime="text/csv"
-    )
+    # DOWNLOAD CSV
+    csv_bytes = vital_df.to_csv(index=False).encode('utf-8')
+    st.download_button("📥 Download Vital Data CSV", csv_bytes, "Autonomous_Vital_Report.csv", "text/csv")
 
-    # ANALYSIS SECTION
-    st.subheader("🔍 Automated Analysis")
-    for index, row in vital_df.iterrows():
-        if row['Total Assets'] > 0:
-            st.success(f"✅ {row['Entity']}: Data fetched successfully. Assets: ₹{row['Total Assets']:,.2f}")
-        else:
-            st.warning(f"⚠️ {row['Entity']}: Vital cells not found. Check if headers are standard.")
+    # DYNAMIC ANALYSIS
+    st.subheader("🔍 Step 2: Analysis Based on Identified Data")
+    for _, row in vital_df.iterrows():
+        with st.expander(f"Scrutiny for {row['Entity']}"):
+            if row['Assets'] == row['Liabilities'] and row['Assets'] > 0:
+                st.success("✅ Balance Sheet Logic Verified.")
+            elif row['Assets'] > 0:
+                st.error(f"❌ Imbalance: Assets ({row['Assets']:,.2f}) vs Liabs ({row['Liabilities']:,.2f})")
+            
+            if row['Profit'] > 0 and row['Sales'] > 0:
+                margin = (row['Profit'] / row['Sales']) * 100
+                st.info(f"📊 Profitability Detected: {margin:.2f}% Net Margin.")
