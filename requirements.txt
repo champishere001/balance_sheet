@@ -2,3 +2,8 @@ streamlit
 pdfplumber
 pandas
 openpyxl
+pytesseract
+pdf2image
+opencv-python-headless
+fuzzywuzzy
+python-Levenshtein
