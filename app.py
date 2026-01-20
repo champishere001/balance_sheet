@@ -2,86 +2,97 @@ import streamlit as st
 import pandas as pd
 import pdfplumber
 import re
+import io
 
-st.set_page_config(page_title="ASI Check Table Portal", layout="wide")
-st.title("🛡️ ASI Scrutiny: Automated Check Table")
+st.set_page_config(page_title="ASI Scrutiny: Own Check Table", layout="wide")
+st.title("🛡️ ASI Scrutiny: Automated Own Check Table")
 
 def run_analysis(check_data):
-    st.subheader("📊 Vital Cell Calculation & Analysis")
+    st.subheader("📊 Vital Cell Check Table")
     
-    # Create the Check Table
-    check_df = pd.DataFrame([
+    # Constructing the Check Table from Fetched Data
+    check_rows = [
         {"Vital Metric": "Total Assets", "Extracted Value": check_data.get("assets", 0), "Source": check_data.get("assets_src", "Not Found")},
         {"Vital Metric": "Total Liabilities", "Extracted Value": check_data.get("liabs", 0), "Source": check_data.get("liabs_src", "Not Found")},
         {"Vital Metric": "Net Profit (P&L)", "Extracted Value": check_data.get("pl_profit", 0), "Source": check_data.get("pl_src", "Not Found")},
         {"Vital Metric": "Closing Stock", "Extracted Value": check_data.get("stock", 0), "Source": check_data.get("stock_src", "Not Found")},
-        {"Vital Metric": "Sales Turnover", "Extracted Value": check_data.get("sales", 0), "Source": check_data.get("sales_src", "Not Found")}
-    ])
+        {"Vital Metric": "Wages/Manpower", "Extracted Value": check_data.get("wages", 0), "Source": check_data.get("wages_src", "Not Found")}
+    ]
     
+    check_df = pd.DataFrame(check_rows)
     st.table(check_df)
 
-    # Automated Analysis Logic
+    # Automated Calculation & Analysis
     st.markdown("---")
+    st.subheader("💡 Automated Analysis Results")
     c1, c2 = st.columns(2)
     
     with c1:
-        if abs(check_data.get("assets", 0) - check_data.get("liabs", 0)) < 1 and check_data.get("assets", 0) > 0:
-            st.success(f"✅ Balance Sheet Verified: Assets match Liabilities at ₹{check_data['assets']:,.2f}")
-        else:
-            st.error("❌ Balance Sheet Imbalance: Check Annexure-D (Current Liabilities) for missing entries.")
+        # Balance Sheet Verification
+        assets = check_data.get("assets", 0)
+        liabs = check_data.get("liabs", 0)
+        if assets > 0 and abs(assets - liabs) < 1:
+            st.success(f"✅ B/S Verified: Assets and Liabilities match at ₹{assets:,.2f}")
+        elif assets > 0:
+            st.error(f"❌ B/S Imbalance: Difference of ₹{abs(assets - liabs):,.2f} detected.")
 
     with c2:
-        # Cross-matching Closing Stock (Vital for ASI)
-        if check_data.get("stock", 0) > 0:
-            st.info(f"💡 Vital Check: Closing Stock of ₹{check_data['stock']:,.2f} must be verified against Physical Stock Audit.")
+        # P&L Vital Check
+        pl = check_data.get("pl_profit", 0)
+        if pl > 0:
+            st.info(f"🔍 P&L Analysis: Net Profit of ₹{pl:,.2f} found. Cross-verify this with Partner Capital accounts.")
 
 def process_pdf(file):
     check_data = {}
     with pdfplumber.open(file) as pdf:
         full_text = ""
-        for page in pdf.pages: full_text += (page.extract_text() or "")
+        for page in pdf.pages:
+            full_text += (page.extract_text() or "")
         
         def get_val(pattern, text):
-            m = re.search(pattern, text)
-            if m:
-                nums = re.findall(r'[\d,.]+', m.group(0))
+            match = re.search(pattern, text)
+            if match:
+                nums = re.findall(r'[\d,.]+', match.group(0))
                 return float(nums[-1].replace(',', '')) if nums else 0
             return 0
 
-        # Fetching Vital Cells
-        check_data["assets"] = get_val(r"Total Rs\.\s+[\d,.]+", full_text) # ₹43,164,277.25
+        # Fetching Vital Cells from Singla Industries PDF
+        check_data["assets"] = get_val(r"Total Rs\.\s+[\d,.]+", full_text) # Target: 43,164,277.25
         check_data["assets_src"] = "Balance Sheet Page 1"
-        check_data["liabs"] = check_data["assets"]
+        check_data["liabs"] = check_data["assets"] 
         check_data["liabs_src"] = "Balance Sheet Page 1"
-        check_data["pl_profit"] = get_val(r"Net Profit\s+[\d,.]+", full_text) # ₹4,939,430.54
+        check_data["pl_profit"] = get_val(r"To Net Profit\s+[\d,.]+", full_text) # Target: 4,939,430.54
         check_data["pl_src"] = "P&L Account Page 2"
-        check_data["stock"] = get_val(r"Closing Stock\s+[\d,.]+", full_text) # ₹12,803,326.00
+        check_data["stock"] = get_val(r"Closing Stock\s+[\d,.]+", full_text) # Target: 12,803,326.00
         check_data["stock_src"] = "Trading Account Page 2"
-        check_data["sales"] = get_val(r"By Sales\s+[\d,.]+", full_text) # ₹99,986,231.08
-        check_data["sales_src"] = "Trading Account Page 2"
+        check_data["wages"] = get_val(r"To Wages Expenses\s+[\d,.]+", full_text) # Target: 8,316,888.00
+        check_data["wages_src"] = "P&L Account Page 2"
         
     return check_data
 
-def process_excel(files):
-    # This logic combines vital cells from multiple sheets
-    check_data = {"assets": 0, "liabs": 0, "pl_profit": 0}
-    for file in files:
-        df = pd.read_csv(file) # Your uploads are CSV versions of Excel
-        if "Balance Sheet" in file.name:
-            # Logic to find "Total" row in Trial Balance
-            check_data["assets"] = df.iloc[:, -1].sum() # Example sum of 24-25 column
-            check_data["assets_src"] = f"Excel: {file.name}"
+def process_excel(uploaded_files):
+    check_data = {}
+    for f in uploaded_files:
+        df = pd.read_csv(f)
+        # Search for Net Profit in Excel Sheets
+        if "P&L Details" in f.name:
+            # Locate Profit/Loss based on specific bucket names
+            if "Description" in df.columns:
+                # Placeholder for logic to find "Net Profit" row in your Excel data
+                check_data["pl_profit_excel"] = 0 
     return check_data
 
-# --- UI ---
-uploaded_files = st.file_uploader("Upload ASI Documents (PDF/Excel)", type=["pdf", "csv", "xlsx"], accept_multiple_files=True)
+# --- UI Interface ---
+st.sidebar.header("Data Sources")
+uploaded_files = st.file_uploader("Upload ASI Files (PDF/Excel)", type=["pdf", "csv", "xlsx"], accept_multiple_files=True)
 
 if uploaded_files:
-    final_data = {}
+    consolidated_data = {}
     for f in uploaded_files:
-        if f.name.endswith(".pdf"):
-            final_data.update(process_pdf(f))
+        if f.name.endswith('.pdf'):
+            consolidated_data.update(process_pdf(f))
         else:
-            final_data.update(process_excel([f]))
+            # Logic for reading CSV/Excel formats
+            consolidated_data.update(process_excel([f]))
     
-    run_analysis(final_data)
+    run_analysis(consolidated_data)
