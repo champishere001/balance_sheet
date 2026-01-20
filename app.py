@@ -1,63 +1,60 @@
 import streamlit as st
-import pdfplumber
 import pandas as pd
+import pytesseract
+from pdf2image import convert_from_bytes
+import numpy as np
+import cv2
 import io
 
-st.set_page_config(page_title="PDF to Multi-CSV Converter", layout="wide")
-st.title("📂 PDF Table Segmenter & CSV Converter")
+st.title("🛡️ ASI Scrutiny: Scanned PDF to CSV Converter")
 
-def convert_pdf_to_multi_csv(uploaded_file):
-    all_tables = []
-    
-    with pdfplumber.open(uploaded_file) as pdf:
-        for i, page in enumerate(pdf.pages):
-            tables = page.extract_tables()
-            for j, table in enumerate(tables):
-                # Convert raw table to Clean DataFrame
-                df = pd.DataFrame(table)
-                
-                # Basic Cleaning: Use first row as header if it looks like text
-                if not df.empty:
-                    df.columns = df.iloc[0]
-                    df = df[1:]
-                    
-                    # Identify the table type by scanning content
-                    table_text = df.to_string().lower()
-                    name = f"Table_{i+1}_{j+1}"
-                    if "opening stock" in table_text or "sales" in table_text:
-                        name = "Trading_Account"
-                    elif "depreciation" in table_text or "block" in table_text:
-                        name = "Fixed_Assets_Schedule"
-                    elif "capital" in table_text or "liabilities" in table_text:
-                        name = "Balance_Sheet"
-                    
-                    all_tables.append({"name": name, "df": df})
-    return all_tables
+def process_scanned_pdf(file_bytes):
+    # 1. Convert PDF pages to Images
+    images = convert_from_bytes(file_bytes)
+    all_data = []
 
-# --- UI Interface ---
-file = st.file_uploader("Upload ASI PDF Document", type="pdf")
-
-if file:
-    with st.spinner("Extracting segments..."):
-        segments = convert_pdf_to_multi_csv(file)
-    
-    if segments:
-        st.success(f"Found {len(segments)} distinct tables/sections!")
+    for i, image in enumerate(images):
+        st.info(f"Processing Page {i+1} via OCR...")
         
-        # Display and provide download for each
-        for item in segments:
-            with st.expander(f"📥 {item['name']}"):
-                st.dataframe(item['df'], use_container_width=True)
-                
-                # Individual CSV Conversion
-                csv_buffer = io.StringIO()
-                item['df'].to_csv(csv_buffer, index=False)
-                
-                st.download_button(
-                    label=f"Download {item['name']}.csv",
-                    data=csv_buffer.getvalue(),
-                    file_name=f"{item['name']}.csv",
-                    mime="text/csv"
-                )
-    else:
-        st.error("No tables detected. The PDF might be an image/scan. Try OCR-enabled PDF.")
+        # 2. Image Pre-processing (Enhance contrast for better reading)
+        open_cv_image = np.array(image)
+        gray = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2GRAY)
+        thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+
+        # 3. Perform OCR to find the table data
+        # 'data' output gives us the positional coordinates of every word
+        data = pytesseract.image_to_data(thresh, output_type=pytesseract.Output.DATAFRAME)
+        
+        # Clean up empty OCR blocks
+        df = data[data.conf > 30] # Only keep results with >30% confidence
+        
+        # Group text by line (top coordinate) to rebuild the table rows
+        lines = df.groupby('block_num')
+        page_content = []
+        for _, line in lines:
+            row_text = " ".join(line['text'].astype(str))
+            page_content.append(row_text)
+            
+        all_data.append(pd.DataFrame(page_content, columns=[f"Page_{i+1}_Data"]))
+
+    return all_data
+
+# --- UI ---
+uploaded_file = st.file_uploader("Upload Scanned Balance Sheet (PDF)", type="pdf")
+
+if uploaded_file:
+    file_bytes = uploaded_file.read()
+    tables = process_scanned_pdf(file_bytes)
+    
+    for i, table in enumerate(tables):
+        st.subheader(f"Extracted Table - Page {i+1}")
+        st.dataframe(table, use_container_width=True)
+        
+        # Generate CSV
+        csv = table.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label=f"Download Page {i+1} as CSV",
+            data=csv,
+            file_name=f"scanned_page_{i+1}.csv",
+            mime="text/csv"
+        )
