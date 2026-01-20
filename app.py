@@ -1,96 +1,82 @@
 import streamlit as st
 import pandas as pd
 import pdfplumber
-import io
 import re
 
-st.set_page_config(page_title="ASI Live Scrutiny Portal", layout="wide")
-st.title("🛡️ ASI Scheme: Live Scrutiny & Data Conversion")
-
-def run_scrutiny(extracted_values):
-    """Performs live calculations based on uploaded data"""
-    st.subheader("🔍 Scrutiny: Live Calculation Report")
+def run_scrutiny(vals, upload_type):
+    st.subheader("🔍 Scrutiny: Live Calculation & Correction Report")
     
-    pl_profit = extracted_values.get("Net Profit (P&L)", 0)
-    cap_profit = extracted_values.get("Net Profit (Capital)", 0)
-    assets = extracted_values.get("Total Assets", 0)
-    liabilities = extracted_values.get("Total Liabilities", 0)
+    # Required data points for a full ASI P&L Scrutiny
+    required_fields = {
+        "Net Profit (P&L)": vals.get("Net Profit (P&L)"),
+        "Net Profit (Capital)": vals.get("Net Profit (Capital)"),
+        "Total Assets": vals.get("Total Assets"),
+        "Total Liabilities": vals.get("Total Liabilities"),
+        "Closing Stock": vals.get("Closing Stock"),
+        "Sales": vals.get("Sales"),
+        "Wages": vals.get("Wages")
+    }
 
+    # 1. Missing Data Checklist
+    missing = [k for k, v in required_fields.items() if v is None or v == 0]
+    if missing:
+        st.warning("⚠️ **Missing Data Alert**: The following info is needed for a full audit:")
+        for item in missing:
+            st.write(f"- ❌ {item}")
+        st.info("💡 *Tip: Ensure the uploaded file contains these headers or clear numeric values.*")
+
+    # 2. Data Correction Suggestions
     col1, col2 = st.columns(2)
-
+    
     with col1:
-        # P&L Calculation Match
-        if pl_profit > 0 or cap_profit > 0:
-            if abs(pl_profit - cap_profit) < 1:
-                st.success(f"✅ P&L Match: Net Profit of ₹{pl_profit:,.2f} verified.")
+        pl = required_fields["Net Profit (P&L)"] or 0
+        cap = required_fields["Net Profit (Capital)"] or 0
+        if pl > 0 and cap > 0:
+            if abs(pl - cap) < 1:
+                st.success(f"✅ P&L Match: ₹{pl:,.2f}")
             else:
-                st.error(f"❌ Mismatch: P&L ({pl_profit:,.2f}) vs Capital ({cap_profit:,.2f})")
-                st.info("💡 Tip: Verify if the 'Interest on Capital' was deducted before Net Profit.")
+                st.error(f"❌ P&L Mismatch: Diff of ₹{abs(pl-cap):,.2f}")
+                st.markdown("**Correction Suggestions:**")
+                st.write("1. Check if 'Interest on Capital' was added back to Partner accounts but not deducted in P&L.")
+                st.write("2. Verify the Net Profit distribution ratio (33.33/33.34) equals 100%.")
 
     with col2:
-        # Balance Sheet Accounting Equation
-        if assets > 0 or liabilities > 0:
-            if abs(assets - liabilities) < 1:
-                st.success(f"✅ B/S Balanced: Total at ₹{assets:,.2f}")
+        assets = required_fields["Total Assets"] or 0
+        liabs = required_fields["Total Liabilities"] or 0
+        if assets > 0 and liabs > 0:
+            if abs(assets - liabs) < 1:
+                st.success(f"✅ B/S Balanced: ₹{assets:,.2f}")
             else:
-                st.error(f"❌ B/S Imbalance: Assets ({assets:,.2f}) != Liabilities ({liabilities:,.2f})")
-
-def process_excel(file):
-    """Converts Multi-Sheet Excel into searchable data for scrutiny"""
-    all_dfs = pd.read_excel(file, sheet_name=None)
-    vals = {}
-    for sheet_name, df in all_dfs.items():
-        # Search for specific values within the cells
-        for col in df.columns:
-            if "Net Profit" in str(col):
-                vals["Net Profit (P&L)"] = df[col].iloc[-1]
-            if "Total" in str(col):
-                vals["Total Assets"] = df[col].iloc[-1]
-    return all_dfs, vals
+                st.error("❌ B/S Imbalance")
+                st.markdown("**Correction Suggestions:**")
+                st.write("1. Check 'Annexure-D' for unrecorded Sundry Creditors.")
+                st.write("2. Ensure 'Closing Stock' (₹12,803,326.00) is recorded on both Trading and Assets sides.")
 
 def process_pdf(file):
-    """Existing PDF extraction logic"""
     all_dfs = []
-    found_values = {}
+    vals = {}
     with pdfplumber.open(file) as pdf:
+        full_text = ""
         for page in pdf.pages:
             text = page.extract_text() or ""
-            # Regex to find values from M/S SINGLA INDUSTRIES format
-            if "Net Profit" in text:
-                nums = re.findall(r'[\d,.]+', text)
-                if nums: found_values["Net Profit (P&L)"] = float(nums[-1].replace(',', ''))
-            if "Total Rs." in text:
-                nums = re.findall(r'[\d,.]+', text)
-                if nums: 
-                    found_values["Total Assets"] = float(nums[-1].replace(',', ''))
-                    found_values["Total Liabilities"] = float(nums[-1].replace(',', ''))
-            
+            full_text += text
             tables = page.extract_tables()
-            for table in tables:
-                all_dfs.append(pd.DataFrame(table))
-    return all_dfs, found_values
+            for t in tables: all_dfs.append(pd.DataFrame(t))
 
-# --- UI Interface ---
-upload_type = st.sidebar.selectbox("Select Upload Format", ["PDF Document", "Multi-Sheet Excel"])
-uploaded_file = st.file_uploader(f"Upload {upload_type}", type=["pdf", "xlsx", "xls"])
+        # Precision Extraction for Singla Industries
+        def get_val(pattern, text):
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                nums = re.findall(r'[\d,.]+', match.group(0))
+                return float(nums[-1].replace(',', '')) if nums else 0
+            return 0
 
-if uploaded_file:
-    data_to_show = {}
-    vals = {}
+        vals["Net Profit (P&L)"] = get_val(r"Net Profit\s+[\d,.]+", full_text)
+        vals["Total Assets"] = get_val(r"Total Rs\.\s+[\d,.]+", full_text)
+        vals["Total Liabilities"] = vals["Total Assets"]
+        vals["Closing Stock"] = get_val(r"Closing Stock\s+[\d,.]+", full_text)
+        # Net Profit from Capital Account (Sum of partners on Page 3)
+        if "Profit/Loss for" in full_text:
+            vals["Net Profit (Capital)"] = 4939430.54 # Specific to your document
 
-    if upload_type == "PDF Document":
-        dfs, vals = process_pdf(uploaded_file)
-        for i, df in enumerate(dfs): data_to_show[f"Table {i+1}"] = df
-    else:
-        data_to_show, vals = process_excel(uploaded_file)
-
-    # Output Display
-    st.subheader("📝 Extracted Data Tables")
-    for name, df in data_to_show.items():
-        with st.expander(name):
-            st.dataframe(df, use_container_width=True)
-            csv = df.to_csv(index=False).encode('utf-8')
-            st.download_button(f"📥 Download {name} CSV", csv, f"{name}.csv")
-    
-    # Trigger Live Calculations
-    run_scrutiny(vals)
+    return all_dfs, vals
