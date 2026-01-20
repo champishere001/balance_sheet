@@ -1,60 +1,125 @@
 import streamlit as st
 import pandas as pd
+import pdfplumber
 import pytesseract
 from pdf2image import convert_from_bytes
-import numpy as np
 import cv2
+import numpy as np
+import re
 import io
+from fuzzywuzzy import process
 
-st.title("🛡️ ASI Scrutiny: Scanned PDF to CSV Converter")
+st.set_page_config(page_title="ASI Autonomous Audit Pro", layout="wide")
+st.title("🛡️ ASI Scrutiny: The Autonomous Super-Portal")
 
-def process_scanned_pdf(file_bytes):
-    # 1. Convert PDF pages to Images
-    images = convert_from_bytes(file_bytes)
-    all_data = []
+# --- 1. CONFIGURATION & INTELLIGENT MAPPING ---
+VITAL_ALIASES = {
+    "Total Assets": ["total assets", "grand total", "total rs.", "total assets and liabilities", "balance sheet total"],
+    "Net Profit": ["net profit", "profit for the year", "profit/(loss) for the period", "surplus after tax"],
+    "Turnover": ["sales", "revenue from operations", "income from sales", "total turnover"],
+    "Wages": ["wages", "salaries and wages", "employee benefit expenses", "manpower cost"]
+}
 
-    for i, image in enumerate(images):
-        st.info(f"Processing Page {i+1} via OCR...")
-        
-        # 2. Image Pre-processing (Enhance contrast for better reading)
-        open_cv_image = np.array(image)
-        gray = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2GRAY)
-        thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+# --- 2. CORE ENGINES ---
+def clean_numeric(val):
+    if pd.isna(val): return 0.0
+    s = str(val).replace(',', '').replace('Rs.', '').replace('₹', '').strip()
+    # Handle accounting brackets: (100) -> -100
+    if '(' in s and ')' in s:
+        s = '-' + s.replace('(', '').replace(')', '')
+    try: return float(re.findall(r"[-+]?\d*\.\d+|\d+", s)[0])
+    except: return 0.0
 
-        # 3. Perform OCR to find the table data
-        # 'data' output gives us the positional coordinates of every word
-        data = pytesseract.image_to_data(thresh, output_type=pytesseract.Output.DATAFRAME)
-        
-        # Clean up empty OCR blocks
-        df = data[data.conf > 30] # Only keep results with >30% confidence
-        
-        # Group text by line (top coordinate) to rebuild the table rows
-        lines = df.groupby('block_num')
-        page_content = []
-        for _, line in lines:
-            row_text = " ".join(line['text'].astype(str))
-            page_content.append(row_text)
-            
-        all_data.append(pd.DataFrame(page_content, columns=[f"Page_{i+1}_Data"]))
+def extract_from_excel(file):
+    """Processes all sheets and identifies vital rows by fuzzy matching headers"""
+    results = {"Source": file.name}
+    dfs = pd.read_excel(file, sheet_name=None)
+    for sheet_name, df in dfs.items():
+        # Flatten all text in the sheet to search for vital metrics
+        text_blob = df.to_string().lower()
+        for metric, aliases in VITAL_ALIASES.items():
+            if any(alias in text_blob for alias in aliases):
+                # If we find a keyword, we try to find the number in the nearest numeric column
+                # This is a 'Smart Guess' for autonomous detection
+                best_match = process.extractOne(metric, df.iloc[:, 0].astype(str))
+                if best_match and best_match[1] > 80:
+                    row_idx = best_match[2]
+                    results[metric] = clean_numeric(df.iloc[row_idx, -1])
+    return results
 
-    return all_data
-
-# --- UI ---
-uploaded_file = st.file_uploader("Upload Scanned Balance Sheet (PDF)", type="pdf")
-
-if uploaded_file:
-    file_bytes = uploaded_file.read()
-    tables = process_scanned_pdf(file_bytes)
+def extract_from_pdf(file, use_ocr=False):
+    """Uses pdfplumber for digital text or OCR for scans"""
+    results = {"Source": file.name}
+    full_text = ""
     
-    for i, table in enumerate(tables):
-        st.subheader(f"Extracted Table - Page {i+1}")
-        st.dataframe(table, use_container_width=True)
-        
-        # Generate CSV
-        csv = table.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label=f"Download Page {i+1} as CSV",
-            data=csv,
-            file_name=f"scanned_page_{i+1}.csv",
-            mime="text/csv"
-        )
+    if use_ocr:
+        images = convert_from_bytes(file.read())
+        for img in images:
+            full_text += pytesseract.image_to_string(img)
+    else:
+        with pdfplumber.open(file) as pdf:
+            full_text = "\n".join([p.extract_text() for p in pdf.pages if p.extract_text()])
+
+    # Autonomous Regex: Look for Alias + closest Number
+    for metric, aliases in VITAL_ALIASES.items():
+        for alias in aliases:
+            pattern = rf"{alias}.*?([\d,.]+)"
+            match = re.search(pattern, full_text, re.IGNORECASE)
+            if match:
+                results[metric] = clean_numeric(match.group(1))
+                break
+    return results
+
+# --- 3. UI INTERFACE ---
+st.sidebar.header("⚙️ Audit Settings")
+ocr_mode = st.sidebar.checkbox("Enable OCR (For Scanned/Image PDFs)", value=False)
+st.sidebar.info("The system automatically identifies headers like 'Total Assets' vs 'Grand Total'.")
+
+uploaded_files = st.file_uploader("Upload All Enterprise Files (PDF/Excel)", accept_multiple_files=True)
+
+if uploaded_files:
+    summary_data = []
+    
+    with st.status("🚀 Autonomously analyzing documents...") as status:
+        for f in uploaded_files:
+            if f.name.endswith(('.xlsx', '.xls')):
+                data = extract_from_excel(f)
+            else:
+                data = extract_from_pdf(f, use_ocr=ocr_mode)
+            summary_data.append(data)
+        status.update(label="Analysis Complete!", state="complete")
+
+    # --- 4. THE VITAL CHECK TABLE & CSV GENERATION ---
+    vital_df = pd.DataFrame(summary_data).fillna(0)
+    
+    st.subheader("📋 Step 1: Autonomous Vital Check Table")
+    st.write("Below are the values identified from your documents. If a value is 0, the header was not recognized.")
+    st.dataframe(vital_df, use_container_width=True)
+    
+    # EXPORT BUTTON
+    csv_bytes = vital_df.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="📥 Download Audit Summary (CSV)",
+        data=csv_bytes,
+        file_name="ASI_Consolidated_Audit.csv",
+        mime="text/csv"
+    )
+
+    # --- 5. CROSS-ANALYSIS & ERROR DETECTION ---
+    st.subheader("🔍 Step 2: Intelligent Scrutiny Analysis")
+    for _, row in vital_df.iterrows():
+        with st.expander(f"Scrutiny Report: {row['Source']}"):
+            c1, c2, c3 = st.columns(3)
+            with c1:
+                if row.get('Total Assets', 0) > 0:
+                    st.success(f"Assets Identified: ₹{row['Total Assets']:,.2f}")
+                else:
+                    st.error("❌ Total Assets not found. Check if the scan is clear.")
+            with c2:
+                if row.get('Net Profit', 0) != 0:
+                    st.info(f"Net Profit: ₹{row['Net Profit']:,.2f}")
+            with c3:
+                # Automatic Trend Analysis
+                if row.get('Turnover', 0) > 0:
+                    margin = (row['Net Profit'] / row['Turnover']) * 100
+                    st.metric("Net Margin", f"{margin:.2f}%")
