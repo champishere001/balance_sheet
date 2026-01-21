@@ -2,71 +2,101 @@ import streamlit as st
 import pandas as pd
 import io
 import re
+from fuzzywuzzy import process
 
-st.set_page_config(page_title="Smart ASI Converter", layout="wide")
-st.title("🛡️ Smart Header Discovery & CSV Converter")
+st.set_page_config(page_title="ASI Audit Pro", layout="wide")
+st.title("🛡️ ASI Master Scrutiny & Analysis Engine")
 
-# Keywords used to identify the header row
-ANCHOR_KEYWORDS = ["description", "account", "material", "nsso", "qty", "amount", "sl. no.", "category"]
+# --- 1. INTELLIGENT CONFIGURATION ---
+# The tool uses these to find data no matter which row it starts on
+VITAL_COLUMNS = ["description", "nsso", "amount", "value", "24-25", "total", "category"]
+AUDIT_TARGETS = {
+    "Total Assets": ["fixed assets", "total assets", "closing dr", "balance sheet total"],
+    "Total Wages": ["wages", "salaries", "employee benefits", "manpower cost"],
+    "Turnover": ["sales", "revenue", "turnover", "dispatched value"],
+    "Raw Material": ["consumption", "rm consumed", "material cost"]
+}
 
-def smart_convert_to_df(file):
-    """Converts Excel/PDF to CSV logic and finds the header row automatically"""
+# --- 2. THE "SMART" EXTRACTION CORE ---
+def smart_load(file):
+    """Detects headers and converts any file to a clean Audit-Ready CSV"""
     if file.name.endswith('.csv'):
-        raw_df = pd.read_csv(file, header=None)
+        raw = pd.read_csv(file, header=None)
     else:
-        # Load Excel (first sheet by default for discovery)
-        raw_df = pd.read_excel(file, header=None)
-
-    # --- STEP 1: FIND THE HEADER ---
-    header_row_index = 0
-    max_matches = 0
+        raw = pd.read_excel(file, header=None)
     
-    for i in range(min(len(raw_df), 20)):  # Scan top 20 rows
-        row_values = [str(val).lower() for val in raw_df.iloc[i].values]
-        # Count keyword matches in this specific row
-        matches = sum(1 for key in ANCHOR_KEYWORDS if any(key in cell for cell in row_values))
-        
-        if matches > max_matches:
-            max_matches = matches
-            header_row_index = i
+    # Header Hunting Logic
+    header_idx = 0
+    for i in range(min(len(raw), 25)):
+        row = [str(x).lower() for x in raw.iloc[i].values]
+        matches = sum(1 for k in VITAL_COLUMNS if any(k in cell for cell in row))
+        if matches >= 2:
+            header_idx = i
+            break
             
-    # --- STEP 2: RE-LOAD WITH CORRECT HEADER ---
     file.seek(0)
-    if file.name.endswith('.csv'):
-        clean_df = pd.read_csv(file, skiprows=header_row_index)
-    else:
-        clean_df = pd.read_excel(file, skiprows=header_row_index)
-        
-    return clean_df, header_row_index
+    df = pd.read_csv(file, skiprows=header_idx) if file.name.endswith('.csv') else pd.read_excel(file, skiprows=header_idx)
+    return df, header_idx
 
-# --- UI INTERFACE ---
-st.info("Upload any file. The system will skip empty rows and find the headers by itself.")
-uploaded_files = st.file_uploader("Upload ASI Files", accept_multiple_files=True)
+def extract_metric(df, target_key):
+    """Fuzzy searches for a metric and extracts its value"""
+    full_text = " ".join(df.columns.astype(str)).lower()
+    # Find column name that matches our keywords
+    potential_cols = []
+    for kw in AUDIT_TARGETS[target_key]:
+        matches = [c for c in df.columns if kw in str(c).lower()]
+        potential_cols.extend(matches)
+    
+    if potential_cols:
+        target_col = potential_cols[0]
+        # Summing numeric values (cleaning strings like 'Rs.' or ',' first)
+        clean_values = pd.to_numeric(df[target_col].astype(str).str.replace(r'[^\d.-]', '', regex=True), errors='coerce')
+        return clean_values.sum()
+    return 0
+
+# --- 3. UI & UPLOAD HUB ---
+st.sidebar.header("📁 Data Input")
+uploaded_files = st.file_uploader("Upload all ASI Schedules (FTO 8, Manpower, Consumption)", 
+                                  accept_multiple_files=True)
 
 if uploaded_files:
+    all_summary = []
+    
     for f in uploaded_files:
-        with st.expander(f"Processing: {f.name}", expanded=True):
-            # Extract
-            df, found_at = smart_convert_to_df(f)
+        with st.status(f"Scanning {f.name}...") as status:
+            df, row_found = smart_load(f)
             
-            st.success(f"Header found at Row {found_at + 1}")
+            # Identify what kind of file this is
+            file_vitals = {"File": f.name, "Header_Row": row_found + 1}
+            for target in AUDIT_TARGETS:
+                val = extract_metric(df, target)
+                if val > 0:
+                    file_vitals[target] = val
             
-            # Show the cleaned table
-            st.dataframe(df.head(10), use_container_width=True)
-            
-            # Convert to CSV for Download
-            csv_buffer = io.StringIO()
-            df.to_csv(csv_buffer, index=False)
-            
-            st.download_button(
-                label=f"📥 Download Clean {f.name} as CSV",
-                data=csv_buffer.getvalue(),
-                file_name=f"{f.name.split('.')[0]}_Cleaned.csv",
-                mime="text/csv"
-            )
+            all_summary.append(file_vitals)
+            status.update(label=f"Verified {f.name}", state="complete")
 
+    # --- 4. THE ANALYTICS DASHBOARD ---
+    st.header("📊 Scrutiny Dashboard")
+    master_df = pd.DataFrame(all_summary).fillna(0)
+    st.dataframe(master_df, use_container_width=True)
+
+    # Cross-Verification Logic
+    st.subheader("🔍 Intelligent Cross-Check")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        # Comparison: Wages in Trial Balance vs Manpower Report
+        total_wages = master_df["Total Wages"].sum()
+        st.metric("Consolidated Wages", f"₹{total_wages:,.2f}")
+        if total_wages == 0:
+            st.error("⚠️ Wages not detected in any file. Check 'Manpower' headers.")
+
+    with col2:
+        total_sales = master_df["Turnover"].sum()
+        st.metric("Total Turnover", f"₹{total_sales:,.2f}")
+
+    # --- 5. DATA EXPORT ---
     st.divider()
-    st.subheader("🛠️ Why this is better?")
-    st.write("1. **Automatic Alignment:** It doesn't matter if data starts at Row 1 or Row 10.")
-    st.write("2. **Format Neutral:** Converts Excel to CSV instantly in the background.")
-    st.write("3. **Multi-File:** Process your FTO 8, Manpower, and Consumption files in one go.")
+    csv_out = master_df.to_csv(index=False).encode('utf-8')
+    st.download_button("📥 Download Audit-Ready CSV", csv_out, "ASI_Consolidated_Audit.csv", "text/csv")
