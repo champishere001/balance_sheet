@@ -9,117 +9,146 @@ import re
 import io
 from fuzzywuzzy import process
 
-st.set_page_config(page_title="ASI Autonomous Audit Pro", layout="wide")
-st.title("🛡️ ASI Scrutiny: The Autonomous Super-Portal")
+# --- PAGE CONFIGURATION ---
+st.set_page_config(page_title="ASI Scrutiny Portal", layout="wide", page_icon="🛡️")
+st.title("🛡️ ASI Scrutiny: Autonomous Multi-File Audit Portal")
 
-# --- 1. CONFIGURATION & INTELLIGENT MAPPING ---
-VITAL_ALIASES = {
-    "Total Assets": ["total assets", "grand total", "total rs.", "total assets and liabilities", "balance sheet total"],
-    "Net Profit": ["net profit", "profit for the year", "profit/(loss) for the period", "surplus after tax"],
-    "Turnover": ["sales", "revenue from operations", "income from sales", "total turnover"],
-    "Wages": ["wages", "salaries and wages", "employee benefit expenses", "manpower cost"]
+# --- GLOBAL INTELLIGENCE: KEYWORD MAPPING ---
+# This allows the system to find "Total Assets" even if it's called "Grand Total" or "24-25"
+VITAL_MAP = {
+    "Total Assets": ["total assets", "total rs.", "balance sheet total", "grand total", "24-25", "closing dr"],
+    "Net Profit": ["net profit", "profit for the year", "final amt of p& l", "pl amount", "surplus"],
+    "Sales/Turnover": ["sales", "revenue from operations", "turnover", "income from sales"],
+    "Wages/Manpower": ["wages", "salaries", "employee benefits", "man-days"]
 }
 
-# --- 2. CORE ENGINES ---
-def clean_numeric(val):
+# --- HELPER FUNCTIONS ---
+def clean_num(val):
+    """Cleans currency strings, brackets, and commas into floats."""
     if pd.isna(val): return 0.0
     s = str(val).replace(',', '').replace('Rs.', '').replace('₹', '').strip()
-    # Handle accounting brackets: (100) -> -100
-    if '(' in s and ')' in s:
-        s = '-' + s.replace('(', '').replace(')', '')
-    try: return float(re.findall(r"[-+]?\d*\.\d+|\d+", s)[0])
+    if '(' in s and ')' in s: s = '-' + s.replace('(', '').replace(')', '')
+    try:
+        nums = re.findall(r"[-+]?\d*\.\d+|\d+", s)
+        return float(nums[0]) if nums else 0.0
     except: return 0.0
 
-def extract_from_excel(file):
-    """Processes all sheets and identifies vital rows by fuzzy matching headers"""
-    results = {"Source": file.name}
-    dfs = pd.read_excel(file, sheet_name=None)
-    for sheet_name, df in dfs.items():
-        # Flatten all text in the sheet to search for vital metrics
-        text_blob = df.to_string().lower()
-        for metric, aliases in VITAL_ALIASES.items():
-            if any(alias in text_blob for alias in aliases):
-                # If we find a keyword, we try to find the number in the nearest numeric column
-                # This is a 'Smart Guess' for autonomous detection
-                best_match = process.extractOne(metric, df.iloc[:, 0].astype(str))
-                if best_match and best_match[1] > 80:
-                    row_idx = best_match[2]
-                    results[metric] = clean_numeric(df.iloc[row_idx, -1])
+def autonomous_excel_scan(file):
+    """Scans all sheets in an Excel file and finds vital data."""
+    results = []
+    excel_file = pd.ExcelFile(file)
+    for sheet in excel_file.sheet_names:
+        df = pd.read_excel(file, sheet_name=sheet)
+        if df.empty: continue
+        
+        sheet_info = {"FileName": file.name, "SheetName": sheet}
+        col_text = " ".join([str(c) for c in df.columns]).lower()
+        
+        # Look for headers in columns
+        for metric, keywords in VITAL_MAP.items():
+            best_col = None
+            for kw in keywords:
+                matches = [c for c in df.columns if kw in str(c).lower()]
+                if matches:
+                    best_col = matches[0]
+                    break
+            
+            if best_col:
+                # If it's a balance sheet/PL, we usually want the total (last row) or sum
+                sheet_info[metric] = df[best_col].apply(clean_num).sum()
+            else:
+                sheet_info[metric] = 0.0
+        
+        results.append(sheet_info)
     return results
 
-def extract_from_pdf(file, use_ocr=False):
-    """Uses pdfplumber for digital text or OCR for scans"""
-    results = {"Source": file.name}
-    full_text = ""
-    
+def autonomous_pdf_scan(file, use_ocr=False):
+    """Extracts text from PDF (Digital or Scanned) and finds values."""
+    text = ""
     if use_ocr:
         images = convert_from_bytes(file.read())
         for img in images:
-            full_text += pytesseract.image_to_string(img)
+            text += pytesseract.image_to_string(img)
     else:
         with pdfplumber.open(file) as pdf:
-            full_text = "\n".join([p.extract_text() for p in pdf.pages if p.extract_text()])
-
-    # Autonomous Regex: Look for Alias + closest Number
-    for metric, aliases in VITAL_ALIASES.items():
-        for alias in aliases:
-            pattern = rf"{alias}.*?([\d,.]+)"
-            match = re.search(pattern, full_text, re.IGNORECASE)
+            text = "\n".join([p.extract_text() for p in pdf.pages if p.extract_text()])
+    
+    extracted = {"FileName": file.name, "SheetName": "PDF Content"}
+    for metric, keywords in VITAL_MAP.items():
+        found = False
+        for kw in keywords:
+            pattern = rf"{kw}.*?([\d,.]+)"
+            match = re.search(pattern, text, re.IGNORECASE)
             if match:
-                results[metric] = clean_numeric(match.group(1))
+                extracted[metric] = clean_num(match.group(1))
+                found = True
                 break
-    return results
+        if not found: extracted[metric] = 0.0
+    return [extracted]
 
-# --- 3. UI INTERFACE ---
-st.sidebar.header("⚙️ Audit Settings")
-ocr_mode = st.sidebar.checkbox("Enable OCR (For Scanned/Image PDFs)", value=False)
-st.sidebar.info("The system automatically identifies headers like 'Total Assets' vs 'Grand Total'.")
+# --- USER INTERFACE ---
+st.sidebar.header("📁 Upload Hub")
+uploaded_files = st.file_uploader("Upload ASI Files (Excel, CSV, PDF)", 
+                                  accept_multiple_files=True, 
+                                  type=["xlsx", "xls", "csv", "pdf"])
 
-uploaded_files = st.file_uploader("Upload All Enterprise Files (PDF/Excel)", accept_multiple_files=True)
+ocr_enabled = st.sidebar.checkbox("Enable OCR for Scanned PDFs", value=False)
 
 if uploaded_files:
-    summary_data = []
+    master_data = []
     
-    with st.status("🚀 Autonomously analyzing documents...") as status:
+    with st.status("🔍 Analyzing documents autonomously...") as status:
         for f in uploaded_files:
             if f.name.endswith(('.xlsx', '.xls')):
-                data = extract_from_excel(f)
-            else:
-                data = extract_from_pdf(f, use_ocr=ocr_mode)
-            summary_data.append(data)
+                master_data.extend(autonomous_excel_scan(f))
+            elif f.name.endswith('.pdf'):
+                master_data.extend(autonomous_pdf_scan(f, use_ocr=ocr_enabled))
+            elif f.name.endswith('.csv'):
+                df = pd.read_csv(f)
+                master_data.append(analyze_sheet_generic(df, f.name, "CSV Root"))
         status.update(label="Analysis Complete!", state="complete")
 
-    # --- 4. THE VITAL CHECK TABLE & CSV GENERATION ---
-    vital_df = pd.DataFrame(summary_data).fillna(0)
+    # --- THE VITAL CHECK TABLE ---
+    st.subheader("📋 Step 1: Consolidated Check Table")
+    final_df = pd.DataFrame(master_data).fillna(0)
     
-    st.subheader("📋 Step 1: Autonomous Vital Check Table")
-    st.write("Below are the values identified from your documents. If a value is 0, the header was not recognized.")
-    st.dataframe(vital_df, use_container_width=True)
+    # Reorder columns for readability
+    cols = ["FileName", "SheetName", "Total Assets", "Net Profit", "Sales/Turnover", "Wages/Manpower"]
+    final_df = final_df[cols]
     
-    # EXPORT BUTTON
-    csv_bytes = vital_df.to_csv(index=False).encode('utf-8')
-    st.download_button(
-        label="📥 Download Audit Summary (CSV)",
-        data=csv_bytes,
-        file_name="ASI_Consolidated_Audit.csv",
-        mime="text/csv"
-    )
+    st.dataframe(final_df, use_container_width=True)
 
-    # --- 5. CROSS-ANALYSIS & ERROR DETECTION ---
-    st.subheader("🔍 Step 2: Intelligent Scrutiny Analysis")
-    for _, row in vital_df.iterrows():
-        with st.expander(f"Scrutiny Report: {row['Source']}"):
-            c1, c2, c3 = st.columns(3)
-            with c1:
-                if row.get('Total Assets', 0) > 0:
+    # 📥 MASTER DOWNLOAD BUTTON
+    csv_bytes = final_df.to_csv(index=False).encode('utf-8')
+    st.download_button("📥 Download Master Scrutiny CSV", csv_bytes, "ASI_Final_Report.csv", "text/csv")
+
+    # --- INDIVIDUAL CONVERSION OPTIONS ---
+    st.divider()
+    st.subheader("📂 Individual Sheet Conversion")
+    st.info("Download individual sheets as CSVs for separate records.")
+    
+    for f in uploaded_files:
+        if f.name.endswith(('.xlsx', '.xls')):
+            xl = pd.ExcelFile(f)
+            for s in xl.sheet_names:
+                df_temp = pd.read_excel(f, sheet_name=s)
+                st.download_button(f"Download {f.name} [{s}] as CSV", 
+                                   df_temp.to_csv(index=False), 
+                                   f"{f.name}_{s}.csv", "text/csv")
+
+    # --- INTELLIGENT ANALYSIS ---
+    st.divider()
+    st.subheader("🔍 Step 2: Automated Analysis & Errors")
+    for index, row in final_df.iterrows():
+        if row['Total Assets'] > 0:
+            with st.expander(f"Analysis for {row['FileName']} ({row['SheetName']})"):
+                c1, c2 = st.columns(2)
+                with c1:
                     st.success(f"Assets Identified: ₹{row['Total Assets']:,.2f}")
-                else:
-                    st.error("❌ Total Assets not found. Check if the scan is clear.")
-            with c2:
-                if row.get('Net Profit', 0) != 0:
-                    st.info(f"Net Profit: ₹{row['Net Profit']:,.2f}")
-            with c3:
-                # Automatic Trend Analysis
-                if row.get('Turnover', 0) > 0:
-                    margin = (row['Net Profit'] / row['Turnover']) * 100
-                    st.metric("Net Margin", f"{margin:.2f}%")
+                    if row['Net Profit'] > 0:
+                        margin = (row['Net Profit'] / row['Sales/Turnover']) * 100 if row['Sales/Turnover'] > 0 else 0
+                        st.metric("Net Profit Margin", f"{margin:.2f}%")
+                with c2:
+                    if row['Sales/Turnover'] == 0:
+                        st.warning("⚠️ Turnover not found. Check if the sheet uses 'Revenue' or 'Income'.")
+
