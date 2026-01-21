@@ -1,5 +1,6 @@
 streamlit
 pandas
-openpyxl
 fuzzywuzzy
 python-Levenshtein
+openpyxl
+xlrd
