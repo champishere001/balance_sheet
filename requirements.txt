@@ -1,9 +1,5 @@
 streamlit
 pandas
 openpyxl
-pdfplumber
-pytesseract
-pdf2image
-opencv-python-headless
 fuzzywuzzy
 python-Levenshtein
