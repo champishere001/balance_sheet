@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import re
 
 # ================= CONFIG & STYLING =================
 st.set_page_config(page_title="ASI Intelligent Audit Engine", layout="wide")
@@ -15,141 +14,144 @@ st.markdown("""
 
 st.title("🛡️ ASI Intelligent Audit & Cross-Check Engine")
 
-# ================= CORE UTILITIES =================
-def robust_numeric_cleaner(series):
-    """Ensures accounting formats (₹, commas, parentheses) are converted to floats."""
-    def clean_value(val):
-        if pd.isna(val) or val == "": return 0.0
-        s = str(val).strip().lower()
-        is_negative = False
-        # Handle (1,234.56) accounting format as negative
-        if "(" in s and ")" in s: is_negative = True
-        # Strip all but numbers, decimals, and minus signs
-        s = re.sub(r'[^-0-9.]', '', s)
-        try:
-            num = float(s) if s else 0.0
-            return -num if is_negative else num
-        except: return 0.0
-    return series.apply(clean_value)
+# ================= HELPERS =================
+def fix_duplicate_columns(df):
+    cols = []
+    counter = {}
+    for c in df.columns:
+        if c in counter:
+            counter[c] += 1
+            cols.append(f"{c}_{counter[c]}")
+        else:
+            counter[c] = 0
+            cols.append(c)
+    df.columns = cols
+    return df
 
 def clean_df(df):
-    """Removes empty rows and handles basic structural cleanup."""
-    df = df.dropna(how="all")
-    if not df.empty:
-        df.columns = [str(c).strip() for c in df.columns]
+    df = df.dropna(axis=1, how="all")
+    df = df.dropna(axis=0, how="all")
+    df.columns = [str(c).strip() for c in df.columns]
+    df = fix_duplicate_columns(df)
     return df
 
 def detect_columns(df):
-    """Automatically maps financial and spatial columns without ambiguity errors."""
     debit, credit, desc = [], [], None
-    lat, lon, height = None, None, None
-    
     for c in df.columns:
-        cl = str(c).lower()
-        # Financial detection
+        cl = c.lower()
         if "debit" in cl or cl.endswith("dr"): debit.append(c)
         elif "credit" in cl or cl.endswith("cr"): credit.append(c)
         elif any(k in cl for k in ["desc", "particulars", "account", "ledger"]): desc = c
-        
-        # Spatial detection (Requirement: Height adjustments with Lat/Lon)
-        if "lat" in cl: lat = c
-        elif "lon" in cl: lon = c
-        elif any(k in cl for k in ["height", "elev", "floor"]): height = c
-        
-    return debit, credit, desc or df.columns[0], lat, lon, height
+    return debit, credit, desc or df.columns[0]
 
 def classify(desc):
-    """Categorizes accounts based on common accounting terminology."""
     d = str(desc).lower()
-    if any(k in d for k in ["capital", "reserve", "loan", "creditor", "payable", "provision"]): return "Liability"
-    if any(k in d for k in ["asset", "plant", "machinery", "building", "cash", "bank", "receivable", "debtor"]): return "Asset"
-    if any(k in d for k in ["salary", "wage", "expense", "purchase", "rent", "tax"]): return "Expense"
-    if any(k in d for k in ["sales", "turnover", "income", "revenue", "gain"]): return "Income"
+    if any(k in d for k in ["capital", "reserve", "loan", "creditor", "payable", "provision", "borrowing"]):
+        return "Liability"
+    if any(k in d for k in ["asset", "plant", "machinery", "building", "cash", "bank", "receivable", "debtor", "stock", "inventory"]):
+        return "Asset"
+    if any(k in d for k in ["salary", "wage", "expense", "consumption", "purchase", "rent", "tax", "interest paid"]):
+        return "Expense"
+    if any(k in d for k in ["sales", "turnover", "income", "revenue", "gain", "interest received"]):
+        return "Income"
     return "Other"
 
 # ================= FILE UPLOADER =================
 uploaded_files = st.file_uploader(
-    "Upload Trial Balance / Spatial Audit Sheets (Excel)", 
-    type=["xlsx", "xls"], 
+    "Upload Trial Balance / Balance Sheet (Excel)",
+    type=["xlsx", "xls"],
     accept_multiple_files=True
 )
 
 if uploaded_files:
-    all_data = {}
+    all_summaries = {}
     
     for file in uploaded_files:
         try:
-            # 1. Load Data
-            df_raw = pd.read_excel(file)
-            df = clean_df(df_raw)
-            dr_cols, cr_cols, desc_col, lat_c, lon_c, h_c = detect_columns(df)
+            # 1. Processing
+            df = pd.read_excel(file, header=0)
+            df = clean_df(df)
+            debit_cols, credit_cols, desc_col = detect_columns(df)
 
-            # 2. Financial Cleaning
-            for col in dr_cols + cr_cols:
-                df[col] = robust_numeric_cleaner(df[col])
-
-            df["Debit"] = df[dr_cols].sum(axis=1) if dr_cols else 0
-            df["Credit"] = df[cr_cols].sum(axis=1) if cr_cols else 0
+            # 2. Calculations
+            df["Debit"] = df[debit_cols].apply(pd.to_numeric, errors="coerce").sum(axis=1) if debit_cols else 0
+            df["Credit"] = df[credit_cols].apply(pd.to_numeric, errors="coerce").sum(axis=1) if credit_cols else 0
             df["Category"] = df[desc_col].apply(classify)
             df["Net Amount"] = df["Debit"] - df["Credit"]
 
-            all_data[file.name] = {
-                "df": df, 
-                "total_dr": df["Debit"].sum(), 
-                "total_cr": df["Credit"].sum(),
-                "desc_col": desc_col,
-                "spatial": (lat_c, lon_c, h_c)
-            }
+            all_summaries[file.name] = df
 
-            # 3. Individual Reconciliation
-            with st.expander(f"📁 Audit Details: {file.name}"):
-                diff = round(all_data[file.name]["total_dr"] - all_data[file.name]["total_cr"], 2)
-                c1, c2, c3 = st.columns(3)
-                c1.metric("Debits", f"₹{all_data[file.name]['total_dr']:,.2f}")
-                c2.metric("Credits", f"₹{all_data[file.name]['total_cr']:,.2f}")
-                
-                if abs(diff) < 0.01:
-                    c3.success("RECONCILED ✅")
-                else:
-                    c3.error(f"MISMATCH: ₹{diff:,.2f}")
-
-                # Spatial Requirement: Height must be checked if Lat/Lon exists
-                if lat_c and lon_c:
-                    if h_c:
-                        st.info(f"📍 Spatial Audit: Coordinates detected with Height ({h_c}).")
-                    else:
-                        st.warning("⚠️ Spatial Audit: Lat/Lon detected but Height is missing.")
-
+            with st.expander(f"📁 Raw Data & Classification: {file.name}"):
                 st.dataframe(df, use_container_width=True)
 
         except Exception as e:
             st.error(f"Error processing {file.name}: {e}")
 
-    # ================= CONSOLIDATED INTELLIGENCE =================
-    if all_data:
-        st.divider()
-        st.header("📊 Financial Performance Summary")
-        
-        target = st.selectbox("Select entity for deep-dive", list(all_data.keys()))
-        t_data = all_data[target]
-        t_df = t_data["df"]
-        d_col = t_data["desc_col"]
-        
-        # Working Capital & Profit/Loss Calculations
-        inc = abs(t_df[t_df["Category"] == "Income"]["Net Amount"].sum())
-        exp = t_df[t_df["Category"] == "Expense"]["Net Amount"].sum()
-        ca = t_df[(t_df["Category"] == "Asset") & (t_df[d_col].astype(str).str.contains("Cash|Bank|Receivable|Stock", case=False, na=False))]["Net Amount"].sum()
-        cl = abs(t_df[(t_df["Category"] == "Liability") & (t_df[d_col].astype(str).str.contains("Payable|Creditor|Loan", case=False, na=False))]["Net Amount"].sum())
-        
-        m1, m2, m3 = st.columns(3)
-        m1.metric("Net Profit/Loss", f"₹{inc - exp:,.2f}")
-        m2.metric("Working Capital", f"₹{ca - cl:,.2f}")
-        m3.metric("Current Ratio", f"{ca/cl:.2f}" if cl != 0 else "N/A")
+    # ================= FINANCIAL ANALYSIS SECTION =================
+    st.divider()
+    st.header("📈 Financial Performance & Working Capital")
+    
+    # Selection for focus analysis
+    selected_name = st.selectbox("Select entity/period for Financial Analysis", list(all_summaries.keys()))
+    adf = all_summaries[selected_name]
+    desc_c = detect_columns(adf)[2]
 
-        # Stable Bar Chart for category totals (Replacing failing pie chart)
-        st.subheader("Account Category Distribution")
-        cat_totals = t_df.groupby("Category")[["Debit", "Credit"]].sum()
-        st.bar_chart(cat_totals)
+    # --- P&L Calculation ---
+    total_income = abs(adf[adf["Category"] == "Income"]["Net Amount"].sum())
+    total_expense = adf[adf["Category"] == "Expense"]["Net Amount"].sum()
+    net_pl = total_income - total_expense
+
+    # --- Working Capital Calculation ---
+    # Heuristic-based current items
+    curr_assets = adf[
+        (adf["Category"] == "Asset") & 
+        (adf[desc_c].str.contains("Cash|Bank|Receivable|Stock|Inventory|Debtor", case=False, na=False))
+    ]["Net Amount"].sum()
+
+    curr_liabilities = abs(adf[
+        (adf["Category"] == "Liability") & 
+        (adf[desc_c].str.contains("Payable|Creditor|Short-term|Provision|Loan", case=False, na=False))
+    ]["Net Amount"].sum())
+
+    working_cap = curr_assets - curr_liabilities
+
+    # --- Display Metrics ---
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Net Profit / (Loss)", f"₹{net_pl:,.2f}", delta=f"{'Profit' if net_pl > 0 else 'Loss'}")
+    c2.metric("Working Capital", f"₹{working_cap:,.2f}")
+    c3.metric("Current Ratio", f"{curr_assets/curr_liabilities:.2f}" if curr_liabilities != 0 else "N/A")
+
+    # --- Visuals ---
+    col_v1, col_v2 = st.columns(2)
+    with col_v1:
+        st.subheader("Profit & Loss Mix")
+        pl_data = pd.DataFrame({"Value": [total_income, total_expense]}, index=["Income", "Expense"])
+        st.bar_chart(pl_data)
+
+    with col_v2:
+        st.subheader("Liquidity Mix")
+        wc_data = pd.DataFrame({"Value": [curr_assets, curr_liabilities]}, index=["Current Assets", "Current Liabilities"])
+        st.bar_chart(wc_data)
+
+    # ================= VARIANCE ANALYSIS (If 2+ Files) =================
+    if len(all_summaries) >= 2:
+        st.divider()
+        st.header("⚖️ Comparative Variance (PY vs CY)")
+        f_names = list(all_summaries.keys())
+        
+        col_py, col_cy = st.columns(2)
+        py_file = col_py.selectbox("Prior Year (PY)", f_names, index=0)
+        cy_file = col_cy.selectbox("Current Year (CY)", f_names, index=1)
+
+        # Merge for comparison
+        py_group = all_summaries[py_file].groupby("Category")["Net Amount"].sum()
+        cy_group = all_summaries[cy_file].groupby("Category")["Net Amount"].sum()
+        
+        variance = pd.DataFrame({"PY": py_group, "CY": cy_group}).fillna(0)
+        variance["Abs Variance"] = variance["CY"] - variance["PY"]
+        variance["% Change"] = (variance["Abs Variance"] / variance["PY"].replace(0, np.nan)) * 100
+        
+        st.dataframe(variance.style.format("{:,.2f}"), use_container_width=True)
 
 else:
-    st.info("👋 Upload Excel sheets to begin.")
+    st.info("👋 Welcome! Please upload your Trial Balance Excel files in the sidebar to begin.")
