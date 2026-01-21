@@ -1,102 +1,189 @@
 import streamlit as st
 import pandas as pd
-import io
 import re
 from fuzzywuzzy import process
 
-st.set_page_config(page_title="ASI Audit Pro", layout="wide")
+# =================================================
+# PAGE CONFIG
+# =================================================
+st.set_page_config(
+    page_title="ASI Audit Pro",
+    layout="wide"
+)
+
 st.title("🛡️ ASI Master Scrutiny & Analysis Engine")
 
-# --- 1. INTELLIGENT CONFIGURATION ---
-# The tool uses these to find data no matter which row it starts on
-VITAL_COLUMNS = ["description", "nsso", "amount", "value", "24-25", "total", "category"]
+# =================================================
+# CONFIGURATION
+# =================================================
+VITAL_COLUMNS = [
+    "description", "particular", "item", "details",
+    "amount", "value", "total", "24-25", "2024-25"
+]
+
 AUDIT_TARGETS = {
-    "Total Assets": ["fixed assets", "total assets", "closing dr", "balance sheet total"],
-    "Total Wages": ["wages", "salaries", "employee benefits", "manpower cost"],
-    "Turnover": ["sales", "revenue", "turnover", "dispatched value"],
-    "Raw Material": ["consumption", "rm consumed", "material cost"]
+    "Total Assets": [
+        "total assets", "fixed assets",
+        "closing balance", "balance sheet total"
+    ],
+    "Total Wages": [
+        "wages", "wages & salaries", "salaries",
+        "emoluments", "manpower cost", "labour charges"
+    ],
+    "Turnover": [
+        "sales", "turnover", "total output",
+        "value of output", "production and sale"
+    ],
+    "Raw Material": [
+        "raw material", "material consumed",
+        "consumption of raw material"
+    ]
 }
 
-# --- 2. THE "SMART" EXTRACTION CORE ---
+# =================================================
+# SMART FILE LOADER (HEADER DETECTION)
+# =================================================
 def smart_load(file):
-    """Detects headers and converts any file to a clean Audit-Ready CSV"""
-    if file.name.endswith('.csv'):
+    if file.name.endswith(".csv"):
         raw = pd.read_csv(file, header=None)
     else:
         raw = pd.read_excel(file, header=None)
-    
-    # Header Hunting Logic
+
     header_idx = 0
     for i in range(min(len(raw), 25)):
-        row = [str(x).lower() for x in raw.iloc[i].values]
-        matches = sum(1 for k in VITAL_COLUMNS if any(k in cell for cell in row))
-        if matches >= 2:
+        row = raw.iloc[i].astype(str).str.lower().tolist()
+        matches = sum(
+            1 for k in VITAL_COLUMNS if any(k in cell for cell in row)
+        )
+        if matches >= 3:
             header_idx = i
             break
-            
+
     file.seek(0)
-    df = pd.read_csv(file, skiprows=header_idx) if file.name.endswith('.csv') else pd.read_excel(file, skiprows=header_idx)
+    if file.name.endswith(".csv"):
+        df = pd.read_csv(file, skiprows=header_idx)
+    else:
+        df = pd.read_excel(file, skiprows=header_idx)
+
     return df, header_idx
 
+# =================================================
+# CORE EXTRACTION LOGIC (ROW + YEAR AWARE)
+# =================================================
 def extract_metric(df, target_key):
-    """Fuzzy searches for a metric and extracts its value"""
-    full_text = " ".join(df.columns.astype(str)).lower()
-    # Find column name that matches our keywords
-    potential_cols = []
-    for kw in AUDIT_TARGETS[target_key]:
-        matches = [c for c in df.columns if kw in str(c).lower()]
-        potential_cols.extend(matches)
-    
-    if potential_cols:
-        target_col = potential_cols[0]
-        # Summing numeric values (cleaning strings like 'Rs.' or ',' first)
-        clean_values = pd.to_numeric(df[target_col].astype(str).str.replace(r'[^\d.-]', '', regex=True), errors='coerce')
-        return clean_values.sum()
-    return 0
+    df = df.copy()
+    df.columns = [str(c).lower() for c in df.columns]
 
-# --- 3. UI & UPLOAD HUB ---
-st.sidebar.header("📁 Data Input")
-uploaded_files = st.file_uploader("Upload all ASI Schedules (FTO 8, Manpower, Consumption)", 
-                                  accept_multiple_files=True)
+    # Identify description column
+    desc_col = None
+    for c in df.columns:
+        if any(x in c for x in ["description", "particular", "item", "details"]):
+            desc_col = c
+            break
 
+    if desc_col is None:
+        return 0
+
+    # Prefer 2024-25 column
+    year_col = None
+    for c in df.columns[::-1]:
+        if any(y in c for y in ["24-25", "2024-25", "2024"]):
+            year_col = c
+            break
+
+    numeric_cols = [year_col] if year_col else df.columns.difference([desc_col])
+
+    total = 0.0
+
+    for _, row in df.iterrows():
+        text = str(row[desc_col]).lower()
+
+        match = process.extractOne(text, AUDIT_TARGETS[target_key])
+        if match and match[1] >= 75:
+            for nc in numeric_cols:
+                val = pd.to_numeric(
+                    re.sub(r"[^\d.-]", "", str(row[nc])),
+                    errors="coerce"
+                )
+                if pd.notna(val):
+                    total += val
+
+    return round(total, 2)
+
+# =================================================
+# SIDEBAR INPUT
+# =================================================
+st.sidebar.header("📁 Upload ASI Files")
+uploaded_files = st.sidebar.file_uploader(
+    "Upload FTO-8 / Manpower / Consumption / Production files",
+    type=["csv", "xlsx", "xls"],
+    accept_multiple_files=True
+)
+
+# =================================================
+# MAIN PROCESSING
+# =================================================
 if uploaded_files:
-    all_summary = []
-    
-    for f in uploaded_files:
-        with st.status(f"Scanning {f.name}...") as status:
-            df, row_found = smart_load(f)
-            
-            # Identify what kind of file this is
-            file_vitals = {"File": f.name, "Header_Row": row_found + 1}
-            for target in AUDIT_TARGETS:
-                val = extract_metric(df, target)
-                if val > 0:
-                    file_vitals[target] = val
-            
-            all_summary.append(file_vitals)
-            status.update(label=f"Verified {f.name}", state="complete")
+    results = []
 
-    # --- 4. THE ANALYTICS DASHBOARD ---
+    for f in uploaded_files:
+        with st.status(f"Scanning {f.name} ..."):
+            df, header_row = smart_load(f)
+
+            record = {
+                "File Name": f.name,
+                "Detected Header Row": header_row + 1
+            }
+
+            for target in AUDIT_TARGETS:
+                value = extract_metric(df, target)
+                if value > 0:
+                    record[target] = value
+
+            results.append(record)
+
+    master_df = pd.DataFrame(results).fillna(0)
+
+    # =================================================
+    # DASHBOARD
+    # =================================================
     st.header("📊 Scrutiny Dashboard")
-    master_df = pd.DataFrame(all_summary).fillna(0)
     st.dataframe(master_df, use_container_width=True)
 
-    # Cross-Verification Logic
     st.subheader("🔍 Intelligent Cross-Check")
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        # Comparison: Wages in Trial Balance vs Manpower Report
-        total_wages = master_df["Total Wages"].sum()
-        st.metric("Consolidated Wages", f"₹{total_wages:,.2f}")
+    c1, c2, c3, c4 = st.columns(4)
+
+    total_wages = master_df["Total Wages"].sum() if "Total Wages" in master_df.columns else 0
+    total_sales = master_df["Turnover"].sum() if "Turnover" in master_df.columns else 0
+    total_assets = master_df["Total Assets"].sum() if "Total Assets" in master_df.columns else 0
+    total_rm = master_df["Raw Material"].sum() if "Raw Material" in master_df.columns else 0
+
+    with c1:
+        st.metric("Total Wages (24-25)", f"₹ {total_wages:,.2f}")
         if total_wages == 0:
-            st.error("⚠️ Wages not detected in any file. Check 'Manpower' headers.")
+            st.warning("Wages not detected")
 
-    with col2:
-        total_sales = master_df["Turnover"].sum()
-        st.metric("Total Turnover", f"₹{total_sales:,.2f}")
+    with c2:
+        st.metric("Turnover (24-25)", f"₹ {total_sales:,.2f}")
 
-    # --- 5. DATA EXPORT ---
+    with c3:
+        st.metric("Total Assets", f"₹ {total_assets:,.2f}")
+
+    with c4:
+        st.metric("Raw Material", f"₹ {total_rm:,.2f}")
+
+    # =================================================
+    # EXPORT
+    # =================================================
     st.divider()
-    csv_out = master_df.to_csv(index=False).encode('utf-8')
-    st.download_button("📥 Download Audit-Ready CSV", csv_out, "ASI_Consolidated_Audit.csv", "text/csv")
+    csv_out = master_df.to_csv(index=False).encode("utf-8")
+
+    st.download_button(
+        "📥 Download Audit-Ready CSV",
+        csv_out,
+        "ASI_Consolidated_Audit_24_25.csv",
+        "text/csv"
+    )
+
+else:
+    st.info("⬅ Upload ASI schedules from the sidebar to start analysis")
