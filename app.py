@@ -1,152 +1,121 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import re
+import plotly.express as px
 
-# ================= CONFIG & STYLING =================
 st.set_page_config(page_title="ASI Intelligent Audit Engine", layout="wide")
 
-st.markdown("""
-    <style>
-    .main { background-color: #f8f9fa; }
-    .stMetric { background-color: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #e1e4e8; }
-    </style>
-    """, unsafe_allow_html=True)
-
-st.title("🛡️ ASI Intelligent Audit & Cross-Check Engine")
-
-# ================= CORE UTILITIES =================
-def robust_numeric_cleaner(series):
-    """Converts messy accounting strings to precise floats."""
-    def clean_value(val):
-        if pd.isna(val) or val == "": return 0.0
-        s = str(val).strip().lower()
-        is_negative = False
-        if "(" in s and ")" in s: is_negative = True
-        s = re.sub(r'[^-0-9.]', '', s)
-        try:
-            num = float(s) if s else 0.0
-            return -num if is_negative else num
-        except: return 0.0
-    return series.apply(clean_value)
+# ================= HELPER FUNCTIONS =================
+def fix_duplicate_columns(df):
+    cols = []
+    counter = {}
+    for c in df.columns:
+        if c in counter:
+            counter[c] += 1
+            cols.append(f"{c}_{counter[c]}")
+        else:
+            counter[c] = 0
+            cols.append(c)
+    df.columns = cols
+    return df
 
 def clean_df(df):
-    """Strips empty rows/cols and prepares headers."""
-    df = df.dropna(how="all")
+    df = df.dropna(axis=1, how="all")
+    df = df.dropna(axis=0, how="all")
+    # Filter out common "Total" rows that cause double-counting
     if not df.empty:
-        df.columns = [str(c).strip() for c in df.columns]
+        df = df[~df.iloc[:, 0].astype(str).str.contains("Total|Grand Total|Balance", case=False, na=False)]
+    df.columns = [str(c).strip() for c in df.columns]
+    df = fix_duplicate_columns(df)
     return df
 
 def detect_columns(df):
-    """Maps financial and spatial columns while avoiding truth-value ambiguity."""
-    debit, credit, desc = [], [], None
-    lat, lon, height = None, None, None
-    
+    debit, credit = [], []
+    desc = df.columns[0]
     for c in df.columns:
         cl = str(c).lower()
         if "debit" in cl or cl.endswith("dr"): debit.append(c)
         elif "credit" in cl or cl.endswith("cr"): credit.append(c)
-        elif any(k in cl for k in ["desc", "particulars", "account", "ledger"]): desc = c
-        
-        # Spatial detection (Instruction: Height check for Lat/Lon)
-        if "lat" in cl: lat = c
-        elif "lon" in cl: lon = c
-        elif any(k in cl for k in ["height", "elev", "floor"]): height = c
-        
-    return debit, credit, desc or df.columns[0], lat, lon, height
+        elif "desc" in cl or "particulars" in cl: desc = c
+    return debit, credit, desc
 
 def classify(desc):
-    """Categorizes accounts for automated P&L matching."""
     d = str(desc).lower()
-    if any(k in d for k in ["capital", "reserve", "loan", "creditor", "payable"]): return "Liability"
-    if any(k in d for k in ["asset", "plant", "machinery", "building", "cash", "bank", "debtor"]): return "Asset"
-    if any(k in d for k in ["salary", "wage", "expense", "purchase", "rent", "consumption"]): return "Expense"
+    if any(k in d for k in ["capital", "reserve", "loan", "creditor", "payable", "tax"]): return "Liability"
+    if any(k in d for k in ["asset", "plant", "machinery", "building", "cash", "bank", "receivable"]): return "Asset"
+    if any(k in d for k in ["salary", "wage", "expense", "consumption", "rent", "purchase"]): return "Expense"
     if any(k in d for k in ["sales", "turnover", "income", "revenue"]): return "Income"
     return "Other"
 
-# ================= MAIN ENGINE =================
-uploaded_files = st.file_uploader(
-    "Upload Trial Balance / Audit Sheets (Excel)", 
-    type=["xlsx", "xls"], 
-    accept_multiple_files=True
-)
+# ================= UI SETUP =================
+st.title("🛡️ ASI Intelligent Audit & Cross-Check Engine")
 
-if uploaded_files:
-    all_data = {}
-    
-    for file in uploaded_files:
-        try:
-            df_raw = pd.read_excel(file)
-            df = clean_df(df_raw)
-            dr_cols, cr_cols, desc_col, lat_c, lon_c, h_c = detect_columns(df)
+uploaded_file = st.file_uploader("Upload Trial Balance (Excel)", type=["xlsx", "xls"])
 
-            # 1. Clean All Data in Sheets
-            for col in dr_cols + cr_cols:
-                df[col] = robust_numeric_cleaner(df[col])
+if uploaded_file:
+    try:
+        # Load and Preprocess
+        df_raw = pd.read_excel(uploaded_file)
+        df = clean_df(df_raw)
+        
+        # Initial Detection
+        d_cols, c_cols, desc_col = detect_columns(df)
+        
+        # Sidebar for Manual Overrides
+        st.sidebar.header("⚙️ Column Mapping")
+        final_desc = st.sidebar.selectbox("Description Column", df.columns, index=list(df.columns).index(desc_col))
+        final_debit = st.sidebar.multiselect("Debit Columns", df.columns, default=d_cols)
+        final_credit = st.sidebar.multiselect("Credit Columns", df.columns, default=c_cols)
 
-            df["Debit"] = df[dr_cols].sum(axis=1) if dr_cols else 0
-            df["Credit"] = df[cr_cols].sum(axis=1) if cr_cols else 0
-            df["Category"] = df[desc_col].apply(classify)
-            df["Net_Amount"] = df["Debit"] - df["Credit"]
+        # Calculations
+        df["Debit"] = df[final_debit].apply(pd.to_numeric, errors="coerce").fillna(0).sum(axis=1)
+        df["Credit"] = df[final_credit].apply(pd.to_numeric, errors="coerce").fillna(0).sum(axis=1)
+        df["Category"] = df[final_desc].apply(classify)
 
-            all_data[file.name] = {
-                "df": df, 
-                "total_dr": df["Debit"].sum(), 
-                "total_cr": df["Credit"].sum(),
-                "desc_col": desc_col,
-                "spatial": (lat_c, lon_c, h_c)
-            }
+        # --- Dashboard Metrics ---
+        total_dr = df["Debit"].sum()
+        total_cr = df["Credit"].sum()
+        diff = abs(total_dr - total_cr)
 
-            # 2. P&L Matching Logic
-            income = abs(df[df["Category"] == "Income"]["Net_Amount"].sum())
-            expense = df[df["Category"] == "Expense"]["Net_Amount"].sum()
-            net_profit = income - expense
+        m1, m2, m3 = st.columns(3)
+        m1.metric("Total Debit", f"₹{total_dr:,.2f}")
+        m2.metric("Total Credit", f"₹{total_cr:,.2f}")
+        m3.metric("Difference", f"₹{diff:,.2f}", delta=None, delta_color="inverse" if diff > 1 else "normal")
 
-            # 3. UI Display with Matching Status
-            with st.expander(f"📁 Audit & P&L Reconciliation: {file.name}"):
-                tb_diff = round(all_data[file.name]["total_dr"] - all_data[file.name]["total_cr"], 2)
-                
-                c1, c2, c3 = st.columns(3)
-                c1.metric("Net Profit / (Loss)", f"₹{net_profit:,.2f}")
-                
-                # Trial Balance Status
-                if abs(tb_diff) < 1:
-                    c2.success("TB MATCHED ✅")
-                else:
-                    c2.error(f"TB MISMATCH: ₹{tb_diff:,.2f}")
+        if diff < 1:
+            st.success("✅ Trial Balance Matched!")
+        else:
+            st.error(f"⚠️ Mismatch Detected: ₹{diff:,.2f}")
 
-                # Spatial Audit Check
-                if lat_c and lon_c:
-                    if h_c:
-                        st.info(f"📍 Height ({h_c}) verified for spatial adjustment.")
-                    else:
-                        st.warning("⚠️ Spatial Warning: Height missing for coordinate adjustment.")
-
-                st.dataframe(df, use_container_width=True)
-
-        except Exception as e:
-            st.error(f"Processing error in {file.name}: {e}")
-
-    # ================= CONSOLIDATED FINANCIAL MATCHING =================
-    if all_data:
+        # --- Visualizations ---
         st.divider()
-        st.header("📊 Final Profit & Loss vs. Balance Sheet Match")
+        c1, c2 = st.columns([1, 1])
         
-        target = st.selectbox("Select File to Match", list(all_data.keys()))
-        t_df = all_data[target]["df"]
-        
-        # Breakdown calculation
-        p_l_summary = t_df.groupby("Category")["Net_Amount"].sum().reset_index()
-        
-        col_l, col_r = st.columns(2)
-        with col_l:
-            st.subheader("Category-wise Net Movement")
-            st.table(p_l_summary)
-        
-        with col_r:
-            st.subheader("P&L Performance")
-            # Using Bar Chart for maximum compatibility
-            st.bar_chart(p_l_summary.set_index("Category"))
+        with c1:
+            st.subheader("📊 Financial Composition")
+            summary = df.groupby("Category")[["Debit", "Credit"]].sum().reset_index()
+            fig = px.bar(summary, x="Category", y=["Debit", "Credit"], barmode="group", color_discrete_sequence=["#1f77b4", "#ff7f0e"])
+            st.plotly_chart(fig, use_container_width=True)
 
+        with c2:
+            st.subheader("🚩 Audit Anomalies")
+            # Logic: Flag round numbers > 10k or negative entries
+            anomalies = df[(df["Debit"] > 0) & (df["Debit"] % 1000 == 0) & (df["Debit"] >= 10000)]
+            if not anomalies.empty:
+                st.warning(f"Found {len(anomalies)} large round-sum transactions (Potential Manual Entries).")
+                st.dataframe(anomalies[[final_desc, "Debit", "Credit"]].head(5))
+            else:
+                st.info("No suspicious round-sum entries found.")
+
+        # --- Data Table ---
+        st.subheader("📝 Processed Audit Data")
+        st.dataframe(df[[final_desc, "Debit", "Credit", "Category"]], use_container_width=True)
+
+        # --- Download ---
+        csv = df.to_csv(index=False).encode('utf-8')
+        st.download_button("📥 Download Audit Report", data=csv, file_name="Audit_Analysis.csv", mime="text/csv")
+
+    except Exception as e:
+        st.error(f"Error processing file: {e}")
 else:
-    st.info("👋 System Ready. Upload files to verify TB and P&L matching.")
+    st.info("Please upload an Excel file to begin the audit analysis.")
