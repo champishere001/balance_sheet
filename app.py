@@ -8,12 +8,11 @@ st.set_page_config(page_title="ASI Intelligent Audit Engine", layout="wide")
 st.markdown("""
     <style>
     .main { background-color: #f8f9fa; }
-    .stMetric { background-color: #ffffff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .stMetric { background-color: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #e1e4e8; }
     </style>
     """, unsafe_allow_html=True)
 
 st.title("🛡️ ASI Intelligent Audit & Cross-Check Engine")
-st.info("Upload one or multiple Trial Balance files (Excel) to perform automated classification and variance analysis.")
 
 # ================= HELPERS =================
 def fix_duplicate_columns(df):
@@ -37,27 +36,23 @@ def clean_df(df):
     return df
 
 def detect_columns(df):
-    debit, credit = [], []
-    desc = None
+    debit, credit, desc = [], [], None
     for c in df.columns:
         cl = c.lower()
-        if "debit" in cl or cl.endswith("dr"):
-            debit.append(c)
-        elif "credit" in cl or cl.endswith("cr"):
-            credit.append(c)
-        elif any(k in cl for k in ["desc", "particulars", "account"]):
-            desc = c
+        if "debit" in cl or cl.endswith("dr"): debit.append(c)
+        elif "credit" in cl or cl.endswith("cr"): credit.append(c)
+        elif any(k in cl for k in ["desc", "particulars", "account", "ledger"]): desc = c
     return debit, credit, desc or df.columns[0]
 
 def classify(desc):
     d = str(desc).lower()
-    if any(k in d for k in ["capital", "reserve", "loan", "creditor", "payable", "provision"]):
+    if any(k in d for k in ["capital", "reserve", "loan", "creditor", "payable", "provision", "borrowing"]):
         return "Liability"
-    if any(k in d for k in ["asset", "plant", "machinery", "building", "cash", "bank", "receivable"]):
+    if any(k in d for k in ["asset", "plant", "machinery", "building", "cash", "bank", "receivable", "debtor", "stock", "inventory"]):
         return "Asset"
-    if any(k in d for k in ["salary", "wage", "expense", "consumption", "purchase", "rent"]):
+    if any(k in d for k in ["salary", "wage", "expense", "consumption", "purchase", "rent", "tax", "interest paid"]):
         return "Expense"
-    if any(k in d for k in ["sales", "turnover", "income", "revenue", "gain"]):
+    if any(k in d for k in ["sales", "turnover", "income", "revenue", "gain", "interest received"]):
         return "Income"
     return "Other"
 
@@ -65,91 +60,98 @@ def classify(desc):
 uploaded_files = st.file_uploader(
     "Upload Trial Balance / Balance Sheet (Excel)",
     type=["xlsx", "xls"],
-    accept_multiple_files=True,
-    key="audit_uploader"
+    accept_multiple_files=True
 )
 
-# ================= PROCESSING LOGIC =================
 if uploaded_files:
     all_summaries = {}
     
-    for uploaded_file in uploaded_files:
+    for file in uploaded_files:
         try:
-            # Load and Process
-            df = pd.read_excel(uploaded_file, header=0)
+            # 1. Processing
+            df = pd.read_excel(file, header=0)
             df = clean_df(df)
             debit_cols, credit_cols, desc_col = detect_columns(df)
 
-            # Calculation
+            # 2. Calculations
             df["Debit"] = df[debit_cols].apply(pd.to_numeric, errors="coerce").sum(axis=1) if debit_cols else 0
             df["Credit"] = df[credit_cols].apply(pd.to_numeric, errors="coerce").sum(axis=1) if credit_cols else 0
             df["Category"] = df[desc_col].apply(classify)
             df["Net Amount"] = df["Debit"] - df["Credit"]
 
-            # Store results
-            all_summaries[uploaded_file.name] = df
+            all_summaries[file.name] = df
 
-            with st.expander(f"📁 Analysis: {uploaded_file.name}", expanded=len(uploaded_files) == 1):
-                col1, col2, col3 = st.columns(3)
-                total_dr = df["Debit"].sum()
-                total_cr = df["Credit"].sum()
-                diff = abs(total_dr - total_cr)
-
-                col1.metric("Total Debit", f"₹{total_dr:,.2f}")
-                col2.metric("Total Credit", f"₹{total_cr:,.2f}")
-                col3.metric("Balance Status", "MATCHED ✅" if diff < 1 else f"DIFF: ₹{diff:,.2f}", delta=-diff if diff > 1 else None)
-
-                # Anomaly Detection
-                st.subheader("🚩 Audit Flags")
-                anomalies = df[
-                    ((df["Category"] == "Asset") & (df["Credit"] > df["Debit"])) |
-                    ((df["Category"] == "Expense") & (df["Credit"] > df["Debit"]))
-                ]
-                if not anomalies.empty:
-                    st.warning(f"Directional Anomaly: {len(anomalies)} Asset/Expense accounts have Credit balances.")
-                    st.dataframe(anomalies[[desc_col, "Debit", "Credit", "Category"]], use_container_width=True)
-                else:
-                    st.success("No directional anomalies detected.")
-
-                st.subheader("Category Breakdown")
-                cat_summary = df.groupby("Category")[["Debit", "Credit"]].sum()
-                st.bar_chart(cat_summary)
-                st.dataframe(cat_summary, use_container_width=True)
+            with st.expander(f"📁 Raw Data & Classification: {file.name}"):
+                st.dataframe(df, use_container_width=True)
 
         except Exception as e:
-            st.error(f"Error processing {uploaded_file.name}: {e}")
+            st.error(f"Error processing {file.name}: {e}")
 
-    # ================= CROSS-CHECK / VARIANCE ANALYSIS =================
+    # ================= FINANCIAL ANALYSIS SECTION =================
+    st.divider()
+    st.header("📈 Financial Performance & Working Capital")
+    
+    # Selection for focus analysis
+    selected_name = st.selectbox("Select entity/period for Financial Analysis", list(all_summaries.keys()))
+    adf = all_summaries[selected_name]
+    desc_c = detect_columns(adf)[2]
+
+    # --- P&L Calculation ---
+    total_income = abs(adf[adf["Category"] == "Income"]["Net Amount"].sum())
+    total_expense = adf[adf["Category"] == "Expense"]["Net Amount"].sum()
+    net_pl = total_income - total_expense
+
+    # --- Working Capital Calculation ---
+    # Heuristic-based current items
+    curr_assets = adf[
+        (adf["Category"] == "Asset") & 
+        (adf[desc_c].str.contains("Cash|Bank|Receivable|Stock|Inventory|Debtor", case=False, na=False))
+    ]["Net Amount"].sum()
+
+    curr_liabilities = abs(adf[
+        (adf["Category"] == "Liability") & 
+        (adf[desc_c].str.contains("Payable|Creditor|Short-term|Provision|Loan", case=False, na=False))
+    ]["Net Amount"].sum())
+
+    working_cap = curr_assets - curr_liabilities
+
+    # --- Display Metrics ---
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Net Profit / (Loss)", f"₹{net_pl:,.2f}", delta=f"{'Profit' if net_pl > 0 else 'Loss'}")
+    c2.metric("Working Capital", f"₹{working_cap:,.2f}")
+    c3.metric("Current Ratio", f"{curr_assets/curr_liabilities:.2f}" if curr_liabilities != 0 else "N/A")
+
+    # --- Visuals ---
+    col_v1, col_v2 = st.columns(2)
+    with col_v1:
+        st.subheader("Profit & Loss Mix")
+        pl_data = pd.DataFrame({"Value": [total_income, total_expense]}, index=["Income", "Expense"])
+        st.bar_chart(pl_data)
+
+    with col_v2:
+        st.subheader("Liquidity Mix")
+        wc_data = pd.DataFrame({"Value": [curr_assets, curr_liabilities]}, index=["Current Assets", "Current Liabilities"])
+        st.bar_chart(wc_data)
+
+    # ================= VARIANCE ANALYSIS (If 2+ Files) =================
     if len(all_summaries) >= 2:
         st.divider()
-        st.header("⚖️ Comparative Variance Analysis")
+        st.header("⚖️ Comparative Variance (PY vs CY)")
+        f_names = list(all_summaries.keys())
         
-        file_names = list(all_summaries.keys())
-        col_a, col_b = st.columns(2)
-        base_file = col_a.selectbox("Select Base Period (PY)", file_names, index=0)
-        comp_file = col_b.selectbox("Select Comparison Period (CY)", file_names, index=1)
+        col_py, col_cy = st.columns(2)
+        py_file = col_py.selectbox("Prior Year (PY)", f_names, index=0)
+        cy_file = col_cy.selectbox("Current Year (CY)", f_names, index=1)
 
-        df_py = all_summaries[base_file].groupby("Category")["Net Amount"].sum()
-        df_cy = all_summaries[comp_file].groupby("Category")["Net Amount"].sum()
-
-        variance_df = pd.DataFrame({"Prior Year": df_py, "Current Year": df_cy})
-        variance_df["Abs Variance"] = variance_df["Current Year"] - variance_df["Prior Year"]
-        variance_df["% Change"] = (variance_df["Abs Variance"] / variance_df["Prior Year"].replace(0, np.nan)) * 100
-
-        st.dataframe(variance_df.style.format("{:,.2f}").highlight_max(axis=0, color='#ffebcc'), use_container_width=True)
+        # Merge for comparison
+        py_group = all_summaries[py_file].groupby("Category")["Net Amount"].sum()
+        cy_group = all_summaries[cy_file].groupby("Category")["Net Amount"].sum()
         
-        st.subheader("Visual Variance")
-        st.line_chart(variance_df[["Prior Year", "Current Year"]])
+        variance = pd.DataFrame({"PY": py_group, "CY": cy_group}).fillna(0)
+        variance["Abs Variance"] = variance["CY"] - variance["PY"]
+        variance["% Change"] = (variance["Abs Variance"] / variance["PY"].replace(0, np.nan)) * 100
+        
+        st.dataframe(variance.style.format("{:,.2f}"), use_container_width=True)
 
-    # ================= GLOBAL DOWNLOAD =================
-    if all_summaries:
-        st.sidebar.header("Export Data")
-        for name, data in all_summaries.items():
-            st.sidebar.download_button(
-                label=f"📥 Download {name} (Processed)",
-                data=data.to_csv(index=False).encode("utf-8"),
-                file_name=f"Processed_{name}.csv",
-                mime="text/csv"
-            )
 else:
-    st.write("Please upload one or more Excel files to begin the audit process.")
+    st.info("👋 Welcome! Please upload your Trial Balance Excel files in the sidebar to begin.")
