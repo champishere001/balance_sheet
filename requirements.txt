@@ -1,7 +1,7 @@
 streamlit
-pdfplumber
 pandas
 openpyxl
+pdfplumber
 pytesseract
 pdf2image
 opencv-python-headless
