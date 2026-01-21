@@ -1,106 +1,84 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import math
-
-# Try-except block to handle missing Plotly gracefully
-try:
-    import plotly.express as px
-    PLOTLY_AVAILABLE = True
-except ImportError:
-    PLOTLY_AVAILABLE = False
 
 # --- PAGE CONFIG ---
-st.set_page_config(page_title="ASI Forensic Audit Suite", layout="wide", page_icon="🕵️")
+st.set_page_config(page_title="ASI Financial Engine", layout="wide")
 
-# --- FIXED CSS ---
+# --- CSS FOR METRICS ---
 st.markdown("""
     <style>
-    .stMetric { 
-        background-color: #ffffff; 
-        padding: 15px; 
-        border-radius: 10px; 
-        border: 1px solid #e0e0e0; 
-    }
+    [data-testid="stMetricValue"] { font-size: 28px; color: #007BFF; }
+    .stMetric { background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
     </style>
-    """, unsafe_allow_html=True) # Fixed the parameter name here
+    """, unsafe_allow_html=True)
 
-# ================= HELPER FUNCTIONS =================
-def clean_df(df):
-    df = df.dropna(axis=1, how="all").dropna(axis=0, how="all")
-    if not df.empty:
-        # Remove common "Total" rows that skew forensic results
-        df = df[~df.iloc[:, 0].astype(str).str.contains("Total|Grand Total|Balance", case=False, na=False)]
-    df.columns = [str(c).strip() for c in df.columns]
-    return df
-
-def get_first_digit(n):
-    n = abs(n)
-    if n < 1 or pd.isna(n): return None
-    return int(str(n)[0])
-
-def check_benford(series):
-    digits = series.apply(get_first_digit).dropna()
-    if len(digits) == 0: return None
-    counts = digits.value_counts(normalize=True).sort_index()
-    expected = pd.Series({i: math.log10(1 + 1/i) for i in range(1, 10)})
-    return pd.DataFrame({"Actual": counts, "Expected": expected}).fillna(0)
+# ================= CORE FUNCTIONS =================
+def classify_extended(desc):
+    d = str(desc).lower()
+    if any(k in d for k in ["sales", "revenue", "income", "turnover"]): return "Income"
+    if any(k in d for k in ["purchase", "wage", "salary", "rent", "electricity", "expense", "admin"]): return "Expense"
+    if any(k in d for k in ["cash", "bank", "debtor", "stock", "inventory", "receivable"]): return "Current Asset"
+    if any(k in d for k in ["creditor", "payable", "short term loan", "od", "overdraft"]): return "Current Liability"
+    if any(k in d for k in ["fixed asset", "machinery", "building", "land"]): return "Fixed Asset"
+    return "Equity/Long-Term Liab"
 
 # ================= APP UI =================
-st.title("🛡️ ASI Intelligent Forensic Audit Suite")
+st.title("🛡️ ASI Financial & Audit Engine")
 
-if not PLOTLY_AVAILABLE:
-    st.error("🚨 **Plotly is missing!** Please add `plotly` to your `requirements.txt` file and redeploy.")
-
-uploaded_file = st.file_uploader("Upload Trial Balance / Ledger (Excel)", type=["xlsx", "xls"])
+uploaded_file = st.file_uploader("Upload Trial Balance (Excel)", type=["xlsx", "xls"])
 
 if uploaded_file:
     try:
-        df_raw = pd.read_excel(uploaded_file)
-        df = clean_df(df_raw)
+        df = pd.read_excel(uploaded_file)
         
-        # Identify numeric columns for the "Hard Look"
+        # 1. Cleaning and Detection
+        df = df.dropna(axis=1, how="all").dropna(axis=0, how="all")
+        df.columns = [str(c).strip() for c in df.columns]
+        
+        # Auto-detect Amount Columns
         num_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+        desc_col = df.columns[0]
         
-        if not num_cols:
-            st.error("No numeric columns found. Please check your Excel format.")
-            st.stop()
-
-        col_to_audit = st.sidebar.selectbox("Select Value Column", num_cols)
+        st.sidebar.header("Setup")
+        val_col = st.sidebar.selectbox("Select Balance/Amount Column", num_cols)
         
-        # --- DASHBOARD METRICS ---
-        total_val = df[col_to_audit].sum()
-        m1, m2 = st.columns(2)
-        m1.metric("Total Column Value", f"₹{total_val:,.2f}")
-        m2.metric("Total Rows", len(df))
+        # 2. Financial Classification
+        df["Category"] = df[desc_col].apply(classify_extended)
+        
+        # 3. Aggregation
+        totals = df.groupby("Category")[val_col].sum()
+        
+        income = totals.get("Income", 0)
+        expense = totals.get("Expense", 0)
+        current_assets = totals.get("Current Asset", 0)
+        current_liabilities = totals.get("Current Liability", 0)
+        
+        # 4. Calculations
+        net_profit = income - expense
+        working_capital = current_assets - current_liabilities
+        current_ratio = current_assets / current_liabilities if current_liabilities != 0 else 0
 
-        tab1, tab2 = st.tabs(["🔍 Forensic Analysis", "🚩 Outlier Detection"])
+        # --- DISPLAY RESULTS ---
+        st.subheader("💰 Profit & Loss Summary")
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Total Income", f"₹{income:,.2f}")
+        c2.metric("Total Expenses", f"₹{expense:,.2f}")
+        c3.metric("Net Profit/Loss", f"₹{net_profit:,.2f}", delta=f"{net_profit:,.2f}")
 
-        with tab1:
-            st.subheader("Benford's Law (Fraud Detection)")
-            ben_df = check_benford(df[col_to_audit])
-            if ben_df is not None and PLOTLY_AVAILABLE:
-                fig = px.bar(ben_df, barmode="group", title="Leading Digit Distribution")
-                st.plotly_chart(fig, use_container_width=True)
-            
-            # Rule of 9 Check
-            diff_input = st.number_input("Enter your Trial Balance difference (if any):", value=0.0)
-            if diff_input != 0 and diff_input % 9 == 0:
-                st.warning("🕵️ Possible Transposition Error: Your difference is divisible by 9.")
+        st.divider()
 
-        with tab2:
-            st.subheader("Statistical Outliers")
-            z_scores = (df[col_to_audit] - df[col_to_audit].mean()) / df[col_to_audit].std()
-            outliers = df[abs(z_scores) > 2]
-            
-            if not outliers.empty:
-                st.write(f"Found {len(outliers)} entries with unusual values:")
-                st.dataframe(outliers)
-            else:
-                st.success("No statistical outliers detected.")
+        st.subheader("🏥 Working Capital & Liquidity")
+        w1, w2, w3 = st.columns(3)
+        w1.metric("Current Assets", f"₹{current_assets:,.2f}")
+        w2.metric("Current Liabilities", f"₹{current_liabilities:,.2f}")
+        w3.metric("Working Capital", f"₹{working_capital:,.2f}", delta="Healthy" if working_capital > 0 else "Risk")
+
+        # --- DATA VIEW ---
+        with st.expander("View Categorized Data"):
+            st.dataframe(df[[desc_col, val_col, "Category"]], use_container_width=True)
 
     except Exception as e:
-        st.error(f"Error: {e}")
-
+        st.error(f"Error processing data: {e}")
 else:
-    st.info("Please upload an Excel file to begin.")
+    st.info("Please upload an Excel file to see P&L and Working Capital.")
