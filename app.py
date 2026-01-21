@@ -40,18 +40,18 @@ def clean_df(df):
     return df
 
 def detect_columns(df):
-    """Automatically maps financial and spatial columns."""
+    """Automatically maps financial and spatial columns without ambiguity errors."""
     debit, credit, desc = [], [], None
     lat, lon, height = None, None, None
     
     for c in df.columns:
-        cl = c.lower()
+        cl = str(c).lower()
         # Financial detection
         if "debit" in cl or cl.endswith("dr"): debit.append(c)
         elif "credit" in cl or cl.endswith("cr"): credit.append(c)
         elif any(k in cl for k in ["desc", "particulars", "account", "ledger"]): desc = c
         
-        # Spatial detection (User Requirement)
+        # Spatial detection (Requirement: Height adjustments with Lat/Lon)
         if "lat" in cl: lat = c
         elif "lon" in cl: lon = c
         elif any(k in cl for k in ["height", "elev", "floor"]): height = c
@@ -80,11 +80,11 @@ if uploaded_files:
     for file in uploaded_files:
         try:
             # 1. Load Data
-            df = pd.read_excel(file)
-            df = clean_df(df)
+            df_raw = pd.read_excel(file)
+            df = clean_df(df_raw)
             dr_cols, cr_cols, desc_col, lat_c, lon_c, h_c = detect_columns(df)
 
-            # 2. Financial Cleaning & Calculation
+            # 2. Financial Cleaning
             for col in dr_cols + cr_cols:
                 df[col] = robust_numeric_cleaner(df[col])
 
@@ -97,12 +97,12 @@ if uploaded_files:
                 "df": df, 
                 "total_dr": df["Debit"].sum(), 
                 "total_cr": df["Credit"].sum(),
+                "desc_col": desc_col,
                 "spatial": (lat_c, lon_c, h_c)
             }
 
-            # 3. Individual Reconciliation & Spatial Audit
+            # 3. Individual Reconciliation
             with st.expander(f"📁 Audit Details: {file.name}"):
-                # Financial Check
                 diff = round(all_data[file.name]["total_dr"] - all_data[file.name]["total_cr"], 2)
                 c1, c2, c3 = st.columns(3)
                 c1.metric("Debits", f"₹{all_data[file.name]['total_dr']:,.2f}")
@@ -113,12 +113,12 @@ if uploaded_files:
                 else:
                     c3.error(f"MISMATCH: ₹{diff:,.2f}")
 
-                # Spatial Check (Requirement: Height must adjust with Lat/Lon)
+                # Spatial Requirement: Height must be checked if Lat/Lon exists
                 if lat_c and lon_c:
                     if h_c:
-                        st.info(f"📍 Spatial data detected. Height ({h_c}) is included for coordinate adjustment.")
+                        st.info(f"📍 Spatial Audit: Coordinates detected with Height ({h_c}).")
                     else:
-                        st.warning("⚠️ Spatial Alert: Lat/Lon detected without Height. Coordinates cannot be fully adjusted.")
+                        st.warning("⚠️ Spatial Audit: Lat/Lon detected but Height is missing.")
 
                 st.dataframe(df, use_container_width=True)
 
@@ -128,26 +128,28 @@ if uploaded_files:
     # ================= CONSOLIDATED INTELLIGENCE =================
     if all_data:
         st.divider()
-        st.header("📊 Financial Performance & Working Capital")
+        st.header("📊 Financial Performance Summary")
         
         target = st.selectbox("Select entity for deep-dive", list(all_data.keys()))
-        target_df = all_data[target]["df"]
+        t_data = all_data[target]
+        t_df = t_data["df"]
+        d_col = t_data["desc_col"]
         
-        # P&L and Working Capital Logic
-        inc = abs(target_df[target_df["Category"] == "Income"]["Net Amount"].sum())
-        exp = target_df[target_df["Category"] == "Expense"]["Net Amount"].sum()
-        ca = target_df[(target_df["Category"] == "Asset") & (target_df[desc_col].str.contains("Cash|Bank|Receivable|Stock", case=False, na=False))]["Net Amount"].sum()
-        cl = abs(target_df[(target_df["Category"] == "Liability") & (target_df[desc_col].str.contains("Payable|Creditor|Loan", case=False, na=False))]["Net Amount"].sum())
+        # Working Capital & Profit/Loss Calculations
+        inc = abs(t_df[t_df["Category"] == "Income"]["Net Amount"].sum())
+        exp = t_df[t_df["Category"] == "Expense"]["Net Amount"].sum()
+        ca = t_df[(t_df["Category"] == "Asset") & (t_df[d_col].astype(str).str.contains("Cash|Bank|Receivable|Stock", case=False, na=False))]["Net Amount"].sum()
+        cl = abs(t_df[(t_df["Category"] == "Liability") & (t_df[d_col].astype(str).str.contains("Payable|Creditor|Loan", case=False, na=False))]["Net Amount"].sum())
         
-        col_m1, col_m2, col_m3 = st.columns(3)
-        col_m1.metric("Net Profit/Loss", f"₹{inc - exp:,.2f}")
-        col_m2.metric("Working Capital", f"₹{ca - cl:,.2f}")
-        col_m3.metric("Current Ratio", f"{ca/cl:.2f}" if cl != 0 else "N/A")
+        m1, m2, m3 = st.columns(3)
+        m1.metric("Net Profit/Loss", f"₹{inc - exp:,.2f}")
+        m2.metric("Working Capital", f"₹{ca - cl:,.2f}")
+        m3.metric("Current Ratio", f"{ca/cl:.2f}" if cl != 0 else "N/A")
 
-        # Stable Visualizations (Avoiding st.pie_chart for compatibility)
+        # Stable Bar Chart for category totals (Replacing failing pie chart)
         st.subheader("Account Category Distribution")
-        cat_data = target_df.groupby("Category")[["Debit", "Credit"]].sum()
-        st.bar_chart(cat_data)
+        cat_totals = t_df.groupby("Category")[["Debit", "Credit"]].sum()
+        st.bar_chart(cat_totals)
 
 else:
-    st.info("👋 Ready for audit. Please upload your Excel sheets to proceed.")
+    st.info("👋 Upload Excel sheets to begin.")
