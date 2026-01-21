@@ -3,7 +3,3 @@ pandas
 numpy
 openpyxl
 xlrd
-pytesseract
-pdf2image
-Pillow
-opencv-python-headless
