@@ -2,8 +2,18 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
+import math
 
-st.set_page_config(page_title="ASI Intelligent Audit Engine", layout="wide")
+# --- PAGE CONFIG ---
+st.set_page_config(page_title="ASI Forensic Audit Suite", layout="wide", page_icon="🕵️")
+
+# --- CUSTOM CSS FOR AUDITORS ---
+st.markdown("""
+    <style>
+    .main { background-color: #f5f7f9; }
+    .stMetric { background-color: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #e0e0e0; }
+    </style>
+    """, unsafe_index=True)
 
 # ================= HELPER FUNCTIONS =================
 def fix_duplicate_columns(df):
@@ -20,9 +30,9 @@ def fix_duplicate_columns(df):
     return df
 
 def clean_df(df):
-    df = df.dropna(axis=1, how="all")
-    df = df.dropna(axis=0, how="all")
-    # Filter out common "Total" rows that cause double-counting
+    # Remove empty columns/rows
+    df = df.dropna(axis=1, how="all").dropna(axis=0, how="all")
+    # Remove Total/Subtotal rows to prevent double-counting
     if not df.empty:
         df = df[~df.iloc[:, 0].astype(str).str.contains("Total|Grand Total|Balance", case=False, na=False)]
     df.columns = [str(c).strip() for c in df.columns]
@@ -39,83 +49,105 @@ def detect_columns(df):
         elif "desc" in cl or "particulars" in cl: desc = c
     return debit, credit, desc
 
-def classify(desc):
-    d = str(desc).lower()
-    if any(k in d for k in ["capital", "reserve", "loan", "creditor", "payable", "tax"]): return "Liability"
-    if any(k in d for k in ["asset", "plant", "machinery", "building", "cash", "bank", "receivable"]): return "Asset"
-    if any(k in d for k in ["salary", "wage", "expense", "consumption", "rent", "purchase"]): return "Expense"
-    if any(k in d for k in ["sales", "turnover", "income", "revenue"]): return "Income"
-    return "Other"
+def get_first_digit(n):
+    n = abs(n)
+    if n < 1 or pd.isna(n): return None
+    return int(str(n)[0])
 
-# ================= UI SETUP =================
-st.title("🛡️ ASI Intelligent Audit & Cross-Check Engine")
+def check_benford(series):
+    digits = series.apply(get_first_digit).dropna()
+    if len(digits) == 0: return None
+    counts = digits.value_counts(normalize=True).sort_index()
+    expected = pd.Series({i: math.log10(1 + 1/i) for i in range(1, 10)})
+    return pd.DataFrame({"Actual": counts, "Expected": expected}).fillna(0)
 
-uploaded_file = st.file_uploader("Upload Trial Balance (Excel)", type=["xlsx", "xls"])
+# ================= APP UI =================
+st.title("🛡️ ASI Intelligent Forensic Audit Suite")
+st.markdown("### Deep Analysis of Financial Statements & Ledger Integrity")
+
+uploaded_file = st.file_uploader("Upload Trial Balance / Ledger (Excel)", type=["xlsx", "xls"])
 
 if uploaded_file:
     try:
-        # Load and Preprocess
+        # 1. DATA LOADING
         df_raw = pd.read_excel(uploaded_file)
         df = clean_df(df_raw)
         
-        # Initial Detection
         d_cols, c_cols, desc_col = detect_columns(df)
         
-        # Sidebar for Manual Overrides
+        # 2. SIDEBAR CONFIG
         st.sidebar.header("⚙️ Column Mapping")
         final_desc = st.sidebar.selectbox("Description Column", df.columns, index=list(df.columns).index(desc_col))
         final_debit = st.sidebar.multiselect("Debit Columns", df.columns, default=d_cols)
         final_credit = st.sidebar.multiselect("Credit Columns", df.columns, default=c_cols)
 
-        # Calculations
-        df["Debit"] = df[final_debit].apply(pd.to_numeric, errors="coerce").fillna(0).sum(axis=1)
-        df["Credit"] = df[final_credit].apply(pd.to_numeric, errors="coerce").fillna(0).sum(axis=1)
-        df["Category"] = df[final_desc].apply(classify)
+        # 3. CORE CALCULATIONS
+        df["Debit_Val"] = df[final_debit].apply(pd.to_numeric, errors="coerce").fillna(0).sum(axis=1)
+        df["Credit_Val"] = df[final_credit].apply(pd.to_numeric, errors="coerce").fillna(0).sum(axis=1)
+        df["Absolute_Val"] = df["Debit_Val"] + df["Credit_Val"]
 
-        # --- Dashboard Metrics ---
-        total_dr = df["Debit"].sum()
-        total_cr = df["Credit"].sum()
-        diff = abs(total_dr - total_cr)
+        # --- DASHBOARD METRICS ---
+        total_dr = df["Debit_Val"].sum()
+        total_cr = df["Credit_Val"].sum()
+        diff = total_dr - total_cr
 
-        m1, m2, m3 = st.columns(3)
+        m1, m2, m3, m4 = st.columns(4)
         m1.metric("Total Debit", f"₹{total_dr:,.2f}")
         m2.metric("Total Credit", f"₹{total_cr:,.2f}")
-        m3.metric("Difference", f"₹{diff:,.2f}", delta=None, delta_color="inverse" if diff > 1 else "normal")
+        m3.metric("Net Difference", f"₹{abs(diff):,.2f}", 
+                  delta="Out of Balance" if abs(diff) > 1 else "Balanced", 
+                  delta_color="inverse" if abs(diff) > 1 else "normal")
+        m4.metric("Total Rows Analyzed", f"{len(df)}")
 
-        if diff < 1:
-            st.success("✅ Trial Balance Matched!")
-        else:
-            st.error(f"⚠️ Mismatch Detected: ₹{diff:,.2f}")
+        # --- TABBED ANALYSIS ---
+        tab1, tab2, tab3 = st.tabs(["📊 Trial Balance Check", "🔍 Forensic Tests", "🚩 Outlier Detection"])
 
-        # --- Visualizations ---
-        st.divider()
-        c1, c2 = st.columns([1, 1])
-        
-        with c1:
-            st.subheader("📊 Financial Composition")
-            summary = df.groupby("Category")[["Debit", "Credit"]].sum().reset_index()
-            fig = px.bar(summary, x="Category", y=["Debit", "Credit"], barmode="group", color_discrete_sequence=["#1f77b4", "#ff7f0e"])
-            st.plotly_chart(fig, use_container_width=True)
-
-        with c2:
-            st.subheader("🚩 Audit Anomalies")
-            # Logic: Flag round numbers > 10k or negative entries
-            anomalies = df[(df["Debit"] > 0) & (df["Debit"] % 1000 == 0) & (df["Debit"] >= 10000)]
-            if not anomalies.empty:
-                st.warning(f"Found {len(anomalies)} large round-sum transactions (Potential Manual Entries).")
-                st.dataframe(anomalies[[final_desc, "Debit", "Credit"]].head(5))
+        with tab1:
+            st.subheader("General Ledger Overview")
+            if abs(diff) > 0.01:
+                st.error(f"⚠️ Trial Balance Mismatch: {diff:,.2f}")
+                if abs(diff) % 9 == 0:
+                    st.warning("🕵️ Forensic Insight: Difference is divisible by 9. Check for transposed digits (e.g., 54 instead of 45).")
             else:
-                st.info("No suspicious round-sum entries found.")
+                st.success("✅ Trial Balance is mathematically sound.")
+            
+            st.dataframe(df[[final_desc, "Debit_Val", "Credit_Val"]], use_container_width=True)
 
-        # --- Data Table ---
-        st.subheader("📝 Processed Audit Data")
-        st.dataframe(df[[final_desc, "Debit", "Credit", "Category"]], use_container_width=True)
+        with tab2:
+            st.subheader("Benford's Law Analysis")
+            st.info("Benford's Law predicts the frequency of leading digits. Significant deviations can indicate manual data manipulation.")
+            ben_df = check_benford(df["Absolute_Val"])
+            if ben_df is not None:
+                fig = px.line(ben_df, title="Digit Frequency vs. Natural Law", markers=True)
+                st.plotly_chart(fig, use_container_width=True)
+            
+            st.subheader("Duplicate Check")
+            dupes = df[df.duplicated(subset=["Absolute_Val"], keep=False) & (df["Absolute_Val"] > 0)]
+            if not dupes.empty:
+                st.warning(f"Found {len(dupes)} entries with identical amounts. Check for double-billing.")
+                st.dataframe(dupes[[final_desc, "Absolute_Val"]].sort_values(by="Absolute_Val", ascending=False))
 
-        # --- Download ---
+        with tab3:
+            st.subheader("Statistical Outliers (Z-Score)")
+            mean = df["Absolute_Val"].mean()
+            std = df["Absolute_Val"].std()
+            df['Z_Score'] = (df["Absolute_Val"] - mean) / std
+            
+            # Show top 5% of outliers
+            outliers = df[df['Z_Score'] > 2].sort_values(by='Absolute_Val', ascending=False)
+            if not outliers.empty:
+                st.warning("High-Value Transactions for Manual Verification:")
+                st.dataframe(outliers[[final_desc, "Absolute_Val", "Z_Score"]])
+                
+                fig_out = px.scatter(df, x=final_desc, y="Absolute_Val", color="Z_Score", 
+                                     title="Transaction Distribution (Color by Z-Score)")
+                st.plotly_chart(fig_out, use_container_width=True)
+
+        # --- EXPORT ---
         csv = df.to_csv(index=False).encode('utf-8')
-        st.download_button("📥 Download Audit Report", data=csv, file_name="Audit_Analysis.csv", mime="text/csv")
+        st.download_button("📥 Download Full Audit Report", data=csv, file_name="ASI_Forensic_Audit.csv", mime="text/csv")
 
     except Exception as e:
-        st.error(f"Error processing file: {e}")
+        st.error(f"System Error: {e}")
 else:
-    st.info("Please upload an Excel file to begin the audit analysis.")
+    st.info("👋 Welcome! Please upload your Trial Balance Excel file to begin a 'Hard Look' audit.")
