@@ -1,164 +1,150 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
+import pytesseract
+from pdf2image import convert_from_bytes
+from PIL import Image
+import cv2
+import io
 import re
 
-# =====================================================
-# PAGE CONFIG
-# =====================================================
-st.set_page_config(page_title="ASI Audit Pro", layout="wide")
-st.title("🛡️ ASI Master Scrutiny & Analysis Engine")
+st.set_page_config(page_title="Intelligent Cross-Check", layout="wide")
+st.title("🔍 Intelligent Cross-Check (Excel + Scanned PDF)")
 
-# =====================================================
-# UTILITY FUNCTIONS
-# =====================================================
-def clean_number(x):
-    return pd.to_numeric(
-        re.sub(r"[^\d.-]", "", str(x)),
-        errors="coerce"
-    )
-
-def drop_nill_and_unnamed_columns(df):
-    cols_to_keep = []
-    for c in df.columns:
-        # Drop unnamed columns
-        if str(c).lower().startswith("unnamed"):
-            continue
-        # Drop fully empty columns
-        if df[c].isna().all():
-            continue
-        cols_to_keep.append(c)
-    return df[cols_to_keep]
-
-def get_valid_numeric_columns(df, ignore_cols):
-    valid = []
-    for c in df.columns:
-        if c in ignore_cols:
-            continue
-        nums = df[c].apply(clean_number)
-        if nums.notna().any() and nums.abs().sum() > 0:
-            valid.append(c)
-    return valid
-
-def get_valid_text_columns(df):
-    return [
-        c for c in df.columns
-        if df[c].astype(str).str.strip().replace("nan", "").ne("").any()
-    ]
-
-# =====================================================
-# SIDEBAR UPLOAD
-# =====================================================
-st.sidebar.header("📁 Upload Files")
-uploaded_files = st.sidebar.file_uploader(
-    "Upload Balance Sheet / Trial Balance / ASI Schedules",
-    type=["csv", "xls", "xlsx"],
-    accept_multiple_files=True
+uploaded_file = st.file_uploader(
+    "Upload Excel or Scanned PDF",
+    type=["xlsx", "xls", "pdf"]
 )
 
-# =====================================================
-# MAIN LOGIC
-# =====================================================
-if uploaded_files:
-    consolidated = []
+def clean_dataframe(df):
+    df = df.dropna(axis=1, how="all")  # drop empty columns
+    df = df.dropna(axis=0, how="all")  # drop empty rows
+    df.columns = [str(c).strip() for c in df.columns]
+    return df
 
-    for f in uploaded_files:
-        st.divider()
-        st.subheader(f"📄 {f.name}")
+def ocr_pdf_to_text(pdf_bytes):
+    images = convert_from_bytes(pdf_bytes, dpi=300)
+    full_text = ""
 
-        # Load file
-        if f.name.endswith(".csv"):
-            df = pd.read_csv(f)
-        else:
-            df = pd.read_excel(f)
+    for img in images:
+        gray = cv2.cvtColor(np.array(img), cv2.COLOR_BGR2GRAY)
+        gray = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)[1]
+        text = pytesseract.image_to_string(gray, config="--psm 6")
+        full_text += "\n" + text
 
-        # Clean dataframe
-        df = drop_nill_and_unnamed_columns(df)
+    return full_text
 
-        if df.empty or df.shape[1] < 2:
-            st.warning("File has no usable data after cleaning")
-            continue
+def text_to_table(text):
+    rows = []
+    for line in text.split("\n"):
+        line = re.sub(r"\s{2,}", "|", line.strip())
+        if "|" in line:
+            rows.append(line.split("|"))
 
-        st.dataframe(df.head(10), use_container_width=True)
+    if not rows:
+        return None
 
-        # -----------------------------
-        # COLUMN SELECTION
-        # -----------------------------
-        st.markdown("### 🔧 Column Mapping")
+    max_cols = max(len(r) for r in rows)
+    rows = [r + [""] * (max_cols - len(r)) for r in rows]
 
-        text_cols = get_valid_text_columns(df)
-        desc_col = st.selectbox(
-            "Select Description / Particulars column",
-            text_cols,
-            key=f"{f.name}_desc"
-        )
+    df = pd.DataFrame(rows)
+    return clean_dataframe(df)
 
-        numeric_cols = get_valid_numeric_columns(df, [desc_col])
+if uploaded_file:
+    try:
+        if uploaded_file.name.endswith((".xlsx", ".xls")):
+            df = pd.read_excel(uploaded_file)
+            df = clean_dataframe(df)
 
-        if not numeric_cols:
-            st.warning("⚠️ No amount columns found (listing-only Trial Balance)")
-            continue
+            st.success("Excel file processed successfully")
+            st.dataframe(df, use_container_width=True)
 
-        amt_cols = st.multiselect(
-            "Select Amount / Dr / Cr column(s)",
-            numeric_cols,
-            key=f"{f.name}_amt"
-        )
+        elif uploaded_file.name.endswith(".pdf"):
+            st.info("Scanned PDF detected – running OCR")
 
-        if not amt_cols:
-            st.info("Select at least one numeric column to calculate totals")
-            continue
+            text = ocr_pdf_to_text(uploaded_file.read())
+            df = text_to_table(text)
 
-        # -----------------------------
-        # METRIC EXTRACTION
-        # -----------------------------
-        metrics = {
-            "Assets": ["asset"],
-            "Liabilities": ["liability", "capital"],
-            "Wages": ["wages", "salary", "emoluments"],
-            "Turnover": ["sales", "turnover", "output"],
-            "Raw Material": ["raw material", "consumption"]
-        }
+            if df is not None:
+                st.success("Scanned PDF converted to table")
+                st.dataframe(df, use_container_width=True)
+            else:
+                st.error("Could not detect tabular structure")
 
-        for metric, keywords in metrics.items():
-            total = 0.0
-            for _, row in df.iterrows():
-                text = str(row[desc_col]).lower()
-                if any(k in text for k in keywords):
-                    for c in amt_cols:
-                        val = clean_number(row[c])
-                        if pd.notna(val):
-                            total += val
+    except Exception as e:
+        st.error(f"Error: {e}")
+import streamlit as st
+import pandas as pd
+import numpy as np
+import pytesseract
+from pdf2image import convert_from_bytes
+from PIL import Image
+import cv2
+import io
+import re
 
-            if total != 0:
-                consolidated.append({
-                    "File": f.name,
-                    "Metric": metric,
-                    "Amount": round(total, 2)
-                })
+st.set_page_config(page_title="Intelligent Cross-Check", layout="wide")
+st.title("🔍 Intelligent Cross-Check (Excel + Scanned PDF)")
 
-    # =====================================================
-    # FINAL OUTPUT
-    # =====================================================
-    st.divider()
-    st.header("📊 Consolidated Audit Summary")
+uploaded_file = st.file_uploader(
+    "Upload Excel or Scanned PDF",
+    type=["xlsx", "xls", "pdf"]
+)
 
-    if consolidated:
-        result_df = pd.DataFrame(consolidated)
-        st.dataframe(result_df, use_container_width=True)
+def clean_dataframe(df):
+    df = df.dropna(axis=1, how="all")  # drop empty columns
+    df = df.dropna(axis=0, how="all")  # drop empty rows
+    df.columns = [str(c).strip() for c in df.columns]
+    return df
 
-        st.subheader("🔍 Totals")
-        for m in result_df["Metric"].unique():
-            amt = result_df[result_df["Metric"] == m]["Amount"].sum()
-            st.metric(m, f"₹ {amt:,.2f}")
+def ocr_pdf_to_text(pdf_bytes):
+    images = convert_from_bytes(pdf_bytes, dpi=300)
+    full_text = ""
 
-        st.download_button(
-            "📥 Download Audit CSV",
-            result_df.to_csv(index=False).encode("utf-8"),
-            "ASI_Audit_Final.csv",
-            "text/csv"
-        )
-    else:
-        st.warning("No calculable data found across uploaded files")
+    for img in images:
+        gray = cv2.cvtColor(np.array(img), cv2.COLOR_BGR2GRAY)
+        gray = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)[1]
+        text = pytesseract.image_to_string(gray, config="--psm 6")
+        full_text += "\n" + text
 
-else:
-    st.info("⬅ Upload balance sheet / trial balance / ASI schedules to start")
+    return full_text
+
+def text_to_table(text):
+    rows = []
+    for line in text.split("\n"):
+        line = re.sub(r"\s{2,}", "|", line.strip())
+        if "|" in line:
+            rows.append(line.split("|"))
+
+    if not rows:
+        return None
+
+    max_cols = max(len(r) for r in rows)
+    rows = [r + [""] * (max_cols - len(r)) for r in rows]
+
+    df = pd.DataFrame(rows)
+    return clean_dataframe(df)
+
+if uploaded_file:
+    try:
+        if uploaded_file.name.endswith((".xlsx", ".xls")):
+            df = pd.read_excel(uploaded_file)
+            df = clean_dataframe(df)
+
+            st.success("Excel file processed successfully")
+            st.dataframe(df, use_container_width=True)
+
+        elif uploaded_file.name.endswith(".pdf"):
+            st.info("Scanned PDF detected – running OCR")
+
+            text = ocr_pdf_to_text(uploaded_file.read())
+            df = text_to_table(text)
+
+            if df is not None:
+                st.success("Scanned PDF converted to table")
+                st.dataframe(df, use_container_width=True)
+            else:
+                st.error("Could not detect tabular structure")
+
+    except Exception as e:
+        st.error(f"Error: {e}")
