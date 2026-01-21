@@ -1,17 +1,19 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import re
 
+# ================= CONFIG & STYLING =================
 st.set_page_config(page_title="ASI Intelligent Audit Engine", layout="wide")
-st.title("🛡️ ASI Intelligent Audit & Cross-Check Engine")
 
-# ================= FILE UPLOADER =================
-uploaded_file = st.file_uploader(
-    "Upload Trial Balance / Balance Sheet (Excel only on cloud)",
-    type=["xlsx", "xls", "pdf"],
-    key="audit_uploader"
-)
+st.markdown("""
+    <style>
+    .main { background-color: #f8f9fa; }
+    .stMetric { background-color: #ffffff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    </style>
+    """, unsafe_allow_html=True)
+
+st.title("🛡️ ASI Intelligent Audit & Cross-Check Engine")
+st.info("Upload one or multiple Trial Balance files (Excel) to perform automated classification and variance analysis.")
 
 # ================= HELPERS =================
 def fix_duplicate_columns(df):
@@ -37,91 +39,117 @@ def clean_df(df):
 def detect_columns(df):
     debit, credit = [], []
     desc = None
-
     for c in df.columns:
         cl = c.lower()
         if "debit" in cl or cl.endswith("dr"):
             debit.append(c)
         elif "credit" in cl or cl.endswith("cr"):
             credit.append(c)
-        elif "desc" in cl:
+        elif any(k in cl for k in ["desc", "particulars", "account"]):
             desc = c
-
     return debit, credit, desc or df.columns[0]
 
 def classify(desc):
     d = str(desc).lower()
-    if any(k in d for k in ["capital", "reserve", "loan", "creditor"]):
+    if any(k in d for k in ["capital", "reserve", "loan", "creditor", "payable", "provision"]):
         return "Liability"
-    if any(k in d for k in ["asset", "plant", "machinery", "building"]):
+    if any(k in d for k in ["asset", "plant", "machinery", "building", "cash", "bank", "receivable"]):
         return "Asset"
-    if any(k in d for k in ["salary", "wage", "expense", "consumption"]):
+    if any(k in d for k in ["salary", "wage", "expense", "consumption", "purchase", "rent"]):
         return "Expense"
-    if any(k in d for k in ["sales", "turnover", "income"]):
+    if any(k in d for k in ["sales", "turnover", "income", "revenue", "gain"]):
         return "Income"
     return "Other"
 
-# ================= MAIN =================
-if uploaded_file:
+# ================= FILE UPLOADER =================
+uploaded_files = st.file_uploader(
+    "Upload Trial Balance / Balance Sheet (Excel)",
+    type=["xlsx", "xls"],
+    accept_multiple_files=True,
+    key="audit_uploader"
+)
 
-    # ---------- PDF HANDLING ----------
-    if uploaded_file.name.endswith(".pdf"):
-        st.error(
-            "⚠️ Scanned PDF OCR is NOT supported on Streamlit Cloud.\n\n"
-            "✔ Please upload Excel here.\n"
-            "✔ For PDF OCR, run the same app on your local system."
-        )
-        st.stop()
+# ================= PROCESSING LOGIC =================
+if uploaded_files:
+    all_summaries = {}
+    
+    for uploaded_file in uploaded_files:
+        try:
+            # Load and Process
+            df = pd.read_excel(uploaded_file, header=0)
+            df = clean_df(df)
+            debit_cols, credit_cols, desc_col = detect_columns(df)
 
-    # ---------- EXCEL ----------
-    try:
-        df = pd.read_excel(uploaded_file, header=0)
-        df = clean_df(df)
+            # Calculation
+            df["Debit"] = df[debit_cols].apply(pd.to_numeric, errors="coerce").sum(axis=1) if debit_cols else 0
+            df["Credit"] = df[credit_cols].apply(pd.to_numeric, errors="coerce").sum(axis=1) if credit_cols else 0
+            df["Category"] = df[desc_col].apply(classify)
+            df["Net Amount"] = df["Debit"] - df["Credit"]
 
-        st.subheader("📄 Cleaned Data")
-        st.dataframe(df, use_container_width=True)
+            # Store results
+            all_summaries[uploaded_file.name] = df
 
-        debit_cols, credit_cols, desc_col = detect_columns(df)
+            with st.expander(f"📁 Analysis: {uploaded_file.name}", expanded=len(uploaded_files) == 1):
+                col1, col2, col3 = st.columns(3)
+                total_dr = df["Debit"].sum()
+                total_cr = df["Credit"].sum()
+                diff = abs(total_dr - total_cr)
 
-        df["Debit"] = (
-            df[debit_cols]
-            .apply(pd.to_numeric, errors="coerce")
-            .sum(axis=1)
-            if debit_cols else 0
-        )
+                col1.metric("Total Debit", f"₹{total_dr:,.2f}")
+                col2.metric("Total Credit", f"₹{total_cr:,.2f}")
+                col3.metric("Balance Status", "MATCHED ✅" if diff < 1 else f"DIFF: ₹{diff:,.2f}", delta=-diff if diff > 1 else None)
 
-        df["Credit"] = (
-            df[credit_cols]
-            .apply(pd.to_numeric, errors="coerce")
-            .sum(axis=1)
-            if credit_cols else 0
-        )
+                # Anomaly Detection
+                st.subheader("🚩 Audit Flags")
+                anomalies = df[
+                    ((df["Category"] == "Asset") & (df["Credit"] > df["Debit"])) |
+                    ((df["Category"] == "Expense") & (df["Credit"] > df["Debit"]))
+                ]
+                if not anomalies.empty:
+                    st.warning(f"Directional Anomaly: {len(anomalies)} Asset/Expense accounts have Credit balances.")
+                    st.dataframe(anomalies[[desc_col, "Debit", "Credit", "Category"]], use_container_width=True)
+                else:
+                    st.success("No directional anomalies detected.")
 
-        df["Category"] = df[desc_col].apply(classify)
+                st.subheader("Category Breakdown")
+                cat_summary = df.groupby("Category")[["Debit", "Credit"]].sum()
+                st.bar_chart(cat_summary)
+                st.dataframe(cat_summary, use_container_width=True)
 
-        # ---------- DASHBOARD ----------
-        st.subheader("📊 Audit Summary")
+        except Exception as e:
+            st.error(f"Error processing {uploaded_file.name}: {e}")
 
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Total Debit", f"₹{df['Debit'].sum():,.2f}")
-        col2.metric("Total Credit", f"₹{df['Credit'].sum():,.2f}")
-        col3.metric(
-            "Status",
-            "MATCHED ✅" if abs(df["Debit"].sum() - df["Credit"].sum()) < 1 else "MISMATCH ⚠️"
-        )
+    # ================= CROSS-CHECK / VARIANCE ANALYSIS =================
+    if len(all_summaries) >= 2:
+        st.divider()
+        st.header("⚖️ Comparative Variance Analysis")
+        
+        file_names = list(all_summaries.keys())
+        col_a, col_b = st.columns(2)
+        base_file = col_a.selectbox("Select Base Period (PY)", file_names, index=0)
+        comp_file = col_b.selectbox("Select Comparison Period (CY)", file_names, index=1)
 
-        st.subheader("📌 Category-wise Summary")
-        st.dataframe(
-            df.groupby("Category")[["Debit", "Credit"]].sum(),
-            use_container_width=True
-        )
+        df_py = all_summaries[base_file].groupby("Category")["Net Amount"].sum()
+        df_cy = all_summaries[comp_file].groupby("Category")["Net Amount"].sum()
 
-        st.download_button(
-            "📥 Download Audit-Ready CSV",
-            df.to_csv(index=False).encode("utf-8"),
-            "ASI_Audit_Output.csv",
-            "text/csv"
-        )
+        variance_df = pd.DataFrame({"Prior Year": df_py, "Current Year": df_cy})
+        variance_df["Abs Variance"] = variance_df["Current Year"] - variance_df["Prior Year"]
+        variance_df["% Change"] = (variance_df["Abs Variance"] / variance_df["Prior Year"].replace(0, np.nan)) * 100
 
-    except Exception as e:
-        st.error(f"Processing failed: {e}")
+        st.dataframe(variance_df.style.format("{:,.2f}").highlight_max(axis=0, color='#ffebcc'), use_container_width=True)
+        
+        st.subheader("Visual Variance")
+        st.line_chart(variance_df[["Prior Year", "Current Year"]])
+
+    # ================= GLOBAL DOWNLOAD =================
+    if all_summaries:
+        st.sidebar.header("Export Data")
+        for name, data in all_summaries.items():
+            st.sidebar.download_button(
+                label=f"📥 Download {name} (Processed)",
+                data=data.to_csv(index=False).encode("utf-8"),
+                file_name=f"Processed_{name}.csv",
+                mime="text/csv"
+            )
+else:
+    st.write("Please upload one or more Excel files to begin the audit process.")
