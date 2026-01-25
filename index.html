@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <title>Chandan Panwar - Diary Automation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .form-section { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h4 { color: #0d6efd; border-bottom: 2px solid #0d6efd; padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 form-section">
+            <h2 class="text-center mb-4">Daily Diary Management System</h2>
+            <form action="/sync_update" method="POST">
+                
+                <h4>1. Profile & Office Details (Manual)</h4>
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <label>Name (नाम):</label>
+                        <input type="text" name="name" class="form-control" value="चन्दन पंवर" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Post (पदनाम):</label>
+                        <input type="text" name="post" class="form-control" value="सर्वे प्रगणक" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Office/SRO:</label>
+                        <input type="text" name="office" class="form-control" value="शिमला" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label>RO:</label>
+                        <input type="text" name="ro" class="form-control" value="शिमला" required>
+                    </div>
+                </div>
+
+                <h4>2. Entry Details (Daily Activity)</h4>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label>Date (दिनांक):</label>
+                        <input type="date" name="date" class="form-control" required>
+                    </div>
+                    <div class="col-md-8">
+                        <label>Work Description (कार्य विवरण):</label>
+                        <textarea name="work" class="form-control" rows="2" required></textarea>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <label>Mode (साधन):</label>
+                        <input type="text" name="mode" class="form-control" placeholder="Bus/Taxi">
+                    </div>
+                    <div class="col-md-3">
+                        <label>Dist (कि.मी.):</label>
+                        <input type="number" name="dist" class="form-control" value="0">
+                    </div>
+                    <div class="col-md-3">
+                        <label>Fare (किराया):</label>
+                        <input type="number" name="fare" class="form-control" value="0">
+                    </div>
+                    <div class="col-md-3">
+                        <label>Time (समय):</label>
+                        <input type="text" name="time" class="form-control" value="08:30:00">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 btn-lg">Update Both Files & Headers</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
