@@ -1,77 +1,502 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Chandan Panwar - Diary Automation</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-        body { background-color: #f8f9fa; }
-        .form-section { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h4 { color: #0d6efd; border-bottom: 2px solid #0d6efd; padding-bottom: 10px; }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NSSO Matcher | Block • Ward • IV</title>
+
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+<style>
+  :root{
+    --bg:#0b1220;
+    --panel: rgba(17, 26, 46, .72);
+    --panel2: rgba(12, 20, 40, .55);
+    --border: rgba(34, 50, 87, .85);
+    --text:#e7eefc;
+    --muted:#9bb0d1;
+    --accent:#6ea8ff;
+    --ok:#2ee59d;
+    --warn:#ffcc66;
+    --shadow: 0 16px 45px rgba(0,0,0,.35);
+    --radius: 16px;
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    color:var(--text);
+    background:
+      radial-gradient(900px 500px at 10% 0%, rgba(110,168,255,.22) 0%, rgba(11,18,32,0) 55%),
+      radial-gradient(900px 500px at 90% 10%, rgba(46,229,157,.15) 0%, rgba(11,18,32,0) 60%),
+      var(--bg);
+    min-height:100vh;
+  }
+
+  .container{ max-width:1200px; margin:18px auto; padding:18px; }
+
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:16px 18px; border-radius:var(--radius);
+    background:var(--panel);
+    border:1px solid var(--border);
+    box-shadow:var(--shadow);
+  }
+
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .logo{
+    width:38px; height:38px; border-radius:12px;
+    background: linear-gradient(145deg, rgba(110,168,255,.35), rgba(46,229,157,.22));
+    border:1px solid rgba(110,168,255,.35);
+    box-shadow: 0 8px 24px rgba(0,0,0,.25) inset;
+  }
+  .title h1{ margin:0; font-size:16px; letter-spacing:.2px; }
+  .title p{ margin:2px 0 0; font-size:12px; color:var(--muted); }
+
+  .meta{
+    display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end;
+  }
+
+  .pill{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:8px 10px;
+    border-radius:999px;
+    background: rgba(12,20,40,.75);
+    border:1px solid var(--border);
+    color:var(--muted);
+    font-size:12px;
+  }
+  .pill b{ color:var(--text); }
+
+  .grid{
+    display:grid; grid-template-columns: 1fr 1fr;
+    gap:14px; margin-top:14px;
+  }
+  @media(max-width: 900px){ .grid{ grid-template-columns:1fr; } }
+
+  .card{
+    background:var(--panel2);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:14px;
+  }
+
+  .card h2{ margin:0 0 8px; font-size:13px; color:#cfe0ff; }
+  .hint{ font-size:12px; color:var(--muted); margin:0 0 10px; }
+
+  input[type="file"]{
+    width:100%;
+    padding:10px;
+    border-radius:12px;
+    border:1px dashed rgba(110,168,255,.35);
+    background: rgba(12,20,40,.7);
+    color:var(--muted);
+    outline:none;
+  }
+
+  .actions{
+    display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+    margin-top:14px;
+    padding:12px;
+    border-radius:var(--radius);
+    background: rgba(12,20,40,.6);
+    border:1px solid var(--border);
+  }
+
+  .leftActions, .rightActions{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+
+  button{
+    border:1px solid rgba(110,168,255,.55);
+    background: rgba(110,168,255,.14);
+    color:var(--text);
+    padding:10px 12px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+    transition: transform .06s ease, background .15s ease;
+  }
+  button:hover{ background: rgba(110,168,255,.20); }
+  button:active{ transform: translateY(1px); }
+
+  .ghost{
+    border:1px solid var(--border);
+    background: rgba(12,20,40,.7);
+  }
+  .ghost:hover{ background: rgba(12,20,40,.85); }
+
+  input[type="text"]{
+    padding:10px 12px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background: rgba(12,20,40,.7);
+    color:var(--text);
+    outline:none;
+    width:240px;
+  }
+
+  .kpis{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .ok{ color:var(--ok); }
+  .warn{ color:var(--warn); }
+
+  .tabs{ margin-top:14px; display:flex; gap:8px; flex-wrap:wrap; }
+  .tab{
+    padding:8px 10px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    background: rgba(12,20,40,.65);
+    color:var(--muted);
+    cursor:pointer;
+    font-size:12px;
+    user-select:none;
+  }
+  .tab.active{
+    color:var(--text);
+    border-color: rgba(110,168,255,.6);
+    background: rgba(110,168,255,.14);
+  }
+
+  .tableCard{
+    margin-top:12px;
+    background: var(--panel2);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+
+  .tableHeader{
+    display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    padding:12px 14px;
+    background: rgba(15,25,48,.92);
+    border-bottom:1px solid rgba(34,50,87,.6);
+  }
+  .tableHeader h3{ margin:0; font-size:13px; color:#dbe8ff; }
+  .tableHeader .sub{ font-size:12px; color:var(--muted); }
+
+  .tableWrap{
+    max-height: 66vh;
+    overflow:auto;
+    background: rgba(12,20,40,.55);
+  }
+
+  table{ width:100%; border-collapse:collapse; font-size:12px; }
+  th, td{
+    padding:8px 10px;
+    border-bottom:1px solid rgba(34,50,87,.55);
+    vertical-align:top;
+    word-break: break-word;
+  }
+  th{
+    position:sticky; top:0; z-index:2;
+    background: rgba(15,25,48,.98);
+    color:#e9f1ff;
+    text-align:left;
+  }
+  tbody tr:hover td{ background: rgba(110,168,255,.08); }
+
+  .empty{ padding:22px; color:var(--muted); font-size:12px; text-align:center; }
+  .footerNote{ margin-top:10px; font-size:12px; color:var(--muted); opacity:.95; }
+</style>
 </head>
+
 <body>
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-10 form-section">
-            <h2 class="text-center mb-4">Daily Diary Management System</h2>
-            <form action="/sync_update" method="POST">
-                
-                <h4>1. Profile & Office Details (Manual)</h4>
-                <div class="row mb-4">
-                    <div class="col-md-3">
-                        <label>Name (नाम):</label>
-                        <input type="text" name="name" class="form-control" value="चन्दन पंवर" required>
-                    </div>
-                    <div class="col-md-3">
-                        <label>Post (पदनाम):</label>
-                        <input type="text" name="post" class="form-control" value="सर्वे प्रगणक" required>
-                    </div>
-                    <div class="col-md-3">
-                        <label>Office/SRO:</label>
-                        <input type="text" name="office" class="form-control" value="शिमला" required>
-                    </div>
-                    <div class="col-md-3">
-                        <label>RO:</label>
-                        <input type="text" name="ro" class="form-control" value="शिमला" required>
-                    </div>
-                </div>
+  <div class="container">
 
-                <h4>2. Entry Details (Daily Activity)</h4>
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label>Date (दिनांक):</label>
-                        <input type="date" name="date" class="form-control" required>
-                    </div>
-                    <div class="col-md-8">
-                        <label>Work Description (कार्य विवरण):</label>
-                        <textarea name="work" class="form-control" rows="2" required></textarea>
-                    </div>
-                </div>
-
-                <div class="row mb-4">
-                    <div class="col-md-3">
-                        <label>Mode (साधन):</label>
-                        <input type="text" name="mode" class="form-control" placeholder="Bus/Taxi">
-                    </div>
-                    <div class="col-md-3">
-                        <label>Dist (कि.मी.):</label>
-                        <input type="number" name="dist" class="form-control" value="0">
-                    </div>
-                    <div class="col-md-3">
-                        <label>Fare (किराया):</label>
-                        <input type="number" name="fare" class="form-control" value="0">
-                    </div>
-                    <div class="col-md-3">
-                        <label>Time (समय):</label>
-                        <input type="text" name="time" class="form-control" value="08:30:00">
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary w-100 btn-lg">Update Both Files & Headers</button>
-            </form>
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div class="title">
+          <h1>NSSO Dataset Matcher</h1>
+          <p>Matching by <b>IV Unit Number • Ward No • Block Number</b> (Header Row: <b>6</b>)</p>
         </div>
+      </div>
+      <div class="meta">
+        <span class="pill">Status: <b id="status">Waiting</b></span>
+        <span class="pill">Header: <b>Row 6</b> <b style="opacity:.8">|</b> range: <b>5</b></span>
+      </div>
     </div>
-</div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Listing File</h2>
+        <p class="hint">Upload NSSO_listing... (must have: IV Unit Number, Ward No, Block Number)</p>
+        <input id="fileListing" type="file" accept=".csv,.xls,.xlsx" />
+        <div class="footerNote" id="listingInfo">No file selected.</div>
+      </div>
+
+      <div class="card">
+        <h2>Block Boundary File</h2>
+        <p class="hint">Upload NSSO_blockboundary... (must have: IV Unit Number, Ward No, Block Number)</p>
+        <input id="fileBoundary" type="file" accept=".csv,.xls,.xlsx" />
+        <div class="footerNote" id="boundaryInfo">No file selected.</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <div class="leftActions">
+        <button id="btnMatch">✅ Match</button>
+        <button id="btnExport" class="ghost">⬇ Export Matched CSV</button>
+      </div>
+      <div class="rightActions">
+        <input id="search" type="text" placeholder="Search..." />
+        <div class="kpis">
+          <span class="pill">Matched <b class="ok" id="kMatched">0</b></span>
+          <span class="pill">Only Listing <b class="warn" id="kOnlyL">0</b></span>
+          <span class="pill">Only Boundary <b class="warn" id="kOnlyB">0</b></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-view="matched">Matched</div>
+      <div class="tab" data-view="onlyL">Only Listing</div>
+      <div class="tab" data-view="onlyB">Only Boundary</div>
+    </div>
+
+    <div class="tableCard">
+      <div class="tableHeader">
+        <div>
+          <h3 id="tableTitle">Matched Records</h3>
+          <div class="sub" id="tableSub">Listing is prefixed <b>L_</b>, Boundary is prefixed <b>B_</b>.</div>
+        </div>
+        <span class="pill">Rows: <b id="tableRows">0</b></span>
+      </div>
+
+      <div class="tableWrap">
+        <table id="tbl"></table>
+        <div id="empty" class="empty">Upload both files and click <b>Match</b>.</div>
+      </div>
+    </div>
+
+    <div class="footerNote">
+      Key = <b>Block Number | Ward No | IV Unit Number</b> (normalized as numbers; handles 05 vs 5).
+    </div>
+
+  </div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+
+  // ✅ Header in Row 6 => range 5 (0-based)
+  const HEADER_RANGE = 5;
+
+  // ✅ Exact column headers provided by you
+  const COL_IV    = "IV Unit Number";
+  const COL_WARD  = "Ward No";
+  const COL_BLOCK = "Block Number";
+
+  let listingRows = [];
+  let boundaryRows = [];
+
+  let matchedRows = [];
+  let onlyListing = [];
+  let onlyBoundary = [];
+  let currentView = "matched";
+
+  function asNumStr(v){
+    const s = String(v ?? "").trim();
+    if (s === "") return "0";
+    const n = parseInt(s, 10);
+    return Number.isFinite(n) ? String(n) : s.toUpperCase();
+  }
+
+  function makeKey(r){
+    return asNumStr(r[COL_BLOCK]) + "|" + asNumStr(r[COL_WARD]) + "|" + asNumStr(r[COL_IV]);
+  }
+
+  function prefixObj(obj, prefix){
+    const out = {};
+    for (const [k,v] of Object.entries(obj)) out[prefix + k] = v;
+    return out;
+  }
+
+  function setStatus(t){ $("status").textContent = t; }
+
+  async function readAny(file){
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, { type:"array" });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    return XLSX.utils.sheet_to_json(ws, { range: HEADER_RANGE, defval:"" });
+  }
+
+  function validateColumns(sampleRow, label){
+    const missing = [COL_BLOCK, COL_WARD, COL_IV].filter(c => !(c in sampleRow));
+    if (missing.length){
+      throw new Error(`${label} missing columns: ${missing.join(", ")}`);
+    }
+  }
+
+  function escapeHtml(v){
+    if (v === null || v === undefined) return "";
+    return String(v)
+      .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+  }
+
+  function renderTable(rows){
+    const tbl = $("tbl");
+    const empty = $("empty");
+    const term = String($("search").value || "").trim().toUpperCase();
+
+    if (!rows || rows.length === 0){
+      tbl.innerHTML = "";
+      empty.style.display = "block";
+      empty.textContent = "No data to show.";
+      $("tableRows").textContent = "0";
+      return;
+    }
+
+    const filtered = term ? rows.filter(r => JSON.stringify(r).toUpperCase().includes(term)) : rows;
+
+    if (!filtered.length){
+      tbl.innerHTML = "";
+      empty.style.display = "block";
+      empty.textContent = "No rows match your search.";
+      $("tableRows").textContent = "0";
+      return;
+    }
+
+    empty.style.display = "none";
+
+    const headers = Array.from(new Set(filtered.flatMap(o => Object.keys(o))));
+    let html = "<thead><tr>" + headers.map(h => `<th>${escapeHtml(h)}</th>`).join("") + "</tr></thead><tbody>";
+    for (const r of filtered){
+      html += "<tr>" + headers.map(h => `<td>${escapeHtml(r[h])}</td>`).join("") + "</tr>";
+    }
+    html += "</tbody>";
+    tbl.innerHTML = html;
+    $("tableRows").textContent = String(filtered.length);
+  }
+
+  function setView(view){
+    currentView = view;
+    document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.view === view));
+
+    if (view === "matched"){
+      $("tableTitle").textContent = "Matched Records";
+      $("tableSub").innerHTML = `Listing prefixed <b>L_</b>, Boundary prefixed <b>B_</b>.`;
+      renderTable(matchedRows);
+    } else if (view === "onlyL"){
+      $("tableTitle").textContent = "Only in Listing";
+      $("tableSub").textContent = "Rows present in Listing but not found in Block Boundary.";
+      renderTable(onlyListing);
+    } else {
+      $("tableTitle").textContent = "Only in Block Boundary";
+      $("tableSub").textContent = "Rows present in Block Boundary but not found in Listing.";
+      renderTable(onlyBoundary);
+    }
+  }
+
+  function csvCell(v){
+    if (v === null || v === undefined) return "";
+    const s = String(v);
+    if (/[",\n]/.test(s)) return `"${s.replaceAll('"','""')}"`;
+    return s;
+  }
+
+  function downloadCsv(filename, rows){
+    if (!rows || !rows.length){ alert("No matched rows to export."); return; }
+    const headers = Array.from(new Set(rows.flatMap(o => Object.keys(o))));
+    const csv = [
+      headers.join(","),
+      ...rows.map(r => headers.map(h => csvCell(r[h])).join(","))
+    ].join("\n");
+
+    const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  async function matchNow(){
+    const fL = $("fileListing").files?.[0];
+    const fB = $("fileBoundary").files?.[0];
+    if (!fL || !fB){ alert("Please upload both files."); return; }
+
+    try{
+      setStatus("Reading...");
+      listingRows = await readAny(fL);
+      boundaryRows = await readAny(fB);
+
+      if (!listingRows.length || !boundaryRows.length) throw new Error("No rows found after Row 6.");
+
+      validateColumns(listingRows[0], "Listing file");
+      validateColumns(boundaryRows[0], "Boundary file");
+
+      setStatus("Matching...");
+      const mapL = new Map();
+      const mapB = new Map();
+
+      for (const r of listingRows){
+        const k = makeKey(r);
+        if (!mapL.has(k)) mapL.set(k, []);
+        mapL.get(k).push(r);
+      }
+      for (const r of boundaryRows){
+        const k = makeKey(r);
+        if (!mapB.has(k)) mapB.set(k, []);
+        mapB.get(k).push(r);
+      }
+
+      matchedRows = [];
+      onlyListing = [];
+      onlyBoundary = [];
+
+      const keys = new Set([...mapL.keys(), ...mapB.keys()]);
+      for (const k of keys){
+        const LA = mapL.get(k) || [];
+        const BA = mapB.get(k) || [];
+
+        if (LA.length && BA.length){
+          const n = Math.max(LA.length, BA.length);
+          for (let i=0;i<n;i++){
+            const l = LA[i] || LA[LA.length-1];
+            const b = BA[i] || BA[BA.length-1];
+            matchedRows.push({ KEY: k, ...prefixObj(l,"L_"), ...prefixObj(b,"B_") });
+          }
+        } else if (LA.length){
+          LA.forEach(r => onlyListing.push({ KEY:k, ...r }));
+        } else if (BA.length){
+          BA.forEach(r => onlyBoundary.push({ KEY:k, ...r }));
+        }
+      }
+
+      $("kMatched").textContent = String(matchedRows.length);
+      $("kOnlyL").textContent = String(onlyListing.length);
+      $("kOnlyB").textContent = String(onlyBoundary.length);
+
+      setStatus("Done");
+      setView(currentView);
+    }catch(e){
+      console.error(e);
+      setStatus("Error");
+      alert(e.message || String(e));
+    }
+  }
+
+  $("fileListing").addEventListener("change", (e) => {
+    const f = e.target.files?.[0];
+    $("listingInfo").textContent = f ? `Selected: ${f.name} • ${(f.size/1024).toFixed(1)} KB` : "No file selected.";
+  });
+  $("fileBoundary").addEventListener("change", (e) => {
+    const f = e.target.files?.[0];
+    $("boundaryInfo").textContent = f ? `Selected: ${f.name} • ${(f.size/1024).toFixed(1)} KB` : "No file selected.";
+  });
+
+  $("btnMatch").addEventListener("click", matchNow);
+  $("btnExport").addEventListener("click", () => downloadCsv("matched_block_ward_iv.csv", matchedRows));
+  $("search").addEventListener("input", () => setView(currentView));
+  document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => setView(t.dataset.view)));
+
+  setView("matched");
+</script>
+
 </body>
 </html>
