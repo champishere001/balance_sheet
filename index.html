@@ -3,1259 +3,1106 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Live Trading Console — Indices + Trades + P/L + Scenarios</title>
+  <title>Trading Console — Live Index + Trades + P/L + Risk + Scenarios (All Logic)</title>
 
-  <!-- Chart.js for P/L visualization -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <!-- PapaParse for CSV import -->
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <style>
     :root{
-      --bg:#020617;
-      --panel:#0b1222;
-      --card:#0f172a;
-      --card2:#101b31;
-      --border:#22304a;
-      --text:#e5e7eb;
-      --muted:#94a3b8;
-
-      --accent:#38bdf8;
-      --green:#10b981;
-      --red:#fb7185;
-      --amber:#f59e0b;
-
-      --shadow: 0 24px 90px rgba(0,0,0,.62);
-      --radius:16px;
+      --bg:#020617; --panel:#0b1222; --card:#0f172a; --border:#22304a;
+      --text:#e5e7eb; --muted:#94a3b8; --accent:#38bdf8;
+      --green:#10b981; --red:#fb7185; --amber:#f59e0b; --violet:#a78bfa;
+      --shadow: 0 22px 70px rgba(0,0,0,.55);
+      --r:16px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
-
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text);
       background:
         radial-gradient(900px 420px at 15% 10%, rgba(56,189,248,.14), transparent 60%),
         radial-gradient(900px 420px at 85% 20%, rgba(167,139,250,.12), transparent 60%),
-        linear-gradient(180deg, #020617, #020617);
+        var(--bg);
       min-height:100vh;
     }
+    body.modal-open{ overflow:hidden; }
+    .wrap{max-width:1280px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:12px}
 
-    .wrap{
-      max-width:1200px;
-      margin:0 auto;
-      padding:18px;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
+    .top{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+      padding:12px;border:1px solid var(--border);border-radius:var(--r);
+      background:linear-gradient(180deg, rgba(15,23,42,.92), rgba(11,18,34,.86));
+      box-shadow:var(--shadow);
+      position:sticky;top:10px;z-index:10;
     }
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg, rgba(56,189,248,.9), rgba(167,139,250,.75))}
+    .brand h1{margin:0;font-size:16px}
+    .brand p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 
-    header{
-      background:linear-gradient(180deg, rgba(56,189,248,.12), transparent);
-      border:1px solid var(--border);
-      box-shadow: var(--shadow);
-      border-radius: var(--radius);
-      padding:16px;
+    .btn{
+      cursor:pointer;border:1px solid var(--border);
+      background:rgba(2,6,23,.6);color:var(--text);
+      padding:9px 12px;border-radius:12px;font-weight:900;font-size:12px;
     }
-    .titleRow{
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
-      justify-content:space-between;
-      flex-wrap:wrap;
-    }
-    h1{
-      margin:0;
-      font-size:18px;
-      letter-spacing:.2px;
-    }
-    .sub{
-      margin-top:6px;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.35;
-    }
-    .pillRow{ display:flex; gap:8px; flex-wrap:wrap; }
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      border:1px solid var(--border);
-      background:rgba(15,23,42,.75);
-      padding:8px 10px;
-      border-radius:999px;
-      font-size:12px;
-      color:var(--muted);
-    }
-    .dot{ width:8px; height:8px; border-radius:50%; background:var(--accent); }
-    .dot.green{ background:var(--green); }
-    .dot.amber{ background:var(--amber); }
+    .btn:hover{filter:brightness(1.06)}
+    .btn.primary{border-color:rgba(56,189,248,.55);background:rgba(56,189,248,.12)}
+    .btn.good{border-color:rgba(16,185,129,.55);background:rgba(16,185,129,.10)}
+    .btn.warn{border-color:rgba(245,158,11,.55);background:rgba(245,158,11,.10)}
+    .btn.danger{border-color:rgba(251,113,133,.55);background:rgba(251,113,133,.10)}
+    .btn.ghost{background:rgba(148,163,184,.06)}
 
-    .grid2{
-      display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap:14px;
-    }
-    .grid3{
-      display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap:14px;
-    }
-    @media (max-width: 980px){
-      .grid2, .grid3{ grid-template-columns:1fr; }
-    }
+    .pillRow{display:flex;gap:8px;flex-wrap:wrap;width:100%}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;border:1px solid rgba(34,48,74,.7);background:rgba(2,6,23,.35);font-size:12px;color:var(--muted)}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--amber)}
+    .dot.on{background:var(--green)}
+    .mono{font-family:var(--mono)}
+    .pos{color:var(--green);font-weight:1000}
+    .neg{color:var(--red);font-weight:1000}
+
+    .grid{display:grid;grid-template-columns: 1.15fr .85fr;gap:12px;align-items:start}
+    @media (max-width:980px){.grid{grid-template-columns:1fr}.top{position:relative;top:auto}}
 
     .card{
       border:1px solid var(--border);
       background:linear-gradient(180deg, rgba(15,23,42,.92), rgba(11,18,34,.92));
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      border-radius:var(--r);
+      box-shadow:var(--shadow);
       overflow:hidden;
     }
-    .card .hd{
-      padding:12px 12px 10px;
-      border-bottom:1px solid rgba(34,48,74,.65);
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-    .card .hd h2{
-      margin:0;
-      font-size:13px;
-      letter-spacing:.2px;
-    }
-    .card .bd{ padding:12px; }
+    .hd{padding:12px;border-bottom:1px solid rgba(34,48,74,.65);display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+    .hd h2{margin:0;font-size:13px}
+    .hint{font-size:12px;color:var(--muted)}
+    .bd{padding:12px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width:700px){.row{grid-template-columns:1fr}}
 
-    .btn{
-      cursor:pointer;
-      border:1px solid var(--border);
-      background:rgba(56,189,248,.10);
-      color:var(--text);
-      padding:9px 11px;
-      border-radius:12px;
-      font-weight:800;
-      font-size:12px;
-    }
-    .btn:hover{ filter:brightness(1.06); }
-    .btn.ghost{ background:rgba(148,163,184,.08); }
-    .btn.danger{ background:rgba(251,113,133,.14); }
-    .btn.green{ background:rgba(16,185,129,.14); }
-
-    .row{
-      display:flex; gap:10px; flex-wrap:wrap;
-      align-items:center;
-    }
-    .field{
-      display:flex; flex-direction:column; gap:6px;
-      min-width: 160px;
-      flex:1;
-    }
-    label{
-      font-size:11px;
-      color:var(--muted);
-    }
+    .field label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
     input, select, textarea{
-      width:100%;
-      border:1px solid var(--border);
-      background:rgba(2,6,23,.55);
-      color:var(--text);
-      border-radius:12px;
-      padding:10px 10px;
-      outline:none;
-      font-size:13px;
+      width:100%;padding:10px;border-radius:12px;border:1px solid var(--border);
+      background:rgba(2,6,23,.55);color:var(--text);outline:none;font-size:13px;
     }
-    textarea{ min-height:70px; resize:vertical; font-family:var(--mono); font-size:12px; }
+    textarea{min-height:140px;resize:vertical;font-family:var(--mono);font-size:12px}
 
     table{
       width:100%;
-      border-collapse:collapse;
+      border-collapse:separate;border-spacing:0;
+      border:1px solid rgba(34,48,74,.7);
+      border-radius:14px;overflow:hidden;
+      background:rgba(2,6,23,.25);
       font-size:12px;
-      overflow:hidden;
-      border-radius:14px;
     }
-    thead th{
-      text-align:left;
-      padding:10px 10px;
-      color:var(--muted);
-      border-bottom:1px solid rgba(34,48,74,.65);
-      background:rgba(2,6,23,.35);
-      font-weight:800;
-      white-space:nowrap;
-    }
-    tbody td{
-      padding:10px 10px;
-      border-bottom:1px solid rgba(34,48,74,.45);
-      vertical-align:top;
-    }
-    tbody tr:hover{ background:rgba(56,189,248,.06); }
-    .mono{ font-family:var(--mono); }
-    .pos{ color:var(--green); font-weight:900; }
-    .neg{ color:var(--red); font-weight:900; }
-    .muted{ color:var(--muted); }
+    th,td{padding:10px 8px;border-bottom:1px solid rgba(34,48,74,.55);text-align:left;vertical-align:top}
+    th{color:var(--muted);font-weight:900;background:rgba(15,23,42,.45)}
+    tr:last-child td{border-bottom:none}
 
-    .kpiRow{
-      display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap:10px;
-    }
-    @media (max-width: 560px){ .kpiRow{ grid-template-columns: 1fr; } }
-    .kpi{
-      border:1px solid rgba(34,48,74,.65);
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
+    @media (max-width:900px){.kpis{grid-template-columns:1fr 1fr}}
+    @media (max-width:520px){.kpis{grid-template-columns:1fr}}
+    .kpi{border:1px solid rgba(34,48,74,.7);background:rgba(2,6,23,.35);border-radius:14px;padding:12px}
+    .kpi .t{font-size:11px;color:var(--muted);font-weight:900}
+    .kpi .v{margin-top:6px;font-size:16px;font-weight:1100}
+
+    .note{
+      border:1px dashed rgba(148,163,184,.25);
       background:rgba(2,6,23,.35);
       border-radius:14px;
-      padding:12px;
-    }
-    .kpi .t{ color:var(--muted); font-size:11px; font-weight:800; }
-    .kpi .v{ margin-top:6px; font-size:16px; font-weight:1000; letter-spacing:.2px; }
-    .kpi .s{ margin-top:4px; font-size:11px; color:var(--muted); }
-
-    .hint{
-      margin-top:10px;
-      font-size:11px;
+      padding:10px;
+      font-size:12px;
       color:var(--muted);
-      line-height:1.4;
+      line-height:1.35;
     }
 
+    /* Modal */
     .modal{
-      position:fixed; inset:0;
+      position:fixed;inset:0;
       background:rgba(0,0,0,.65);
+      backdrop-filter: blur(6px);
       display:none;
-      align-items:center;
-      justify-content:center;
+      align-items:center;justify-content:center;
       padding:16px;
-      z-index:50;
+      z-index:9999;
     }
-    .modal.open{ display:flex; }
-    .modal .box{
-      max-width:780px;
-      width:100%;
+    .modal.open{display:flex}
+    .box{
+      width:min(900px, 96vw);
+      max-height:min(82vh, 760px);
       border:1px solid var(--border);
-      background:linear-gradient(180deg, rgba(15,23,42,.98), rgba(11,18,34,.98));
       border-radius:18px;
-      box-shadow: var(--shadow);
+      box-shadow:var(--shadow);
+      background:linear-gradient(180deg, rgba(15,23,42,.98), rgba(11,18,34,.98));
       overflow:hidden;
-    }
-    .modal .box .hd{
-      padding:12px;
-      border-bottom:1px solid rgba(34,48,74,.65);
       display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
+      flex-direction:column;
     }
-    .modal .box .bd{ padding:12px; }
-    .x{
-      width:36px; height:36px; border-radius:12px;
-      border:1px solid var(--border);
-      background:rgba(148,163,184,.08);
-      color:var(--text);
-      cursor:pointer;
-      font-weight:1000;
-    }
-
-    /* TradingView containers look better on dark background */
-    .tvBox{
-      border:1px solid rgba(34,48,74,.65);
-      border-radius:14px;
-      overflow:hidden;
-      background:rgba(2,6,23,.35);
-    }
+    .box .hd{position:sticky; top:0; background:linear-gradient(180deg, rgba(15,23,42,.98), rgba(11,18,34,.98)); z-index:2}
+    .box .bd{overflow:auto}
+    .x{width:38px;height:38px;border-radius:12px;border:1px solid var(--border);background:rgba(148,163,184,.08);color:var(--text);cursor:pointer;font-weight:1100}
+    .modalActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .split3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    @media (max-width:900px){.split3{grid-template-columns:1fr}}
   </style>
 </head>
 
 <body>
-  <div class="wrap">
+<div class="wrap">
 
-    <header>
-      <div class="titleRow">
-        <div>
-          <h1>Live Trading Console — Indices + Trades + P/L + Scenario Analysis</h1>
-          <div class="sub">
-            Works on GitHub Pages. Indices are live via TradingView widgets. Trades can be entered manually / imported from CSV / pushed by your backend.
-          </div>
-        </div>
-        <div class="pillRow">
-          <div class="pill"><span class="dot green"></span><span id="statusText">Live indices: ON</span></div>
-          <div class="pill"><span class="dot amber"></span><span id="clock">--</span></div>
-          <div class="pill"><span class="dot"></span><span class="mono">IST</span></div>
-        </div>
+  <!-- TOP -->
+  <div class="top">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <h1>Trading Console (All Functions & Logic)</h1>
+        <p>Live Index widgets + Trade book + MTM + Risk + Scenarios + Save/Load + Proxy-ready fetch</p>
       </div>
-    </header>
-
-    <!-- LIVE INDICES -->
-    <section class="card">
-      <div class="hd">
-        <h2>Live Market Indices (Real-time value + visualization)</h2>
-        <div class="row">
-          <button class="btn ghost" id="btnRefreshTV">Refresh Widgets</button>
-        </div>
-      </div>
-      <div class="bd">
-        <!-- Ticker tape -->
-        <div class="tvBox" style="margin-bottom:12px;">
-          <div class="tradingview-widget-container" id="tvTape"></div>
-        </div>
-
-        <!-- 3 live charts -->
-        <div class="grid3">
-          <div class="tvBox">
-            <div class="tradingview-widget-container" id="tvNifty"></div>
-          </div>
-          <div class="tvBox">
-            <div class="tradingview-widget-container" id="tvBank"></div>
-          </div>
-          <div class="tvBox">
-            <div class="tradingview-widget-container" id="tvSensex"></div>
-          </div>
-        </div>
-
-        <div class="hint">
-          Tip: You can change symbols inside the code (e.g. NSE:NIFTY, NSE:BANKNIFTY, BSE:SENSEX). These widgets show live price + chart without API keys.
-        </div>
-      </div>
-    </section>
-
-    <div class="grid2">
-      <!-- TRADES CONSOLE -->
-      <section class="card">
-        <div class="hd">
-          <h2>Trades Console (Add/Edit + MTM P/L)</h2>
-          <div class="row">
-            <button class="btn green" id="btnAddTrade">+ Add Trade</button>
-            <button class="btn ghost" id="btnImportCSV">Import CSV</button>
-            <button class="btn ghost" id="btnLiveFeed">Live Feed JSON</button>
-            <button class="btn danger" id="btnClear">Clear</button>
-          </div>
-        </div>
-        <div class="bd">
-
-          <div class="kpiRow" style="margin-bottom:12px;">
-            <div class="kpi">
-              <div class="t">Net MTM P/L</div>
-              <div class="v" id="kpiNetPL">₹ 0.00</div>
-              <div class="s">Based on Entry vs Current (LTP)</div>
-            </div>
-            <div class="kpi">
-              <div class="t">Open Trades</div>
-              <div class="v" id="kpiOpen">0</div>
-              <div class="s">Trades where Status = OPEN</div>
-            </div>
-            <div class="kpi">
-              <div class="t">Ledger Snapshot (Angel)</div>
-              <div class="v" id="kpiLedger">₹ 53.58</div>
-              <div class="s">Closing balance from uploaded statement</div>
-            </div>
-          </div>
-
-          <div style="overflow:auto; border:1px solid rgba(34,48,74,.65); border-radius:14px;">
-            <table id="tblTrades">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Type</th>
-                  <th>Symbol</th>
-                  <th>Side</th>
-                  <th class="mono">Qty</th>
-                  <th class="mono">Entry</th>
-                  <th class="mono">LTP</th>
-                  <th class="mono">P/L</th>
-                  <th>Status</th>
-                  <th>Notes</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-
-          <div class="hint">
-            Preloaded from your uploaded Angel ledger: “Trades Executed 2026-02-03 NSEFO … 237.67 … (running balance 53.58)” 2 and ledger credit/debit/closing balance 3.
-          </div>
-        </div>
-      </section>
-
-      <!-- P/L CHART -->
-      <section class="card">
-        <div class="hd">
-          <h2>Visualization</h2>
-          <div class="row">
-            <select id="chartMode">
-              <option value="pl">P/L by trade</option>
-              <option value="qty">Qty by trade</option>
-            </select>
-          </div>
-        </div>
-        <div class="bd">
-          <canvas id="plChart" height="220"></canvas>
-          <div class="hint">
-            This chart updates whenever you edit trades or update LTP. For real broker auto-fetch, connect backend feed → “Live Feed JSON”.
-          </div>
-        </div>
-      </section>
     </div>
 
-    <!-- SCENARIO ANALYSIS -->
-    <section class="card">
-      <div class="hd">
-        <h2>Scenario Analysis (Profit/Loss Possibility)</h2>
-        <div class="row">
-          <button class="btn" id="btnRunScenario">Run Scenario</button>
-          <button class="btn ghost" id="btnAutoLTP">Set LTP = Live Index (manual)</button>
-        </div>
-      </div>
-      <div class="bd">
-        <div class="grid2">
-          <div>
-            <div class="row">
-              <div class="field">
-                <label>Underlying (Index) Symbol (for reference)</label>
-                <select id="scUnder">
-                  <option value="NSE:NIFTY">NSE:NIFTY</option>
-                  <option value="NSE:BANKNIFTY">NSE:BANKNIFTY</option>
-                  <option value="BSE:SENSEX">BSE:SENSEX</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>Current Underlying Price (you type)</label>
-                <input id="scS0" type="number" step="0.05" placeholder="e.g. 22000" />
-              </div>
-              <div class="field">
-                <label>Move % (e.g. 1 = +1%)</label>
-                <input id="scMovePct" type="number" step="0.1" value="1" />
-              </div>
-            </div>
+    <div class="actions">
+      <button class="btn primary" id="btnAngel">Connect Angel</button>
+      <button class="btn primary" id="btnGroww">Connect Groww</button>
+      <button class="btn good" id="btnFetch">Auto Fetch</button>
+      <button class="btn warn" id="btnPaste">Paste Trades</button>
+      <button class="btn ghost" id="btnAdd">+ Add Trade</button>
+      <button class="btn danger" id="btnClear">Clear</button>
+    </div>
 
-            <div class="row">
-              <div class="field">
-                <label>Option Greeks (optional) — Delta</label>
-                <input id="scDelta" type="number" step="0.01" placeholder="e.g. 0.45" />
-              </div>
-              <div class="field">
-                <label>Gamma (optional)</label>
-                <input id="scGamma" type="number" step="0.0001" placeholder="e.g. 0.0012" />
-              </div>
-              <div class="field">
-                <label>Theta / day (optional, ₹)</label>
-                <input id="scTheta" type="number" step="0.01" placeholder="e.g. -12" />
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="field">
-                <label>Days Forward (theta applied)</label>
-                <input id="scDays" type="number" step="1" value="1" />
-              </div>
-              <div class="field">
-                <label>Qty for scenario (defaults to trade qty)</label>
-                <input id="scQtyOverride" type="number" step="1" placeholder="leave blank" />
-              </div>
-              <div class="field">
-                <label>Pick Trade</label>
-                <select id="scTradePick"></select>
-              </div>
-            </div>
-
-            <div class="hint">
-              • Futures: scenario P/L ≈ (Underlying move points) × qty (if you map 1:1).<br/>
-              • Options: scenario uses Δ and Γ approximation if you enter Greeks; otherwise it only shows current MTM.
-            </div>
-          </div>
-
-          <div>
-            <div class="kpiRow">
-              <div class="kpi">
-                <div class="t">Underlying After Move</div>
-                <div class="v" id="scS1">—</div>
-                <div class="s">S1 = S0 × (1 + move%)</div>
-              </div>
-              <div class="kpi">
-                <div class="t">Projected P/L (approx)</div>
-                <div class="v" id="scPL">—</div>
-                <div class="s">Δ/Γ + theta if provided</div>
-              </div>
-              <div class="kpi">
-                <div class="t">Notes</div>
-                <div class="v" style="font-size:12px; font-weight:800;" id="scNote">—</div>
-                <div class="s">Use Greeks for better estimate</div>
-              </div>
-            </div>
-
-            <div style="margin-top:12px;">
-              <div class="field">
-                <label>Strategy Console (paste your live trade feed / notes)</label>
-                <textarea id="consoleBox" placeholder='Example live feed:
-{"symbol":"NSE:NIFTY","ltp":22110.5}
-or
-TRADE: BUY NIFTY 22000CE @ 120 Qty 50 LTP 148'></textarea>
-              </div>
-              <div class="row" style="justify-content:flex-end;">
-                <button class="btn ghost" id="btnParseConsole">Parse & Update Trade LTP</button>
-              </div>
-              <div class="hint">
-                If you will “give live trade values”, paste them here. The parser will update matching trades’ LTP and refresh P/L + chart.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <footer class="hint" style="text-align:center; padding-bottom:8px;">
-      Built for GitHub Pages. For full auto-fetch from Groww/Angel One, connect a backend service that sends trades as JSON → use “Live Feed JSON”.
-    </footer>
-  </div>
-
-  <!-- MODALS -->
-  <div class="modal" id="mTrade">
-    <div class="box">
-      <div class="hd">
-        <div style="font-weight:1000;">Add / Edit Trade</div>
-        <button class="x" id="mTradeClose">×</button>
-      </div>
-      <div class="bd">
-        <div class="grid2">
-          <div>
-            <div class="row">
-              <div class="field">
-                <label>Date</label>
-                <input id="tDate" type="date" />
-              </div>
-              <div class="field">
-                <label>Type</label>
-                <select id="tType">
-                  <option value="FUT">FUT</option>
-                  <option value="OPT">OPT</option>
-                  <option value="CASH">CASH</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>Side</label>
-                <select id="tSide">
-                  <option value="BUY">BUY</option>
-                  <option value="SELL">SELL</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="field" style="min-width:260px;">
-                <label>Symbol (e.g. NSE:NIFTY, NIFTY 22000CE)</label>
-                <input id="tSymbol" placeholder="NSE:NIFTY or NIFTY 22000CE" />
-              </div>
-              <div class="field">
-                <label>Qty</label>
-                <input id="tQty" type="number" step="1" placeholder="e.g. 50" />
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="field">
-                <label>Entry Price</label>
-                <input id="tEntry" type="number" step="0.05" placeholder="e.g. 120" />
-              </div>
-              <div class="field">
-                <label>Current LTP</label>
-                <input id="tLtp" type="number" step="0.05" placeholder="e.g. 148" />
-              </div>
-              <div class="field">
-                <label>Status</label>
-                <select id="tStatus">
-                  <option value="OPEN">OPEN</option>
-                  <option value="CLOSED">CLOSED</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="field">
-              <label>Notes</label>
-              <input id="tNotes" placeholder="optional" />
-            </div>
-
-            <div class="row" style="justify-content:flex-end; margin-top:8px;">
-              <button class="btn ghost" id="btnQuickParse">Quick-Parse Notes</button>
-              <button class="btn green" id="btnSaveTrade">Save</button>
-            </div>
-
-            <div class="hint">
-              Quick-Parse: if you paste text like “BUY NIFTY 22000CE @120 qty50 ltp148” into Notes, it will try to fill fields automatically.
-            </div>
-          </div>
-
-          <div>
-            <div class="kpi">
-              <div class="t">Instant P/L Preview</div>
-              <div class="v" id="tPLPreview">₹ 0.00</div>
-              <div class="s" id="tPLExplain">—</div>
-            </div>
-
-            <div class="hint" style="margin-top:10px;">
-              For SELL trades, P/L is inverted (you gain if price falls). This is a simple MTM formula:
-              <span class="mono">P/L = (LTP − Entry) × Qty × Sign</span>.
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="pillRow">
+      <div class="pill"><span class="dot" id="dotAngel"></span>Angel: <strong id="stAngel">Not connected</strong></div>
+      <div class="pill"><span class="dot" id="dotGroww"></span>Groww: <strong id="stGroww">Not connected</strong></div>
+      <div class="pill"><span class="dot on"></span>Index Widgets: <strong>Live</strong></div>
+      <div class="pill"><span class="dot on"></span><span class="mono" id="clock">--</span></div>
+      <div class="pill"><span class="dot on"></span>Storage: <strong class="mono">localStorage</strong></div>
     </div>
   </div>
 
-  <input id="csvFile" type="file" accept=".csv,text/csv" style="display:none" />
-
-  <div class="modal" id="mJson">
-    <div class="box">
-      <div class="hd">
-        <div style="font-weight:1000;">Live Feed JSON (paste)</div>
-        <button class="x" id="mJsonClose">×</button>
-      </div>
-      <div class="bd">
-        <div class="field">
-          <label>Paste JSON array of trades (your backend can send this)</label>
-          <textarea id="jsonBox" placeholder='Example:
-[
-  {"date":"2026-02-06","type":"OPT","side":"BUY","symbol":"NIFTY 22000CE","qty":50,"entry":120,"ltp":148,"status":"OPEN","notes":"from feed"}
-]'></textarea>
-        </div>
-        <div class="row" style="justify-content:flex-end;">
-          <button class="btn ghost" id="btnJsonMerge">Merge</button>
-          <button class="btn green" id="btnJsonReplace">Replace All</button>
-        </div>
-        <div class="hint">
-          This is the clean way to “auto fetch”: your backend/broker API fetches trades and pushes JSON here (or directly into localStorage).
-        </div>
-      </div>
+  <!-- LIVE INDEX (VALUES + VISUALIZATION) -->
+  <div class="card">
+    <div class="hd">
+      <h2>📡 Live Index (Real-time value + visualization)</h2>
+      <div class="hint">Works on GitHub Pages (TradingView widgets)</div>
     </div>
-  </div>
-
-  <script>
-    /***********************
-     * DATA MODEL
-     ***********************/
-    const STORAGE_KEY = "live_trading_console_v1_trades";
-
-    // Preload ONE trade row from your uploaded Angel ledger:
-    // “Trades Executed 2026-02-03 ... NSEFO ... 237.67 ...”
-    // (Ledger’s table doesn’t include instrument name/strike, so we store it as a ledger-entry type trade.)
-    const preload = [
-      {
-        id: crypto.randomUUID(),
-        date: "2026-02-03",
-        type: "OPT",
-        side: "BUY",
-        symbol: "NSEFO (Voucher 202500000210)",
-        qty: 1,
-        entry: 237.67,
-        ltp: 237.67,
-        status: "CLOSED",
-        notes: "Imported from Angel ledger: Trades Executed 2026-02-03 NSEFO amount 237.67; running balance 53.58."
-      }
-    ];
-
-    let trades = loadTrades();
-
-    function loadTrades(){
-      try{
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if(!raw) return [...preload];
-        const parsed = JSON.parse(raw);
-        if(!Array.isArray(parsed) || parsed.length===0) return [...preload];
-        return parsed;
-      }catch(e){
-        return [...preload];
-      }
-    }
-    function saveTrades(){
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(trades));
-    }
-
-    /***********************
-     * UTILS
-     ***********************/
-    const ₹ = (n) => {
-      const v = Number(n);
-      if(!Number.isFinite(v)) return "₹ 0.00";
-      return "₹ " + v.toLocaleString("en-IN", {minimumFractionDigits:2, maximumFractionDigits:2});
-    };
-    const num = (x, fallback=0) => {
-      const v = Number(x);
-      return Number.isFinite(v) ? v : fallback;
-    };
-    const todayISO = () => new Date().toISOString().slice(0,10);
-
-    function calcPL(t){
-      const qty = num(t.qty);
-      const entry = num(t.entry);
-      const ltp = num(t.ltp);
-      const sign = (t.side === "SELL") ? -1 : 1;
-      return (ltp - entry) * qty * sign;
-    }
-
-    /***********************
-     * DOM HOOKS
-     ***********************/
-    const clockEl = document.getElementById("clock");
-    setInterval(()=>{
-      const d = new Date();
-      const s = d.toLocaleString("en-IN", { timeZone: "Asia/Kolkata", weekday:"short", hour:"2-digit", minute:"2-digit", second:"2-digit" });
-      clockEl.textContent = s;
-    }, 500);
-
-    const tbody = document.querySelector("#tblTrades tbody");
-    const kpiNetPL = document.getElementById("kpiNetPL");
-    const kpiOpen = document.getElementById("kpiOpen");
-
-    // Ledger snapshot from upload (closing balance 53.58)
-    // Credit 52092.84, Debit 52039.26, Closing 53.58
-    document.getElementById("kpiLedger").textContent = "₹ 53.58";
-
-    /***********************
-     * CHART
-     ***********************/
-    const ctx = document.getElementById("plChart");
-    const chartMode = document.getElementById("chartMode");
-    const chart = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: [],
-        datasets: [{
-          label: "P/L",
-          data: []
-        }]
-      },
-      options: {
-        responsive:true,
-        plugins: { legend:{ display:true }},
-        scales: {
-          x: { ticks:{ color:"#94a3b8" }, grid:{ color:"rgba(34,48,74,.35)" } },
-          y: { ticks:{ color:"#94a3b8" }, grid:{ color:"rgba(34,48,74,.35)" } }
+    <div class="bd">
+      <!-- ticker tape -->
+      <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+        {
+          "symbols": [
+            {"proName":"NSE:NIFTY","title":"NIFTY 50"},
+            {"proName":"NSE:BANKNIFTY","title":"BANKNIFTY"},
+            {"proName":"BSE:SENSEX","title":"SENSEX"},
+            {"proName":"NSE:FINNIFTY","title":"FINNIFTY"},
+            {"proName":"NSE:INDIAVIX","title":"INDIA VIX"}
+          ],
+          "showSymbolLogo": true,
+          "isTransparent": true,
+          "displayMode": "adaptive",
+          "colorTheme": "dark",
+          "locale": "in"
         }
-      }
-    });
+        </script>
+      </div>
 
-    function refreshChart(){
-      const mode = chartMode.value;
-      chart.data.labels = trades.map(t => (t.symbol || "").slice(0,24));
-      chart.data.datasets[0].label = mode === "qty" ? "Qty" : "P/L";
-      chart.data.datasets[0].data = trades.map(t => mode === "qty" ? num(t.qty) : calcPL(t));
-      chart.update();
-    }
-
-    /***********************
-     * RENDER
-     ***********************/
-    function render(){
-      tbody.innerHTML = "";
-      let net = 0;
-      let open = 0;
-
-      for(const t of trades){
-        const pl = calcPL(t);
-        net += pl;
-        if(t.status === "OPEN") open++;
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td class="mono">${t.date || ""}</td>
-          <td>${t.type || ""}</td>
-          <td>${escapeHtml(t.symbol || "")}</td>
-          <td><span class="mono">${t.side || ""}</span></td>
-          <td class="mono">${num(t.qty)}</td>
-          <td class="mono">${num(t.entry).toFixed(2)}</td>
-          <td class="mono">
-            <input data-id="${t.id}" data-k="ltp" type="number" step="0.05" value="${num(t.ltp).toFixed(2)}" style="max-width:110px; padding:8px; border-radius:10px;">
-          </td>
-          <td class="mono ${pl>=0 ? "pos":"neg"}">${₹(pl)}</td>
-          <td>
-            <select data-id="${t.id}" data-k="status" style="padding:8px; border-radius:10px;">
-              <option ${t.status==="OPEN"?"selected":""} value="OPEN">OPEN</option>
-              <option ${t.status==="CLOSED"?"selected":""} value="CLOSED">CLOSED</option>
-            </select>
-          </td>
-          <td class="muted">${escapeHtml(t.notes || "")}</td>
-          <td class="row" style="gap:6px;">
-            <button class="btn ghost" data-act="edit" data-id="${t.id}">Edit</button>
-            <button class="btn danger" data-act="del" data-id="${t.id}">Del</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      }
-
-      kpiNetPL.textContent = ₹(net);
-      kpiNetPL.className = (net>=0) ? "v pos" : "v neg";
-      kpiOpen.textContent = String(open);
-
-      // scenario trade picker
-      const pick = document.getElementById("scTradePick");
-      pick.innerHTML = "";
-      trades.forEach((t, i)=>{
-        const opt = document.createElement("option");
-        opt.value = t.id;
-        opt.textContent = `${i+1}. ${t.symbol} (${t.side} ${t.qty})`;
-        pick.appendChild(opt);
-      });
-
-      saveTrades();
-      refreshChart();
-    }
-
-    function escapeHtml(str){
-      return String(str)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replace(">", "&gt;");
-    }
-
-    /***********************
-     * ADD/EDIT MODAL
-     ***********************/
-    const mTrade = document.getElementById("mTrade");
-    const mTradeClose = document.getElementById("mTradeClose");
-    const btnAddTrade = document.getElementById("btnAddTrade");
-    const btnSaveTrade = document.getElementById("btnSaveTrade");
-    const btnQuickParse = document.getElementById("btnQuickParse");
-
-    const tDate = document.getElementById("tDate");
-    const tType = document.getElementById("tType");
-    const tSide = document.getElementById("tSide");
-    const tSymbol = document.getElementById("tSymbol");
-    const tQty = document.getElementById("tQty");
-    const tEntry = document.getElementById("tEntry");
-    const tLtp = document.getElementById("tLtp");
-    const tStatus = document.getElementById("tStatus");
-    const tNotes = document.getElementById("tNotes");
-    const tPLPreview = document.getElementById("tPLPreview");
-    const tPLExplain = document.getElementById("tPLExplain");
-
-    let editId = null;
-
-    function openTradeModal(trade=null){
-      editId = trade?.id || null;
-      tDate.value = trade?.date || todayISO();
-      tType.value = trade?.type || "OPT";
-      tSide.value = trade?.side || "BUY";
-      tSymbol.value = trade?.symbol || "";
-      tQty.value = trade?.qty ?? "";
-      tEntry.value = trade?.entry ?? "";
-      tLtp.value = trade?.ltp ?? "";
-      tStatus.value = trade?.status || "OPEN";
-      tNotes.value = trade?.notes || "";
-      updateTradePreview();
-      mTrade.classList.add("open");
-    }
-    function closeTradeModal(){
-      mTrade.classList.remove("open");
-    }
-
-    function updateTradePreview(){
-      const tmp = {
-        side: tSide.value,
-        qty: num(tQty.value),
-        entry: num(tEntry.value),
-        ltp: num(tLtp.value)
-      };
-      const pl = calcPL(tmp);
-      tPLPreview.textContent = ₹(pl);
-      tPLPreview.className = (pl>=0) ? "v pos" : "v neg";
-      tPLExplain.textContent = `P/L = (LTP − Entry) × Qty × ${tmp.side==="SELL" ? "-1 (SELL)" : "+1 (BUY)"}`;
-    }
-
-    [tSide, tQty, tEntry, tLtp].forEach(el => el.addEventListener("input", updateTradePreview));
-
-    btnAddTrade.addEventListener("click", ()=>openTradeModal());
-    mTradeClose.addEventListener("click", closeTradeModal);
-    mTrade.addEventListener("click", (e)=>{ if(e.target === mTrade) closeTradeModal(); });
-
-    btnQuickParse.addEventListener("click", ()=>{
-      // Very simple parser from notes
-      const s = (tNotes.value || "").toUpperCase();
-
-      // side
-      if(s.includes(" BUY ")) tSide.value = "BUY";
-      if(s.includes(" SELL ")) tSide.value = "SELL";
-
-      // qty
-      const qm = s.match(/QTY\s*([0-9]+)/i) || s.match(/Q\s*([0-9]+)/i);
-      if(qm) tQty.value = qm[1];
-
-      // entry @
-      const em = s.match(/@\s*([0-9]+(\.[0-9]+)?)/) || s.match(/ENTRY\s*([0-9]+(\.[0-9]+)?)/i);
-      if(em) tEntry.value = em[1];
-
-      // ltp
-      const lm = s.match(/LTP\s*([0-9]+(\.[0-9]+)?)/i) || s.match(/CMP\s*([0-9]+(\.[0-9]+)?)/i);
-      if(lm) tLtp.value = lm[1];
-
-      // symbol guess (keep original text)
-      if(!tSymbol.value.trim()){
-        const sm = (tNotes.value || "").match(/(NIFTY|BANKNIFTY|SENSEX).*/i);
-        if(sm) tSymbol.value = sm[0].trim();
-      }
-
-      updateTradePreview();
-    });
-
-    btnSaveTrade.addEventListener("click", ()=>{
-      const obj = {
-        id: editId || crypto.randomUUID(),
-        date: tDate.value || todayISO(),
-        type: tType.value,
-        side: tSide.value,
-        symbol: tSymbol.value.trim(),
-        qty: num(tQty.value),
-        entry: num(tEntry.value),
-        ltp: num(tLtp.value),
-        status: tStatus.value,
-        notes: tNotes.value.trim()
-      };
-
-      if(editId){
-        trades = trades.map(x => x.id===editId ? obj : x);
-      }else{
-        trades.unshift(obj);
-      }
-      closeTradeModal();
-      render();
-    });
-
-    /***********************
-     * TABLE EVENTS
-     ***********************/
-    tbody.addEventListener("click", (e)=>{
-      const btn = e.target.closest("button[data-act]");
-      if(!btn) return;
-      const id = btn.getAttribute("data-id");
-      const act = btn.getAttribute("data-act");
-      const t = trades.find(x=>x.id===id);
-      if(!t) return;
-
-      if(act==="edit") openTradeModal(t);
-      if(act==="del"){
-        trades = trades.filter(x=>x.id!==id);
-        render();
-      }
-    });
-
-    tbody.addEventListener("input", (e)=>{
-      const inp = e.target;
-      const id = inp.getAttribute("data-id");
-      const k = inp.getAttribute("data-k");
-      if(!id || !k) return;
-      trades = trades.map(t=>{
-        if(t.id!==id) return t;
-        const copy = {...t};
-        copy[k] = (k==="ltp") ? num(inp.value) : inp.value;
-        return copy;
-      });
-      render();
-    });
-
-    /***********************
-     * CLEAR
-     ***********************/
-    document.getElementById("btnClear").addEventListener("click", ()=>{
-      if(!confirm("Clear all trades?")) return;
-      trades = [];
-      saveTrades();
-      render();
-    });
-
-    /***********************
-     * CSV IMPORT
-     ***********************/
-    const csvFile = document.getElementById("csvFile");
-    document.getElementById("btnImportCSV").addEventListener("click", ()=>csvFile.click());
-
-    csvFile.addEventListener("change", async ()=>{
-      const file = csvFile.files?.[0];
-      if(!file) return;
-
-      Papa.parse(file, {
-        header:true,
-        skipEmptyLines:true,
-        complete: (res)=>{
-          // Expect columns like: date,type,side,symbol,qty,entry,ltp,status,notes
-          const rows = (res.data || []).map(r=>({
-            id: crypto.randomUUID(),
-            date: (r.date || r.Date || todayISO()).slice(0,10),
-            type: (r.type || r.Type || "OPT").toUpperCase(),
-            side: (r.side || r.Side || "BUY").toUpperCase(),
-            symbol: (r.symbol || r.Symbol || "").trim(),
-            qty: num(r.qty || r.Qty || r.Quantity || 1),
-            entry: num(r.entry || r.Entry || r.EntryPrice || 0),
-            ltp: num(r.ltp || r.LTP || r.Current || 0),
-            status: (r.status || r.Status || "OPEN").toUpperCase(),
-            notes: (r.notes || r.Notes || "").trim()
-          }));
-          trades = rows.concat(trades);
-          render();
-          csvFile.value = "";
-          alert("CSV imported.");
-        }
-      });
-    });
-
-    /***********************
-     * LIVE FEED JSON MODAL
-     ***********************/
-    const mJson = document.getElementById("mJson");
-    const jsonBox = document.getElementById("jsonBox");
-    document.getElementById("btnLiveFeed").addEventListener("click", ()=>mJson.classList.add("open"));
-    document.getElementById("mJsonClose").addEventListener("click", ()=>mJson.classList.remove("open"));
-    mJson.addEventListener("click",(e)=>{ if(e.target===mJson) mJson.classList.remove("open"); });
-
-    document.getElementById("btnJsonReplace").addEventListener("click", ()=>{
-      try{
-        const arr = JSON.parse(jsonBox.value || "[]");
-        if(!Array.isArray(arr)) throw new Error("Not array");
-        trades = arr.map(x=>({
-          id: x.id || crypto.randomUUID(),
-          date: (x.date || todayISO()).slice(0,10),
-          type: (x.type || "OPT").toUpperCase(),
-          side: (x.side || "BUY").toUpperCase(),
-          symbol: (x.symbol || "").trim(),
-          qty: num(x.qty, 1),
-          entry: num(x.entry, 0),
-          ltp: num(x.ltp, 0),
-          status: (x.status || "OPEN").toUpperCase(),
-          notes: (x.notes || "").trim()
-        }));
-        mJson.classList.remove("open");
-        render();
-      }catch(err){
-        alert("Invalid JSON. Please paste a JSON array of trades.");
-      }
-    });
-
-    document.getElementById("btnJsonMerge").addEventListener("click", ()=>{
-      try{
-        const arr = JSON.parse(jsonBox.value || "[]");
-        if(!Array.isArray(arr)) throw new Error("Not array");
-        const incoming = arr.map(x=>({
-          id: x.id || crypto.randomUUID(),
-          date: (x.date || todayISO()).slice(0,10),
-          type: (x.type || "OPT").toUpperCase(),
-          side: (x.side || "BUY").toUpperCase(),
-          symbol: (x.symbol || "").trim(),
-          qty: num(x.qty, 1),
-          entry: num(x.entry, 0),
-          ltp: num(x.ltp, 0),
-          status: (x.status || "OPEN").toUpperCase(),
-          notes: (x.notes || "").trim()
-        }));
-        trades = incoming.concat(trades);
-        mJson.classList.remove("open");
-        render();
-      }catch(err){
-        alert("Invalid JSON.");
-      }
-    });
-
-    /***********************
-     * CONSOLE PARSER (paste live trade values)
-     ***********************/
-    document.getElementById("btnParseConsole").addEventListener("click", ()=>{
-      const text = (document.getElementById("consoleBox").value || "").trim();
-      if(!text) return;
-
-      // Try JSON first
-      try{
-        const j = JSON.parse(text);
-        // If looks like {symbol, ltp}
-        if(j && typeof j === "object" && !Array.isArray(j) && j.symbol && (j.ltp!==undefined)){
-          const sym = String(j.symbol).trim().toUpperCase();
-          const ltp = num(j.ltp);
-          trades = trades.map(t=>{
-            if(String(t.symbol).toUpperCase().includes(sym) || sym.includes(String(t.symbol).toUpperCase())){
-              return {...t, ltp};
-            }
-            return t;
-          });
-          render();
-          alert("Updated matching trade LTP from JSON.");
-          return;
-        }
-      }catch(e){ /* ignore */ }
-
-      // Text format: "SYMBOL ... LTP 148"
-      const up = text.toUpperCase();
-      const ltpMatch = up.match(/LTP\s*([0-9]+(\.[0-9]+)?)/i) || up.match(/CMP\s*([0-9]+(\.[0-9]+)?)/i);
-      const symMatch = up.match(/(NIFTY|BANKNIFTY|SENSEX)[A-Z0-9\s:]*/i);
-
-      if(ltpMatch && symMatch){
-        const ltp = num(ltpMatch[1]);
-        const sym = symMatch[0].trim();
-        trades = trades.map(t=>{
-          if(String(t.symbol).toUpperCase().includes(sym)){
-            return {...t, ltp};
+      <!-- chart -->
+      <div style="margin-top:10px">
+        <div class="tradingview-widget-container">
+          <div id="tvChart"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+          {
+            "autosize": true,
+            "symbol": "NSE:NIFTY",
+            "interval": "5",
+            "timezone": "Asia/Kolkata",
+            "theme": "dark",
+            "style": "1",
+            "locale": "in",
+            "allow_symbol_change": true,
+            "save_image": false,
+            "container_id": "tvChart"
           }
-          return t;
-        });
-        render();
-        alert("Updated matching trade LTP from text.");
-        return;
-      }
+          </script>
+        </div>
+      </div>
 
-      alert("Could not parse. Paste like: {\"symbol\":\"NSE:NIFTY\",\"ltp\":22110.5} OR 'NIFTY ... LTP 148'");
+      <div class="row" style="margin-top:10px">
+        <div class="field">
+          <label>Scenario underlying</label>
+          <select id="calcIndex">
+            <option value="NIFTY">NIFTY</option>
+            <option value="BANKNIFTY">BANKNIFTY</option>
+            <option value="SENSEX">SENSEX</option>
+            <option value="FINNIFTY">FINNIFTY</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>SpotNow (paste current index value)</label>
+          <input id="spotNow" inputmode="decimal" placeholder="e.g. 22540.50" />
+        </div>
+      </div>
+
+      <div class="note" style="margin-top:10px">
+        Browser cannot auto-read the widget value into JS. For full automation (Spot + option chain + trades) use a small proxy.
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- TRADES -->
+    <div class="card">
+      <div class="hd">
+        <h2>🧾 Trade Book + MTM P/L + Risk</h2>
+        <div class="hint">All calculations in JS (no backend needed)</div>
+      </div>
+      <div class="bd">
+        <div class="kpis">
+          <div class="kpi">
+            <div class="t">Net MTM P/L</div>
+            <div class="v" id="kpiPL">₹0.00</div>
+          </div>
+          <div class="kpi">
+            <div class="t">Trades</div>
+            <div class="v" id="kpiCount">0</div>
+          </div>
+          <div class="kpi">
+            <div class="t">Gross Buy Premium (Risk)</div>
+            <div class="v" id="kpiRisk">₹0.00</div>
+          </div>
+          <div class="kpi">
+            <div class="t">Net Exposure (approx)</div>
+            <div class="v" id="kpiExp">₹0.00</div>
+          </div>
+        </div>
+
+        <div style="overflow:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Broker</th>
+                <th>Type</th>
+                <th>Side</th>
+                <th>Symbol</th>
+                <th class="mono">Qty</th>
+                <th class="mono">Entry</th>
+                <th class="mono">LTP</th>
+                <th class="mono">P/L</th>
+                <th>Status</th>
+                <th>✕</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="note" style="margin-top:10px">
+          ✅ Included logic: Save/Load, Add/Edit/Delete trades, MTM P/L, risk (buy premium), exposure approx, scenarios, charts.<br/>
+          ⚠️ Broker “auto fetch” works only if you set a Proxy URL in Connect popup (or PROXY_BASE_URL in code).
+        </div>
+      </div>
+    </div>
+
+    <!-- VISUALS -->
+    <div class="card">
+      <div class="hd">
+        <h2>📈 Visualization</h2>
+        <div class="hint">MTM per trade + P/L history (local)</div>
+      </div>
+      <div class="bd">
+        <canvas id="plChart" height="220"></canvas>
+        <div style="height:10px"></div>
+        <canvas id="equityChart" height="220"></canvas>
+        <div class="hint" style="margin-top:8px">
+          Equity curve stores snapshots on each “Save Snapshot”.
+        </div>
+        <div class="actions" style="margin-top:8px">
+          <button class="btn good" id="btnSnap">Save Snapshot</button>
+          <button class="btn danger" id="btnClearSnap">Clear Snapshots</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIO TABLE -->
+  <div class="card">
+    <div class="hd">
+      <h2>🧠 Profit/Loss Possibility (Scenario)</h2>
+      <div class="actions">
+        <button class="btn good" id="btnCalc">Calculate Scenario</button>
+      </div>
+    </div>
+    <div class="bd">
+      <div class="row">
+        <div class="field">
+          <label>Scenario Range (%)</label>
+          <select id="rangePct">
+            <option value="1">±1%</option>
+            <option value="2" selected>±2%</option>
+            <option value="3">±3%</option>
+            <option value="5">±5%</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Steps</label>
+          <select id="steps">
+            <option value="3">3 (−,0,+)</option>
+            <option value="5" selected>5</option>
+            <option value="7">7</option>
+            <option value="9">9</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="overflow:auto;margin-top:10px">
+        <table>
+          <thead>
+            <tr>
+              <th>Scenario</th>
+              <th class="mono">Spot</th>
+              <th class="mono">Total P/L (Expiry approx)</th>
+            </tr>
+          </thead>
+          <tbody id="scenarioBody"></tbody>
+        </table>
+      </div>
+
+      <div class="note" style="margin-top:10px">
+        Logic used: FUT payoff (spot-entry)×qty; OPT payoff uses intrinsic − premium (expiry approximation).  
+        If you want exact option-chain MTM, we can add “Option Chain Fetch” via proxy later.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- CONNECT ANGEL -->
+<div class="modal" id="mAngel">
+  <div class="box">
+    <div class="hd">
+      <h2>Connect Angel (Token-based)</h2>
+      <button class="x" data-close="mAngel">×</button>
+    </div>
+    <div class="bd">
+      <div class="note">
+        This page does NOT take password/OTP. Use API/session token only.  
+        Auto Fetch expects proxy endpoint: <span class="mono">GET /angel/trades</span>
+      </div>
+
+      <div class="split3" style="margin-top:10px">
+        <div class="field">
+          <label>Client Code (optional)</label>
+          <input id="angelClient" placeholder="e.g. AB1234" />
+        </div>
+        <div class="field">
+          <label>API Key (optional)</label>
+          <input id="angelApiKey" placeholder="SmartAPI key" />
+        </div>
+        <div class="field">
+          <label>Proxy URL (optional)</label>
+          <input id="angelProxy" placeholder="https://your-proxy.example.com" />
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:10px">
+        <label>Access / Session Token</label>
+        <input id="angelToken" placeholder="paste token here" />
+      </div>
+
+      <div class="modalActions" style="margin-top:10px">
+        <button class="btn good" id="saveAngel">Save</button>
+        <button class="btn" data-close="mAngel">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONNECT GROWW -->
+<div class="modal" id="mGroww">
+  <div class="box">
+    <div class="hd">
+      <h2>Connect Groww (Token-based)</h2>
+      <button class="x" data-close="mGroww">×</button>
+    </div>
+    <div class="bd">
+      <div class="note">
+        Use Groww token only. Auto Fetch expects proxy endpoint: <span class="mono">GET /groww/trades</span>
+      </div>
+
+      <div class="split3" style="margin-top:10px">
+        <div class="field">
+          <label>Groww Token</label>
+          <input id="growwToken" placeholder="paste token here" />
+        </div>
+        <div class="field">
+          <label>Proxy URL (optional)</label>
+          <input id="growwProxy" placeholder="https://your-proxy.example.com" />
+        </div>
+        <div class="field">
+          <label>PROXY_BASE_URL (optional)</label>
+          <input id="proxyBase" placeholder="If set, used for both brokers" />
+        </div>
+      </div>
+
+      <div class="modalActions" style="margin-top:10px">
+        <button class="btn good" id="saveGroww">Save</button>
+        <button class="btn" data-close="mGroww">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD / EDIT TRADE -->
+<div class="modal" id="mTrade">
+  <div class="box">
+    <div class="hd">
+      <h2 id="tradeTitle">Add Trade</h2>
+      <button class="x" data-close="mTrade">×</button>
+    </div>
+    <div class="bd">
+      <div class="split3">
+        <div class="field">
+          <label>Broker</label>
+          <select id="tBroker">
+            <option value="MANUAL">MANUAL</option>
+            <option value="ANGEL">ANGEL</option>
+            <option value="GROWW">GROWW</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Type</label>
+          <select id="tType">
+            <option value="FUT">FUT</option>
+            <option value="OPT">OPT</option>
+            <option value="EQ">EQ</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Side</label>
+          <select id="tSide">
+            <option value="BUY">BUY</option>
+            <option value="SELL">SELL</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <div class="field">
+          <label>Symbol</label>
+          <input id="tSymbol" placeholder="e.g. NIFTY 22500 CE / BANKNIFTY FUT" />
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select id="tStatus">
+            <option value="OPEN">OPEN</option>
+            <option value="CLOSED">CLOSED</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="split3" style="margin-top:10px">
+        <div class="field">
+          <label>Qty</label>
+          <input id="tQty" type="number" step="1" value="1" />
+        </div>
+        <div class="field">
+          <label>Entry</label>
+          <input id="tEntry" type="number" step="0.05" value="0" />
+        </div>
+        <div class="field">
+          <label>LTP</label>
+          <input id="tLtp" type="number" step="0.05" value="0" />
+        </div>
+      </div>
+
+      <div class="split3" style="margin-top:10px">
+        <div class="field">
+          <label>Strike (OPT only)</label>
+          <input id="tStrike" type="number" step="1" placeholder="e.g. 22500" />
+        </div>
+        <div class="field">
+          <label>OptType (OPT only)</label>
+          <select id="tOptType">
+            <option value="CE">CE</option>
+            <option value="PE">PE</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Lot/Multiplier (optional)</label>
+          <input id="tMult" type="number" step="1" value="1" />
+        </div>
+      </div>
+
+      <div class="note" style="margin-top:10px">
+        Lot/Multiplier lets you compute P/L as: (LTP-Entry) × Qty × Mult × sideSign.  
+        Use for NIFTY lot size or any custom.
+      </div>
+
+      <div class="modalActions" style="margin-top:10px">
+        <button class="btn good" id="saveTrade">Save Trade</button>
+        <button class="btn" data-close="mTrade">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PASTE TRADES -->
+<div class="modal" id="mPaste">
+  <div class="box">
+    <div class="hd">
+      <h2>Paste Trades (JSON)</h2>
+      <button class="x" data-close="mPaste">×</button>
+    </div>
+    <div class="bd">
+      <div class="note">
+        Paste an array. Supported fields:
+        broker,type,side,symbol,qty,entry,ltp,status,strike,optType,mult
+      </div>
+      <textarea id="pasteBox">[
+  {"broker":"ANGEL","type":"FUT","side":"BUY","symbol":"NIFTY FUT","qty":1,"entry":22480,"ltp":22540,"status":"OPEN","mult":1},
+  {"broker":"GROWW","type":"OPT","side":"BUY","symbol":"NIFTY 22500 CE","qty":50,"entry":120,"ltp":148,"strike":22500,"optType":"CE","status":"OPEN","mult":1},
+  {"broker":"ANGEL","type":"OPT","side":"SELL","symbol":"NIFTY 22300 PE","qty":50,"entry":95,"ltp":70,"strike":22300,"optType":"PE","status":"OPEN","mult":1}
+]</textarea>
+      <div class="modalActions" style="margin-top:10px">
+        <button class="btn good" id="applyPaste">Apply</button>
+        <button class="btn" data-close="mPaste">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==========================
+   ALL FUNCTIONS & LOGIC (JS)
+   ========================== */
+
+/*** CLOCK (IST) ***/
+const clockEl = document.getElementById("clock");
+setInterval(()=>{
+  const d = new Date();
+  clockEl.textContent = d.toLocaleString("en-IN", { timeZone:"Asia/Kolkata", hour:"2-digit", minute:"2-digit", second:"2-digit" });
+}, 500);
+
+/*** OPTIONAL PROXY BASE (can be set in UI and saved) ***/
+let PROXY_BASE_URL = "";
+
+/*** STORAGE KEYS ***/
+const STORE = {
+  angel: "conn_angel_alllogic_v1",
+  groww: "conn_groww_alllogic_v1",
+  proxy: "proxy_base_alllogic_v1",
+  trades: "trades_alllogic_v1",
+  snaps: "equity_snaps_alllogic_v1"
+};
+
+/*** HELPERS ***/
+function $(id){ return document.getElementById(id); }
+function num(x){
+  const n = parseFloat(String(x ?? "").replace(/,/g,""));
+  return Number.isFinite(n) ? n : 0;
+}
+function INR(n){
+  const v = Number(n);
+  return "₹" + (Number.isFinite(v) ? v.toLocaleString("en-IN",{maximumFractionDigits:2, minimumFractionDigits:2}) : "0.00");
+}
+function uid(){ return (crypto?.randomUUID?.() || ("id_"+Math.random().toString(16).slice(2))); }
+function esc(s){
+  return String(s ?? "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+function loadJSON(key, fallback){
+  try{
+    const raw = localStorage.getItem(key);
+    if(!raw) return fallback;
+    return JSON.parse(raw);
+  }catch{ return fallback; }
+}
+function saveJSON(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+
+/*** MODALS ***/
+function openModal(id){ document.body.classList.add("modal-open"); $(id).classList.add("open"); }
+function closeModal(id){
+  $(id).classList.remove("open");
+  if(!document.querySelector(".modal.open")) document.body.classList.remove("modal-open");
+}
+document.addEventListener("click", (e)=>{
+  const closeId = e.target?.getAttribute?.("data-close");
+  if(closeId) closeModal(closeId);
+  if(e.target?.classList?.contains("modal")) closeModal(e.target.id);
+});
+
+/*** LOAD STATE ***/
+PROXY_BASE_URL = loadJSON(STORE.proxy, "") || "";
+let trades = loadJSON(STORE.trades, []);
+let snaps  = loadJSON(STORE.snaps, []);
+
+/*** CONNECTION STATE UI ***/
+function setConnState(){
+  const angel = loadJSON(STORE.angel, null);
+  const groww = loadJSON(STORE.groww, null);
+
+  if(angel?.token){ $("stAngel").textContent="Connected"; $("dotAngel").classList.add("on"); }
+  else{ $("stAngel").textContent="Not connected"; $("dotAngel").classList.remove("on"); }
+
+  if(groww?.token){ $("stGroww").textContent="Connected"; $("dotGroww").classList.add("on"); }
+  else{ $("stGroww").textContent="Not connected"; $("dotGroww").classList.remove("on"); }
+}
+
+/*** CORE CALC LOGIC ***/
+// Intrinsic value (expiry)
+function intrinsic(optType, S, K){
+  if(optType === "CE") return Math.max(0, S - K);
+  return Math.max(0, K - S);
+}
+
+// MTM P/L (trade-based)
+function plForTrade(t){
+  const qty = num(t.qty);
+  const entry = num(t.entry);
+  const ltp = num(t.ltp);
+  const mult = Math.max(1, num(t.mult || 1));
+  const sign = (String(t.side).toUpperCase() === "SELL") ? -1 : 1;
+  return (ltp - entry) * qty * mult * sign;
+}
+
+// Approx exposure (simple) — for FUT/EQ use notional, for OPT use premium
+function exposureForTrade(t){
+  const qty = num(t.qty);
+  const ltp = num(t.ltp);
+  const mult = Math.max(1, num(t.mult || 1));
+  const type = String(t.type).toUpperCase();
+  const side = String(t.side).toUpperCase();
+  const sign = (side==="SELL") ? -1 : 1;
+
+  if(type==="FUT" || type==="EQ"){
+    return ltp * qty * mult * sign;
+  }
+  // Options: approximate by premium notional
+  return num(t.entry) * qty * mult * sign;
+}
+
+// Scenario payoff (expiry approx)
+function payoffAtSpot(t, S){
+  const sign = (String(t.side).toUpperCase() === "SELL") ? -1 : 1;
+  const qty = num(t.qty);
+  const mult = Math.max(1, num(t.mult || 1));
+  const type = String(t.type).toUpperCase();
+
+  if(type === "FUT" || type === "EQ"){
+    return (S - num(t.entry)) * qty * mult * sign;
+  }
+
+  // OPT expiry payoff approx: intrinsic - premium (BUY), reverse for SELL
+  const K = num(t.strike);
+  const prem = num(t.entry);
+  const ot = String(t.optType || "CE").toUpperCase();
+  if(!K) return 0;
+  const intr = intrinsic(ot, S, K);
+  return (intr - prem) * qty * mult * sign;
+}
+
+/*** RENDER TABLE + KPI + CHARTS ***/
+const tbody = $("tbody");
+let plChart, equityChart;
+
+function refreshPLChart(){
+  const labels = trades.map((t,i)=> `${i+1}`);
+  const data = trades.map(t => plForTrade(t));
+
+  if(!plChart){
+    plChart = new Chart(document.getElementById("plChart"), {
+      type:"bar",
+      data:{ labels, datasets:[{ label:"MTM P/L (per trade)", data }]},
+      options:{
+        responsive:true,
+        plugins:{ legend:{ display:true } },
+        scales:{
+          x:{ ticks:{ color:"#94a3b8" }, grid:{ color:"rgba(34,48,74,.35)" } },
+          y:{ ticks:{ color:"#94a3b8" }, grid:{ color:"rgba(34,48,74,.35)" } }
+        }
+      }
     });
+  }else{
+    plChart.data.labels = labels;
+    plChart.data.datasets[0].data = data;
+    plChart.update();
+  }
+}
 
-    /***********************
-     * SCENARIO ANALYSIS
-     ***********************/
-    document.getElementById("btnRunScenario").addEventListener("click", ()=>{
-      const pickId = document.getElementById("scTradePick").value;
-      const t = trades.find(x=>x.id===pickId);
-      if(!t){
-        alert("No trade selected.");
-        return;
+function refreshEquityChart(){
+  const labels = snaps.map(s => s.ts);
+  const data = snaps.map(s => s.netPL);
+
+  if(!equityChart){
+    equityChart = new Chart(document.getElementById("equityChart"), {
+      type:"line",
+      data:{ labels, datasets:[{ label:"Equity (Net MTM snapshots)", data, tension:0.3 }]},
+      options:{
+        responsive:true,
+        plugins:{ legend:{ display:true } },
+        scales:{
+          x:{ ticks:{ color:"#94a3b8" }, grid:{ color:"rgba(34,48,74,.35)" } },
+          y:{ ticks:{ color:"#94a3b8" }, grid:{ color:"rgba(34,48,74,.35)" } }
+        }
       }
-
-      const S0 = num(document.getElementById("scS0").value, NaN);
-      const movePct = num(document.getElementById("scMovePct").value, 0);
-      const delta = document.getElementById("scDelta").value.trim()==="" ? NaN : num(document.getElementById("scDelta").value);
-      const gamma = document.getElementById("scGamma").value.trim()==="" ? NaN : num(document.getElementById("scGamma").value);
-      const theta = document.getElementById("scTheta").value.trim()==="" ? NaN : num(document.getElementById("scTheta").value);
-      const days = num(document.getElementById("scDays").value, 1);
-      const qOverride = document.getElementById("scQtyOverride").value.trim()==="" ? NaN : num(document.getElementById("scQtyOverride").value);
-
-      const qty = Number.isFinite(qOverride) ? qOverride : num(t.qty, 1);
-      const sign = (t.side === "SELL") ? -1 : 1;
-
-      if(!Number.isFinite(S0)){
-        document.getElementById("scS1").textContent = "—";
-        document.getElementById("scPL").textContent = "—";
-        document.getElementById("scNote").textContent = "Enter Current Underlying Price (S0) to run scenario.";
-        return;
-      }
-
-      const S1 = S0 * (1 + (movePct/100));
-      const dS = (S1 - S0);
-
-      document.getElementById("scS1").textContent = S1.toLocaleString("en-IN", {maximumFractionDigits:2});
-
-      // If Greeks are given, approximate option price change: dV ≈ Δ·dS + 0.5·Γ·dS^2 + θ·days
-      // Otherwise: just show MTM P/L (no projection)
-      let projected = NaN;
-      let note = "";
-
-      if(Number.isFinite(delta) || Number.isFinite(gamma) || Number.isFinite(theta)){
-        const dV = (Number.isFinite(delta) ? delta*dS : 0)
-                + (Number.isFinite(gamma) ? 0.5*gamma*dS*dS : 0)
-                + (Number.isFinite(theta) ? theta*days : 0);
-
-        // assume option price changes by dV (approx), multiply by qty and sign
-        projected = dV * qty * sign;
-        note = "Using Δ/Γ/theta approximation.";
-      }else{
-        projected = calcPL(t); // current mtm
-        note = "No Greeks provided; showing current MTM only.";
-      }
-
-      document.getElementById("scPL").textContent = ₹(projected);
-      document.getElementById("scPL").className = (projected>=0) ? "v pos" : "v neg";
-      document.getElementById("scNote").textContent = note;
     });
+  }else{
+    equityChart.data.labels = labels;
+    equityChart.data.datasets[0].data = data;
+    equityChart.update();
+  }
+}
 
-    // Optional helper: set selected trade LTP = user-entered underlying (manual)
-    document.getElementById("btnAutoLTP").addEventListener("click", ()=>{
-      const pickId = document.getElementById("scTradePick").value;
-      const t = trades.find(x=>x.id===pickId);
-      const S0 = num(document.getElementById("scS0").value, NaN);
-      if(!t || !Number.isFinite(S0)){
-        alert("Select a trade and type S0.");
-        return;
-      }
-      trades = trades.map(x=> x.id===pickId ? {...x, ltp:S0} : x);
-      render();
-      alert("Set selected trade LTP = S0 (manual mapping).");
-    });
+function render(){
+  tbody.innerHTML = "";
 
-    /***********************
-     * TRADINGVIEW WIDGETS
-     ***********************/
-    function loadTV(){
-      // Clear containers
-      document.getElementById("tvTape").innerHTML = "";
-      document.getElementById("tvNifty").innerHTML = "";
-      document.getElementById("tvBank").innerHTML = "";
-      document.getElementById("tvSensex").innerHTML = "";
+  let netPL = 0;
+  let riskBuyPremium = 0;
+  let netExp = 0;
 
-      // Ticker tape
-      const tape = document.createElement("script");
-      tape.type = "text/javascript";
-      tape.src = "https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js";
-      tape.async = true;
-      tape.innerHTML = JSON.stringify({
-        symbols: [
-          { proName: "NSE:NIFTY", title: "NIFTY 50" },
-          { proName: "NSE:BANKNIFTY", title: "BANK NIFTY" },
-          { proName: "BSE:SENSEX", title: "SENSEX" },
-          { proName: "NSE:INDIAVIX", title: "INDIA VIX" },
-          { proName: "FX_IDC:USDINR", title: "USD/INR" }
-        ],
-        showSymbolLogo: true,
-        colorTheme: "dark",
-        isTransparent: true,
-        displayMode: "adaptive",
-        locale: "en"
-      });
-      document.getElementById("tvTape").appendChild(tape);
+  trades.forEach((t, i)=>{
+    if(!t.id) t.id = uid();
 
-      // Symbol overview widgets (price + chart)
-      const makeOverview = (mountId, symbol, title) => {
-        const sc = document.createElement("script");
-        sc.type = "text/javascript";
-        sc.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
-        sc.async = true;
-        sc.innerHTML = JSON.stringify({
-          symbols: [[symbol, title]],
-          chartOnly: false,
-          width: "100%",
-          height: 320,
-          locale: "en",
-          colorTheme: "dark",
-          autosize: true,
-          showVolume: true,
-          showMA: true,
-          hideDateRanges: false,
-          hideMarketStatus: false,
-          hideSymbolLogo: false,
-          scalePosition: "right",
-          scaleMode: "Normal",
-          fontFamily: "-apple-system, system-ui, Segoe UI, Roboto, Arial",
-          fontSize: "12",
-          noTimeScale: false,
-          valuesTracking: "1",
-          changeMode: "price-and-percent",
-          chartType: "area",
-          maLineColor: "rgba(56,189,248,.9)",
-          maLineWidth: 1,
-          maLength: 9,
-          lineWidth: 2,
-          dateRanges: ["1D","5D","1M","3M","6M","YTD","1Y","5Y","ALL"],
-          isTransparent: true
-        });
-        document.getElementById(mountId).appendChild(sc);
-      };
+    const pl = plForTrade(t);
+    netPL += pl;
 
-      makeOverview("tvNifty", "NSE:NIFTY", "NIFTY 50");
-      makeOverview("tvBank", "NSE:BANKNIFTY", "BANK NIFTY");
-      makeOverview("tvSensex", "BSE:SENSEX", "SENSEX");
+    // Risk: total premium paid for BUY options
+    if(String(t.type).toUpperCase()==="OPT" && String(t.side).toUpperCase()==="BUY"){
+      riskBuyPremium += num(t.entry) * num(t.qty) * Math.max(1, num(t.mult || 1));
     }
 
-    document.getElementById("btnRefreshTV").addEventListener("click", loadTV);
+    netExp += exposureForTrade(t);
 
-    /***********************
-     * INIT
-     ***********************/
-    loadTV();
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="mono">${i+1}</td>
+      <td>${esc(t.broker||"MANUAL")}</td>
+      <td>${esc(t.type||"")}</td>
+      <td>${esc(t.side||"")}</td>
+      <td>${esc(t.symbol||"")}${String(t.type).toUpperCase()==="OPT" ? `<div class="hint mono">K=${esc(t.strike||"")}, ${esc(t.optType||"")}, mult=${esc(t.mult||1)}</div>` : `<div class="hint mono">mult=${esc(t.mult||1)}</div>`}</td>
+      <td class="mono"><input data-id="${t.id}" data-k="qty" type="number" step="1" value="${num(t.qty)}" style="max-width:90px"></td>
+      <td class="mono"><input data-id="${t.id}" data-k="entry" type="number" step="0.05" value="${num(t.entry)}" style="max-width:110px"></td>
+      <td class="mono"><input data-id="${t.id}" data-k="ltp" type="number" step="0.05" value="${num(t.ltp)}" style="max-width:110px"></td>
+      <td class="mono ${pl>=0?'pos':'neg'}">${INR(pl)}</td>
+      <td>
+        <select data-id="${t.id}" data-k="status" style="max-width:110px">
+          <option value="OPEN" ${String(t.status).toUpperCase()==="OPEN"?"selected":""}>OPEN</option>
+          <option value="CLOSED" ${String(t.status).toUpperCase()==="CLOSED"?"selected":""}>CLOSED</option>
+        </select>
+      </td>
+      <td>
+        <button class="btn ghost" data-edit="${t.id}">Edit</button>
+        <button class="btn danger" data-del="${t.id}">✕</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  $("kpiPL").textContent = INR(netPL);
+  $("kpiCount").textContent = String(trades.length);
+  $("kpiRisk").textContent = INR(riskBuyPremium);
+  $("kpiExp").textContent = INR(netExp);
+
+  saveJSON(STORE.trades, trades);
+  refreshPLChart();
+  refreshEquityChart();
+}
+
+/*** TABLE EVENTS (INLINE EDIT) ***/
+tbody.addEventListener("input", (e)=>{
+  const id = e.target?.getAttribute?.("data-id");
+  const k = e.target?.getAttribute?.("data-k");
+  if(!id || !k) return;
+  trades = trades.map(t => t.id===id ? ({...t, [k]: (k==="status" ? e.target.value : num(e.target.value))}) : t);
+  render();
+});
+tbody.addEventListener("change", (e)=>{
+  const id = e.target?.getAttribute?.("data-id");
+  const k = e.target?.getAttribute?.("data-k");
+  if(!id || !k) return;
+  trades = trades.map(t => t.id===id ? ({...t, [k]: e.target.value}) : t);
+  render();
+});
+tbody.addEventListener("click", (e)=>{
+  const del = e.target?.getAttribute?.("data-del");
+  const edit = e.target?.getAttribute?.("data-edit");
+
+  if(del){
+    trades = trades.filter(t => t.id !== del);
     render();
+    return;
+  }
+  if(edit){
+    openTradeModal(edit);
+    return;
+  }
+});
 
-    /***********************
-     * NOTES:
-     * - For REAL auto-fetch from broker:
-     *   1) Use a backend (Node/Python) with broker API auth
-     *   2) Backend returns JSON of trades
-     *   3) Paste into “Live Feed JSON” or fetch from your endpoint and merge automatically.
-     ***********************/
-  </script>
+/*** ADD/EDIT TRADE MODAL ***/
+let editingTradeId = null;
+
+function openTradeModal(id){
+  editingTradeId = id || null;
+  const t = id ? trades.find(x => x.id===id) : null;
+
+  $("tradeTitle").textContent = id ? "Edit Trade" : "Add Trade";
+  $("tBroker").value = (t?.broker || "MANUAL").toUpperCase();
+  $("tType").value = (t?.type || "FUT").toUpperCase();
+  $("tSide").value = (t?.side || "BUY").toUpperCase();
+  $("tSymbol").value = t?.symbol || "";
+  $("tStatus").value = (t?.status || "OPEN").toUpperCase();
+  $("tQty").value = num(t?.qty || 1);
+  $("tEntry").value = num(t?.entry || 0);
+  $("tLtp").value = num(t?.ltp || 0);
+  $("tStrike").value = t?.strike ?? "";
+  $("tOptType").value = (t?.optType || "CE").toUpperCase();
+  $("tMult").value = num(t?.mult || 1);
+
+  openModal("mTrade");
+}
+
+$("btnAdd").addEventListener("click", ()=> openTradeModal(null));
+
+$("saveTrade").addEventListener("click", ()=>{
+  const t = {
+    id: editingTradeId || uid(),
+    broker: $("tBroker").value.trim().toUpperCase(),
+    type: $("tType").value.trim().toUpperCase(),
+    side: $("tSide").value.trim().toUpperCase(),
+    symbol: $("tSymbol").value.trim(),
+    status: $("tStatus").value.trim().toUpperCase(),
+    qty: num($("tQty").value),
+    entry: num($("tEntry").value),
+    ltp: num($("tLtp").value),
+    strike: $("tStrike").value === "" ? "" : num($("tStrike").value),
+    optType: $("tOptType").value.trim().toUpperCase(),
+    mult: Math.max(1, num($("tMult").value || 1))
+  };
+
+  // For non OPT, clear option fields
+  if(t.type !== "OPT"){
+    t.strike = "";
+    t.optType = "";
+  }
+
+  if(editingTradeId){
+    trades = trades.map(x => x.id===editingTradeId ? t : x);
+  }else{
+    trades = [t, ...trades];
+  }
+  editingTradeId = null;
+  closeModal("mTrade");
+  render();
+});
+
+/*** PASTE TRADES ***/
+$("btnPaste").addEventListener("click", ()=> openModal("mPaste"));
+$("applyPaste").addEventListener("click", ()=>{
+  try{
+    const arr = JSON.parse($("pasteBox").value || "[]");
+    if(!Array.isArray(arr)) throw new Error("not array");
+
+    trades = arr.map(x => ({
+      id: uid(),
+      broker: (x.broker||"MANUAL").toUpperCase(),
+      type: (x.type||"FUT").toUpperCase(),
+      side: (x.side||"BUY").toUpperCase(),
+      symbol: String(x.symbol||""),
+      qty: num(x.qty||1),
+      entry: num(x.entry||0),
+      ltp: num(x.ltp||0),
+      status: (x.status||"OPEN").toUpperCase(),
+      strike: x.strike ?? "",
+      optType: x.optType ?? "",
+      mult: Math.max(1, num(x.mult||1))
+    }));
+
+    saveJSON(STORE.trades, trades);
+    closeModal("mPaste");
+    render();
+  }catch(e){
+    alert("Invalid JSON array.");
+  }
+});
+
+/*** CONNECT POPUPS ***/
+$("btnAngel").addEventListener("click", ()=>{
+  const c = loadJSON(STORE.angel, {});
+  $("angelClient").value = c.client || "";
+  $("angelApiKey").value = c.apiKey || "";
+  $("angelToken").value  = c.token || "";
+  $("angelProxy").value  = c.proxy || "";
+  openModal("mAngel");
+});
+$("btnGroww").addEventListener("click", ()=>{
+  const c = loadJSON(STORE.groww, {});
+  $("growwToken").value = c.token || "";
+  $("growwProxy").value = c.proxy || "";
+  $("proxyBase").value  = PROXY_BASE_URL || "";
+  openModal("mGroww");
+});
+
+$("saveAngel").addEventListener("click", ()=>{
+  saveJSON(STORE.angel, {
+    client: $("angelClient").value.trim(),
+    apiKey: $("angelApiKey").value.trim(),
+    token: $("angelToken").value.trim(),
+    proxy: $("angelProxy").value.trim()
+  });
+  closeModal("mAngel");
+  setConnState();
+});
+
+$("saveGroww").addEventListener("click", ()=>{
+  saveJSON(STORE.groww, {
+    token: $("growwToken").value.trim(),
+    proxy: $("growwProxy").value.trim()
+  });
+  PROXY_BASE_URL = $("proxyBase").value.trim();
+  saveJSON(STORE.proxy, PROXY_BASE_URL);
+  closeModal("mGroww");
+  setConnState();
+});
+
+/*** CLEAR ***/
+$("btnClear").addEventListener("click", ()=>{
+  if(!confirm("Clear all trades?")) return;
+  trades = [];
+  saveJSON(STORE.trades, trades);
+  render();
+});
+
+/*** SNAPSHOTS (Equity curve) ***/
+function currentNetPL(){
+  return trades.reduce((s,t)=> s + plForTrade(t), 0);
+}
+$("btnSnap").addEventListener("click", ()=>{
+  const ts = new Date().toLocaleString("en-IN", { timeZone:"Asia/Kolkata" });
+  snaps.push({ ts, netPL: currentNetPL() });
+  if(snaps.length > 200) snaps = snaps.slice(snaps.length-200);
+  saveJSON(STORE.snaps, snaps);
+  refreshEquityChart();
+});
+$("btnClearSnap").addEventListener("click", ()=>{
+  if(!confirm("Clear equity snapshots?")) return;
+  snaps = [];
+  saveJSON(STORE.snaps, snaps);
+  refreshEquityChart();
+});
+
+/*** AUTO FETCH (PROXY-READY) ***/
+async function safeFetchJSON(url, headers){
+  const r = await fetch(url, { headers });
+  const txt = await r.text();
+  let data;
+  try{ data = JSON.parse(txt); } catch { data = { raw: txt }; }
+  if(!r.ok) throw new Error((data && data.error) ? data.error : ("HTTP "+r.status));
+  return data;
+}
+
+$("btnFetch").addEventListener("click", async ()=>{
+  const angel = loadJSON(STORE.angel, {});
+  const groww = loadJSON(STORE.groww, {});
+  const base = (PROXY_BASE_URL || angel.proxy || groww.proxy || "").replace(/\/$/,"");
+
+  if(!base){
+    alert("Auto Fetch needs Proxy URL.\nFor now: Paste trades or Add trade manually.");
+    return;
+  }
+
+  const merged = [];
+  const errs = [];
+
+  // Angel endpoint: GET /angel/trades
+  if(angel.token){
+    try{
+      const data = await safeFetchJSON(base + "/angel/trades", {
+        "Authorization": "Bearer " + angel.token,
+        "X-Client": angel.client || "",
+        "X-ApiKey": angel.apiKey || ""
+      });
+      if(Array.isArray(data)){
+        merged.push(...data.map(x => ({...x, broker:"ANGEL"})));
+      }
+    }catch(e){ errs.push("Angel: " + String(e.message||e)); }
+  }
+
+  // Groww endpoint: GET /groww/trades
+  if(groww.token){
+    try{
+      const data = await safeFetchJSON(base + "/groww/trades", {
+        "Authorization": "Bearer " + groww.token
+      });
+      if(Array.isArray(data)){
+        merged.push(...data.map(x => ({...x, broker:"GROWW"})));
+      }
+    }catch(e){ errs.push("Groww: " + String(e.message||e)); }
+  }
+
+  if(merged.length === 0){
+    alert("No trades fetched.\n" + (errs.length ? errs.join("\n") : "Check tokens/proxy."));
+    return;
+  }
+
+  // Normalize to our schema
+  trades = merged.map(x => ({
+    id: uid(),
+    broker: (x.broker || "").toUpperCase() || "MANUAL",
+    type: (x.type || x.product || "OPT").toUpperCase(),
+    side: (x.side || x.transactionType || "BUY").toUpperCase(),
+    symbol: String(x.symbol || x.tradingsymbol || x.instrument || ""),
+    qty: num(x.qty || x.quantity || 1),
+    entry: num(x.entry || x.avgPrice || x.average_price || 0),
+    ltp: num(x.ltp || x.last_price || x.ltpPrice || 0),
+    status: (x.status || "OPEN").toUpperCase(),
+    strike: x.strike ?? "",
+    optType: x.optType ?? "",
+    mult: Math.max(1, num(x.mult || 1))
+  }));
+
+  saveJSON(STORE.trades, trades);
+  render();
+  alert("Fetched and updated trades.");
+});
+
+/*** SCENARIO ***/
+$("btnCalc").addEventListener("click", ()=>{
+  const spotNow = num($("spotNow").value);
+  if(!spotNow){ alert("Type SpotNow first."); return; }
+
+  const range = num($("rangePct").value);
+  const steps = parseInt($("steps").value, 10);
+  const half = Math.floor(steps/2);
+
+  const pcts = [];
+  for(let i=-half;i<=half;i++) pcts.push((i/half) * range);
+
+  const tb = $("scenarioBody");
+  tb.innerHTML = "";
+
+  pcts.forEach(p => {
+    const S = spotNow * (1 + p/100);
+    let tot = 0;
+    trades.forEach(t => { tot += payoffAtSpot(t, S); });
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="mono">${p===0 ? "Spot" : (p>0 ? "+"+p.toFixed(2)+"%" : p.toFixed(2)+"%")}</td>
+      <td class="mono">${S.toFixed(2)}</td>
+      <td class="mono ${tot>=0?'pos':'neg'}">${INR(tot)}</td>
+    `;
+    tb.appendChild(tr);
+  });
+});
+
+/*** INIT ***/
+setConnState();
+render();
+refreshEquityChart();
+</script>
+
 </body>
 </html>
