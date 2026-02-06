@@ -1,0 +1,1261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Live Trading Console — Indices + Trades + P/L + Scenarios</title>
+
+  <!-- Chart.js for P/L visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- PapaParse for CSV import -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#020617;
+      --panel:#0b1222;
+      --card:#0f172a;
+      --card2:#101b31;
+      --border:#22304a;
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+
+      --accent:#38bdf8;
+      --green:#10b981;
+      --red:#fb7185;
+      --amber:#f59e0b;
+
+      --shadow: 0 24px 90px rgba(0,0,0,.62);
+      --radius:16px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 420px at 15% 10%, rgba(56,189,248,.14), transparent 60%),
+        radial-gradient(900px 420px at 85% 20%, rgba(167,139,250,.12), transparent 60%),
+        linear-gradient(180deg, #020617, #020617);
+      min-height:100vh;
+    }
+
+    .wrap{
+      max-width:1200px;
+      margin:0 auto;
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    header{
+      background:linear-gradient(180deg, rgba(56,189,248,.12), transparent);
+      border:1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding:16px;
+    }
+    .titleRow{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+    .sub{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+    .pillRow{ display:flex; gap:8px; flex-wrap:wrap; }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--border);
+      background:rgba(15,23,42,.75);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .dot{ width:8px; height:8px; border-radius:50%; background:var(--accent); }
+    .dot.green{ background:var(--green); }
+    .dot.amber{ background:var(--amber); }
+
+    .grid2{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:14px;
+    }
+    .grid3{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){
+      .grid2, .grid3{ grid-template-columns:1fr; }
+    }
+
+    .card{
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(15,23,42,.92), rgba(11,18,34,.92));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding:12px 12px 10px;
+      border-bottom:1px solid rgba(34,48,74,.65);
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .card .hd h2{
+      margin:0;
+      font-size:13px;
+      letter-spacing:.2px;
+    }
+    .card .bd{ padding:12px; }
+
+    .btn{
+      cursor:pointer;
+      border:1px solid var(--border);
+      background:rgba(56,189,248,.10);
+      color:var(--text);
+      padding:9px 11px;
+      border-radius:12px;
+      font-weight:800;
+      font-size:12px;
+    }
+    .btn:hover{ filter:brightness(1.06); }
+    .btn.ghost{ background:rgba(148,163,184,.08); }
+    .btn.danger{ background:rgba(251,113,133,.14); }
+    .btn.green{ background:rgba(16,185,129,.14); }
+
+    .row{
+      display:flex; gap:10px; flex-wrap:wrap;
+      align-items:center;
+    }
+    .field{
+      display:flex; flex-direction:column; gap:6px;
+      min-width: 160px;
+      flex:1;
+    }
+    label{
+      font-size:11px;
+      color:var(--muted);
+    }
+    input, select, textarea{
+      width:100%;
+      border:1px solid var(--border);
+      background:rgba(2,6,23,.55);
+      color:var(--text);
+      border-radius:12px;
+      padding:10px 10px;
+      outline:none;
+      font-size:13px;
+    }
+    textarea{ min-height:70px; resize:vertical; font-family:var(--mono); font-size:12px; }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
+      overflow:hidden;
+      border-radius:14px;
+    }
+    thead th{
+      text-align:left;
+      padding:10px 10px;
+      color:var(--muted);
+      border-bottom:1px solid rgba(34,48,74,.65);
+      background:rgba(2,6,23,.35);
+      font-weight:800;
+      white-space:nowrap;
+    }
+    tbody td{
+      padding:10px 10px;
+      border-bottom:1px solid rgba(34,48,74,.45);
+      vertical-align:top;
+    }
+    tbody tr:hover{ background:rgba(56,189,248,.06); }
+    .mono{ font-family:var(--mono); }
+    .pos{ color:var(--green); font-weight:900; }
+    .neg{ color:var(--red); font-weight:900; }
+    .muted{ color:var(--muted); }
+
+    .kpiRow{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width: 560px){ .kpiRow{ grid-template-columns: 1fr; } }
+    .kpi{
+      border:1px solid rgba(34,48,74,.65);
+      background:rgba(2,6,23,.35);
+      border-radius:14px;
+      padding:12px;
+    }
+    .kpi .t{ color:var(--muted); font-size:11px; font-weight:800; }
+    .kpi .v{ margin-top:6px; font-size:16px; font-weight:1000; letter-spacing:.2px; }
+    .kpi .s{ margin-top:4px; font-size:11px; color:var(--muted); }
+
+    .hint{
+      margin-top:10px;
+      font-size:11px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+
+    .modal{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.65);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      z-index:50;
+    }
+    .modal.open{ display:flex; }
+    .modal .box{
+      max-width:780px;
+      width:100%;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(15,23,42,.98), rgba(11,18,34,.98));
+      border-radius:18px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .modal .box .hd{
+      padding:12px;
+      border-bottom:1px solid rgba(34,48,74,.65);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .modal .box .bd{ padding:12px; }
+    .x{
+      width:36px; height:36px; border-radius:12px;
+      border:1px solid var(--border);
+      background:rgba(148,163,184,.08);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:1000;
+    }
+
+    /* TradingView containers look better on dark background */
+    .tvBox{
+      border:1px solid rgba(34,48,74,.65);
+      border-radius:14px;
+      overflow:hidden;
+      background:rgba(2,6,23,.35);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <header>
+      <div class="titleRow">
+        <div>
+          <h1>Live Trading Console — Indices + Trades + P/L + Scenario Analysis</h1>
+          <div class="sub">
+            Works on GitHub Pages. Indices are live via TradingView widgets. Trades can be entered manually / imported from CSV / pushed by your backend.
+          </div>
+        </div>
+        <div class="pillRow">
+          <div class="pill"><span class="dot green"></span><span id="statusText">Live indices: ON</span></div>
+          <div class="pill"><span class="dot amber"></span><span id="clock">--</span></div>
+          <div class="pill"><span class="dot"></span><span class="mono">IST</span></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- LIVE INDICES -->
+    <section class="card">
+      <div class="hd">
+        <h2>Live Market Indices (Real-time value + visualization)</h2>
+        <div class="row">
+          <button class="btn ghost" id="btnRefreshTV">Refresh Widgets</button>
+        </div>
+      </div>
+      <div class="bd">
+        <!-- Ticker tape -->
+        <div class="tvBox" style="margin-bottom:12px;">
+          <div class="tradingview-widget-container" id="tvTape"></div>
+        </div>
+
+        <!-- 3 live charts -->
+        <div class="grid3">
+          <div class="tvBox">
+            <div class="tradingview-widget-container" id="tvNifty"></div>
+          </div>
+          <div class="tvBox">
+            <div class="tradingview-widget-container" id="tvBank"></div>
+          </div>
+          <div class="tvBox">
+            <div class="tradingview-widget-container" id="tvSensex"></div>
+          </div>
+        </div>
+
+        <div class="hint">
+          Tip: You can change symbols inside the code (e.g. NSE:NIFTY, NSE:BANKNIFTY, BSE:SENSEX). These widgets show live price + chart without API keys.
+        </div>
+      </div>
+    </section>
+
+    <div class="grid2">
+      <!-- TRADES CONSOLE -->
+      <section class="card">
+        <div class="hd">
+          <h2>Trades Console (Add/Edit + MTM P/L)</h2>
+          <div class="row">
+            <button class="btn green" id="btnAddTrade">+ Add Trade</button>
+            <button class="btn ghost" id="btnImportCSV">Import CSV</button>
+            <button class="btn ghost" id="btnLiveFeed">Live Feed JSON</button>
+            <button class="btn danger" id="btnClear">Clear</button>
+          </div>
+        </div>
+        <div class="bd">
+
+          <div class="kpiRow" style="margin-bottom:12px;">
+            <div class="kpi">
+              <div class="t">Net MTM P/L</div>
+              <div class="v" id="kpiNetPL">₹ 0.00</div>
+              <div class="s">Based on Entry vs Current (LTP)</div>
+            </div>
+            <div class="kpi">
+              <div class="t">Open Trades</div>
+              <div class="v" id="kpiOpen">0</div>
+              <div class="s">Trades where Status = OPEN</div>
+            </div>
+            <div class="kpi">
+              <div class="t">Ledger Snapshot (Angel)</div>
+              <div class="v" id="kpiLedger">₹ 53.58</div>
+              <div class="s">Closing balance from uploaded statement</div>
+            </div>
+          </div>
+
+          <div style="overflow:auto; border:1px solid rgba(34,48,74,.65); border-radius:14px;">
+            <table id="tblTrades">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Symbol</th>
+                  <th>Side</th>
+                  <th class="mono">Qty</th>
+                  <th class="mono">Entry</th>
+                  <th class="mono">LTP</th>
+                  <th class="mono">P/L</th>
+                  <th>Status</th>
+                  <th>Notes</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="hint">
+            Preloaded from your uploaded Angel ledger: “Trades Executed 2026-02-03 NSEFO … 237.67 … (running balance 53.58)” 2 and ledger credit/debit/closing balance 3.
+          </div>
+        </div>
+      </section>
+
+      <!-- P/L CHART -->
+      <section class="card">
+        <div class="hd">
+          <h2>Visualization</h2>
+          <div class="row">
+            <select id="chartMode">
+              <option value="pl">P/L by trade</option>
+              <option value="qty">Qty by trade</option>
+            </select>
+          </div>
+        </div>
+        <div class="bd">
+          <canvas id="plChart" height="220"></canvas>
+          <div class="hint">
+            This chart updates whenever you edit trades or update LTP. For real broker auto-fetch, connect backend feed → “Live Feed JSON”.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- SCENARIO ANALYSIS -->
+    <section class="card">
+      <div class="hd">
+        <h2>Scenario Analysis (Profit/Loss Possibility)</h2>
+        <div class="row">
+          <button class="btn" id="btnRunScenario">Run Scenario</button>
+          <button class="btn ghost" id="btnAutoLTP">Set LTP = Live Index (manual)</button>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="grid2">
+          <div>
+            <div class="row">
+              <div class="field">
+                <label>Underlying (Index) Symbol (for reference)</label>
+                <select id="scUnder">
+                  <option value="NSE:NIFTY">NSE:NIFTY</option>
+                  <option value="NSE:BANKNIFTY">NSE:BANKNIFTY</option>
+                  <option value="BSE:SENSEX">BSE:SENSEX</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Current Underlying Price (you type)</label>
+                <input id="scS0" type="number" step="0.05" placeholder="e.g. 22000" />
+              </div>
+              <div class="field">
+                <label>Move % (e.g. 1 = +1%)</label>
+                <input id="scMovePct" type="number" step="0.1" value="1" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label>Option Greeks (optional) — Delta</label>
+                <input id="scDelta" type="number" step="0.01" placeholder="e.g. 0.45" />
+              </div>
+              <div class="field">
+                <label>Gamma (optional)</label>
+                <input id="scGamma" type="number" step="0.0001" placeholder="e.g. 0.0012" />
+              </div>
+              <div class="field">
+                <label>Theta / day (optional, ₹)</label>
+                <input id="scTheta" type="number" step="0.01" placeholder="e.g. -12" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label>Days Forward (theta applied)</label>
+                <input id="scDays" type="number" step="1" value="1" />
+              </div>
+              <div class="field">
+                <label>Qty for scenario (defaults to trade qty)</label>
+                <input id="scQtyOverride" type="number" step="1" placeholder="leave blank" />
+              </div>
+              <div class="field">
+                <label>Pick Trade</label>
+                <select id="scTradePick"></select>
+              </div>
+            </div>
+
+            <div class="hint">
+              • Futures: scenario P/L ≈ (Underlying move points) × qty (if you map 1:1).<br/>
+              • Options: scenario uses Δ and Γ approximation if you enter Greeks; otherwise it only shows current MTM.
+            </div>
+          </div>
+
+          <div>
+            <div class="kpiRow">
+              <div class="kpi">
+                <div class="t">Underlying After Move</div>
+                <div class="v" id="scS1">—</div>
+                <div class="s">S1 = S0 × (1 + move%)</div>
+              </div>
+              <div class="kpi">
+                <div class="t">Projected P/L (approx)</div>
+                <div class="v" id="scPL">—</div>
+                <div class="s">Δ/Γ + theta if provided</div>
+              </div>
+              <div class="kpi">
+                <div class="t">Notes</div>
+                <div class="v" style="font-size:12px; font-weight:800;" id="scNote">—</div>
+                <div class="s">Use Greeks for better estimate</div>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;">
+              <div class="field">
+                <label>Strategy Console (paste your live trade feed / notes)</label>
+                <textarea id="consoleBox" placeholder='Example live feed:
+{"symbol":"NSE:NIFTY","ltp":22110.5}
+or
+TRADE: BUY NIFTY 22000CE @ 120 Qty 50 LTP 148'></textarea>
+              </div>
+              <div class="row" style="justify-content:flex-end;">
+                <button class="btn ghost" id="btnParseConsole">Parse & Update Trade LTP</button>
+              </div>
+              <div class="hint">
+                If you will “give live trade values”, paste them here. The parser will update matching trades’ LTP and refresh P/L + chart.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="hint" style="text-align:center; padding-bottom:8px;">
+      Built for GitHub Pages. For full auto-fetch from Groww/Angel One, connect a backend service that sends trades as JSON → use “Live Feed JSON”.
+    </footer>
+  </div>
+
+  <!-- MODALS -->
+  <div class="modal" id="mTrade">
+    <div class="box">
+      <div class="hd">
+        <div style="font-weight:1000;">Add / Edit Trade</div>
+        <button class="x" id="mTradeClose">×</button>
+      </div>
+      <div class="bd">
+        <div class="grid2">
+          <div>
+            <div class="row">
+              <div class="field">
+                <label>Date</label>
+                <input id="tDate" type="date" />
+              </div>
+              <div class="field">
+                <label>Type</label>
+                <select id="tType">
+                  <option value="FUT">FUT</option>
+                  <option value="OPT">OPT</option>
+                  <option value="CASH">CASH</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Side</label>
+                <select id="tSide">
+                  <option value="BUY">BUY</option>
+                  <option value="SELL">SELL</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field" style="min-width:260px;">
+                <label>Symbol (e.g. NSE:NIFTY, NIFTY 22000CE)</label>
+                <input id="tSymbol" placeholder="NSE:NIFTY or NIFTY 22000CE" />
+              </div>
+              <div class="field">
+                <label>Qty</label>
+                <input id="tQty" type="number" step="1" placeholder="e.g. 50" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label>Entry Price</label>
+                <input id="tEntry" type="number" step="0.05" placeholder="e.g. 120" />
+              </div>
+              <div class="field">
+                <label>Current LTP</label>
+                <input id="tLtp" type="number" step="0.05" placeholder="e.g. 148" />
+              </div>
+              <div class="field">
+                <label>Status</label>
+                <select id="tStatus">
+                  <option value="OPEN">OPEN</option>
+                  <option value="CLOSED">CLOSED</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Notes</label>
+              <input id="tNotes" placeholder="optional" />
+            </div>
+
+            <div class="row" style="justify-content:flex-end; margin-top:8px;">
+              <button class="btn ghost" id="btnQuickParse">Quick-Parse Notes</button>
+              <button class="btn green" id="btnSaveTrade">Save</button>
+            </div>
+
+            <div class="hint">
+              Quick-Parse: if you paste text like “BUY NIFTY 22000CE @120 qty50 ltp148” into Notes, it will try to fill fields automatically.
+            </div>
+          </div>
+
+          <div>
+            <div class="kpi">
+              <div class="t">Instant P/L Preview</div>
+              <div class="v" id="tPLPreview">₹ 0.00</div>
+              <div class="s" id="tPLExplain">—</div>
+            </div>
+
+            <div class="hint" style="margin-top:10px;">
+              For SELL trades, P/L is inverted (you gain if price falls). This is a simple MTM formula:
+              <span class="mono">P/L = (LTP − Entry) × Qty × Sign</span>.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <input id="csvFile" type="file" accept=".csv,text/csv" style="display:none" />
+
+  <div class="modal" id="mJson">
+    <div class="box">
+      <div class="hd">
+        <div style="font-weight:1000;">Live Feed JSON (paste)</div>
+        <button class="x" id="mJsonClose">×</button>
+      </div>
+      <div class="bd">
+        <div class="field">
+          <label>Paste JSON array of trades (your backend can send this)</label>
+          <textarea id="jsonBox" placeholder='Example:
+[
+  {"date":"2026-02-06","type":"OPT","side":"BUY","symbol":"NIFTY 22000CE","qty":50,"entry":120,"ltp":148,"status":"OPEN","notes":"from feed"}
+]'></textarea>
+        </div>
+        <div class="row" style="justify-content:flex-end;">
+          <button class="btn ghost" id="btnJsonMerge">Merge</button>
+          <button class="btn green" id="btnJsonReplace">Replace All</button>
+        </div>
+        <div class="hint">
+          This is the clean way to “auto fetch”: your backend/broker API fetches trades and pushes JSON here (or directly into localStorage).
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * DATA MODEL
+     ***********************/
+    const STORAGE_KEY = "live_trading_console_v1_trades";
+
+    // Preload ONE trade row from your uploaded Angel ledger:
+    // “Trades Executed 2026-02-03 ... NSEFO ... 237.67 ...”
+    // (Ledger’s table doesn’t include instrument name/strike, so we store it as a ledger-entry type trade.)
+    const preload = [
+      {
+        id: crypto.randomUUID(),
+        date: "2026-02-03",
+        type: "OPT",
+        side: "BUY",
+        symbol: "NSEFO (Voucher 202500000210)",
+        qty: 1,
+        entry: 237.67,
+        ltp: 237.67,
+        status: "CLOSED",
+        notes: "Imported from Angel ledger: Trades Executed 2026-02-03 NSEFO amount 237.67; running balance 53.58."
+      }
+    ];
+
+    let trades = loadTrades();
+
+    function loadTrades(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return [...preload];
+        const parsed = JSON.parse(raw);
+        if(!Array.isArray(parsed) || parsed.length===0) return [...preload];
+        return parsed;
+      }catch(e){
+        return [...preload];
+      }
+    }
+    function saveTrades(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(trades));
+    }
+
+    /***********************
+     * UTILS
+     ***********************/
+    const ₹ = (n) => {
+      const v = Number(n);
+      if(!Number.isFinite(v)) return "₹ 0.00";
+      return "₹ " + v.toLocaleString("en-IN", {minimumFractionDigits:2, maximumFractionDigits:2});
+    };
+    const num = (x, fallback=0) => {
+      const v = Number(x);
+      return Number.isFinite(v) ? v : fallback;
+    };
+    const todayISO = () => new Date().toISOString().slice(0,10);
+
+    function calcPL(t){
+      const qty = num(t.qty);
+      const entry = num(t.entry);
+      const ltp = num(t.ltp);
+      const sign = (t.side === "SELL") ? -1 : 1;
+      return (ltp - entry) * qty * sign;
+    }
+
+    /***********************
+     * DOM HOOKS
+     ***********************/
+    const clockEl = document.getElementById("clock");
+    setInterval(()=>{
+      const d = new Date();
+      const s = d.toLocaleString("en-IN", { timeZone: "Asia/Kolkata", weekday:"short", hour:"2-digit", minute:"2-digit", second:"2-digit" });
+      clockEl.textContent = s;
+    }, 500);
+
+    const tbody = document.querySelector("#tblTrades tbody");
+    const kpiNetPL = document.getElementById("kpiNetPL");
+    const kpiOpen = document.getElementById("kpiOpen");
+
+    // Ledger snapshot from upload (closing balance 53.58)
+    // Credit 52092.84, Debit 52039.26, Closing 53.58
+    document.getElementById("kpiLedger").textContent = "₹ 53.58";
+
+    /***********************
+     * CHART
+     ***********************/
+    const ctx = document.getElementById("plChart");
+    const chartMode = document.getElementById("chartMode");
+    const chart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: [],
+        datasets: [{
+          label: "P/L",
+          data: []
+        }]
+      },
+      options: {
+        responsive:true,
+        plugins: { legend:{ display:true }},
+        scales: {
+          x: { ticks:{ color:"#94a3b8" }, grid:{ color:"rgba(34,48,74,.35)" } },
+          y: { ticks:{ color:"#94a3b8" }, grid:{ color:"rgba(34,48,74,.35)" } }
+        }
+      }
+    });
+
+    function refreshChart(){
+      const mode = chartMode.value;
+      chart.data.labels = trades.map(t => (t.symbol || "").slice(0,24));
+      chart.data.datasets[0].label = mode === "qty" ? "Qty" : "P/L";
+      chart.data.datasets[0].data = trades.map(t => mode === "qty" ? num(t.qty) : calcPL(t));
+      chart.update();
+    }
+
+    /***********************
+     * RENDER
+     ***********************/
+    function render(){
+      tbody.innerHTML = "";
+      let net = 0;
+      let open = 0;
+
+      for(const t of trades){
+        const pl = calcPL(t);
+        net += pl;
+        if(t.status === "OPEN") open++;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="mono">${t.date || ""}</td>
+          <td>${t.type || ""}</td>
+          <td>${escapeHtml(t.symbol || "")}</td>
+          <td><span class="mono">${t.side || ""}</span></td>
+          <td class="mono">${num(t.qty)}</td>
+          <td class="mono">${num(t.entry).toFixed(2)}</td>
+          <td class="mono">
+            <input data-id="${t.id}" data-k="ltp" type="number" step="0.05" value="${num(t.ltp).toFixed(2)}" style="max-width:110px; padding:8px; border-radius:10px;">
+          </td>
+          <td class="mono ${pl>=0 ? "pos":"neg"}">${₹(pl)}</td>
+          <td>
+            <select data-id="${t.id}" data-k="status" style="padding:8px; border-radius:10px;">
+              <option ${t.status==="OPEN"?"selected":""} value="OPEN">OPEN</option>
+              <option ${t.status==="CLOSED"?"selected":""} value="CLOSED">CLOSED</option>
+            </select>
+          </td>
+          <td class="muted">${escapeHtml(t.notes || "")}</td>
+          <td class="row" style="gap:6px;">
+            <button class="btn ghost" data-act="edit" data-id="${t.id}">Edit</button>
+            <button class="btn danger" data-act="del" data-id="${t.id}">Del</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      kpiNetPL.textContent = ₹(net);
+      kpiNetPL.className = (net>=0) ? "v pos" : "v neg";
+      kpiOpen.textContent = String(open);
+
+      // scenario trade picker
+      const pick = document.getElementById("scTradePick");
+      pick.innerHTML = "";
+      trades.forEach((t, i)=>{
+        const opt = document.createElement("option");
+        opt.value = t.id;
+        opt.textContent = `${i+1}. ${t.symbol} (${t.side} ${t.qty})`;
+        pick.appendChild(opt);
+      });
+
+      saveTrades();
+      refreshChart();
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replace(">", "&gt;");
+    }
+
+    /***********************
+     * ADD/EDIT MODAL
+     ***********************/
+    const mTrade = document.getElementById("mTrade");
+    const mTradeClose = document.getElementById("mTradeClose");
+    const btnAddTrade = document.getElementById("btnAddTrade");
+    const btnSaveTrade = document.getElementById("btnSaveTrade");
+    const btnQuickParse = document.getElementById("btnQuickParse");
+
+    const tDate = document.getElementById("tDate");
+    const tType = document.getElementById("tType");
+    const tSide = document.getElementById("tSide");
+    const tSymbol = document.getElementById("tSymbol");
+    const tQty = document.getElementById("tQty");
+    const tEntry = document.getElementById("tEntry");
+    const tLtp = document.getElementById("tLtp");
+    const tStatus = document.getElementById("tStatus");
+    const tNotes = document.getElementById("tNotes");
+    const tPLPreview = document.getElementById("tPLPreview");
+    const tPLExplain = document.getElementById("tPLExplain");
+
+    let editId = null;
+
+    function openTradeModal(trade=null){
+      editId = trade?.id || null;
+      tDate.value = trade?.date || todayISO();
+      tType.value = trade?.type || "OPT";
+      tSide.value = trade?.side || "BUY";
+      tSymbol.value = trade?.symbol || "";
+      tQty.value = trade?.qty ?? "";
+      tEntry.value = trade?.entry ?? "";
+      tLtp.value = trade?.ltp ?? "";
+      tStatus.value = trade?.status || "OPEN";
+      tNotes.value = trade?.notes || "";
+      updateTradePreview();
+      mTrade.classList.add("open");
+    }
+    function closeTradeModal(){
+      mTrade.classList.remove("open");
+    }
+
+    function updateTradePreview(){
+      const tmp = {
+        side: tSide.value,
+        qty: num(tQty.value),
+        entry: num(tEntry.value),
+        ltp: num(tLtp.value)
+      };
+      const pl = calcPL(tmp);
+      tPLPreview.textContent = ₹(pl);
+      tPLPreview.className = (pl>=0) ? "v pos" : "v neg";
+      tPLExplain.textContent = `P/L = (LTP − Entry) × Qty × ${tmp.side==="SELL" ? "-1 (SELL)" : "+1 (BUY)"}`;
+    }
+
+    [tSide, tQty, tEntry, tLtp].forEach(el => el.addEventListener("input", updateTradePreview));
+
+    btnAddTrade.addEventListener("click", ()=>openTradeModal());
+    mTradeClose.addEventListener("click", closeTradeModal);
+    mTrade.addEventListener("click", (e)=>{ if(e.target === mTrade) closeTradeModal(); });
+
+    btnQuickParse.addEventListener("click", ()=>{
+      // Very simple parser from notes
+      const s = (tNotes.value || "").toUpperCase();
+
+      // side
+      if(s.includes(" BUY ")) tSide.value = "BUY";
+      if(s.includes(" SELL ")) tSide.value = "SELL";
+
+      // qty
+      const qm = s.match(/QTY\s*([0-9]+)/i) || s.match(/Q\s*([0-9]+)/i);
+      if(qm) tQty.value = qm[1];
+
+      // entry @
+      const em = s.match(/@\s*([0-9]+(\.[0-9]+)?)/) || s.match(/ENTRY\s*([0-9]+(\.[0-9]+)?)/i);
+      if(em) tEntry.value = em[1];
+
+      // ltp
+      const lm = s.match(/LTP\s*([0-9]+(\.[0-9]+)?)/i) || s.match(/CMP\s*([0-9]+(\.[0-9]+)?)/i);
+      if(lm) tLtp.value = lm[1];
+
+      // symbol guess (keep original text)
+      if(!tSymbol.value.trim()){
+        const sm = (tNotes.value || "").match(/(NIFTY|BANKNIFTY|SENSEX).*/i);
+        if(sm) tSymbol.value = sm[0].trim();
+      }
+
+      updateTradePreview();
+    });
+
+    btnSaveTrade.addEventListener("click", ()=>{
+      const obj = {
+        id: editId || crypto.randomUUID(),
+        date: tDate.value || todayISO(),
+        type: tType.value,
+        side: tSide.value,
+        symbol: tSymbol.value.trim(),
+        qty: num(tQty.value),
+        entry: num(tEntry.value),
+        ltp: num(tLtp.value),
+        status: tStatus.value,
+        notes: tNotes.value.trim()
+      };
+
+      if(editId){
+        trades = trades.map(x => x.id===editId ? obj : x);
+      }else{
+        trades.unshift(obj);
+      }
+      closeTradeModal();
+      render();
+    });
+
+    /***********************
+     * TABLE EVENTS
+     ***********************/
+    tbody.addEventListener("click", (e)=>{
+      const btn = e.target.closest("button[data-act]");
+      if(!btn) return;
+      const id = btn.getAttribute("data-id");
+      const act = btn.getAttribute("data-act");
+      const t = trades.find(x=>x.id===id);
+      if(!t) return;
+
+      if(act==="edit") openTradeModal(t);
+      if(act==="del"){
+        trades = trades.filter(x=>x.id!==id);
+        render();
+      }
+    });
+
+    tbody.addEventListener("input", (e)=>{
+      const inp = e.target;
+      const id = inp.getAttribute("data-id");
+      const k = inp.getAttribute("data-k");
+      if(!id || !k) return;
+      trades = trades.map(t=>{
+        if(t.id!==id) return t;
+        const copy = {...t};
+        copy[k] = (k==="ltp") ? num(inp.value) : inp.value;
+        return copy;
+      });
+      render();
+    });
+
+    /***********************
+     * CLEAR
+     ***********************/
+    document.getElementById("btnClear").addEventListener("click", ()=>{
+      if(!confirm("Clear all trades?")) return;
+      trades = [];
+      saveTrades();
+      render();
+    });
+
+    /***********************
+     * CSV IMPORT
+     ***********************/
+    const csvFile = document.getElementById("csvFile");
+    document.getElementById("btnImportCSV").addEventListener("click", ()=>csvFile.click());
+
+    csvFile.addEventListener("change", async ()=>{
+      const file = csvFile.files?.[0];
+      if(!file) return;
+
+      Papa.parse(file, {
+        header:true,
+        skipEmptyLines:true,
+        complete: (res)=>{
+          // Expect columns like: date,type,side,symbol,qty,entry,ltp,status,notes
+          const rows = (res.data || []).map(r=>({
+            id: crypto.randomUUID(),
+            date: (r.date || r.Date || todayISO()).slice(0,10),
+            type: (r.type || r.Type || "OPT").toUpperCase(),
+            side: (r.side || r.Side || "BUY").toUpperCase(),
+            symbol: (r.symbol || r.Symbol || "").trim(),
+            qty: num(r.qty || r.Qty || r.Quantity || 1),
+            entry: num(r.entry || r.Entry || r.EntryPrice || 0),
+            ltp: num(r.ltp || r.LTP || r.Current || 0),
+            status: (r.status || r.Status || "OPEN").toUpperCase(),
+            notes: (r.notes || r.Notes || "").trim()
+          }));
+          trades = rows.concat(trades);
+          render();
+          csvFile.value = "";
+          alert("CSV imported.");
+        }
+      });
+    });
+
+    /***********************
+     * LIVE FEED JSON MODAL
+     ***********************/
+    const mJson = document.getElementById("mJson");
+    const jsonBox = document.getElementById("jsonBox");
+    document.getElementById("btnLiveFeed").addEventListener("click", ()=>mJson.classList.add("open"));
+    document.getElementById("mJsonClose").addEventListener("click", ()=>mJson.classList.remove("open"));
+    mJson.addEventListener("click",(e)=>{ if(e.target===mJson) mJson.classList.remove("open"); });
+
+    document.getElementById("btnJsonReplace").addEventListener("click", ()=>{
+      try{
+        const arr = JSON.parse(jsonBox.value || "[]");
+        if(!Array.isArray(arr)) throw new Error("Not array");
+        trades = arr.map(x=>({
+          id: x.id || crypto.randomUUID(),
+          date: (x.date || todayISO()).slice(0,10),
+          type: (x.type || "OPT").toUpperCase(),
+          side: (x.side || "BUY").toUpperCase(),
+          symbol: (x.symbol || "").trim(),
+          qty: num(x.qty, 1),
+          entry: num(x.entry, 0),
+          ltp: num(x.ltp, 0),
+          status: (x.status || "OPEN").toUpperCase(),
+          notes: (x.notes || "").trim()
+        }));
+        mJson.classList.remove("open");
+        render();
+      }catch(err){
+        alert("Invalid JSON. Please paste a JSON array of trades.");
+      }
+    });
+
+    document.getElementById("btnJsonMerge").addEventListener("click", ()=>{
+      try{
+        const arr = JSON.parse(jsonBox.value || "[]");
+        if(!Array.isArray(arr)) throw new Error("Not array");
+        const incoming = arr.map(x=>({
+          id: x.id || crypto.randomUUID(),
+          date: (x.date || todayISO()).slice(0,10),
+          type: (x.type || "OPT").toUpperCase(),
+          side: (x.side || "BUY").toUpperCase(),
+          symbol: (x.symbol || "").trim(),
+          qty: num(x.qty, 1),
+          entry: num(x.entry, 0),
+          ltp: num(x.ltp, 0),
+          status: (x.status || "OPEN").toUpperCase(),
+          notes: (x.notes || "").trim()
+        }));
+        trades = incoming.concat(trades);
+        mJson.classList.remove("open");
+        render();
+      }catch(err){
+        alert("Invalid JSON.");
+      }
+    });
+
+    /***********************
+     * CONSOLE PARSER (paste live trade values)
+     ***********************/
+    document.getElementById("btnParseConsole").addEventListener("click", ()=>{
+      const text = (document.getElementById("consoleBox").value || "").trim();
+      if(!text) return;
+
+      // Try JSON first
+      try{
+        const j = JSON.parse(text);
+        // If looks like {symbol, ltp}
+        if(j && typeof j === "object" && !Array.isArray(j) && j.symbol && (j.ltp!==undefined)){
+          const sym = String(j.symbol).trim().toUpperCase();
+          const ltp = num(j.ltp);
+          trades = trades.map(t=>{
+            if(String(t.symbol).toUpperCase().includes(sym) || sym.includes(String(t.symbol).toUpperCase())){
+              return {...t, ltp};
+            }
+            return t;
+          });
+          render();
+          alert("Updated matching trade LTP from JSON.");
+          return;
+        }
+      }catch(e){ /* ignore */ }
+
+      // Text format: "SYMBOL ... LTP 148"
+      const up = text.toUpperCase();
+      const ltpMatch = up.match(/LTP\s*([0-9]+(\.[0-9]+)?)/i) || up.match(/CMP\s*([0-9]+(\.[0-9]+)?)/i);
+      const symMatch = up.match(/(NIFTY|BANKNIFTY|SENSEX)[A-Z0-9\s:]*/i);
+
+      if(ltpMatch && symMatch){
+        const ltp = num(ltpMatch[1]);
+        const sym = symMatch[0].trim();
+        trades = trades.map(t=>{
+          if(String(t.symbol).toUpperCase().includes(sym)){
+            return {...t, ltp};
+          }
+          return t;
+        });
+        render();
+        alert("Updated matching trade LTP from text.");
+        return;
+      }
+
+      alert("Could not parse. Paste like: {\"symbol\":\"NSE:NIFTY\",\"ltp\":22110.5} OR 'NIFTY ... LTP 148'");
+    });
+
+    /***********************
+     * SCENARIO ANALYSIS
+     ***********************/
+    document.getElementById("btnRunScenario").addEventListener("click", ()=>{
+      const pickId = document.getElementById("scTradePick").value;
+      const t = trades.find(x=>x.id===pickId);
+      if(!t){
+        alert("No trade selected.");
+        return;
+      }
+
+      const S0 = num(document.getElementById("scS0").value, NaN);
+      const movePct = num(document.getElementById("scMovePct").value, 0);
+      const delta = document.getElementById("scDelta").value.trim()==="" ? NaN : num(document.getElementById("scDelta").value);
+      const gamma = document.getElementById("scGamma").value.trim()==="" ? NaN : num(document.getElementById("scGamma").value);
+      const theta = document.getElementById("scTheta").value.trim()==="" ? NaN : num(document.getElementById("scTheta").value);
+      const days = num(document.getElementById("scDays").value, 1);
+      const qOverride = document.getElementById("scQtyOverride").value.trim()==="" ? NaN : num(document.getElementById("scQtyOverride").value);
+
+      const qty = Number.isFinite(qOverride) ? qOverride : num(t.qty, 1);
+      const sign = (t.side === "SELL") ? -1 : 1;
+
+      if(!Number.isFinite(S0)){
+        document.getElementById("scS1").textContent = "—";
+        document.getElementById("scPL").textContent = "—";
+        document.getElementById("scNote").textContent = "Enter Current Underlying Price (S0) to run scenario.";
+        return;
+      }
+
+      const S1 = S0 * (1 + (movePct/100));
+      const dS = (S1 - S0);
+
+      document.getElementById("scS1").textContent = S1.toLocaleString("en-IN", {maximumFractionDigits:2});
+
+      // If Greeks are given, approximate option price change: dV ≈ Δ·dS + 0.5·Γ·dS^2 + θ·days
+      // Otherwise: just show MTM P/L (no projection)
+      let projected = NaN;
+      let note = "";
+
+      if(Number.isFinite(delta) || Number.isFinite(gamma) || Number.isFinite(theta)){
+        const dV = (Number.isFinite(delta) ? delta*dS : 0)
+                + (Number.isFinite(gamma) ? 0.5*gamma*dS*dS : 0)
+                + (Number.isFinite(theta) ? theta*days : 0);
+
+        // assume option price changes by dV (approx), multiply by qty and sign
+        projected = dV * qty * sign;
+        note = "Using Δ/Γ/theta approximation.";
+      }else{
+        projected = calcPL(t); // current mtm
+        note = "No Greeks provided; showing current MTM only.";
+      }
+
+      document.getElementById("scPL").textContent = ₹(projected);
+      document.getElementById("scPL").className = (projected>=0) ? "v pos" : "v neg";
+      document.getElementById("scNote").textContent = note;
+    });
+
+    // Optional helper: set selected trade LTP = user-entered underlying (manual)
+    document.getElementById("btnAutoLTP").addEventListener("click", ()=>{
+      const pickId = document.getElementById("scTradePick").value;
+      const t = trades.find(x=>x.id===pickId);
+      const S0 = num(document.getElementById("scS0").value, NaN);
+      if(!t || !Number.isFinite(S0)){
+        alert("Select a trade and type S0.");
+        return;
+      }
+      trades = trades.map(x=> x.id===pickId ? {...x, ltp:S0} : x);
+      render();
+      alert("Set selected trade LTP = S0 (manual mapping).");
+    });
+
+    /***********************
+     * TRADINGVIEW WIDGETS
+     ***********************/
+    function loadTV(){
+      // Clear containers
+      document.getElementById("tvTape").innerHTML = "";
+      document.getElementById("tvNifty").innerHTML = "";
+      document.getElementById("tvBank").innerHTML = "";
+      document.getElementById("tvSensex").innerHTML = "";
+
+      // Ticker tape
+      const tape = document.createElement("script");
+      tape.type = "text/javascript";
+      tape.src = "https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js";
+      tape.async = true;
+      tape.innerHTML = JSON.stringify({
+        symbols: [
+          { proName: "NSE:NIFTY", title: "NIFTY 50" },
+          { proName: "NSE:BANKNIFTY", title: "BANK NIFTY" },
+          { proName: "BSE:SENSEX", title: "SENSEX" },
+          { proName: "NSE:INDIAVIX", title: "INDIA VIX" },
+          { proName: "FX_IDC:USDINR", title: "USD/INR" }
+        ],
+        showSymbolLogo: true,
+        colorTheme: "dark",
+        isTransparent: true,
+        displayMode: "adaptive",
+        locale: "en"
+      });
+      document.getElementById("tvTape").appendChild(tape);
+
+      // Symbol overview widgets (price + chart)
+      const makeOverview = (mountId, symbol, title) => {
+        const sc = document.createElement("script");
+        sc.type = "text/javascript";
+        sc.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
+        sc.async = true;
+        sc.innerHTML = JSON.stringify({
+          symbols: [[symbol, title]],
+          chartOnly: false,
+          width: "100%",
+          height: 320,
+          locale: "en",
+          colorTheme: "dark",
+          autosize: true,
+          showVolume: true,
+          showMA: true,
+          hideDateRanges: false,
+          hideMarketStatus: false,
+          hideSymbolLogo: false,
+          scalePosition: "right",
+          scaleMode: "Normal",
+          fontFamily: "-apple-system, system-ui, Segoe UI, Roboto, Arial",
+          fontSize: "12",
+          noTimeScale: false,
+          valuesTracking: "1",
+          changeMode: "price-and-percent",
+          chartType: "area",
+          maLineColor: "rgba(56,189,248,.9)",
+          maLineWidth: 1,
+          maLength: 9,
+          lineWidth: 2,
+          dateRanges: ["1D","5D","1M","3M","6M","YTD","1Y","5Y","ALL"],
+          isTransparent: true
+        });
+        document.getElementById(mountId).appendChild(sc);
+      };
+
+      makeOverview("tvNifty", "NSE:NIFTY", "NIFTY 50");
+      makeOverview("tvBank", "NSE:BANKNIFTY", "BANK NIFTY");
+      makeOverview("tvSensex", "BSE:SENSEX", "SENSEX");
+    }
+
+    document.getElementById("btnRefreshTV").addEventListener("click", loadTV);
+
+    /***********************
+     * INIT
+     ***********************/
+    loadTV();
+    render();
+
+    /***********************
+     * NOTES:
+     * - For REAL auto-fetch from broker:
+     *   1) Use a backend (Node/Python) with broker API auth
+     *   2) Backend returns JSON of trades
+     *   3) Paste into “Live Feed JSON” or fetch from your endpoint and merge automatically.
+     ***********************/
+  </script>
+</body>
+</html>
