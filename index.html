@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Personal Trading Terminal — Tablet Edition</title>
+
+  <!-- Charts -->
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+  <!-- OCR -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <!-- Indicators chart -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#020617; --panel:#0b1222; --card:#0f172a; --border:#22304a;
+      --text:#e5e7eb; --muted:#94a3b8; --accent:#38bdf8;
+      --green:#10b981; --red:#fb7185; --amber:#f59e0b;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+    header{
+      position:sticky; top:0; z-index:10;
+      padding:14px 16px; border-bottom:1px solid var(--border);
+      background:linear-gradient(90deg,#020617,#0f172a);
+      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    }
+    .brand{display:flex;flex-direction:column;gap:2px}
+    .brand b{font-size:16px}
+    .brand span{font-size:12px;color:var(--muted)}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap}
+    .tab{
+      border:1px solid var(--border); background:#020617; color:var(--text);
+      padding:10px 12px; border-radius:999px; cursor:pointer; font-weight:700;
+    }
+    .tab.active{background:var(--accent); color:#000; border:none}
+    .wrap{max-width:1250px;margin:0 auto;padding:16px}
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
+    @media(min-width:980px){.grid{grid-template-columns:1fr 1fr}}
+    .card{
+      background:var(--card); border:1px solid var(--border);
+      border-radius:16px; padding:14px;
+      box-shadow:0 10px 25px rgba(0,0,0,.2);
+    }
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    input,select,textarea{
+      width:100%; padding:10px 12px; border-radius:12px;
+      border:1px solid var(--border); background:#020617; color:var(--text); outline:none;
+    }
+    textarea{min-height:110px;resize:vertical}
+    button{
+      background:var(--accent); color:#000; border:none; padding:10px 14px;
+      border-radius:12px; font-weight:900; cursor:pointer;
+    }
+    button.alt{background:#111c33;color:var(--text);border:1px solid var(--border)}
+    .small{font-size:12px;color:var(--muted)}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--border); background:#020617; color:var(--muted);
+      padding:6px 10px; border-radius:999px; font-size:12px;
+    }
+    .dot{width:8px;height:8px;border-radius:50%}
+    .dot.red{background:var(--red)}
+    .dot.green{background:var(--green)}
+    .dot.amber{background:var(--amber)}
+    .section{display:none}
+    .section.active{display:block}
+    .chartBox{
+      height:420px; border:1px solid var(--border); border-radius:16px;
+      background:#020617; margin-top:10px;
+    }
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{border:1px solid var(--border);padding:8px;text-align:center}
+    th{background:#020617;color:var(--muted);font-size:12px}
+    td input{background:transparent;border:none;color:var(--text);text-align:center;width:100%}
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+    .stat{background:#020617;border:1px solid var(--border);border-radius:14px;padding:12px}
+    .stat b{display:block;color:var(--muted);font-size:12px}
+    .stat span{display:block;margin-top:6px;font-weight:900;font-size:18px}
+    .green{color:var(--green)} .red{color:var(--red)}
+    canvas{width:100%!important;height:320px!important;border:1px solid var(--border);border-radius:16px;background:#020617;padding:8px;margin-top:12px}
+    footer{padding:12px;text-align:center;color:var(--muted);font-size:12px}
+    .hint{
+      border:1px dashed var(--border); border-radius:14px; padding:10px 12px;
+      background:rgba(2,6,23,.35); color:var(--muted); font-size:12px;
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="brand">
+    <b>🧠 Personal Trading Terminal</b>
+    <span>Tablet Edition — OCR + Indicators + Demo Candles</span>
+  </div>
+  <div class="tabs">
+    <button class="tab active" data-tab="live">Live Charts</button>
+    <button class="tab" data-tab="audit">F&O Audit (OCR)</button>
+    <button class="tab" data-tab="ind">Indicators (BB/SMA)</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- LIVE -->
+  <section id="tab-live" class="section active">
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <div class="row">
+          <span class="badge"><span class="dot amber"></span> Tablet mode (no broker API)</span>
+          <span class="badge">Demo candles (auto-moving)</span>
+        </div>
+        <div class="row">
+          <button class="alt" onclick="resetDemo()">Reset Demo</button>
+        </div>
+      </div>
+
+      <div class="hint" style="margin-top:10px">
+        ✅ This works on tablet today.  
+        🔌 Later, when you have a laptop backend, we’ll replace demo candles with Angel One live candles without changing your UI layout.
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top:16px">
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <b>NIFTY 50 (Demo)</b>
+          <span class="badge"><span class="dot green"></span> Running</span>
+        </div>
+        <div id="niftyChart" class="chartBox"></div>
+        <div class="small" id="niftyInfo">—</div>
+      </div>
+
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <b>SENSEX (Demo)</b>
+          <span class="badge"><span class="dot green"></span> Running</span>
+        </div>
+        <div id="sensexChart" class="chartBox"></div>
+        <div class="small" id="sensexInfo">—</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AUDIT OCR -->
+  <section id="tab-audit" class="section">
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <b>📸 Upload F&O Screenshot (OCR)</b>
+        <span class="badge">Runs inside browser</span>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <input type="file" id="img" accept="image/*" />
+        <button onclick="runOCR()">Extract</button>
+      </div>
+      <div class="small" id="ocrStatus" style="margin-top:8px">—</div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="stats">
+        <div class="stat"><b>Unrealized P/L</b><span id="unreal">₹0.00</span></div>
+        <div class="stat"><b>Net P/L</b><span id="netpl">₹0.00</span></div>
+        <div class="stat"><b>Selected Symbol</b><span id="selShow">—</span></div>
+      </div>
+
+      <table>
+        <thead>
+          <tr><th>Symbol</th><th>Qty</th><th>Avg</th><th>LTP</th><th>P/L</th></tr>
+        </thead>
+        <tbody id="tbl"></tbody>
+      </table>
+
+      <div class="small" style="margin-top:10px">
+        Tip: Tap a Symbol cell to send it to Indicators tab.
+      </div>
+    </div>
+  </section>
+
+  <!-- INDICATORS -->
+  <section id="tab-ind" class="section">
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <b>📉 Bollinger Bands + SMA</b>
+        <span class="badge">Paste close prices</span>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <input id="selSymbol" placeholder="Selected symbol (from OCR table)" readonly />
+        <input id="selAvg" placeholder="Avg price (from table)" readonly />
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <input id="bbPeriod" type="number" value="20" min="2" />
+        <input id="bbMult" type="number" value="2" step="0.1" min="0.1" />
+      </div>
+
+      <div class="small" style="margin-top:10px">Paste closes (comma / space / newline)</div>
+      <textarea id="closes" placeholder="Example:
+22750, 22780, 22740, 22810, ..."></textarea>
+
+      <div class="row" style="margin-top:10px">
+        <button onclick="computeBB()">Compute</button>
+        <button class="alt" onclick="clearBB()">Clear</button>
+      </div>
+
+      <div class="stats" style="margin-top:12px">
+        <div class="stat"><b>SMA</b><span id="outSMA">—</span></div>
+        <div class="stat"><b>Upper</b><span id="outU">—</span></div>
+        <div class="stat"><b>Lower</b><span id="outL">—</span></div>
+        <div class="stat"><b>Bandwidth %</b><span id="outBW">—</span></div>
+      </div>
+
+      <div class="small" id="bbSignal" style="margin-top:10px">Signal: —</div>
+      <canvas id="bbChart"></canvas>
+
+      <div class="hint" style="margin-top:12px">
+        Bollinger Bands need a series of closes (usually last 20 closes).  
+        You can copy closes from any chart app and paste here.
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  ✅ Works on tablet + GitHub Pages | 🔒 No broker login stored | 🔌 Laptop backend can be added later for live Angel One candles
+</footer>
+
+<script>
+/* ================= Tabs ================= */
+document.querySelectorAll(".tab").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const t = btn.dataset.tab;
+    document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+    document.getElementById("tab-"+t).classList.add("active");
+  });
+});
+
+/* ================= Live Demo Candles ================= */
+const niftySeries = createLW("niftyChart");
+const sensexSeries = createLW("sensexChart");
+
+let demoTimer = null;
+let niftyData = [], sensexData = [];
+
+function createLW(id){
+  const el = document.getElementById(id);
+  const chart = LightweightCharts.createChart(el, {
+    layout:{ background:{color:"#020617"}, textColor:"#e5e7eb" },
+    grid:{ vertLines:{color:"#22304a"}, horzLines:{color:"#22304a"} },
+    timeScale:{ timeVisible:true, secondsVisible:false, borderColor:"#22304a" },
+    rightPriceScale:{ borderColor:"#22304a" }
+  });
+  const series = chart.addCandlestickSeries();
+  chart.applyOptions({ width: el.clientWidth, height: el.clientHeight });
+  window.addEventListener("resize", ()=> chart.applyOptions({ width: el.clientWidth, height: el.clientHeight }));
+  return series;
+}
+
+function seedCandles(startPrice){
+  const out = [];
+  let t = Math.floor(Date.now()/1000) - 60*60; // 60 mins back
+  let price = startPrice;
+  for(let i=0;i<60;i++){
+    const open = price;
+    const move1 = (Math.random()-0.5)*30;
+    const close = Math.max(1, open + move1);
+    const high = Math.max(open, close) + Math.random()*12;
+    const low  = Math.min(open, close) - Math.random()*12;
+    out.push({ time: t, open, high, low, close });
+    t += 60;
+    price = close;
+  }
+  return out;
+}
+
+function tickCandle(data){
+  const last = data[data.length-1];
+  const t = last.time + 60;
+  const open = last.close;
+  const close = Math.max(1, open + (Math.random()-0.5)*40);
+  const high = Math.max(open, close) + Math.random()*15;
+  const low  = Math.min(open, close) - Math.random()*15;
+  data.push({ time:t, open, high, low, close });
+  // keep last 180
+  if(data.length>180) data.shift();
+}
+
+function resetDemo(){
+  niftyData = seedCandles(22750);
+  sensexData = seedCandles(74800);
+  niftySeries.setData(niftyData);
+  sensexSeries.setData(sensexData);
+  updateInfo();
+  startDemo();
+}
+
+function updateInfo(){
+  const n = niftyData[niftyData.length-1];
+  const s = sensexData[sensexData.length-1];
+  document.getElementById("niftyInfo").textContent = n ? `Last: ${n.close.toFixed(2)} | O:${n.open.toFixed(2)} H:${n.high.toFixed(2)} L:${n.low.toFixed(2)}` : "—";
+  document.getElementById("sensexInfo").textContent = s ? `Last: ${s.close.toFixed(2)} | O:${s.open.toFixed(2)} H:${s.high.toFixed(2)} L:${s.low.toFixed(2)}` : "—";
+}
+
+function startDemo(){
+  if(demoTimer) clearInterval(demoTimer);
+  demoTimer = setInterval(()=>{
+    tickCandle(niftyData);
+    tickCandle(sensexData);
+    niftySeries.setData(niftyData);
+    sensexSeries.setData(sensexData);
+    updateInfo();
+  }, 2000);
+}
+
+resetDemo();
+
+/* ================= OCR Audit ================= */
+function money(n){ return `₹${(+n||0).toFixed(2)}`; }
+function paint(el, val){
+  el.classList.toggle("green", val>=0);
+  el.classList.toggle("red", val<0);
+}
+function esc(s){ return String(s).replace(/[&<>"']/g, m => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m])); }
+
+async function runOCR(){
+  const f = document.getElementById("img").files[0];
+  if(!f){ alert("Upload screenshot first"); return; }
+  const status = document.getElementById("ocrStatus");
+  status.textContent = "OCR running…";
+
+  const { data:{ text } } = await Tesseract.recognize(f, "eng", {
+    logger:m=>{ if(m?.status) status.textContent = `${m.status} ${Math.round((m.progress||0)*100)}%`; }
+  });
+
+  status.textContent = "Parsing…";
+  parseOCR(text);
+  status.textContent = "✅ Done";
+}
+
+function parseOCR(text){
+  const lines = text.split("\n").map(l=>l.trim()).filter(Boolean);
+  const tbody = document.getElementById("tbl");
+  tbody.innerHTML = "";
+  let unreal = 0;
+
+  lines.forEach(line=>{
+    const nums = line.match(/-?\d+(?:\.\d+)?/g);
+    if(nums && nums.length>=4){
+      const qty = +nums[nums.length-4];
+      const avg = +nums[nums.length-3];
+      const ltp = +nums[nums.length-2];
+      const pl  = +nums[nums.length-1];
+      if([qty,avg,ltp,pl].some(x=>Number.isNaN(x))) return;
+
+      unreal += pl;
+      const sym = (line.split(/\s+/)[0] || "").slice(0,30);
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><input value="${esc(sym)}" onclick="selectRow(this)"></td>
+        <td><input value="${qty}"></td>
+        <td><input value="${avg}"></td>
+        <td><input value="${ltp}"></td>
+        <td><input value="${pl}" oninput="recalcPL()"></td>
+      `;
+      tbody.appendChild(tr);
+    }
+  });
+
+  const uEl = document.getElementById("unreal");
+  const nEl = document.getElementById("netpl");
+  uEl.textContent = money(unreal);
+  nEl.textContent = money(unreal);
+  paint(uEl, unreal);
+  paint(nEl, unreal);
+}
+
+function recalcPL(){
+  let sum=0;
+  document.querySelectorAll("#tbl tr").forEach(r=>{
+    sum += parseFloat(r.cells[4].querySelector("input").value)||0;
+  });
+  const uEl = document.getElementById("unreal");
+  const nEl = document.getElementById("netpl");
+  uEl.textContent = money(sum);
+  nEl.textContent = money(sum);
+  paint(uEl, sum);
+  paint(nEl, sum);
+}
+
+function selectRow(el){
+  const tr = el.closest("tr");
+  const symbol = tr.cells[0].querySelector("input").value.trim();
+  const avg = tr.cells[2].querySelector("input").value.trim();
+  document.getElementById("selSymbol").value = symbol;
+  document.getElementById("selAvg").value = avg ? `Avg: ${avg}` : "";
+  document.getElementById("selShow").textContent = symbol || "—";
+  // switch tab
+  document.querySelector('.tab[data-tab="ind"]').click();
+}
+
+/* ================= Indicators (BB/SMA) ================= */
+let bbChart = null;
+
+function parseCloses(){
+  const raw = document.getElementById("closes").value || "";
+  return raw.split(/[\s,]+/).map(x=>parseFloat(x)).filter(n=>Number.isFinite(n));
+}
+function mean(a){ return a.reduce((s,x)=>s+x,0)/a.length; }
+function stddev(a){
+  const m=mean(a);
+  const v=a.reduce((s,x)=>s+(x-m)*(x-m),0)/a.length;
+  return Math.sqrt(v);
+}
+
+function computeBB(){
+  const closes = parseCloses();
+  const period = Math.max(2, parseInt(document.getElementById("bbPeriod").value||"20",10));
+  const mult = Math.max(0.1, parseFloat(document.getElementById("bbMult").value||"2"));
+
+  if(closes.length < period){
+    alert(`Need at least ${period} closes. You provided ${closes.length}.`);
+    return;
+  }
+
+  const win = closes.slice(-period);
+  const sma = mean(win);
+  const sd = stddev(win);
+  const upper = sma + mult*sd;
+  const lower = sma - mult*sd;
+  const bw = sma ? ((upper-lower)/sma)*100 : NaN;
+  const last = closes[closes.length-1];
+
+  document.getElementById("outSMA").textContent = `₹${sma.toFixed(2)}`;
+  document.getElementById("outU").textContent = `₹${upper.toFixed(2)}`;
+  document.getElementById("outL").textContent = `₹${lower.toFixed(2)}`;
+  document.getElementById("outBW").textContent = `${bw.toFixed(2)}%`;
+
+  let sig="Inside bands";
+  if(last>upper) sig="Above Upper (possible overbought)";
+  if(last<lower) sig="Below Lower (possible oversold)";
+  document.getElementById("bbSignal").textContent = `Signal: Last ₹${last.toFixed(2)} — ${sig}`;
+
+  renderBB(closes, period, mult);
+}
+
+function renderBB(closes, period, mult){
+  const labels = closes.map((_,i)=>String(i+1));
+  const smaS=[], upS=[], lowS=[];
+  for(let i=0;i<closes.length;i++){
+    if(i+1<period){ smaS.push(null); upS.push(null); lowS.push(null); continue; }
+    const win = closes.slice(i+1-period, i+1);
+    const sma = mean(win);
+    const sd = stddev(win);
+    smaS.push(sma);
+    upS.push(sma + mult*sd);
+    lowS.push(sma - mult*sd);
+  }
+
+  const ctx = document.getElementById("bbChart");
+  if(bbChart) bbChart.destroy();
+  bbChart = new Chart(ctx, {
+    type:"line",
+    data:{ labels, datasets:[
+      { label:"Close", data:closes, tension:.25, pointRadius:0 },
+      { label:`SMA(${period})`, data:smaS, tension:.25, pointRadius:0 },
+      { label:"Upper", data:upS, tension:.25, pointRadius:0 },
+      { label:"Lower", data:lowS, tension:.25, pointRadius:0 }
+    ]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ labels:{ color:"#e5e7eb" } } },
+      scales:{
+        x:{ ticks:{ color:"#94a3b8" }, grid:{ color:"#22304a" } },
+        y:{ ticks:{ color:"#94a3b8" }, grid:{ color:"#22304a" } }
+      }
+    }
+  });
+}
+
+function clearBB(){
+  document.getElementById("closes").value="";
+  document.getElementById("outSMA").textContent="—";
+  document.getElementById("outU").textContent="—";
+  document.getElementById("outL").textContent="—";
+  document.getElementById("outBW").textContent="—";
+  document.getElementById("bbSignal").textContent="Signal: —";
+  if(bbChart){ bbChart.destroy(); bbChart=null; }
+}
+</script>
+</body>
+</html>
