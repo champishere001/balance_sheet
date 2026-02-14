@@ -1,354 +1,199 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Categories Left + Products Grid</title>
-  <style>
-    :root{
-      --bg:#0b1220;
-      --panel:#0f172a;
-      --card:#111c33;
-      --border:#22304a;
-      --text:#e5e7eb;
-      --muted:#94a3b8;
-      --shadow: 0 18px 60px rgba(0,0,0,.35);
-      --accent:#38bdf8;
-    }
-    *{ box-sizing:border-box; }
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      padding: 20px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Store</title>
 
-    .wrap{
-      max-width: 1300px;
-      margin: 0 auto;
-      display:grid;
-      grid-template-columns: 280px 1fr;
-      gap: 16px;
-      align-items:start;
-    }
+<style>
 
-    @media (max-width: 980px){
-      .wrap{ grid-template-columns: 1fr; }
-    }
+body{
+margin:0;
+font-family:Arial, sans-serif;
+background:#0b1220;
+color:white;
+}
 
-    /* LEFT: Categories */
-    .sidebar{
-      background: rgba(255,255,255,.03);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      padding: 14px;
-      position: sticky;
-      top: 16px;
-    }
-    @media (max-width: 980px){
-      .sidebar{ position: relative; top: 0; }
-    }
+header{
+display:flex;
+gap:10px;
+align-items:center;
+padding:14px 18px;
+background:#111a2f;
+}
 
-    .sideTitle{
-      margin: 0 0 10px;
-      font-size: 16px;
-      font-weight: 800;
-      letter-spacing: .2px;
-    }
+header input{
+flex:1;
+padding:10px;
+border-radius:10px;
+border:none;
+outline:none;
+}
 
-    .catList{
-      display:flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .catBtn{
-      appearance:none;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,.03);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 12px;
-      text-align:left;
-      cursor:pointer;
-      font-weight: 650;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 10px;
-    }
-    .catBtn:hover{ background: rgba(255,255,255,.07); }
-    .catBtn.active{
-      border-color: rgba(56,189,248,.7);
-      box-shadow: 0 0 0 3px rgba(56,189,248,.12) inset;
-    }
-    .badge{
-      font-size: 12px;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.02);
-    }
+.container{
+display:grid;
+grid-template-columns:240px 1fr 320px;
+gap:14px;
+padding:14px;
+}
 
-    /* RIGHT: Header + Grid */
-    .main{
-      background: rgba(255,255,255,.02);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      padding: 14px;
-      overflow:hidden;
-    }
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 12px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-    .heading{
-      margin:0;
-      font-size: 18px;
-      font-weight: 900;
-    }
-    .sub{
-      margin:4px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    .search{
-      display:flex;
-      align-items:center;
-      gap: 10px;
-      min-width: 260px;
-      flex: 1;
-      justify-content:flex-end;
-    }
-    .search input{
-      width: min(420px, 100%);
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,.2);
-      color: var(--text);
-      outline:none;
-    }
-    .search input:focus{
-      border-color: rgba(56,189,248,.7);
-      box-shadow: 0 0 0 3px rgba(56,189,248,.12);
-    }
+@media(max-width:900px){
+.container{grid-template-columns:1fr;}
+.sidebar{order:2}
+.details{order:3}
+}
 
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr)); /* 4 products in a row */
-      gap: 14px;
-    }
-    @media (max-width: 1180px){
-      .grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    }
-    @media (max-width: 900px){
-      .grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-    @media (max-width: 520px){
-      .grid{ grid-template-columns: 1fr; }
-    }
+.sidebar{
+background:#111a2f;
+border-radius:14px;
+padding:14px;
+}
 
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow:hidden;
-    }
-    .imgwrap{
-      aspect-ratio: 4/3;
-      background:#0a1020;
-      overflow:hidden;
-    }
-    .imgwrap img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-      transition: transform .25s ease;
-    }
-    .card:hover .imgwrap img{ transform: scale(1.04); }
-    .content{ padding: 12px 12px 14px; }
-    .title{ margin:0 0 6px; font-size: 15px; font-weight: 800; }
-    .desc{ margin:0 0 10px; color: var(--muted); font-size: 13px; line-height: 1.35; }
-    .row{
-      display:flex; align-items:center; justify-content:space-between; gap: 10px;
-    }
-    .price{ font-weight: 900; }
-    .btn{
-      text-decoration:none;
-      border:1px solid var(--border);
-      padding: 8px 10px;
-      border-radius: 12px;
-      color: var(--text);
-      font-weight: 700;
-      font-size: 13px;
-      background: rgba(255,255,255,.04);
-    }
-    .btn:hover{ background: rgba(255,255,255,.08); }
-    .empty{
-      padding: 24px;
-      border: 1px dashed var(--border);
-      border-radius: 14px;
-      color: var(--muted);
-      text-align:center;
-    }
-  </style>
+.cat{
+padding:10px;
+margin-bottom:8px;
+border-radius:10px;
+background:#1a2440;
+cursor:pointer;
+}
+
+.cat:hover{background:#22305a}
+
+.products{
+background:#111a2f;
+border-radius:14px;
+padding:14px;
+
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:14px;
+}
+
+@media(max-width:420px){
+.products{grid-template-columns:1fr;}
+}
+
+.product{
+background:#1a2440;
+border-radius:12px;
+padding:14px;
+cursor:pointer;
+transition:.2s;
+}
+
+.product:hover{background:#22305a}
+
+.details{
+background:#111a2f;
+border-radius:14px;
+padding:14px;
+}
+
+.details img{
+width:100%;
+height:200px;
+object-fit:cover;
+background:#1a2440;
+border-radius:10px;
+}
+
+button{
+padding:10px 14px;
+border:none;
+border-radius:10px;
+background:#22c55e;
+color:white;
+margin-top:10px;
+cursor:pointer;
+}
+
+</style>
 </head>
+
 <body>
 
-<div class="wrap">
-  <!-- LEFT -->
-  <aside class="sidebar">
-    <h3 class="sideTitle">Categories</h3>
-    <div class="catList" id="catList"></div>
-  </aside>
+<header>
+<input placeholder="Search products...">
+<button onclick="location.href='index.html'">Home</button>
+</header>
 
-  <!-- RIGHT -->
-  <main class="main">
-    <div class="topbar">
-      <div>
-        <h2 class="heading" id="pageTitle">All Products</h2>
-        <p class="sub" id="pageSub">Showing everything</p>
-      </div>
-      <div class="search">
-        <input id="searchInput" type="search" placeholder="Search products..." />
-      </div>
-    </div>
+<div class="container">
 
-    <section class="grid" id="grid"></section>
-    <div id="empty" class="empty" style="display:none;">No products found.</div>
-  </main>
+<!-- LEFT CATEGORIES -->
+<div class="sidebar">
+<b>Categories</b>
+
+<div class="cat" onclick="showCat('all')">All</div>
+<div class="cat" onclick="showCat('charger')">Chargers</div>
+<div class="cat" onclick="showCat('speaker')">Speakers</div>
+<div class="cat" onclick="showCat('powerbank')">Powerbanks</div>
+
 </div>
 
+
+<!-- CENTER PRODUCTS (2 GRID) -->
+<div class="products" id="products">
+
+<div class="product" data-cat="charger" onclick="showDetail('20W PD Charger','₹799')">
+20W PD Charger
+</div>
+
+<div class="product" data-cat="charger" onclick="showDetail('Fast Charger','₹599')">
+Fast Charger
+</div>
+
+<div class="product" data-cat="speaker" onclick="showDetail('Bluetooth Speaker','₹999')">
+Bluetooth Speaker
+</div>
+
+<div class="product" data-cat="powerbank" onclick="showDetail('10000mAh Powerbank','₹1199')">
+10000mAh Powerbank
+</div>
+
+<div class="product" data-cat="speaker" onclick="showDetail('Mini Speaker','₹699')">
+Mini Speaker
+</div>
+
+<div class="product" data-cat="powerbank" onclick="showDetail('20000mAh Powerbank','₹1599')">
+20000mAh Powerbank
+</div>
+
+</div>
+
+
+<!-- RIGHT DETAILS -->
+<div class="details" id="details">
+
+<h3>Select product</h3>
+
+<img>
+
+<h2 id="pname">---</h2>
+<h3 id="price"></h3>
+
+<button onclick="alert('WhatsApp enquiry')">
+WhatsApp Enquiry
+</button>
+
+</div>
+
+</div>
+
+
 <script>
-  // Add as many categories/products as you want
-  const PRODUCTS = [
-    // Electronics
-    { id: 1, cat: "Electronics", name: "Laptop Pro 14", price: 79999, desc:"Fast & lightweight.", img:"https://source.unsplash.com/800x600/?laptop" },
-    { id: 2, cat: "Electronics", name: "Smartphone X", price: 39999, desc:"Great camera.", img:"https://source.unsplash.com/800x600/?smartphone" },
-    { id: 3, cat: "Electronics", name: "Noise-Cancel Headphones", price: 6499, desc:"Deep bass + ANC.", img:"https://source.unsplash.com/800x600/?headphones" },
-    { id: 4, cat: "Electronics", name: "Smartwatch S", price: 2999, desc:"Fitness & alerts.", img:"https://source.unsplash.com/800x600/?smartwatch" },
 
-    // Home
-    { id: 5, cat: "Home & Kitchen", name: "Coffee Maker", price: 3499, desc:"Quick brew.", img:"https://source.unsplash.com/800x600/?coffee,maker" },
-    { id: 6, cat: "Home & Kitchen", name: "Air Fryer", price: 5999, desc:"Crispy with less oil.", img:"https://source.unsplash.com/800x600/?air,fryer" },
-    { id: 7, cat: "Home & Kitchen", name: "Vacuum Cleaner", price: 7499, desc:"Strong suction.", img:"https://source.unsplash.com/800x600/?vacuum,cleaner" },
-    { id: 8, cat: "Home & Kitchen", name: "Blender", price: 1999, desc:"Smooth mixing.", img:"https://source.unsplash.com/800x600/?blender" },
+function showCat(cat){
+document.querySelectorAll('.product').forEach(p=>{
+p.style.display = (cat==='all'||p.dataset.cat===cat)?'block':'none';
+});
+}
 
-    // Fashion
-    { id: 9, cat: "Fashion", name: "Sneakers", price: 2499, desc:"Everyday comfort.", img:"https://source.unsplash.com/800x600/?sneakers" },
-    { id:10, cat: "Fashion", name: "Jacket", price: 2999, desc:"Warm & stylish.", img:"https://source.unsplash.com/800x600/?jacket" },
-    { id:11, cat: "Fashion", name: "Backpack", price: 1599, desc:"Travel ready.", img:"https://source.unsplash.com/800x600/?backpack" },
-    { id:12, cat: "Fashion", name: "Watch", price: 3499, desc:"Classic look.", img:"https://source.unsplash.com/800x600/?wristwatch" },
+function showDetail(name,price){
+document.getElementById('pname').innerText=name;
+document.getElementById('price').innerText=price;
+}
 
-    // Sports
-    { id:13, cat: "Sports", name: "Yoga Mat", price: 799, desc:"Non-slip grip.", img:"https://source.unsplash.com/800x600/?yoga,mat" },
-    { id:14, cat: "Sports", name: "Dumbbells", price: 1299, desc:"Home workout.", img:"https://source.unsplash.com/800x600/?dumbbells" },
-    { id:15, cat: "Sports", name: "Football", price: 699, desc:"Match feel.", img:"https://source.unsplash.com/800x600/?football" },
-    { id:16, cat: "Sports", name: "Running Shoes", price: 2799, desc:"Lightweight.", img:"https://source.unsplash.com/800x600/?running,shoes" },
-  ];
-
-  const catListEl = document.getElementById("catList");
-  const gridEl = document.getElementById("grid");
-  const emptyEl = document.getElementById("empty");
-  const pageTitleEl = document.getElementById("pageTitle");
-  const pageSubEl = document.getElementById("pageSub");
-  const searchInput = document.getElementById("searchInput");
-
-  let activeCat = "All";
-  let searchText = "";
-
-  const money = (n) => "₹" + n.toLocaleString("en-IN");
-
-  function getCategories(){
-    const cats = Array.from(new Set(PRODUCTS.map(p => p.cat))).sort();
-    return ["All", ...cats];
-  }
-
-  function countByCategory(cat){
-    if(cat === "All") return PRODUCTS.length;
-    return PRODUCTS.filter(p => p.cat === cat).length;
-  }
-
-  function renderCategories(){
-    const cats = getCategories();
-    catListEl.innerHTML = "";
-
-    cats.forEach(cat => {
-      const btn = document.createElement("button");
-      btn.className = "catBtn" + (cat === activeCat ? " active" : "");
-      btn.innerHTML = `<span>${cat}</span><span class="badge">${countByCategory(cat)}</span>`;
-      btn.addEventListener("click", () => {
-        activeCat = cat;
-        renderCategories();
-        renderProducts();
-      });
-      catListEl.appendChild(btn);
-    });
-  }
-
-  function filteredProducts(){
-    return PRODUCTS.filter(p => {
-      const okCat = (activeCat === "All") ? true : p.cat === activeCat;
-      const q = searchText.trim().toLowerCase();
-      const okSearch = !q ? true : (p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q));
-      return okCat && okSearch;
-    });
-  }
-
-  function renderProducts(){
-    const list = filteredProducts();
-    gridEl.innerHTML = "";
-
-    const title = activeCat === "All" ? "All Products" : activeCat;
-    pageTitleEl.textContent = title;
-
-    const sub = activeCat === "All"
-      ? `Showing ${list.length} products`
-      : `Showing ${list.length} products in ${activeCat}`;
-    pageSubEl.textContent = sub;
-
-    if(list.length === 0){
-      emptyEl.style.display = "block";
-      return;
-    }
-    emptyEl.style.display = "none";
-
-    list.forEach(p => {
-      const card = document.createElement("article");
-      card.className = "card";
-      card.innerHTML = `
-        <div class="imgwrap">
-          <img src="${p.img}" alt="${p.name}" loading="lazy" />
-        </div>
-        <div class="content">
-          <h3 class="title">${p.name}</h3>
-          <p class="desc">${p.desc}</p>
-          <div class="row">
-            <div class="price">${money(p.price)}</div>
-            <a class="btn" href="#" onclick="return false;">View</a>
-          </div>
-        </div>
-      `;
-      gridEl.appendChild(card);
-    });
-  }
-
-  searchInput.addEventListener("input", (e) => {
-    searchText = e.target.value || "";
-    renderProducts();
-  });
-
-  renderCategories();
-  renderProducts();
 </script>
+
 </body>
 </html>
