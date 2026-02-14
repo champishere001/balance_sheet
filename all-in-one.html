@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Garg Enterprise • All Categories</title>
+<title>Garg Enterprise • Shop (All-in-One)</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,7 +18,7 @@
   --text:#eaf0ff;
   --muted:rgba(234,240,255,.70);
   --a1:#60a5fa; --a2:#22d3ee;
-  --good:#34d399; --warn:#fbbf24; --bad:#fb7185;
+  --good:#34d399;
   --shadow:0 26px 90px rgba(0,0,0,.55);
 }
 *{box-sizing:border-box}
@@ -211,6 +211,62 @@ h1{margin:10px 0 6px;font-size:clamp(26px,4vw,44px);line-height:1.05;letter-spac
   margin-top:22px;
   text-align:center;
 }
+
+/* ===== Category Grid ===== */
+.catGrid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-top:12px;
+}
+@media(max-width:1100px){ .catGrid{grid-template-columns:repeat(3,1fr)} }
+@media(max-width:820px){ .catGrid{grid-template-columns:repeat(2,1fr)} }
+@media(max-width:540px){ .catGrid{grid-template-columns:1fr} }
+
+.catTile{
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05);
+  padding:14px;
+  cursor:pointer;
+  transition:.18s ease;
+  position:relative;
+  overflow:hidden;
+}
+.catTile:hover{
+  transform:translateY(-2px);
+  background:rgba(255,255,255,.07);
+  border-color:rgba(255,255,255,.18);
+}
+.catTile.on{
+  border-color:rgba(34,211,238,.30);
+  background:rgba(34,211,238,.10);
+}
+.catTile::before{
+  content:"";
+  position:absolute; inset:-1px;
+  background:
+    radial-gradient(320px 180px at 25% 15%, rgba(96,165,250,.20), transparent 60%),
+    radial-gradient(320px 180px at 90% 55%, rgba(34,211,238,.14), transparent 60%);
+  pointer-events:none;
+}
+.catTileIn{position:relative; display:flex; gap:12px; align-items:center; justify-content:space-between}
+.catLeft{display:flex; gap:12px; align-items:center}
+.catIcon{
+  width:44px;height:44px;border-radius:18px;
+  display:grid;place-items:center;font-size:22px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);
+}
+.catName{font-weight:1200}
+.catHint{color:var(--muted); font-weight:900; font-size:12px; margin-top:2px}
+.catCount{
+  font-size:12px;font-weight:1100;
+  padding:6px 10px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.04);
+  color:var(--muted);
+}
 </style>
 </head>
 
@@ -222,7 +278,7 @@ h1{margin:10px 0 6px;font-size:clamp(26px,4vw,44px);line-height:1.05;letter-spac
       <div class="mark"></div>
       <div>
         <div class="brandTitle">Garg Enterprise</div>
-        <div class="brandSub">100 Demo Items • All Categories • Single Page</div>
+        <div class="brandSub">Grid Categories + Product Viewer</div>
       </div>
     </div>
 
@@ -238,9 +294,9 @@ h1{margin:10px 0 6px;font-size:clamp(26px,4vw,44px);line-height:1.05;letter-spac
 <div class="wrap">
   <section class="hero">
     <div class="heroIn">
-      <div class="tag"><span class="dot"></span> Click category → filter • Click product → details + more from same section</div>
-      <h1>All Categories <span class="grad">100 Demo Products</span></h1>
-      <p class="sub">Replace WhatsApp number in code: <b>91YOURNUMBER</b>. Later we can connect Google Sheet/Firebase for real inventory.</p>
+      <div class="tag"><span class="dot"></span> Category grid + sidebar • Click product → details + more items</div>
+      <h1>Garg Enterprise <span class="grad">Shop</span></h1>
+      <p class="sub">Replace WhatsApp number in code: <b>91YOURNUMBER</b>. Demo UI + demo products.</p>
     </div>
   </section>
 
@@ -265,7 +321,11 @@ h1{margin:10px 0 6px;font-size:clamp(26px,4vw,44px);line-height:1.05;letter-spac
         <b id="listTitle">Products</b>
         <span class="pill good" id="countPill">0 items</span>
       </div>
+
+      <!-- PRODUCTS BODY -->
       <div class="body">
+        <div class="catGrid" id="catGrid"></div>
+        <div style="height:12px"></div>
         <div class="grid" id="grid"></div>
       </div>
     </section>
@@ -277,14 +337,14 @@ h1{margin:10px 0 6px;font-size:clamp(26px,4vw,44px);line-height:1.05;letter-spac
         <span class="pill" id="vCat">—</span>
       </div>
       <div class="body" id="viewerBody">
-        <div class="smallNote">Tap any product card to open details. You’ll still see other products from the same category.</div>
+        <div class="smallNote">Tap any product card to open details.</div>
       </div>
     </aside>
 
   </div>
 
   <div class="footer">
-    © <span id="yr"></span> Garg Enterprise • Demo Store
+    © <span id="yr"></span> Garg Enterprise
   </div>
 </div>
 
@@ -308,21 +368,10 @@ const CATEGORIES = [
   {name:"Computer Accessories", icon:"💻"},
   {name:"Storage Devices", icon:"💾"},
   {name:"Networking", icon:"📡"},
-  {name:"Smart Gadgets", icon:"🏠"},
-  {name:"Car Accessories", icon:"🚗"},
-  {name:"Adapters & Hubs", icon:"🧩"},
-  {name:"Keyboard & Mouse", icon:"⌨️"},
-  {name:"Power Strips", icon:"⚡"},
-  {name:"CCTV & Security", icon:"📷"},
-  {name:"TV Accessories", icon:"📺"},
-  {name:"Gaming Accessories", icon:"🎮"},
-  {name:"Printers & Ink", icon:"🖨️"},
-  {name:"Others", icon:"📦"},
 ];
 
-/* ========= 100 DEMO PRODUCTS (10 categories × 10 items) ========= */
 const PRODUCTS = [
-  // 1) Powerbanks (10)
+  // Powerbanks
   {id:"pb01", cat:"Powerbanks", name:"Portronics PB 10,000mAh Lite", brand:"Portronics", price:999,  wholesale:740,  stock:32, img:"https://source.unsplash.com/featured/?powerbank&sig=1",  spec:["10,000mAh","Type-C","Fast charge"]},
   {id:"pb02", cat:"Powerbanks", name:"Portronics PB 20,000mAh Max",  brand:"Portronics", price:1699, wholesale:1200, stock:21, img:"https://source.unsplash.com/featured/?powerbank&sig=2",  spec:["20,000mAh","22.5W","LED indicator"]},
   {id:"pb03", cat:"Powerbanks", name:"PB 20k Dual Output",           brand:"Portronics", price:1799, wholesale:1290, stock:18, img:"https://source.unsplash.com/featured/?powerbank&sig=3",  spec:["Dual USB","Type-C","Safe protection"]},
@@ -334,7 +383,7 @@ const PRODUCTS = [
   {id:"pb09", cat:"Powerbanks", name:"PB 20k Digital Display",       brand:"Portronics", price:2099, wholesale:1590, stock:7,  img:"https://source.unsplash.com/featured/?powerbank&sig=9",  spec:["Digital %","PD/QC","Type-C"]},
   {id:"pb10", cat:"Powerbanks", name:"PB 10k Fast+ (22.5W)",         brand:"Portronics", price:1299, wholesale:950,  stock:14, img:"https://source.unsplash.com/featured/?powerbank&sig=10", spec:["22.5W","Quick charge","Compact"]},
 
-  // 2) Speakers (10)
+  // Speakers
   {id:"sp01", cat:"Speakers", name:"Mini Bluetooth Speaker",         brand:"Portronics", price:1299, wholesale:980,  stock:15, img:"https://source.unsplash.com/featured/?bluetooth-speaker&sig=11", spec:["BT 5.3","Deep bass","RGB"]},
   {id:"sp02", cat:"Speakers", name:"Party Speaker 40W",              brand:"Portronics", price:3499, wholesale:2990, stock:6,  img:"https://source.unsplash.com/featured/?party-speaker&sig=12",    spec:["40W output","Bass boost","Mic"]},
   {id:"sp03", cat:"Speakers", name:"Pocket Speaker",                 brand:"Portronics", price:899,  wholesale:670,  stock:28, img:"https://source.unsplash.com/featured/?speaker&sig=13",         spec:["Portable","Handsfree","Good battery"]},
@@ -346,7 +395,7 @@ const PRODUCTS = [
   {id:"sp09", cat:"Speakers", name:"Speaker + TWS Pair",             brand:"Portronics", price:2799, wholesale:2290, stock:7,  img:"https://source.unsplash.com/featured/?speaker&sig=19",         spec:["TWS mode","Stereo","Party"]},
   {id:"sp10", cat:"Speakers", name:"USB Powered Desktop Speaker",    brand:"Portronics", price:999,  wholesale:740,  stock:19, img:"https://source.unsplash.com/featured/?computer-speakers&sig=20", spec:["USB power","3.5mm","Clear"]},
 
-  // 3) Chargers (10)
+  // Chargers
   {id:"ch01", cat:"Chargers", name:"20W PD Charger",                 brand:"Portronics", price:799,  wholesale:590,  stock:30, img:"https://source.unsplash.com/featured/?phone-charger&sig=21", spec:["PD","Type-C","Fast charge"]},
   {id:"ch02", cat:"Chargers", name:"33W Fast Charger",               brand:"Portronics", price:999,  wholesale:740,  stock:42, img:"https://source.unsplash.com/featured/?charger&sig=22",      spec:["PD/QC","Safe","Compact"]},
   {id:"ch03", cat:"Chargers", name:"65W GaN Charger",                brand:"Portronics", price:2499, wholesale:1990, stock:11, img:"https://source.unsplash.com/featured/?gan-charger&sig=23",  spec:["65W","GaN","Laptop + phone"]},
@@ -358,7 +407,7 @@ const PRODUCTS = [
   {id:"ch09", cat:"Chargers", name:"Travel Charger Kit",             brand:"Portronics", price:1399, wholesale:1050, stock:14, img:"https://source.unsplash.com/featured/?charger&sig=29",      spec:["Travel","Multi-plug","Safe"]},
   {id:"ch10", cat:"Chargers", name:"Multi Socket USB Charger",       brand:"Portronics", price:1799, wholesale:1390, stock:8,  img:"https://source.unsplash.com/featured/?charger&sig=30",      spec:["Multi USB","Home/office","Protection"]},
 
-  // 4) Cables (10)
+  // Cables
   {id:"cb01", cat:"Cables", name:"Type-C to Type-C 1m (Braided)",    brand:"Portronics", price:299,  wholesale:149,  stock:150, img:"https://source.unsplash.com/featured/?usb-c-cable&sig=31", spec:["3A","Braided","Data"]},
   {id:"cb02", cat:"Cables", name:"USB-A to Type-C 1m",               brand:"Portronics", price:249,  wholesale:129,  stock:170, img:"https://source.unsplash.com/featured/?usb-c-cable&sig=32", spec:["Fast","Strong","Data"]},
   {id:"cb03", cat:"Cables", name:"Lightning Cable 1m",               brand:"Portronics", price:399,  wholesale:219,  stock:95,  img:"https://source.unsplash.com/featured/?lightning-cable&sig=33", spec:["iPhone","Durable","Sync"]},
@@ -370,80 +419,32 @@ const PRODUCTS = [
   {id:"cb09", cat:"Cables", name:"HDMI Cable 2m",                    brand:"Garg Select",price:699,  wholesale:499,  stock:35,  img:"https://source.unsplash.com/featured/?hdmi-cable&sig=39",     spec:["2m","4K","Strong"]},
   {id:"cb10", cat:"Cables", name:"AUX Cable 1m",                     brand:"Garg Select",price:199,  wholesale:119,  stock:120, img:"https://source.unsplash.com/featured/?aux-cable&sig=40",      spec:["3.5mm","Clear","Strong"]},
 
-  // 5) Earbuds (10)
+  // Earbuds
   {id:"eb01", cat:"Earbuds", name:"TWS Earbuds ENC",                 brand:"Portronics", price:1899, wholesale:1490, stock:22, img:"https://source.unsplash.com/featured/?earbuds&sig=41", spec:["ENC mic","Low latency","Type-C"]},
   {id:"eb02", cat:"Earbuds", name:"TWS Earbuds Bass Boost",          brand:"Portronics", price:1599, wholesale:1290, stock:18, img:"https://source.unsplash.com/featured/?earbuds&sig=42", spec:["Bass","Touch","Long battery"]},
   {id:"eb03", cat:"Earbuds", name:"TWS Compact Mini",                brand:"Portronics", price:1299, wholesale:990,  stock:30, img:"https://source.unsplash.com/featured/?earbuds&sig=43", spec:["Compact","Fast pairing","Comfort"]},
-  {id:"eb04", cat:"Earbuds", name:"TWS Gaming Mode",                 brand:"Portronics", price:1999, wholesale:1590, stock:12, img:"https://source.unsplash.com/featured/?earbuds&sig=44", spec:["Low latency","ENC","BT 5.3"]},
-  {id:"eb05", cat:"Earbuds", name:"TWS ANC (Demo)",                  brand:"Portronics", price:2999, wholesale:2490, stock:8,  img:"https://source.unsplash.com/featured/?earbuds&sig=45", spec:["ANC","Premium","Type-C"]},
-  {id:"eb06", cat:"Earbuds", name:"Neckband Wireless",               brand:"Portronics", price:999,  wholesale:740,  stock:26, img:"https://source.unsplash.com/featured/?neckband&sig=46", spec:["Neckband","Magnetic","Bass"]},
-  {id:"eb07", cat:"Earbuds", name:"Neckband Fast Charge",            brand:"Portronics", price:1299, wholesale:990,  stock:16, img:"https://source.unsplash.com/featured/?neckband&sig=47", spec:["Fast charge","Long battery","Mic"]},
-  {id:"eb08", cat:"Earbuds", name:"TWS with Display Case",           brand:"Portronics", price:2199, wholesale:1790, stock:9,  img:"https://source.unsplash.com/featured/?earbuds&sig=48", spec:["Display case","ENC","Type-C"]},
-  {id:"eb09", cat:"Earbuds", name:"TWS Sports Fit",                  brand:"Portronics", price:1799, wholesale:1390, stock:14, img:"https://source.unsplash.com/featured/?earbuds&sig=49", spec:["Secure fit","Sweat friendly","Bass"]},
-  {id:"eb10", cat:"Earbuds", name:"TWS Ultra Compact",               brand:"Portronics", price:1399, wholesale:1090, stock:20, img:"https://source.unsplash.com/featured/?earbuds&sig=50", spec:["Ultra compact","Quick pairing","Touch"]},
 
-  // 6) Headphones (10)
+  // Headphones
   {id:"hp01", cat:"Headphones", name:"Wireless Headphones Foldable", brand:"Portronics", price:1999, wholesale:1590, stock:12, img:"https://source.unsplash.com/featured/?headphones&sig=51", spec:["Foldable","BT","Long battery"]},
   {id:"hp02", cat:"Headphones", name:"Gaming Headset with Mic",      brand:"Garg Select",price:1499, wholesale:1190, stock:18, img:"https://source.unsplash.com/featured/?gaming-headset&sig=52", spec:["Mic","Comfort","Bass"]},
-  {id:"hp03", cat:"Headphones", name:"On-Ear Wireless Lite",         brand:"Portronics", price:1299, wholesale:990,  stock:20, img:"https://source.unsplash.com/featured/?headphones&sig=53", spec:["Lightweight","BT 5.3","Comfort"]},
-  {id:"hp04", cat:"Headphones", name:"Over-Ear Deep Bass",           brand:"Portronics", price:1799, wholesale:1390, stock:10, img:"https://source.unsplash.com/featured/?headphones&sig=54", spec:["Deep bass","Soft cushions","Mic"]},
-  {id:"hp05", cat:"Headphones", name:"Wired Headphones 3.5mm",       brand:"Garg Select",price:799,  wholesale:590,  stock:40, img:"https://source.unsplash.com/featured/?headphones&sig=55", spec:["3.5mm","Clear sound","Strong"]},
-  {id:"hp06", cat:"Headphones", name:"Studio Style Headphones",      brand:"Portronics", price:2499, wholesale:1990, stock:7,  img:"https://source.unsplash.com/featured/?headphones&sig=56", spec:["Big drivers","Comfort","Mic"]},
-  {id:"hp07", cat:"Headphones", name:"Headset USB (Office)",         brand:"Garg Select",price:999,  wholesale:740,  stock:25, img:"https://source.unsplash.com/featured/?headset&sig=57", spec:["USB","Office calls","Mic"]},
-  {id:"hp08", cat:"Headphones", name:"Wireless ANC (Demo)",          brand:"Portronics", price:3999, wholesale:3290, stock:5,  img:"https://source.unsplash.com/featured/?headphones&sig=58", spec:["ANC","Premium","BT"]},
-  {id:"hp09", cat:"Headphones", name:"Kids Headphones",              brand:"Garg Select",price:899,  wholesale:690,  stock:16, img:"https://source.unsplash.com/featured/?headphones&sig=59", spec:["Light","Safe volume","Comfort"]},
-  {id:"hp10", cat:"Headphones", name:"Wireless Headphones Pro",      brand:"Portronics", price:2299, wholesale:1890, stock:9,  img:"https://source.unsplash.com/featured/?headphones&sig=60", spec:["Pro sound","BT 5.3","Battery+"]},
 
-  // 7) Mobile Accessories (10)
+  // Mobile Accessories
   {id:"ma01", cat:"Mobile Accessories", name:"Mobile Holder Desk",   brand:"Portronics", price:499,  wholesale:320,  stock:60, img:"https://source.unsplash.com/featured/?phone-stand&sig=61", spec:["Adjustable","Strong","Desk"]},
   {id:"ma02", cat:"Mobile Accessories", name:"Car Mobile Mount",     brand:"Portronics", price:599,  wholesale:420,  stock:35, img:"https://source.unsplash.com/featured/?car-phone-holder&sig=62", spec:["Car","Grip","Easy"]},
-  {id:"ma03", cat:"Mobile Accessories", name:"Phone Ring Stand",     brand:"Garg Select",price:199,  wholesale:99,   stock:120,img:"https://source.unsplash.com/featured/?phone-accessories&sig=63", spec:["Ring","Stand","Strong"]},
-  {id:"ma04", cat:"Mobile Accessories", name:"Screen Guard Pack",    brand:"Garg Select",price:299,  wholesale:149,  stock:80, img:"https://source.unsplash.com/featured/?screen-protector&sig=64", spec:["Clear","Protection","Pack"]},
-  {id:"ma05", cat:"Mobile Accessories", name:"Phone Case (Demo)",    brand:"Garg Select",price:399,  wholesale:199,  stock:90, img:"https://source.unsplash.com/featured/?phone-case&sig=65", spec:["Grip","Protection","Design"]},
-  {id:"ma06", cat:"Mobile Accessories", name:"Selfie Stick Tripod",  brand:"Portronics", price:999,  wholesale:740,  stock:22, img:"https://source.unsplash.com/featured/?tripod&sig=66", spec:["Tripod","Bluetooth remote","Portable"]},
-  {id:"ma07", cat:"Mobile Accessories", name:"Camera Lens Kit",      brand:"Garg Select",price:799,  wholesale:590,  stock:15, img:"https://source.unsplash.com/featured/?camera-lens&sig=67", spec:["Wide+Macro","Clip","Case"]},
-  {id:"ma08", cat:"Mobile Accessories", name:"OTG Card Reader",      brand:"Portronics", price:699,  wholesale:499,  stock:18, img:"https://source.unsplash.com/featured/?card-reader&sig=68", spec:["OTG","SD/TF","Fast"]},
-  {id:"ma09", cat:"Mobile Accessories", name:"Mobile Cooling Fan",   brand:"Garg Select",price:999,  wholesale:740,  stock:12, img:"https://source.unsplash.com/featured/?phone-cooler&sig=69", spec:["Cooling","Gaming","USB"]},
-  {id:"ma10", cat:"Mobile Accessories", name:"Magnetic Phone Holder",brand:"Portronics", price:899,  wholesale:640,  stock:20, img:"https://source.unsplash.com/featured/?phone-holder&sig=70", spec:["Magnetic","Strong","Desk/Car"]},
+  {id:"ma03", cat:"Mobile Accessories", name:"Selfie Stick Tripod",  brand:"Portronics", price:999,  wholesale:740,  stock:22, img:"https://source.unsplash.com/featured/?tripod&sig=66", spec:["Tripod","Bluetooth remote","Portable"]},
 
-  // 8) Computer Accessories (10)
+  // Computer Accessories
   {id:"ca01", cat:"Computer Accessories", name:"Wireless Mouse Silent", brand:"Portronics", price:699, wholesale:420, stock:55, img:"https://source.unsplash.com/featured/?computer-mouse&sig=71", spec:["2.4GHz","Silent","Ergonomic"]},
   {id:"ca02", cat:"Computer Accessories", name:"Keyboard Wireless",     brand:"Portronics", price:999, wholesale:740, stock:40, img:"https://source.unsplash.com/featured/?keyboard&sig=72", spec:["Wireless","Compact","Smooth keys"]},
-  {id:"ca03", cat:"Computer Accessories", name:"Keyboard+Mouse Combo",  brand:"Portronics", price:1499, wholesale:1190, stock:22, img:"https://source.unsplash.com/featured/?keyboard-mouse&sig=73", spec:["Combo","Wireless","Office"]},
-  {id:"ca04", cat:"Computer Accessories", name:"Webcam 1080p",          brand:"Garg Select",price:1299, wholesale:990, stock:16, img:"https://source.unsplash.com/featured/?webcam&sig=74", spec:["1080p","Mic","Plug & play"]},
-  {id:"ca05", cat:"Computer Accessories", name:"USB Mic (Demo)",        brand:"Garg Select",price:1799, wholesale:1390, stock:10, img:"https://source.unsplash.com/featured/?microphone&sig=75", spec:["USB","Clear voice","Stand"]},
-  {id:"ca06", cat:"Computer Accessories", name:"Laptop Cooling Pad",    brand:"Portronics", price:1199, wholesale:890, stock:18, img:"https://source.unsplash.com/featured/?laptop-cooling&sig=76", spec:["Cooling","USB","Adjustable"]},
-  {id:"ca07", cat:"Computer Accessories", name:"USB Extension 4-Port",  brand:"Portronics", price:699, wholesale:499, stock:25, img:"https://source.unsplash.com/featured/?usb-hub&sig=77", spec:["4-port","USB 3.0","Fast"]},
-  {id:"ca08", cat:"Computer Accessories", name:"Mouse Pad XL",          brand:"Garg Select",price:499, wholesale:320, stock:60, img:"https://source.unsplash.com/featured/?mousepad&sig=78", spec:["XL","Smooth","Anti-slip"]},
-  {id:"ca09", cat:"Computer Accessories", name:"USB Bluetooth Adapter", brand:"Garg Select",price:599, wholesale:420, stock:30, img:"https://source.unsplash.com/featured/?bluetooth-adapter&sig=79", spec:["BT 5.0","Plug & play","Stable"]},
-  {id:"ca10", cat:"Computer Accessories", name:"HDMI to VGA Converter", brand:"Garg Select",price:699, wholesale:499, stock:18, img:"https://source.unsplash.com/featured/?hdmi&sig=80", spec:["Converter","1080p","Easy"]},
 
-  // 9) Storage Devices (10)
+  // Storage Devices
   {id:"sd01", cat:"Storage Devices", name:"Pendrive 32GB USB 3.0",   brand:"SanDisk", price:399, wholesale:320, stock:70, img:"https://source.unsplash.com/featured/?usb-drive&sig=81", spec:["USB 3.0","Fast","Compact"]},
-  {id:"sd02", cat:"Storage Devices", name:"Pendrive 64GB USB 3.0",   brand:"SanDisk", price:599, wholesale:499, stock:55, img:"https://source.unsplash.com/featured/?usb-drive&sig=82", spec:["64GB","USB 3.0","Fast"]},
-  {id:"sd03", cat:"Storage Devices", name:"Memory Card 64GB",        brand:"SanDisk", price:699, wholesale:590, stock:40, img:"https://source.unsplash.com/featured/?memory-card&sig=83", spec:["64GB","UHS","Reliable"]},
-  {id:"sd04", cat:"Storage Devices", name:"Memory Card 128GB",       brand:"SanDisk", price:1199, wholesale:990, stock:28, img:"https://source.unsplash.com/featured/?memory-card&sig=84", spec:["128GB","UHS","Fast"]},
-  {id:"sd05", cat:"Storage Devices", name:"Portable SSD 500GB",      brand:"SanDisk", price:5499, wholesale:4990, stock:8, img:"https://source.unsplash.com/featured/?ssd&sig=85", spec:["SSD","USB-C","High speed"]},
-  {id:"sd06", cat:"Storage Devices", name:"Portable SSD 1TB",        brand:"SanDisk", price:8999, wholesale:8350, stock:4, img:"https://source.unsplash.com/featured/?ssd&sig=86", spec:["1TB","USB-C","Shock resistant"]},
-  {id:"sd07", cat:"Storage Devices", name:"External HDD 1TB (Demo)", brand:"Garg Select",price:4999, wholesale:4590, stock:6, img:"https://source.unsplash.com/featured/?hard-drive&sig=87", spec:["1TB","USB 3.0","Backup"]},
-  {id:"sd08", cat:"Storage Devices", name:"OTG Pendrive 64GB",       brand:"SanDisk", price:899, wholesale:790, stock:22, img:"https://source.unsplash.com/featured/?usb-drive&sig=88", spec:["OTG","USB-C","Fast"]},
-  {id:"sd09", cat:"Storage Devices", name:"Card Reader USB 3.0",     brand:"Garg Select",price:499, wholesale:320, stock:30, img:"https://source.unsplash.com/featured/?card-reader&sig=89", spec:["USB 3.0","SD/TF","Fast"]},
-  {id:"sd10", cat:"Storage Devices", name:"Pendrive 128GB (Demo)",   brand:"SanDisk", price:1299, wholesale:1190, stock:15, img:"https://source.unsplash.com/featured/?usb-drive&sig=90", spec:["128GB","USB 3.0","Fast"]},
+  {id:"sd02", cat:"Storage Devices", name:"Memory Card 64GB",        brand:"SanDisk", price:699, wholesale:590, stock:40, img:"https://source.unsplash.com/featured/?memory-card&sig=83", spec:["64GB","UHS","Reliable"]},
 
-  // 10) Networking (10)
+  // Networking
   {id:"nw01", cat:"Networking", name:"Dual Band Wi-Fi Router",       brand:"TP-Link", price:2799, wholesale:2499, stock:14, img:"https://source.unsplash.com/featured/?wifi-router&sig=91", spec:["Dual band","High coverage","Easy setup"]},
   {id:"nw02", cat:"Networking", name:"Wi-Fi Extender (Repeater)",    brand:"TP-Link", price:1699, wholesale:1490, stock:18, img:"https://source.unsplash.com/featured/?wifi-extender&sig=92", spec:["Extender","Easy setup","Stable"]},
-  {id:"nw03", cat:"Networking", name:"LAN Cable 10m",                brand:"Garg Select",price:499, wholesale:320, stock:40, img:"https://source.unsplash.com/featured/?ethernet-cable&sig=93", spec:["10m","Cat6","Strong"]},
-  {id:"nw04", cat:"Networking", name:"LAN Cable 20m",                brand:"Garg Select",price:799, wholesale:590, stock:25, img:"https://source.unsplash.com/featured/?ethernet-cable&sig=94", spec:["20m","Cat6","Speed"]},
-  {id:"nw05", cat:"Networking", name:"Router Dual Band Pro",         brand:"TP-Link", price:3499, wholesale:3190, stock:10, img:"https://source.unsplash.com/featured/?wifi-router&sig=95", spec:["Dual band","Fast","Coverage+"]},
-  {id:"nw06", cat:"Networking", name:"Switch 8-Port (Demo)",         brand:"Garg Select",price:1799, wholesale:1490, stock:12, img:"https://source.unsplash.com/featured/?network-switch&sig=96", spec:["8-port","Stable","Office"]},
-  {id:"nw07", cat:"Networking", name:"USB Wi-Fi Adapter",            brand:"TP-Link", price:999, wholesale:840, stock:20, img:"https://source.unsplash.com/featured/?wifi-adapter&sig=97", spec:["USB","Stable","Easy"]},
-  {id:"nw08", cat:"Networking", name:"RJ45 Connector Pack",          brand:"Garg Select",price:299, wholesale:149, stock:80, img:"https://source.unsplash.com/featured/?rj45&sig=98", spec:["Pack","Network","Easy"]},
-  {id:"nw09", cat:"Networking", name:"Crimping Tool (Demo)",         brand:"Garg Select",price:699, wholesale:499, stock:18, img:"https://source.unsplash.com/featured/?tool&sig=99", spec:["Crimp","RJ45","Strong"]},
-  {id:"nw10", cat:"Networking", name:"Wi-Fi Mesh Node (Demo)",       brand:"TP-Link", price:4999, wholesale:4590, stock:6, img:"https://source.unsplash.com/featured/?wifi-mesh&sig=100", spec:["Mesh","Coverage","Easy"]},
 ];
-
-/* ============================================================= */
 
 function displayPrice(p){
   return (mode==="Wholesale" && p.wholesale) ? p.wholesale : p.price;
@@ -471,11 +472,47 @@ function renderCats(){
   document.querySelectorAll(".item").forEach(el=>{
     el.onclick = ()=>{
       activeCat = el.dataset.cat;
-      document.querySelectorAll(".item").forEach(x=>x.classList.remove("on"));
-      el.classList.add("on");
       openedProductId = null;
+      renderCats();
+      renderCatGrid();
       renderProducts(true);
       if(window.matchMedia("(max-width:980px)").matches) closeFilters();
+    };
+  });
+}
+
+function renderCatGrid(){
+  const counts = catCounts();
+  const tiles = CATEGORIES
+    .filter(c => c.name !== "All")
+    .map(c=>{
+      const count = counts[c.name] || 0;
+      const on = (activeCat === c.name) ? "on" : "";
+      return `
+        <div class="catTile ${on}" data-cat="${c.name}">
+          <div class="catTileIn">
+            <div class="catLeft">
+              <div class="catIcon">${c.icon}</div>
+              <div>
+                <div class="catName">${c.name}</div>
+                <div class="catHint">View products</div>
+              </div>
+            </div>
+            <div class="catCount">${count}</div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+  $("catGrid").innerHTML = tiles || `<div class="smallNote">No categories</div>`;
+
+  document.querySelectorAll(".catTile").forEach(t=>{
+    t.onclick = ()=>{
+      activeCat = t.dataset.cat;
+      openedProductId = null;
+      renderCats();
+      renderCatGrid();
+      renderProducts(true);
     };
   });
 }
@@ -530,8 +567,9 @@ function openProduct(id){
   if(!p) return;
 
   openedProductId = id;
-  activeCat = p.cat;        // keep list in same category
-  renderCats();             // sidebar highlight
+  activeCat = p.cat;
+  renderCats();
+  renderCatGrid();
 
   $("vName").textContent = p.name;
   $("vCat").textContent = p.cat;
@@ -557,14 +595,11 @@ function openProduct(id){
           ${(p.spec||[]).map(s=>`<li>${s}</li>`).join("")}
         </ul>
 
-        <div class="smallNote">
-          Showing other products from <b>${p.cat}</b> below.
-        </div>
+        <div class="smallNote"><b>More from ${p.cat}</b> below.</div>
       </div>
     </div>
 
     <div style="margin-top:12px">
-      <div style="font-weight:1200;margin-bottom:10px">More in ${p.cat}</div>
       <div class="grid">
         ${related.map(r=>`
           <div class="card" onclick="openProduct('${r.id}')">
@@ -606,6 +641,7 @@ $("modeBtn").onclick=()=>{
 document.getElementById("yr").textContent = new Date().getFullYear();
 
 renderCats();
+renderCatGrid();
 renderProducts(true);
 </script>
 
