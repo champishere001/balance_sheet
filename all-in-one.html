@@ -1,649 +1,354 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Garg Enterprise • Shop (All-in-One)</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Categories Left + Products Grid</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#0f172a;
+      --card:#111c33;
+      --border:#22304a;
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --shadow: 0 18px 60px rgba(0,0,0,.35);
+      --accent:#38bdf8;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 20px;
+    }
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    .wrap{
+      max-width: 1300px;
+      margin: 0 auto;
+      display:grid;
+      grid-template-columns: 280px 1fr;
+      gap: 16px;
+      align-items:start;
+    }
 
-<style>
-:root{
-  --bg0:#050816; --bg1:#070a16;
-  --panel:rgba(255,255,255,.06);
-  --panel2:rgba(255,255,255,.04);
-  --border:rgba(255,255,255,.12);
-  --text:#eaf0ff;
-  --muted:rgba(234,240,255,.70);
-  --a1:#60a5fa; --a2:#22d3ee;
-  --good:#34d399;
-  --shadow:0 26px 90px rgba(0,0,0,.55);
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;
-  font-family:"Plus Jakarta Sans",system-ui;
-  color:var(--text);
-  background:
-    radial-gradient(1200px 700px at 20% -10%, rgba(96,165,250,.22), transparent 55%),
-    radial-gradient(1000px 700px at 85% 10%, rgba(34,211,238,.18), transparent 55%),
-    linear-gradient(180deg, var(--bg0) 0%, var(--bg1) 45%, var(--bg0) 100%);
-  overflow-x:hidden;
-}
-a{color:inherit;text-decoration:none}
+    @media (max-width: 980px){
+      .wrap{ grid-template-columns: 1fr; }
+    }
 
-header{
-  position:sticky; top:0; z-index:60;
-  backdrop-filter: blur(16px);
-  background: rgba(6,10,22,.72);
-  border-bottom:1px solid rgba(255,255,255,.08);
-}
-.bar{
-  max-width:1220px;margin:0 auto;
-  padding:12px 16px;
-  display:flex;gap:12px;align-items:center;flex-wrap:wrap;
-}
-.logo{display:flex;align-items:center;gap:10px}
-.mark{
-  width:42px;height:42px;border-radius:16px;
-  background:linear-gradient(135deg, rgba(96,165,250,.95), rgba(34,211,238,.9));
-  box-shadow:0 18px 60px rgba(96,165,250,.22);
-}
-.brandTitle{font-weight:1000;font-size:14px}
-.brandSub{font-size:12px;color:var(--muted);font-weight:900}
+    /* LEFT: Categories */
+    .sidebar{
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      position: sticky;
+      top: 16px;
+    }
+    @media (max-width: 980px){
+      .sidebar{ position: relative; top: 0; }
+    }
 
-.search{
-  flex:1; min-width:220px;
-  display:flex; gap:8px; align-items:center;
-  padding:10px 12px; border-radius:16px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(255,255,255,.05);
-}
-.search input{flex:1;border:none;outline:none;background:transparent;color:var(--text);font-weight:900}
+    .sideTitle{
+      margin: 0 0 10px;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
 
-.btn{
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.06);
-  color:var(--text);
-  font-weight:1000;
-  padding:10px 12px;
-  border-radius:14px;
-  cursor:pointer;
-  transition:.18s ease;
-  display:inline-flex;align-items:center;gap:8px;
-}
-.btn:hover{transform:translateY(-1px); background:rgba(255,255,255,.085);}
-.btn.primary{border-color:rgba(96,165,250,.35); background:linear-gradient(135deg, rgba(96,165,250,.25), rgba(34,211,238,.15));}
+    .catList{
+      display:flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .catBtn{
+      appearance:none;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      text-align:left;
+      cursor:pointer;
+      font-weight: 650;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+    }
+    .catBtn:hover{ background: rgba(255,255,255,.07); }
+    .catBtn.active{
+      border-color: rgba(56,189,248,.7);
+      box-shadow: 0 0 0 3px rgba(56,189,248,.12) inset;
+    }
+    .badge{
+      font-size: 12px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.02);
+    }
 
-.wrap{max-width:1220px;margin:0 auto;padding:16px}
+    /* RIGHT: Header + Grid */
+    .main{
+      background: rgba(255,255,255,.02);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      overflow:hidden;
+    }
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .heading{
+      margin:0;
+      font-size: 18px;
+      font-weight: 900;
+    }
+    .sub{
+      margin:4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .search{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      min-width: 260px;
+      flex: 1;
+      justify-content:flex-end;
+    }
+    .search input{
+      width: min(420px, 100%);
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.2);
+      color: var(--text);
+      outline:none;
+    }
+    .search input:focus{
+      border-color: rgba(56,189,248,.7);
+      box-shadow: 0 0 0 3px rgba(56,189,248,.12);
+    }
 
-.hero{
-  margin-top:12px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(255,255,255,.06);
-  border-radius:28px;
-  box-shadow:var(--shadow);
-  padding:18px;
-  position:relative;
-  overflow:hidden;
-}
-.hero::before{
-  content:""; position:absolute; inset:-2px;
-  background:
-    radial-gradient(520px 220px at 15% 10%, rgba(96,165,250,.22), transparent 60%),
-    radial-gradient(520px 240px at 85% 35%, rgba(34,211,238,.18), transparent 60%);
-  pointer-events:none;
-}
-.heroIn{position:relative}
-.tag{
-  display:inline-flex;gap:8px;align-items:center;
-  font-size:12px;font-weight:1100;
-  padding:8px 10px;border-radius:999px;
-  border:1px solid rgba(96,165,250,.35);
-  background:rgba(96,165,250,.12);
-}
-.dot{width:9px;height:9px;border-radius:99px;background:linear-gradient(135deg,var(--a1),var(--a2));}
-h1{margin:10px 0 6px;font-size:clamp(26px,4vw,44px);line-height:1.05;letter-spacing:-.8px}
-.grad{background:linear-gradient(90deg,var(--a1),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent;}
-.sub{margin:0;color:var(--muted);font-weight:900;line-height:1.6;max-width:92ch}
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr)); /* 4 products in a row */
+      gap: 14px;
+    }
+    @media (max-width: 1180px){
+      .grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 900px){
+      .grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 520px){
+      .grid{ grid-template-columns: 1fr; }
+    }
 
-.layout{
-  display:grid;
-  grid-template-columns: 320px 1.1fr .9fr;
-  gap:12px;
-  align-items:start;
-  margin-top:14px;
-}
-@media(max-width:1100px){ .layout{grid-template-columns: 320px 1fr} .detail{grid-column: 1 / -1} }
-@media(max-width:980px){ .layout{grid-template-columns: 1fr} }
-
-.panel{
-  border-radius:24px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(255,255,255,.05);
-  overflow:hidden;
-  box-shadow:0 18px 70px rgba(0,0,0,.25);
-}
-.head{
-  padding:14px;
-  display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;
-  border-bottom:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.03);
-}
-.head b{font-weight:1200}
-.body{padding:14px}
-
-.sidebar{position:sticky;top:86px}
-@media(max-width:980px){
-  .sidebar{position:fixed; inset:0 auto 0 0; width:min(360px,92vw); top:0; height:100vh; z-index:80; transform:translateX(-105%); transition:.22s ease;}
-  .sidebar.show{transform:translateX(0)}
-}
-.overlay{
-  position:fixed; inset:0; background:rgba(0,0,0,.55);
-  backdrop-filter: blur(8px);
-  opacity:0; pointer-events:none; transition:.18s ease;
-  z-index:75;
-}
-.overlay.show{opacity:1;pointer-events:auto}
-
-.list{display:flex;flex-direction:column;gap:8px}
-.item{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:10px 10px;border-radius:16px;
-  border:1px solid rgba(255,255,255,.10);
-  background:rgba(255,255,255,.03);
-  cursor:pointer; transition:.18s ease;
-}
-.item:hover{background:rgba(255,255,255,.06);transform:translateY(-1px)}
-.item.on{border-color:rgba(34,211,238,.26);background:rgba(34,211,238,.10)}
-.left{display:flex;gap:10px;align-items:center;font-weight:1100}
-.badge{font-size:11px;font-weight:1100;padding:5px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.12);color:var(--muted);background:rgba(255,255,255,.03)}
-
-.grid{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:12px;
-}
-@media(max-width:560px){.grid{grid-template-columns:1fr}}
-.card{
-  border-radius:22px;border:1px solid rgba(255,255,255,.11);
-  background:rgba(255,255,255,.05);
-  padding:14px;display:flex;flex-direction:column;gap:10px;
-  transition:.18s ease;
-  cursor:pointer;
-}
-.card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.07);}
-.img{
-  height:150px;border-radius:18px;border:1px solid rgba(255,255,255,.10);
-  background:linear-gradient(135deg, rgba(96,165,250,.25), rgba(34,211,238,.16));
-  overflow:hidden;
-}
-.img img{width:100%;height:100%;object-fit:cover;display:block}
-.name{font-weight:1200}
-.desc{color:var(--muted);font-weight:900;font-size:12px;line-height:1.45;margin-top:-6px}
-.meta{display:flex;gap:6px;flex-wrap:wrap}
-.pill{
-  font-size:11px;font-weight:1100;padding:6px 8px;border-radius:999px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(255,255,255,.04);color:var(--muted);
-}
-.pill.good{border-color:rgba(52,211,153,.22);background:rgba(52,211,153,.10);color:rgba(234,240,255,.92);}
-.priceRow{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
-.priceRow strong{font-weight:1200}
-.priceRow small{display:block;color:var(--muted);font-weight:1000;margin-top:2px}
-
-.big{
-  border-radius:22px;border:1px solid rgba(255,255,255,.10);
-  background:rgba(255,255,255,.04);
-  overflow:hidden;
-}
-.bigImg{height:280px;background:rgba(255,255,255,.03)}
-.bigImg img{width:100%;height:100%;object-fit:cover;display:block}
-.specs{margin:10px 0 0;padding:0 0 0 16px;color:var(--muted);font-weight:900;line-height:1.75}
-.smallNote{margin-top:10px;color:var(--muted);font-weight:900;font-size:12px;line-height:1.6}
-
-.footer{
-  padding:34px 16px;
-  color:var(--muted);
-  font-weight:900;
-  border-top:1px solid rgba(255,255,255,.08);
-  margin-top:22px;
-  text-align:center;
-}
-
-/* ===== Category Grid ===== */
-.catGrid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-  margin-top:12px;
-}
-@media(max-width:1100px){ .catGrid{grid-template-columns:repeat(3,1fr)} }
-@media(max-width:820px){ .catGrid{grid-template-columns:repeat(2,1fr)} }
-@media(max-width:540px){ .catGrid{grid-template-columns:1fr} }
-
-.catTile{
-  border-radius:22px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(255,255,255,.05);
-  padding:14px;
-  cursor:pointer;
-  transition:.18s ease;
-  position:relative;
-  overflow:hidden;
-}
-.catTile:hover{
-  transform:translateY(-2px);
-  background:rgba(255,255,255,.07);
-  border-color:rgba(255,255,255,.18);
-}
-.catTile.on{
-  border-color:rgba(34,211,238,.30);
-  background:rgba(34,211,238,.10);
-}
-.catTile::before{
-  content:"";
-  position:absolute; inset:-1px;
-  background:
-    radial-gradient(320px 180px at 25% 15%, rgba(96,165,250,.20), transparent 60%),
-    radial-gradient(320px 180px at 90% 55%, rgba(34,211,238,.14), transparent 60%);
-  pointer-events:none;
-}
-.catTileIn{position:relative; display:flex; gap:12px; align-items:center; justify-content:space-between}
-.catLeft{display:flex; gap:12px; align-items:center}
-.catIcon{
-  width:44px;height:44px;border-radius:18px;
-  display:grid;place-items:center;font-size:22px;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.06);
-}
-.catName{font-weight:1200}
-.catHint{color:var(--muted); font-weight:900; font-size:12px; margin-top:2px}
-.catCount{
-  font-size:12px;font-weight:1100;
-  padding:6px 10px;border-radius:999px;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.04);
-  color:var(--muted);
-}
-</style>
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow:hidden;
+    }
+    .imgwrap{
+      aspect-ratio: 4/3;
+      background:#0a1020;
+      overflow:hidden;
+    }
+    .imgwrap img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      transition: transform .25s ease;
+    }
+    .card:hover .imgwrap img{ transform: scale(1.04); }
+    .content{ padding: 12px 12px 14px; }
+    .title{ margin:0 0 6px; font-size: 15px; font-weight: 800; }
+    .desc{ margin:0 0 10px; color: var(--muted); font-size: 13px; line-height: 1.35; }
+    .row{
+      display:flex; align-items:center; justify-content:space-between; gap: 10px;
+    }
+    .price{ font-weight: 900; }
+    .btn{
+      text-decoration:none;
+      border:1px solid var(--border);
+      padding: 8px 10px;
+      border-radius: 12px;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 13px;
+      background: rgba(255,255,255,.04);
+    }
+    .btn:hover{ background: rgba(255,255,255,.08); }
+    .empty{
+      padding: 24px;
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      color: var(--muted);
+      text-align:center;
+    }
+  </style>
 </head>
-
 <body>
 
-<header>
-  <div class="bar">
-    <div class="logo">
-      <div class="mark"></div>
-      <div>
-        <div class="brandTitle">Garg Enterprise</div>
-        <div class="brandSub">Grid Categories + Product Viewer</div>
-      </div>
-    </div>
-
-    <div class="search">
-      🔎 <input id="q" placeholder="Search products (name / brand)..." />
-    </div>
-
-    <button class="btn" id="modeBtn">Retail</button>
-    <button class="btn primary" id="openFilters">☰ Categories</button>
-  </div>
-</header>
-
 <div class="wrap">
-  <section class="hero">
-    <div class="heroIn">
-      <div class="tag"><span class="dot"></span> Category grid + sidebar • Click product → details + more items</div>
-      <h1>Garg Enterprise <span class="grad">Shop</span></h1>
-      <p class="sub">Replace WhatsApp number in code: <b>91YOURNUMBER</b>. Demo UI + demo products.</p>
+  <!-- LEFT -->
+  <aside class="sidebar">
+    <h3 class="sideTitle">Categories</h3>
+    <div class="catList" id="catList"></div>
+  </aside>
+
+  <!-- RIGHT -->
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h2 class="heading" id="pageTitle">All Products</h2>
+        <p class="sub" id="pageSub">Showing everything</p>
+      </div>
+      <div class="search">
+        <input id="searchInput" type="search" placeholder="Search products..." />
+      </div>
     </div>
-  </section>
 
-  <div class="overlay" id="ov"></div>
-
-  <div class="layout">
-
-    <!-- Sidebar categories -->
-    <aside class="panel sidebar" id="sb">
-      <div class="head">
-        <b>Categories</b>
-        <button class="btn" id="closeFilters" style="padding:8px 10px">Close</button>
-      </div>
-      <div class="body">
-        <div class="list" id="catList"></div>
-      </div>
-    </aside>
-
-    <!-- Product list -->
-    <section class="panel">
-      <div class="head">
-        <b id="listTitle">Products</b>
-        <span class="pill good" id="countPill">0 items</span>
-      </div>
-
-      <!-- PRODUCTS BODY -->
-      <div class="body">
-        <div class="catGrid" id="catGrid"></div>
-        <div style="height:12px"></div>
-        <div class="grid" id="grid"></div>
-      </div>
-    </section>
-
-    <!-- Product detail -->
-    <aside class="panel detail">
-      <div class="head">
-        <b id="vName">Select a product</b>
-        <span class="pill" id="vCat">—</span>
-      </div>
-      <div class="body" id="viewerBody">
-        <div class="smallNote">Tap any product card to open details.</div>
-      </div>
-    </aside>
-
-  </div>
-
-  <div class="footer">
-    © <span id="yr"></span> Garg Enterprise
-  </div>
+    <section class="grid" id="grid"></section>
+    <div id="empty" class="empty" style="display:none;">No products found.</div>
+  </main>
 </div>
 
 <script>
-const $ = id => document.getElementById(id);
-const money = n => "₹" + Math.round(n).toLocaleString("en-IN");
+  // Add as many categories/products as you want
+  const PRODUCTS = [
+    // Electronics
+    { id: 1, cat: "Electronics", name: "Laptop Pro 14", price: 79999, desc:"Fast & lightweight.", img:"https://source.unsplash.com/800x600/?laptop" },
+    { id: 2, cat: "Electronics", name: "Smartphone X", price: 39999, desc:"Great camera.", img:"https://source.unsplash.com/800x600/?smartphone" },
+    { id: 3, cat: "Electronics", name: "Noise-Cancel Headphones", price: 6499, desc:"Deep bass + ANC.", img:"https://source.unsplash.com/800x600/?headphones" },
+    { id: 4, cat: "Electronics", name: "Smartwatch S", price: 2999, desc:"Fitness & alerts.", img:"https://source.unsplash.com/800x600/?smartwatch" },
 
-let mode = "Retail";
-let activeCat = "All";
-let openedProductId = null;
+    // Home
+    { id: 5, cat: "Home & Kitchen", name: "Coffee Maker", price: 3499, desc:"Quick brew.", img:"https://source.unsplash.com/800x600/?coffee,maker" },
+    { id: 6, cat: "Home & Kitchen", name: "Air Fryer", price: 5999, desc:"Crispy with less oil.", img:"https://source.unsplash.com/800x600/?air,fryer" },
+    { id: 7, cat: "Home & Kitchen", name: "Vacuum Cleaner", price: 7499, desc:"Strong suction.", img:"https://source.unsplash.com/800x600/?vacuum,cleaner" },
+    { id: 8, cat: "Home & Kitchen", name: "Blender", price: 1999, desc:"Smooth mixing.", img:"https://source.unsplash.com/800x600/?blender" },
 
-const CATEGORIES = [
-  {name:"All", icon:"✨"},
-  {name:"Powerbanks", icon:"🔋"},
-  {name:"Speakers", icon:"🔊"},
-  {name:"Chargers", icon:"🔌"},
-  {name:"Cables", icon:"🧵"},
-  {name:"Earbuds", icon:"🎧"},
-  {name:"Headphones", icon:"🎧"},
-  {name:"Mobile Accessories", icon:"📱"},
-  {name:"Computer Accessories", icon:"💻"},
-  {name:"Storage Devices", icon:"💾"},
-  {name:"Networking", icon:"📡"},
-];
+    // Fashion
+    { id: 9, cat: "Fashion", name: "Sneakers", price: 2499, desc:"Everyday comfort.", img:"https://source.unsplash.com/800x600/?sneakers" },
+    { id:10, cat: "Fashion", name: "Jacket", price: 2999, desc:"Warm & stylish.", img:"https://source.unsplash.com/800x600/?jacket" },
+    { id:11, cat: "Fashion", name: "Backpack", price: 1599, desc:"Travel ready.", img:"https://source.unsplash.com/800x600/?backpack" },
+    { id:12, cat: "Fashion", name: "Watch", price: 3499, desc:"Classic look.", img:"https://source.unsplash.com/800x600/?wristwatch" },
 
-const PRODUCTS = [
-  // Powerbanks
-  {id:"pb01", cat:"Powerbanks", name:"Portronics PB 10,000mAh Lite", brand:"Portronics", price:999,  wholesale:740,  stock:32, img:"https://source.unsplash.com/featured/?powerbank&sig=1",  spec:["10,000mAh","Type-C","Fast charge"]},
-  {id:"pb02", cat:"Powerbanks", name:"Portronics PB 20,000mAh Max",  brand:"Portronics", price:1699, wholesale:1200, stock:21, img:"https://source.unsplash.com/featured/?powerbank&sig=2",  spec:["20,000mAh","22.5W","LED indicator"]},
-  {id:"pb03", cat:"Powerbanks", name:"PB 20k Dual Output",           brand:"Portronics", price:1799, wholesale:1290, stock:18, img:"https://source.unsplash.com/featured/?powerbank&sig=3",  spec:["Dual USB","Type-C","Safe protection"]},
-  {id:"pb04", cat:"Powerbanks", name:"PB 10k Slim",                  brand:"Portronics", price:1099, wholesale:790,  stock:40, img:"https://source.unsplash.com/featured/?powerbank&sig=4",  spec:["Slim body","PD/QC","Travel"]},
-  {id:"pb05", cat:"Powerbanks", name:"PB 20k PD Pro",                brand:"Portronics", price:1999, wholesale:1490, stock:12, img:"https://source.unsplash.com/featured/?powerbank&sig=5",  spec:["PD output","Fast refill","Type-C"]},
-  {id:"pb06", cat:"Powerbanks", name:"PB 10k Pocket",                brand:"Portronics", price:899,  wholesale:640,  stock:55, img:"https://source.unsplash.com/featured/?powerbank&sig=6",  spec:["Pocket size","Fast charge","LED"]},
-  {id:"pb07", cat:"Powerbanks", name:"PB 20k Rugged",                brand:"Portronics", price:1899, wholesale:1390, stock:9,  img:"https://source.unsplash.com/featured/?powerbank&sig=7",  spec:["Strong shell","Multi-protection","22.5W"]},
-  {id:"pb08", cat:"Powerbanks", name:"PB 10k Type-C In/Out",         brand:"Portronics", price:1049, wholesale:760,  stock:27, img:"https://source.unsplash.com/featured/?powerbank&sig=8",  spec:["Type-C in/out","QC","LED"]},
-  {id:"pb09", cat:"Powerbanks", name:"PB 20k Digital Display",       brand:"Portronics", price:2099, wholesale:1590, stock:7,  img:"https://source.unsplash.com/featured/?powerbank&sig=9",  spec:["Digital %","PD/QC","Type-C"]},
-  {id:"pb10", cat:"Powerbanks", name:"PB 10k Fast+ (22.5W)",         brand:"Portronics", price:1299, wholesale:950,  stock:14, img:"https://source.unsplash.com/featured/?powerbank&sig=10", spec:["22.5W","Quick charge","Compact"]},
+    // Sports
+    { id:13, cat: "Sports", name: "Yoga Mat", price: 799, desc:"Non-slip grip.", img:"https://source.unsplash.com/800x600/?yoga,mat" },
+    { id:14, cat: "Sports", name: "Dumbbells", price: 1299, desc:"Home workout.", img:"https://source.unsplash.com/800x600/?dumbbells" },
+    { id:15, cat: "Sports", name: "Football", price: 699, desc:"Match feel.", img:"https://source.unsplash.com/800x600/?football" },
+    { id:16, cat: "Sports", name: "Running Shoes", price: 2799, desc:"Lightweight.", img:"https://source.unsplash.com/800x600/?running,shoes" },
+  ];
 
-  // Speakers
-  {id:"sp01", cat:"Speakers", name:"Mini Bluetooth Speaker",         brand:"Portronics", price:1299, wholesale:980,  stock:15, img:"https://source.unsplash.com/featured/?bluetooth-speaker&sig=11", spec:["BT 5.3","Deep bass","RGB"]},
-  {id:"sp02", cat:"Speakers", name:"Party Speaker 40W",              brand:"Portronics", price:3499, wholesale:2990, stock:6,  img:"https://source.unsplash.com/featured/?party-speaker&sig=12",    spec:["40W output","Bass boost","Mic"]},
-  {id:"sp03", cat:"Speakers", name:"Pocket Speaker",                 brand:"Portronics", price:899,  wholesale:670,  stock:28, img:"https://source.unsplash.com/featured/?speaker&sig=13",         spec:["Portable","Handsfree","Good battery"]},
-  {id:"sp04", cat:"Speakers", name:"Soundbar Mini",                  brand:"Portronics", price:2199, wholesale:1790, stock:10, img:"https://source.unsplash.com/featured/?soundbar&sig=14",        spec:["Soundbar","USB/BT","Clear audio"]},
-  {id:"sp05", cat:"Speakers", name:"RGB Table Speaker",              brand:"Portronics", price:1599, wholesale:1190, stock:16, img:"https://source.unsplash.com/featured/?speaker&sig=15",         spec:["RGB modes","BT","Deep bass"]},
-  {id:"sp06", cat:"Speakers", name:"Outdoor Speaker Rugged",         brand:"Portronics", price:2499, wholesale:1990, stock:8,  img:"https://source.unsplash.com/featured/?outdoor-speaker&sig=16",  spec:["Rugged","Loud","Long battery"]},
-  {id:"sp07", cat:"Speakers", name:"Speaker with FM",                brand:"Portronics", price:1199, wholesale:890,  stock:22, img:"https://source.unsplash.com/featured/?radio-speaker&sig=17",  spec:["FM","USB","BT"]},
-  {id:"sp08", cat:"Speakers", name:"Dual Driver Speaker",            brand:"Portronics", price:1899, wholesale:1490, stock:12, img:"https://source.unsplash.com/featured/?speaker&sig=18",         spec:["Dual driver","Bass","BT 5.3"]},
-  {id:"sp09", cat:"Speakers", name:"Speaker + TWS Pair",             brand:"Portronics", price:2799, wholesale:2290, stock:7,  img:"https://source.unsplash.com/featured/?speaker&sig=19",         spec:["TWS mode","Stereo","Party"]},
-  {id:"sp10", cat:"Speakers", name:"USB Powered Desktop Speaker",    brand:"Portronics", price:999,  wholesale:740,  stock:19, img:"https://source.unsplash.com/featured/?computer-speakers&sig=20", spec:["USB power","3.5mm","Clear"]},
+  const catListEl = document.getElementById("catList");
+  const gridEl = document.getElementById("grid");
+  const emptyEl = document.getElementById("empty");
+  const pageTitleEl = document.getElementById("pageTitle");
+  const pageSubEl = document.getElementById("pageSub");
+  const searchInput = document.getElementById("searchInput");
 
-  // Chargers
-  {id:"ch01", cat:"Chargers", name:"20W PD Charger",                 brand:"Portronics", price:799,  wholesale:590,  stock:30, img:"https://source.unsplash.com/featured/?phone-charger&sig=21", spec:["PD","Type-C","Fast charge"]},
-  {id:"ch02", cat:"Chargers", name:"33W Fast Charger",               brand:"Portronics", price:999,  wholesale:740,  stock:42, img:"https://source.unsplash.com/featured/?charger&sig=22",      spec:["PD/QC","Safe","Compact"]},
-  {id:"ch03", cat:"Chargers", name:"65W GaN Charger",                brand:"Portronics", price:2499, wholesale:1990, stock:11, img:"https://source.unsplash.com/featured/?gan-charger&sig=23",  spec:["65W","GaN","Laptop + phone"]},
-  {id:"ch04", cat:"Chargers", name:"Dual Port Charger 30W",          brand:"Portronics", price:1299, wholesale:990,  stock:18, img:"https://source.unsplash.com/featured/?usb-charger&sig=24",  spec:["Dual port","Fast","Protection"]},
-  {id:"ch05", cat:"Chargers", name:"Car Charger Dual Port",          brand:"Portronics", price:699,  wholesale:499,  stock:25, img:"https://source.unsplash.com/featured/?car-charger&sig=25",  spec:["Car use","Dual","Fast"]},
-  {id:"ch06", cat:"Chargers", name:"Car Charger PD 45W",             brand:"Portronics", price:1199, wholesale:890,  stock:10, img:"https://source.unsplash.com/featured/?car-charger&sig=26",  spec:["45W","PD","Metal build"]},
-  {id:"ch07", cat:"Chargers", name:"Wireless Charger Pad 10W",       brand:"Portronics", price:999,  wholesale:740,  stock:17, img:"https://source.unsplash.com/featured/?wireless-charger&sig=27", spec:["10W","Qi","LED"]},
-  {id:"ch08", cat:"Chargers", name:"Wireless Charger Stand 15W",     brand:"Portronics", price:1499, wholesale:1190, stock:9,  img:"https://source.unsplash.com/featured/?wireless-charger&sig=28", spec:["15W","Stand","Desk"]},
-  {id:"ch09", cat:"Chargers", name:"Travel Charger Kit",             brand:"Portronics", price:1399, wholesale:1050, stock:14, img:"https://source.unsplash.com/featured/?charger&sig=29",      spec:["Travel","Multi-plug","Safe"]},
-  {id:"ch10", cat:"Chargers", name:"Multi Socket USB Charger",       brand:"Portronics", price:1799, wholesale:1390, stock:8,  img:"https://source.unsplash.com/featured/?charger&sig=30",      spec:["Multi USB","Home/office","Protection"]},
+  let activeCat = "All";
+  let searchText = "";
 
-  // Cables
-  {id:"cb01", cat:"Cables", name:"Type-C to Type-C 1m (Braided)",    brand:"Portronics", price:299,  wholesale:149,  stock:150, img:"https://source.unsplash.com/featured/?usb-c-cable&sig=31", spec:["3A","Braided","Data"]},
-  {id:"cb02", cat:"Cables", name:"USB-A to Type-C 1m",               brand:"Portronics", price:249,  wholesale:129,  stock:170, img:"https://source.unsplash.com/featured/?usb-c-cable&sig=32", spec:["Fast","Strong","Data"]},
-  {id:"cb03", cat:"Cables", name:"Lightning Cable 1m",               brand:"Portronics", price:399,  wholesale:219,  stock:95,  img:"https://source.unsplash.com/featured/?lightning-cable&sig=33", spec:["iPhone","Durable","Sync"]},
-  {id:"cb04", cat:"Cables", name:"Type-C to Type-C 2m",              brand:"Portronics", price:449,  wholesale:249,  stock:80,  img:"https://source.unsplash.com/featured/?usb-c-cable&sig=34", spec:["2m","Fast","Braided"]},
-  {id:"cb05", cat:"Cables", name:"Micro USB Cable 1m",               brand:"Portronics", price:199,  wholesale:99,   stock:220, img:"https://source.unsplash.com/featured/?usb-cable&sig=35",  spec:["Micro USB","Charge+data","Strong"]},
-  {id:"cb06", cat:"Cables", name:"3-in-1 Multi Cable",               brand:"Portronics", price:499,  wholesale:299,  stock:65,  img:"https://source.unsplash.com/featured/?charging-cable&sig=36", spec:["Type-C/Lightning/Micro","Travel","Fast"]},
-  {id:"cb07", cat:"Cables", name:"C-to-Lightning PD Cable",          brand:"Portronics", price:599,  wholesale:399,  stock:55,  img:"https://source.unsplash.com/featured/?cable&sig=37",          spec:["PD","Fast iPhone","Durable"]},
-  {id:"cb08", cat:"Cables", name:"Type-C OTG Cable",                 brand:"Portronics", price:299,  wholesale:149,  stock:40,  img:"https://source.unsplash.com/featured/?otg&sig=38",            spec:["OTG","USB-C","Data"]},
-  {id:"cb09", cat:"Cables", name:"HDMI Cable 2m",                    brand:"Garg Select",price:699,  wholesale:499,  stock:35,  img:"https://source.unsplash.com/featured/?hdmi-cable&sig=39",     spec:["2m","4K","Strong"]},
-  {id:"cb10", cat:"Cables", name:"AUX Cable 1m",                     brand:"Garg Select",price:199,  wholesale:119,  stock:120, img:"https://source.unsplash.com/featured/?aux-cable&sig=40",      spec:["3.5mm","Clear","Strong"]},
+  const money = (n) => "₹" + n.toLocaleString("en-IN");
 
-  // Earbuds
-  {id:"eb01", cat:"Earbuds", name:"TWS Earbuds ENC",                 brand:"Portronics", price:1899, wholesale:1490, stock:22, img:"https://source.unsplash.com/featured/?earbuds&sig=41", spec:["ENC mic","Low latency","Type-C"]},
-  {id:"eb02", cat:"Earbuds", name:"TWS Earbuds Bass Boost",          brand:"Portronics", price:1599, wholesale:1290, stock:18, img:"https://source.unsplash.com/featured/?earbuds&sig=42", spec:["Bass","Touch","Long battery"]},
-  {id:"eb03", cat:"Earbuds", name:"TWS Compact Mini",                brand:"Portronics", price:1299, wholesale:990,  stock:30, img:"https://source.unsplash.com/featured/?earbuds&sig=43", spec:["Compact","Fast pairing","Comfort"]},
+  function getCategories(){
+    const cats = Array.from(new Set(PRODUCTS.map(p => p.cat))).sort();
+    return ["All", ...cats];
+  }
 
-  // Headphones
-  {id:"hp01", cat:"Headphones", name:"Wireless Headphones Foldable", brand:"Portronics", price:1999, wholesale:1590, stock:12, img:"https://source.unsplash.com/featured/?headphones&sig=51", spec:["Foldable","BT","Long battery"]},
-  {id:"hp02", cat:"Headphones", name:"Gaming Headset with Mic",      brand:"Garg Select",price:1499, wholesale:1190, stock:18, img:"https://source.unsplash.com/featured/?gaming-headset&sig=52", spec:["Mic","Comfort","Bass"]},
+  function countByCategory(cat){
+    if(cat === "All") return PRODUCTS.length;
+    return PRODUCTS.filter(p => p.cat === cat).length;
+  }
 
-  // Mobile Accessories
-  {id:"ma01", cat:"Mobile Accessories", name:"Mobile Holder Desk",   brand:"Portronics", price:499,  wholesale:320,  stock:60, img:"https://source.unsplash.com/featured/?phone-stand&sig=61", spec:["Adjustable","Strong","Desk"]},
-  {id:"ma02", cat:"Mobile Accessories", name:"Car Mobile Mount",     brand:"Portronics", price:599,  wholesale:420,  stock:35, img:"https://source.unsplash.com/featured/?car-phone-holder&sig=62", spec:["Car","Grip","Easy"]},
-  {id:"ma03", cat:"Mobile Accessories", name:"Selfie Stick Tripod",  brand:"Portronics", price:999,  wholesale:740,  stock:22, img:"https://source.unsplash.com/featured/?tripod&sig=66", spec:["Tripod","Bluetooth remote","Portable"]},
+  function renderCategories(){
+    const cats = getCategories();
+    catListEl.innerHTML = "";
 
-  // Computer Accessories
-  {id:"ca01", cat:"Computer Accessories", name:"Wireless Mouse Silent", brand:"Portronics", price:699, wholesale:420, stock:55, img:"https://source.unsplash.com/featured/?computer-mouse&sig=71", spec:["2.4GHz","Silent","Ergonomic"]},
-  {id:"ca02", cat:"Computer Accessories", name:"Keyboard Wireless",     brand:"Portronics", price:999, wholesale:740, stock:40, img:"https://source.unsplash.com/featured/?keyboard&sig=72", spec:["Wireless","Compact","Smooth keys"]},
+    cats.forEach(cat => {
+      const btn = document.createElement("button");
+      btn.className = "catBtn" + (cat === activeCat ? " active" : "");
+      btn.innerHTML = `<span>${cat}</span><span class="badge">${countByCategory(cat)}</span>`;
+      btn.addEventListener("click", () => {
+        activeCat = cat;
+        renderCategories();
+        renderProducts();
+      });
+      catListEl.appendChild(btn);
+    });
+  }
 
-  // Storage Devices
-  {id:"sd01", cat:"Storage Devices", name:"Pendrive 32GB USB 3.0",   brand:"SanDisk", price:399, wholesale:320, stock:70, img:"https://source.unsplash.com/featured/?usb-drive&sig=81", spec:["USB 3.0","Fast","Compact"]},
-  {id:"sd02", cat:"Storage Devices", name:"Memory Card 64GB",        brand:"SanDisk", price:699, wholesale:590, stock:40, img:"https://source.unsplash.com/featured/?memory-card&sig=83", spec:["64GB","UHS","Reliable"]},
+  function filteredProducts(){
+    return PRODUCTS.filter(p => {
+      const okCat = (activeCat === "All") ? true : p.cat === activeCat;
+      const q = searchText.trim().toLowerCase();
+      const okSearch = !q ? true : (p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q));
+      return okCat && okSearch;
+    });
+  }
 
-  // Networking
-  {id:"nw01", cat:"Networking", name:"Dual Band Wi-Fi Router",       brand:"TP-Link", price:2799, wholesale:2499, stock:14, img:"https://source.unsplash.com/featured/?wifi-router&sig=91", spec:["Dual band","High coverage","Easy setup"]},
-  {id:"nw02", cat:"Networking", name:"Wi-Fi Extender (Repeater)",    brand:"TP-Link", price:1699, wholesale:1490, stock:18, img:"https://source.unsplash.com/featured/?wifi-extender&sig=92", spec:["Extender","Easy setup","Stable"]},
-];
+  function renderProducts(){
+    const list = filteredProducts();
+    gridEl.innerHTML = "";
 
-function displayPrice(p){
-  return (mode==="Wholesale" && p.wholesale) ? p.wholesale : p.price;
-}
+    const title = activeCat === "All" ? "All Products" : activeCat;
+    pageTitleEl.textContent = title;
 
-function catCounts(){
-  const m = {};
-  for(const p of PRODUCTS) m[p.cat] = (m[p.cat]||0)+1;
-  return m;
-}
+    const sub = activeCat === "All"
+      ? `Showing ${list.length} products`
+      : `Showing ${list.length} products in ${activeCat}`;
+    pageSubEl.textContent = sub;
 
-function renderCats(){
-  const counts = catCounts();
-  $("catList").innerHTML = CATEGORIES.map(c=>{
-    const on = (activeCat===c.name) ? "on" : "";
-    const count = c.name==="All" ? PRODUCTS.length : (counts[c.name]||0);
-    return `
-      <div class="item ${on}" data-cat="${c.name}">
-        <div class="left"><span>${c.icon}</span><span>${c.name}</span></div>
-        <span class="badge">${count}</span>
-      </div>
-    `;
-  }).join("");
+    if(list.length === 0){
+      emptyEl.style.display = "block";
+      return;
+    }
+    emptyEl.style.display = "none";
 
-  document.querySelectorAll(".item").forEach(el=>{
-    el.onclick = ()=>{
-      activeCat = el.dataset.cat;
-      openedProductId = null;
-      renderCats();
-      renderCatGrid();
-      renderProducts(true);
-      if(window.matchMedia("(max-width:980px)").matches) closeFilters();
-    };
-  });
-}
-
-function renderCatGrid(){
-  const counts = catCounts();
-  const tiles = CATEGORIES
-    .filter(c => c.name !== "All")
-    .map(c=>{
-      const count = counts[c.name] || 0;
-      const on = (activeCat === c.name) ? "on" : "";
-      return `
-        <div class="catTile ${on}" data-cat="${c.name}">
-          <div class="catTileIn">
-            <div class="catLeft">
-              <div class="catIcon">${c.icon}</div>
-              <div>
-                <div class="catName">${c.name}</div>
-                <div class="catHint">View products</div>
-              </div>
-            </div>
-            <div class="catCount">${count}</div>
+    list.forEach(p => {
+      const card = document.createElement("article");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="imgwrap">
+          <img src="${p.img}" alt="${p.name}" loading="lazy" />
+        </div>
+        <div class="content">
+          <h3 class="title">${p.name}</h3>
+          <p class="desc">${p.desc}</p>
+          <div class="row">
+            <div class="price">${money(p.price)}</div>
+            <a class="btn" href="#" onclick="return false;">View</a>
           </div>
         </div>
       `;
-    }).join("");
-
-  $("catGrid").innerHTML = tiles || `<div class="smallNote">No categories</div>`;
-
-  document.querySelectorAll(".catTile").forEach(t=>{
-    t.onclick = ()=>{
-      activeCat = t.dataset.cat;
-      openedProductId = null;
-      renderCats();
-      renderCatGrid();
-      renderProducts(true);
-    };
-  });
-}
-
-function renderProducts(openFirst){
-  const q = ($("q").value||"").trim().toLowerCase();
-  let list = PRODUCTS.slice();
-
-  if(activeCat!=="All") list = list.filter(p=>p.cat===activeCat);
-  if(q) list = list.filter(p => (p.name+" "+p.brand).toLowerCase().includes(q));
-
-  $("countPill").textContent = `${list.length} items`;
-  $("listTitle").textContent = activeCat==="All" ? "Products (All Categories)" : `Products • ${activeCat}`;
-
-  $("grid").innerHTML = list.map(p=>{
-    const stock = Number(p.stock||0);
-    return `
-      <div class="card" data-id="${p.id}">
-        <div class="img"><img src="${p.img}" alt=""></div>
-        <div class="name">${p.name}</div>
-        <div class="desc">${(p.spec||[]).slice(0,2).join(" • ")}</div>
-        <div class="meta">
-          <span class="pill">${p.cat}</span>
-          <span class="pill">${p.brand}</span>
-          <span class="pill ${stock>0?'good':''}">${stock>0?("In stock: "+stock):"Out of stock"}</span>
-        </div>
-        <div class="priceRow">
-          <div>
-            <strong>${money(displayPrice(p))}</strong>
-            <small>${mode}</small>
-          </div>
-          <button class="btn primary" ${stock<=0?'disabled style="opacity:.45;cursor:not-allowed"':''}>Add</button>
-        </div>
-      </div>
-    `;
-  }).join("");
-
-  document.querySelectorAll(".card").forEach(card=>{
-    card.onclick = ()=> openProduct(card.getAttribute("data-id"));
-  });
-
-  if(openFirst && list.length) openProduct(list[0].id);
-  if(!list.length){
-    $("vName").textContent = "No products found";
-    $("vCat").textContent = activeCat;
-    $("viewerBody").innerHTML = `<div class="smallNote">Try another category or clear search.</div>`;
+      gridEl.appendChild(card);
+    });
   }
-}
 
-function openProduct(id){
-  const p = PRODUCTS.find(x=>x.id===id);
-  if(!p) return;
+  searchInput.addEventListener("input", (e) => {
+    searchText = e.target.value || "";
+    renderProducts();
+  });
 
-  openedProductId = id;
-  activeCat = p.cat;
-  renderCats();
-  renderCatGrid();
-
-  $("vName").textContent = p.name;
-  $("vCat").textContent = p.cat;
-
-  const related = PRODUCTS.filter(x=>x.cat===p.cat && x.id!==p.id).slice(0,6);
-
-  $("viewerBody").innerHTML = `
-    <div class="big">
-      <div class="bigImg"><img src="${p.img}" alt=""></div>
-      <div style="padding:12px">
-        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
-          <div>
-            <div class="pill">${p.brand}</div>
-            <div style="font-weight:1200;font-size:20px;margin-top:8px">${money(displayPrice(p))}</div>
-            <div style="color:var(--muted);font-weight:900;font-size:12px;margin-top:4px">${mode} price</div>
-          </div>
-          <a class="btn primary" target="_blank"
-             href="https://wa.me/91YOURNUMBER?text=${encodeURIComponent('Hi Garg Enterprise, I want: '+p.name+' ('+p.cat+'). Please share availability & best price.')}"
-          >WhatsApp Enquiry</a>
-        </div>
-
-        <ul class="specs">
-          ${(p.spec||[]).map(s=>`<li>${s}</li>`).join("")}
-        </ul>
-
-        <div class="smallNote"><b>More from ${p.cat}</b> below.</div>
-      </div>
-    </div>
-
-    <div style="margin-top:12px">
-      <div class="grid">
-        ${related.map(r=>`
-          <div class="card" onclick="openProduct('${r.id}')">
-            <div class="img"><img src="${r.img}" alt=""></div>
-            <div class="name">${r.name}</div>
-            <div class="desc">${(r.spec||[]).slice(0,2).join(" • ")}</div>
-            <div class="priceRow">
-              <div>
-                <strong>${money(displayPrice(r))}</strong>
-                <small>${mode}</small>
-              </div>
-              <span class="pill">${r.brand}</span>
-            </div>
-          </div>
-        `).join("")}
-      </div>
-    </div>
-  `;
-
-  renderProducts(false);
-}
-
-function openFilters(){ $("sb").classList.add("show"); $("ov").classList.add("show"); }
-function closeFilters(){ $("sb").classList.remove("show"); $("ov").classList.remove("show"); }
-
-$("openFilters").onclick=openFilters;
-$("closeFilters").onclick=closeFilters;
-$("ov").onclick=closeFilters;
-
-$("q").addEventListener("input", ()=> renderProducts(true));
-
-$("modeBtn").onclick=()=>{
-  mode = (mode==="Retail") ? "Wholesale" : "Retail";
-  $("modeBtn").textContent = mode;
-  if(openedProductId) openProduct(openedProductId);
-  else renderProducts(true);
-};
-
-document.getElementById("yr").textContent = new Date().getFullYear();
-
-renderCats();
-renderCatGrid();
-renderProducts(true);
+  renderCategories();
+  renderProducts();
 </script>
-
 </body>
 </html>
