@@ -1,199 +1,349 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Store</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
+:root{
+  --bg:#070b18;
+  --panel:#0b1226;
+  --card:#0f1833;
+  --stroke:rgba(255,255,255,.08);
+  --text:#e5e7eb;
+  --muted:#9aa4b2;
+  --brand:#38bdf8;
+  --brand2:#a78bfa;
+  --good:#10b981;
+}
 
+*{box-sizing:border-box}
 body{
-margin:0;
-font-family:Arial, sans-serif;
-background:#0b1220;
-color:white;
+  margin:0;
+  font-family:"Plus Jakarta Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background:
+    radial-gradient(900px 500px at 10% 10%, rgba(56,189,248,.18), transparent 60%),
+    radial-gradient(900px 500px at 90% 20%, rgba(167,139,250,.16), transparent 60%),
+    radial-gradient(800px 500px at 50% 100%, rgba(16,185,129,.10), transparent 60%),
+    linear-gradient(180deg, #050815, #060a16 40%, #070b18);
+  color:var(--text);
 }
 
-header{
-display:flex;
-gap:10px;
-align-items:center;
-padding:14px 18px;
-background:#111a2f;
+a{color:inherit; text-decoration:none}
+.container{max-width:1150px; margin:0 auto; padding:18px 16px 40px}
+
+.nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:14px 14px;
+  background:rgba(11,18,38,.55);
+  border:1px solid var(--stroke);
+  border-radius:18px;
+  backdrop-filter: blur(10px);
+}
+.brand{
+  display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px;
+}
+.logo{
+  width:38px; height:38px; border-radius:12px;
+  background:linear-gradient(135deg, var(--brand), var(--brand2));
+  box-shadow:0 18px 60px rgba(56,189,248,.18);
+}
+.nav-actions{display:flex; gap:10px; align-items:center}
+.pill{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:10px 12px;
+  border-radius:14px;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--stroke);
+  color:var(--muted);
+  font-weight:600;
+  font-size:14px;
+}
+.pill input{
+  border:0; outline:0; background:transparent; color:var(--text);
+  width:min(280px, 55vw);
+  font:inherit;
+}
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  padding:11px 14px;
+  border-radius:14px;
+  border:1px solid var(--stroke);
+  background:rgba(255,255,255,.06);
+  color:var(--text);
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
+}
+.btn:hover{transform:translateY(-2px); background:rgba(255,255,255,.09)}
+.btn.primary{
+  border:0;
+  background:linear-gradient(135deg, var(--brand), var(--brand2));
+  box-shadow:0 18px 70px rgba(56,189,248,.18);
+}
+.btn.primary:hover{filter:brightness(1.05)}
+
+.hero{
+  margin-top:18px;
+  display:grid;
+  grid-template-columns:1.35fr .65fr;
+  gap:16px;
+}
+@media (max-width: 920px){
+  .hero{grid-template-columns:1fr}
+  .nav{flex-wrap:wrap}
+}
+.hero-main{
+  background:linear-gradient(180deg, rgba(11,18,38,.75), rgba(11,18,38,.45));
+  border:1px solid var(--stroke);
+  border-radius:22px;
+  padding:26px 22px;
+  position:relative;
+  overflow:hidden;
+}
+.hero-main:before{
+  content:"";
+  position:absolute; inset:-120px -160px auto auto;
+  width:360px; height:360px;
+  background:radial-gradient(circle at 30% 30%, rgba(56,189,248,.34), transparent 62%);
+  filter: blur(2px);
+}
+.hero-kicker{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid var(--stroke);
+  background:rgba(255,255,255,.05);
+  color:var(--muted);
+  font-weight:700;
+  font-size:13px;
+}
+.dot{width:9px; height:9px; border-radius:50%; background:var(--good); box-shadow:0 0 0 6px rgba(16,185,129,.12)}
+h1{
+  margin:14px 0 10px;
+  font-size:44px;
+  line-height:1.05;
+  letter-spacing:-.8px;
+}
+@media (max-width:520px){h1{font-size:34px}}
+.sub{
+  margin:0 0 18px;
+  color:var(--muted);
+  font-size:15.5px;
+  line-height:1.55;
+  max-width:58ch;
+}
+.hero-cta{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+.small{
+  color:var(--muted);
+  font-weight:600;
+  font-size:13px;
+  margin-top:10px;
 }
 
-header input{
-flex:1;
-padding:10px;
-border-radius:10px;
-border:none;
-outline:none;
+.hero-side{
+  display:grid;
+  gap:12px;
 }
-
-.container{
-display:grid;
-grid-template-columns:240px 1fr 320px;
-gap:14px;
-padding:14px;
+.stat, .mini{
+  background:rgba(11,18,38,.55);
+  border:1px solid var(--stroke);
+  border-radius:20px;
+  padding:16px;
 }
-
-@media(max-width:900px){
-.container{grid-template-columns:1fr;}
-.sidebar{order:2}
-.details{order:3}
+.stat b{font-size:22px; display:block}
+.stat span{color:var(--muted); font-weight:600; font-size:13px}
+.mini{
+  display:flex; gap:12px; align-items:center;
 }
-
-.sidebar{
-background:#111a2f;
-border-radius:14px;
-padding:14px;
+.badge{
+  width:44px; height:44px; border-radius:16px;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--stroke);
+  display:grid; place-items:center;
+  font-size:20px;
 }
+.mini b{display:block}
+.mini p{margin:3px 0 0; color:var(--muted); font-size:13px; line-height:1.4}
 
-.cat{
-padding:10px;
-margin-bottom:8px;
-border-radius:10px;
-background:#1a2440;
-cursor:pointer;
+.section{
+  margin-top:18px;
+  display:grid;
+  grid-template-columns: 1fr;
+  gap:14px;
 }
-
-.cat:hover{background:#22305a}
-
-.products{
-background:#111a2f;
-border-radius:14px;
-padding:14px;
-
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:14px;
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:12px;
 }
+@media (max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.grid{grid-template-columns:1fr}}
 
-@media(max-width:420px){
-.products{grid-template-columns:1fr;}
+.card{
+  background:rgba(15,24,51,.7);
+  border:1px solid var(--stroke);
+  border-radius:20px;
+  padding:16px;
+  transition:.2s;
+  position:relative;
+  overflow:hidden;
 }
-
-.product{
-background:#1a2440;
-border-radius:12px;
-padding:14px;
-cursor:pointer;
-transition:.2s;
+.card:hover{transform:translateY(-3px); background:rgba(15,24,51,.9)}
+.card h3{margin:10px 0 6px; font-size:16px}
+.card p{margin:0; color:var(--muted); font-size:13px; line-height:1.45}
+.tag{
+  display:inline-flex;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.3px;
+  padding:7px 10px;
+  border-radius:999px;
+  background:rgba(56,189,248,.12);
+  border:1px solid rgba(56,189,248,.25);
+  color:#c9f0ff;
 }
-
-.product:hover{background:#22305a}
-
-.details{
-background:#111a2f;
-border-radius:14px;
-padding:14px;
+.arrow{
+  position:absolute; right:14px; top:14px;
+  width:34px; height:34px; border-radius:12px;
+  display:grid; place-items:center;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--stroke);
+  color:var(--text);
+  transition:.2s;
 }
-
-.details img{
-width:100%;
-height:200px;
-object-fit:cover;
-background:#1a2440;
-border-radius:10px;
+.card:hover .arrow{transform:translateX(2px)}
+.footer{
+  margin-top:22px;
+  color:var(--muted);
+  font-size:13px;
+  text-align:center;
+  opacity:.9;
 }
-
-button{
-padding:10px 14px;
-border:none;
-border-radius:10px;
-background:#22c55e;
-color:white;
-margin-top:10px;
-cursor:pointer;
-}
-
 </style>
 </head>
 
 <body>
+  <div class="container">
+    <!-- NAV -->
+    <div class="nav">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <div style="font-size:15px; line-height:1;">My Store</div>
+          <div style="font-size:12px; color:var(--muted); font-weight:700;">Fast • Simple • Mobile</div>
+        </div>
+      </div>
 
-<header>
-<input placeholder="Search products...">
-<button onclick="location.href='index.html'">Home</button>
-</header>
+      <div class="nav-actions">
+        <div class="pill" title="Search (demo)">
+          🔎 <input type="text" placeholder="Search products…" />
+        </div>
+        <a class="btn" href="all-in-one.html" title="Go to Store">Store</a>
+        <a class="btn primary" href="all-in-one.html">Start Shopping →</a>
+      </div>
+    </div>
 
-<div class="container">
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-main">
+        <div class="hero-kicker"><span class="dot"></span> New deals live • Wholesale & Retail</div>
+        <h1>Shop smarter.<br/>Sell faster.</h1>
+        <p class="sub">
+          A clean, modern storefront that works great on mobile. Open the all-in-one store page to browse products,
+          switch pricing modes, and view details instantly.
+        </p>
 
-<!-- LEFT CATEGORIES -->
-<div class="sidebar">
-<b>Categories</b>
+        <div class="hero-cta">
+          <a class="btn primary" href="all-in-one.html">Enter Store</a>
+          <a class="btn" href="all-in-one.html#featured">View Featured</a>
+          <a class="btn" href="all-in-one.html#latest">Latest Arrivals</a>
+        </div>
 
-<div class="cat" onclick="showCat('all')">All</div>
-<div class="cat" onclick="showCat('charger')">Chargers</div>
-<div class="cat" onclick="showCat('speaker')">Speakers</div>
-<div class="cat" onclick="showCat('powerbank')">Powerbanks</div>
+        <div class="small">Tip: Keep all files in the same folder (index.html + all-in-one.html).</div>
+      </div>
 
-</div>
+      <div class="hero-side">
+        <div class="stat">
+          <b>⚡ Instant</b>
+          <span>Fast loading • simple layout</span>
+        </div>
 
+        <div class="mini">
+          <div class="badge">💰</div>
+          <div>
+            <b>Wholesale / Retail</b>
+            <p>Toggle pricing mode easily (demo).</p>
+          </div>
+        </div>
 
-<!-- CENTER PRODUCTS (2 GRID) -->
-<div class="products" id="products">
+        <div class="mini">
+          <div class="badge">📦</div>
+          <div>
+            <b>Product Details</b>
+            <p>See product panel + similar items.</p>
+          </div>
+        </div>
 
-<div class="product" data-cat="charger" onclick="showDetail('20W PD Charger','₹799')">
-20W PD Charger
-</div>
+        <div class="mini">
+          <div class="badge">📱</div>
+          <div>
+            <b>Phone Friendly</b>
+            <p>Easy control and updates later.</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<div class="product" data-cat="charger" onclick="showDetail('Fast Charger','₹599')">
-Fast Charger
-</div>
+    <!-- FEATURE CARDS -->
+    <div class="section">
+      <div style="display:flex; align-items:end; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+        <div>
+          <div style="font-weight:800; font-size:18px;">Quick Actions</div>
+          <div style="color:var(--muted); font-weight:600; font-size:13px;">Jump straight into the store experience</div>
+        </div>
+        <a class="btn" href="all-in-one.html">Open All Products →</a>
+      </div>
 
-<div class="product" data-cat="speaker" onclick="showDetail('Bluetooth Speaker','₹999')">
-Bluetooth Speaker
-</div>
+      <div class="grid">
+        <a class="card" href="all-in-one.html">
+          <span class="tag">ALL PRODUCTS</span>
+          <div class="arrow">→</div>
+          <h3>Browse Everything</h3>
+          <p>Single-page store with filters and smooth browsing.</p>
+        </a>
 
-<div class="product" data-cat="powerbank" onclick="showDetail('10000mAh Powerbank','₹1199')">
-10000mAh Powerbank
-</div>
+        <a class="card" href="all-in-one.html">
+          <span class="tag" style="background:rgba(167,139,250,.12); border-color:rgba(167,139,250,.25); color:#ece6ff;">PRICING</span>
+          <div class="arrow">→</div>
+          <h3>Wholesale / Retail</h3>
+          <p>Switch price mode instantly (demo values).</p>
+        </a>
 
-<div class="product" data-cat="speaker" onclick="showDetail('Mini Speaker','₹699')">
-Mini Speaker
-</div>
+        <a class="card" href="all-in-one.html">
+          <span class="tag" style="background:rgba(16,185,129,.12); border-color:rgba(16,185,129,.25); color:#d6ffe9;">DETAILS</span>
+          <div class="arrow">→</div>
+          <h3>Product Detail Panel</h3>
+          <p>Click a product → details + more from same category.</p>
+        </a>
 
-<div class="product" data-cat="powerbank" onclick="showDetail('20000mAh Powerbank','₹1599')">
-20000mAh Powerbank
-</div>
+        <a class="card" href="all-in-one.html">
+          <span class="tag" style="background:rgba(251,113,133,.10); border-color:rgba(251,113,133,.22); color:#ffd6dd;">CONTROL</span>
+          <div class="arrow">→</div>
+          <h3>Easy Phone Control</h3>
+          <p>Edit products later using Google Sheet / admin panel.</p>
+        </a>
+      </div>
 
-</div>
-
-
-<!-- RIGHT DETAILS -->
-<div class="details" id="details">
-
-<h3>Select product</h3>
-
-<img>
-
-<h2 id="pname">---</h2>
-<h3 id="price"></h3>
-
-<button onclick="alert('WhatsApp enquiry')">
-WhatsApp Enquiry
-</button>
-
-</div>
-
-</div>
-
-
-<script>
-
-function showCat(cat){
-document.querySelectorAll('.product').forEach(p=>{
-p.style.display = (cat==='all'||p.dataset.cat===cat)?'block':'none';
-});
-}
-
-function showDetail(name,price){
-document.getElementById('pname').innerText=name;
-document.getElementById('price').innerText=price;
-}
-
-</script>
-
+      <div class="footer">
+        © My Store • <a href="all-in-one.html" style="color:#c9f0ff; font-weight:800;">Go to Store</a>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
