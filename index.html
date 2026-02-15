@@ -1,37 +1,304 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Himachal Tourism Portal</title>
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Himachal Smart Tourism Portal</title>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+
+/* GLOBAL */
+body{
+margin:0;
+font-family:Inter,system-ui;
+background:linear-gradient(180deg,#070b16,#0b1220);
+color:#fff;
+}
+
+/* HERO */
+.hero{
+padding:50px 30px;
+background:
+radial-gradient(circle at 20% 20%,#2a3fff44,transparent 40%),
+radial-gradient(circle at 80% 10%,#00ffd544,transparent 40%);
+}
+
+.hero h1{
+font-size:40px;
+margin:0;
+font-weight:900;
+}
+
+.hero p{opacity:.8;margin-top:8px}
+
+/* LAYOUT */
+.container{padding:20px 30px}
+
+/* FILTER BAR */
+.filters{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin:20px 0;
+}
+
+.filters button{
+padding:10px 14px;
+border-radius:20px;
+border:1px solid #3a4a88;
+background:#121b34;
+color:white;
+cursor:pointer;
+font-weight:700;
+}
+
+.filters button:hover{background:#2f4288}
+
+/* GRID */
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+gap:20px;
+}
+
+/* CARD PREMIUM */
+.card{
+background:#121b34;
+border-radius:18px;
+overflow:hidden;
+box-shadow:0 18px 35px rgba(0,0,0,.6);
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-8px) scale(1.02);
+box-shadow:0 25px 50px rgba(0,0,0,.8);
+}
+
+.card img{
+width:100%;
+height:200px;
+object-fit:cover;
+cursor:pointer;
+}
+
+.card .info{padding:16px}
+
+.title{font-size:18px;font-weight:900}
+.meta{opacity:.7;font-size:13px;margin-top:4px}
+
+.actions{
+display:flex;
+gap:8px;
+margin-top:10px;
+}
+
+.btn{
+padding:8px 12px;
+border-radius:10px;
+background:#2f4288;
+text-decoration:none;
+color:white;
+font-size:13px;
+}
+
+/* MAP */
+#map{
+height:350px;
+border-radius:18px;
+margin-top:30px;
+box-shadow:0 15px 40px rgba(0,0,0,.5);
+}
+
+/* MODAL */
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.85);
+display:none;
+align-items:center;
+justify-content:center;
+}
+
+.modal img{
+max-width:90%;
+max-height:85%;
+border-radius:16px;
+}
+
+/* FLOAT BUDGET BUTTON */
+.fab{
+position:fixed;
+bottom:30px;
+right:30px;
+background:#00ffd5;
+color:black;
+font-weight:900;
+padding:16px 18px;
+border-radius:30px;
+cursor:pointer;
+box-shadow:0 15px 40px rgba(0,255,213,.5);
+}
+
+/* BUDGET PANEL */
+.panel{
+position:fixed;
+right:-340px;
+top:0;
+bottom:0;
+width:320px;
+background:#0e162e;
+padding:20px;
+transition:.4s;
+}
+
+.panel.open{right:0}
+
+input{
+width:100%;
+padding:8px;
+margin:6px 0;
+border-radius:8px;
+border:0;
+}
+
+.calc{
+background:#2f4288;
+padding:10px;
+text-align:center;
+margin-top:10px;
+border-radius:10px;
+cursor:pointer;
+font-weight:800;
+}
+
+</style>
 </head>
+
 <body>
 
-<div class="sidebar">
-<h2>Explore HP</h2>
-<a href="index.html">🏠 Home</a>
-<a href="district.html">📍 Districts</a>
+<div class="hero">
+<h1>Himachal Smart Tourism</h1>
+<p>Discover locations • Plan routes • Estimate trip budget</p>
 </div>
 
-<div class="main">
+<div class="container">
 
-<h1>Himachal Tourism Portal</h1>
+<div class="filters">
+<button onclick="show('all')">All</button>
+<button onclick="show('Shimla')">Shimla</button>
+<button onclick="show('Kullu')">Kullu</button>
+<button onclick="show('Kangra')">Kangra</button>
+</div>
 
-<div class="grid">
+<div class="grid" id="grid"></div>
 
-<a href="district.html?d=Shimla" class="card">
-<img src="https://images.unsplash.com/photo-1589187151053-5ec8818e661b">
-<div>Shimla District</div>
-</a>
-
-<a href="district.html?d=Kullu" class="card">
-<img src="https://images.unsplash.com/photo-1626621341517-bbf3d9990a23">
-<div>Kullu District</div>
-</a>
+<div id="map"></div>
 
 </div>
 
+<div class="modal" id="modal" onclick="this.style.display='none'">
+<img id="modalImg">
 </div>
 
+<div class="fab" onclick="toggleBudget()">💰 Budget</div>
+
+<div class="panel" id="panel">
+
+<h2>Trip Budget</h2>
+
+People <input id="p" value="2">
+Days <input id="d" value="3">
+Stay/night ₹<input id="s" value="2500">
+Food/day ₹<input id="f" value="700">
+
+<div class="calc" onclick="calc()">Calculate</div>
+
+<div id="total" style="margin-top:12px;font-weight:900"></div>
+
+</div>
+
+<script>
+
+/* DATA */
+const places=[
+{name:"Shimla",d:"Shimla",
+img:"https://images.unsplash.com/photo-1589187151053-5ec8818e661b",
+lat:31.10,lon:77.17},
+
+{name:"Manali",d:"Kullu",
+img:"https://images.unsplash.com/photo-1626621341517-bbf3d9990a23",
+lat:32.24,lon:77.19},
+
+{name:"Dharamshala",d:"Kangra",
+img:"https://images.unsplash.com/photo-1598514982841-1c6b9f9b6c62",
+lat:32.22,lon:76.32}
+];
+
+let map=L.map('map').setView([31.7,77.4],7);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+let markers=[];
+
+function show(filter){
+
+let html="";
+markers.forEach(m=>map.removeLayer(m));
+markers=[];
+
+places.forEach(p=>{
+
+if(filter!=="all" && p.d!==filter)return;
+
+html+=`
+<div class="card">
+<img src="${p.img}" onclick="popup('${p.img}')">
+<div class="info">
+<div class="title">${p.name}</div>
+<div class="meta">${p.d}</div>
+
+<div class="actions">
+<a class="btn" target="_blank"
+href="https://www.google.com/maps?q=${p.lat},${p.lon}">
+Route</a>
+</div>
+
+</div>
+</div>`;
+
+let m=L.marker([p.lat,p.lon]).addTo(map).bindPopup(p.name);
+markers.push(m);
+
+});
+
+document.getElementById("grid").innerHTML=html;
+}
+
+function popup(src){
+modalImg.src=src;
+modal.style.display="flex";
+}
+
+function toggleBudget(){
+panel.classList.toggle("open");
+}
+
+function calc(){
+let p=+document.getElementById("p").value;
+let d=+document.getElementById("d").value;
+let s=+document.getElementById("s").value;
+let f=+document.getElementById("f").value;
+
+let total=(d*s)+(p*d*f);
+document.getElementById("total").innerText=
+"Estimated ₹"+total.toLocaleString();
+}
+
+show("all");
+
+</script>
 </body>
 </html>
