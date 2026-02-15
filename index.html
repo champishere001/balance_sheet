@@ -1,228 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Himachal Explorer — Firebase DB</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Himachal Explorer</title>
   <style>
-    :root{
-      --bg:#070B15; --text:#ECF2FF; --muted: rgba(236,242,255,.78);
-      --brand:#FF7A18; --shadow: 0 30px 80px rgba(0,0,0,.55);
-    }
+    :root{--bg:#070B15;--text:#ECF2FF;--muted:rgba(236,242,255,.78);--stroke:rgba(255,255,255,.12);--panel:rgba(255,255,255,.07);--brand:#FF7A18;}
     *{box-sizing:border-box}
-    body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      background: radial-gradient(1200px 600px at 15% 15%, rgba(255,122,24,.18), transparent 60%),
-                  radial-gradient(900px 500px at 85% 30%, rgba(255,209,102,.14), transparent 55%),
-                  var(--bg);
-      color:var(--text);
-    }
-    .app{display:flex; min-height:100vh;}
-    .sidebar{
-      width:30vw; min-width:280px; max-width:420px;
-      position:sticky; top:0; height:100vh; overflow:auto;
-      padding:16px 12px; border-right:1px solid rgba(255,255,255,.10);
-      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
-      backdrop-filter: blur(12px);
-    }
-    .content{flex:1; padding:16px 16px 70px; min-width:0;}
-
-    .brand{
-      display:flex; gap:10px; align-items:center;
-      padding:10px; border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.22);
-      margin-bottom:10px;
-      position:sticky; top:10px; z-index:5;
-    }
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)}
+    .app{display:flex;min-height:100vh}
+    .side{width:30%;min-width:310px;max-width:460px;border-right:1px solid var(--stroke);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));padding:14px;overflow:auto}
+    .main{flex:1;min-width:0;padding:14px}
+    .brand{display:flex;gap:10px;align-items:center;padding:10px;border-radius:16px;border:1px solid var(--stroke);background:rgba(0,0,0,.22)}
     .dot{width:12px;height:12px;border-radius:50%;background:var(--brand);box-shadow:0 0 18px rgba(255,122,24,.75)}
     .title{font-weight:950}
     .sub{font-size:12px;color:var(--muted);margin-top:2px}
-
-    .row{display:flex; gap:10px; margin:10px 2px;}
-    .input{
-      width:100%; border-radius:14px; border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18); padding:10px 12px; color:var(--text);
-      outline:none; font-weight:800;
-    }
-    .btn{
-      border:0; cursor:pointer; padding:10px 12px; border-radius:14px;
-      font-weight:950; color:#0b1220;
-      background: linear-gradient(135deg, var(--brand), #ff9a4a);
-      box-shadow: 0 12px 24px rgba(255,122,24,.22);
-      white-space:nowrap;
-    }
-    .btnGhost{
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.08);
-      color: var(--text);
-      box-shadow:none;
-    }
-
-    .navTitle{margin:10px 6px 8px; font-size:12px; color:var(--muted); font-weight:950; text-transform:uppercase}
-    .districtList{display:flex; flex-direction:column; gap:10px; padding-bottom:14px;}
-    .dItem{
-      border-radius:16px; border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.06); padding:10px; cursor:pointer;
-      transition:.18s transform,.18s background;
-    }
-    .dItem:hover{transform:translateY(-2px); background: rgba(255,122,24,.12); border-color: rgba(255,122,24,.25);}
-    .dItem.active{background: rgba(255,122,24,.16); border-color: rgba(255,122,24,.35);}
-    .dTop{display:flex; justify-content:space-between; align-items:center; gap:10px;}
-    .dName{font-weight:950}
-    .pill{
-      font-size:11px; padding:5px 10px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.14); background: rgba(0,0,0,.18);
-      color: rgba(236,242,255,.88);
-    }
-    .counts{margin-top:8px; display:grid; grid-template-columns: repeat(4,1fr); gap:8px;}
-    .cBox{
-      border-radius:14px; border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.16); padding:8px; text-align:center;
-    }
-    .cBox b{display:block; font-size:14px}
-    .cBox small{display:block; color:var(--muted); font-weight:900; font-size:11px; margin-top:2px}
-
-    .hero{
-      border-radius:26px; overflow:hidden; padding:18px;
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow: var(--shadow);
-      background:
-        linear-gradient(110deg, rgba(0,0,0,.78) 10%, rgba(0,0,0,.35) 55%, rgba(0,0,0,.82) 100%),
-        url("https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=2000&auto=format&fit=crop");
-      background-size:cover; background-position:center;
-    }
-    .hero h1{margin:0 0 6px; font-size: clamp(24px, 3.2vw, 44px); line-height:1.05;}
-    .hero p{margin:0; color: rgba(236,242,255,.88); max-width: 80ch; line-height:1.45;}
-
-    .tabs{margin-top:14px; display:flex; flex-wrap:wrap; gap:10px;}
-    .tab{
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.18);
-      color: var(--text);
-      padding:10px 12px; border-radius:999px;
-      cursor:pointer; font-weight:950; font-size:12px;
-      transition:.18s transform;
-    }
-    .tab:hover{transform: translateY(-2px)}
-    .tab.active{border:0; color:#0b1220; background: linear-gradient(135deg, var(--brand), #ff9a4a);}
-
-    .panel{
-      margin-top:12px; border-radius:22px; overflow:hidden;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-    }
-    .panelHead{
-      display:flex; justify-content:space-between; align-items:center;
-      padding:12px 14px; border-bottom:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.18);
-    }
-    .panelHead b{font-size:13px}
-    .panelHead span{color:var(--muted); font-size:12px; font-weight:900}
-    .list{padding:12px 14px; display:flex; flex-wrap:wrap; gap:10px; max-height: 60vh; overflow:auto;}
-    .chip{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.18);
-      padding:8px 12px; border-radius:999px;
-      font-weight:950; font-size:12px;
-    }
-    .chip small{display:block; font-size:10px; font-weight:900; color:var(--muted); margin-top:2px}
-
-    .mTop{display:none; position:sticky; top:0; z-index:50; padding:12px;
-      background: rgba(0,0,0,.35); backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,.10);
-    }
-    .ham{
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.08);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 14px;
-      cursor:pointer;
-      font-weight: 950;
-    }
-    @media (max-width:980px){
-      .mTop{display:flex; gap:10px; align-items:center;}
-      .app{display:block;}
-      .sidebar{
-        position:fixed; left:0; top:0;
-        transform: translateX(-110%);
-        transition:.22s transform;
-        z-index:200;
-        width:min(88vw, 420px);
-      }
-      .sidebar.open{transform: translateX(0);}
-      .content{padding: 14px 12px 70px;}
-    }
+    .btnRow{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+    .btn{border:0;cursor:pointer;padding:10px 12px;border-radius:14px;font-weight:950;color:#0b1220;background:linear-gradient(135deg,var(--brand),#ff9a4a)}
+    .btnGhost{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:var(--text)}
+    .hero{border-radius:24px;border:1px solid var(--stroke);overflow:hidden;background:rgba(255,255,255,.06)}
+    .heroTop{padding:14px;background:rgba(0,0,0,.22);border-bottom:1px solid rgba(255,255,255,.10)}
+    .heroTop h1{margin:0;font-size:clamp(22px,3.2vw,40px)}
+    .heroTop p{margin:6px 0 0;color:rgba(236,242,255,.86);line-height:1.45}
+    .carousel{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;padding:14px}
+    .ph{height:120px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background-size:cover;background-position:center}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:0 14px 14px}
+    .card{border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.16);padding:10px}
+    .card b{display:block;font-size:18px}
+    .card small{display:block;margin-top:2px;color:var(--muted);font-weight:900}
+    .list{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+    .d{border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.18);padding:10px;cursor:pointer}
+    .d b{display:block}
+    .d small{color:var(--muted);font-weight:900;line-height:1.35}
+    @media(max-width:980px){.app{display:block}.side{width:auto;max-width:none;border-right:0;border-bottom:1px solid var(--stroke)}.carousel{grid-template-columns:repeat(3,1fr)}.stats{grid-template-columns:repeat(2,1fr)}}
   </style>
 </head>
-
 <body>
-  <div class="mTop">
-    <button class="ham" onclick="toggleSidebar()">☰</button>
-    <div style="font-weight:950">Himachal Explorer</div>
-    <div style="margin-left:auto" class="pill" id="activePill">All</div>
-  </div>
-
   <div class="app">
-    <aside class="sidebar" id="sidebar">
+    <aside class="side">
       <div class="brand">
         <div class="dot"></div>
         <div>
           <div class="title">Himachal Explorer</div>
-          <div class="sub">Firebase RTDB • live counts</div>
+          <div class="sub">District-wise places • treks • temples • lakes • hotels</div>
         </div>
       </div>
 
-      <div class="row">
-        <input class="input" id="globalSearch" placeholder="Search: place / temple / trek / hotel..." />
+      <div class="btnRow">
+        <button class="btn" onclick="location.href='map.html'">Open Master Map</button>
+        <button class="btn btnGhost" onclick="location.href='admin.html'">Open Admin</button>
       </div>
 
-      <div class="row">
-        <button class="btn" onclick="openAdd()">+ Add Item</button>
-        <button class="btn btnGhost" onclick="refreshDB()">Refresh DB</button>
+      <div class="list" id="districtList">
+        <div class="d"><b>Loading districts…</b><small>Please wait</small></div>
       </div>
-
-      <div class="navTitle">Districts (counts)</div>
-      <div class="districtList" id="districtList"></div>
-
-      <div class="navTitle">Status</div>
-      <div class="pill" id="statusPill">Connecting...</div>
     </aside>
 
-    <main class="content">
+    <main class="main">
       <section class="hero">
-        <h1 id="title">All Himachal Data</h1>
-        <p id="subtitle">Select district from left to view Firebase database.</p>
-
-        <div class="tabs">
-          <button class="tab active" id="tab-all" onclick="setTab('all')">All</button>
-          <button class="tab" id="tab-places" onclick="setTab('places')">Places</button>
-          <button class="tab" id="tab-temples" onclick="setTab('temples')">Temples</button>
-          <button class="tab" id="tab-treks" onclick="setTab('treks')">Treks</button>
-          <button class="tab" id="tab-hotels" onclick="setTab('hotels')">Hotels</button>
+        <div class="heroTop">
+          <h1>Himachal Pradesh</h1>
+          <p>Explore the state by district. Use the Master Map for live distance & routes, and the Admin panel to publish new places.</p>
         </div>
-      </section>
 
-      <section class="panel">
-        <div class="panelHead">
-          <b id="panelTitle">Showing: All items</b>
-          <span id="panelCount">0</span>
+        <div class="carousel">
+          <div class="ph" style="background-image:url('https://source.unsplash.com/1200x800/?Himachal,Mountains')"></div>
+          <div class="ph" style="background-image:url('https://source.unsplash.com/1200x800/?Spiti,Monastery')"></div>
+          <div class="ph" style="background-image:url('https://source.unsplash.com/1200x800/?Manali,Snow')"></div>
+          <div class="ph" style="background-image:url('https://source.unsplash.com/1200x800/?Dharamshala,Monastery')"></div>
+          <div class="ph" style="background-image:url('https://source.unsplash.com/1200x800/?Dalhousie,Hills')"></div>
+          <div class="ph" style="background-image:url('https://source.unsplash.com/1200x800/?Himachal,Lake')"></div>
         </div>
-        <div class="list" id="list"></div>
+
+        <div class="stats">
+          <div class="card"><b id="sDistricts">—</b><small>Districts</small></div>
+          <div class="card"><b id="sPins">—</b><small>Total Records</small></div>
+          <div class="card"><b id="sGeo">—</b><small>With lat/lng</small></div>
+          <div class="card"><b>Map + Admin</b><small>Live distance + publish</small></div>
+        </div>
       </section>
     </main>
   </div>
 
-  <!-- Simple Add Modal (prompt-based for speed) -->
   <script type="module">
-    /******************************
-     * Firebase (Modular v9+)
-     ******************************/
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getDatabase, ref, get, set, push, child } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
-    // ✅ PASTE YOUR CONFIG HERE (from Firebase console)
+    // ✅ PASTE SAME CONFIG HERE (same in admin.html & map.html)
     const firebaseConfig = {
       apiKey: "PASTE_API_KEY",
       authDomain: "revnue-records.firebaseapp.com",
@@ -237,271 +101,67 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    /******************************
-     * App State
-     ******************************/
-    let DATA = null; // live DB cache
-    let selectedDistrict = null;
-    let activeTab = "all";
-    let q = "";
+    const ROOT = "tourism/hp/districts";
+    const listEl = document.getElementById("districtList");
 
-    const statusPill = document.getElementById("statusPill");
-    const districtListEl = document.getElementById("districtList");
-    const titleEl = document.getElementById("title");
-    const subtitleEl = document.getElementById("subtitle");
-    const listEl = document.getElementById("list");
-    const panelTitleEl = document.getElementById("panelTitle");
-    const panelCountEl = document.getElementById("panelCount");
-    const activePillEl = document.getElementById("activePill");
-    const globalSearchEl = document.getElementById("globalSearch");
-    const sidebarEl = document.getElementById("sidebar");
+    const sDistricts = document.getElementById("sDistricts");
+    const sPins = document.getElementById("sPins");
+    const sGeo = document.getElementById("sGeo");
 
-    // Firebase path for Tourism data
-    const ROOT = "tourism/hp";
+    const safeObj = (x)=> (x && typeof x==="object") ? x : {};
 
-    function safeObj(x){ return x && typeof x === "object" ? x : {}; }
-    function safeArr(x){ return Array.isArray(x) ? x : []; }
-
-    function countsForDistrict(d){
-      const dd = safeObj(DATA?.districts?.[d]);
-      return {
-        places: safeArr(dd.places).length,
-        temples: safeArr(dd.temples).length,
-        treks: safeArr(dd.treks).length,
-        hotels: safeArr(dd.hotels).length,
-      };
-    }
-
-    function flattenAll(){
-      const out = [];
-      const districts = Object.keys(safeObj(DATA?.districts)).sort((a,b)=>a.localeCompare(b));
-      for(const d of districts){
-        const dd = safeObj(DATA.districts[d]);
-        for(const type of ["places","temples","treks","hotels"]){
-          for(const it of safeArr(dd[type])){
-            out.push({district:d, type, ...it});
-          }
+    function countSegments(seg){
+      seg = safeObj(seg);
+      const types = ["destinations","lakes","temples","treks","hotels"];
+      let total=0, geo=0;
+      for(const t of types){
+        const node = safeObj(seg[t]);
+        for(const id of Object.keys(node)){
+          total++;
+          const it = node[id]||{};
+          if(it.lat!=null && it.lng!=null && it.lat!=="" && it.lng!=="") geo++;
         }
       }
-      return out;
+      return {total, geo};
     }
 
-    function matches(item, q){
-      if(!q) return true;
-      const hay = (
-        (item.name||"") + " " +
-        (item.district||"") + " " +
-        (item.type||"") + " " +
-        (safeArr(item.tags).join(" ")) + " " +
-        (item.notes||"")
-      ).toLowerCase();
-      return hay.includes(q.toLowerCase());
-    }
+    async function load(){
+      const snap = await get(ref(db, ROOT));
+      const root = snap.exists() ? snap.val() : {};
+      const districts = Object.keys(safeObj(root)).sort((a,b)=>a.localeCompare(b));
 
-    function labelType(t){
-      if(t==="places") return "📍 Place";
-      if(t==="temples") return "🛕 Temple";
-      if(t==="treks") return "🥾 Trek";
-      if(t==="hotels") return "🏨 Hotel";
-      return t;
-    }
+      let totalPins=0, geoPins=0;
 
-    function renderSidebar(){
-      const districts = Object.keys(safeObj(DATA?.districts)).sort((a,b)=>a.localeCompare(b));
-      districtListEl.innerHTML = districts.map(d=>{
-        const c = countsForDistrict(d);
-        const total = c.places + c.temples + c.treks + c.hotels;
-        const active = selectedDistrict===d ? "active" : "";
+      listEl.innerHTML = districts.map(d=>{
+        const dn = root[d]||{};
+        const counts = dn.counts || {};
+        const c = {
+          destinations: counts.destinations ?? 0,
+          lakes: counts.lakes ?? 0,
+          temples: counts.temples ?? 0,
+          treks: counts.treks ?? 0,
+          hotels: counts.hotels ?? 0
+        };
+        const sum = c.destinations + c.lakes + c.temples + c.treks + c.hotels;
+
+        const segCount = countSegments(dn.segments);
+        totalPins += segCount.total;
+        geoPins += segCount.geo;
+
         return `
-          <div class="dItem ${active}" data-d="${escapeHTMLAttr(d)}">
-            <div class="dTop">
-              <div class="dName">${escapeHTML(d)}</div>
-              <span class="pill">${total} items</span>
-            </div>
-            <div class="counts">
-              <div class="cBox"><b>${c.places}</b><small>Places</small></div>
-              <div class="cBox"><b>${c.temples}</b><small>Temples</small></div>
-              <div class="cBox"><b>${c.treks}</b><small>Treks</small></div>
-              <div class="cBox"><b>${c.hotels}</b><small>Hotels</small></div>
-            </div>
+          <div class="d" onclick="location.href='map.html#district=${encodeURIComponent(d)}'">
+            <b>${d}</b>
+            <small>${sum} items • Dest ${c.destinations} • Lakes ${c.lakes} • Temples ${c.temples} • Treks ${c.treks} • Hotels ${c.hotels}</small>
           </div>
         `;
       }).join("");
 
-      // bind clicks
-      districtListEl.querySelectorAll(".dItem").forEach(el=>{
-        el.addEventListener("click", ()=>{
-          selectedDistrict = el.getAttribute("data-d");
-          if(window.matchMedia("(max-width:980px)").matches) sidebarEl.classList.remove("open");
-          renderSidebar();
-          renderMain();
-        });
-      });
+      sDistricts.textContent = districts.length;
+      sPins.textContent = totalPins;
+      sGeo.textContent = geoPins;
     }
 
-    function renderMain(){
-      const all = flattenAll();
-      const filtered = all.filter(it=>{
-        if(selectedDistrict && it.district !== selectedDistrict) return false;
-        if(activeTab !== "all" && it.type !== activeTab) return false;
-        if(!matches(it, q)) return false;
-        return true;
-      });
-
-      titleEl.textContent = selectedDistrict ? selectedDistrict : "All Himachal Data";
-      subtitleEl.textContent = selectedDistrict
-        ? `Firebase DB • ${activeTab.toUpperCase()} • search: ${q||"none"}`
-        : `Firebase DB • ${activeTab.toUpperCase()} across districts • search: ${q||"none"}`;
-
-      panelTitleEl.textContent = selectedDistrict
-        ? `Showing: ${activeTab.toUpperCase()} • ${selectedDistrict}`
-        : `Showing: ${activeTab.toUpperCase()} • All districts`;
-
-      panelCountEl.textContent = `${filtered.length} result(s)`;
-      if(activePillEl) activePillEl.textContent = selectedDistrict ? selectedDistrict : "All";
-
-      listEl.innerHTML = filtered.map(it=>{
-        const tags = safeArr(it.tags).slice(0,3).join(", ");
-        return `
-          <div class="chip">
-            ${escapeHTML(it.name || "(no name)")}
-            <small>${escapeHTML(it.district)} • ${labelType(it.type)}${tags ? " • "+escapeHTML(tags) : ""}</small>
-          </div>
-        `;
-      }).join("");
-
-      if(filtered.length===0){
-        listEl.innerHTML = `<div style="color:rgba(236,242,255,.78); font-weight:900; padding:10px">
-          No results. Change tab or search.
-        </div>`;
-      }
-    }
-
-    function setTab(tab){
-      activeTab = tab;
-      ["all","places","temples","treks","hotels"].forEach(t=>{
-        document.getElementById("tab-"+t).classList.toggle("active", t===tab);
-      });
-      renderMain();
-    }
-    window.setTab = setTab;
-
-    globalSearchEl.addEventListener("input", ()=>{
-      q = globalSearchEl.value || "";
-      renderMain();
-    });
-
-    async function ensureSeedIfEmpty(){
-      const rootRef = ref(db, ROOT);
-      const snap = await get(rootRef);
-      if(snap.exists()){
-        DATA = snap.val();
-        return;
-      }
-
-      // Seed minimal DB structure (you can expand later)
-      const seed = {
-        districts: {
-          "Shimla": { places:[{name:"Mall Road"}], temples:[{name:"Jakhu Temple"}], treks:[{name:"Shali Tibba Trek"}], hotels:[{name:"Heritage Hotels (Shimla)"}] },
-          "Kullu": { places:[{name:"Manali"},{name:"Kasol"}], temples:[{name:"Manikaran Sahib"}], treks:[{name:"Hampta Pass"}], hotels:[{name:"Resorts (Manali)"}] },
-          "Kangra": { places:[{name:"Dharamshala"},{name:"McLeod Ganj"}], temples:[{name:"Baijnath Temple"}], treks:[{name:"Triund Trek"}], hotels:[{name:"Hotels (Dharamshala)"}] },
-          "Chamba": { places:[{name:"Dalhousie"},{name:"Khajjiar"}], temples:[{name:"Lakshmi Narayan Temple"}], treks:[{name:"Kalatop Trails"}], hotels:[{name:"Stays (Dalhousie)"}] },
-          "Lahaul & Spiti": { places:[{name:"Kaza"},{name:"Chandratal Lake"}], temples:[{name:"Key Monastery"}], treks:[{name:"Dhankar View Hike"}], hotels:[{name:"Homestays (Spiti)"}] },
-          "Kinnaur": { places:[{name:"Kalpa"},{name:"Chitkul"}], temples:[{name:"Local Kinnauri Temples"}], treks:[{name:"Kinner Kailash Trek"}], hotels:[{name:"Stays (Kalpa)"}] },
-          "Mandi": { places:[{name:"Prashar Lake"}], temples:[{name:"Shikari Devi"}], treks:[{name:"Janjehli Trails"}], hotels:[{name:"Stays (Mandi)"}] },
-          "Solan": { places:[{name:"Kasauli"}], temples:[{name:"Shoolini Mata Temple"}], treks:[{name:"Timber Trail (near)"}], hotels:[{name:"Hotels (Kasauli)"}] },
-          "Sirmaur": { places:[{name:"Renuka Lake"}], temples:[{name:"Paonta Sahib"}], treks:[{name:"Churdhar Peak"}], hotels:[{name:"Stays (Nahan)"}] },
-          "Bilaspur": { places:[{name:"Gobind Sagar"}], temples:[{name:"Naina Devi"}], treks:[{name:"Hill Trails"}], hotels:[{name:"Stays (Bilaspur)"}] },
-          "Hamirpur": { places:[{name:"Sujanpur Tira"}], temples:[{name:"Awah Devi Temple"}], treks:[{name:"Local Hikes"}], hotels:[{name:"Stays (Hamirpur)"}] },
-          "Una": { places:[{name:"Chintpurni Temple"}], temples:[{name:"Chintpurni Temple"}], treks:[{name:"Short Trails"}], hotels:[{name:"Stays (Una)"}] }
-        }
-      };
-
-      await set(rootRef, seed);
-      DATA = seed;
-    }
-
-    async function refreshDB(){
-      statusPill.textContent = "Loading from Firebase…";
-      try{
-        const snap = await get(ref(db, ROOT));
-        DATA = snap.exists() ? snap.val() : {districts:{}};
-        statusPill.textContent = "Connected ✅";
-        renderSidebar();
-        renderMain();
-      }catch(err){
-        console.error(err);
-        statusPill.textContent = "Error ❌ (check rules/config)";
-        alert("Firebase error. Check database rules + config.");
-      }
-    }
-    window.refreshDB = refreshDB;
-
-    async function openAdd(){
-      // Simple prompts (fast on mobile)
-      const districts = Object.keys(safeObj(DATA?.districts)).sort((a,b)=>a.localeCompare(b));
-      const d = prompt("District name (exact):\n" + districts.join(", "), selectedDistrict || "Shimla");
-      if(!d) return;
-
-      const type = prompt("Type: places / temples / treks / hotels", "places");
-      if(!type || !["places","temples","treks","hotels"].includes(type)) { alert("Invalid type"); return; }
-
-      const name = prompt("Name (e.g., Triund Trek / Jakhu Temple / Hotel XYZ):", "");
-      if(!name) return;
-
-      const tags = prompt("Tags (comma separated) optional:", "");
-      const notes = prompt("Notes optional:", "");
-
-      // push into Firebase at ROOT/districts/{d}/{type}/
-      try{
-        statusPill.textContent = "Saving…";
-        const listRef = ref(db, `${ROOT}/districts/${d}/${type}`);
-        const snap = await get(listRef);
-        const current = snap.exists() ? snap.val() : [];
-        const arr = Array.isArray(current) ? current : [];
-        arr.push({
-          name: name.trim(),
-          tags: tags ? tags.split(",").map(x=>x.trim()).filter(Boolean) : [],
-          notes: notes ? notes.trim() : ""
-        });
-        await set(listRef, arr);
-
-        statusPill.textContent = "Saved ✅";
-        await refreshDB();
-        selectedDistrict = d;
-        renderSidebar();
-        renderMain();
-      }catch(err){
-        console.error(err);
-        statusPill.textContent = "Save failed ❌";
-        alert("Save failed. Check Firebase rules.");
-      }
-    }
-    window.openAdd = openAdd;
-
-    // mobile sidebar
-    function toggleSidebar(){ sidebarEl.classList.toggle("open"); }
-    window.toggleSidebar = toggleSidebar;
-
-    // init
-    statusPill.textContent = "Seeding/Connecting…";
-    try{
-      await ensureSeedIfEmpty();
-      statusPill.textContent = "Connected ✅";
-      renderSidebar();
-      renderMain();
-    }catch(e){
-      console.error(e);
-      statusPill.textContent = "Error ❌ (rules/config)";
-      alert("Firebase connection error. Check your config + DB rules.");
-    }
-
-    function escapeHTML(str){
-      return String(str).replace(/[&<>"']/g, s=>({
-        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-      }[s]));
-    }
-    function escapeHTMLAttr(str){ return escapeHTML(str).replace(/"/g,"&quot;"); }
+    load().catch(()=>{ listEl.innerHTML = `<div class="d"><b>Firebase not configured</b><small>Paste firebaseConfig in all pages</small></div>`; });
   </script>
 </body>
 </html>
