@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin — Staged Tourism DB (HP)</title>
+
+  <!-- ✅ Proper CSV parser (fixes header row + commas inside URLs) -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#070B15; --text:#ECF2FF; --muted: rgba(236,242,255,.78);
+      --brand:#FF7A18; --stroke: rgba(255,255,255,.12);
+      --panel: rgba(255,255,255,.06);
+      --bad: rgba(255,80,80,.12);
+      --ok: rgba(54,211,153,.10);
+      --shadow: 0 28px 80px rgba(0,0,0,.55);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(1200px 600px at 15% 15%, rgba(255,122,24,.18), transparent 60%),
+        radial-gradient(900px 500px at 85% 30%, rgba(255,209,102,.14), transparent 55%),
+        var(--bg);
+      color: var(--text);
+    }
+    .wrap{max-width: 1240px; margin:0 auto; padding: 16px 12px 80px;}
+    .hero{
+      border-radius: 26px;
+      border: 1px solid var(--stroke);
+      background: linear-gradient(110deg, rgba(0,0,0,.78), rgba(0,0,0,.25)),
+                  url("https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=2000&auto=format&fit=crop");
+      background-size: cover;
+      background-position: center;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .heroTop{display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; justify-content:space-between;}
+    h1{margin:0; font-size: clamp(22px, 3.2vw, 40px); line-height:1.05}
+    .sub{margin:6px 0 0; color: rgba(236,242,255,.88); line-height:1.45; max-width: 90ch;}
+    .status{display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;}
+    .pill{
+      font-size: 12px; padding: 7px 12px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18); color: rgba(236,242,255,.88); font-weight: 950;
+      white-space:nowrap;
+    }
+    .btn{
+      border:0; cursor:pointer; padding: 10px 12px; border-radius: 14px;
+      font-weight: 950; color: #0b1220;
+      background: linear-gradient(135deg, var(--brand), #ff9a4a);
+      box-shadow: 0 12px 24px rgba(255,122,24,.22);
+      transition: .18s transform; white-space:nowrap;
+    }
+    .btn:hover{transform: translateY(-2px)}
+    .btnGhost{
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      box-shadow:none;
+    }
+    .btnDanger{
+      border: 1px solid rgba(255,80,80,.35);
+      background: rgba(255,80,80,.12);
+      color: var(--text);
+      box-shadow:none;
+    }
+
+    .grid{margin-top: 14px; display:grid; grid-template-columns: 1.08fr .92fr; gap: 14px; align-items:start;}
+    .card{border-radius: 22px; border: 1px solid var(--stroke); background: var(--panel); overflow:hidden; box-shadow: 0 18px 45px rgba(0,0,0,.38);}
+    .cardHead{padding: 12px 14px; display:flex; justify-content:space-between; gap: 10px; align-items:center; background: rgba(0,0,0,.18); border-bottom: 1px solid rgba(255,255,255,.10);}
+    .cardHead b{font-size: 13px; letter-spacing:.2px}
+    .cardBody{padding: 14px}
+
+    .tabs{display:flex; flex-wrap:wrap; gap:10px;}
+    .tab{
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 999px;
+      cursor:pointer;
+      font-weight: 950;
+      font-size: 12px;
+      transition: .18s transform;
+    }
+    .tab:hover{transform: translateY(-2px)}
+    .tab.active{
+      border:0; color:#0b1220;
+      background: linear-gradient(135deg, var(--brand), #ff9a4a);
+    }
+
+    label{display:block; margin: 12px 0 6px; font-size: 12px; color: var(--muted); font-weight: 950; letter-spacing: .15px;}
+    input, select, textarea{
+      width:100%; border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      padding: 10px 12px;
+      outline:none;
+      font-weight: 850;
+    }
+    textarea{min-height: 210px; resize: vertical; line-height:1.35}
+    .row2{display:grid; grid-template-columns: 1fr 1fr; gap: 10px;}
+    .row3{display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;}
+    .hint{margin-top: 10px; color: var(--muted); font-size: 12px; line-height:1.45;}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size: 12px;}
+
+    .preview{display:flex; flex-direction:column; gap: 10px; max-height: 62vh; overflow:auto; padding-right: 4px;}
+    .pItem{border-radius: 16px; border: 1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.18); padding: 10px 12px;}
+    .pItem.ok{border-color: rgba(54,211,153,.35); background: var(--ok);}
+    .pItem.bad{border-color: rgba(255,80,80,.45); background: var(--bad);}
+    .pItem b{display:block; font-size: 13px}
+    .pItem small{display:block; margin-top:4px; color: var(--muted); font-weight: 900; line-height:1.3}
+
+    .footActions{display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end; padding: 12px 14px; border-top: 1px solid rgba(255,255,255,.10); background: rgba(0,0,0,.18);}
+
+    .listDrafts{margin-top: 10px; display:flex; flex-direction:column; gap:10px; max-height: 30vh; overflow:auto; padding-right:4px;}
+    .dRow{border-radius: 16px; border: 1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.18); padding: 10px 12px; display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;}
+    .dRow b{font-size: 13px}
+    .dRow small{color: var(--muted); font-weight: 900}
+    .dBtns{display:flex; gap:10px; flex-wrap:wrap;}
+
+    @media (max-width: 980px){
+      .grid{grid-template-columns: 1fr;}
+      .row2,.row3{grid-template-columns: 1fr;}
+      textarea{min-height: 180px;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="heroTop">
+        <div>
+          <h1>Admin — Staged Tourism DB (Himachal)</h1>
+          <p class="sub">
+            Stage flow: <b>Draft → Validate/Normalize → Publish</b><br/>
+            Publish paths:
+            <span class="mono">tourism/hp/districts/{District}/segments/{type}/{id}</span> and
+            <span class="mono">tourism/hp/districts/{District}/weather</span><br/>
+            Index:
+            <span class="mono">tourism/hp/index/{type}/{id}</span>
+          </p>
+        </div>
+        <div class="status">
+          <span class="pill" id="connPill">Connecting…</span>
+          <span class="pill" id="devicePill">Device: …</span>
+          <button class="btn btnGhost" id="btnLoadDrafts">Load Drafts</button>
+          <button class="btn btnGhost" id="btnExportLive">Export Live JSON</button>
+          <button class="btn" id="btnPublish">Publish Valid Items</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <div class="card">
+        <div class="cardHead">
+          <b>Stage A — Create Draft</b>
+          <div class="tabs" style="justify-content:flex-end">
+            <button class="tab active" data-tab="bulk">Bulk CSV</button>
+            <button class="tab" data-tab="single">Single Item</button>
+            <button class="tab" data-tab="weather">District Weather</button>
+          </div>
+        </div>
+
+        <div class="cardBody">
+          <div class="pane" id="pane-bulk">
+            <label>Bulk CSV (supports header + commas + extra PRO columns)</label>
+            <div class="hint">
+              Required: <span class="mono">district,type,name</span><br/>
+              Optional: <span class="mono">tags,notes,photo,priceMin,priceMax,rating,phone,lat,lng,bestSeason,popularityScore,entryFee,timing,districtHQDistanceKm</span><br/>
+              <b>Type must be:</b> destinations | lakes | temples | treks | hotels
+            </div>
+
+            <label>Paste CSV</label>
+            <textarea id="csvInput" placeholder="district,type,name,tags,notes,photo,lat,lng
+Kangra,treks,Triund Trek,easy|views,Popular trek,https://...|https://...,32.251,76.323"></textarea>
+
+            <div class="row2" style="margin-top:12px">
+              <button class="btn btnGhost" id="btnBuildPreview">Build Preview</button>
+              <button class="btn btnGhost" id="btnClearPreview">Clear Preview</button>
+            </div>
+
+            <div class="row2" style="margin-top:12px">
+              <input id="draftTitle" placeholder="Draft title (e.g., Kangra batch 1)" />
+              <button class="btn" id="btnSaveDraft">Save Draft</button>
+            </div>
+
+            <div class="hint">
+              Draft saves to: <span class="mono">tourism/hp_admin/drafts/{deviceId}/{draftId}</span>
+            </div>
+          </div>
+
+          <div class="pane" id="pane-single" style="display:none">
+            <label>Single Item</label>
+            <div class="row3">
+              <div><label>District</label><input id="sDistrict" placeholder="e.g., Kangra"/></div>
+              <div>
+                <label>Type</label>
+                <select id="sType">
+                  <option value="destinations">destinations</option>
+                  <option value="lakes">lakes</option>
+                  <option value="temples">temples</option>
+                  <option value="treks">treks</option>
+                  <option value="hotels">hotels</option>
+                </select>
+              </div>
+              <div><label>Name</label><input id="sName" placeholder="e.g., Triund Trek"/></div>
+            </div>
+
+            <div class="row2">
+              <div><label>Tags (use | or ,)</label><input id="sTags" placeholder="easy|views|popular"/></div>
+              <div><label>Photo URLs (use | for many)</label><input id="sPhoto" placeholder="url1|url2|url3"/></div>
+            </div>
+
+            <div class="row2">
+              <div><label>Lat</label><input id="sLat" placeholder="32.2510" inputmode="decimal"/></div>
+              <div><label>Lng</label><input id="sLng" placeholder="76.3230" inputmode="decimal"/></div>
+            </div>
+
+            <label>Notes</label>
+            <input id="sNotes" placeholder="Short info (timing, distance, etc.)"/>
+
+            <div class="row3">
+              <div><label>Hotel: priceMin</label><input id="sPriceMin" placeholder="1200" inputmode="numeric"/></div>
+              <div><label>Hotel: priceMax</label><input id="sPriceMax" placeholder="2500" inputmode="numeric"/></div>
+              <div><label>Hotel: rating</label><input id="sRating" placeholder="4.2" inputmode="decimal"/></div>
+            </div>
+            <label>Hotel: phone (optional)</label>
+            <input id="sPhone" placeholder="98xxxxxxx"/>
+
+            <div class="row2" style="margin-top:12px">
+              <button class="btn btnGhost" id="btnAddToPreview">Add to Preview</button>
+              <button class="btn btnGhost" id="btnResetSingle">Reset</button>
+            </div>
+
+            <div class="row2" style="margin-top:12px">
+              <input id="draftTitle2" placeholder="Draft title (e.g., Single adds)" />
+              <button class="btn" id="btnSaveDraft2">Save Draft</button>
+            </div>
+          </div>
+
+          <div class="pane" id="pane-weather" style="display:none">
+            <label>District Weather</label>
+            <div class="row2">
+              <div><label>District</label><input id="wDistrict" placeholder="e.g., Kangra"/></div>
+              <div><label>Best Season</label><input id="wSeason" placeholder="Mar–Jun, Sep–Nov"/></div>
+            </div>
+            <div class="row3">
+              <div><label>Summer min °C</label><input id="wSumMin" inputmode="numeric" placeholder="18"/></div>
+              <div><label>Summer max °C</label><input id="wSumMax" inputmode="numeric" placeholder="32"/></div>
+              <div><label>Summer note</label><input id="wSumNote" placeholder="Pleasant"/></div>
+            </div>
+            <div class="row3">
+              <div><label>Winter min °C</label><input id="wWinMin" inputmode="numeric" placeholder="2"/></div>
+              <div><label>Winter max °C</label><input id="wWinMax" inputmode="numeric" placeholder="16"/></div>
+              <div><label>Winter note</label><input id="wWinNote" placeholder="Cold nights"/></div>
+            </div>
+            <div class="row2">
+              <div><label>Monsoon note</label><input id="wMonNote" placeholder="Rainy"/></div>
+              <div><label>Extra note</label><input id="wExtra" placeholder="Snow in higher areas"/></div>
+            </div>
+            <div class="row2" style="margin-top:12px">
+              <button class="btn btnGhost" id="btnLoadWeather">Load from Firebase</button>
+              <button class="btn" id="btnSaveWeather">Save Weather</button>
+            </div>
+          </div>
+
+          <div class="footActions">
+            <button class="btn btnGhost" id="btnNormalize">Stage B — Validate/Normalize</button>
+            <button class="btn btnGhost" id="btnClearAll">Clear All</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="cardHead">
+          <b>Stage B/C — Preview, Drafts & Publish</b>
+          <span class="pill" id="previewCount">0 items</span>
+        </div>
+        <div class="cardBody">
+          <div class="hint">
+            ✅ Green = valid • ❌ Red = invalid (missing district/type/name or wrong type).<br/>
+            Publish writes: segments + counts + index.
+          </div>
+
+          <div class="preview" id="preview"></div>
+          <div class="hint" id="summary" style="margin-top:12px"></div>
+
+          <div class="hint" style="margin-top:14px"><b>Drafts</b></div>
+          <div class="listDrafts" id="drafts"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getDatabase, ref, get, set, push, update, remove } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+
+    /**********************
+     * FIREBASE CONFIG (PASTE YOUR REAL VALUES)
+     **********************/
+    const firebaseConfig = {
+      apiKey: "PASTE_API_KEY",
+      authDomain: "revnue-records.firebaseapp.com",
+      databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "revnue-records",
+      storageBucket: "revnue-records.appspot.com",
+      messagingSenderId: "PASTE_SENDER_ID",
+      appId: "PASTE_APP_ID",
+      measurementId: "PASTE_MEASUREMENT_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const ROOT = "tourism/hp";
+    const ADMIN_ROOT = "tourism/hp_admin";
+
+    const LS_DEVICE = "hp_admin_device_id";
+    function makeId(){ return "dev_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(16); }
+    let deviceId = localStorage.getItem(LS_DEVICE);
+    if(!deviceId){ deviceId = makeId(); localStorage.setItem(LS_DEVICE, deviceId); }
+
+    const TYPES = new Set(["destinations","lakes","temples","treks","hotels"]);
+    const safeArr = (x)=> Array.isArray(x) ? x : [];
+    const safeObj = (x)=> (x && typeof x==="object") ? x : {};
+    const norm = (s)=> String(s ?? "").trim();
+
+    function parseTags(raw){
+      const s = norm(raw);
+      if(!s) return [];
+      const split = s.includes("|") ? s.split("|") : s.split(",");
+      return split.map(x=>norm(x)).filter(Boolean);
+    }
+    function toNumOrNull(v){
+      const s = norm(v);
+      if(!s) return null;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : null;
+    }
+    function canonicalDistrictName(d){
+      const s = norm(d).replace(/\s+/g, " ");
+      if(!s) return "";
+      return s.split(" ").map(w=>{
+        if(w === "&") return "&";
+        if(w.length<=2) return w.toUpperCase();
+        return w[0].toUpperCase() + w.slice(1).toLowerCase();
+      }).join(" ");
+    }
+    function validate(it){
+      const district = canonicalDistrictName(it.district);
+      const type = norm(it.type);
+      const name = norm(it.name);
+      const ok = !!district && TYPES.has(type) && !!name;
+      return {ok, district, type, name};
+    }
+
+    function normalizeItem(it){
+      const v = validate(it);
+      return {
+        district: v.district,
+        type: v.type,
+        name: v.name,
+        tags: safeArr(it.tags).map(norm).filter(Boolean),
+        notes: norm(it.notes),
+        photo: norm(it.photo),
+
+        // ✅ geo + pro fields
+        lat: toNumOrNull(it.lat),
+        lng: toNumOrNull(it.lng),
+        bestSeason: norm(it.bestSeason),
+        popularityScore: toNumOrNull(it.popularityScore),
+        entryFee: norm(it.entryFee),
+        timing: norm(it.timing),
+        districtHQDistanceKm: toNumOrNull(it.districtHQDistanceKm),
+
+        // hotels
+        priceMin: it.type==="hotels" ? toNumOrNull(it.priceMin) : null,
+        priceMax: it.type==="hotels" ? toNumOrNull(it.priceMax) : null,
+        rating: it.type==="hotels" ? toNumOrNull(it.rating) : null,
+        phone: it.type==="hotels" ? norm(it.phone) : "",
+
+        _source: it._source || ""
+      };
+    }
+
+    function itemToDB(it){
+      const base = {
+        name: norm(it.name),
+        tags: safeArr(it.tags).map(norm).filter(Boolean),
+        notes: norm(it.notes),
+        photo: norm(it.photo),
+
+        lat: it.lat ?? null,
+        lng: it.lng ?? null,
+        bestSeason: norm(it.bestSeason),
+        popularityScore: it.popularityScore ?? null,
+        entryFee: norm(it.entryFee),
+        timing: norm(it.timing),
+        districtHQDistanceKm: it.districtHQDistanceKm ?? null,
+
+        updatedAt: Date.now()
+      };
+      if(it.type === "hotels"){
+        return {
+          ...base,
+          priceMin: it.priceMin ?? null,
+          priceMax: it.priceMax ?? null,
+          rating: it.rating ?? null,
+          phone: norm(it.phone)
+        };
+      }
+      return base;
+    }
+
+    function summarize(items){
+      const by = {destinations:0, lakes:0, temples:0, treks:0, hotels:0};
+      const districts = new Set();
+      let bad = 0;
+      for(const it of items){
+        const v = validate(it);
+        if(!v.ok){ bad++; continue; }
+        by[v.type]++; districts.add(v.district);
+      }
+      return {by, districts: districts.size, bad, total: items.length};
+    }
+
+    function escapeHTML(str){
+      return String(str).replace(/[&<>"']/g, s=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[s]));
+    }
+
+    // ✅ Proper CSV reader with header support
+    function buildFromCSV(text){
+      const parsed = Papa.parse(text, {
+        header: true,
+        skipEmptyLines: true,
+        dynamicTyping: false
+      });
+      if(parsed.errors?.length){ console.warn("CSV errors:", parsed.errors); }
+
+      const out = [];
+      for(const row of (parsed.data || [])){
+        const district = row.district ?? row.District ?? "";
+        const type = row.type ?? row.Type ?? "";
+        const name = row.name ?? row.Name ?? "";
+
+        const tagsRaw = row.tags ?? row.Tags ?? "";
+        const notes = row.notes ?? row.Notes ?? "";
+        const photo = row.photo ?? row.Photo ?? "";
+
+        const priceMin = row.priceMin ?? row.PriceMin ?? "";
+        const priceMax = row.priceMax ?? row.PriceMax ?? "";
+        const rating = row.rating ?? row.Rating ?? "";
+        const phone = row.phone ?? row.Phone ?? "";
+
+        const lat = row.lat ?? row.Lat ?? "";
+        const lng = row.lng ?? row.Lng ?? "";
+        const bestSeason = row.bestSeason ?? row.BestSeason ?? "";
+        const popularityScore = row.popularityScore ?? row.PopularityScore ?? "";
+        const entryFee = row.entryFee ?? row.EntryFee ?? "";
+        const timing = row.timing ?? row.Timing ?? "";
+        const districtHQDistanceKm = row.districtHQDistanceKm ?? row.DistrictHQDistanceKm ?? "";
+
+        out.push(normalizeItem({
+          district, type, name,
+          tags: parseTags(tagsRaw),
+          notes, photo,
+          priceMin, priceMax, rating, phone,
+          lat, lng, bestSeason, popularityScore, entryFee, timing, districtHQDistanceKm,
+          _source: "csv"
+        }));
+      }
+      return out;
+    }
+
+    // UI refs
+    const connPill = document.getElementById("connPill");
+    const devicePill = document.getElementById("devicePill");
+
+    const tabs = [...document.querySelectorAll(".tab")];
+    const paneBulk = document.getElementById("pane-bulk");
+    const paneSingle = document.getElementById("pane-single");
+    const paneWeather = document.getElementById("pane-weather");
+
+    const csvInput = document.getElementById("csvInput");
+    const previewEl = document.getElementById("preview");
+    const previewCountEl = document.getElementById("previewCount");
+    const summaryEl = document.getElementById("summary");
+    const draftsEl = document.getElementById("drafts");
+
+    const btnBuildPreview = document.getElementById("btnBuildPreview");
+    const btnClearPreview = document.getElementById("btnClearPreview");
+    const btnNormalize = document.getElementById("btnNormalize");
+    const btnClearAll = document.getElementById("btnClearAll");
+
+    const draftTitle = document.getElementById("draftTitle");
+    const btnSaveDraft = document.getElementById("btnSaveDraft");
+
+    const sDistrict = document.getElementById("sDistrict");
+    const sType = document.getElementById("sType");
+    const sName = document.getElementById("sName");
+    const sTags = document.getElementById("sTags");
+    const sPhoto = document.getElementById("sPhoto");
+    const sLat = document.getElementById("sLat");
+    const sLng = document.getElementById("sLng");
+    const sNotes = document.getElementById("sNotes");
+    const sPriceMin = document.getElementById("sPriceMin");
+    const sPriceMax = document.getElementById("sPriceMax");
+    const sRating = document.getElementById("sRating");
+    const sPhone = document.getElementById("sPhone");
+    const btnAddToPreview = document.getElementById("btnAddToPreview");
+    const btnResetSingle = document.getElementById("btnResetSingle");
+    const draftTitle2 = document.getElementById("draftTitle2");
+    const btnSaveDraft2 = document.getElementById("btnSaveDraft2");
+
+    const wDistrict = document.getElementById("wDistrict");
+    const wSeason = document.getElementById("wSeason");
+    const wSumMin = document.getElementById("wSumMin");
+    const wSumMax = document.getElementById("wSumMax");
+    const wSumNote = document.getElementById("wSumNote");
+    const wWinMin = document.getElementById("wWinMin");
+    const wWinMax = document.getElementById("wWinMax");
+    const wWinNote = document.getElementById("wWinNote");
+    const wMonNote = document.getElementById("wMonNote");
+    const wExtra = document.getElementById("wExtra");
+    const btnLoadWeather = document.getElementById("btnLoadWeather");
+    const btnSaveWeather = document.getElementById("btnSaveWeather");
+
+    const btnLoadDrafts = document.getElementById("btnLoadDrafts");
+    const btnExportLive = document.getElementById("btnExportLive");
+    const btnPublish = document.getElementById("btnPublish");
+
+    let previewItems = [];
+
+    function renderPreview(){
+      const s = summarize(previewItems);
+      previewCountEl.textContent = `${s.total} items`;
+      summaryEl.innerHTML =
+        `Valid districts: <b>${s.districts}</b> • Invalid rows: <b>${s.bad}</b><br/>
+         Destinations: <b>${s.by.destinations}</b> • Lakes: <b>${s.by.lakes}</b> • Temples: <b>${s.by.temples}</b> • Treks: <b>${s.by.treks}</b> • Hotels: <b>${s.by.hotels}</b>`;
+
+      previewEl.innerHTML = previewItems.map((it, idx)=>{
+        const v = validate(it);
+        const cls = v.ok ? "pItem ok" : "pItem bad";
+        const tags = safeArr(it.tags).slice(0,8).join(", ");
+        const geo = (it.lat!=null && it.lng!=null) ? ` • 📍 ${it.lat}, ${it.lng}` : "";
+        return `
+          <div class="${cls}">
+            <b>${v.ok ? "✅" : "❌"} ${escapeHTML(it.name || "(missing name)")}</b>
+            <small>
+              District: <b>${escapeHTML(it.district||"-")}</b> • Type: <b>${escapeHTML(it.type||"-")}</b>
+              ${tags ? " • Tags: "+escapeHTML(tags) : ""}
+              ${geo}
+              ${it._source ? " • Source: "+escapeHTML(it._source) : ""}
+            </small>
+            <small class="mono">#${idx+1}</small>
+          </div>
+        `;
+      }).join("");
+
+      if(previewItems.length===0){
+        previewEl.innerHTML = `<div class="hint">No preview items.</div>`;
+      }
+    }
+
+    function setMode(mode){
+      tabs.forEach(t=>t.classList.toggle("active", t.dataset.tab===mode));
+      paneBulk.style.display = (mode==="bulk") ? "block" : "none";
+      paneSingle.style.display = (mode==="single") ? "block" : "none";
+      paneWeather.style.display = (mode==="weather") ? "block" : "none";
+    }
+    tabs.forEach(t=>t.addEventListener("click", ()=>setMode(t.dataset.tab)));
+
+    btnBuildPreview.addEventListener("click", ()=>{
+      previewItems = buildFromCSV(csvInput.value || "");
+      renderPreview();
+    });
+    btnClearPreview.addEventListener("click", ()=>{ previewItems=[]; renderPreview(); });
+    btnNormalize.addEventListener("click", ()=>{ previewItems = previewItems.map(normalizeItem); renderPreview(); alert("Normalize done."); });
+    btnClearAll.addEventListener("click", ()=>{ csvInput.value=""; previewItems=[]; renderPreview(); });
+
+    btnAddToPreview.addEventListener("click", ()=>{
+      const it = normalizeItem({
+        district: sDistrict.value,
+        type: sType.value,
+        name: sName.value,
+        tags: parseTags(sTags.value),
+        notes: sNotes.value,
+        photo: sPhoto.value,
+        lat: sLat.value,
+        lng: sLng.value,
+        priceMin: sPriceMin.value,
+        priceMax: sPriceMax.value,
+        rating: sRating.value,
+        phone: sPhone.value,
+        _source: "manual"
+      });
+      previewItems.push(it);
+      renderPreview();
+    });
+    btnResetSingle.addEventListener("click", ()=>{
+      sDistrict.value=""; sName.value=""; sTags.value=""; sNotes.value=""; sPhoto.value="";
+      sLat.value=""; sLng.value="";
+      sPriceMin.value=""; sPriceMax.value=""; sRating.value=""; sPhone.value="";
+      sType.value="destinations";
+    });
+
+    async function saveDraft(title){
+      const t = norm(title) || "Untitled Draft";
+      if(previewItems.length===0){ alert("Nothing to save."); return; }
+      const payload = { title:t, deviceId, createdAt:Date.now(), updatedAt:Date.now(), items:previewItems };
+      const baseRef = ref(db, `${ADMIN_ROOT}/drafts/${deviceId}`);
+      const newRef = push(baseRef);
+      await set(newRef, payload);
+      alert("Draft saved ✅");
+      await loadDrafts();
+    }
+    btnSaveDraft.addEventListener("click", ()=>saveDraft(draftTitle.value));
+    btnSaveDraft2.addEventListener("click", ()=>saveDraft(draftTitle2.value));
+
+    async function loadDrafts(){
+      draftsEl.innerHTML = `<div class="hint">Loading drafts…</div>`;
+      const snap = await get(ref(db, `${ADMIN_ROOT}/drafts/${deviceId}`));
+      const data = snap.exists() ? snap.val() : {};
+      const ids = Object.keys(data || {}).sort((a,b)=> (data[b].updatedAt||0)-(data[a].updatedAt||0));
+      if(ids.length===0){ draftsEl.innerHTML = `<div class="hint">No drafts saved.</div>`; return; }
+
+      draftsEl.innerHTML = ids.map(id=>{
+        const d = data[id];
+        const count = (d.items||[]).length;
+        const when = new Date(d.updatedAt || d.createdAt || Date.now()).toLocaleString();
+        return `
+          <div class="dRow">
+            <div>
+              <b>${escapeHTML(d.title || "Draft")}</b><br/>
+              <small>${count} items • ${escapeHTML(when)}</small><br/>
+              <small class="mono">${escapeHTML(id)}</small>
+            </div>
+            <div class="dBtns">
+              <button class="btn btnGhost" data-act="open" data-id="${escapeHTML(id)}">Open</button>
+              <button class="btn btnDanger" data-act="del" data-id="${escapeHTML(id)}">Delete</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      draftsEl.querySelectorAll("button").forEach(btn=>{
+        const act = btn.getAttribute("data-act");
+        const id = btn.getAttribute("data-id");
+        if(act==="open") btn.addEventListener("click", ()=>openDraft(id));
+        if(act==="del") btn.addEventListener("click", ()=>deleteDraft(id));
+      });
+    }
+
+    async function openDraft(draftId){
+      const snap = await get(ref(db, `${ADMIN_ROOT}/drafts/${deviceId}/${draftId}`));
+      if(!snap.exists()){ alert("Draft not found"); return; }
+      previewItems = safeArr(snap.val().items).map(normalizeItem);
+      renderPreview();
+      alert("Draft loaded ✅");
+    }
+
+    async function deleteDraft(draftId){
+      if(!confirm("Delete this draft?")) return;
+      await remove(ref(db, `${ADMIN_ROOT}/drafts/${deviceId}/${draftId}`));
+      await loadDrafts();
+    }
+
+    btnLoadDrafts.addEventListener("click", loadDrafts);
+
+    async function loadWeather(){
+      const d = canonicalDistrictName(wDistrict.value);
+      if(!d){ alert("Enter district"); return; }
+      const snap = await get(ref(db, `${ROOT}/districts/${d}/weather`));
+      const w = snap.exists() ? snap.val() : {};
+      wSeason.value = w.bestSeason || "";
+      wSumMin.value = w?.summer?.minC ?? "";
+      wSumMax.value = w?.summer?.maxC ?? "";
+      wSumNote.value = w?.summer?.note ?? "";
+      wWinMin.value = w?.winter?.minC ?? "";
+      wWinMax.value = w?.winter?.maxC ?? "";
+      wWinNote.value = w?.winter?.note ?? "";
+      wMonNote.value = w?.monsoon?.note ?? "";
+      wExtra.value = w?.extraNote ?? "";
+      alert("Weather loaded ✅");
+    }
+
+    async function saveWeather(){
+      const d = canonicalDistrictName(wDistrict.value);
+      if(!d){ alert("Enter district"); return; }
+      const payload = {
+        bestSeason: norm(wSeason.value),
+        summer: { minC: toNumOrNull(wSumMin.value), maxC: toNumOrNull(wSumMax.value), note: norm(wSumNote.value) },
+        winter: { minC: toNumOrNull(wWinMin.value), maxC: toNumOrNull(wWinMax.value), note: norm(wWinNote.value) },
+        monsoon: { note: norm(wMonNote.value) },
+        extraNote: norm(wExtra.value),
+        updatedAt: Date.now()
+      };
+      await set(ref(db, `${ROOT}/districts/${d}/weather`), payload);
+      alert("Weather saved ✅");
+    }
+    btnLoadWeather.addEventListener("click", loadWeather);
+    btnSaveWeather.addEventListener("click", saveWeather);
+
+    async function publishValidItems(){
+      const valid = previewItems.map(normalizeItem).filter(it=>validate(it).ok);
+      if(valid.length===0){ alert("No valid items."); return; }
+      connPill.textContent = "Publishing…";
+
+      const updates = {};
+      const affectedDistricts = new Set();
+
+      for(const it of valid){
+        const d = it.district;
+        const type = it.type;
+
+        const segBase = ref(db, `${ROOT}/districts/${d}/segments/${type}`);
+        const newRef = push(segBase);
+        const id = newRef.key;
+
+        updates[`${ROOT}/districts/${d}/segments/${type}/${id}`] = itemToDB(it);
+
+        // ✅ index for fast map search
+        updates[`${ROOT}/index/${type}/${id}`] = {
+          district: d,
+          name: it.name,
+          tags: it.tags || [],
+          photo: it.photo || "",
+          lat: it.lat ?? null,
+          lng: it.lng ?? null,
+          updatedAt: Date.now()
+        };
+
+        affectedDistricts.add(d);
+      }
+
+      await update(ref(db), updates);
+
+      // Recompute counts
+      for(const d of affectedDistricts){
+        const snap = await get(ref(db, `${ROOT}/districts/${d}/segments`));
+        const seg = snap.exists() ? snap.val() : {};
+        const counts = {
+          destinations: Object.keys(safeObj(seg.destinations)).length,
+          lakes: Object.keys(safeObj(seg.lakes)).length,
+          temples: Object.keys(safeObj(seg.temples)).length,
+          treks: Object.keys(safeObj(seg.treks)).length,
+          hotels: Object.keys(safeObj(seg.hotels)).length,
+          updatedAt: Date.now()
+        };
+        await set(ref(db, `${ROOT}/districts/${d}/counts`), counts);
+      }
+
+      await update(ref(db, `${ROOT}/meta`), { version:"3.0", updatedAt: Date.now(), source:"admin" });
+
+      connPill.textContent = "Published ✅";
+      alert(`Published ${valid.length} item(s) ✅`);
+    }
+
+    btnPublish.addEventListener("click", publishValidItems);
+
+    btnExportLive.addEventListener("click", async ()=>{
+      connPill.textContent = "Exporting…";
+      const snap = await get(ref(db, ROOT));
+      const data = snap.exists() ? snap.val() : {};
+      const json = JSON.stringify(data, null, 2);
+      const blob = new Blob([json], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "tourism_hp_live_export.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      connPill.textContent = "Connected ✅";
+    });
+
+    async function init(){
+      devicePill.textContent = `Device: ${deviceId.slice(0,12)}…`;
+      try{ await get(ref(db, `${ROOT}/meta`)); connPill.textContent = "Connected ✅"; }
+      catch(e){ console.error(e); connPill.textContent = "Error ❌"; alert("Firebase error. Check config + rules."); }
+      renderPreview();
+      await loadDrafts();
+    }
+    init();
+  </script>
+</body>
+</html>
