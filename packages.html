@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Packages — HP Tourism</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="inner">
+      <a class="brand" href="index.html"><div class="logo"></div><div>HP Tourism Portal</div></a>
+      <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="districts.html">Districts</a>
+        <a href="packages.html">Packages</a>
+        <a href="hotels.html">Hotels</a>
+        <a href="temples.html">Temples</a>
+        <a href="treks.html">Treks</a>
+        <a href="routes.html">Routes</a>
+        <a href="admin.html">Admin</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="sectionHead">
+      <div>
+        <h2>HP Tourism Packages (Demo)</h2>
+        <div class="meta">Side-by-side packages • photo-first cards • HP only</div>
+      </div>
+      <div class="meta" id="pkgMeta"></div>
+    </div>
+
+    <div class="row">
+      <aside class="sidebar">
+        <div class="side-title">Package Filters <span class="small">HP</span></div>
+        <div class="divider"></div>
+
+        <div class="small">District</div>
+        <select id="districtSelect" data-fill="districts" class="input" style="width:100%;"></select>
+
+        <div class="divider"></div>
+        <div class="small">Search</div>
+        <div class="input" style="margin-top:8px;">
+          <div style="width:100%">
+            <label>Search packages</label>
+            <input id="searchInput" placeholder="Shimla, Manali, Triund..." />
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="panel">
+          <h3>Upgrade idea</h3>
+          <div class="note">Later: add booking inquiry form + WhatsApp button.</div>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div id="pkgWrap" class="cards"></div>
+      </main>
+    </div>
+
+    <div class="footer">Packages page ready for “real packages” later.</div>
+  </div>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/ui.js"></script>
+  <script>
+    UI.setActiveNav();
+
+    // fill districts
+    document.querySelectorAll("[data-fill='districts']").forEach(sel=>{
+      sel.innerHTML = `<option value="all">All Districts</option>` +
+        HP_DATA.districts.map(d=>`<option value="${d.id}">${d.name}</option>`).join("");
+    });
+
+    let state = { district:"all", q:"" };
+
+    const dd = document.getElementById("districtSelect");
+    const q = document.getElementById("searchInput");
+    const meta = document.getElementById("pkgMeta");
+    const wrap = document.getElementById("pkgWrap");
+
+    function render(){
+      const items = (HP_DATA.packages||[]).filter(p=>{
+        const okD = state.district==="all" || p.district===state.district;
+        const okQ = !state.q || (p.name.toLowerCase().includes(state.q) || (p.includes||[]).join(" ").toLowerCase().includes(state.q));
+        return okD && okQ;
+      });
+
+      meta.textContent = `${items.length} packages`;
+
+      wrap.innerHTML = items.map(p=>{
+        const distName = HP_DATA.districts.find(d=>d.id===p.district)?.name || p.district;
+        return `
+          <div class="card">
+            <div class="img">
+              <img src="${p.img}" alt="${p.name}">
+              <div class="badges">
+                <div class="badge">${distName}</div>
+                <div class="badge">${p.days} Days</div>
+              </div>
+            </div>
+            <div class="body">
+              <div class="titleRow">
+                <h3>${p.name}</h3>
+              </div>
+              <p>Includes: ${(p.includes||[]).slice(0,3).join(", ")}...</p>
+              <div class="quickIcons">
+                <div class="iconChip">From ${UI.fmtINR(p.priceFrom||0)}</div>
+                <a class="iconChip" href="index.html?district=${encodeURIComponent(p.district)}">Explore District</a>
+              </div>
+            </div>
+          </div>`;
+      }).join("");
+    }
+
+    dd.addEventListener("change", ()=>{ state.district = dd.value; render(); });
+    q.addEventListener("input", ()=>{ state.q = q.value.trim().toLowerCase(); render(); });
+
+    render();
+  </script>
+</body>
+</html>
