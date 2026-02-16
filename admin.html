@@ -1,519 +1,142 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer • Drafts</title>
-  <style>
-    :root{
-      --bg:#070B15;--text:#ECF2FF;--muted:rgba(236,242,255,.78);
-      --stroke:rgba(255,255,255,.12);--panel:rgba(255,255,255,.07);
-      --brand:#FF7A18;--ok:#5CFF9A;--bad:#FF5C7A;--chip:rgba(255,255,255,.08);
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)}
-    .app{display:flex;min-height:100vh}
-    .side{
-      width:30%;min-width:310px;max-width:460px;border-right:1px solid var(--stroke);
-      background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));
-      padding:14px;overflow:auto
-    }
-    .main{flex:1;min-width:0;padding:14px}
-    .brand{display:flex;gap:10px;align-items:center;padding:10px;border-radius:16px;border:1px solid var(--stroke);background:rgba(0,0,0,.22)}
-    .dot{width:12px;height:12px;border-radius:50%;background:var(--brand);box-shadow:0 0 18px rgba(255,122,24,.75)}
-    .title{font-weight:950}
-    .sub{font-size:12px;color:var(--muted);margin-top:2px}
-
-    .btnRow{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
-    .btn{
-      border:0;cursor:pointer;padding:10px 12px;border-radius:14px;font-weight:950;
-      color:#0b1220;background:linear-gradient(135deg,var(--brand),#ff9a4a)
-    }
-    .btnGhost{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:var(--text)}
-    .btnTiny{
-      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);
-      color:var(--text);padding:8px 10px;border-radius:12px;font-weight:950;cursor:pointer
-    }
-
-    .searchWrap{margin-top:12px}
-    .search{
-      width:100%;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.14);
-      outline:none;background:rgba(0,0,0,.18);color:var(--text);font-weight:850
-    }
-    .hint{margin-top:8px;color:var(--muted);font-size:12px;font-weight:900}
-    .chipRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    .chip{
-      padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);
-      background:var(--chip);color:rgba(236,242,255,.9);font-weight:950;font-size:12px;cursor:pointer;
-      user-select:none
-    }
-    .chip.active{background:rgba(255,122,24,.20);border-color:rgba(255,122,24,.35)}
-
-    .hero{border-radius:24px;border:1px solid var(--stroke);overflow:hidden;background:rgba(255,255,255,.06)}
-    .heroTop{padding:14px;background:rgba(0,0,0,.22);border-bottom:1px solid rgba(255,255,255,.10)}
-    .heroTop h1{margin:0;font-size:clamp(20px,2.8vw,34px)}
-    .heroTop p{margin:6px 0 0;color:rgba(236,242,255,.86);line-height:1.45}
-
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px}
-    .card{border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.16);padding:10px}
-    .card b{display:block;font-size:18px}
-    .card small{display:block;margin-top:2px;color:var(--muted);font-weight:900}
-
-    .list{margin-top:12px;display:flex;flex-direction:column;gap:10px}
-    .d{
-      border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.18);
-      padding:10px;cursor:pointer;transition:.12s transform ease,.12s border-color ease
-    }
-    .d:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.20)}
-    .d.active{border-color:rgba(255,122,24,.45);box-shadow:0 0 0 1px rgba(255,122,24,.22) inset}
-    .d b{display:block}
-    .d small{color:var(--muted);font-weight:900;line-height:1.35}
-    .row2{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-
-    .pill{
-      padding:5px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.06);font-size:11px;font-weight:950;color:rgba(236,242,255,.92)
-    }
-    .pill.ok{border-color:rgba(92,255,154,.35);background:rgba(92,255,154,.12)}
-    .pill.bad{border-color:rgba(255,92,122,.35);background:rgba(255,92,122,.12)}
-
-    .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:12px;padding:14px}
-    .panel{
-      border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.16);
-      overflow:hidden;min-height:320px
-    }
-    .panelHead{
-      padding:12px 12px;border-bottom:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.18);display:flex;align-items:center;justify-content:space-between;gap:10px
-    }
-    .panelHead .left h2{margin:0;font-size:16px}
-    .panelHead .left div{margin-top:4px;font-size:12px;color:var(--muted);font-weight:900}
-    .panelBody{padding:12px}
-
-    .kv{display:grid;grid-template-columns:140px 1fr;gap:8px 10px;align-items:start}
-    .k{color:var(--muted);font-weight:950;font-size:12px}
-    .v{font-weight:900;font-size:13px;word-break:break-word}
-
-    .sep{height:1px;background:rgba(255,255,255,.10);margin:12px 0}
-
-    pre{
-      margin:0;border-radius:14px;border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.22);padding:10px;overflow:auto;max-height:360px;
-      color:rgba(236,242,255,.92);font-size:12px;line-height:1.35
-    }
-
-    .toast{
-      position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
-      background:rgba(0,0,0,.75);border:1px solid rgba(255,255,255,.14);
-      padding:10px 12px;border-radius:14px;color:var(--text);font-weight:950;
-      display:none;max-width:min(560px,90vw)
-    }
-
-    @media(max-width:980px){
-      .app{display:block}
-      .side{width:auto;max-width:none;border-right:0;border-bottom:1px solid var(--stroke)}
-      .stats{grid-template-columns:repeat(2,1fr)}
-      .grid{grid-template-columns:1fr}
-      pre{max-height:260px}
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin — HP Tourism</title>
+  <link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
-  <div class="app">
-    <aside class="side">
-      <div class="brand">
-        <div class="dot"></div>
-        <div>
-          <div class="title">Himachal Explorer</div>
-          <div class="sub">Admin Drafts • Review • Copy JSON</div>
-        </div>
+  <div class="topbar">
+    <div class="inner">
+      <a class="brand" href="index.html"><div class="logo"></div><div>HP Tourism Portal</div></a>
+      <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="districts.html">Districts</a>
+        <a href="packages.html">Packages</a>
+        <a href="hotels.html">Hotels</a>
+        <a href="temples.html">Temples</a>
+        <a href="treks.html">Treks</a>
+        <a href="routes.html">Routes</a>
+        <a href="admin.html">Admin</a>
       </div>
-
-      <div class="btnRow">
-        <button class="btn" onclick="location.href='map.html'">Open Master Map</button>
-        <button class="btn btnGhost" onclick="location.href='admin.html'">Open Admin</button>
-        <button class="btnTiny" id="btnRefresh">Refresh</button>
-      </div>
-
-      <div class="searchWrap">
-        <input id="q" class="search" placeholder="Search drafts (title / district / type / key)"/>
-        <div class="hint">Source: <span id="pathLabel">/tourism/hp_admin/drafts</span></div>
-
-        <div class="chipRow" id="chips">
-          <div class="chip active" data-status="all">All</div>
-          <div class="chip" data-status="draft">draft</div>
-          <div class="chip" data-status="pending">pending</div>
-          <div class="chip" data-status="published">published</div>
-          <div class="chip" data-status="rejected">rejected</div>
-        </div>
-      </div>
-
-      <div class="list" id="draftList">
-        <div class="d"><b>Loading drafts…</b><small>Please wait</small></div>
-      </div>
-    </aside>
-
-    <main class="main">
-      <section class="hero">
-        <div class="heroTop">
-          <h1>HP Admin Drafts</h1>
-          <p>Reads drafts from Firebase: <b>/tourism/hp_admin/drafts</b>. Click a draft to preview details and copy JSON.</p>
-        </div>
-
-        <div class="stats">
-          <div class="card"><b id="sDrafts">—</b><small>Total Drafts</small></div>
-          <div class="card"><b id="sWithGeo">—</b><small>With lat/lng</small></div>
-          <div class="card"><b id="sWithPics">—</b><small>With photos</small></div>
-          <div class="card"><b id="sLast">—</b><small>Last loaded</small></div>
-        </div>
-
-        <div class="grid">
-          <div class="panel">
-            <div class="panelHead">
-              <div class="left">
-                <h2>Quick Preview</h2>
-                <div id="pSub">Select a draft from left list</div>
-              </div>
-              <div class="right" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
-                <button class="btnTiny" id="btnCopyKey" disabled>Copy Key</button>
-                <button class="btnTiny" id="btnCopyJson" disabled>Copy JSON</button>
-              </div>
-            </div>
-
-            <div class="panelBody">
-              <div class="kv" id="kv">
-                <div class="k">Status</div><div class="v">—</div>
-                <div class="k">Title</div><div class="v">—</div>
-                <div class="k">District</div><div class="v">—</div>
-                <div class="k">Type</div><div class="v">—</div>
-                <div class="k">Lat/Lng</div><div class="v">—</div>
-                <div class="k">Photos</div><div class="v">—</div>
-                <div class="k">Updated</div><div class="v">—</div>
-              </div>
-
-              <div class="sep"></div>
-
-              <div style="display:flex;gap:10px;flex-wrap:wrap">
-                <button class="btnTiny" id="btnOpenAdminWithKey" disabled>Open Admin (with key)</button>
-                <button class="btnTiny" id="btnOpenMapWithDistrict" disabled>Open Map (district)</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="panelHead">
-              <div class="left">
-                <h2>Raw JSON</h2>
-                <div id="rawSub">—</div>
-              </div>
-            </div>
-            <div class="panelBody">
-              <pre id="raw">Select a draft to view JSON.</pre>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
+    </div>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div class="container">
+    <div class="sectionHead">
+      <div>
+        <h2>Admin Panel (Starter)</h2>
+        <div class="meta">Add/edit content from phone later (Firebase)</div>
+      </div>
+    </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics.js";
-
-    // ✅ Your Firebase config (provided by you)
-    const firebaseConfig = {
-      apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
-      authDomain: "revnue-records.firebaseapp.com",
-      databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "revnue-records",
-      storageBucket: "revnue-records.firebasestorage.app",
-      messagingSenderId: "182348503564",
-      appId: "1:182348503564:web:480085405b09177245ac29",
-      measurementId: "G-MGTDBCG896"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    // Analytics optional; if blocked by browser, page will still work.
-    try { getAnalytics(app); } catch(e) {}
-
-    const db = getDatabase(app);
-
-    // ✅ DRAFTS PATH
-    const ROOT = "tourism/hp_admin/drafts";
-
-    // UI refs
-    const listEl = document.getElementById("draftList");
-    const qEl = document.getElementById("q");
-    const chipsEl = document.getElementById("chips");
-
-    const sDrafts = document.getElementById("sDrafts");
-    const sWithGeo = document.getElementById("sWithGeo");
-    const sWithPics = document.getElementById("sWithPics");
-    const sLast = document.getElementById("sLast");
-
-    const kvEl = document.getElementById("kv");
-    const pSub = document.getElementById("pSub");
-    const rawEl = document.getElementById("raw");
-    const rawSub = document.getElementById("rawSub");
-
-    const btnRefresh = document.getElementById("btnRefresh");
-    const btnCopyKey = document.getElementById("btnCopyKey");
-    const btnCopyJson = document.getElementById("btnCopyJson");
-    const btnOpenAdminWithKey = document.getElementById("btnOpenAdminWithKey");
-    const btnOpenMapWithDistrict = document.getElementById("btnOpenMapWithDistrict");
-
-    const toast = document.getElementById("toast");
-    document.getElementById("pathLabel").textContent = "/" + ROOT;
-
-    // state
-    let ALL = [];
-    let ACTIVE = null;
-    let ACTIVE_STATUS = "all";
-
-    const safeObj = (x)=> (x && typeof x==="object") ? x : {};
-    const norm = (s)=> String(s ?? "").trim();
-    const low = (s)=> norm(s).toLowerCase();
-
-    function nowStamp(){
-      const d = new Date();
-      return d.toLocaleString();
-    }
-
-    function showToast(msg){
-      toast.textContent = msg;
-      toast.style.display = "block";
-      clearTimeout(showToast._t);
-      showToast._t = setTimeout(()=> toast.style.display="none", 1800);
-    }
-
-    function extractPhotos(item){
-      const a = [];
-      const pushArr = (x)=> { if(Array.isArray(x)) x.forEach(u=>{ if(norm(u)) a.push(norm(u)); }); };
-      pushArr(item.photos);
-      pushArr(item.images);
-      pushArr(item.gallery);
-      if(norm(item.photoUrl)) a.push(norm(item.photoUrl));
-      if(norm(item.imageUrl)) a.push(norm(item.imageUrl));
-      if(norm(item.cover)) a.push(norm(item.cover));
-      return Array.from(new Set(a));
-    }
-
-    function hasGeo(item){
-      const lat = item.lat ?? item.latitude;
-      const lng = item.lng ?? item.longitude;
-      return lat !== undefined && lng !== undefined && lat !== "" && lng !== "";
-    }
-
-    function pickTitle(item){
-      return item.title || item.name || item.place || item.placeName || item.locationName || "Untitled Draft";
-    }
-    function pickDistrict(item){
-      return item.district || item.dist || item.districtName || item.district_name || "—";
-    }
-    function pickType(item){
-      return item.type || item.category || item.segment || item.kind || "draft";
-    }
-    function pickStatus(item){
-      const s = low(item.status || item.state || item.publishStatus || "draft");
-      return s || "draft";
-    }
-    function pickUpdated(item){
-      return item.updatedAt || item.updated_at || item.modifiedAt || item.modified_at || item.createdAt || item.created_at || "";
-    }
-
-    function normalizeDrafts(raw){
-      const obj = safeObj(raw);
-      return Object.keys(obj).map(key=>{
-        const item = safeObj(obj[key]);
-        return {
-          key,
-          item,
-          title: pickTitle(item),
-          district: pickDistrict(item),
-          type: pickType(item),
-          status: pickStatus(item),
-          updated: pickUpdated(item),
-          photos: extractPhotos(item),
-          geo: hasGeo(item)
-        };
-      });
-    }
-
-    function escapeHtml(str){
-      return String(str ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-
-    function renderList(){
-      const q = low(qEl.value);
-      const filtered = ALL.filter(x=>{
-        const matchesStatus = (ACTIVE_STATUS === "all") ? true : low(x.status) === ACTIVE_STATUS;
-        if(!matchesStatus) return false;
-        if(!q) return true;
-        const hay = low(x.key + " " + x.title + " " + x.district + " " + x.type + " " + x.status);
-        return hay.includes(q);
-      });
-
-      if(!filtered.length){
-        listEl.innerHTML = `<div class="d"><b>No drafts found</b><small>Try changing filter/search</small></div>`;
-        return;
-      }
-
-      listEl.innerHTML = filtered.map(x=>{
-        const pills = [];
-        pills.push(`<span class="pill">${escapeHtml(x.type)}</span>`);
-        pills.push(`<span class="pill ${x.geo ? "ok":"bad"}">${x.geo ? "geo":"no-geo"}</span>`);
-        pills.push(`<span class="pill ${x.photos.length ? "ok":"bad"}">${x.photos.length ? (x.photos.length+" photos") : "no-photo"}</span>`);
-        pills.push(`<span class="pill">${escapeHtml(x.status)}</span>`);
-
-        const activeCls = (ACTIVE && ACTIVE.key === x.key) ? "active" : "";
-        const up = x.updated ? ` • ${norm(x.updated)}` : "";
-
-        return `
-          <div class="d ${activeCls}" data-key="${escapeHtml(x.key)}">
-            <b>${escapeHtml(x.title)}</b>
-            <small>${escapeHtml(x.district)} • Key: ${escapeHtml(x.key)}${escapeHtml(up)}</small>
-            <div class="row2">${pills.join("")}</div>
+    <div class="row">
+      <main class="content">
+        <div class="panel">
+          <h3>What you can do next</h3>
+          <div class="note">
+            ✅ Add Firebase config  
+            ✅ Add “Add Place / Hotel / Temple / Trek” forms  
+            ✅ Save data into Firebase Realtime DB / Firestore  
+            ✅ Load live data into index cards
           </div>
-        `;
-      }).join("");
-
-      [...listEl.querySelectorAll(".d[data-key]")].forEach(el=>{
-        el.addEventListener("click", ()=>{
-          const key = el.getAttribute("data-key");
-          const found = ALL.find(x=>x.key===key);
-          if(found) selectDraft(found);
-        });
-      });
-    }
-
-    function selectDraft(x){
-      ACTIVE = x;
-
-      btnCopyKey.disabled = false;
-      btnCopyJson.disabled = false;
-      btnOpenAdminWithKey.disabled = false;
-      btnOpenMapWithDistrict.disabled = false;
-
-      pSub.textContent = `Key: ${x.key}`;
-      rawSub.textContent = `${x.district} • ${x.type} • ${x.status}`;
-
-      const lat = x.item.lat ?? x.item.latitude ?? "—";
-      const lng = x.item.lng ?? x.item.longitude ?? "—";
-      const photoCount = x.photos.length ? String(x.photos.length) : "0";
-
-      kvEl.innerHTML = `
-        <div class="k">Status</div><div class="v">${escapeHtml(x.status)}</div>
-        <div class="k">Title</div><div class="v">${escapeHtml(x.title)}</div>
-        <div class="k">District</div><div class="v">${escapeHtml(x.district)}</div>
-        <div class="k">Type</div><div class="v">${escapeHtml(x.type)}</div>
-        <div class="k">Lat/Lng</div><div class="v">${escapeHtml(String(lat))}, ${escapeHtml(String(lng))}</div>
-        <div class="k">Photos</div><div class="v">${escapeHtml(photoCount)}</div>
-        <div class="k">Updated</div><div class="v">${escapeHtml(norm(x.updated) || "—")}</div>
-      `;
-
-      rawEl.textContent = JSON.stringify(x.item, null, 2);
-      renderList();
-    }
-
-    async function load(){
-      ACTIVE = null;
-      btnCopyKey.disabled = true;
-      btnCopyJson.disabled = true;
-      btnOpenAdminWithKey.disabled = true;
-      btnOpenMapWithDistrict.disabled = true;
-
-      pSub.textContent = "Select a draft from left list";
-      rawSub.textContent = "—";
-      rawEl.textContent = "Select a draft to view JSON.";
-
-      listEl.innerHTML = `<div class="d"><b>Loading drafts…</b><small>${"/"+ROOT}</small></div>`;
-
-      const snap = await get(ref(db, ROOT));
-      const raw = snap.exists() ? snap.val() : {};
-      ALL = normalizeDrafts(raw);
-
-      ALL.sort((a,b)=>{
-        const au = Date.parse(a.updated || "") || 0;
-        const bu = Date.parse(b.updated || "") || 0;
-        if(bu !== au) return bu - au;
-        return b.key.localeCompare(a.key);
-      });
-
-      sDrafts.textContent = String(ALL.length);
-      sWithGeo.textContent = String(ALL.filter(x=>x.geo).length);
-      sWithPics.textContent = String(ALL.filter(x=>x.photos.length).length);
-      sLast.textContent = nowStamp();
-
-      renderList();
-    }
-
-    function setActiveStatus(status){
-      ACTIVE_STATUS = status;
-      [...chipsEl.querySelectorAll(".chip")].forEach(c=>{
-        c.classList.toggle("active", c.getAttribute("data-status") === status);
-      });
-      renderList();
-    }
-
-    chipsEl.addEventListener("click", (e)=>{
-      const t = e.target.closest(".chip");
-      if(!t) return;
-      setActiveStatus(t.getAttribute("data-status"));
-    });
-
-    qEl.addEventListener("input", ()=> renderList());
-    btnRefresh.addEventListener("click", ()=> load().catch(handleLoadError));
-
-    btnCopyKey.addEventListener("click", async ()=>{
-      if(!ACTIVE) return;
-      await navigator.clipboard.writeText(ACTIVE.key);
-      showToast("Key copied ✅");
-    });
-
-    btnCopyJson.addEventListener("click", async ()=>{
-      if(!ACTIVE) return;
-      await navigator.clipboard.writeText(JSON.stringify(ACTIVE.item, null, 2));
-      showToast("JSON copied ✅");
-    });
-
-    btnOpenAdminWithKey.addEventListener("click", ()=>{
-      if(!ACTIVE) return;
-      location.href = `admin.html#draftKey=${encodeURIComponent(ACTIVE.key)}`;
-    });
-
-    btnOpenMapWithDistrict.addEventListener("click", ()=>{
-      if(!ACTIVE) return;
-      const d = (ACTIVE.district && ACTIVE.district !== "—") ? ACTIVE.district : "";
-      location.href = `map.html#district=${encodeURIComponent(d)}`;
-    });
-
-    function handleLoadError(e){
-      console.error(e);
-      listEl.innerHTML = `
-        <div class="d">
-          <b>Cannot read drafts</b>
-          <small>
-            1) Firebase rules allow read?<br/>
-            2) Correct config pasted?<br/>
-            3) Path: ${"/"+ROOT}
-          </small>
         </div>
-      `;
-      sDrafts.textContent = "—";
-      sWithGeo.textContent = "—";
-      sWithPics.textContent = "—";
-      sLast.textContent = "—";
-    }
 
-    load().catch(handleLoadError);
+        <div class="panel" style="margin-top:14px;">
+          <h3>Quick form (local demo)</h3>
+          <div class="note">This just shows layout. Real saving will be added when you provide Firebase config.</div>
+          <div class="divider"></div>
+
+          <div class="formRow">
+            <div class="input">
+              <div style="width:100%">
+                <label>Type</label>
+                <select id="type">
+                  <option value="place">Place</option>
+                  <option value="hotel">Hotel</option>
+                  <option value="temple">Temple</option>
+                  <option value="trek">Trek</option>
+                </select>
+              </div>
+            </div>
+            <div class="input">
+              <div style="width:100%">
+                <label>District</label>
+                <select id="district" data-fill="districts"></select>
+              </div>
+            </div>
+          </div>
+
+          <div class="input" style="margin-top:10px;">
+            <div style="width:100%">
+              <label>Name</label>
+              <input id="name" placeholder="e.g., Narkanda" />
+            </div>
+          </div>
+
+          <div class="input" style="margin-top:10px;">
+            <div style="width:100%">
+              <label>Image URL</label>
+              <input id="img" placeholder="paste image link..." />
+            </div>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:10px;">
+            <button class="btn" id="saveBtn">Save (Demo)</button>
+            <button class="btn ghost" id="clearBtn">Clear</button>
+          </div>
+
+          <div class="divider"></div>
+          <div id="out" class="note">Saved demo items will show here (local only).</div>
+        </div>
+      </main>
+
+      <aside class="sidebar">
+        <div class="side-title">Help <span class="small">Admin</span></div>
+        <div class="divider"></div>
+        <div class="panel">
+          <h3>Firebase config needed</h3>
+          <div class="note">
+            If you share your Firebase project config (or DB URL), I’ll connect this admin to live save + load.
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="footer">Admin is starter layout only — ready for Firebase integration.</div>
+  </div>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/ui.js"></script>
+  <script>
+    UI.setActiveNav();
+
+    document.querySelectorAll("[data-fill='districts']").forEach(sel=>{
+      sel.innerHTML = HP_DATA.districts.map(d=>`<option value="${d.id}">${d.name}</option>`).join("");
+    });
+
+    const out = document.getElementById("out");
+    const saved = [];
+
+    document.getElementById("saveBtn").addEventListener("click", ()=>{
+      const item = {
+        type: document.getElementById("type").value,
+        district: document.getElementById("district").value,
+        name: document.getElementById("name").value.trim(),
+        img: document.getElementById("img").value.trim()
+      };
+      if(!item.name) return alert("Enter name");
+      saved.push(item);
+      out.innerHTML = `<b>Saved (demo local):</b><br>` + saved.map(s=>`• ${s.type.toUpperCase()} — ${s.name} (${s.district})`).join("<br>");
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", ()=>{
+      saved.length = 0;
+      out.textContent = "Cleared.";
+      document.getElementById("name").value = "";
+      document.getElementById("img").value = "";
+    });
   </script>
 </body>
 </html>
