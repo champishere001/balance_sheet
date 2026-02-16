@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer • Stories by District</title>
+  <title>Himachal Explorer • Premium District Guide</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,304 +11,514 @@
 
   <style>
     :root{
-      --bg0:#050712; --bg1:#080B18;
-      --text:#ECF2FF; --muted:rgba(236,242,255,.74); --muted2:rgba(236,242,255,.60);
+      --bg0:#050712;
+      --bg1:#080B18;
+      --ink:#ECF2FF;
+      --muted:rgba(236,242,255,.72);
+      --muted2:rgba(236,242,255,.56);
       --stroke:rgba(255,255,255,.12);
-      --brand:#FF7A18; --brand2:#FFB04A;
-      --blur:18px;
-      --shadow: 0 18px 50px rgba(0,0,0,.55);
-      --shadow2: 0 10px 26px rgba(0,0,0,.45);
-      --radius:22px;
+      --glass:rgba(255,255,255,.06);
+      --glass2:rgba(0,0,0,.28);
+      --brand:#FF7A18;
+      --brand2:#FFB04A;
+      --aqua:#00D2FF;
+      --violet:#786EFF;
+      --shadow: 0 28px 80px rgba(0,0,0,.62);
+      --shadow2: 0 14px 30px rgba(0,0,0,.48);
+      --r12:12px; --r16:16px; --r20:20px; --r24:24px; --r28:28px;
+      --blur: 18px;
     }
+
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
       font-family:"Manrope",system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      color:var(--text);
+      color:var(--ink);
       background:
-        radial-gradient(1200px 900px at 15% 10%, rgba(255,122,24,.14), transparent 60%),
-        radial-gradient(900px 700px at 90% 20%, rgba(120,110,255,.14), transparent 55%),
-        radial-gradient(900px 700px at 70% 95%, rgba(0,210,255,.10), transparent 55%),
+        radial-gradient(1200px 900px at 18% 8%, rgba(255,122,24,.18), transparent 60%),
+        radial-gradient(900px 700px at 92% 18%, rgba(120,110,255,.16), transparent 55%),
+        radial-gradient(900px 700px at 70% 96%, rgba(0,210,255,.12), transparent 55%),
         linear-gradient(180deg, var(--bg0), var(--bg1));
       overflow-x:hidden;
     }
 
-    /* layout */
-    .app{
-      display:grid;
-      grid-template-columns: 1fr 360px;
-      gap:14px;
-      padding:14px;
-      min-height:100vh;
+    /* Subtle animated grain */
+    body:before{
+      content:"";
+      position:fixed; inset:-40%;
+      background-image:url("https://www.transparenttextures.com/patterns/asfalt-light.png");
+      opacity:.06;
+      transform:rotate(6deg);
+      pointer-events:none;
+      z-index:0;
+      animation: grain 10s infinite linear;
+    }
+    @keyframes grain{
+      0%{transform:translate3d(-2%, -1%, 0) rotate(6deg)}
+      50%{transform:translate3d(2%, 1%, 0) rotate(6deg)}
+      100%{transform:translate3d(-2%, -1%, 0) rotate(6deg)}
     }
 
-    /* hero */
+    /* Layout */
+    .shell{
+      position:relative;
+      z-index:1;
+      padding:16px;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    /* HERO (cinematic) */
     .hero{
-      grid-column: 1 / 2;
-      border-radius:28px;
+      border-radius: 34px;
       border:1px solid rgba(255,255,255,.12);
       overflow:hidden;
-      background:rgba(255,255,255,.05);
+      background:rgba(255,255,255,.04);
       backdrop-filter: blur(var(--blur));
       -webkit-backdrop-filter: blur(var(--blur));
       box-shadow: var(--shadow);
       position:relative;
       isolation:isolate;
     }
-    .heroCover{
+    .heroBg{
       position:absolute; inset:0;
       background-size:cover;
       background-position:center;
-      filter: blur(26px) saturate(1.1) contrast(1.05);
-      transform:scale(1.12);
-      opacity:.58;
+      transform:scale(1.06);
+      filter:saturate(1.1) contrast(1.06);
+      opacity:.62;
       z-index:0;
     }
-    .heroOverlay{
+    .heroShade{
       position:absolute; inset:0;
-      background:linear-gradient(180deg, rgba(5,7,18,.18), rgba(5,7,18,.82) 55%, rgba(5,7,18,.95));
+      background:
+        radial-gradient(900px 500px at 18% 20%, rgba(255,122,24,.20), transparent 60%),
+        radial-gradient(700px 420px at 85% 30%, rgba(0,210,255,.14), transparent 60%),
+        linear-gradient(180deg, rgba(5,7,18,.10), rgba(5,7,18,.82) 55%, rgba(5,7,18,.96));
       z-index:1;
     }
-    .heroInner{position:relative; z-index:2; padding:18px;}
-    .topRow{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+    .heroInner{
+      position:relative;
+      z-index:2;
+      padding: 20px;
+    }
+
+    .topBar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
       flex-wrap:wrap;
     }
-    .brand{
-      display:flex; gap:10px; align-items:center;
-      padding:12px 14px;border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: radial-gradient(450px 120px at 20% 0%, rgba(255,122,24,.22), transparent 70%), rgba(0,0,0,.26);
-      box-shadow: var(--shadow2);
-    }
-    .dot{
-      width:12px;height:12px;border-radius:50%;
-      background:linear-gradient(135deg,var(--brand),var(--brand2));
-      box-shadow:0 0 24px rgba(255,122,24,.55)
-    }
-    .title{font-weight:900; letter-spacing:-.2px}
-    .sub{font-size:12px;color:var(--muted);font-weight:800;margin-top:2px}
 
-    .quoteBox{
-      flex:1;
-      min-width: 260px;
-      max-width: 620px;
-      padding:14px 14px;
-      border-radius:20px;
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      padding:12px 14px;
+      border-radius: 999px;
       border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.22);
+      background: rgba(0,0,0,.22);
       box-shadow: var(--shadow2);
+    }
+    .brandDot{
+      width:10px; height:10px; border-radius:50%;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      box-shadow: 0 0 24px rgba(255,122,24,.55);
+    }
+    .brandTitle{font-weight:950; letter-spacing:-.2px}
+    .brandSub{font-size:12px; color:var(--muted); font-weight:800}
+
+    .actions{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+    }
+    .pill{
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      padding:10px 12px;
+      color:rgba(236,242,255,.92);
+      font-weight:900;
+      font-size:12px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      box-shadow: 0 10px 20px rgba(0,0,0,.35);
+    }
+    .pill b{font-size:12px}
+    .search{
+      min-width: 260px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.24);
+      padding:12px 14px;
+      color: var(--ink);
+      outline:none;
+      font-weight:850;
+      box-shadow: 0 10px 20px rgba(0,0,0,.28);
+    }
+    .search:focus{
+      border-color: rgba(255,122,24,.45);
+      box-shadow: 0 0 0 5px rgba(255,122,24,.12), 0 10px 20px rgba(0,0,0,.28);
+    }
+
+    .heroGrid{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1.45fr 1fr;
+      gap:14px;
+    }
+
+    .headline{
+      border-radius: 28px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      padding:18px;
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      position:relative;
+    }
+    .headline:before{
+      content:"";
+      position:absolute; inset:-1px;
+      background:
+        radial-gradient(500px 200px at 20% 0%, rgba(255,122,24,.18), transparent 60%),
+        radial-gradient(450px 200px at 90% 10%, rgba(120,110,255,.16), transparent 60%),
+        radial-gradient(600px 240px at 55% 105%, rgba(0,210,255,.10), transparent 60%);
+      opacity:.9;
+      pointer-events:none;
+    }
+    .headlineInner{position:relative}
+    .kicker{
+      font-size:12px;
+      color: rgba(236,242,255,.76);
+      font-weight:950;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+    }
+    .h1{
+      margin:8px 0 0;
+      font-size: clamp(26px, 3.2vw, 44px);
+      font-weight:950;
+      letter-spacing:-.5px;
+      line-height:1.08;
+    }
+    .h1 span{
+      background: linear-gradient(135deg, rgba(255,122,24,.95), rgba(255,176,74,.95));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .desc{
+      margin:10px 0 0;
+      color: rgba(236,242,255,.82);
+      line-height:1.6;
+      font-weight:650;
+      max-width: 60ch;
+    }
+
+    .quoteCard{
+      border-radius: 28px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      padding:18px;
+      box-shadow: var(--shadow2);
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:12px;
     }
     .quote{
-      font-weight:900;
-      font-size:14px;
-      line-height:1.5;
       margin:0;
+      font-weight:950;
+      font-size: 15px;
+      line-height:1.55;
     }
-    .quoteSmall{
-      margin-top:8px;
+    .quoteBy{
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      color: var(--muted);
+      font-weight:850;
       font-size:12px;
-      color:var(--muted);
-      font-weight:800;
+    }
+    .glowBtn{
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: rgba(236,242,255,.92);
+      padding:10px 12px;
+      font-weight:950;
+      cursor:pointer;
+      transition:.18s transform ease, .18s border-color ease, .18s background ease;
+    }
+    .glowBtn:hover{
+      transform: translateY(-2px);
+      border-color: rgba(255,122,24,.45);
+      background: rgba(255,122,24,.14);
+      box-shadow: 0 0 0 4px rgba(255,122,24,.10);
     }
 
-    /* districts grid (top) */
-    .districtPanel{
-      margin-top:14px;
-      border-radius: var(--radius);
+    /* District Cards: THE WOW GRID */
+    .districtStrip{
+      margin-top: 14px;
+      border-radius: 34px;
       border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.18);
+      background: rgba(0,0,0,.20);
+      box-shadow: var(--shadow);
       overflow:hidden;
     }
-    .districtHead{
+    .stripHead{
+      padding:14px 16px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.22);
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      padding:12px 14px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.22);
       flex-wrap:wrap;
     }
-    .districtHead b{letter-spacing:.2px}
-    .search{
-      min-width:220px;
-      flex:1;
-      padding:11px 12px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.14);
-      outline:none;
-      color:var(--text);
-      background:rgba(0,0,0,.22);
-      font-weight:800;
-    }
-    .search:focus{
-      border-color:rgba(255,122,24,.45);
-      box-shadow:0 0 0 4px rgba(255,122,24,.12);
-    }
-    .grid{
-      padding:14px;
+    .stripHead b{font-weight:950; letter-spacing:.2px}
+    .hint{color:var(--muted); font-weight:800; font-size:12px}
+
+    .districtGrid{
+      padding:16px;
       display:grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap:12px;
+      gap:14px;
     }
     .dCard{
-      border-radius:18px;
+      border-radius: 26px;
       border:1px solid rgba(255,255,255,.12);
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.20));
-      padding:12px;
-      cursor:pointer;
-      transition:.18s transform ease, .18s border-color ease;
-      position:relative;
+      background: rgba(255,255,255,.04);
       overflow:hidden;
+      cursor:pointer;
+      position:relative;
+      box-shadow: 0 16px 36px rgba(0,0,0,.42);
+      transition: .22s transform ease, .22s border-color ease, .22s box-shadow ease;
+      transform: translateZ(0);
     }
-    .dCard:hover{transform:translateY(-3px); border-color:rgba(255,255,255,.22)}
-    .dCard.active{border-color:rgba(255,122,24,.48); box-shadow:0 0 0 1px rgba(255,122,24,.24) inset, 0 12px 26px rgba(0,0,0,.45)}
-    .dCard b{display:block; font-weight:950; font-size:14px}
-    .dCard small{
-      display:block;
-      margin-top:8px;
-      color:var(--muted);
-      font-weight:800;
-      font-size:11px;
+    .dCard:hover{
+      transform: translateY(-6px) scale(1.01);
+      border-color: rgba(255,255,255,.22);
+      box-shadow: 0 22px 50px rgba(0,0,0,.54);
+    }
+    .dCard.active{
+      border-color: rgba(255,122,24,.52);
+      box-shadow: 0 0 0 1px rgba(255,122,24,.22) inset, 0 22px 50px rgba(0,0,0,.58);
+    }
+    .dThumb{
+      height: 120px;
+      background-size:cover;
+      background-position:center;
+      position:relative;
+    }
+    .dThumb:after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.68));
+    }
+    .dMeta{
+      padding:14px 14px 14px;
+      background: rgba(0,0,0,.22);
+    }
+    .dName{
+      font-weight: 950;
+      letter-spacing:-.2px;
+    }
+    .dLine{
+      margin-top:6px;
+      color: var(--muted);
+      font-weight:850;
+      font-size:12px;
       line-height:1.35;
-      opacity:.95;
+      min-height: 34px;
     }
-    .miniTag{
-      position:absolute;
-      top:10px; right:10px;
-      padding:6px 9px;
+    .dBadges{
+      margin-top:10px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .chip{
+      padding:7px 10px;
       border-radius:999px;
       border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.25);
+      background: rgba(0,0,0,.18);
       font-weight:900;
       font-size:11px;
-      color:rgba(236,242,255,.92);
+      color: rgba(236,242,255,.92);
+    }
+    .chip.hot{
+      border-color: rgba(255,122,24,.32);
+      background: rgba(255,122,24,.12);
     }
 
-    /* story section */
+    /* Content area: map + story */
+    .content{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: 1fr 380px;
+      gap:14px;
+      align-items:start;
+    }
+
+    /* Story panel */
     .story{
-      margin-top:14px;
-      border-radius:28px;
+      border-radius: 34px;
       border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
+      background: rgba(255,255,255,.05);
       backdrop-filter: blur(var(--blur));
       -webkit-backdrop-filter: blur(var(--blur));
       box-shadow: var(--shadow);
       overflow:hidden;
+      position:relative;
+    }
+    .storyCover{
+      position:absolute; inset:0;
+      background-size:cover;
+      background-position:center;
+      filter: blur(22px) saturate(1.05);
+      transform: scale(1.08);
+      opacity:.22;
+      pointer-events:none;
     }
     .storyTop{
+      position:relative;
       padding:16px;
-      background:rgba(0,0,0,.20);
+      background: rgba(0,0,0,.22);
       border-bottom:1px solid rgba(255,255,255,.10);
     }
-    .storyTop h1{
+    .storyTitle{
       margin:0;
-      font-size: clamp(22px, 2.6vw, 42px);
-      font-weight:950;
+      font-size: clamp(20px, 2.2vw, 34px);
+      font-weight: 950;
       letter-spacing:-.4px;
     }
-    .storyTop p{
+    .storySub{
       margin:10px 0 0;
-      color:rgba(236,242,255,.86);
-      line-height:1.55;
+      color: rgba(236,242,255,.84);
+      line-height: 1.6;
       font-weight:650;
     }
-    .metaRow{
-      margin-top:12px;
-      display:flex; gap:8px; flex-wrap:wrap;
+    .pillRow{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top: 12px;
     }
-    .pill{
+    .pillMini{
       padding:8px 11px;
-      border-radius:999px;
+      border-radius: 999px;
       border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.06);
+      background: rgba(0,0,0,.20);
       font-weight:900;
       font-size:12px;
-      color:rgba(236,242,255,.92);
+      color: rgba(236,242,255,.92);
     }
 
-    /* section headers + cards */
-    .section{
-      padding:14px;
+    .block{
+      padding: 14px 16px;
       border-top:1px solid rgba(255,255,255,.08);
     }
-    .sectionTitle{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      margin:0;
+    .blockHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
       padding:10px 12px;
-      border-radius:16px;
+      border-radius: 18px;
       border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.18);
+      background: rgba(0,0,0,.18);
     }
-    .sectionTitle b{font-size:13px; letter-spacing:.2px}
-    .countPill{
-      padding:6px 10px; border-radius:999px;
+    .blockHead b{font-size:13px; letter-spacing:.2px}
+    .count{
+      padding:7px 10px;
+      border-radius:999px;
       border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.06);
-      font-weight:900; font-size:12px;
+      background: rgba(255,255,255,.06);
+      font-weight:900;
+      font-size:12px;
+    }
+    .text{
+      margin-top:12px;
+      color: rgba(236,242,255,.92);
+      line-height:1.75;
+      font-weight:650;
     }
 
-    .cards{
+    /* Place cards */
+    .section{
+      margin-top:12px;
+    }
+    .placesGrid{
       margin-top:12px;
       display:grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap:12px;
     }
-    .card{
-      border-radius:18px;
+    .pCard{
+      border-radius: 22px;
       border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.18);
+      background: rgba(0,0,0,.18);
       overflow:hidden;
       cursor:pointer;
-      transition:.18s;
-      box-shadow:0 10px 18px rgba(0,0,0,.24);
+      transition:.20s transform ease, .20s border-color ease, .20s box-shadow ease;
+      box-shadow: 0 12px 22px rgba(0,0,0,.28);
     }
-    .card:hover{transform:translateY(-3px); border-color:rgba(255,255,255,.22); box-shadow:0 18px 34px rgba(0,0,0,.35)}
-    .thumb{
-      height:140px;
-      background:rgba(255,255,255,.08);
+    .pCard:hover{
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,.20);
+      box-shadow: 0 18px 32px rgba(0,0,0,.38);
+    }
+    .pThumb{
+      height: 132px;
       background-size:cover;
       background-position:center;
       position:relative;
     }
-    .thumb:after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,.55))}
-    .badge{
-      position:absolute; top:10px; left:10px; z-index:2;
-      padding:6px 9px;
+    .pThumb:after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.62));
+    }
+    .pBadge{
+      position:absolute;
+      top:10px; left:10px;
+      z-index:2;
+      padding:7px 10px;
       border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.28);
+      backdrop-filter: blur(10px);
       font-size:11px;
       font-weight:950;
-      color:rgba(236,242,255,.95);
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.28);
-      backdrop-filter: blur(10px);
     }
-    .pad{padding:12px}
-    .pad b{display:block; font-weight:950}
-    .meta{margin-top:6px; color:var(--muted); font-weight:800; font-size:12px; line-height:1.35}
-    .empty{
-      padding:16px;
-      border-radius:18px;
-      border:1px dashed rgba(255,255,255,.22);
-      background:rgba(0,0,0,.18);
-      color:rgba(236,242,255,.88);
+    .pBody{padding:12px}
+    .pTitle{font-weight:950}
+    .pMeta{
+      margin-top:6px;
+      color: var(--muted);
       font-weight:850;
+      font-size:12px;
+      line-height:1.35;
+    }
+    .empty{
       margin-top:12px;
+      padding:16px;
+      border-radius: 20px;
+      border:1px dashed rgba(255,255,255,.22);
+      background: rgba(0,0,0,.18);
+      color: rgba(236,242,255,.88);
+      font-weight:850;
     }
 
-    /* map column (second priority) */
-    .mapCol{
-      position:sticky;
-      top:14px;
-      height: calc(100vh - 28px);
-    }
-    .mapShell{
-      height:100%;
-      border-radius:28px;
+    /* Map column (secondary) */
+    .map{
+      position: sticky;
+      top: 16px;
+      height: calc(100vh - 32px);
+      border-radius: 34px;
       border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
+      background: rgba(255,255,255,.05);
       backdrop-filter: blur(var(--blur));
       -webkit-backdrop-filter: blur(var(--blur));
       box-shadow: var(--shadow);
@@ -317,155 +527,209 @@
       flex-direction:column;
     }
     .mapHead{
-      padding:14px;
+      padding:14px 16px;
       border-bottom:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.20);
+      background: rgba(0,0,0,.22);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
     }
-    .mapHead b{font-size:13px; letter-spacing:.3px}
-    .mapHint{font-size:12px; color:var(--muted); font-weight:800; margin-top:4px}
-    .mapFrameWrap{flex:1; min-height:0}
+    .mapHead b{font-size:13px; letter-spacing:.2px}
+    .mapHead .mHint{
+      color: var(--muted);
+      font-weight:800;
+      font-size:12px;
+      line-height:1.35;
+      max-width: 220px;
+      text-align:right;
+    }
+    .mapFrame{flex:1; min-height:0}
     iframe{width:100%; height:100%; border:0; background:rgba(0,0,0,.2)}
 
-    /* floating districts button after scroll */
+    /* Floating district dock (shows when scrolled) */
     .dockBtn{
       position:fixed;
-      left:14px;
-      bottom:14px;
-      z-index:999;
+      left:16px; bottom:16px;
+      z-index:1000;
       display:none;
-      padding:10px 12px;
-      border-radius:999px;
+      padding:12px 14px;
+      border-radius: 999px;
       border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.45);
-      backdrop-filter: blur(14px);
-      color:rgba(236,242,255,.92);
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(16px);
+      color: rgba(236,242,255,.92);
       font-weight:950;
       cursor:pointer;
-      box-shadow: 0 16px 34px rgba(0,0,0,.45);
+      box-shadow: 0 18px 40px rgba(0,0,0,.55);
+      transition:.18s transform ease, .18s border-color ease;
     }
-    .dockBtn:hover{border-color:rgba(255,255,255,.24)}
-    .dockSheet{
+    .dockBtn:hover{transform:translateY(-2px); border-color: rgba(255,122,24,.45)}
+    .dock{
       position:fixed;
-      left:14px;
-      right:14px;
-      bottom:64px;
-      z-index:999;
+      left:16px; right:16px; bottom:70px;
+      z-index:1000;
       display:none;
-      max-height: 62vh;
+      max-height: 66vh;
       overflow:auto;
-      border-radius:22px;
+      border-radius: 28px;
       border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.55);
+      background: rgba(0,0,0,.62);
       backdrop-filter: blur(18px);
-      box-shadow: 0 18px 50px rgba(0,0,0,.6);
-      padding:12px;
+      box-shadow: 0 28px 80px rgba(0,0,0,.65);
+      padding: 14px;
     }
-    .dockSheet .grid{padding:0; grid-template-columns: repeat(3, minmax(0,1fr));}
-    .dockSheet .districtHead{padding:0 0 12px 0; background:transparent; border-bottom:0}
-    .dockClose{
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.35);
-      color:rgba(236,242,255,.92);
-      font-weight:950;
+    .dockTop{
+      display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    .dockTop b{font-weight:950}
+    .closeBtn{
       padding:10px 12px;
-      border-radius:16px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.35);
+      color: rgba(236,242,255,.92);
+      font-weight:950;
       cursor:pointer;
+    }
+    .dockGrid{grid-template-columns: repeat(3, minmax(0,1fr)); padding:0}
+
+    /* Responsive */
+    @media(max-width:1200px){
+      .districtGrid{grid-template-columns: repeat(3, minmax(0, 1fr))}
+      .placesGrid{grid-template-columns: repeat(2, minmax(0,1fr))}
+      .content{grid-template-columns: 1fr}
+      .map{position:relative; height:520px}
+    }
+    @media(max-width:620px){
+      .heroGrid{grid-template-columns: 1fr}
+      .districtGrid{grid-template-columns: repeat(2, minmax(0, 1fr))}
+      .placesGrid{grid-template-columns: 1fr}
+      .search{min-width: 0; width:100%}
     }
 
-    @media(max-width:1200px){
-      .grid{grid-template-columns: repeat(3, minmax(0,1fr));}
-      .cards{grid-template-columns: repeat(2, minmax(0,1fr));}
-      .app{grid-template-columns: 1fr}
-      .mapCol{position:relative; height:520px}
-    }
-    @media(max-width:520px){
-      .grid{grid-template-columns: repeat(2, minmax(0,1fr));}
-      .cards{grid-template-columns: 1fr;}
+    /* motion */
+    @media (prefers-reduced-motion: reduce){
+      *{transition:none !important; animation:none !important}
     }
   </style>
 </head>
-
 <body>
-  <div class="app">
+  <div class="shell">
     <section class="hero" id="hero">
-      <div class="heroCover" id="heroCover"></div>
-      <div class="heroOverlay"></div>
+      <div class="heroBg" id="heroBg"></div>
+      <div class="heroShade"></div>
+
       <div class="heroInner">
-        <div class="topRow">
+        <div class="topBar">
           <div class="brand">
-            <div class="dot"></div>
+            <div class="brandDot"></div>
             <div>
-              <div class="title">Himachal Explorer</div>
-              <div class="sub">Stories by district • places • temples • lakes • treks • hotels</div>
+              <div class="brandTitle">Himachal Explorer</div>
+              <div class="brandSub">A premium district guide • stories • curated places</div>
             </div>
           </div>
 
-          <div class="quoteBox">
-            <p class="quote" id="quoteText">“Where mountains whisper and rivers sing — welcome to Himachal.”</p>
-            <div class="quoteSmall" id="quoteBy">— Himachal Explorer</div>
+          <div class="actions">
+            <div class="pill">✨ <b id="liveTitle">Select a district</b></div>
+            <input class="search" id="q" placeholder="Search district… (e.g., Shimla, Kullu, Kangra)">
           </div>
         </div>
 
-        <div class="districtPanel" id="districtPanel">
-          <div class="districtHead">
-            <b>Pick a District</b>
-            <input id="q" class="search" placeholder="Search district…">
+        <div class="heroGrid">
+          <div class="headline">
+            <div class="headlineInner">
+              <div class="kicker">HIMACHAL PRADESH</div>
+              <div class="h1">Feel the <span>Himalayan calm</span> — district by district.</div>
+              <div class="desc">
+                Tap a district card to open its story: brief, how to reach, and stunning places in categories.
+                Map stays secondary — but always ready.
+              </div>
+            </div>
           </div>
-          <div class="grid" id="districtGrid">
-            <div class="dCard"><b>Loading…</b><small>Please wait</small></div>
+
+          <div class="quoteCard">
+            <p class="quote" id="quote">“Where mountains whisper and rivers sing — welcome to Himachal.”</p>
+            <div class="quoteBy">
+              <span id="quoteBy">— Himachal Explorer</span>
+              <button class="glowBtn" id="newQuote">New quote</button>
+            </div>
           </div>
         </div>
 
-        <div class="story" id="story">
-          <div class="storyTop">
-            <h1 id="hTitle">Himachal Pradesh</h1>
-            <p id="hSub">Select any district above to read its story — brief, how to reach, and curated places.</p>
-            <div class="metaRow" id="metaRow"></div>
+        <div class="districtStrip" id="districtStrip">
+          <div class="stripHead">
+            <b>Districts</b>
+            <span class="hint">Cinematic cards • click to open story</span>
           </div>
+          <div class="districtGrid" id="districtGrid">
+            <div class="dCard">
+              <div class="dThumb" style="background:#111"></div>
+              <div class="dMeta">
+                <div class="dName">Loading…</div>
+                <div class="dLine">Fetching from Firebase…</div>
+                <div class="dBadges"><span class="chip">Please wait</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          <div class="section">
-            <div class="sectionTitle"><b>District Brief</b></div>
-            <div id="briefBox" style="margin-top:12px;color:rgba(236,242,255,.92);line-height:1.7;font-weight:650">
-              <div class="empty">Select a district to see a story-style overview…</div>
+        <div class="content">
+          <div class="story" id="story">
+            <div class="storyCover" id="storyCover"></div>
+
+            <div class="storyTop">
+              <h2 class="storyTitle" id="sTitle">Pick a district to begin</h2>
+              <div class="storySub" id="sSub">
+                Your visitor experience starts here — district story, reach info, then curated categories.
+              </div>
+              <div class="pillRow" id="pillRow"></div>
+            </div>
+
+            <div class="block">
+              <div class="blockHead"><b>District Brief</b><span class="count" id="briefTag">—</span></div>
+              <div class="text" id="briefBox"><div class="empty">Select any district card above.</div></div>
+            </div>
+
+            <div class="block">
+              <div class="blockHead"><b>How to Reach</b><span class="count" id="reachTag">—</span></div>
+              <div class="text" id="reachBox"><div class="empty">We’ll show road / rail / air guidance.</div></div>
+            </div>
+
+            <div class="block">
+              <div class="blockHead"><b>Curated Places</b><span class="count" id="placesTag">—</span></div>
+              <div id="placesWrap" class="text">
+                <div class="empty">Destinations • Lakes • Temples • Treks • Hotels — shown beautifully.</div>
+              </div>
             </div>
           </div>
 
-          <div class="section">
-            <div class="sectionTitle"><b>How to Reach</b></div>
-            <div id="reachBox" style="margin-top:12px;color:rgba(236,242,255,.92);line-height:1.7;font-weight:650">
-              <div class="empty">Select a district to see roads, rail and airports guidance…</div>
+          <aside class="map">
+            <div class="mapHead">
+              <div>
+                <b>Map (Secondary)</b>
+              </div>
+              <div class="mHint" id="mapHint">Tap a place card to focus the map.</div>
             </div>
-          </div>
-
-          <div class="section" id="placesRoot">
-            <!-- sections injected -->
-          </div>
+            <div class="mapFrame">
+              <iframe id="mapFrame" src="map.html" title="HP Map"></iframe>
+            </div>
+          </aside>
         </div>
       </div>
     </section>
-
-    <aside class="mapCol">
-      <div class="mapShell">
-        <div class="mapHead">
-          <b>Map</b>
-          <div class="mapHint" id="mapHint">Map is secondary — click a place to focus here.</div>
-        </div>
-        <div class="mapFrameWrap">
-          <iframe id="mapFrame" title="District Map" src="map.html"></iframe>
-        </div>
-      </div>
-    </aside>
   </div>
 
-  <!-- floating districts -->
+  <!-- Dock -->
   <button class="dockBtn" id="dockBtn">☰ Districts</button>
-  <div class="dockSheet" id="dockSheet">
-    <div class="districtHead">
+  <div class="dock" id="dock">
+    <div class="dockTop">
       <b>Districts</b>
-      <button class="dockClose" id="dockClose">Close</button>
+      <button class="closeBtn" id="dockClose">Close</button>
     </div>
-    <input id="q2" class="search" placeholder="Search district…" style="margin-bottom:12px">
-    <div class="grid" id="districtGrid2"></div>
+    <input class="search" id="q2" placeholder="Search district…">
+    <div class="districtGrid dockGrid" id="districtGrid2"></div>
   </div>
 
   <script type="module">
@@ -489,8 +753,6 @@
     const db = getDatabase(app);
 
     const ROOT = "tourism/hp/districts";
-
-    // ✅ canonical types
     const TYPES = ["destinations","lakes","temples","treks","hotels"];
     const TYPE_LABEL = {
       destinations:"Destinations",
@@ -500,54 +762,63 @@
       hotels:"Hotels"
     };
 
-    // Himachal-ish fallback hero photos (safe, thematic)
-    const HERO_FALLBACKS = [
-      "https://source.unsplash.com/1600x1000/?Himachal,Mountains",
-      "https://source.unsplash.com/1600x1000/?Spiti,Monastery",
-      "https://source.unsplash.com/1600x1000/?Manali,Snow",
-      "https://source.unsplash.com/1600x1000/?Dharamshala,Mountains",
-      "https://source.unsplash.com/1600x1000/?Himachal,Lake",
-      "https://source.unsplash.com/1600x1000/?Himalaya,Valley"
+    // Himachal-ish hero backgrounds
+    const HERO = [
+      "https://source.unsplash.com/1900x1100/?Himachal,Mountains",
+      "https://source.unsplash.com/1900x1100/?Spiti,Valley",
+      "https://source.unsplash.com/1900x1100/?Manali,Snow",
+      "https://source.unsplash.com/1900x1100/?Dharamshala,Mountains",
+      "https://source.unsplash.com/1900x1100/?Himachal,Lake",
+      "https://source.unsplash.com/1900x1100/?Himalaya,Forest"
     ];
 
     const QUOTES = [
       {q:"Where mountains whisper and rivers sing — welcome to Himachal.", by:"Himachal Explorer"},
       {q:"In Himachal, every bend of the road is a postcard.", by:"Travel Note"},
-      {q:"Breathe deeper — the Himalayas keep secrets in the pine-scented air.", by:"Himalayan Diaries"},
-      {q:"Not all who wander are lost… some are just in Himachal.", by:"Wander Quote"},
+      {q:"Breathe deeper — the Himalayas keep secrets in pine-scented air.", by:"Himalayan Diaries"},
       {q:"Chai tastes warmer when the view is colder.", by:"Hill Station Mood"},
-      {q:"Let the peaks reset your mind.", by:"Slow Travel"}
+      {q:"Let the peaks reset your mind.", by:"Slow Travel"},
+      {q:"Some places don’t just look beautiful — they heal you. Himachal does.", by:"Wander Lines"}
     ];
 
     // UI
-    const heroCover = document.getElementById("heroCover");
-    const quoteText = document.getElementById("quoteText");
-    const quoteBy = document.getElementById("quoteBy");
-
+    const heroBg = document.getElementById("heroBg");
+    const storyCover = document.getElementById("storyCover");
     const q = document.getElementById("q");
-    const districtGrid = document.getElementById("districtGrid");
     const q2 = document.getElementById("q2");
+    const districtGrid = document.getElementById("districtGrid");
     const districtGrid2 = document.getElementById("districtGrid2");
-
-    const hTitle = document.getElementById("hTitle");
-    const hSub = document.getElementById("hSub");
-    const metaRow = document.getElementById("metaRow");
-    const briefBox = document.getElementById("briefBox");
-    const reachBox = document.getElementById("reachBox");
-    const placesRoot = document.getElementById("placesRoot");
-
-    const mapHint = document.getElementById("mapHint");
-    const mapFrame = document.getElementById("mapFrame");
-
     const dockBtn = document.getElementById("dockBtn");
-    const dockSheet = document.getElementById("dockSheet");
+    const dock = document.getElementById("dock");
     const dockClose = document.getElementById("dockClose");
 
-    // state
-    let ROOT_SNAPSHOT = {};
+    const liveTitle = document.getElementById("liveTitle");
+    const quote = document.getElementById("quote");
+    const quoteBy = document.getElementById("quoteBy");
+    const newQuoteBtn = document.getElementById("newQuote");
+
+    const sTitle = document.getElementById("sTitle");
+    const sSub = document.getElementById("sSub");
+    const pillRow = document.getElementById("pillRow");
+
+    const briefBox = document.getElementById("briefBox");
+    const reachBox = document.getElementById("reachBox");
+    const placesWrap = document.getElementById("placesWrap");
+
+    const briefTag = document.getElementById("briefTag");
+    const reachTag = document.getElementById("reachTag");
+    const placesTag = document.getElementById("placesTag");
+
+    const mapFrame = document.getElementById("mapFrame");
+    const mapHint = document.getElementById("mapHint");
+
+    // State
+    let ROOT_SNAP = {};
     let DISTRICTS = [];
-    let PREVIEW = {}; // district -> 2-3 popular destination names
-    let ACTIVE_DIST = "";
+    let PREVIEW = {};  // district -> top destinations names
+    let COVER = {};    // district -> cover url
+    let COUNT = {};    // district -> total count
+    let ACTIVE = "";
 
     const safeObj = (x)=> (x && typeof x==="object") ? x : {};
     const norm = (s)=> String(s ?? "").trim();
@@ -560,7 +831,6 @@
     }
 
     function normalizeType(t){
-      // ✅ fix: if DB has lake/temple/destination etc
       const s = low(t);
       if(!s) return "";
       if(s==="destination" || s==="dest") return "destinations";
@@ -568,7 +838,7 @@
       if(s==="temple") return "temples";
       if(s==="trek") return "treks";
       if(s==="hotel") return "hotels";
-      return s; // expects already plural
+      return s;
     }
 
     function extractPhotos(item){
@@ -579,7 +849,6 @@
       if(norm(item.imageUrl)) a.push(norm(item.imageUrl));
       if(norm(item.cover)) a.push(norm(item.cover));
       if(norm(item.photo)) a.push(norm(item.photo));
-      // also support pipe-separated
       if(norm(item.photo) && String(item.photo).includes("|")){
         String(item.photo).split("|").map(x=>x.trim()).filter(Boolean).forEach(u=>a.push(u));
       }
@@ -590,9 +859,19 @@
       return it.name || it.title || it.place || it.placeName || it.locationName || "Untitled";
     }
 
-    function computePreviewNames(dNode){
+    function countDistrict(dNode){
       const seg = safeObj(dNode?.segments);
-      // ✅ preview ONLY from destinations
+      let total=0;
+      for(const k of Object.keys(seg)){
+        const t = normalizeType(k);
+        if(!TYPES.includes(t)) continue;
+        total += Object.keys(safeObj(seg[k])).length;
+      }
+      return total;
+    }
+
+    function computePreview(dNode){
+      const seg = safeObj(dNode?.segments);
       const bucket = safeObj(seg?.destinations);
       const arr = Object.keys(bucket).map(id=>{
         const it = safeObj(bucket[id]);
@@ -606,58 +885,85 @@
       return arr.slice(0,3).map(x=>x.title).filter(Boolean);
     }
 
-    function pickDistrictCover(dNode){
+    function pickCover(dNode){
       const info = safeObj(dNode?.districtInfo);
-      const a = [];
-      if(Array.isArray(info.coverPhotos)) a.push(...info.coverPhotos);
-      if(norm(info.coverPhoto)) a.push(info.coverPhoto);
-      if(norm(info.cover)) a.push(info.cover);
-      // fallback from any place photo
+      const arr = [];
+      if(Array.isArray(info.coverPhotos)) arr.push(...info.coverPhotos);
+      if(norm(info.coverPhoto)) arr.push(info.coverPhoto);
+      if(norm(info.cover)) arr.push(info.cover);
+
       const seg = safeObj(dNode?.segments);
-      for(const t of TYPES){
-        const bucket = safeObj(seg[t]);
+      for(const k of Object.keys(seg)){
+        const t = normalizeType(k);
+        if(!TYPES.includes(t)) continue;
+        const bucket = safeObj(seg[k]);
         for(const id of Object.keys(bucket)){
           const it = safeObj(bucket[id]);
           const pics = extractPhotos(it);
-          if(pics[0]) { a.push(pics[0]); break; }
+          if(pics[0]) { arr.push(pics[0]); break; }
         }
-        if(a.length) break;
+        if(arr.length) break;
       }
-      const cover = a.map(norm).filter(Boolean)[0];
-      return cover || HERO_FALLBACKS[(Math.random()*HERO_FALLBACKS.length)|0];
+      return norm(arr[0]) || HERO[(Math.random()*HERO.length)|0];
     }
 
-    function setHeroImage(url){
-      heroCover.style.backgroundImage = url ? `url('${String(url).replaceAll("'","%27")}')` : "none";
+    function setHero(url){
+      heroBg.style.backgroundImage = url ? `url('${String(url).replaceAll("'","%27")}')` : "none";
     }
 
-    function rotateQuotes(){
-      let i=0;
-      const apply = ()=>{
-        const x = QUOTES[i % QUOTES.length];
-        quoteText.textContent = `“${x.q}”`;
-        quoteBy.textContent = `— ${x.by}`;
-        i++;
-      };
-      apply();
-      setInterval(apply, 5200);
+    function setStoryCover(url){
+      storyCover.style.backgroundImage = url ? `url('${String(url).replaceAll("'","%27")}')` : "none";
     }
 
-    function renderDistrictCards(targetEl, queryStr){
-      const query = low(queryStr);
-      const list = DISTRICTS.filter(d => !query || low(d).includes(query));
+    function randomQuote(){
+      const x = QUOTES[(Math.random()*QUOTES.length)|0];
+      quote.textContent = `“${x.q}”`;
+      quoteBy.textContent = `— ${x.by}`;
+    }
+    newQuoteBtn.addEventListener("click", randomQuote);
+
+    function focusDistrictOnMap(d){
+      mapHint.textContent = `Map focus: ${d}`;
+      mapFrame.src = `map.html#district=${encodeURIComponent(d)}&t=${Date.now()}`;
+      setTimeout(()=> mapFrame.contentWindow?.postMessage({ type:"FOCUS_DISTRICT", district:d }, "*"), 450);
+    }
+    function focusPlaceOnMap(payload){
+      mapFrame.contentWindow?.postMessage({ type:"FOCUS_PLACE", ...payload }, "*");
+    }
+
+    function renderDistricts(targetEl, query){
+      const qv = low(query);
+      const list = DISTRICTS.filter(d => !qv || low(d).includes(qv));
 
       targetEl.innerHTML = (list.length ? list : [""]).map(d=>{
-        if(!d) return `<div class="dCard"><b>No district found</b><small>Try another search</small></div>`;
-        const active = (ACTIVE_DIST === d) ? "active" : "";
+        if(!d) return `
+          <div class="dCard">
+            <div class="dThumb" style="background:#111"></div>
+            <div class="dMeta">
+              <div class="dName">No match</div>
+              <div class="dLine">Try another keyword.</div>
+              <div class="dBadges"><span class="chip">Search</span></div>
+            </div>
+          </div>
+        `;
+        const active = (ACTIVE===d) ? "active" : "";
+        const cover = COVER[d] || HERO[0];
         const pv = PREVIEW[d] || [];
-        const line = pv.length ? `<small>${pv.map(escapeHtml).join(" • ")}</small>` : `<small style="opacity:.65">—</small>`;
-        const count = countDistrictItems(ROOT_SNAPSHOT[d]);
+        const line = pv.length ? pv.map(escapeHtml).join(" • ") : "—";
+        const cnt = COUNT[d] ?? 0;
+
         return `
           <div class="dCard ${active}" data-d="${escapeHtml(d)}">
-            <span class="miniTag">${count}</span>
-            <b>${escapeHtml(d)}</b>
-            ${line}
+            <div class="dThumb" style="background-image:url('${String(cover).replaceAll("'","%27")}')"></div>
+            <div class="dMeta">
+              <div class="dName">${escapeHtml(d)}</div>
+              <div class="dLine">${line}</div>
+              <div class="dBadges">
+                <span class="chip hot">${cnt} places</span>
+                <span class="chip">Story</span>
+                <span class="chip">Map</span>
+              </div>
+            </div>
           </div>
         `;
       }).join("");
@@ -667,121 +973,25 @@
       });
     }
 
-    function countDistrictItems(dNode){
-      const seg = safeObj(dNode?.segments);
-      let total=0;
-      for(const t of TYPES){
-        total += Object.keys(safeObj(seg[t])).length;
-      }
-      return total;
-    }
-
-    function focusDistrictOnMap(d){
-      mapHint.textContent = `Map focus: ${d}`;
-      mapFrame.src = `map.html#district=${encodeURIComponent(d)}&t=${Date.now()}`;
-      setTimeout(()=> mapFrame.contentWindow?.postMessage({ type:"FOCUS_DISTRICT", district:d }, "*"), 500);
-    }
-    function focusPlaceOnMap(payload){
-      mapFrame.contentWindow?.postMessage({ type:"FOCUS_PLACE", ...payload }, "*");
-    }
-
     function defaultBrief(d){
-      return `• ${d} is a beautiful district of Himachal Pradesh.\n• Explore curated places section-wise below.\n• Tap any card to focus on map (if location exists).`;
+      return `• ${d} is one of Himachal’s most loved regions.\n• Explore curated categories below (Destinations, Lakes, Temples, Treks, Hotels).\n• Tap any card to focus on map (when lat/lng exists).`;
     }
     function defaultReach(d){
-      return `🛣️ Road: Well-connected by road from major towns.\n🚆 Train: nearest railhead depends on route.\n✈️ Air: nearest airport depends on region.\n\nTip: Map panel will help you visualize distance.`;
-    }
-
-    function metaPills(info, total){
-      const pills = [];
-      if(norm(info.bestSeason)) pills.push(`Best season: ${norm(info.bestSeason)}`);
-      if(norm(info.districtHQ)) pills.push(`HQ: ${norm(info.districtHQ)}`);
-      if(Number.isFinite(Number(info.popularityScore))) pills.push(`Popularity: ${Number(info.popularityScore)}`);
-      pills.push(`Records: ${total}`);
-      return pills;
-    }
-
-    function makeSectionHTML(type, items){
-      const label = TYPE_LABEL[type] || type;
-      return `
-        <div class="section">
-          <div class="sectionTitle">
-            <b>${escapeHtml(label)}</b>
-            <span class="countPill">${items.length}</span>
-          </div>
-          ${items.length ? `
-            <div class="cards">
-              ${items.slice(0, 24).map(cardHTML).join("")}
-            </div>
-            ${items.length>24 ? `<div class="meta" style="margin-top:10px">Showing top 24. Add filters later if you want.</div>` : ""}
-          ` : `<div class="empty">No records in this section.</div>`}
-        </div>
-      `;
-    }
-
-    function cardHTML(x){
-      const photos = x.photos || [];
-      const thumbUrl = photos[0] ? photos[0].replaceAll("'","%27") : "";
-      const label = TYPE_LABEL[x.type] || x.type;
-      const canMap = Number.isFinite(x.lat) && Number.isFinite(x.lng);
-
-      const extra = [
-        Number.isFinite(x.rating) ? `⭐ ${x.rating}` : "",
-        Number.isFinite(x.popularity) ? `🔥 ${x.popularity}` : "",
-        Number.isFinite(x.entryFee) ? `₹${x.entryFee}` : ""
-      ].filter(Boolean).join(" • ");
-
-      return `
-        <div class="card" data-id="${escapeHtml(x.id)}" data-type="${escapeHtml(x.type)}">
-          <div class="thumb" style="${thumbUrl ? `background-image:url('${thumbUrl}')` : ""}">
-            <div class="badge">${escapeHtml(label)}${canMap ? " • Map" : ""}</div>
-          </div>
-          <div class="pad">
-            <b>${escapeHtml(x.title)}</b>
-            <div class="meta">${escapeHtml(extra || "Tap to focus on map (if lat/lng available)")}</div>
-            ${x.notes ? `<div class="meta">${escapeHtml(x.notes).slice(0,120)}${x.notes.length>120?"…":""}</div>` : ""}
-          </div>
-        </div>
-      `;
-    }
-
-    function bindCardClicks(itemsById){
-      [...document.querySelectorAll(".card[data-id]")].forEach(el=>{
-        el.addEventListener("click", ()=>{
-          const id = el.getAttribute("data-id");
-          const p = itemsById.get(id);
-          if(!p) return;
-
-          // ✅ "place location not working" fix:
-          // ensure we send numeric lat/lng & correct type
-          if(Number.isFinite(p.lat) && Number.isFinite(p.lng)){
-            focusPlaceOnMap({
-              district: ACTIVE_DIST,
-              title: p.title,
-              lat: p.lat,
-              lng: p.lng,
-              type: p.type
-            });
-          } else {
-            focusDistrictOnMap(ACTIVE_DIST);
-          }
-        });
-      });
+      return `🛣️ Road: well-connected by highway + scenic hill roads.\n🚆 Rail: nearest railhead depends on route.\n✈️ Air: nearest airport depends on region.\n\nTip: Tap a place card to focus on map.`;
     }
 
     function flattenDistrict(dNode){
       const seg = safeObj(dNode?.segments);
       const out = [];
-      for(const rawKey of Object.keys(seg)){
-        const t = normalizeType(rawKey);
-        if(!TYPES.includes(t)) continue;
-
-        const bucket = safeObj(seg[rawKey]);
+      for(const k of Object.keys(seg)){
+        const type = normalizeType(k);
+        if(!TYPES.includes(type)) continue;
+        const bucket = safeObj(seg[k]);
         for(const id of Object.keys(bucket)){
           const it = safeObj(bucket[id]);
           out.push({
             id,
-            type: t,
+            type,
             title: pickTitle(it),
             photos: extractPhotos(it),
             notes: it.notes || it.description || "",
@@ -796,38 +1006,106 @@
       return out;
     }
 
+    function sectionHTML(type, items){
+      const label = TYPE_LABEL[type] || type;
+      const top = items.slice(0, 12);
+      return `
+        <div class="section">
+          <div class="blockHead"><b>${escapeHtml(label)}</b><span class="count">${items.length}</span></div>
+          ${items.length ? `
+            <div class="placesGrid">
+              ${top.map(placeCard).join("")}
+            </div>
+            ${items.length>12 ? `<div class="pMeta" style="margin-top:10px">Showing top 12. Add more items in Firebase to expand.</div>` : ""}
+          ` : `<div class="empty">No records in this category.</div>`}
+        </div>
+      `;
+    }
+
+    function placeCard(p){
+      const photo = (p.photos && p.photos[0]) ? p.photos[0] : `https://source.unsplash.com/1200x800/?Himachal,travel`;
+      const mapOk = Number.isFinite(p.lat) && Number.isFinite(p.lng);
+      const extra = [
+        Number.isFinite(p.rating) ? `⭐ ${p.rating}` : "",
+        Number.isFinite(p.popularity) ? `🔥 ${p.popularity}` : "",
+        Number.isFinite(p.entryFee) ? `₹${p.entryFee}` : "",
+        mapOk ? "📍 Map" : ""
+      ].filter(Boolean).join(" • ");
+
+      return `
+        <div class="pCard" data-id="${escapeHtml(p.id)}">
+          <div class="pThumb" style="background-image:url('${String(photo).replaceAll("'","%27")}')">
+            <div class="pBadge">${escapeHtml(TYPE_LABEL[p.type] || p.type)}</div>
+          </div>
+          <div class="pBody">
+            <div class="pTitle">${escapeHtml(p.title)}</div>
+            <div class="pMeta">${escapeHtml(extra || "Tap to open on map (if location exists)")}</div>
+            ${p.notes ? `<div class="pMeta">${escapeHtml(p.notes).slice(0,100)}${p.notes.length>100?"…":""}</div>` : ""}
+          </div>
+        </div>
+      `;
+    }
+
+    function bindPlaceClicks(itemsById){
+      [...document.querySelectorAll(".pCard[data-id]")].forEach(el=>{
+        el.addEventListener("click", ()=>{
+          const id = el.getAttribute("data-id");
+          const p = itemsById.get(id);
+          if(!p) return;
+
+          if(Number.isFinite(p.lat) && Number.isFinite(p.lng)){
+            focusPlaceOnMap({
+              district: ACTIVE,
+              title: p.title,
+              lat: p.lat,
+              lng: p.lng,
+              type: p.type
+            });
+          }else{
+            focusDistrictOnMap(ACTIVE);
+          }
+        });
+      });
+    }
+
+    function pill(text){
+      return `<span class="pillMini">${escapeHtml(text)}</span>`;
+    }
+
     async function openDistrict(d){
-      ACTIVE_DIST = d;
+      ACTIVE = d;
+      liveTitle.textContent = d;
 
-      // highlight
-      renderDistrictCards(districtGrid, q.value);
-      renderDistrictCards(districtGrid2, q2.value);
+      renderDistricts(districtGrid, q.value);
+      renderDistricts(districtGrid2, q2.value);
 
-      const node = ROOT_SNAPSHOT[d];
+      const node = ROOT_SNAP[d];
       const info = safeObj(node?.districtInfo);
-      const total = countDistrictItems(node);
+      const cover = COVER[d] || HERO[0];
 
-      // hero
-      setHeroImage(pickDistrictCover(node));
+      setHero(cover);
+      setStoryCover(cover);
 
-      // title + meta
-      hTitle.textContent = d;
-      hSub.textContent = "A short district story + curated sections below.";
-      metaRow.innerHTML = metaPills(info, total).map(t=>`<span class="pill">${escapeHtml(t)}</span>`).join("");
+      sTitle.textContent = d;
+      sSub.textContent = "A district story — then curated categories in a premium grid.";
+      briefTag.textContent = "Story";
+      reachTag.textContent = "Reach";
+      placesTag.textContent = `${COUNT[d] ?? 0} items`;
 
-      // brief/how to reach
       const brief = norm(info.brief) || defaultBrief(d);
       const reach = norm(info.howToReach) || defaultReach(d);
+
       briefBox.innerHTML = `<div>${escapeHtml(brief).replaceAll("\n","<br/>")}</div>`;
       reachBox.innerHTML = `<div>${escapeHtml(reach).replaceAll("\n","<br/>")}</div>`;
 
-      // places sections
       const all = flattenDistrict(node);
+
+      // group by type
       const byType = {};
       for(const t of TYPES) byType[t] = [];
       all.forEach(x=> byType[x.type].push(x));
 
-      // sort inside each type (popularity > rating > name)
+      // sort: popularity > rating > name
       for(const t of TYPES){
         byType[t].sort((a,b)=>{
           const pa = Number.isFinite(a.popularity)?a.popularity:-1e18;
@@ -838,68 +1116,79 @@
         });
       }
 
-      placesRoot.innerHTML =
-        makeSectionHTML("destinations", byType.destinations) +
-        makeSectionHTML("lakes", byType.lakes) +
-        makeSectionHTML("temples", byType.temples) +
-        makeSectionHTML("treks", byType.treks) +
-        makeSectionHTML("hotels", byType.hotels);
+      // pills
+      const pills = [];
+      if(norm(info.bestSeason)) pills.push(pill(`Best: ${info.bestSeason}`));
+      if(norm(info.districtHQ)) pills.push(pill(`HQ: ${info.districtHQ}`));
+      pills.push(pill(`Total: ${COUNT[d] ?? all.length}`));
+      pillRow.innerHTML = pills.join("");
 
-      // card clicks -> map focus
+      // build sections
+      placesWrap.innerHTML =
+        sectionHTML("destinations", byType.destinations) +
+        sectionHTML("lakes", byType.lakes) +
+        sectionHTML("temples", byType.temples) +
+        sectionHTML("treks", byType.treks) +
+        sectionHTML("hotels", byType.hotels);
+
+      // bind map clicks
       const mapById = new Map(all.map(x=>[x.id,x]));
-      bindCardClicks(mapById);
+      bindPlaceClicks(mapById);
 
-      // map focus (district)
+      // focus map
       focusDistrictOnMap(d);
 
-      // smooth scroll to story
-      document.getElementById("story").scrollIntoView({behavior:"smooth", block:"start"});
+      // close dock
+      dock.style.display = "none";
 
-      // close dock if open
-      dockSheet.style.display = "none";
+      // nice scroll
+      document.getElementById("story").scrollIntoView({behavior:"smooth", block:"start"});
     }
 
     function setupDock(){
-      dockBtn.addEventListener("click", ()=>{
-        dockSheet.style.display = (dockSheet.style.display === "block") ? "none" : "block";
-      });
-      dockClose.addEventListener("click", ()=> dockSheet.style.display="none");
-
-      // show dock button after you scroll past district panel
-      const districtPanel = document.getElementById("districtPanel");
+      const strip = document.getElementById("districtStrip");
       const onScroll = ()=>{
-        const r = districtPanel.getBoundingClientRect();
-        const shouldShow = r.bottom < 40;
-        dockBtn.style.display = shouldShow ? "block" : "none";
+        const r = strip.getBoundingClientRect();
+        dockBtn.style.display = (r.bottom < 36) ? "block" : "none";
       };
       window.addEventListener("scroll", onScroll, {passive:true});
       onScroll();
+
+      dockBtn.addEventListener("click", ()=>{
+        dock.style.display = (dock.style.display === "block") ? "none" : "block";
+      });
+      dockClose.addEventListener("click", ()=> dock.style.display="none");
     }
 
     async function init(){
-      rotateQuotes();
-      setHeroImage(HERO_FALLBACKS[0]);
+      setHero(HERO[0]);
+      randomQuote();
 
-      const snap = await get(ref(db, ROOT));
-      ROOT_SNAPSHOT = snap.exists() ? safeObj(snap.val()) : {};
-      DISTRICTS = Object.keys(ROOT_SNAPSHOT).sort((a,b)=>a.localeCompare(b));
-
-      PREVIEW = {};
-      for(const d of DISTRICTS){
-        PREVIEW[d] = computePreviewNames(ROOT_SNAPSHOT[d]);
-      }
-
-      renderDistrictCards(districtGrid, "");
-      renderDistrictCards(districtGrid2, "");
-
-      // searches
-      q.addEventListener("input", ()=> renderDistrictCards(districtGrid, q.value));
-      q2.addEventListener("input", ()=> renderDistrictCards(districtGrid2, q2.value));
+      q.addEventListener("input", ()=> renderDistricts(districtGrid, q.value));
+      q2.addEventListener("input", ()=> renderDistricts(districtGrid2, q2.value));
 
       setupDock();
 
-      // if URL has #district=Kullu
-      const m = (location.hash || "").match(/district=([^&]+)/i);
+      const snap = await get(ref(db, ROOT));
+      ROOT_SNAP = snap.exists() ? safeObj(snap.val()) : {};
+      DISTRICTS = Object.keys(ROOT_SNAP).sort((a,b)=>a.localeCompare(b));
+
+      PREVIEW = {};
+      COVER = {};
+      COUNT = {};
+
+      for(const d of DISTRICTS){
+        const node = ROOT_SNAP[d];
+        PREVIEW[d] = computePreview(node);
+        COVER[d] = pickCover(node);
+        COUNT[d] = countDistrict(node);
+      }
+
+      renderDistricts(districtGrid, "");
+      renderDistricts(districtGrid2, "");
+
+      // hash open
+      const m = (location.hash||"").match(/district=([^&]+)/i);
       if(m){
         const d = decodeURIComponent(m[1]);
         if(DISTRICTS.includes(d)) openDistrict(d);
@@ -908,7 +1197,16 @@
 
     init().catch((e)=>{
       console.error(e);
-      districtGrid.innerHTML = `<div class="dCard"><b>Firebase not configured</b><small>Check config/rules/path</small></div>`;
+      districtGrid.innerHTML = `
+        <div class="dCard">
+          <div class="dThumb" style="background:#111"></div>
+          <div class="dMeta">
+            <div class="dName">Firebase not loading</div>
+            <div class="dLine">Check rules / config / path: ${escapeHtml(ROOT)}</div>
+            <div class="dBadges"><span class="chip hot">Fix rules</span><span class="chip">Try again</span></div>
+          </div>
+        </div>
+      `;
       districtGrid2.innerHTML = districtGrid.innerHTML;
     });
   </script>
