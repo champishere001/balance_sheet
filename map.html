@@ -3,73 +3,134 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>HP Map • Himachal Explorer</title>
+  <title>HP Map • Premium</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
+    :root{
+      --bg:#060914;
+      --ink:#eaf0ff;
+      --muted:rgba(234,240,255,.72);
+      --stroke:rgba(255,255,255,.14);
+      --glass:rgba(0,0,0,.40);
+      --brand:#FF7A18;
+      --brand2:#FFB04A;
+      --shadow: 0 18px 55px rgba(0,0,0,.55);
+      --r:18px;
+    }
     html,body{height:100%;margin:0}
-    body{background:#060914;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#eaf0ff;overflow:hidden}
+    body{
+      background:var(--bg);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      color:var(--ink);
+      overflow:hidden;
+    }
     #map{height:100%;width:100%}
 
-    /* Intro */
-    .intro{
-      position:absolute; inset:0; z-index:99999;
-      display:flex; align-items:center; justify-content:center;
-      padding:18px;
-      background:
-        radial-gradient(1000px 700px at 20% 10%, rgba(255,122,24,.18), transparent 60%),
-        radial-gradient(900px 700px at 85% 15%, rgba(120,110,255,.18), transparent 55%),
-        radial-gradient(900px 700px at 70% 95%, rgba(0,210,255,.12), transparent 55%),
-        linear-gradient(180deg, rgba(4,6,16,.55), rgba(4,6,16,.86));
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      transition: opacity .35s ease, transform .35s ease;
-    }
-    .intro.hide{opacity:0; pointer-events:none; transform:scale(1.02)}
-    .card{
-      width:min(860px, 100%);
-      border-radius:26px;
-      border:1px solid rgba(255,255,255,.14);
-      overflow:hidden;
-      box-shadow: 0 24px 70px rgba(0,0,0,.65);
-      background: rgba(0,0,0,.22);
-      position:relative; isolation:isolate;
-    }
-    .cover{position:absolute; inset:0; z-index:0; background-size:cover; background-position:center; transform:scale(1.06); opacity:.92;}
-    .cover:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.72) 55%, rgba(0,0,0,.84));}
-    .inner{position:relative;z-index:1;padding:18px;display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
-    .brand{display:flex;align-items:center;gap:10px;padding:12px;border-radius:18px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.28)}
-    .dot{width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,#FF7A18,#FFB04A);box-shadow:0 0 22px rgba(255,122,24,.55)}
-    .brand b{display:block;font-size:14px}
-    .brand small{display:block;opacity:.82;font-weight:700;margin-top:2px}
-    .quoteBox{padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.28);min-height:148px;display:flex;flex-direction:column;justify-content:center}
-    .quote{font-weight:900;font-size:clamp(18px,2.4vw,28px);line-height:1.25}
-    .by{margin-top:10px;opacity:.82;font-weight:800;font-size:12px}
-    .right{display:flex;flex-direction:column;gap:12px}
-    .pillRow{display:flex;flex-wrap:wrap;gap:8px}
-    .pill{padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.25);font-weight:800;font-size:12px;opacity:.95}
-    .actions{display:flex;gap:10px;flex-wrap:wrap}
-    .btn{cursor:pointer;border:0;padding:11px 14px;border-radius:16px;font-weight:950;color:#0b1220;background:linear-gradient(135deg,#FF7A18,#FFB04A);box-shadow:0 14px 32px rgba(255,122,24,.20)}
-    .btnGhost{background:rgba(0,0,0,.30);border:1px solid rgba(255,255,255,.14);color:#eaf0ff;box-shadow:none}
-
-    /* Badge */
+    /* Top badge */
     .badge{
       position:absolute;left:12px;top:12px;z-index:9999;
-      background:rgba(0,0,0,.45);
+      background:rgba(0,0,0,.42);
       border:1px solid rgba(255,255,255,.16);
-      color:#eaf0ff;
-      padding:10px 12px;border-radius:14px;
-      backdrop-filter: blur(12px);
+      color:var(--ink);
+      padding:10px 12px;border-radius:16px;
+      backdrop-filter: blur(14px);
       font-weight:800;font-size:12px;
+      box-shadow: var(--shadow);
       max-width: calc(100% - 24px);
       box-sizing:border-box;
     }
     .badge b{display:block;font-size:13px}
-    .badge span{opacity:.8;font-weight:700;display:block;margin-top:2px;line-height:1.2}
+    .badge span{opacity:.85;font-weight:700}
 
-    @media (max-width:860px){ .inner{grid-template-columns:1fr} }
+    /* Intro overlay */
+    .intro{
+      position:absolute; inset:0;
+      z-index:9998;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      background:
+        radial-gradient(900px 600px at 20% 20%, rgba(255,122,24,.22), transparent 60%),
+        radial-gradient(800px 540px at 80% 30%, rgba(0,210,255,.14), transparent 60%),
+        linear-gradient(180deg, rgba(6,9,20,.35), rgba(6,9,20,.92));
+    }
+    .introCard{
+      width:min(820px, 100%);
+      border-radius:26px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.42);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 28px 90px rgba(0,0,0,.65);
+      overflow:hidden;
+      position:relative;
+    }
+    .introBg{
+      height: 190px;
+      background-size:cover;
+      background-position:center;
+      position:relative;
+    }
+    .introBg:after{
+      content:"";
+      position:absolute; inset:0;
+      background:linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.85));
+    }
+    .introBody{
+      padding:16px 16px 18px;
+    }
+    .kicker{
+      font-weight:900;
+      letter-spacing:.24em;
+      text-transform:uppercase;
+      font-size:12px;
+      color:rgba(234,240,255,.72);
+    }
+    .h1{
+      margin:8px 0 0;
+      font-size: clamp(22px, 2.6vw, 34px);
+      font-weight:950;
+      letter-spacing:-.4px;
+      line-height:1.12;
+    }
+    .h1 span{
+      background: linear-gradient(135deg, rgba(255,122,24,.98), rgba(255,176,74,.98));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    .q{
+      margin:12px 0 0;
+      font-weight:900;
+      font-size:14px;
+      line-height:1.6;
+    }
+    .muted{color:var(--muted); font-weight:750; line-height:1.6; margin-top:8px}
+    .btnRow{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .btn{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.30);
+      color:rgba(234,240,255,.92);
+      font-weight:950;
+      cursor:pointer;
+      transition:.18s;
+    }
+    .btn:hover{
+      transform:translateY(-2px);
+      border-color:rgba(255,122,24,.45);
+      background:rgba(255,122,24,.14);
+      box-shadow:0 0 0 4px rgba(255,122,24,.10);
+    }
   </style>
 </head>
 <body>
@@ -77,74 +138,63 @@
 
   <div class="badge" id="badge">
     <b>Himachal Map</b>
-    <span>Select a district</span>
+    <span>Select a district or tap a place</span>
   </div>
 
   <div class="intro" id="intro">
-    <div class="card">
-      <div class="cover" id="cover"></div>
-      <div class="inner">
-        <div>
-          <div class="brand">
-            <div class="dot"></div>
-            <div>
-              <b>Himachal Explorer • Master Map</b>
-              <small>Snow peaks • cedar forests • monasteries • rivers</small>
-            </div>
-          </div>
-
-          <div class="quoteBox" style="margin-top:12px">
-            <div class="quote" id="quote">“Where mountains whisper and time slows down.”</div>
-            <div class="by" id="by">— Himachal Pradesh</div>
-          </div>
-
-          <div class="pillRow" style="margin-top:12px">
-            <div class="pill">🗺️ District Focus</div>
-            <div class="pill">📍 Place Markers</div>
-            <div class="pill">🔎 Search + Filters (main site)</div>
-            <div class="pill">🌲 Nature, Culture, Adventure</div>
-          </div>
+    <div class="introCard">
+      <div class="introBg" id="introBg"></div>
+      <div class="introBody">
+        <div class="kicker">HIMACHAL PRADESH</div>
+        <div class="h1">A map that feels like a <span>journey</span>.</div>
+        <div class="q" id="introQuote">“Every mountain has a story — Himachal has a library.”</div>
+        <div class="muted">
+          Click any place card on the main page → this map will focus instantly.
+          District focus works even if lat/lng is missing.
         </div>
-
-        <div class="right">
-          <div style="padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.28)">
-            <div style="font-weight:950;font-size:13px">Tip</div>
-            <div style="opacity:.85;font-weight:750;margin-top:8px;line-height:1.35;font-size:12px">
-              Place marker tabhi aayega jab <b>lat/lng</b> filled ho.  
-              Sheet/Firebase update → reload district.
-            </div>
-          </div>
-
-          <div class="actions">
-            <button class="btn" id="btnEnter">Enter Map</button>
-            <button class="btn btnGhost" id="btnSkip">Skip Intro</button>
-          </div>
+        <div class="btnRow">
+          <button class="btn" id="newQuote">New quote</button>
+          <button class="btn" id="continue">Continue to map</button>
         </div>
       </div>
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+  <script>
+    const HERO = [
+      "https://source.unsplash.com/1600x900/?Himachal,Mountains",
+      "https://source.unsplash.com/1600x900/?Spiti,Valley",
+      "https://source.unsplash.com/1600x900/?Himachal,Lake",
+      "https://source.unsplash.com/1600x900/?Manali,Snow",
+      "https://source.unsplash.com/1600x900/?Dharamshala,Mountains"
+    ];
+    const QUOTES = [
+      "Every mountain has a story — Himachal has a library.",
+      "The Himalayas don’t just rise… they inspire.",
+      "If peace had an address, it would be somewhere in Himachal.",
+      "The air here feels like a reset button.",
+      "Follow the rivers — they know the way.",
+      "Some views don’t need filters. Himachal is one of them."
+    ];
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
-      authDomain: "revnue-records.firebaseapp.com",
-      databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "revnue-records",
-      storageBucket: "revnue-records.firebasestorage.app",
-      messagingSenderId: "182348503564",
-      appId: "1:182348503564:web:480085405b09177245ac29",
-      measurementId: "G-MGTDBCG896"
-    };
+    const intro = document.getElementById("intro");
+    const introBg = document.getElementById("introBg");
+    const introQuote = document.getElementById("introQuote");
+    const newQuoteBtn = document.getElementById("newQuote");
+    const contBtn = document.getElementById("continue");
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    function randomFrom(a){ return a[(Math.random()*a.length)|0]; }
+    function setIntro(){
+      introBg.style.backgroundImage = `url('${randomFrom(HERO)}')`;
+      introQuote.textContent = `“${randomFrom(QUOTES)}”`;
+    }
+    setIntro();
+    newQuoteBtn.onclick = setIntro;
 
-    const ROOT = "tourism/hp/districts";
+    contBtn.onclick = ()=> intro.style.display="none";
 
-    const DIST_CENTER = {
+    // District centers (approx)
+    const DIST = {
       "Bilaspur": {lat:31.330, lng:76.760},
       "Chamba": {lat:32.556, lng:76.127},
       "Hamirpur": {lat:31.686, lng:76.521},
@@ -152,6 +202,7 @@
       "Kinnaur": {lat:31.595, lng:78.400},
       "Kullu": {lat:31.957, lng:77.110},
       "Lahaul & Spiti": {lat:32.490, lng:77.600},
+      "Lahaul and Spiti": {lat:32.490, lng:77.600},
       "Mandi": {lat:31.708, lng:76.932},
       "Shimla": {lat:31.104, lng:77.173},
       "Sirmaur": {lat:30.570, lng:77.300},
@@ -159,277 +210,71 @@
       "Una": {lat:31.470, lng:76.270}
     };
 
-    const TYPE_LABEL = {
-      destinations:"Destination",
-      lakes:"Lake",
-      temples:"Temple",
-      treks:"Trek",
-      hotels:"Hotel"
-    };
-
-    // Intro
-    const intro = document.getElementById("intro");
-    const cover = document.getElementById("cover");
-    const btnEnter = document.getElementById("btnEnter");
-    const btnSkip = document.getElementById("btnSkip");
-    const quoteEl = document.getElementById("quote");
-    const byEl = document.getElementById("by");
-
-    const bgPhotos = [
-      "https://images.unsplash.com/photo-1619026785869-5f4a62e3f4c7?auto=format&fit=crop&w=1800&q=70",
-      "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1800&q=70",
-      "https://images.unsplash.com/photo-1605649487212-47bdab064dfc?auto=format&fit=crop&w=1800&q=70",
-      "https://images.unsplash.com/photo-1629276302516-4ad8eb49f4b2?auto=format&fit=crop&w=1800&q=70"
-    ];
-    cover.style.backgroundImage = `url('${bgPhotos[Math.floor(Math.random()*bgPhotos.length)]}')`;
-
-    const quotes = [
-      {q:"“Himachal: where the air is pure and the mind becomes quiet.”", by:"— Mountain State of India"},
-      {q:"“Every bend in Himachal feels like a new postcard.”", by:"— Traveler’s Note"},
-      {q:"“Let the cedar forests teach you patience.”", by:"— Himachal Vibes"},
-      {q:"“Snow peaks, silent monasteries, and rivers that never stop singing.”", by:"— Himalayan Trails"},
-      {q:"“Come for the views, stay for the peace.”", by:"— Himachal Pradesh"}
-    ];
-    let qi = 0;
-    setInterval(()=>{
-      qi = (qi+1) % quotes.length;
-      quoteEl.textContent = quotes[qi].q;
-      byEl.textContent = quotes[qi].by;
-    }, 6000);
-
-    function hideIntro(){
-      intro.classList.add("hide");
-      setTimeout(()=> intro.remove(), 420);
-    }
-    btnEnter.addEventListener("click", hideIntro);
-    btnSkip.addEventListener("click", hideIntro);
-    setTimeout(hideIntro, 9000);
-
-    // Map
     const map = L.map("map", { zoomControl:true }).setView([31.9, 77.2], 7);
+
+    // Better tiles
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18,
       attribution: "&copy; OpenStreetMap"
     }).addTo(map);
 
     const badge = document.getElementById("badge");
-    const layer = L.layerGroup().addTo(map);
-    let activeDistrict = "";
+    let districtMarker = null;
+    let placeMarker = null;
 
-    function setBadge(title, subtitle){
-      badge.innerHTML = `<b>${escapeHtml(title)}</b><span>${escapeHtml(subtitle || "")}</span>`;
-    }
     function escapeHtml(s){
       return String(s ?? "")
         .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
         .replaceAll('"',"&quot;").replaceAll("'","&#039;");
     }
-    function norm(s){ return String(s ?? "").trim(); }
-    function low(s){ return norm(s).toLowerCase(); }
-    function toNum(v){
-      if(v===null || v===undefined) return NaN;
-      const s = String(v).trim();
-      if(!s) return NaN;
-      return Number(s);
+    function setBadge(title, subtitle){
+      badge.innerHTML = `<b>${escapeHtml(title)}</b><span>${escapeHtml(subtitle || "")}</span>`;
     }
 
-    function normalizeDistrictName(name){
-      const n = low(name).replaceAll(" and ", " & ");
-      if(n.includes("lahaul") && n.includes("spiti")) return "Lahaul & Spiti";
-      const key = Object.keys(DIST_CENTER).find(k => low(k) === n);
-      return key || name;
-    }
-    function normalizeTypeKey(k){
-      k = low(k);
-      if(k==="destination" || k==="dest") return "destinations";
-      if(k==="lake") return "lakes";
-      if(k==="temple") return "temples";
-      if(k==="trek") return "treks";
-      if(k==="hotel") return "hotels";
-      return k;
+    function findDistrictKey(name){
+      const n = String(name||"").toLowerCase().trim();
+      return Object.keys(DIST).find(k => k.toLowerCase() === n) || null;
     }
 
-    function pickTitle(it){
-      return it.name || it.title || it.place || it.placeName || it.locationName || "Place";
-    }
-    function pickNotes(it){
-      return it.notes || it.description || it.about || "";
-    }
-
-    function markerIcon(type){
-      const color =
-        type==="lakes" ? "#4AA3FF" :
-        type==="temples" ? "#FFB04A" :
-        type==="treks" ? "#7BFFB0" :
-        type==="hotels" ? "#FF7A18" :
-        "#B7B7FF";
-      return L.divIcon({
-        className: "",
-        html: `<div style="
-          width:12px;height:12px;border-radius:50%;
-          background:${color};
-          box-shadow:0 0 0 3px rgba(0,0,0,.35), 0 0 18px rgba(0,0,0,.28);
-          border:1px solid rgba(255,255,255,.55);
-        "></div>`,
-        iconSize: [12,12],
-        iconAnchor: [6,6]
-      });
-    }
-
-    function popupHtml({title, district, type, notes, lat, lng}){
-      const gmaps = (Number.isFinite(lat) && Number.isFinite(lng))
-        ? `https://www.google.com/maps?q=${lat},${lng}` : "";
-      const link = gmaps
-        ? `<div style="margin-top:8px">
-            <a href="${gmaps}" target="_blank" rel="noopener"
-               style="font-weight:900;color:#FFB04A;text-decoration:none">
-               Open in Google Maps
-            </a>
-          </div>` : "";
-      return `
-        <div style="min-width:220px;max-width:260px">
-          <b>${escapeHtml(title)}</b>
-          <div style="opacity:.75;font-weight:800;font-size:12px">
-            ${escapeHtml(district)}${type ? " • " + escapeHtml(type) : ""}
-          </div>
-          ${notes ? `<div style="margin-top:6px;font-size:12px;line-height:1.35;opacity:.85">
-            ${escapeHtml(notes).slice(0,180)}${notes.length>180?"…":""}
-          </div>` : ""}
-          ${link}
-        </div>
-      `;
-    }
-
-    function clearAll(){ layer.clearLayers(); }
-
-    function focusFallbackDistrictCenter(d){
-      const key = normalizeDistrictName(d);
-      const c = DIST_CENTER[key];
-      if(!c){
-        map.setView([31.9, 77.2], 7, {animate:true});
-        setBadge("Himachal Map", "District not found in center list");
+    function focusDistrict(name){
+      const key = findDistrictKey(name);
+      if(!key){
+        setBadge("Himachal Map", "District not found in map centers list");
         return;
       }
-      map.setView([c.lat, c.lng], 9, {animate:true, duration:0.6});
-      setBadge(key, "District center (fallback)");
-    }
+      const {lat,lng} = DIST[key];
+      map.setView([lat,lng], 9, {animate:true, duration:0.6});
 
-    function fitBounds(bounds){
-      if(bounds) map.fitBounds(bounds.pad(0.20), {animate:true});
-    }
+      if(districtMarker) districtMarker.remove();
+      districtMarker = L.marker([lat,lng]).addTo(map)
+        .bindPopup(`<b>${escapeHtml(key)}</b><br/>District center`)
+        .openPopup();
 
-    // ✅ strict: only segments keys become types
-    function flattenDistrictPlaces(node, districtName){
-      const seg = (node && typeof node==="object") ? (node.segments || {}) : {};
-      const items = [];
-
-      for(const rawKey of Object.keys(seg)){
-        const t = normalizeTypeKey(rawKey);            // <-- fixes lakes under destinations
-        const bucket = seg[rawKey] || {};
-        if(!bucket || typeof bucket !== "object") continue;
-
-        for(const id of Object.keys(bucket)){
-          const it = bucket[id] || {};
-          const lat = toNum(it.lat ?? it.latitude);
-          const lng = toNum(it.lng ?? it.longitude);
-
-          items.push({
-            id,
-            type: t,
-            title: pickTitle(it),
-            notes: pickNotes(it),
-            lat, lng,
-            district: districtName
-          });
-        }
-      }
-      return items;
-    }
-
-    async function loadDistrictFromFirebase(d){
-      const district = normalizeDistrictName(d);
-      activeDistrict = district;
-
-      setBadge(district, "Loading places…");
-      clearAll();
-
-      try{
-        const snap = await get(ref(db, `${ROOT}/${district}`));
-        if(!snap.exists()){
-          setBadge(district, "No district data in Firebase");
-          focusFallbackDistrictCenter(district);
-          return;
-        }
-
-        const node = snap.val() || {};
-        const places = flattenDistrictPlaces(node, district);
-
-        let bounds = null;
-        let count = 0;
-
-        for(const p of places){
-          if(!Number.isFinite(p.lat) || !Number.isFinite(p.lng)) continue;
-
-          const label = TYPE_LABEL[p.type] || p.type || "";
-          const m = L.marker([p.lat, p.lng], {icon: markerIcon(p.type)}).addTo(layer);
-          m.bindPopup(popupHtml({
-            title: p.title,
-            district,
-            type: label,
-            notes: p.notes || "",
-            lat: p.lat,
-            lng: p.lng
-          }));
-
-          const b = L.latLngBounds([[p.lat,p.lng],[p.lat,p.lng]]);
-          bounds = bounds ? bounds.extend(b) : b;
-          count++;
-        }
-
-        if(count){
-          setBadge(district, `Loaded ${count} places • click markers`);
-          fitBounds(bounds);
-        }else{
-          setBadge(district, "No lat/lng found in this district data");
-          focusFallbackDistrictCenter(district);
-        }
-
-      }catch(e){
-        console.error(e);
-        setBadge(district, "Firebase read failed (rules/config?)");
-        focusFallbackDistrictCenter(district);
-      }
+      setBadge(key, "District center");
     }
 
     function focusPlace(payload){
       const lat = Number(payload?.lat);
       const lng = Number(payload?.lng);
-      if(!Number.isFinite(lat) || !Number.isFinite(lng)){
-        setBadge(payload?.title || "Place", "lat/lng missing (add in sheet)");
-        return;
-      }
+      if(!Number.isFinite(lat) || !Number.isFinite(lng)) return;
 
       const title = payload?.title || "Place";
-      const typeKey = normalizeTypeKey(payload?.type || "");
-      const type = payload?.type ? (TYPE_LABEL[typeKey] || payload.type) : "";
-      const district = payload?.district ? normalizeDistrictName(payload.district) : (activeDistrict || "");
+      const sub = payload?.type ? `Type: ${payload.type}` : "";
 
       map.setView([lat,lng], 13, {animate:true, duration:0.6});
-      L.popup()
-        .setLatLng([lat,lng])
-        .setContent(popupHtml({title, district, type, notes:"", lat, lng}))
-        .openOn(map);
+      if(placeMarker) placeMarker.remove();
+      placeMarker = L.marker([lat,lng]).addTo(map)
+        .bindPopup(`<b>${escapeHtml(title)}</b><br/>${escapeHtml(sub)}`)
+        .openPopup();
 
-      setBadge(title, type ? `${district} • ${type}` : district || "Selected place");
+      setBadge(title, sub || "Selected place");
     }
 
     function readDistrictFromHash(){
       const m = (location.hash||"").match(/district=([^&]+)/i);
       if(m){
-        const d = decodeURIComponent(m[1]);
-        loadDistrictFromFirebase(d);
-      }else{
-        setBadge("Himachal Map", "Select a district");
+        focusDistrict(decodeURIComponent(m[1]));
+        intro.style.display="none"; // auto hide intro when deep-linked
       }
     }
     window.addEventListener("hashchange", readDistrictFromHash);
@@ -438,17 +283,9 @@
     window.addEventListener("message", (ev)=>{
       const data = ev.data;
       if(!data || typeof data !== "object") return;
-
-      if(data.type === "FOCUS_DISTRICT" && data.district){
-        loadDistrictFromFirebase(data.district);
-      }
-      if(data.type === "FOCUS_PLACE"){
-        if(data.district && normalizeDistrictName(data.district) !== activeDistrict){
-          loadDistrictFromFirebase(data.district).then(()=> focusPlace(data));
-        }else{
-          focusPlace(data);
-        }
-      }
+      if(data.type === "FOCUS_DISTRICT") focusDistrict(data.district);
+      if(data.type === "FOCUS_PLACE") focusPlace(data);
+      intro.style.display="none";
     });
   </script>
 </body>
