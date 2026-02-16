@@ -1,155 +1,618 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Himachal Tourism Portal</title>
-  <link rel="stylesheet" href="assets/style.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>HP Tourism Portal — Single Page</title>
+  <link rel="stylesheet" href="assets/style.css"/>
+
+  <!-- Optional Map (works without key) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    /* Small helpers for single-page tabs */
+    .page{display:none}
+    .page.active{display:block}
+    .tabsTop{display:flex; gap:10px; flex-wrap:wrap; margin:12px 0 0}
+    .tabsTop .pill{padding:10px 12px}
+    .twoCol{display:grid; grid-template-columns: 1.2fr .8fr; gap:14px}
+    @media (max-width: 1000px){ .twoCol{grid-template-columns:1fr} }
+    .mapBox{height:420px; border-radius:18px; overflow:hidden; border:1px solid rgba(255,255,255,.10); background:rgba(7,11,20,.35)}
+  </style>
 </head>
 <body>
+
+  <!-- TOPBAR -->
   <div class="topbar">
     <div class="inner">
-      <a class="brand" href="index.html">
+      <a class="brand" href="#" onclick="SPA.go('home'); return false;">
         <div class="logo"></div>
         <div>HP Tourism Portal</div>
       </a>
+
       <div class="nav">
-        <a href="index.html">Home</a>
-        <a href="districts.html">Districts</a>
-        <a href="packages.html">Packages</a>
-        <a href="hotels.html">Hotels</a>
-        <a href="temples.html">Temples</a>
-        <a href="treks.html">Treks</a>
-        <a href="routes.html">Routes</a>
-        <a href="admin.html">Admin</a>
+        <a href="#" onclick="SPA.go('home');return false;">Home</a>
+        <a href="#" onclick="SPA.go('districts');return false;">Districts</a>
+        <a href="#" onclick="SPA.go('packages');return false;">Packages</a>
+        <a href="#" onclick="SPA.go('list','hotel');return false;">Hotels</a>
+        <a href="#" onclick="SPA.go('list','temple');return false;">Temples</a>
+        <a href="#" onclick="SPA.go('list','trek');return false;">Treks</a>
+        <a href="#" onclick="SPA.go('routes');return false;">Routes</a>
       </div>
     </div>
   </div>
 
   <div class="container">
-    <div class="hero">
-      <div class="wrap">
-        <h1>Explore Himachal — District wise, Photo first, Route ready</h1>
-        <p>Find places, hotels, temples and treks in one portal. Built for an info-based tourism experience with route & expenditure tracking.</p>
 
-        <div class="searchbar">
-          <div class="input">
-            <div style="width:100%">
-              <label>District</label>
-              <select id="heroDistrict" data-fill="districts"></select>
-            </div>
-          </div>
-          <div class="input">
-            <div style="width:100%">
-              <label>Category</label>
-              <select id="heroCategory">
-                <option value="all">All</option>
-                <option value="place">Places</option>
-                <option value="hotel">Hotels</option>
-                <option value="temple">Temples</option>
-                <option value="trek">Treks</option>
-              </select>
-            </div>
-          </div>
-          <div class="input">
-            <div style="width:100%">
-              <label>Search</label>
-              <input id="heroQuery" placeholder="Manali, Kufri, Triund..." />
-            </div>
-          </div>
-          <button class="btn" id="heroGo">Explore</button>
-        </div>
+    <!-- HOME -->
+    <section id="page-home" class="page active">
+      <div class="hero">
+        <div class="wrap">
+          <h1>Explore Himachal — Photo first, District wise, Route ready</h1>
+          <p>Single-page tourism portal: places, hotels, temples, treks, packages and routes — all in one.</p>
 
-        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
-          <a class="btn ghost" href="districts.html">Browse Districts</a>
-          <a class="btn ghost" href="packages.html">View Packages</a>
-          <button class="btn ghost" onclick="localStorage.removeItem('hpPortal_seen'); UI.openModal('#capModal');">Show Capabilities</button>
+          <div class="searchbar">
+            <div class="input">
+              <div style="width:100%">
+                <label>District</label>
+                <select id="heroDistrict"></select>
+              </div>
+            </div>
+
+            <div class="input">
+              <div style="width:100%">
+                <label>Category</label>
+                <select id="heroCategory">
+                  <option value="all">All</option>
+                  <option value="place">Places</option>
+                  <option value="hotel">Hotels</option>
+                  <option value="temple">Temples</option>
+                  <option value="trek">Treks</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="input">
+              <div style="width:100%">
+                <label>Search</label>
+                <input id="heroQuery" placeholder="Manali, Kufri, Triund..."/>
+              </div>
+            </div>
+
+            <button class="btn" id="heroGo">Explore</button>
+          </div>
+
+          <div class="tabsTop">
+            <div class="pill" onclick="SPA.go('districts')">Browse Districts</div>
+            <div class="pill" onclick="SPA.go('packages')">View Packages</div>
+            <div class="pill" onclick="SPA.openCapabilities()">Portal Capabilities</div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="shell row">
-      <aside class="sidebar">
-        <div class="side-title">Filters <span class="small">tourism portal</span></div>
-        <div class="divider"></div>
+      <div class="shell row">
+        <aside class="sidebar">
+          <div class="side-title">Filters <span class="small">single page</span></div>
+          <div class="divider"></div>
 
-        <div class="small">District</div>
-        <div id="districtPills" class="pills" style="margin-top:8px;"></div>
+          <div class="small">District</div>
+          <div id="districtPills" class="pills" style="margin-top:8px;"></div>
 
-        <div class="divider"></div>
-        <div class="small">Category</div>
-        <div id="typePills" class="pills" style="margin-top:8px;"></div>
+          <div class="divider"></div>
+          <div class="small">Category</div>
+          <div id="typePills" class="pills" style="margin-top:8px;"></div>
 
-        <div class="divider"></div>
-        <div class="small">Quick search</div>
-        <div class="input" style="margin-top:8px;">
-          <div style="width:100%">
-            <label>Search anywhere</label>
-            <input id="searchInput" placeholder="snow, monastery, heritage..." />
+          <div class="divider"></div>
+          <div class="small">Search</div>
+          <div class="input" style="margin-top:8px;">
+            <div style="width:100%">
+              <label>Search anywhere</label>
+              <input id="searchInput" placeholder="snow, heritage, monastery..."/>
+            </div>
           </div>
-        </div>
 
+          <div class="divider"></div>
+          <div class="panel">
+            <h3>Tip</h3>
+            <div class="note">Click any card to open Place Detail inside this same page.</div>
+          </div>
+        </aside>
+
+        <main class="content">
+          <div class="sectionHead">
+            <div>
+              <h2>Featured results</h2>
+              <div class="meta">All categories • photo-first tiles</div>
+            </div>
+            <div class="meta" id="cardsMeta"></div>
+          </div>
+          <div id="cardsWrap" class="cards"></div>
+          <div class="footer">© HP Tourism Portal — Single page version</div>
+        </main>
+      </div>
+    </section>
+
+    <!-- DISTRICTS -->
+    <section id="page-districts" class="page">
+      <div class="sectionHead">
+        <div>
+          <h2>Districts of Himachal Pradesh</h2>
+          <div class="meta">Tap a district to filter Home instantly</div>
+        </div>
+      </div>
+      <div id="districtGrid" class="cards"></div>
+      <div class="footer">Click a district → back to Home with filter</div>
+    </section>
+
+    <!-- PACKAGES -->
+    <section id="page-packages" class="page">
+      <div class="sectionHead">
+        <div>
+          <h2>HP Packages (Demo)</h2>
+          <div class="meta">Single page packages</div>
+        </div>
+        <div class="meta" id="pkgMeta"></div>
+      </div>
+
+      <div class="row">
+        <aside class="sidebar">
+          <div class="side-title">Package Filters <span class="small">HP</span></div>
+          <div class="divider"></div>
+
+          <div class="small">District</div>
+          <select id="pkgDistrict" class="input" style="width:100%"></select>
+
+          <div class="divider"></div>
+          <div class="small">Search</div>
+          <div class="input" style="margin-top:8px;">
+            <div style="width:100%">
+              <label>Search packages</label>
+              <input id="pkgSearch" placeholder="Shimla, Manali..."/>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <div class="panel">
+            <h3>Next</h3>
+            <div class="note">Add WhatsApp inquiry button later.</div>
+          </div>
+        </aside>
+
+        <main class="content">
+          <div id="pkgWrap" class="cards"></div>
+        </main>
+      </div>
+    </section>
+
+    <!-- LISTINGS (Hotels/Temples/Treks) -->
+    <section id="page-list" class="page">
+      <div class="sectionHead">
+        <div>
+          <h2 id="listTitle">Listing</h2>
+          <div class="meta">Filter by district • photo cards</div>
+        </div>
+        <div class="meta" id="listMeta"></div>
+      </div>
+
+      <div class="row">
+        <aside class="sidebar">
+          <div class="side-title">Filters <span class="small" id="listTypeTag"></span></div>
+          <div class="divider"></div>
+
+          <div class="small">District</div>
+          <select id="listDistrict" class="input" style="width:100%"></select>
+
+          <div class="divider"></div>
+          <div class="small">Search</div>
+          <div class="input" style="margin-top:8px;">
+            <div style="width:100%">
+              <label>Search</label>
+              <input id="listSearch" placeholder="budget, heritage, beginner..."/>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <div class="panel">
+            <h3>Tip</h3>
+            <div class="note">Click any card → Place Detail in same page.</div>
+          </div>
+        </aside>
+
+        <main class="content">
+          <div id="listWrap" class="cards"></div>
+        </main>
+      </div>
+    </section>
+
+    <!-- ROUTES (MAP) -->
+    <section id="page-routes" class="page">
+      <div class="sectionHead">
+        <div>
+          <h2>Routes & Map (OpenStreetMap)</h2>
+          <div class="meta">Pins from data.js coords</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>All Locations Map</h3>
+        <div class="note">If coords missing, pin won’t show.</div>
         <div class="divider"></div>
+        <div id="allMap" class="mapBox"></div>
+      </div>
+
+      <div class="footer">Map works without API key</div>
+    </section>
+
+    <!-- PLACE DETAIL (IN PAGE) -->
+    <section id="page-detail" class="page">
+      <div class="sectionHead">
+        <div>
+          <h2 id="detailTitle">Place Detail</h2>
+          <div class="meta">Back to Home anytime</div>
+        </div>
+        <div style="display:flex; gap:10px">
+          <button class="btn ghost" onclick="SPA.go('home')">⬅ Back</button>
+        </div>
+      </div>
+
+      <div class="twoCol">
         <div class="panel">
-          <h3>What’s special?</h3>
-          <div class="note">
-            Photo-first tiles, district filters, detail pages with tabs, MAPS (OpenStreetMap),
-            and a route + expenditure calculator.
-          </div>
-        </div>
-      </aside>
+          <h3 id="dName">Place</h3>
+          <div class="note" id="dDesc"></div>
 
-      <main class="content">
-        <div class="sectionHead">
-          <div>
-            <h2>Featured results</h2>
-            <div class="meta">Click any card to open details</div>
+          <div class="divider"></div>
+          <div class="kv">
+            <div class="item"><b>District</b><span id="dDistrict">-</span></div>
+            <div class="item"><b>Best time</b><span id="dBest">-</span></div>
           </div>
-          <div class="meta" id="cardsMeta"></div>
-        </div>
-        <div id="cardsWrap" class="cards"></div>
 
-        <div class="footer">© HP Tourism Portal (Demo) — Replace demo data/images with real content.</div>
-      </main>
-    </div>
+          <div class="divider"></div>
+          <h3>Highlights</h3>
+          <div id="dHighlights" class="pills"></div>
+
+          <div class="divider"></div>
+          <h3>Nearby</h3>
+          <div id="dNearby" class="pills"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Map (if coords available)</h3>
+          <div class="divider"></div>
+          <div id="detailMap" class="mapBox" style="height:280px;"></div>
+
+          <div class="divider"></div>
+          <h3>Expenditure Calculator (Demo)</h3>
+          <div class="formRow">
+            <div class="input"><div style="width:100%"><label>Fuel ₹/L</label><input id="fuelCost" type="number" value="105"></div></div>
+            <div class="input"><div style="width:100%"><label>Mileage km/L</label><input id="kmpl" type="number" value="14"></div></div>
+            <div class="input"><div style="width:100%"><label>Toll ₹</label><input id="toll" type="number" value="300"></div></div>
+            <div class="input"><div style="width:100%"><label>Days</label><input id="days" type="number" value="2"></div></div>
+          </div>
+          <div class="input" style="margin-top:10px;"><div style="width:100%"><label>Per day ₹</label><input id="perDay" type="number" value="1500"></div></div>
+          <div style="display:flex; gap:10px; margin-top:10px;">
+            <button class="btn" onclick="SPA.calc()">Calculate</button>
+            <button class="btn ghost" onclick="SPA.go('routes')">Open Routes</button>
+          </div>
+
+          <div class="divider"></div>
+          <div id="calcOut" class="note">Calculate to see result.</div>
+        </div>
+      </div>
+    </section>
+
   </div>
 
-  <!-- Capabilities popup -->
+  <!-- CAPABILITIES MODAL -->
   <div id="capModal" class="modalBack hidden">
     <div class="modal">
       <div class="top">
         <div>
           <h3>Portal Capabilities</h3>
-          <div class="small">A quick tour of what this site can do</div>
+          <div class="small">Single-page version</div>
         </div>
-        <button class="x" data-close="#capModal">✕</button>
+        <button class="x" onclick="SPA.closeCapabilities()">✕</button>
       </div>
       <div class="body">
         <div class="featureGrid">
-          <div class="feature"><b>District-wise exploration</b><span>Browse Shimla, Kullu, Kangra and more.</span></div>
-          <div class="feature"><b>Photo-first destination tiles</b><span>Less text, more visuals for tourism feel.</span></div>
-          <div class="feature"><b>Place detail with tabs</b><span>Hotels, Temples, Treks, Gallery inside one page.</span></div>
-          <div class="feature"><b>Maps (OpenStreetMap)</b><span>Pin locations on map without any API key.</span></div>
-          <div class="feature"><b>Route & expenditure tool</b><span>Fuel + toll + per-day estimate (demo).</span></div>
-          <div class="feature"><b>Packages page</b><span>Side-by-side tourism packages (HP only).</span></div>
+          <div class="feature"><b>All in one page</b><span>No multi-pages. Fast & simple.</span></div>
+          <div class="feature"><b>District-wise browsing</b><span>Filter instantly.</span></div>
+          <div class="feature"><b>Photo-first cards</b><span>Premium tourism feel.</span></div>
+          <div class="feature"><b>Routes map</b><span>OpenStreetMap pins, no key.</span></div>
+          <div class="feature"><b>Packages</b><span>Tour packages section.</span></div>
+          <div class="feature"><b>Place detail</b><span>Detail opens inside same page.</span></div>
         </div>
         <div style="display:flex; gap:10px; margin-top:12px; justify-content:flex-end;">
-          <button class="btn ghost" data-close="#capModal">Close</button>
-          <a class="btn" href="districts.html" data-close="#capModal">Start Exploring</a>
+          <button class="btn ghost" onclick="SPA.closeCapabilities()">Close</button>
+          <button class="btn" onclick="SPA.closeCapabilities(); SPA.go('home')">Start</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- JS -->
   <script src="assets/data.js"></script>
   <script src="assets/ui.js"></script>
   <script src="assets/app.js"></script>
+
   <script>
-    // allow index to auto-filter from districts.html
-    const d = UI.getParam("district");
-    if(d) App.state.district = d;
-    App.initHome();
+    // ---- Single Page Controller (no extra files) ----
+    const SPA = {
+      state: { district:"all", type:"all", q:"", listType:"hotel", pkgDistrict:"all", pkgQ:"", selected:null },
+      mapAll:null, mapDetail:null, allMarkers:[],
+
+      go(page, param){
+        UI.qsa(".page").forEach(p=>p.classList.remove("active"));
+        UI.qs("#page-"+page).classList.add("active");
+
+        if(page==="list" && param) { SPA.state.listType = param; SPA.renderList(); }
+        if(page==="districts") SPA.renderDistricts();
+        if(page==="packages") SPA.renderPackages();
+        if(page==="routes") SPA.renderRoutesMap();
+      },
+
+      openCapabilities(){ UI.qs("#capModal").classList.remove("hidden"); },
+      closeCapabilities(){ UI.qs("#capModal").classList.add("hidden"); },
+
+      fillDistrictSelect(sel, all=true){
+        const opts = (all?`<option value="all">All Districts</option>`:"") +
+          HP_DATA.districts.map(d=>`<option value="${d.id}">${d.name}</option>`).join("");
+        sel.innerHTML = opts;
+      },
+
+      init(){
+        // HERO + SIDEBAR dropdowns/pills
+        SPA.fillDistrictSelect(UI.qs("#heroDistrict"), true);
+
+        // district pills
+        const pills = UI.qs("#districtPills");
+        pills.innerHTML = `<div class="pill active" data-d="all">All</div>` +
+          HP_DATA.districts.map(d=>`<div class="pill" data-d="${d.id}">${d.name}</div>`).join("");
+
+        pills.addEventListener("click", (e)=>{
+          const p = e.target.closest(".pill"); if(!p) return;
+          SPA.state.district = p.dataset.d;
+          UI.qsa("#districtPills .pill").forEach(x=>x.classList.toggle("active", x.dataset.d===SPA.state.district));
+          SPA.renderHomeCards();
+        });
+
+        // type pills
+        const typePills = UI.qs("#typePills");
+        typePills.innerHTML = `
+          <div class="pill active" data-t="all">All</div>
+          <div class="pill" data-t="place">Places</div>
+          <div class="pill" data-t="hotel">Hotels</div>
+          <div class="pill" data-t="temple">Temples</div>
+          <div class="pill" data-t="trek">Treks</div>
+        `;
+        typePills.addEventListener("click",(e)=>{
+          const p = e.target.closest(".pill"); if(!p) return;
+          SPA.state.type = p.dataset.t;
+          UI.qsa("#typePills .pill").forEach(x=>x.classList.toggle("active", x.dataset.t===SPA.state.type));
+          SPA.renderHomeCards();
+        });
+
+        // search inputs
+        UI.qs("#searchInput").addEventListener("input", e=>{ SPA.state.q = e.target.value.trim().toLowerCase(); SPA.renderHomeCards(); });
+
+        // hero go
+        UI.qs("#heroGo").addEventListener("click", ()=>{
+          SPA.state.district = UI.qs("#heroDistrict").value;
+          SPA.state.type = UI.qs("#heroCategory").value;
+          SPA.state.q = UI.qs("#heroQuery").value.trim().toLowerCase();
+
+          UI.qsa("#districtPills .pill").forEach(x=>x.classList.toggle("active", x.dataset.d===SPA.state.district));
+          UI.qsa("#typePills .pill").forEach(x=>x.classList.toggle("active", x.dataset.t===SPA.state.type));
+          SPA.renderHomeCards();
+          window.scrollTo({top: 520, behavior:"smooth"});
+        });
+
+        SPA.renderHomeCards();
+      },
+
+      filterItems(typeOverride=null){
+        const t = typeOverride ?? SPA.state.type;
+        return (HP_DATA.items||[]).filter(x=>{
+          const okD = SPA.state.district==="all" || x.district===SPA.state.district;
+          const okT = t==="all" || x.type===t;
+          const q = SPA.state.q;
+          const okQ = !q || (x.name||"").toLowerCase().includes(q) || (x.short||"").toLowerCase().includes(q) || (x.tags||[]).join(" ").toLowerCase().includes(q);
+          return okD && okT && okQ;
+        });
+      },
+
+      cardHTML(item){
+        const distName = HP_DATA.districts.find(d=>d.id===item.district)?.name || item.district;
+        const icons = {place:"📍 Place", hotel:"🏨 Hotel", temple:"🛕 Temple", trek:"🥾 Trek"};
+        const chips = (item.tags||[]).slice(0,3).map(t=>`<div class="iconChip">${t}</div>`).join("");
+        return `
+          <div class="card" style="cursor:pointer" onclick="SPA.openDetail('${item.id}')">
+            <div class="img">
+              <img src="${item.img}" alt="${item.name}">
+              <div class="badges">
+                <div class="badge">${distName}</div>
+                <div class="badge">${icons[item.type]||"Info"}</div>
+              </div>
+            </div>
+            <div class="body">
+              <h3>${item.name}</h3>
+              <p>${item.short||""}</p>
+              <div class="quickIcons">${chips}</div>
+            </div>
+          </div>
+        `;
+      },
+
+      renderHomeCards(){
+        const items = SPA.filterItems();
+        UI.qs("#cardsMeta").textContent = `${items.length} results`;
+        UI.qs("#cardsWrap").innerHTML = items.map(SPA.cardHTML).join("");
+      },
+
+      renderDistricts(){
+        const wrap = UI.qs("#districtGrid");
+        wrap.innerHTML = HP_DATA.districts.map(d=>`
+          <div class="card" style="cursor:pointer" onclick="SPA.state.district='${d.id}'; SPA.go('home'); SPA.renderHomeCards();">
+            <div class="img">
+              <img src="https://images.unsplash.com/photo-1482192596544-9eb780fc7f66?auto=format&fit=crop&w=1600&q=70" alt="${d.name}">
+              <div class="badges"><div class="badge">District</div></div>
+            </div>
+            <div class="body">
+              <h3>${d.name}</h3>
+              <p>Explore places, hotels, temples & treks in ${d.name}.</p>
+              <div class="quickIcons">
+                <div class="iconChip">Places</div>
+                <div class="iconChip">Hotels</div>
+                <div class="iconChip">Routes</div>
+              </div>
+            </div>
+          </div>
+        `).join("");
+      },
+
+      renderPackages(){
+        SPA.fillDistrictSelect(UI.qs("#pkgDistrict"), true);
+        const dd = UI.qs("#pkgDistrict");
+        const q = UI.qs("#pkgSearch");
+        dd.value = SPA.state.pkgDistrict;
+        q.value = SPA.state.pkgQ;
+
+        dd.onchange = ()=>{ SPA.state.pkgDistrict = dd.value; SPA.renderPackages(); };
+        q.oninput = ()=>{ SPA.state.pkgQ = q.value.trim().toLowerCase(); SPA.renderPackages(); };
+
+        const items = (HP_DATA.packages||[]).filter(p=>{
+          const okD = SPA.state.pkgDistrict==="all" || p.district===SPA.state.pkgDistrict;
+          const okQ = !SPA.state.pkgQ || p.name.toLowerCase().includes(SPA.state.pkgQ) || (p.includes||[]).join(" ").toLowerCase().includes(SPA.state.pkgQ);
+          return okD && okQ;
+        });
+
+        UI.qs("#pkgMeta").textContent = `${items.length} packages`;
+        UI.qs("#pkgWrap").innerHTML = items.map(p=>{
+          const distName = HP_DATA.districts.find(d=>d.id===p.district)?.name || p.district;
+          return `
+            <div class="card">
+              <div class="img"><img src="${p.img}" alt="${p.name}">
+                <div class="badges"><div class="badge">${distName}</div><div class="badge">${p.days} Days</div></div>
+              </div>
+              <div class="body">
+                <h3>${p.name}</h3>
+                <p>Includes: ${(p.includes||[]).slice(0,3).join(", ")}...</p>
+                <div class="quickIcons">
+                  <div class="iconChip">From ${UI.fmtINR(p.priceFrom||0)}</div>
+                  <div class="iconChip" style="cursor:pointer" onclick="SPA.state.district='${p.district}'; SPA.go('home'); SPA.renderHomeCards();">Explore District</div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+      },
+
+      renderList(){
+        SPA.fillDistrictSelect(UI.qs("#listDistrict"), true);
+
+        const type = SPA.state.listType;
+        UI.qs("#listTitle").textContent = type==="hotel"?"Hotels":type==="temple"?"Temples":"Treks";
+        UI.qs("#listTypeTag").textContent = type;
+
+        const dd = UI.qs("#listDistrict");
+        const q = UI.qs("#listSearch");
+        dd.value = SPA.state.district;
+
+        dd.onchange = ()=>{ SPA.state.district = dd.value; SPA.renderList(); };
+        q.oninput = ()=>{ SPA.state.q = q.value.trim().toLowerCase(); SPA.renderList(); };
+
+        const items = SPA.filterItems(type);
+        UI.qs("#listMeta").textContent = `${items.length} results`;
+        UI.qs("#listWrap").innerHTML = items.map(SPA.cardHTML).join("");
+      },
+
+      openDetail(id){
+        const item = (HP_DATA.items||[]).find(x=>x.id===id);
+        if(!item){ alert("Not found"); return; }
+        SPA.state.selected = item;
+
+        const distName = HP_DATA.districts.find(d=>d.id===item.district)?.name || item.district;
+
+        UI.qs("#dName").textContent = item.name;
+        UI.qs("#detailTitle").textContent = item.name;
+        UI.qs("#dDesc").textContent = item.short || "";
+        UI.qs("#dDistrict").textContent = distName;
+        UI.qs("#dBest").textContent = item.bestTime || "-";
+        UI.qs("#dHighlights").innerHTML = (item.highlights||item.tags||[]).slice(0,6).map(x=>`<div class="pill active">${x}</div>`).join("");
+        UI.qs("#dNearby").innerHTML = (item.nearby||[]).slice(0,6).map(x=>`<div class="pill">${x}</div>`).join("") || `<div class="note">No nearby data yet.</div>`;
+
+        SPA.go("detail");
+        setTimeout(()=>SPA.renderDetailMap(), 200);
+      },
+
+      renderRoutesMap(){
+        if(!window.L){ return; }
+
+        if(!SPA.mapAll){
+          SPA.mapAll = L.map("allMap", {scrollWheelZoom:false}).setView([31.7,77.2], 7);
+          L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom:18, attribution:"© OpenStreetMap"}).addTo(SPA.mapAll);
+        }
+
+        // clear markers
+        SPA.allMarkers.forEach(m=>SPA.mapAll.removeLayer(m));
+        SPA.allMarkers = [];
+
+        (HP_DATA.items||[]).forEach(it=>{
+          if(!it.coords) return;
+          const m = L.marker(it.coords).addTo(SPA.mapAll).bindPopup(`<b>${it.name}</b>`);
+          SPA.allMarkers.push(m);
+        });
+
+        if(SPA.allMarkers.length){
+          const group = L.featureGroup(SPA.allMarkers);
+          SPA.mapAll.fitBounds(group.getBounds().pad(0.25));
+        }
+        setTimeout(()=>SPA.mapAll.invalidateSize(), 200);
+      },
+
+      renderDetailMap(){
+        if(!window.L){ return; }
+        const it = SPA.state.selected;
+        const center = it?.coords || [31.7,77.2];
+
+        // destroy old map safely
+        const el = document.getElementById("detailMap");
+        el.innerHTML = "";
+
+        SPA.mapDetail = L.map("detailMap", {scrollWheelZoom:false}).setView(center, it?.coords ? 12 : 7);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom:18, attribution:"© OpenStreetMap"}).addTo(SPA.mapDetail);
+        if(it?.coords) L.marker(it.coords).addTo(SPA.mapDetail).bindPopup(`<b>${it.name}</b>`).openPopup();
+        setTimeout(()=>SPA.mapDetail.invalidateSize(), 200);
+      },
+
+      calc(){
+        const it = SPA.state.selected;
+        const approxKm = 35; // demo
+        const fuelCost = Number(UI.qs("#fuelCost").value||0);
+        const kmpl = Math.max(1, Number(UI.qs("#kmpl").value||12));
+        const toll = Number(UI.qs("#toll").value||0);
+        const days = Math.max(1, Number(UI.qs("#days").value||1));
+        const perDay = Number(UI.qs("#perDay").value||0);
+
+        const fuelLiters = approxKm / kmpl;
+        const fuelTotal = fuelLiters * fuelCost;
+        const stay = days * perDay;
+        const total = fuelTotal + toll + stay;
+
+        UI.qs("#calcOut").innerHTML = `
+          <div class="kv">
+            <div class="item"><b>Fuel</b><span>${UI.fmtINR(fuelTotal)}</span></div>
+            <div class="item"><b>Toll</b><span>${UI.fmtINR(toll)}</span></div>
+            <div class="item"><b>Stay+Food</b><span>${UI.fmtINR(stay)}</span></div>
+            <div class="item"><b>Total</b><span>${UI.fmtINR(total)}</span></div>
+          </div>
+          <div class="note" style="margin-top:8px;">Demo estimate. Replace approxKm with real distance later.</div>
+        `;
+      }
+    };
+
+    // init after scripts loaded
+    document.addEventListener("DOMContentLoaded", SPA.init);
   </script>
 </body>
 </html>
