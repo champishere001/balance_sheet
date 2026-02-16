@@ -33,71 +33,11 @@
       overflow-x:hidden;
     }
 
-    /* ✅ 3-column grid (sidebar 20%) */
+    /* ✅ Main layout WITHOUT sidebar column */
     .app{
       display:grid;
-      grid-template-columns: 20% 50% 30%;
+      grid-template-columns: 1fr 30%;
       min-height:100vh;
-    }
-
-    /* LEFT (district list only) */
-    .side{
-      min-width:240px;
-      border-right:1px solid rgba(255,255,255,.10);
-      background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
-      backdrop-filter: blur(var(--blur));
-      -webkit-backdrop-filter: blur(var(--blur));
-      padding:14px;
-      overflow:auto;
-      position:sticky; top:0; height:100vh;
-    }
-    .brand{
-      display:flex; gap:10px; align-items:center;
-      padding:12px;border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: radial-gradient(450px 120px at 20% 0%, rgba(255,122,24,.22), transparent 70%), rgba(0,0,0,.24);
-      box-shadow: var(--shadow2);
-    }
-    .dot{width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:0 0 24px rgba(255,122,24,.55)}
-    .title{font-weight:900}
-    .sub{font-size:12px;color:var(--muted);font-weight:800;margin-top:2px}
-
-    .search{
-      width:100%;margin-top:12px;padding:11px 12px;border-radius:16px;
-      border:1px solid rgba(255,255,255,.14);
-      outline:none;color:var(--text);background:rgba(0,0,0,.22);
-      font-weight:800;transition:.15s;
-    }
-    .search:focus{
-      border-color:rgba(255,122,24,.45);
-      box-shadow:0 0 0 4px rgba(255,122,24,.12);
-    }
-
-    .pillRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    .pill{
-      padding:7px 10px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.18);
-      font-weight:900;font-size:11px; color:rgba(236,242,255,.9);
-    }
-
-    .list{margin-top:12px;display:flex;flex-direction:column;gap:10px}
-    .d{
-      border-radius:16px;border:1px solid rgba(255,255,255,.12);
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.20));
-      padding:10px 11px;cursor:pointer;
-      transition:.18s transform ease, .18s border-color ease;
-    }
-    .d:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.22)}
-    .d.active{border-color:rgba(255,122,24,.48);box-shadow:0 0 0 1px rgba(255,122,24,.24) inset, 0 12px 26px rgba(0,0,0,.45)}
-    .d b{display:block;font-weight:950}
-    .d small{
-      display:block;margin-top:6px;
-      color:var(--muted);
-      font-weight:800;
-      font-size:11px;
-      line-height:1.35;
-      opacity:.95;
     }
 
     /* MIDDLE */
@@ -164,7 +104,6 @@
       outline:none;color:var(--text);background:rgba(0,0,0,.22);font-weight:900;cursor:pointer;
     }
 
-    /* Sections for ALL view */
     .sectionTitle{
       display:flex;align-items:center;justify-content:space-between;
       gap:10px;margin-top:12px;
@@ -243,41 +182,148 @@
     .mapFrameWrap{flex:1;min-height:0}
     iframe{width:100%;height:100%;border:0;background:rgba(0,0,0,.2)}
 
+    /* ✅ Floating District button (hidden until scroll) */
+    .floatBtn{
+      position:fixed;
+      left:14px;
+      top:14px;
+      z-index:9999;
+      display:flex;align-items:center;gap:10px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.32);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 14px 40px rgba(0,0,0,.40);
+      color:rgba(236,242,255,.95);
+      font-weight:950;
+      cursor:pointer;
+      transform: translateY(-20px);
+      opacity:0;
+      pointer-events:none;
+      transition: .2s ease;
+    }
+    .floatBtn.show{
+      transform: translateY(0);
+      opacity:1;
+      pointer-events:auto;
+    }
+    .floatDot{
+      width:10px;height:10px;border-radius:50%;
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      box-shadow:0 0 18px rgba(255,122,24,.55)
+    }
+    .floatBtn small{display:block;font-weight:850;color:var(--muted);margin-top:1px}
+
+    /* ✅ Drawer Sidebar (overlay) */
+    .drawerOverlay{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.55);
+      z-index:9998;
+      opacity:0; pointer-events:none;
+      transition:.2s ease;
+    }
+    .drawerOverlay.open{opacity:1; pointer-events:auto}
+
+    .drawer{
+      position:fixed;
+      left:0; top:0; bottom:0;
+      width:min(360px, 88vw);
+      z-index:9999;
+      border-right:1px solid rgba(255,255,255,.10);
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.35));
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      padding:14px;
+      transform: translateX(-104%);
+      transition:.22s ease;
+      overflow:auto;
+    }
+    .drawer.open{transform: translateX(0)}
+    .drawerHead{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      margin-bottom:10px;
+    }
+    .xBtn{
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.28);
+      color:rgba(236,242,255,.95);
+      font-weight:950;
+      padding:8px 10px;border-radius:12px;
+      cursor:pointer;
+    }
+    .xBtn:hover{border-color:rgba(255,255,255,.22)}
+
+    .search{
+      width:100%;margin-top:10px;padding:11px 12px;border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      outline:none;color:var(--text);background:rgba(0,0,0,.22);
+      font-weight:800;transition:.15s;
+    }
+    .search:focus{
+      border-color:rgba(255,122,24,.45);
+      box-shadow:0 0 0 4px rgba(255,122,24,.12);
+    }
+    .list{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+    .d{
+      border-radius:16px;border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.20));
+      padding:10px 11px;cursor:pointer;
+      transition:.18s transform ease, .18s border-color ease;
+    }
+    .d:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.22)}
+    .d.active{border-color:rgba(255,122,24,.48);box-shadow:0 0 0 1px rgba(255,122,24,.24) inset, 0 12px 26px rgba(0,0,0,.45)}
+    .d b{display:block;font-weight:950}
+    .d small{
+      display:block;margin-top:6px;color:var(--muted);
+      font-weight:800;font-size:11px;line-height:1.35;opacity:.95;
+    }
+
     @media(max-width:1100px){
       .app{grid-template-columns:1fr}
-      .side{position:relative;height:auto;border-right:0;border-bottom:1px solid rgba(255,255,255,.10)}
       .mapCol{position:relative;height:auto;border-left:0;border-top:1px solid rgba(255,255,255,.10)}
       .mapShell{height:460px}
     }
-    @media(max-width:520px){ .cards{grid-template-columns:1fr} }
+    @media(max-width:520px){
+      .cards{grid-template-columns:1fr}
+      .floatBtn{left:10px;top:10px}
+    }
   </style>
 </head>
 
 <body>
-  <div class="app">
-    <!-- LEFT: districts only -->
-    <aside class="side">
-      <div class="brand">
-        <div class="dot"></div>
+  <!-- ✅ Floating Districts button -->
+  <div class="floatBtn" id="floatBtn" title="Open district list">
+    <div class="floatDot"></div>
+    <div>
+      Districts
+      <small id="floatSub">Scroll to show</small>
+    </div>
+  </div>
+
+  <!-- ✅ Drawer -->
+  <div class="drawerOverlay" id="drawerOverlay"></div>
+  <aside class="drawer" id="drawer">
+    <div class="drawerHead">
+      <div style="display:flex;gap:10px;align-items:center">
+        <div style="width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:0 0 22px rgba(255,122,24,.55)"></div>
         <div>
-          <div class="title">Himachal Explorer</div>
-          <div class="sub">Select a district • clean & fast</div>
+          <div style="font-weight:950">District List</div>
+          <div style="font-size:12px;color:var(--muted);font-weight:800">Select district • map sync</div>
         </div>
       </div>
+      <button class="xBtn" id="closeDrawer">✕</button>
+    </div>
 
-      <input id="q" class="search" placeholder="Search district…"/>
+    <input id="q" class="search" placeholder="Search district…"/>
 
-      <div class="pillRow">
-        <div class="pill">🗺️ Map Sync</div>
-        <div class="pill">📍 Place Focus</div>
-        <div class="pill">✨ Premium UI</div>
-      </div>
+    <div class="list" id="districtList">
+      <div class="d"><b>Loading…</b><small>Please wait</small></div>
+    </div>
+  </aside>
 
-      <div class="list" id="districtList">
-        <div class="d"><b>Loading…</b><small>Please wait</small></div>
-      </div>
-    </aside>
-
+  <div class="app">
     <!-- MIDDLE -->
     <main class="main">
       <section class="hero">
@@ -287,7 +333,7 @@
         <div class="heroInner">
           <div class="heroTop">
             <h1 id="hTitle">Himachal Pradesh</h1>
-            <p id="hSub">District select karo → brief + how to reach + best places (map synced).</p>
+            <p id="hSub">Scroll a little → “Districts” button appears. Then choose a district.</p>
 
             <div class="chipRow" id="typeChips" style="display:none">
               <div class="chip active" data-type="all">All</div>
@@ -302,17 +348,17 @@
           <div class="grid">
             <div class="panel">
               <div class="panelHead"><b>District Brief</b></div>
-              <div class="panelBody" id="briefBox"><div class="empty">Select a district…</div></div>
+              <div class="panelBody" id="briefBox"><div class="empty">Open Districts → select a district…</div></div>
             </div>
 
             <div class="panel">
               <div class="panelHead"><b>How to Reach</b></div>
-              <div class="panelBody" id="reachBox"><div class="empty">Select a district…</div></div>
+              <div class="panelBody" id="reachBox"><div class="empty">Open Districts → select a district…</div></div>
             </div>
 
             <div class="panel">
               <div class="panelHead"><b id="placesTitle">Places</b></div>
-              <div class="panelBody" id="cardsWrap"><div class="empty">Select a district…</div></div>
+              <div class="panelBody" id="cardsWrap"><div class="empty">Open Districts → select a district…</div></div>
             </div>
           </div>
         </div>
@@ -329,7 +375,6 @@
           </div>
         </div>
         <div class="mapFrameWrap">
-          <!-- ✅ keep map.html in same folder -->
           <iframe id="mapFrame" title="District Map" src="map.html"></iframe>
         </div>
       </div>
@@ -357,19 +402,21 @@
     const db = getDatabase(app);
 
     const ROOT = "tourism/hp/districts";
-
     const TYPES = ["destinations","lakes","temples","treks","hotels"];
-    const TYPE_LABEL = {
-      destinations:"Destinations",
-      lakes:"Lakes",
-      temples:"Temples",
-      treks:"Treks",
-      hotels:"Hotels"
-    };
+    const TYPE_LABEL = { destinations:"Destinations", lakes:"Lakes", temples:"Temples", treks:"Treks", hotels:"Hotels" };
 
-    // UI
+    // Drawer UI
+    const floatBtn = document.getElementById("floatBtn");
+    const floatSub = document.getElementById("floatSub");
+    const drawer = document.getElementById("drawer");
+    const drawerOverlay = document.getElementById("drawerOverlay");
+    const closeDrawerBtn = document.getElementById("closeDrawer");
+
+    // List UI
     const qEl = document.getElementById("q");
     const districtList = document.getElementById("districtList");
+
+    // Main UI
     const hTitle = document.getElementById("hTitle");
     const hSub = document.getElementById("hSub");
     const heroCover = document.getElementById("heroCover");
@@ -385,15 +432,14 @@
 
     // State
     let DISTRICTS = [];
-    let DIST_PREVIEW = {};     // district -> 2-3 popular destination names
+    let DIST_PREVIEW = {};
     let ACTIVE_DIST = "";
-    let ACTIVE_TYPE = "all";   // default
+    let ACTIVE_TYPE = "all";
     let ACTIVE_NODE = null;
     let ALL_ITEMS = [];
     let PLACE_QUERY = "";
     let PLACE_SORT = "popular_desc";
 
-    // helpers
     const safeObj = (x)=> (x && typeof x==="object") ? x : {};
     const norm = (s)=> String(s ?? "").trim();
     const low = (s)=> norm(s).toLowerCase();
@@ -403,14 +449,11 @@
         .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
         .replaceAll('"',"&quot;").replaceAll("'","&#039;");
     }
-
     function toNum(v){
-      if(v===null || v===undefined) return NaN;
-      const s = String(v).trim();
+      const s = String(v ?? "").trim();
       if(!s) return NaN;
       return Number(s);
     }
-
     function normalizeTypeKey(k){
       k = low(k);
       if(k==="destination" || k==="dest") return "destinations";
@@ -420,7 +463,6 @@
       if(k==="hotel") return "hotels";
       return k;
     }
-
     function extractPhotos(item){
       const a = [];
       const pushArr = (x)=> { if(Array.isArray(x)) x.forEach(u=>{ if(norm(u)) a.push(norm(u)); }); };
@@ -429,27 +471,24 @@
       if(norm(item.imageUrl)) a.push(norm(item.imageUrl));
       if(norm(item.cover)) a.push(norm(item.cover));
       if(norm(item.photo)) a.push(norm(item.photo));
-      // support "url1|url2|url3"
       if(norm(item.photo) && String(item.photo).includes("|")){
         String(item.photo).split("|").map(x=>x.trim()).filter(Boolean).forEach(u=>a.push(u));
       }
       return Array.from(new Set(a));
     }
-
     function pickTitle(it){
       return it.name || it.title || it.place || it.placeName || it.locationName || "Untitled";
     }
 
-    /* ✅ FIX: strict reading of types from segments keys (so lakes never go under destinations) */
     function flattenSegments(node){
       const seg = safeObj(node.segments);
       const out = [];
 
       for(const rawKey of Object.keys(seg)){
         const t = normalizeTypeKey(rawKey);
-        if(!TYPES.includes(t)) continue; // ignore unknown
-        const bucket = safeObj(seg[rawKey]);
+        if(!TYPES.includes(t)) continue;
 
+        const bucket = safeObj(seg[rawKey]);
         for(const id of Object.keys(bucket)){
           const it = safeObj(bucket[id]);
           out.push({
@@ -510,7 +549,10 @@
       }).join("");
 
       [...districtList.querySelectorAll(".d[data-d]")].forEach(el=>{
-        el.addEventListener("click", ()=> openDistrict(el.getAttribute("data-d")));
+        el.addEventListener("click", ()=>{
+          openDistrict(el.getAttribute("data-d"));
+          closeDrawer();
+        });
       });
     }
 
@@ -530,15 +572,12 @@
       heroCover.style.backgroundImage = cover ? `url('${cover.replaceAll("'", "%27")}')` : "none";
     }
 
-    /* ✅ Map syncing */
+    // Map syncing
     function focusDistrictOnMap(d){
       mapHint.textContent = `Map: ${d}`;
       mapFrame.src = `map.html#district=${encodeURIComponent(d)}&t=${Date.now()}`;
-      setTimeout(()=>{
-        mapFrame.contentWindow?.postMessage({ type:"FOCUS_DISTRICT", district:d }, "*");
-      }, 600);
+      setTimeout(()=> mapFrame.contentWindow?.postMessage({ type:"FOCUS_DISTRICT", district:d }, "*"), 600);
     }
-
     function focusPlaceOnMap(place){
       mapFrame.contentWindow?.postMessage({
         type:"FOCUS_PLACE",
@@ -634,7 +673,6 @@
           if(Number.isFinite(place.lat) && Number.isFinite(place.lng)){
             focusPlaceOnMap(place);
           }else{
-            // fallback: focus district
             if(ACTIVE_DIST) focusDistrictOnMap(ACTIVE_DIST);
           }
         });
@@ -732,7 +770,7 @@
 
     function renderPlaces(){
       if(!ACTIVE_NODE){
-        cardsWrap.innerHTML = `<div class="empty">Select a district…</div>`;
+        cardsWrap.innerHTML = `<div class="empty">Open Districts → select a district…</div>`;
         return;
       }
 
@@ -793,14 +831,13 @@
         briefBox.innerHTML = `<div>${escapeHtml(brief).replaceAll("\n","<br/>")}</div>`;
         reachBox.innerHTML = `<div>${escapeHtml(reach).replaceAll("\n","<br/>")}</div>`;
 
-        // ✅ FIX: correct categorization
         ALL_ITEMS = flattenSegments(ACTIVE_NODE);
 
-        // chips + default ALL
         typeChips.style.display = "flex";
         setActiveType("all");
 
-        hSub.innerHTML = `Loaded ✅ <b>All</b> shows sections wise • Cards click → map focus`;
+        hSub.innerHTML = `Loaded ✅ <b>${escapeHtml(d)}</b> • Cards click → map focus`;
+        floatSub.textContent = escapeHtml(d);
 
         renderDistrictList();
 
@@ -813,6 +850,20 @@
       }
     }
 
+    /* ✅ Drawer open/close */
+    function openDrawer(){
+      drawer.classList.add("open");
+      drawerOverlay.classList.add("open");
+    }
+    function closeDrawer(){
+      drawer.classList.remove("open");
+      drawerOverlay.classList.remove("open");
+    }
+    floatBtn.addEventListener("click", openDrawer);
+    closeDrawerBtn.addEventListener("click", closeDrawer);
+    drawerOverlay.addEventListener("click", closeDrawer);
+    window.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeDrawer(); });
+
     // chips
     typeChips.addEventListener("click", (e)=>{
       const chip = e.target.closest(".chip");
@@ -823,6 +874,18 @@
     // district search
     qEl.addEventListener("input", renderDistrictList);
 
+    /* ✅ Show button only after scroll */
+    function handleScroll(){
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      const show = y > 80; // threshold
+      floatBtn.classList.toggle("show", show);
+      if(!ACTIVE_DIST){
+        floatSub.textContent = show ? "Open list" : "Scroll to show";
+      }
+    }
+    window.addEventListener("scroll", handleScroll, {passive:true});
+    handleScroll();
+
     async function init(){
       const snap = await get(ref(db, ROOT));
       const root = snap.exists() ? safeObj(snap.val()) : {};
@@ -831,16 +894,31 @@
 
       DIST_PREVIEW = {};
       for(const d of DISTRICTS){
-        DIST_PREVIEW[d] = computeDistrictPreviewNames(root[d]);
+        const node = root[d];
+        // preview line (2-3 destinations)
+        const seg = safeObj(node?.segments);
+        const bucket = safeObj(seg?.destinations);
+        const arr = Object.keys(bucket).map(id=>{
+          const it = safeObj(bucket[id]);
+          return {
+            title: pickTitle(it),
+            pop: Number(it.popularityScore ?? it.popularity ?? 0) || 0,
+            rating: Number(it.rating ?? 0) || 0
+          };
+        });
+        arr.sort((a,b)=> (b.pop-a.pop) || (b.rating-a.rating) || String(a.title).localeCompare(String(b.title)));
+        DIST_PREVIEW[d] = arr.slice(0,3).map(x=>x.title).filter(Boolean);
       }
 
       renderDistrictList();
 
-      // ✅ allow deep-link: index.html#district=Kullu
+      // deep-link: index.html#district=Kullu
       const m = (location.hash || "").match(/district=([^&]+)/i);
       if(m){
         const d = decodeURIComponent(m[1]);
-        if(DISTRICTS.includes(d)) openDistrict(d);
+        if(DISTRICTS.includes(d)){
+          openDistrict(d);
+        }
       }
     }
 
