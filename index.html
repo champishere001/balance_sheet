@@ -1,820 +1,151 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer • District Guide</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
-  <style>
-    :root{
-      --bg0:#050712; --bg1:#080B18;
-      --text:#ECF2FF; --muted:rgba(236,242,255,.72); --muted2:rgba(236,242,255,.60);
-      --stroke:rgba(255,255,255,.12);
-      --brand:#FF7A18; --brand2:#FFB04A;
-      --blur:18px;
-      --shadow: 0 18px 50px rgba(0,0,0,.55);
-      --shadow2: 0 10px 26px rgba(0,0,0,.45);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:"Manrope",system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      color:var(--text);
-      background:
-        radial-gradient(1200px 900px at 15% 10%, rgba(255,122,24,.14), transparent 60%),
-        radial-gradient(900px 700px at 90% 20%, rgba(120,110,255,.14), transparent 55%),
-        radial-gradient(900px 700px at 70% 95%, rgba(0,210,255,.10), transparent 55%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
-      overflow-x:hidden;
-    }
-
-    /* ✅ 3-column grid */
-    .app{
-      display:grid;
-      grid-template-columns: 15% 55% 30%;
-      min-height:100vh;
-    }
-
-    /* LEFT */
-    .side{
-      min-width:220px;
-      border-right:1px solid rgba(255,255,255,.10);
-      background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
-      backdrop-filter: blur(var(--blur));
-      -webkit-backdrop-filter: blur(var(--blur));
-      padding:14px;
-      overflow:auto;
-      position:sticky; top:0; height:100vh;
-    }
-    .brand{
-      display:flex; gap:10px; align-items:center;
-      padding:12px;border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: radial-gradient(450px 120px at 20% 0%, rgba(255,122,24,.22), transparent 70%), rgba(0,0,0,.24);
-      box-shadow: var(--shadow2);
-    }
-    .dot{width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:0 0 24px rgba(255,122,24,.55)}
-    .title{font-weight:900}
-    .sub{font-size:12px;color:var(--muted);font-weight:800;margin-top:2px}
-
-    .search{
-      width:100%;margin-top:12px;padding:11px 12px;border-radius:16px;
-      border:1px solid rgba(255,255,255,.14);
-      outline:none;color:var(--text);background:rgba(0,0,0,.22);
-      font-weight:800;transition:.15s;
-    }
-    .search:focus{
-      border-color:rgba(255,122,24,.45);
-      box-shadow:0 0 0 4px rgba(255,122,24,.12);
-    }
-    .list{margin-top:12px;display:flex;flex-direction:column;gap:10px}
-    .d{
-      border-radius:16px;border:1px solid rgba(255,255,255,.12);
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.20));
-      padding:10px 11px;cursor:pointer;
-      transition:.18s transform ease, .18s border-color ease;
-    }
-    .d:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.22)}
-    .d.active{border-color:rgba(255,122,24,.48);box-shadow:0 0 0 1px rgba(255,122,24,.24) inset, 0 12px 26px rgba(0,0,0,.45)}
-    .d b{display:block;font-weight:950}
-    /* ✅ 2–3 popular destinations line */
-    .d small{
-      display:block;
-      margin-top:6px;
-      color:var(--muted);
-      font-weight:800;
-      font-size:11px;
-      line-height:1.35;
-      opacity:.95;
-    }
-
-    /* MIDDLE */
-    .main{padding:14px;min-width:0}
-    .hero{
-      border-radius:24px;border:1px solid rgba(255,255,255,.12);
-      overflow:hidden;background:rgba(255,255,255,.05);
-      backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur));
-      box-shadow: var(--shadow);
-      position:relative;isolation:isolate;
-    }
-    .heroCover{
-      position:absolute; inset:0;
-      background-size:cover;background-position:center;
-      filter: blur(26px) saturate(1.1) contrast(1.05);
-      transform:scale(1.12);
-      opacity:.55; z-index:0;
-    }
-    .heroCoverOverlay{
-      position:absolute; inset:0;
-      background:linear-gradient(180deg, rgba(5,7,18,.20), rgba(5,7,18,.86) 55%, rgba(5,7,18,.95));
-      z-index:1;
-    }
-    .heroInner{position:relative;z-index:2}
-    .heroTop{
-      padding:16px;border-bottom:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.18);
-    }
-    .heroTop h1{margin:0;font-size:clamp(22px,2.6vw,40px);font-weight:950;letter-spacing:-.3px}
-    .heroTop p{margin:8px 0 0;color:rgba(236,242,255,.86);line-height:1.5;font-weight:650}
-
-    .chipRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-    .chip{
-      padding:8px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.06);
-      color:rgba(236,242,255,.92);font-weight:900;font-size:12px;
-      cursor:pointer;user-select:none;transition:.15s;
-    }
-    .chip:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.22)}
-    .chip.active{background:rgba(255,122,24,.18);border-color:rgba(255,122,24,.35);box-shadow:0 0 0 3px rgba(255,122,24,.10)}
-
-    .grid{display:grid;gap:12px;padding:14px}
-    .panel{
-      border-radius:18px;border:1px solid rgba(255,255,255,.12);
-      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.22));
-      overflow:hidden;box-shadow:0 10px 22px rgba(0,0,0,.28);
-    }
-    .panelHead{
-      padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.22);
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-    }
-    .panelHead b{font-size:13px;letter-spacing:.3px}
-    .panelBody{padding:14px;color:rgba(236,242,255,.92);line-height:1.6;font-weight:650}
-
-    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
-    .input{
-      flex:1;min-width:220px;padding:11px 12px;border-radius:16px;
-      border:1px solid rgba(255,255,255,.14);
-      outline:none;color:var(--text);background:rgba(0,0,0,.22);font-weight:800;
-    }
-    .select{
-      padding:11px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.14);
-      outline:none;color:var(--text);background:rgba(0,0,0,.22);font-weight:900;cursor:pointer;
-    }
-
-    /* ✅ Sections for ALL view */
-    .sectionTitle{
-      display:flex;align-items:center;justify-content:space-between;
-      gap:10px;margin-top:12px;
-      padding:10px 10px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.18);
-    }
-    .sectionTitle b{font-size:13px;letter-spacing:.2px}
-    .sectionTitle .right{
-      display:flex;align-items:center;gap:8px;
-    }
-    .countPill{
-      padding:6px 10px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.06);
-      color:rgba(236,242,255,.92);
-      font-weight:900;font-size:12px;
-    }
-    .linkBtn{
-      padding:6px 10px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.28);
-      color:rgba(236,242,255,.92);
-      font-weight:900;font-size:12px;
-      cursor:pointer;
-    }
-    .linkBtn:hover{border-color:rgba(255,255,255,.22)}
-
-    .cards{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px;margin-top:10px}
-    .card{
-      border-radius:18px;border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.18);overflow:hidden;
-      transition:.18s;box-shadow:0 10px 18px rgba(0,0,0,.24);
-      cursor:pointer;
-    }
-    .card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.22);box-shadow:0 18px 34px rgba(0,0,0,.35)}
-    .thumb{
-      height:132px;background:rgba(255,255,255,.08);
-      background-size:cover;background-position:center;position:relative;
-    }
-    .thumb:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,.50))}
-    .badge{
-      position:absolute;top:10px;left:10px;z-index:2;
-      padding:6px 9px;border-radius:999px;font-size:11px;font-weight:950;
-      color:rgba(236,242,255,.95);border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.28);backdrop-filter: blur(10px);
-    }
-    .pad{padding:12px}
-    .pad b{display:block;font-weight:950}
-    .meta{margin-top:6px;color:var(--muted);font-weight:800;font-size:12px;line-height:1.35}
-    .empty{
-      padding:16px;border-radius:18px;border:1px dashed rgba(255,255,255,.20);
-      background:rgba(0,0,0,.18);color:rgba(236,242,255,.88);font-weight:850
-    }
-
-    /* RIGHT MAP */
-    .mapCol{
-      border-left:1px solid rgba(255,255,255,.10);
-      padding:14px;
-      position:sticky; top:0; height:100vh;
-    }
-    .mapShell{
-      height:100%;
-      border-radius:24px;border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
-      backdrop-filter: blur(var(--blur));-webkit-backdrop-filter: blur(var(--blur));
-      box-shadow: var(--shadow);
-      overflow:hidden;display:flex;flex-direction:column;
-    }
-    .mapHead{
-      padding:14px;border-bottom:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.20);
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-    }
-    .mapHead b{font-size:13px;letter-spacing:.3px}
-    .mapHint{font-size:12px;color:var(--muted);font-weight:800}
-    .mapFrameWrap{flex:1;min-height:0}
-    iframe{width:100%;height:100%;border:0;background:rgba(0,0,0,.2)}
-
-    @media(max-width:1100px){
-      .app{grid-template-columns:1fr}
-      .side{position:relative;height:auto;border-right:0;border-bottom:1px solid rgba(255,255,255,.10)}
-      .mapCol{position:relative;height:auto;border-left:0;border-top:1px solid rgba(255,255,255,.10)}
-      .mapShell{height:420px}
-    }
-    @media(max-width:520px){ .cards{grid-template-columns:1fr} }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Himachal Tourism Portal</title>
+  <link rel="stylesheet" href="assets/style.css" />
 </head>
-
 <body>
-  <div class="app">
-    <!-- LEFT -->
-    <aside class="side">
-      <div class="brand">
-        <div class="dot"></div>
-        <div>
-          <div class="title">Himachal Explorer</div>
-          <div class="sub">Popular picks under each district</div>
-        </div>
+  <div class="topbar">
+    <div class="inner">
+      <a class="brand" href="index.html">
+        <div class="logo"></div>
+        <div>HP Tourism Portal</div>
+      </a>
+      <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="districts.html">Districts</a>
+        <a href="hotels.html">Hotels</a>
+        <a href="temples.html">Temples</a>
+        <a href="treks.html">Treks</a>
+        <a href="routes.html">Routes</a>
       </div>
-
-      <input id="q" class="search" placeholder="Search district…"/>
-
-      <div class="list" id="districtList">
-        <div class="d"><b>Loading…</b></div>
-      </div>
-    </aside>
-
-    <!-- MIDDLE -->
-    <main class="main">
-      <section class="hero">
-        <div class="heroCover" id="heroCover"></div>
-        <div class="heroCoverOverlay"></div>
-
-        <div class="heroInner">
-          <div class="heroTop">
-            <h1 id="hTitle">Himachal Pradesh</h1>
-            <p id="hSub">Select district → Default is <b>All</b> (sections wise). Chips se single type dekh sakte ho.</p>
-
-            <div class="chipRow" id="typeChips" style="display:none">
-              <div class="chip active" data-type="all">All</div>
-              <div class="chip" data-type="destinations">Destinations</div>
-              <div class="chip" data-type="lakes">Lakes</div>
-              <div class="chip" data-type="temples">Temples</div>
-              <div class="chip" data-type="treks">Treks</div>
-              <div class="chip" data-type="hotels">Hotels</div>
-            </div>
-          </div>
-
-          <div class="grid">
-            <div class="panel">
-              <div class="panelHead"><b>District Brief</b></div>
-              <div class="panelBody" id="briefBox"><div class="empty">Select a district…</div></div>
-            </div>
-
-            <div class="panel">
-              <div class="panelHead"><b>How to Reach</b></div>
-              <div class="panelBody" id="reachBox"><div class="empty">Select a district…</div></div>
-            </div>
-
-            <div class="panel">
-              <div class="panelHead"><b id="placesTitle">Places</b></div>
-              <div class="panelBody" id="cardsWrap"><div class="empty">Select a district…</div></div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- RIGHT MAP -->
-    <aside class="mapCol">
-      <div class="mapShell">
-        <div class="mapHead">
-          <div>
-            <b>Map</b>
-            <div class="mapHint" id="mapHint">Select district to load map.</div>
-          </div>
-        </div>
-        <div class="mapFrameWrap">
-          <iframe id="mapFrame" title="District Map" src="map.html"></iframe>
-        </div>
-      </div>
-    </aside>
+    </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics.js";
+  <div class="container">
+    <div class="hero">
+      <div class="wrap">
+        <h1>Explore Himachal — District wise, Photo first, Route ready</h1>
+        <p>Find places, hotels, temples and treks in one portal. Built for an info-based tourism experience with route & expenditure tracking.</p>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
-      authDomain: "revnue-records.firebaseapp.com",
-      databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "revnue-records",
-      storageBucket: "revnue-records.firebasestorage.app",
-      messagingSenderId: "182348503564",
-      appId: "1:182348503564:web:480085405b09177245ac29",
-      measurementId: "G-MGTDBCG896"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    try { getAnalytics(app); } catch(e) {}
-    const db = getDatabase(app);
-
-    const ROOT = "tourism/hp/districts";
-    const TYPES = ["destinations","lakes","temples","treks","hotels"];
-    const TYPE_LABEL = {
-      destinations:"Destinations",
-      lakes:"Lakes",
-      temples:"Temples",
-      treks:"Treks",
-      hotels:"Hotels"
-    };
-
-    // UI
-    const qEl = document.getElementById("q");
-    const districtList = document.getElementById("districtList");
-    const hTitle = document.getElementById("hTitle");
-    const hSub = document.getElementById("hSub");
-    const heroCover = document.getElementById("heroCover");
-    const briefBox = document.getElementById("briefBox");
-    const reachBox = document.getElementById("reachBox");
-    const cardsWrap = document.getElementById("cardsWrap");
-    const placesTitle = document.getElementById("placesTitle");
-    const typeChips = document.getElementById("typeChips");
-
-    // Map
-    const mapHint = document.getElementById("mapHint");
-    const mapFrame = document.getElementById("mapFrame");
-
-    // state
-    let DISTRICTS = [];
-    let DIST_PREVIEW = {}; // ✅ district -> 2-3 popular destination names
-    let ACTIVE_DIST = "";
-    let ACTIVE_TYPE = "all"; // ✅ default ALL
-    let ACTIVE_NODE = null;
-    let ALL_ITEMS = [];
-    let PLACE_QUERY = "";
-    let PLACE_SORT = "popular_desc";
-
-    const safeObj = (x)=> (x && typeof x==="object") ? x : {};
-    const norm = (s)=> String(s ?? "").trim();
-    const low = (s)=> norm(s).toLowerCase();
-
-    function escapeHtml(str){
-      return String(str ?? "")
-        .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;").replaceAll("'","&#039;");
-    }
-
-    function extractPhotos(item){
-      const a = [];
-      const pushArr = (x)=> { if(Array.isArray(x)) x.forEach(u=>{ if(norm(u)) a.push(norm(u)); }); };
-      pushArr(item.photos); pushArr(item.images); pushArr(item.gallery);
-      if(norm(item.photoUrl)) a.push(norm(item.photoUrl));
-      if(norm(item.imageUrl)) a.push(norm(item.imageUrl));
-      if(norm(item.cover)) a.push(norm(item.cover));
-      if(norm(item.photo)) a.push(norm(item.photo));
-      return Array.from(new Set(a));
-    }
-
-    function pickTitle(it){
-      return it.name || it.title || it.place || it.placeName || it.locationName || "Untitled";
-    }
-
-    function flattenSegments(node){
-      const seg = safeObj(node.segments);
-      const out = [];
-      for(const t of TYPES){
-        const bucket = safeObj(seg[t]);
-        for(const id of Object.keys(bucket)){
-          const it = safeObj(bucket[id]);
-          out.push({
-            id, type:t,
-            title: pickTitle(it),
-            photos: extractPhotos(it),
-            notes: it.notes || it.description || "",
-            rating: Number(it.rating ?? "") || null,
-            popularity: Number(it.popularityScore ?? it.popularity ?? "") || null,
-            entryFee: Number(it.entryFee ?? "") || null,
-            lat: Number(it.lat ?? it.latitude ?? ""),
-            lng: Number(it.lng ?? it.longitude ?? ""),
-            raw: it
-          });
-        }
-      }
-      return out;
-    }
-
-    function defaultBrief(d){
-      return `• ${d} is one of the key districts of Himachal Pradesh.\n• Use chips to explore: destinations, lakes, temples, treks and hotels.\n• Card click → map focus (if lat/lng present).`;
-    }
-    function defaultHowToReach(d){
-      return `🛣️ Road: ${d} is connected by road.\n🚆 Train: nearest station depends on route.\n✈️ Air: nearest airport depends on region.\n\nRight side map me district auto center hoga.`;
-    }
-
-    function computeDistrictPreviewNames(node){
-      // ✅ Only from destinations (as you asked)
-      const seg = safeObj(node?.segments);
-      const bucket = safeObj(seg?.destinations);
-      const arr = Object.keys(bucket).map(id=>{
-        const it = safeObj(bucket[id]);
-        return {
-          title: pickTitle(it),
-          pop: Number(it.popularityScore ?? it.popularity ?? 0) || 0,
-          rating: Number(it.rating ?? 0) || 0
-        };
-      });
-
-      arr.sort((a,b)=> (b.pop-a.pop) || (b.rating-a.rating) || String(a.title).localeCompare(String(b.title)));
-      return arr.slice(0,3).map(x=>x.title).filter(Boolean);
-    }
-
-    function renderDistrictList(){
-      const q = low(qEl.value);
-      const filtered = DISTRICTS.filter(d => !q || low(d).includes(q));
-
-      districtList.innerHTML = (filtered.length ? filtered : [""]).map(d=>{
-        if(!d) return `<div class="d"><b>No district found</b></div>`;
-        const active = (ACTIVE_DIST === d) ? "active" : "";
-        const pv = DIST_PREVIEW[d] || [];
-        const line = pv.length ? `<small>${pv.map(escapeHtml).join(" • ")}</small>` : `<small style="opacity:.65">—</small>`;
-        return `
-          <div class="d ${active}" data-d="${escapeHtml(d)}">
-            <b>${escapeHtml(d)}</b>
-            ${line}
-          </div>
-        `;
-      }).join("");
-
-      [...districtList.querySelectorAll(".d[data-d]")].forEach(el=>{
-        el.addEventListener("click", ()=> openDistrict(el.getAttribute("data-d")));
-      });
-    }
-
-    function setHeroCover(){
-      if(!ACTIVE_NODE){ heroCover.style.backgroundImage = "none"; return; }
-      const info = safeObj(ACTIVE_NODE.districtInfo);
-
-      let cover = null;
-      if(Array.isArray(info.coverPhotos) && info.coverPhotos.length) cover = norm(info.coverPhotos[0]);
-      if(!cover && norm(info.coverPhoto)) cover = norm(info.coverPhoto);
-      if(!cover && norm(info.cover)) cover = norm(info.cover);
-
-      if(!cover){
-        const fallback = ALL_ITEMS?.[0]?.photos?.[0];
-        cover = fallback || null;
-      }
-      heroCover.style.backgroundImage = cover ? `url('${cover.replaceAll("'", "%27")}')` : "none";
-    }
-
-    function focusDistrictOnMap(d){
-      mapHint.textContent = `Map: ${d}`;
-      mapFrame.src = `map.html#district=${encodeURIComponent(d)}&t=${Date.now()}`;
-      setTimeout(()=>{
-        mapFrame.contentWindow?.postMessage({ type:"FOCUS_DISTRICT", district:d }, "*");
-      }, 600);
-    }
-
-    function focusPlaceOnMap(place){
-      mapFrame.contentWindow?.postMessage({
-        type:"FOCUS_PLACE",
-        district: ACTIVE_DIST,
-        title: place.title,
-        lat: place.lat,
-        lng: place.lng,
-        type: place.type
-      }, "*");
-    }
-
-    function getFilteredItems(type){
-      let items = ALL_ITEMS.slice();
-
-      if(type && type !== "all") items = items.filter(x => x.type === type);
-
-      const q = low(PLACE_QUERY);
-      if(q){
-        items = items.filter(x => (`${x.title} ${x.notes} ${x.id} ${x.type}`.toLowerCase()).includes(q));
-      }
-
-      const byName = (a,b)=> String(a.title||"").localeCompare(String(b.title||""), undefined, {sensitivity:"base"});
-      const pop = (x)=> Number.isFinite(x.popularity) ? x.popularity : -Infinity;
-      const rat = (x)=> Number.isFinite(x.rating) ? x.rating : -Infinity;
-      const fee = (x)=> Number.isFinite(x.entryFee) ? x.entryFee : Infinity;
-
-      switch(PLACE_SORT){
-        case "popular_desc": items.sort((a,b)=> pop(b)-pop(a) || rat(b)-rat(a) || byName(a,b)); break;
-        case "rating_desc": items.sort((a,b)=> rat(b)-rat(a) || pop(b)-pop(a) || byName(a,b)); break;
-        case "fee_asc": items.sort((a,b)=> fee(a)-fee(b) || pop(b)-pop(a) || byName(a,b)); break;
-        case "name_asc": items.sort(byName); break;
-        default: items.sort((a,b)=> pop(b)-pop(a) || byName(a,b));
-      }
-
-      return items;
-    }
-
-    function wireControls(){
-      const search = document.getElementById("placeSearch");
-      const sort = document.getElementById("placeSort");
-      if(!search || !sort) return;
-
-      search.value = PLACE_QUERY;
-      sort.value = PLACE_SORT;
-
-      let t=null;
-      search.addEventListener("input", ()=>{
-        clearTimeout(t);
-        t=setTimeout(()=>{
-          PLACE_QUERY = search.value;
-          renderPlaces();
-        },120);
-      });
-
-      sort.addEventListener("change", ()=>{
-        PLACE_SORT = sort.value;
-        renderPlaces();
-      });
-    }
-
-    function cardHtml(x){
-      const thumbUrl = x.photos?.[0] ? x.photos[0].replaceAll("'", "%27") : "";
-      const thumb = thumbUrl ? `style="background-image:url('${thumbUrl}')"` : "";
-      const label = TYPE_LABEL[x.type] || x.type;
-      const extra = [
-        Number.isFinite(x.rating) ? `⭐ ${x.rating}` : "",
-        Number.isFinite(x.popularity) ? `🔥 ${x.popularity}` : "",
-        Number.isFinite(x.entryFee) ? `₹${x.entryFee}` : ""
-      ].filter(Boolean).join(" • ");
-
-      const canMap = Number.isFinite(x.lat) && Number.isFinite(x.lng);
-      return `
-        <div class="card" data-id="${escapeHtml(x.id)}">
-          <div class="thumb" ${thumb}>
-            <div class="badge">${escapeHtml(label)}${canMap ? " • Map" : ""}</div>
-          </div>
-          <div class="pad">
-            <b>${escapeHtml(x.title)}</b>
-            <div class="meta">${escapeHtml(extra || "Tap to focus on map (if lat/lng available)")}</div>
-            ${x.notes ? `<div class="meta">${escapeHtml(x.notes).slice(0,120)}${x.notes.length>120?"…":""}</div>` : ""}
-          </div>
-        </div>
-      `;
-    }
-
-    function bindCardClicks(){
-      [...cardsWrap.querySelectorAll(".card[data-id]")].forEach(el=>{
-        el.addEventListener("click", ()=>{
-          const id = el.getAttribute("data-id");
-          const place = ALL_ITEMS.find(p=>p.id===id);
-          if(place && Number.isFinite(place.lat) && Number.isFinite(place.lng)){
-            focusPlaceOnMap(place);
-          }else if(ACTIVE_DIST){
-            focusDistrictOnMap(ACTIVE_DIST);
-          }
-        });
-      });
-    }
-
-    function renderAllSections(){
-      // ✅ All = sections wise
-      const controlsHtml = `
-        <div class="controls">
-          <input id="placeSearch" class="input" placeholder="Search in ALL categories…" />
-          <select id="placeSort" class="select">
-            <option value="popular_desc">Popularity (high → low)</option>
-            <option value="rating_desc">Rating (high → low)</option>
-            <option value="fee_asc">Entry fee (low → high)</option>
-            <option value="name_asc">Name (A → Z)</option>
-          </select>
-        </div>
-        <div style="margin-top:8px;color:var(--muted2);font-weight:800;font-size:12px">
-          Tip: “View all” pe click karke single category open hogi.
-        </div>
-      `;
-
-      let html = controlsHtml;
-
-      for(const t of TYPES){
-        const items = getFilteredItems(t);
-        const top = items.slice(0,6);
-
-        html += `
-          <div class="sectionTitle">
-            <b>${escapeHtml(TYPE_LABEL[t] || t)}</b>
-            <div class="right">
-              <span class="countPill">${items.length}</span>
-              <button class="linkBtn" data-view="${escapeHtml(t)}">View all</button>
+        <div class="searchbar">
+          <div class="input">
+            <div style="width:100%">
+              <label>District</label>
+              <select id="heroDistrict" data-fill="districts"></select>
             </div>
           </div>
-        `;
-
-        if(!top.length){
-          html += `<div class="empty" style="margin-top:10px">No items in this section.</div>`;
-          continue;
-        }
-
-        html += `
-          <div class="cards">
-            ${top.map(cardHtml).join("")}
+          <div class="input">
+            <div style="width:100%">
+              <label>Category</label>
+              <select id="heroCategory">
+                <option value="all">All</option>
+                <option value="place">Places</option>
+                <option value="hotel">Hotels</option>
+                <option value="temple">Temples</option>
+                <option value="trek">Treks</option>
+              </select>
+            </div>
           </div>
-        `;
-      }
-
-      cardsWrap.innerHTML = html;
-
-      // bind view all buttons
-      [...cardsWrap.querySelectorAll("button[data-view]")].forEach(btn=>{
-        btn.addEventListener("click", ()=>{
-          setActiveType(btn.getAttribute("data-view"));
-          // scroll up to places panel top a bit
-          cardsWrap.scrollIntoView({behavior:"smooth", block:"start"});
-        });
-      });
-
-      wireControls();
-      bindCardClicks();
-    }
-
-    function renderSingleType(){
-      const niceType = ACTIVE_TYPE === "all" ? "All" : (TYPE_LABEL[ACTIVE_TYPE] || ACTIVE_TYPE);
-      const items = getFilteredItems(ACTIVE_TYPE);
-
-      const controlsHtml = `
-        <div class="controls">
-          <input id="placeSearch" class="input" placeholder="Search in ${escapeHtml(niceType)}…" />
-          <select id="placeSort" class="select">
-            <option value="popular_desc">Popularity (high → low)</option>
-            <option value="rating_desc">Rating (high → low)</option>
-            <option value="fee_asc">Entry fee (low → high)</option>
-            <option value="name_asc">Name (A → Z)</option>
-          </select>
+          <div class="input">
+            <div style="width:100%">
+              <label>Search</label>
+              <input id="heroQuery" placeholder="Manali, Kufri, Triund..." />
+            </div>
+          </div>
+          <button class="btn" id="heroGo">Explore</button>
         </div>
-        <div style="margin-top:8px;color:var(--muted2);font-weight:800;font-size:12px">
-          Showing <b>${items.length}</b> items
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+          <a class="btn ghost" href="districts.html">Browse Districts</a>
+          <button class="btn ghost" onclick="localStorage.removeItem('hpPortal_seen'); UI.openModal('#capModal');">Show Capabilities</button>
         </div>
-      `;
+      </div>
+    </div>
 
-      if(!items.length){
-        cardsWrap.innerHTML = controlsHtml + `<div class="empty" style="margin-top:12px">No items found.</div>`;
-        wireControls();
-        return;
-      }
+    <div class="shell row">
+      <aside class="sidebar">
+        <div class="side-title">Filters <span class="small">tourism portal</span></div>
+        <div class="divider"></div>
 
-      cardsWrap.innerHTML = controlsHtml + `
-        <div class="cards">
-          ${items.slice(0,60).map(cardHtml).join("")}
+        <div class="small">District</div>
+        <div id="districtPills" class="pills" style="margin-top:8px;"></div>
+
+        <div class="divider"></div>
+        <div class="small">Category</div>
+        <div id="typePills" class="pills" style="margin-top:8px;"></div>
+
+        <div class="divider"></div>
+        <div class="small">Quick search</div>
+        <div class="input" style="margin-top:8px;">
+          <div style="width:100%">
+            <label>Search anywhere</label>
+            <input id="searchInput" placeholder="snow, monastery, heritage..." />
+          </div>
         </div>
-        ${items.length>60 ? `<div style="margin-top:10px;color:var(--muted2);font-weight:800;font-size:12px">Showing first 60 items.</div>` : ""}
-      `;
 
-      wireControls();
-      bindCardClicks();
-    }
+        <div class="divider"></div>
+        <div class="panel">
+          <h3>What’s special?</h3>
+          <div class="note">
+            Photo-first tiles, district filters, detail pages with tabs, and a route + expenditure calculator (demo).
+          </div>
+        </div>
+      </aside>
 
-    function renderPlaces(){
-      if(!ACTIVE_NODE){
-        cardsWrap.innerHTML = `<div class="empty">Select a district…</div>`;
-        return;
-      }
+      <main class="content">
+        <div class="sectionHead">
+          <div>
+            <h2>Featured results</h2>
+            <div class="meta">Click any card to open details</div>
+          </div>
+          <div class="meta" id="cardsMeta"></div>
+        </div>
+        <div id="cardsWrap" class="cards"></div>
 
-      if(ACTIVE_TYPE === "all"){
-        placesTitle.textContent = `All • ${ACTIVE_DIST}`;
-        renderAllSections();
-      }else{
-        placesTitle.textContent = `${TYPE_LABEL[ACTIVE_TYPE] || ACTIVE_TYPE} • ${ACTIVE_DIST}`;
-        renderSingleType();
-      }
+        <div class="footer">© HP Tourism Portal (Demo) — Replace demo data/images with real content.</div>
+      </main>
+    </div>
+  </div>
 
-      setHeroCover();
-    }
+  <!-- Capabilities popup -->
+  <div id="capModal" class="modalBack hidden">
+    <div class="modal">
+      <div class="top">
+        <div>
+          <h3>Portal Capabilities</h3>
+          <div class="small">A quick tour of what this site can do</div>
+        </div>
+        <button class="x" data-close="#capModal">✕</button>
+      </div>
+      <div class="body">
+        <div class="featureGrid">
+          <div class="feature"><b>District-wise exploration</b><span>Browse Shimla, Kullu, Kangra and more.</span></div>
+          <div class="feature"><b>Photo-first destination tiles</b><span>Less text, more visuals for tourism feel.</span></div>
+          <div class="feature"><b>Tabs on place detail</b><span>Hotels, Temples, Treks, Gallery inside one page.</span></div>
+          <div class="feature"><b>Route & expenditure calculator</b><span>Estimate fuel + toll + per-day cost (demo).</span></div>
+          <div class="feature"><b>Future ready</b><span>Add bookings later without changing layout.</span></div>
+          <div class="feature"><b>Mobile responsive</b><span>Sidebar converts into stacked layout on phone.</span></div>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:12px; justify-content:flex-end;">
+          <button class="btn ghost" data-close="#capModal">Close</button>
+          <a class="btn" href="districts.html" data-close="#capModal">Start Exploring</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    function setActiveType(t){
-      ACTIVE_TYPE = t;
-      [...typeChips.querySelectorAll(".chip")].forEach(c=>{
-        c.classList.toggle("active", c.getAttribute("data-type")===t);
-      });
-      renderPlaces();
-    }
-
-    async function openDistrict(d){
-      ACTIVE_DIST = d;
-      ACTIVE_NODE = null;
-      ALL_ITEMS = [];
-      PLACE_QUERY = "";
-      PLACE_SORT = "popular_desc";
-
-      hTitle.textContent = d;
-      hSub.innerHTML = `Loading <b>${escapeHtml(d)}</b>…`;
-
-      typeChips.style.display = "none";
-      heroCover.style.backgroundImage = "none";
-      briefBox.innerHTML = `<div class="empty">Loading…</div>`;
-      reachBox.innerHTML = `<div class="empty">Loading…</div>`;
-      cardsWrap.innerHTML = `<div class="empty">Loading…</div>`;
-
-      renderDistrictList();
-      focusDistrictOnMap(d);
-
-      try{
-        const snap = await get(ref(db, `${ROOT}/${d}`));
-        if(!snap.exists()){
-          hSub.textContent = "No district data found.";
-          briefBox.innerHTML = `<div>${escapeHtml(defaultBrief(d)).replaceAll("\n","<br/>")}</div>`;
-          reachBox.innerHTML = `<div>${escapeHtml(defaultHowToReach(d)).replaceAll("\n","<br/>")}</div>`;
-          cardsWrap.innerHTML = `<div class="empty">No places found for this district.</div>`;
-          return;
-        }
-
-        ACTIVE_NODE = safeObj(snap.val());
-        const info = safeObj(ACTIVE_NODE.districtInfo);
-
-        const brief = norm(info.brief) || defaultBrief(d);
-        const reach = norm(info.howToReach) || defaultHowToReach(d);
-
-        briefBox.innerHTML = `<div>${escapeHtml(brief).replaceAll("\n","<br/>")}</div>`;
-        reachBox.innerHTML = `<div>${escapeHtml(reach).replaceAll("\n","<br/>")}</div>`;
-
-        ALL_ITEMS = flattenSegments(ACTIVE_NODE);
-
-        // chips + default ALL
-        typeChips.style.display = "flex";
-        setActiveType("all");
-
-        hSub.innerHTML = `Loaded ✅ <b>All</b> shows sections wise. You can switch types.`;
-
-        // refresh sidebar active highlight
-        renderDistrictList();
-
-      }catch(e){
-        console.error(e);
-        hSub.textContent = "Load failed (rules/config?)";
-        briefBox.innerHTML = `<div class="empty">Firebase read failed.</div>`;
-        reachBox.innerHTML = `<div class="empty">Firebase read failed.</div>`;
-        cardsWrap.innerHTML = `<div class="empty">Firebase read failed.</div>`;
-      }
-    }
-
-    // chips
-    typeChips.addEventListener("click", (e)=>{
-      const chip = e.target.closest(".chip");
-      if(!chip) return;
-      setActiveType(chip.getAttribute("data-type"));
-    });
-
-    // district search
-    qEl.addEventListener("input", renderDistrictList);
-
-    // ✅ init
-    async function init(){
-      const snap = await get(ref(db, ROOT));
-      const root = snap.exists() ? safeObj(snap.val()) : {};
-
-      DISTRICTS = Object.keys(root).sort((a,b)=>a.localeCompare(b));
-
-      // ✅ precompute 2–3 popular destination names for EACH district
-      DIST_PREVIEW = {};
-      for(const d of DISTRICTS){
-        const node = root[d];
-        const names = computeDistrictPreviewNames(node);
-        DIST_PREVIEW[d] = names;
-      }
-
-      renderDistrictList();
-
-      // if URL has #district=Kullu
-      const m = (location.hash || "").match(/district=([^&]+)/i);
-      if(m){
-        const d = decodeURIComponent(m[1]);
-        if(DISTRICTS.includes(d)) openDistrict(d);
-      }
-    }
-
-    init().catch(()=>{
-      districtList.innerHTML = `<div class="d"><b>Firebase not configured</b><small>Check rules/config</small></div>`;
-    });
+  <!-- Scripts -->
+  <script src="assets/data.js"></script>
+  <script src="assets/ui.js"></script>
+  <script src="assets/app.js"></script>
+  <script>
+    // allow index to auto-filter from districts.html
+    const d = UI.getParam("district");
+    if(d) App.state.district = d;
+    App.initHome();
   </script>
 </body>
 </html>
