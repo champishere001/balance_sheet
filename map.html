@@ -3,581 +3,124 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>HP Master Map — Live Distance + Routes</title>
+  <title>HP Map</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
-    :root{
-      --bg:#070B15; --text:#ECF2FF; --muted: rgba(236,242,255,.78);
-      --brand:#FF7A18; --stroke: rgba(255,255,255,.12);
-    }
-    *{box-sizing:border-box}
-    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--text);}
-    .app{display:flex; min-height:100vh;}
-
-    .sidebar{
-      width:390px; max-width:92vw;
-      border-right:1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    html,body{height:100%;margin:0}
+    body{background:#060914;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#eaf0ff}
+    #map{height:100%;width:100%}
+    .badge{
+      position:absolute;left:12px;top:12px;z-index:9999;
+      background:rgba(0,0,0,.45);
+      border:1px solid rgba(255,255,255,.16);
+      color:#eaf0ff;
+      padding:10px 12px;border-radius:14px;
       backdrop-filter: blur(12px);
-      padding:14px;
-      overflow:auto;
+      font-weight:800;font-size:12px;
+      max-width: calc(100% - 24px);
+      box-sizing:border-box;
     }
-    .brand{
-      display:flex; gap:10px; align-items:center;
-      padding:10px; border-radius:16px;
-      border:1px solid var(--stroke);
-      background: rgba(0,0,0,.22);
-      margin-bottom:12px;
-    }
-    .dot{width:12px;height:12px;border-radius:50%;background:var(--brand);box-shadow:0 0 18px rgba(255,122,24,.75)}
-    .title{font-weight:950}
-    .sub{font-size:12px;color:var(--muted);margin-top:2px}
-
-    label{display:block; font-size:12px; color:var(--muted); font-weight:900; margin:10px 0 6px;}
-    select,input{
-      width:100%;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.18);
-      color: var(--text);
-      padding:10px 12px;
-      outline:none;
-      font-weight:850;
-    }
-    .row{display:flex; gap:10px; margin-top:10px;}
-    .btn{
-      flex:1;
-      border:0; cursor:pointer;
-      padding:10px 12px;
-      border-radius:14px;
-      font-weight:950;
-      color:#0b1220;
-      background: linear-gradient(135deg, var(--brand), #ff9a4a);
-      box-shadow: 0 12px 24px rgba(255,122,24,.22);
-    }
-    .btnGhost{
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.14);
-      color: var(--text);
-      box-shadow:none;
-    }
-
-    .pill{
-      display:inline-block;
-      font-size:12px;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.18);
-      color: rgba(236,242,255,.9);
-      font-weight:900;
-      margin-top:10px;
-    }
-
-    .counts{
-      margin-top:12px;
-      display:grid;
-      grid-template-columns: repeat(2,1fr);
-      gap:10px;
-    }
-    .cBox{
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.16);
-      padding:10px;
-    }
-    .cBox b{display:block; font-size:18px}
-    .cBox small{display:block; margin-top:2px; color:var(--muted); font-weight:900}
-
-    .listHead{
-      display:flex; align-items:center; justify-content:space-between;
-      margin-top:14px;
-      padding:10px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.16);
-    }
-    .listHead b{font-size:13px}
-    .listHead small{color:var(--muted); font-weight:900}
-
-    .list{
-      margin-top:10px;
-      display:flex; flex-direction:column; gap:10px;
-      max-height: 44vh;
-      overflow:auto;
-      padding-right:4px;
-    }
-    .item{
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      padding:10px;
-      display:flex; gap:10px;
-      cursor:pointer;
-      transition: transform .12s ease;
-    }
-    .item:hover{transform: translateY(-2px)}
-    .thumb{
-      width:84px; height:64px; border-radius:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      object-fit:cover;
-      flex: 0 0 auto;
-    }
-    .meta{min-width:0}
-    .meta b{display:block; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-    .meta small{display:block; margin-top:4px; color:var(--muted); font-weight:900; line-height:1.25}
-    .tag{display:inline-block; margin:6px 6px 0 0; padding:4px 8px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.18); font-size:11px; font-weight:900;}
-
-    .mapWrap{flex:1; min-width:0; position:relative;}
-    #map{height:100vh; width:100%;}
-    .toast{
-      position:absolute; left:12px; bottom:12px;
-      background: rgba(0,0,0,.55);
-      border:1px solid rgba(255,255,255,.14);
-      backdrop-filter: blur(10px);
-      padding:10px 12px;
-      border-radius:14px;
-      color: rgba(236,242,255,.9);
-      font-weight:850;
-      max-width: min(560px, calc(100% - 24px));
-    }
-
-    .gal{display:flex; gap:8px; overflow:auto; padding-top:8px;}
-    .gal img{height:74px; width:120px; object-fit:cover; border-radius:12px; border:1px solid rgba(255,255,255,.14)}
-    .muted{color: rgba(236,242,255,.75); font-weight:800}
-
-    @media (max-width: 980px){
-      .app{display:block;}
-      .sidebar{width:auto; border-right:0; border-bottom:1px solid var(--stroke)}
-      #map{height: calc(100vh - 540px);}
-      .list{max-height: 28vh;}
-    }
+    .badge b{display:block;font-size:13px}
+    .badge span{opacity:.8;font-weight:700}
   </style>
 </head>
-
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="dot"></div>
-        <div>
-          <div class="title">HP Master Map</div>
-          <div class="sub">Live Location Distance + Routes</div>
-        </div>
-      </div>
-
-      <label>District</label>
-      <select id="districtSel">
-        <option value="">All districts</option>
-      </select>
-
-      <label>Type</label>
-      <select id="typeSel">
-        <option value="">All types</option>
-        <option value="destinations">Destinations</option>
-        <option value="lakes">Lakes</option>
-        <option value="temples">Temples</option>
-        <option value="treks">Treks</option>
-        <option value="hotels">Hotels</option>
-      </select>
-
-      <label>Search</label>
-      <input id="q" placeholder="e.g., Triund, Chandratal, Jakhu…" />
-
-      <div class="row">
-        <button class="btn" id="btnLoad">Load / Refresh</button>
-        <button class="btn btnGhost" id="btnFit">Fit markers</button>
-      </div>
-
-      <div class="row">
-        <button class="btn" id="btnMe">📍 Use My Live Location</button>
-        <button class="btn btnGhost" id="btnClearRoute">Clear Route</button>
-      </div>
-
-      <div class="pill" id="status">Status: idle</div>
-      <div class="pill" id="meStatus">Live: not set</div>
-
-      <div class="counts">
-        <div class="cBox"><b id="cntAll">0</b><small>Total records</small></div>
-        <div class="cBox"><b id="cntShown">0</b><small>Pins shown</small></div>
-        <div class="cBox"><b id="cntNoGeo">0</b><small>Missing lat/lng</small></div>
-        <div class="cBox"><b id="cntDistricts">0</b><small>Districts loaded</small></div>
-      </div>
-
-      <div class="listHead">
-        <b>Nearby List</b>
-        <small id="listNote">Turn on live location</small>
-      </div>
-      <div class="list" id="list"></div>
-
-      <div style="margin-top:12px; color:rgba(236,242,255,.78); font-size:12px; line-height:1.45">
-        ✅ Live location needs <b>HTTPS</b> (GitHub Pages OK).<br/>
-        ✅ Distance updates after you set location.<br/>
-        ✅ Photos in DB: multiple URLs separated by <b>|</b>.
-      </div>
-    </aside>
-
-    <main class="mapWrap">
-      <div id="map"></div>
-      <div class="toast" id="toast">Use “📍 Use My Live Location” to see distance + nearest places.</div>
-    </main>
+  <div id="map"></div>
+  <div class="badge" id="badge">
+    <b>Himachal Map</b>
+    <span>Select a district</span>
   </div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
-
-    // ✅ PASTE SAME CONFIG HERE (same in admin.html & index.html)
-    const firebaseConfig = {
-      apiKey: "PASTE_API_KEY",
-      authDomain: "revnue-records.firebaseapp.com",
-      databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "revnue-records",
-      storageBucket: "revnue-records.appspot.com",
-      messagingSenderId: "PASTE_SENDER_ID",
-      appId: "PASTE_APP_ID",
-      measurementId: "PASTE_MEASUREMENT_ID"
+  <script>
+    // ✅ Approx district centers (HP 12 districts)
+    const DIST = {
+      "Bilaspur": {lat:31.330, lng:76.760},
+      "Chamba": {lat:32.556, lng:76.127},
+      "Hamirpur": {lat:31.686, lng:76.521},
+      "Kangra": {lat:32.100, lng:76.270},
+      "Kinnaur": {lat:31.595, lng:78.400},
+      "Kullu": {lat:31.957, lng:77.110},
+      "Lahaul and Spiti": {lat:32.490, lng:77.600},
+      "Mandi": {lat:31.708, lng:76.932},
+      "Shimla": {lat:31.104, lng:77.173},
+      "Sirmaur": {lat:30.570, lng:77.300},
+      "Solan": {lat:30.910, lng:77.110},
+      "Una": {lat:31.470, lng:76.270}
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    const map = L.map("map", { zoomControl:true }).setView([31.9, 77.2], 7);
 
-    const map = L.map("map", { zoomControl:true }).setView([31.8, 77.3], 7);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19, attribution: "&copy; OpenStreetMap"
+      maxZoom: 18,
+      attribution: "&copy; OpenStreetMap"
     }).addTo(map);
 
-    const cluster = L.markerClusterGroup({ chunkedLoading:true });
-    map.addLayer(cluster);
+    const badge = document.getElementById("badge");
+    let marker = null;
+    let placeMarker = null;
 
-    let meMarker = null;
-    let meLatLng = null;
-    let routeLine = null;
-
-    const districtSel = document.getElementById("districtSel");
-    const typeSel = document.getElementById("typeSel");
-    const qEl = document.getElementById("q");
-    const btnLoad = document.getElementById("btnLoad");
-    const btnFit = document.getElementById("btnFit");
-    const btnMe = document.getElementById("btnMe");
-    const btnClearRoute = document.getElementById("btnClearRoute");
-    const statusEl = document.getElementById("status");
-    const meStatusEl = document.getElementById("meStatus");
-    const toastEl = document.getElementById("toast");
-
-    const cntAll = document.getElementById("cntAll");
-    const cntShown = document.getElementById("cntShown");
-    const cntNoGeo = document.getElementById("cntNoGeo");
-    const cntDistricts = document.getElementById("cntDistricts");
-
-    const listEl = document.getElementById("list");
-    const listNote = document.getElementById("listNote");
-
-    const ROOT = "tourism/hp/districts";
-    const TYPES = ["destinations","lakes","temples","treks","hotels"];
-    const safeObj = (x)=> (x && typeof x==="object") ? x : {};
-    const safeArr = (x)=> Array.isArray(x) ? x : [];
-    const norm = (s)=> String(s ?? "").trim();
-
-    function isFiniteNumber(v){
-      if(v === null || v === undefined || v === "") return false;
-      const n = Number(v);
-      return Number.isFinite(n);
-    }
-    function hasGeo(it){ return isFiniteNumber(it.lat) && isFiniteNumber(it.lng); }
-
-    function photosToArray(photoField){
-      const s = norm(photoField);
-      if(!s) return [];
-      return s.split("|").map(x=>x.trim()).filter(Boolean);
+    function setBadge(title, subtitle){
+      badge.innerHTML = `<b>${escapeHtml(title)}</b><span>${escapeHtml(subtitle || "")}</span>`;
     }
 
-    function matches(item, q){
-      if(!q) return true;
-      const hay = (`${item.name||""} ${item.district||""} ${item.type||""} ${(item.tags||[]).join(" ")} ${item.notes||""}`).toLowerCase();
-      return hay.includes(q.toLowerCase());
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;").replaceAll("'","&#039;");
     }
 
-    function iconEmoji(type){
-      if(type==="destinations") return "📍";
-      if(type==="lakes") return "🏞️";
-      if(type==="temples") return "🛕";
-      if(type==="treks") return "🥾";
-      if(type==="hotels") return "🏨";
-      return "📌";
-    }
-
-    function escapeHTML(str){
-      return String(str).replace(/[&<>"']/g, s=>({
-        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-      }[s]));
-    }
-    function escapeAttr(str){ return escapeHTML(str).replace(/"/g,"&quot;"); }
-
-    function distanceKm(a, b){
-      const R = 6371;
-      const toRad = (x)=> (x*Math.PI)/180;
-      const dLat = toRad(b.lat - a.lat);
-      const dLng = toRad(b.lng - a.lng);
-      const lat1 = toRad(a.lat);
-      const lat2 = toRad(b.lat);
-      const h = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLng/2)**2;
-      return 2*R*Math.asin(Math.sqrt(h));
-    }
-
-    function popupHTML(item){
-      const pics = photosToArray(item.photo);
-      const tags = safeArr(item.tags);
-      const dist = (meLatLng && item.__distKm != null) ? ` • 📏 ${item.__distKm.toFixed(1)} km` : "";
-      return `
-        <div style="min-width:260px; max-width:360px;">
-          <div style="font-weight:950; font-size:14px;">
-            ${iconEmoji(item.type)} ${escapeHTML(item.name || "Unknown")}
-          </div>
-          <div class="muted" style="margin-top:4px;">
-            ${escapeHTML(item.district)} • ${escapeHTML(item.type)}${dist}
-          </div>
-          ${item.notes ? `<div style="margin-top:6px; color:rgba(236,242,255,.82); font-weight:800; line-height:1.35;">
-            ${escapeHTML(item.notes)}
-          </div>` : ""}
-
-          <div style="margin-top:6px;">
-            ${tags.slice(0,10).map(t=>`<span class="tag">${escapeHTML(t)}</span>`).join("")}
-          </div>
-
-          ${pics.length ? `
-            <div class="gal">
-              ${pics.slice(0,5).map(u=>`<img src="${escapeAttr(u)}" alt="photo"/>`).join("")}
-            </div>
-          ` : `<div style="margin-top:8px; color:rgba(236,242,255,.65); font-weight:800;">No photos</div>`}
-        </div>
-      `;
-    }
-
-    async function loadDistrictList(){
-      const snap = await get(ref(db, ROOT));
-      const districts = snap.exists() ? Object.keys(safeObj(snap.val())).sort((a,b)=>a.localeCompare(b)) : [];
-      districtSel.innerHTML = `<option value="">All districts</option>` + districts.map(d=>`<option value="${escapeAttr(d)}">${escapeHTML(d)}</option>`).join("");
-      cntDistricts.textContent = String(districts.length);
-      return districts;
-    }
-
-    let ALL_ITEMS = [];
-    let SHOWN = [];
-    let markerById = new Map();
-
-    async function loadAllFromFirebase(){
-      statusEl.textContent = "Status: loading…";
-      toastEl.textContent = "Loading from Firebase…";
-
-      cluster.clearLayers();
-      markerById.clear();
-      ALL_ITEMS = [];
-      SHOWN = [];
-      listEl.innerHTML = "";
-
-      const districts = await loadDistrictList();
-      const snap = await get(ref(db, ROOT));
-      const root = snap.exists() ? snap.val() : {};
-
-      let missingGeo = 0;
-
-      for(const d of districts){
-        const dNode = safeObj(root[d]);
-        const seg = safeObj(dNode.segments);
-
-        for(const t of TYPES){
-          const tNode = safeObj(seg[t]);
-          for(const id of Object.keys(tNode)){
-            const it = safeObj(tNode[id]);
-            const item = {
-              id,
-              district: d,
-              type: t,
-              name: it.name || "",
-              tags: safeArr(it.tags),
-              notes: it.notes || "",
-              photo: it.photo || "",
-              lat: it.lat ?? "",
-              lng: it.lng ?? ""
-            };
-            if(!hasGeo(item)) missingGeo++;
-            ALL_ITEMS.push(item);
-          }
-        }
-      }
-
-      cntAll.textContent = String(ALL_ITEMS.length);
-      cntNoGeo.textContent = String(missingGeo);
-
-      applyFilters();
-      statusEl.textContent = "Status: ready ✅";
-      toastEl.textContent = "Ready. Use live location to see distance + nearest list.";
-    }
-
-    function applyFilters(){
-      const d = districtSel.value;
-      const t = typeSel.value;
-      const q = qEl.value.trim();
-
-      cluster.clearLayers();
-      markerById.clear();
-      SHOWN = [];
-
-      for(const item of ALL_ITEMS){
-        if(d && item.district !== d) continue;
-        if(t && item.type !== t) continue;
-        if(!matches(item, q)) continue;
-        if(!hasGeo(item)) continue;
-
-        const lat = Number(item.lat);
-        const lng = Number(item.lng);
-
-        if(meLatLng){
-          item.__distKm = distanceKm(meLatLng, {lat,lng});
-        } else {
-          item.__distKm = null;
-        }
-
-        const marker = L.marker([lat, lng]);
-        marker.bindPopup(popupHTML(item), { maxWidth: 420 });
-        marker.on("click", () => {
-          if(meLatLng) drawRouteTo({lat,lng});
-        });
-
-        cluster.addLayer(marker);
-        markerById.set(item.id, marker);
-        SHOWN.push(item);
-      }
-
-      cntShown.textContent = String(SHOWN.length);
-      renderList();
-    }
-
-    function fitToMarkers(){
-      const layers = cluster.getLayers();
-      if(!layers.length){ alert("No markers to fit."); return; }
-      const group = L.featureGroup(layers);
-      map.fitBounds(group.getBounds().pad(0.15));
-    }
-
-    function pickThumb(item){
-      const pics = photosToArray(item.photo);
-      return pics[0] || "";
-    }
-
-    function renderList(){
-      if(!meLatLng){
-        listNote.textContent = "Turn on live location";
-        listEl.innerHTML = `<div style="color:rgba(236,242,255,.7); font-weight:850; font-size:12px; line-height:1.45">
-          Tap <b>Use My Live Location</b> to see nearest places with distance.
-        </div>`;
+    function focusDistrict(name){
+      const key = Object.keys(DIST).find(k => k.toLowerCase() === String(name||"").toLowerCase());
+      if(!key){
+        setBadge("Himachal Map", "District not found in map list");
         return;
       }
+      const {lat,lng} = DIST[key];
+      map.setView([lat,lng], 9, {animate:true, duration:0.6});
 
-      listNote.textContent = "Nearest first";
-      const sorted = [...SHOWN].sort((a,b)=> (a.__distKm ?? 1e9) - (b.__distKm ?? 1e9)).slice(0, 80);
+      if(marker) marker.remove();
+      marker = L.marker([lat,lng]).addTo(map).bindPopup(`<b>${escapeHtml(key)}</b><br/>District center`).openPopup();
 
-      if(sorted.length === 0){
-        listEl.innerHTML = `<div style="color:rgba(236,242,255,.7); font-weight:850; font-size:12px">
-          No results for current filters.
-        </div>`;
-        return;
+      setBadge(key, "District center");
+    }
+
+    function focusPlace(payload){
+      const lat = Number(payload?.lat);
+      const lng = Number(payload?.lng);
+      if(!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+      const title = payload?.title || "Place";
+      const sub = payload?.type ? `Type: ${payload.type}` : "";
+
+      map.setView([lat,lng], 13, {animate:true, duration:0.6});
+      if(placeMarker) placeMarker.remove();
+      placeMarker = L.marker([lat,lng]).addTo(map).bindPopup(`<b>${escapeHtml(title)}</b><br/>${escapeHtml(sub)}`).openPopup();
+
+      setBadge(title, sub || "Selected place");
+    }
+
+    function readDistrictFromHash(){
+      const m = (location.hash||"").match(/district=([^&]+)/i);
+      if(m){
+        const d = decodeURIComponent(m[1]);
+        focusDistrict(d);
+      }else{
+        setBadge("Himachal Map", "Select a district");
       }
-
-      listEl.innerHTML = sorted.map(it=>{
-        const thumb = pickThumb(it);
-        const dist = (it.__distKm != null) ? it.__distKm.toFixed(1) + " km" : "-";
-        const tags = safeArr(it.tags).slice(0,3);
-        return `
-          <div class="item" data-id="${escapeAttr(it.id)}">
-            ${thumb ? `<img class="thumb" src="${escapeAttr(thumb)}" alt="thumb"/>` : `<div class="thumb"></div>`}
-            <div class="meta">
-              <b>${iconEmoji(it.type)} ${escapeHTML(it.name)}</b>
-              <small>${escapeHTML(it.district)} • ${escapeHTML(it.type)} • 📏 ${dist}</small>
-              <small>${tags.length ? tags.map(t=>`<span class="tag">${escapeHTML(t)}</span>`).join("") : ""}</small>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      listEl.querySelectorAll(".item").forEach(el=>{
-        el.addEventListener("click", ()=>{
-          const id = el.getAttribute("data-id");
-          const it = sorted.find(x=>x.id === id);
-          if(!it) return;
-          const lat = Number(it.lat), lng = Number(it.lng);
-          map.setView([lat, lng], 13, {animate:true});
-          const m = markerById.get(id);
-          if(m) m.openPopup();
-          if(meLatLng) drawRouteTo({lat,lng});
-        });
-      });
     }
+    window.addEventListener("hashchange", readDistrictFromHash);
+    readDistrictFromHash();
 
-    function setMeLocation(lat, lng, accuracyM){
-      meLatLng = {lat, lng};
-
-      if(!meMarker){
-        meMarker = L.marker([lat, lng], { title: "You are here" }).addTo(map);
-      } else {
-        meMarker.setLatLng([lat, lng]);
-      }
-
-      meStatusEl.textContent = `Live: set ✅ (±${Math.round(accuracyM || 0)} m)`;
-      applyFilters();
-      map.setView([lat, lng], 12, {animate:true});
-      toastEl.textContent = "Live location set. Tap any place to draw route.";
-    }
-
-    function useMyLocation(){
-      if(!navigator.geolocation){
-        alert("Geolocation not supported.");
-        return;
-      }
-      meStatusEl.textContent = "Live: requesting…";
-      toastEl.textContent = "Requesting GPS permission…";
-
-      navigator.geolocation.getCurrentPosition(
-        (pos)=> setMeLocation(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy),
-        ()=> { meStatusEl.textContent = "Live: denied/failed ❌"; alert("Live location failed. Use HTTPS and allow permission."); },
-        { enableHighAccuracy:true, timeout:12000, maximumAge: 10000 }
-      );
-    }
-
-    function drawRouteTo(target){
-      if(!meLatLng) return;
-      if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
-
-      routeLine = L.polyline([[meLatLng.lat, meLatLng.lng],[target.lat, target.lng]], { weight: 4, opacity: 0.9 }).addTo(map);
-      const km = distanceKm(meLatLng, target).toFixed(1);
-      toastEl.textContent = `Route (straight-line): ${km} km`;
-    }
-
-    function clearRoute(){
-      if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
-      toastEl.textContent = "Route cleared.";
-    }
-
-    btnLoad.addEventListener("click", loadAllFromFirebase);
-    btnFit.addEventListener("click", fitToMarkers);
-    btnMe.addEventListener("click", useMyLocation);
-    btnClearRoute.addEventListener("click", clearRoute);
-
-    districtSel.addEventListener("change", applyFilters);
-    typeSel.addEventListener("change", applyFilters);
-    qEl.addEventListener("input", () => { clearTimeout(window.__t); window.__t = setTimeout(applyFilters, 150); });
-
-    loadAllFromFirebase().catch(()=>alert("Firebase load error. Check config + rules."));
+    // ✅ Receive place focus from parent (index page)
+    window.addEventListener("message", (ev)=>{
+      const data = ev.data;
+      if(!data || typeof data !== "object") return;
+      if(data.type === "FOCUS_DISTRICT") focusDistrict(data.district);
+      if(data.type === "FOCUS_PLACE") focusPlace(data);
+    });
   </script>
 </body>
 </html>
