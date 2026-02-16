@@ -1,1 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Temples — HP Tourism</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="inner">
+      <a class="brand" href="index.html"><div class="logo"></div><div>HP Tourism Portal</div></a>
+      <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="districts.html">Districts</a>
+        <a href="hotels.html">Hotels</a>
+        <a href="temples.html">Temples</a>
+        <a href="treks.html">Treks</a>
+        <a href="routes.html">Routes</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="sectionHead">
+      <div>
+        <h2>Hotels</h2>
+        <div class="meta">Filter by district • photo-first cards</div>
+      </div>
+      <div class="meta" id="cardsMeta"></div>
+    </div>
+
+    <div class="row">
+      <aside class="sidebar">
+        <div class="side-title">Hotel Filters <span class="small">HP only</span></div>
+        <div class="divider"></div>
+
+        <div class="small">District</div>
+        <select id="districtSelect" data-fill="districts" class="input" style="width:100%;"></select>
+
+        <div class="divider"></div>
+        <div class="small">Search</div>
+        <div class="input" style="margin-top:8px;">
+          <div style="width:100%">
+            <label>Search hotels</label>
+            <input id="searchInput" placeholder="budget, view, parking..." />
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="panel">
+          <h3>Tip</h3>
+          <div class="note">Add real hotel listings later (Firebase / admin panel).</div>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div id="cardsWrap" class="cards"></div>
+      </main>
+    </div>
+
+    <div class="footer">Hotels listing page — ready for future booking integration.</div>
+  </div>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/ui.js"></script>
+  <script src="assets/app.js"></script>
+  <script>App.initListing("temple");</script>
+</body>
+</html>
 
