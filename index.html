@@ -16,10 +16,12 @@
       <div class="nav">
         <a href="index.html">Home</a>
         <a href="districts.html">Districts</a>
+        <a href="packages.html">Packages</a>
         <a href="hotels.html">Hotels</a>
         <a href="temples.html">Temples</a>
         <a href="treks.html">Treks</a>
         <a href="routes.html">Routes</a>
+        <a href="admin.html">Admin</a>
       </div>
     </div>
   </div>
@@ -60,6 +62,7 @@
 
         <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
           <a class="btn ghost" href="districts.html">Browse Districts</a>
+          <a class="btn ghost" href="packages.html">View Packages</a>
           <button class="btn ghost" onclick="localStorage.removeItem('hpPortal_seen'); UI.openModal('#capModal');">Show Capabilities</button>
         </div>
       </div>
@@ -90,7 +93,8 @@
         <div class="panel">
           <h3>What’s special?</h3>
           <div class="note">
-            Photo-first tiles, district filters, detail pages with tabs, and a route + expenditure calculator (demo).
+            Photo-first tiles, district filters, detail pages with tabs, MAPS (OpenStreetMap),
+            and a route + expenditure calculator.
           </div>
         </div>
       </aside>
@@ -124,10 +128,10 @@
         <div class="featureGrid">
           <div class="feature"><b>District-wise exploration</b><span>Browse Shimla, Kullu, Kangra and more.</span></div>
           <div class="feature"><b>Photo-first destination tiles</b><span>Less text, more visuals for tourism feel.</span></div>
-          <div class="feature"><b>Tabs on place detail</b><span>Hotels, Temples, Treks, Gallery inside one page.</span></div>
-          <div class="feature"><b>Route & expenditure calculator</b><span>Estimate fuel + toll + per-day cost (demo).</span></div>
-          <div class="feature"><b>Future ready</b><span>Add bookings later without changing layout.</span></div>
-          <div class="feature"><b>Mobile responsive</b><span>Sidebar converts into stacked layout on phone.</span></div>
+          <div class="feature"><b>Place detail with tabs</b><span>Hotels, Temples, Treks, Gallery inside one page.</span></div>
+          <div class="feature"><b>Maps (OpenStreetMap)</b><span>Pin locations on map without any API key.</span></div>
+          <div class="feature"><b>Route & expenditure tool</b><span>Fuel + toll + per-day estimate (demo).</span></div>
+          <div class="feature"><b>Packages page</b><span>Side-by-side tourism packages (HP only).</span></div>
         </div>
         <div style="display:flex; gap:10px; margin-top:12px; justify-content:flex-end;">
           <button class="btn ghost" data-close="#capModal">Close</button>
