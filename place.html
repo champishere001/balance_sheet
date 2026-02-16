@@ -1,1 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Place — HP Tourism</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="inner">
+      <a class="brand" href="index.html"><div class="logo"></div><div>HP Tourism Portal</div></a>
+      <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="districts.html">Districts</a>
+        <a href="hotels.html">Hotels</a>
+        <a href="temples.html">Temples</a>
+        <a href="treks.html">Treks</a>
+        <a href="routes.html">Routes</a>
+      </div>
+    </div>
+  </div>
 
+  <div class="container" id="placeWrap">
+
+    <div class="detailHead">
+      <div class="detailHero">
+        <img id="placeHeroImg" alt="Place"/>
+        <div class="detailOverlay">
+          <div>
+            <h1 id="placeTitle">Place</h1>
+            <div class="sub" id="placeSub"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detailBody">
+        <div class="panel">
+          <h3>Overview</h3>
+          <div id="placeDesc" class="note"></div>
+
+          <div class="divider"></div>
+          <div class="kv">
+            <div class="item"><b>Best time</b><span id="bestTime">-</span></div>
+            <div class="item"><b>Distance (demo)</b><span id="approxKm">-</span></div>
+          </div>
+
+          <div class="divider"></div>
+          <h3>Highlights</h3>
+          <div id="highlights" class="pills"></div>
+
+          <div class="divider"></div>
+          <h3>Nearby</h3>
+          <div id="nearby" class="pills"></div>
+
+          <div class="divider"></div>
+          <h3>Explore inside this place</h3>
+          <div class="tabs">
+            <div class="tab active" data-tab="hotels">🏨 Hotels</div>
+            <div class="tab" data-tab="temples">🛕 Temples</div>
+            <div class="tab" data-tab="treks">🥾 Treks</div>
+            <div class="tab" data-tab="gallery">📷 Gallery</div>
+          </div>
+
+          <div id="tabContent"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Route + Expenditure (Demo)</h3>
+          <div class="note">Enter values to estimate total cost.</div>
+
+          <div class="divider"></div>
+          <div class="formRow">
+            <div class="input">
+              <div style="width:100%">
+                <label>Fuel cost (₹/L)</label>
+                <input id="fuelCost" type="number" value="105" />
+              </div>
+            </div>
+            <div class="input">
+              <div style="width:100%">
+                <label>Mileage (km/L)</label>
+                <input id="kmpl" type="number" value="14" />
+              </div>
+            </div>
+            <div class="input">
+              <div style="width:100%">
+                <label>Toll / Parking (₹)</label>
+                <input id="toll" type="number" value="300" />
+              </div>
+            </div>
+            <div class="input">
+              <div style="width:100%">
+                <label>Days</label>
+                <input id="days" type="number" value="2" />
+              </div>
+            </div>
+          </div>
+
+          <div class="input" style="margin-top:10px;">
+            <div style="width:100%">
+              <label>Stay + Food per day (₹)</label>
+              <input id="perDay" type="number" value="1500" />
+            </div>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:10px;">
+            <button class="btn" id="calcBtn">Calculate</button>
+            <a class="btn ghost" href="routes.html">Open Routes Page</a>
+          </div>
+
+          <div class="divider"></div>
+          <div id="calcOut" class="note">Click <b>Calculate</b> to see breakdown.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">This is a premium “detail + tabs + calculator” layout for HP tourism.</div>
+  </div>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/ui.js"></script>
+  <script src="assets/app.js"></script>
+  <script>
+    App.initPlace();
+  </script>
+</body>
+</html>
