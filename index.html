@@ -33,12 +33,11 @@
       overflow-x:hidden;
     }
 
-    /* ✅ MAGIC 3-column grid */
+    /* ✅ 3-column grid */
     .app{
       display:grid;
       grid-template-columns: 15% 55% 30%;
       min-height:100vh;
-      gap:0;
     }
 
     /* LEFT */
@@ -67,7 +66,7 @@
       width:100%;margin-top:12px;padding:11px 12px;border-radius:16px;
       border:1px solid rgba(255,255,255,.14);
       outline:none;color:var(--text);background:rgba(0,0,0,.22);
-      font-weight:800;transition:.15s;border-color:rgba(255,255,255,.14);
+      font-weight:800;transition:.15s;
     }
     .search:focus{
       border-color:rgba(255,122,24,.45);
@@ -83,6 +82,16 @@
     .d:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.22)}
     .d.active{border-color:rgba(255,122,24,.48);box-shadow:0 0 0 1px rgba(255,122,24,.24) inset, 0 12px 26px rgba(0,0,0,.45)}
     .d b{display:block;font-weight:950}
+    /* ✅ 2–3 popular destinations line */
+    .d small{
+      display:block;
+      margin-top:6px;
+      color:var(--muted);
+      font-weight:800;
+      font-size:11px;
+      line-height:1.35;
+      opacity:.95;
+    }
 
     /* MIDDLE */
     .main{padding:14px;min-width:0}
@@ -129,7 +138,11 @@
       background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.22));
       overflow:hidden;box-shadow:0 10px 22px rgba(0,0,0,.28);
     }
-    .panelHead{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.22)}
+    .panelHead{
+      padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.22);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+    }
     .panelHead b{font-size:13px;letter-spacing:.3px}
     .panelBody{padding:14px;color:rgba(236,242,255,.92);line-height:1.6;font-weight:650}
 
@@ -144,7 +157,37 @@
       outline:none;color:var(--text);background:rgba(0,0,0,.22);font-weight:900;cursor:pointer;
     }
 
-    .cards{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px;margin-top:12px}
+    /* ✅ Sections for ALL view */
+    .sectionTitle{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:10px;margin-top:12px;
+      padding:10px 10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18);
+    }
+    .sectionTitle b{font-size:13px;letter-spacing:.2px}
+    .sectionTitle .right{
+      display:flex;align-items:center;gap:8px;
+    }
+    .countPill{
+      padding:6px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      color:rgba(236,242,255,.92);
+      font-weight:900;font-size:12px;
+    }
+    .linkBtn{
+      padding:6px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.28);
+      color:rgba(236,242,255,.92);
+      font-weight:900;font-size:12px;
+      cursor:pointer;
+    }
+    .linkBtn:hover{border-color:rgba(255,255,255,.22)}
+
+    .cards{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px;margin-top:10px}
     .card{
       border-radius:18px;border:1px solid rgba(255,255,255,.12);
       background:rgba(0,0,0,.18);overflow:hidden;
@@ -213,7 +256,7 @@
         <div class="dot"></div>
         <div>
           <div class="title">Himachal Explorer</div>
-          <div class="sub">District → Type → Places</div>
+          <div class="sub">Popular picks under each district</div>
         </div>
       </div>
 
@@ -233,15 +276,15 @@
         <div class="heroInner">
           <div class="heroTop">
             <h1 id="hTitle">Himachal Pradesh</h1>
-            <p id="hSub">Left se district select kar. Upar type choose kar. Cards pe click → map focus.</p>
+            <p id="hSub">Select district → Default is <b>All</b> (sections wise). Chips se single type dekh sakte ho.</p>
 
             <div class="chipRow" id="typeChips" style="display:none">
-              <div class="chip active" data-type="destinations">Destinations</div>
+              <div class="chip active" data-type="all">All</div>
+              <div class="chip" data-type="destinations">Destinations</div>
               <div class="chip" data-type="lakes">Lakes</div>
               <div class="chip" data-type="temples">Temples</div>
               <div class="chip" data-type="treks">Treks</div>
               <div class="chip" data-type="hotels">Hotels</div>
-              <div class="chip" data-type="all">All</div>
             </div>
           </div>
 
@@ -303,6 +346,13 @@
 
     const ROOT = "tourism/hp/districts";
     const TYPES = ["destinations","lakes","temples","treks","hotels"];
+    const TYPE_LABEL = {
+      destinations:"Destinations",
+      lakes:"Lakes",
+      temples:"Temples",
+      treks:"Treks",
+      hotels:"Hotels"
+    };
 
     // UI
     const qEl = document.getElementById("q");
@@ -322,8 +372,9 @@
 
     // state
     let DISTRICTS = [];
+    let DIST_PREVIEW = {}; // ✅ district -> 2-3 popular destination names
     let ACTIVE_DIST = "";
-    let ACTIVE_TYPE = "destinations";
+    let ACTIVE_TYPE = "all"; // ✅ default ALL
     let ACTIVE_NODE = null;
     let ALL_ITEMS = [];
     let PLACE_QUERY = "";
@@ -369,7 +420,6 @@
             rating: Number(it.rating ?? "") || null,
             popularity: Number(it.popularityScore ?? it.popularity ?? "") || null,
             entryFee: Number(it.entryFee ?? "") || null,
-            // ✅ lat/lng for map focus (keep your column names)
             lat: Number(it.lat ?? it.latitude ?? ""),
             lng: Number(it.lng ?? it.longitude ?? ""),
             raw: it
@@ -380,10 +430,27 @@
     }
 
     function defaultBrief(d){
-      return `• ${d} is one of the key districts of Himachal Pradesh.\n• Explore places by type from top chips.\n• Cards pe click karke map focus le sakte ho.`;
+      return `• ${d} is one of the key districts of Himachal Pradesh.\n• Use chips to explore: destinations, lakes, temples, treks and hotels.\n• Card click → map focus (if lat/lng present).`;
     }
     function defaultHowToReach(d){
       return `🛣️ Road: ${d} is connected by road.\n🚆 Train: nearest station depends on route.\n✈️ Air: nearest airport depends on region.\n\nRight side map me district auto center hoga.`;
+    }
+
+    function computeDistrictPreviewNames(node){
+      // ✅ Only from destinations (as you asked)
+      const seg = safeObj(node?.segments);
+      const bucket = safeObj(seg?.destinations);
+      const arr = Object.keys(bucket).map(id=>{
+        const it = safeObj(bucket[id]);
+        return {
+          title: pickTitle(it),
+          pop: Number(it.popularityScore ?? it.popularity ?? 0) || 0,
+          rating: Number(it.rating ?? 0) || 0
+        };
+      });
+
+      arr.sort((a,b)=> (b.pop-a.pop) || (b.rating-a.rating) || String(a.title).localeCompare(String(b.title)));
+      return arr.slice(0,3).map(x=>x.title).filter(Boolean);
     }
 
     function renderDistrictList(){
@@ -393,7 +460,14 @@
       districtList.innerHTML = (filtered.length ? filtered : [""]).map(d=>{
         if(!d) return `<div class="d"><b>No district found</b></div>`;
         const active = (ACTIVE_DIST === d) ? "active" : "";
-        return `<div class="d ${active}" data-d="${escapeHtml(d)}"><b>${escapeHtml(d)}</b></div>`;
+        const pv = DIST_PREVIEW[d] || [];
+        const line = pv.length ? `<small>${pv.map(escapeHtml).join(" • ")}</small>` : `<small style="opacity:.65">—</small>`;
+        return `
+          <div class="d ${active}" data-d="${escapeHtml(d)}">
+            <b>${escapeHtml(d)}</b>
+            ${line}
+          </div>
+        `;
       }).join("");
 
       [...districtList.querySelectorAll(".d[data-d]")].forEach(el=>{
@@ -411,15 +485,35 @@
       if(!cover && norm(info.cover)) cover = norm(info.cover);
 
       if(!cover){
-        const fallback = getFilteredItems()[0]?.photos?.[0] || ALL_ITEMS?.[0]?.photos?.[0];
+        const fallback = ALL_ITEMS?.[0]?.photos?.[0];
         cover = fallback || null;
       }
       heroCover.style.backgroundImage = cover ? `url('${cover.replaceAll("'", "%27")}')` : "none";
     }
 
-    function getFilteredItems(){
+    function focusDistrictOnMap(d){
+      mapHint.textContent = `Map: ${d}`;
+      mapFrame.src = `map.html#district=${encodeURIComponent(d)}&t=${Date.now()}`;
+      setTimeout(()=>{
+        mapFrame.contentWindow?.postMessage({ type:"FOCUS_DISTRICT", district:d }, "*");
+      }, 600);
+    }
+
+    function focusPlaceOnMap(place){
+      mapFrame.contentWindow?.postMessage({
+        type:"FOCUS_PLACE",
+        district: ACTIVE_DIST,
+        title: place.title,
+        lat: place.lat,
+        lng: place.lng,
+        type: place.type
+      }, "*");
+    }
+
+    function getFilteredItems(type){
       let items = ALL_ITEMS.slice();
-      if(ACTIVE_TYPE !== "all") items = items.filter(x => x.type === ACTIVE_TYPE);
+
+      if(type && type !== "all") items = items.filter(x => x.type === type);
 
       const q = low(PLACE_QUERY);
       if(q){
@@ -438,6 +532,7 @@
         case "name_asc": items.sort(byName); break;
         default: items.sort((a,b)=> pop(b)-pop(a) || byName(a,b));
       }
+
       return items;
     }
 
@@ -455,49 +550,117 @@
         t=setTimeout(()=>{
           PLACE_QUERY = search.value;
           renderPlaces();
-          setHeroCover();
         },120);
       });
 
       sort.addEventListener("change", ()=>{
         PLACE_SORT = sort.value;
         renderPlaces();
-        setHeroCover();
       });
     }
 
-    function focusDistrictOnMap(d){
-      mapHint.textContent = `Map: ${d}`;
-      // ✅ ensure iframe refreshes with hash (and avoid cache issues)
-      mapFrame.src = `map.html#district=${encodeURIComponent(d)}&t=${Date.now()}`;
+    function cardHtml(x){
+      const thumbUrl = x.photos?.[0] ? x.photos[0].replaceAll("'", "%27") : "";
+      const thumb = thumbUrl ? `style="background-image:url('${thumbUrl}')"` : "";
+      const label = TYPE_LABEL[x.type] || x.type;
+      const extra = [
+        Number.isFinite(x.rating) ? `⭐ ${x.rating}` : "",
+        Number.isFinite(x.popularity) ? `🔥 ${x.popularity}` : "",
+        Number.isFinite(x.entryFee) ? `₹${x.entryFee}` : ""
+      ].filter(Boolean).join(" • ");
 
-      // also postMessage (more reliable)
-      setTimeout(()=>{
-        mapFrame.contentWindow?.postMessage({ type:"FOCUS_DISTRICT", district:d }, "*");
-      }, 600);
+      const canMap = Number.isFinite(x.lat) && Number.isFinite(x.lng);
+      return `
+        <div class="card" data-id="${escapeHtml(x.id)}">
+          <div class="thumb" ${thumb}>
+            <div class="badge">${escapeHtml(label)}${canMap ? " • Map" : ""}</div>
+          </div>
+          <div class="pad">
+            <b>${escapeHtml(x.title)}</b>
+            <div class="meta">${escapeHtml(extra || "Tap to focus on map (if lat/lng available)")}</div>
+            ${x.notes ? `<div class="meta">${escapeHtml(x.notes).slice(0,120)}${x.notes.length>120?"…":""}</div>` : ""}
+          </div>
+        </div>
+      `;
     }
 
-    function focusPlaceOnMap(place){
-      mapFrame.contentWindow?.postMessage({
-        type:"FOCUS_PLACE",
-        district: ACTIVE_DIST,
-        title: place.title,
-        lat: place.lat,
-        lng: place.lng,
-        type: place.type
-      }, "*");
+    function bindCardClicks(){
+      [...cardsWrap.querySelectorAll(".card[data-id]")].forEach(el=>{
+        el.addEventListener("click", ()=>{
+          const id = el.getAttribute("data-id");
+          const place = ALL_ITEMS.find(p=>p.id===id);
+          if(place && Number.isFinite(place.lat) && Number.isFinite(place.lng)){
+            focusPlaceOnMap(place);
+          }else if(ACTIVE_DIST){
+            focusDistrictOnMap(ACTIVE_DIST);
+          }
+        });
+      });
     }
 
-    function renderPlaces(){
-      if(!ACTIVE_NODE){
-        cardsWrap.innerHTML = `<div class="empty">Select a district…</div>`;
-        return;
+    function renderAllSections(){
+      // ✅ All = sections wise
+      const controlsHtml = `
+        <div class="controls">
+          <input id="placeSearch" class="input" placeholder="Search in ALL categories…" />
+          <select id="placeSort" class="select">
+            <option value="popular_desc">Popularity (high → low)</option>
+            <option value="rating_desc">Rating (high → low)</option>
+            <option value="fee_asc">Entry fee (low → high)</option>
+            <option value="name_asc">Name (A → Z)</option>
+          </select>
+        </div>
+        <div style="margin-top:8px;color:var(--muted2);font-weight:800;font-size:12px">
+          Tip: “View all” pe click karke single category open hogi.
+        </div>
+      `;
+
+      let html = controlsHtml;
+
+      for(const t of TYPES){
+        const items = getFilteredItems(t);
+        const top = items.slice(0,6);
+
+        html += `
+          <div class="sectionTitle">
+            <b>${escapeHtml(TYPE_LABEL[t] || t)}</b>
+            <div class="right">
+              <span class="countPill">${items.length}</span>
+              <button class="linkBtn" data-view="${escapeHtml(t)}">View all</button>
+            </div>
+          </div>
+        `;
+
+        if(!top.length){
+          html += `<div class="empty" style="margin-top:10px">No items in this section.</div>`;
+          continue;
+        }
+
+        html += `
+          <div class="cards">
+            ${top.map(cardHtml).join("")}
+          </div>
+        `;
       }
 
-      const niceType = ACTIVE_TYPE==="all" ? "All" : (ACTIVE_TYPE[0].toUpperCase()+ACTIVE_TYPE.slice(1));
-      placesTitle.textContent = `${niceType} • ${ACTIVE_DIST}`;
+      cardsWrap.innerHTML = html;
 
-      const filtered = getFilteredItems();
+      // bind view all buttons
+      [...cardsWrap.querySelectorAll("button[data-view]")].forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          setActiveType(btn.getAttribute("data-view"));
+          // scroll up to places panel top a bit
+          cardsWrap.scrollIntoView({behavior:"smooth", block:"start"});
+        });
+      });
+
+      wireControls();
+      bindCardClicks();
+    }
+
+    function renderSingleType(){
+      const niceType = ACTIVE_TYPE === "all" ? "All" : (TYPE_LABEL[ACTIVE_TYPE] || ACTIVE_TYPE);
+      const items = getFilteredItems(ACTIVE_TYPE);
 
       const controlsHtml = `
         <div class="controls">
@@ -510,11 +673,11 @@
           </select>
         </div>
         <div style="margin-top:8px;color:var(--muted2);font-weight:800;font-size:12px">
-          Showing <b>${filtered.length}</b> items
+          Showing <b>${items.length}</b> items
         </div>
       `;
 
-      if(!filtered.length){
+      if(!items.length){
         cardsWrap.innerHTML = controlsHtml + `<div class="empty" style="margin-top:12px">No items found.</div>`;
         wireControls();
         return;
@@ -522,48 +685,30 @@
 
       cardsWrap.innerHTML = controlsHtml + `
         <div class="cards">
-          ${filtered.slice(0,60).map(x=>{
-            const thumbUrl = x.photos?.[0] ? x.photos[0].replaceAll("'", "%27") : "";
-            const thumb = thumbUrl ? `style="background-image:url('${thumbUrl}')"` : "";
-            const label = x.type ? x.type[0].toUpperCase()+x.type.slice(1) : "Place";
-            const extra = [
-              Number.isFinite(x.rating) ? `⭐ ${x.rating}` : "",
-              Number.isFinite(x.popularity) ? `🔥 ${x.popularity}` : "",
-              Number.isFinite(x.entryFee) ? `₹${x.entryFee}` : ""
-            ].filter(Boolean).join(" • ");
-
-            const canMap = Number.isFinite(x.lat) && Number.isFinite(x.lng);
-            return `
-              <div class="card" data-id="${escapeHtml(x.id)}">
-                <div class="thumb" ${thumb}>
-                  <div class="badge">${escapeHtml(label)}${canMap ? " • Map" : ""}</div>
-                </div>
-                <div class="pad">
-                  <b>${escapeHtml(x.title)}</b>
-                  <div class="meta">${escapeHtml(extra || "Tap to focus on map (if lat/lng available)")}</div>
-                  ${x.notes ? `<div class="meta">${escapeHtml(x.notes).slice(0,120)}${x.notes.length>120?"…":""}</div>` : ""}
-                </div>
-              </div>
-            `;
-          }).join("")}
+          ${items.slice(0,60).map(cardHtml).join("")}
         </div>
+        ${items.length>60 ? `<div style="margin-top:10px;color:var(--muted2);font-weight:800;font-size:12px">Showing first 60 items.</div>` : ""}
       `;
 
-      // ✅ card click => map focus if lat/lng exists
-      [...cardsWrap.querySelectorAll(".card[data-id]")].forEach(el=>{
-        el.addEventListener("click", ()=>{
-          const id = el.getAttribute("data-id");
-          const place = ALL_ITEMS.find(p=>p.id===id);
-          if(place && Number.isFinite(place.lat) && Number.isFinite(place.lng)){
-            focusPlaceOnMap(place);
-          }else{
-            // fallback: just focus district
-            focusDistrictOnMap(ACTIVE_DIST);
-          }
-        });
-      });
-
       wireControls();
+      bindCardClicks();
+    }
+
+    function renderPlaces(){
+      if(!ACTIVE_NODE){
+        cardsWrap.innerHTML = `<div class="empty">Select a district…</div>`;
+        return;
+      }
+
+      if(ACTIVE_TYPE === "all"){
+        placesTitle.textContent = `All • ${ACTIVE_DIST}`;
+        renderAllSections();
+      }else{
+        placesTitle.textContent = `${TYPE_LABEL[ACTIVE_TYPE] || ACTIVE_TYPE} • ${ACTIVE_DIST}`;
+        renderSingleType();
+      }
+
+      setHeroCover();
     }
 
     function setActiveType(t){
@@ -572,7 +717,6 @@
         c.classList.toggle("active", c.getAttribute("data-type")===t);
       });
       renderPlaces();
-      setHeroCover();
     }
 
     async function openDistrict(d){
@@ -583,16 +727,15 @@
       PLACE_SORT = "popular_desc";
 
       hTitle.textContent = d;
-      hSub.textContent = "Loading district data…";
+      hSub.innerHTML = `Loading <b>${escapeHtml(d)}</b>…`;
 
       typeChips.style.display = "none";
       heroCover.style.backgroundImage = "none";
       briefBox.innerHTML = `<div class="empty">Loading…</div>`;
       reachBox.innerHTML = `<div class="empty">Loading…</div>`;
       cardsWrap.innerHTML = `<div class="empty">Loading…</div>`;
-      renderDistrictList();
 
-      // ✅ map focus
+      renderDistrictList();
       focusDistrictOnMap(d);
 
       try{
@@ -616,9 +759,14 @@
 
         ALL_ITEMS = flattenSegments(ACTIVE_NODE);
 
+        // chips + default ALL
         typeChips.style.display = "flex";
-        setActiveType("destinations"); // ✅ default
-        hSub.textContent = "Loaded ✅ Type select karo, cards pe click → map focus.";
+        setActiveType("all");
+
+        hSub.innerHTML = `Loaded ✅ <b>All</b> shows sections wise. You can switch types.`;
+
+        // refresh sidebar active highlight
+        renderDistrictList();
 
       }catch(e){
         console.error(e);
@@ -629,23 +777,43 @@
       }
     }
 
+    // chips
     typeChips.addEventListener("click", (e)=>{
       const chip = e.target.closest(".chip");
       if(!chip) return;
       setActiveType(chip.getAttribute("data-type"));
     });
 
+    // district search
     qEl.addEventListener("input", renderDistrictList);
 
+    // ✅ init
     async function init(){
       const snap = await get(ref(db, ROOT));
       const root = snap.exists() ? safeObj(snap.val()) : {};
+
       DISTRICTS = Object.keys(root).sort((a,b)=>a.localeCompare(b));
+
+      // ✅ precompute 2–3 popular destination names for EACH district
+      DIST_PREVIEW = {};
+      for(const d of DISTRICTS){
+        const node = root[d];
+        const names = computeDistrictPreviewNames(node);
+        DIST_PREVIEW[d] = names;
+      }
+
       renderDistrictList();
+
+      // if URL has #district=Kullu
+      const m = (location.hash || "").match(/district=([^&]+)/i);
+      if(m){
+        const d = decodeURIComponent(m[1]);
+        if(DISTRICTS.includes(d)) openDistrict(d);
+      }
     }
 
     init().catch(()=>{
-      districtList.innerHTML = `<div class="d"><b>Firebase not configured</b></div>`;
+      districtList.innerHTML = `<div class="d"><b>Firebase not configured</b><small>Check rules/config</small></div>`;
     });
   </script>
 </body>
