@@ -33,14 +33,130 @@
       overflow-x:hidden;
     }
 
-    /* ✅ Main layout WITHOUT sidebar column */
+    /* ✅ Visitor layout after district selected */
     .app{
-      display:grid;
+      display:none;
       grid-template-columns: 1fr 30%;
       min-height:100vh;
     }
 
-    /* MIDDLE */
+    /* ✅ Landing (initial open): District grid on top + Map below */
+    .landing{
+      padding:14px;
+      max-width:1200px;
+      margin:0 auto;
+    }
+    .landingHero{
+      border-radius:24px;border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.05);
+      backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .landingTop{
+      padding:16px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18);
+    }
+    .landingTop h1{
+      margin:0;
+      font-size:clamp(22px,2.6vw,40px);
+      font-weight:950;letter-spacing:-.3px
+    }
+    .landingTop p{
+      margin:8px 0 0;
+      color:rgba(236,242,255,.86);
+      line-height:1.5;
+      font-weight:650
+    }
+    .landingControls{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px
+    }
+    .search{
+      flex:1;min-width:220px;
+      width:100%;padding:11px 12px;border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      outline:none;color:var(--text);background:rgba(0,0,0,.22);
+      font-weight:800;transition:.15s;
+    }
+    .search:focus{
+      border-color:rgba(255,122,24,.45);
+      box-shadow:0 0 0 4px rgba(255,122,24,.12);
+    }
+    .hintPill{
+      padding:10px 12px;border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.05);
+      color:rgba(236,242,255,.92);
+      font-weight:900;font-size:12px;
+    }
+
+    .districtGridWrap{
+      padding:14px;
+    }
+    .districtGrid{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap:12px;
+    }
+    .dCard{
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.22));
+      overflow:hidden;
+      cursor:pointer;
+      transition:.18s;
+      box-shadow:0 10px 18px rgba(0,0,0,.24);
+      position:relative;
+    }
+    .dCard:hover{
+      transform:translateY(-3px);
+      border-color:rgba(255,255,255,.22);
+      box-shadow:0 18px 34px rgba(0,0,0,.35)
+    }
+    .dCardTop{
+      padding:12px 12px 10px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+    }
+    .dCardTop b{font-weight:950}
+    .pill{
+      padding:6px 9px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      font-weight:900;font-size:11px;color:rgba(236,242,255,.92);
+    }
+    .dCardBody{
+      padding:12px;
+      color:var(--muted);
+      font-weight:800;
+      font-size:12px;
+      line-height:1.35;
+      min-height:52px;
+    }
+
+    /* Landing Map area (below grid) */
+    .landingMap{
+      margin-top:14px;
+      border-radius:24px;border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.05);
+      backdrop-filter: blur(var(--blur));-webkit-backdrop-filter: blur(var(--blur));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      height:460px;
+    }
+    .landingMapHead{
+      padding:14px;border-bottom:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.20);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+    }
+    .landingMapHead b{font-size:13px;letter-spacing:.3px}
+    .landingMapHead span{font-size:12px;color:var(--muted);font-weight:800}
+    .landingMapFrame{height:calc(100% - 52px)}
+    iframe{width:100%;height:100%;border:0;background:rgba(0,0,0,.2)}
+
+    /* Main visitor page (same style as yours) */
     .main{padding:14px;min-width:0}
     .hero{
       border-radius:24px;border:1px solid rgba(255,255,255,.12);
@@ -158,7 +274,7 @@
       background:rgba(0,0,0,.18);color:rgba(236,242,255,.88);font-weight:850
     }
 
-    /* RIGHT MAP */
+    /* Right map (sticky on visitor view) */
     .mapCol{
       border-left:1px solid rgba(255,255,255,.10);
       padding:14px;
@@ -180,13 +296,11 @@
     .mapHead b{font-size:13px;letter-spacing:.3px}
     .mapHint{font-size:12px;color:var(--muted);font-weight:800}
     .mapFrameWrap{flex:1;min-height:0}
-    iframe{width:100%;height:100%;border:0;background:rgba(0,0,0,.2)}
 
-    /* ✅ Floating District button (hidden until scroll) */
+    /* Floating Districts button (shown after scroll on visitor view) */
     .floatBtn{
       position:fixed;
-      left:14px;
-      top:14px;
+      left:14px; top:14px;
       z-index:9999;
       display:flex;align-items:center;gap:10px;
       padding:10px 12px;
@@ -216,7 +330,7 @@
     }
     .floatBtn small{display:block;font-weight:850;color:var(--muted);margin-top:1px}
 
-    /* ✅ Drawer Sidebar (overlay) */
+    /* Drawer */
     .drawerOverlay{
       position:fixed; inset:0;
       background:rgba(0,0,0,.55);
@@ -225,7 +339,6 @@
       transition:.2s ease;
     }
     .drawerOverlay.open{opacity:1; pointer-events:auto}
-
     .drawer{
       position:fixed;
       left:0; top:0; bottom:0;
@@ -255,16 +368,6 @@
     }
     .xBtn:hover{border-color:rgba(255,255,255,.22)}
 
-    .search{
-      width:100%;margin-top:10px;padding:11px 12px;border-radius:16px;
-      border:1px solid rgba(255,255,255,.14);
-      outline:none;color:var(--text);background:rgba(0,0,0,.22);
-      font-weight:800;transition:.15s;
-    }
-    .search:focus{
-      border-color:rgba(255,122,24,.45);
-      box-shadow:0 0 0 4px rgba(255,122,24,.12);
-    }
     .list{margin-top:12px;display:flex;flex-direction:column;gap:10px}
     .d{
       border-radius:16px;border:1px solid rgba(255,255,255,.12);
@@ -281,28 +384,31 @@
     }
 
     @media(max-width:1100px){
+      .districtGrid{grid-template-columns: repeat(2, minmax(0,1fr));}
       .app{grid-template-columns:1fr}
       .mapCol{position:relative;height:auto;border-left:0;border-top:1px solid rgba(255,255,255,.10)}
       .mapShell{height:460px}
     }
     @media(max-width:520px){
+      .districtGrid{grid-template-columns: 1fr;}
       .cards{grid-template-columns:1fr}
       .floatBtn{left:10px;top:10px}
+      .landingMap{height:420px}
     }
   </style>
 </head>
 
 <body>
-  <!-- ✅ Floating Districts button -->
+  <!-- Floating district button (visitor view) -->
   <div class="floatBtn" id="floatBtn" title="Open district list">
     <div class="floatDot"></div>
     <div>
       Districts
-      <small id="floatSub">Scroll to show</small>
+      <small id="floatSub">Open list</small>
     </div>
   </div>
 
-  <!-- ✅ Drawer -->
+  <!-- Drawer -->
   <div class="drawerOverlay" id="drawerOverlay"></div>
   <aside class="drawer" id="drawer">
     <div class="drawerHead">
@@ -315,16 +421,45 @@
       </div>
       <button class="xBtn" id="closeDrawer">✕</button>
     </div>
-
     <input id="q" class="search" placeholder="Search district…"/>
-
     <div class="list" id="districtList">
       <div class="d"><b>Loading…</b><small>Please wait</small></div>
     </div>
   </aside>
 
-  <div class="app">
-    <!-- MIDDLE -->
+  <!-- ✅ LANDING: District grid top, map below -->
+  <section class="landing" id="landing">
+    <div class="landingHero">
+      <div class="landingTop">
+        <h1>Himachal Explorer</h1>
+        <p>Choose a district to explore places, temples, treks, lakes & stays. Cards → map focus (when lat/lng exists).</p>
+
+        <div class="landingControls">
+          <input id="landingSearch" class="search" placeholder="Search district… (e.g., Shimla, Kullu, Kangra)"/>
+          <div class="hintPill">Tap any district card</div>
+        </div>
+      </div>
+
+      <div class="districtGridWrap">
+        <div class="districtGrid" id="districtGrid">
+          <!-- Filled by JS -->
+        </div>
+
+        <div class="landingMap">
+          <div class="landingMapHead">
+            <b>Himachal Map</b>
+            <span id="landingMapHint">Tap a district to focus map</span>
+          </div>
+          <div class="landingMapFrame">
+            <iframe id="landingMapFrame" title="HP Map" src="map.html"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ✅ VISITOR APP (after district selected): content + sticky map -->
+  <div class="app" id="app">
     <main class="main">
       <section class="hero">
         <div class="heroCover" id="heroCover"></div>
@@ -333,7 +468,7 @@
         <div class="heroInner">
           <div class="heroTop">
             <h1 id="hTitle">Himachal Pradesh</h1>
-            <p id="hSub">Scroll a little → “Districts” button appears. Then choose a district.</p>
+            <p id="hSub">District loaded details will appear here.</p>
 
             <div class="chipRow" id="typeChips" style="display:none">
               <div class="chip active" data-type="all">All</div>
@@ -348,24 +483,23 @@
           <div class="grid">
             <div class="panel">
               <div class="panelHead"><b>District Brief</b></div>
-              <div class="panelBody" id="briefBox"><div class="empty">Open Districts → select a district…</div></div>
+              <div class="panelBody" id="briefBox"><div class="empty">Loading…</div></div>
             </div>
 
             <div class="panel">
               <div class="panelHead"><b>How to Reach</b></div>
-              <div class="panelBody" id="reachBox"><div class="empty">Open Districts → select a district…</div></div>
+              <div class="panelBody" id="reachBox"><div class="empty">Loading…</div></div>
             </div>
 
             <div class="panel">
               <div class="panelHead"><b id="placesTitle">Places</b></div>
-              <div class="panelBody" id="cardsWrap"><div class="empty">Open Districts → select a district…</div></div>
+              <div class="panelBody" id="cardsWrap"><div class="empty">Loading…</div></div>
             </div>
           </div>
         </div>
       </section>
     </main>
 
-    <!-- RIGHT MAP -->
     <aside class="mapCol">
       <div class="mapShell">
         <div class="mapHead">
@@ -397,13 +531,21 @@
       measurementId: "G-MGTDBCG896"
     };
 
-    const app = initializeApp(firebaseConfig);
-    try { getAnalytics(app); } catch(e) {}
-    const db = getDatabase(app);
+    const appFB = initializeApp(firebaseConfig);
+    try { getAnalytics(appFB); } catch(e) {}
+    const db = getDatabase(appFB);
 
     const ROOT = "tourism/hp/districts";
     const TYPES = ["destinations","lakes","temples","treks","hotels"];
     const TYPE_LABEL = { destinations:"Destinations", lakes:"Lakes", temples:"Temples", treks:"Treks", hotels:"Hotels" };
+
+    // Landing
+    const landing = document.getElementById("landing");
+    const appEl = document.getElementById("app");
+    const landingSearch = document.getElementById("landingSearch");
+    const districtGrid = document.getElementById("districtGrid");
+    const landingMapFrame = document.getElementById("landingMapFrame");
+    const landingMapHint = document.getElementById("landingMapHint");
 
     // Drawer UI
     const floatBtn = document.getElementById("floatBtn");
@@ -411,12 +553,10 @@
     const drawer = document.getElementById("drawer");
     const drawerOverlay = document.getElementById("drawerOverlay");
     const closeDrawerBtn = document.getElementById("closeDrawer");
-
-    // List UI
     const qEl = document.getElementById("q");
     const districtList = document.getElementById("districtList");
 
-    // Main UI
+    // App UI
     const hTitle = document.getElementById("hTitle");
     const hSub = document.getElementById("hSub");
     const heroCover = document.getElementById("heroCover");
@@ -426,11 +566,11 @@
     const placesTitle = document.getElementById("placesTitle");
     const typeChips = document.getElementById("typeChips");
 
-    // Map
+    // Map (visitor view)
     const mapHint = document.getElementById("mapHint");
     const mapFrame = document.getElementById("mapFrame");
 
-    // State
+    // state
     let DISTRICTS = [];
     let DIST_PREVIEW = {};
     let ACTIVE_DIST = "";
@@ -510,50 +650,10 @@
     }
 
     function defaultBrief(d){
-      return `• ${d} is a beautiful district of Himachal Pradesh.\n• Explore nature, culture, temples, treks and stays.\n• Tap any place card → map focus (when lat/lng exists).`;
+      return `• ${d} is a beautiful district of Himachal Pradesh.\n• Explore nature, culture, temples, treks, lakes and stays.\n• Tap any place card → map focus (when lat/lng exists).`;
     }
     function defaultHowToReach(d){
       return `🛣️ Road: Regular road connectivity.\n🚆 Train: Nearest railhead depends on route.\n✈️ Air: Nearest airport depends on region.\n\nRight side map will stay synced.`;
-    }
-
-    function computeDistrictPreviewNames(node){
-      const seg = safeObj(node?.segments);
-      const bucket = safeObj(seg?.destinations);
-      const arr = Object.keys(bucket).map(id=>{
-        const it = safeObj(bucket[id]);
-        return {
-          title: pickTitle(it),
-          pop: Number(it.popularityScore ?? it.popularity ?? 0) || 0,
-          rating: Number(it.rating ?? 0) || 0
-        };
-      });
-      arr.sort((a,b)=> (b.pop-a.pop) || (b.rating-a.rating) || String(a.title).localeCompare(String(b.title)));
-      return arr.slice(0,3).map(x=>x.title).filter(Boolean);
-    }
-
-    function renderDistrictList(){
-      const q = low(qEl.value);
-      const filtered = DISTRICTS.filter(d => !q || low(d).includes(q));
-
-      districtList.innerHTML = (filtered.length ? filtered : [""]).map(d=>{
-        if(!d) return `<div class="d"><b>No district found</b><small>Try another keyword</small></div>`;
-        const active = (ACTIVE_DIST === d) ? "active" : "";
-        const pv = DIST_PREVIEW[d] || [];
-        const line = pv.length ? `<small>${pv.map(escapeHtml).join(" • ")}</small>` : `<small style="opacity:.65">—</small>`;
-        return `
-          <div class="d ${active}" data-d="${escapeHtml(d)}">
-            <b>${escapeHtml(d)}</b>
-            ${line}
-          </div>
-        `;
-      }).join("");
-
-      [...districtList.querySelectorAll(".d[data-d]")].forEach(el=>{
-        el.addEventListener("click", ()=>{
-          openDistrict(el.getAttribute("data-d"));
-          closeDrawer();
-        });
-      });
     }
 
     function setHeroCover(){
@@ -572,11 +672,16 @@
       heroCover.style.backgroundImage = cover ? `url('${cover.replaceAll("'", "%27")}')` : "none";
     }
 
-    // Map syncing
+    // map syncing
     function focusDistrictOnMap(d){
       mapHint.textContent = `Map: ${d}`;
       mapFrame.src = `map.html#district=${encodeURIComponent(d)}&t=${Date.now()}`;
       setTimeout(()=> mapFrame.contentWindow?.postMessage({ type:"FOCUS_DISTRICT", district:d }, "*"), 600);
+    }
+    function focusDistrictOnLandingMap(d){
+      landingMapHint.textContent = `Map focused: ${d}`;
+      landingMapFrame.src = `map.html#district=${encodeURIComponent(d)}&t=${Date.now()}`;
+      setTimeout(()=> landingMapFrame.contentWindow?.postMessage({ type:"FOCUS_DISTRICT", district:d }, "*"), 600);
     }
     function focusPlaceOnMap(place){
       mapFrame.contentWindow?.postMessage({
@@ -690,7 +795,7 @@
             <option value="name_asc">Name (A → Z)</option>
           </select>
         </div>
-        <div style="margin-top:8px;color:var(--muted2);font-weight:800;font-size:12px">
+        <div style="margin-top:8px;color:rgba(236,242,255,.60);font-weight:800;font-size:12px">
           Tip: “View all” pe click karke single category open hogi.
         </div>
       `;
@@ -746,7 +851,7 @@
             <option value="name_asc">Name (A → Z)</option>
           </select>
         </div>
-        <div style="margin-top:8px;color:var(--muted2);font-weight:800;font-size:12px">
+        <div style="margin-top:8px;color:rgba(236,242,255,.60);font-weight:800;font-size:12px">
           Showing <b>${items.length}</b> items
         </div>
       `;
@@ -761,7 +866,7 @@
         <div class="cards">
           ${items.slice(0,60).map(cardHtml).join("")}
         </div>
-        ${items.length>60 ? `<div style="margin-top:10px;color:var(--muted2);font-weight:800;font-size:12px">Showing first 60 items.</div>` : ""}
+        ${items.length>60 ? `<div style="margin-top:10px;color:rgba(236,242,255,.60);font-weight:800;font-size:12px">Showing first 60 items.</div>` : ""}
       `;
 
       wireControls();
@@ -770,7 +875,7 @@
 
     function renderPlaces(){
       if(!ACTIVE_NODE){
-        cardsWrap.innerHTML = `<div class="empty">Open Districts → select a district…</div>`;
+        cardsWrap.innerHTML = `<div class="empty">Select a district…</div>`;
         return;
       }
 
@@ -793,12 +898,22 @@
       renderPlaces();
     }
 
+    function showVisitorApp(){
+      landing.style.display = "none";
+      appEl.style.display = "grid";
+      // floating button should work after visitor view
+      handleScroll();
+    }
+
     async function openDistrict(d){
       ACTIVE_DIST = d;
       ACTIVE_NODE = null;
       ALL_ITEMS = [];
       PLACE_QUERY = "";
       PLACE_SORT = "popular_desc";
+
+      // Switch to visitor view
+      showVisitorApp();
 
       hTitle.textContent = d;
       hSub.innerHTML = `Loading <b>${escapeHtml(d)}</b>…`;
@@ -836,11 +951,10 @@
         typeChips.style.display = "flex";
         setActiveType("all");
 
-        hSub.innerHTML = `Loaded ✅ <b>${escapeHtml(d)}</b> • Cards click → map focus`;
+        hSub.innerHTML = `Loaded ✅ <b>${escapeHtml(d)}</b> • Card click → map focus`;
         floatSub.textContent = escapeHtml(d);
 
         renderDistrictList();
-
       }catch(e){
         console.error(e);
         hSub.textContent = "Load failed (rules/config?)";
@@ -850,7 +964,7 @@
       }
     }
 
-    /* ✅ Drawer open/close */
+    /* Drawer open/close */
     function openDrawer(){
       drawer.classList.add("open");
       drawerOverlay.classList.add("open");
@@ -871,20 +985,72 @@
       setActiveType(chip.getAttribute("data-type"));
     });
 
-    // district search
+    function renderDistrictList(){
+      const q = low(qEl.value);
+      const filtered = DISTRICTS.filter(d => !q || low(d).includes(q));
+
+      districtList.innerHTML = (filtered.length ? filtered : [""]).map(d=>{
+        if(!d) return `<div class="d"><b>No district found</b><small>Try another keyword</small></div>`;
+        const active = (ACTIVE_DIST === d) ? "active" : "";
+        const pv = DIST_PREVIEW[d] || [];
+        const line = pv.length ? `<small>${pv.map(escapeHtml).join(" • ")}</small>` : `<small style="opacity:.65">—</small>`;
+        return `
+          <div class="d ${active}" data-d="${escapeHtml(d)}">
+            <b>${escapeHtml(d)}</b>
+            ${line}
+          </div>
+        `;
+      }).join("");
+
+      [...districtList.querySelectorAll(".d[data-d]")].forEach(el=>{
+        el.addEventListener("click", ()=>{
+          openDistrict(el.getAttribute("data-d"));
+          closeDrawer();
+        });
+      });
+    }
     qEl.addEventListener("input", renderDistrictList);
 
-    /* ✅ Show button only after scroll */
+    /* ✅ Landing grid render */
+    function renderLandingGrid(){
+      const q = low(landingSearch.value);
+      const filtered = DISTRICTS.filter(d => !q || low(d).includes(q));
+
+      districtGrid.innerHTML = (filtered.length ? filtered : [""]).map(d=>{
+        if(!d) return `<div class="dCard" style="padding:14px"><b>No district found</b></div>`;
+        const pv = DIST_PREVIEW[d] || [];
+        const preview = pv.length ? pv.map(escapeHtml).join(" • ") : "Popular places will appear here";
+        return `
+          <div class="dCard" data-d="${escapeHtml(d)}">
+            <div class="dCardTop">
+              <b>${escapeHtml(d)}</b>
+              <span class="pill">Explore</span>
+            </div>
+            <div class="dCardBody">${preview}</div>
+          </div>
+        `;
+      }).join("");
+
+      [...districtGrid.querySelectorAll(".dCard[data-d]")].forEach(el=>{
+        el.addEventListener("mouseenter", ()=>{
+          // optional: hover focuses landing map
+          const d = el.getAttribute("data-d");
+          focusDistrictOnLandingMap(d);
+        });
+        el.addEventListener("click", ()=>{
+          openDistrict(el.getAttribute("data-d"));
+        });
+      });
+    }
+    landingSearch.addEventListener("input", renderLandingGrid);
+
+    /* Floating button visible after scroll (visitor view only) */
     function handleScroll(){
       const y = window.scrollY || document.documentElement.scrollTop || 0;
-      const show = y > 80; // threshold
+      const show = (appEl.style.display === "grid") && (y > 80);
       floatBtn.classList.toggle("show", show);
-      if(!ACTIVE_DIST){
-        floatSub.textContent = show ? "Open list" : "Scroll to show";
-      }
     }
     window.addEventListener("scroll", handleScroll, {passive:true});
-    handleScroll();
 
     async function init(){
       const snap = await get(ref(db, ROOT));
@@ -892,10 +1058,10 @@
 
       DISTRICTS = Object.keys(root).sort((a,b)=>a.localeCompare(b));
 
+      // preview 2-3 destination names
       DIST_PREVIEW = {};
       for(const d of DISTRICTS){
         const node = root[d];
-        // preview line (2-3 destinations)
         const seg = safeObj(node?.segments);
         const bucket = safeObj(seg?.destinations);
         const arr = Object.keys(bucket).map(id=>{
@@ -910,19 +1076,19 @@
         DIST_PREVIEW[d] = arr.slice(0,3).map(x=>x.title).filter(Boolean);
       }
 
+      renderLandingGrid();
       renderDistrictList();
 
-      // deep-link: index.html#district=Kullu
+      // deep link: index.html#district=Kullu
       const m = (location.hash || "").match(/district=([^&]+)/i);
       if(m){
         const d = decodeURIComponent(m[1]);
-        if(DISTRICTS.includes(d)){
-          openDistrict(d);
-        }
+        if(DISTRICTS.includes(d)) openDistrict(d);
       }
     }
 
     init().catch(()=>{
+      districtGrid.innerHTML = `<div class="dCard"><div class="dCardTop"><b>Firebase not configured</b><span class="pill">Fix</span></div><div class="dCardBody">Check rules / config / database path</div></div>`;
       districtList.innerHTML = `<div class="d"><b>Firebase not configured</b><small>Check rules/config</small></div>`;
     });
   </script>
