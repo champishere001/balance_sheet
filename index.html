@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer • District Guide</title>
+  <title>Himachal Explorer • Stories by District</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,12 +12,13 @@
   <style>
     :root{
       --bg0:#050712; --bg1:#080B18;
-      --text:#ECF2FF; --muted:rgba(236,242,255,.72); --muted2:rgba(236,242,255,.60);
+      --text:#ECF2FF; --muted:rgba(236,242,255,.74); --muted2:rgba(236,242,255,.60);
       --stroke:rgba(255,255,255,.12);
       --brand:#FF7A18; --brand2:#FFB04A;
       --blur:18px;
       --shadow: 0 18px 50px rgba(0,0,0,.55);
       --shadow2: 0 10px 26px rgba(0,0,0,.45);
+      --radius:22px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -33,68 +34,121 @@
       overflow-x:hidden;
     }
 
-    /* ✅ Visitor layout after district selected */
+    /* layout */
     .app{
-      display:none;
-      grid-template-columns: 1fr 30%;
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:14px;
+      padding:14px;
       min-height:100vh;
     }
 
-    /* ✅ Landing (initial open): District grid on top + Map below */
-    .landing{
-      padding:14px;
-      max-width:1200px;
-      margin:0 auto;
-    }
-    .landingHero{
-      border-radius:24px;border:1px solid rgba(255,255,255,.12);
+    /* hero */
+    .hero{
+      grid-column: 1 / 2;
+      border-radius:28px;
+      border:1px solid rgba(255,255,255,.12);
+      overflow:hidden;
       background:rgba(255,255,255,.05);
-      backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur));
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
       box-shadow: var(--shadow);
+      position:relative;
+      isolation:isolate;
+    }
+    .heroCover{
+      position:absolute; inset:0;
+      background-size:cover;
+      background-position:center;
+      filter: blur(26px) saturate(1.1) contrast(1.05);
+      transform:scale(1.12);
+      opacity:.58;
+      z-index:0;
+    }
+    .heroOverlay{
+      position:absolute; inset:0;
+      background:linear-gradient(180deg, rgba(5,7,18,.18), rgba(5,7,18,.82) 55%, rgba(5,7,18,.95));
+      z-index:1;
+    }
+    .heroInner{position:relative; z-index:2; padding:18px;}
+    .topRow{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex; gap:10px; align-items:center;
+      padding:12px 14px;border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background: radial-gradient(450px 120px at 20% 0%, rgba(255,122,24,.22), transparent 70%), rgba(0,0,0,.26);
+      box-shadow: var(--shadow2);
+    }
+    .dot{
+      width:12px;height:12px;border-radius:50%;
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      box-shadow:0 0 24px rgba(255,122,24,.55)
+    }
+    .title{font-weight:900; letter-spacing:-.2px}
+    .sub{font-size:12px;color:var(--muted);font-weight:800;margin-top:2px}
+
+    .quoteBox{
+      flex:1;
+      min-width: 260px;
+      max-width: 620px;
+      padding:14px 14px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.22);
+      box-shadow: var(--shadow2);
+    }
+    .quote{
+      font-weight:900;
+      font-size:14px;
+      line-height:1.5;
+      margin:0;
+    }
+    .quoteSmall{
+      margin-top:8px;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    /* districts grid (top) */
+    .districtPanel{
+      margin-top:14px;
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.18);
       overflow:hidden;
     }
-    .landingTop{
-      padding:16px;
+    .districtHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:12px 14px;
       border-bottom:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.18);
+      background:rgba(0,0,0,.22);
+      flex-wrap:wrap;
     }
-    .landingTop h1{
-      margin:0;
-      font-size:clamp(22px,2.6vw,40px);
-      font-weight:950;letter-spacing:-.3px
-    }
-    .landingTop p{
-      margin:8px 0 0;
-      color:rgba(236,242,255,.86);
-      line-height:1.5;
-      font-weight:650
-    }
-    .landingControls{
-      display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px
-    }
+    .districtHead b{letter-spacing:.2px}
     .search{
-      flex:1;min-width:220px;
-      width:100%;padding:11px 12px;border-radius:16px;
+      min-width:220px;
+      flex:1;
+      padding:11px 12px;
+      border-radius:16px;
       border:1px solid rgba(255,255,255,.14);
-      outline:none;color:var(--text);background:rgba(0,0,0,.22);
-      font-weight:800;transition:.15s;
+      outline:none;
+      color:var(--text);
+      background:rgba(0,0,0,.22);
+      font-weight:800;
     }
     .search:focus{
       border-color:rgba(255,122,24,.45);
       box-shadow:0 0 0 4px rgba(255,122,24,.12);
     }
-    .hintPill{
-      padding:10px 12px;border-radius:16px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.05);
-      color:rgba(236,242,255,.92);
-      font-weight:900;font-size:12px;
-    }
-
-    .districtGridWrap{
+    .grid{
       padding:14px;
-    }
-    .districtGrid{
       display:grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap:12px;
@@ -102,417 +156,316 @@
     .dCard{
       border-radius:18px;
       border:1px solid rgba(255,255,255,.12);
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.22));
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.20));
+      padding:12px;
+      cursor:pointer;
+      transition:.18s transform ease, .18s border-color ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .dCard:hover{transform:translateY(-3px); border-color:rgba(255,255,255,.22)}
+    .dCard.active{border-color:rgba(255,122,24,.48); box-shadow:0 0 0 1px rgba(255,122,24,.24) inset, 0 12px 26px rgba(0,0,0,.45)}
+    .dCard b{display:block; font-weight:950; font-size:14px}
+    .dCard small{
+      display:block;
+      margin-top:8px;
+      color:var(--muted);
+      font-weight:800;
+      font-size:11px;
+      line-height:1.35;
+      opacity:.95;
+    }
+    .miniTag{
+      position:absolute;
+      top:10px; right:10px;
+      padding:6px 9px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.25);
+      font-weight:900;
+      font-size:11px;
+      color:rgba(236,242,255,.92);
+    }
+
+    /* story section */
+    .story{
+      margin-top:14px;
+      border-radius:28px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.05);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .storyTop{
+      padding:16px;
+      background:rgba(0,0,0,.20);
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .storyTop h1{
+      margin:0;
+      font-size: clamp(22px, 2.6vw, 42px);
+      font-weight:950;
+      letter-spacing:-.4px;
+    }
+    .storyTop p{
+      margin:10px 0 0;
+      color:rgba(236,242,255,.86);
+      line-height:1.55;
+      font-weight:650;
+    }
+    .metaRow{
+      margin-top:12px;
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
+    .pill{
+      padding:8px 11px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06);
+      font-weight:900;
+      font-size:12px;
+      color:rgba(236,242,255,.92);
+    }
+
+    /* section headers + cards */
+    .section{
+      padding:14px;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+    .sectionTitle{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin:0;
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18);
+    }
+    .sectionTitle b{font-size:13px; letter-spacing:.2px}
+    .countPill{
+      padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      font-weight:900; font-size:12px;
+    }
+
+    .cards{
+      margin-top:12px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:12px;
+    }
+    .card{
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.18);
       overflow:hidden;
       cursor:pointer;
       transition:.18s;
       box-shadow:0 10px 18px rgba(0,0,0,.24);
+    }
+    .card:hover{transform:translateY(-3px); border-color:rgba(255,255,255,.22); box-shadow:0 18px 34px rgba(0,0,0,.35)}
+    .thumb{
+      height:140px;
+      background:rgba(255,255,255,.08);
+      background-size:cover;
+      background-position:center;
       position:relative;
     }
-    .dCard:hover{
-      transform:translateY(-3px);
-      border-color:rgba(255,255,255,.22);
-      box-shadow:0 18px 34px rgba(0,0,0,.35)
-    }
-    .dCardTop{
-      padding:12px 12px 10px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.18);
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-    }
-    .dCardTop b{font-weight:950}
-    .pill{
-      padding:6px 9px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.06);
-      font-weight:900;font-size:11px;color:rgba(236,242,255,.92);
-    }
-    .dCardBody{
-      padding:12px;
-      color:var(--muted);
-      font-weight:800;
-      font-size:12px;
-      line-height:1.35;
-      min-height:52px;
-    }
-
-    /* Landing Map area (below grid) */
-    .landingMap{
-      margin-top:14px;
-      border-radius:24px;border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
-      backdrop-filter: blur(var(--blur));-webkit-backdrop-filter: blur(var(--blur));
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      height:460px;
-    }
-    .landingMapHead{
-      padding:14px;border-bottom:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.20);
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-    }
-    .landingMapHead b{font-size:13px;letter-spacing:.3px}
-    .landingMapHead span{font-size:12px;color:var(--muted);font-weight:800}
-    .landingMapFrame{height:calc(100% - 52px)}
-    iframe{width:100%;height:100%;border:0;background:rgba(0,0,0,.2)}
-
-    /* Main visitor page (same style as yours) */
-    .main{padding:14px;min-width:0}
-    .hero{
-      border-radius:24px;border:1px solid rgba(255,255,255,.12);
-      overflow:hidden;background:rgba(255,255,255,.05);
-      backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur));
-      box-shadow: var(--shadow);
-      position:relative;isolation:isolate;
-    }
-    .heroCover{
-      position:absolute; inset:0;
-      background-size:cover;background-position:center;
-      filter: blur(26px) saturate(1.1) contrast(1.05);
-      transform:scale(1.12);
-      opacity:.55; z-index:0;
-    }
-    .heroCoverOverlay{
-      position:absolute; inset:0;
-      background:linear-gradient(180deg, rgba(5,7,18,.20), rgba(5,7,18,.86) 55%, rgba(5,7,18,.95));
-      z-index:1;
-    }
-    .heroInner{position:relative;z-index:2}
-    .heroTop{
-      padding:16px;border-bottom:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.18);
-    }
-    .heroTop h1{margin:0;font-size:clamp(22px,2.6vw,40px);font-weight:950;letter-spacing:-.3px}
-    .heroTop p{margin:8px 0 0;color:rgba(236,242,255,.86);line-height:1.5;font-weight:650}
-
-    .chipRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-    .chip{
-      padding:8px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.06);
-      color:rgba(236,242,255,.92);font-weight:900;font-size:12px;
-      cursor:pointer;user-select:none;transition:.15s;
-    }
-    .chip:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.22)}
-    .chip.active{background:rgba(255,122,24,.18);border-color:rgba(255,122,24,.35);box-shadow:0 0 0 3px rgba(255,122,24,.10)}
-
-    .grid{display:grid;gap:12px;padding:14px}
-    .panel{
-      border-radius:18px;border:1px solid rgba(255,255,255,.12);
-      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.22));
-      overflow:hidden;box-shadow:0 10px 22px rgba(0,0,0,.28);
-    }
-    .panelHead{
-      padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.22);
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-    }
-    .panelHead b{font-size:13px;letter-spacing:.3px}
-    .panelBody{padding:14px;color:rgba(236,242,255,.92);line-height:1.6;font-weight:650}
-
-    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
-    .input{
-      flex:1;min-width:220px;padding:11px 12px;border-radius:16px;
-      border:1px solid rgba(255,255,255,.14);
-      outline:none;color:var(--text);background:rgba(0,0,0,.22);font-weight:800;
-    }
-    .select{
-      padding:11px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.14);
-      outline:none;color:var(--text);background:rgba(0,0,0,.22);font-weight:900;cursor:pointer;
-    }
-
-    .sectionTitle{
-      display:flex;align-items:center;justify-content:space-between;
-      gap:10px;margin-top:12px;
-      padding:10px 10px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.18);
-    }
-    .sectionTitle b{font-size:13px;letter-spacing:.2px}
-    .sectionTitle .right{display:flex;align-items:center;gap:8px}
-    .countPill{
-      padding:6px 10px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.06);
-      color:rgba(236,242,255,.92);
-      font-weight:900;font-size:12px;
-    }
-    .linkBtn{
-      padding:6px 10px;border-radius:999px;
+    .thumb:after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,.55))}
+    .badge{
+      position:absolute; top:10px; left:10px; z-index:2;
+      padding:6px 9px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:950;
+      color:rgba(236,242,255,.95);
       border:1px solid rgba(255,255,255,.14);
       background:rgba(0,0,0,.28);
-      color:rgba(236,242,255,.92);
-      font-weight:900;font-size:12px;
-      cursor:pointer;
-    }
-    .linkBtn:hover{border-color:rgba(255,255,255,.22)}
-
-    .cards{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px;margin-top:10px}
-    .card{
-      border-radius:18px;border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.18);overflow:hidden;
-      transition:.18s;box-shadow:0 10px 18px rgba(0,0,0,.24);
-      cursor:pointer;
-    }
-    .card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.22);box-shadow:0 18px 34px rgba(0,0,0,.35)}
-    .thumb{
-      height:136px;background:rgba(255,255,255,.08);
-      background-size:cover;background-position:center;position:relative;
-    }
-    .thumb:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,.52))}
-    .badge{
-      position:absolute;top:10px;left:10px;z-index:2;
-      padding:6px 9px;border-radius:999px;font-size:11px;font-weight:950;
-      color:rgba(236,242,255,.95);border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.28);backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
     }
     .pad{padding:12px}
-    .pad b{display:block;font-weight:950}
-    .meta{margin-top:6px;color:var(--muted);font-weight:800;font-size:12px;line-height:1.35}
+    .pad b{display:block; font-weight:950}
+    .meta{margin-top:6px; color:var(--muted); font-weight:800; font-size:12px; line-height:1.35}
     .empty{
-      padding:16px;border-radius:18px;border:1px dashed rgba(255,255,255,.20);
-      background:rgba(0,0,0,.18);color:rgba(236,242,255,.88);font-weight:850
+      padding:16px;
+      border-radius:18px;
+      border:1px dashed rgba(255,255,255,.22);
+      background:rgba(0,0,0,.18);
+      color:rgba(236,242,255,.88);
+      font-weight:850;
+      margin-top:12px;
     }
 
-    /* Right map (sticky on visitor view) */
+    /* map column (second priority) */
     .mapCol{
-      border-left:1px solid rgba(255,255,255,.10);
-      padding:14px;
-      position:sticky; top:0; height:100vh;
+      position:sticky;
+      top:14px;
+      height: calc(100vh - 28px);
     }
     .mapShell{
       height:100%;
-      border-radius:24px;border:1px solid rgba(255,255,255,.12);
+      border-radius:28px;
+      border:1px solid rgba(255,255,255,.12);
       background:rgba(255,255,255,.05);
-      backdrop-filter: blur(var(--blur));-webkit-backdrop-filter: blur(var(--blur));
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
       box-shadow: var(--shadow);
-      overflow:hidden;display:flex;flex-direction:column;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
     }
     .mapHead{
-      padding:14px;border-bottom:1px solid rgba(255,255,255,.10);
+      padding:14px;
+      border-bottom:1px solid rgba(255,255,255,.10);
       background:rgba(0,0,0,.20);
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
     }
-    .mapHead b{font-size:13px;letter-spacing:.3px}
-    .mapHint{font-size:12px;color:var(--muted);font-weight:800}
-    .mapFrameWrap{flex:1;min-height:0}
+    .mapHead b{font-size:13px; letter-spacing:.3px}
+    .mapHint{font-size:12px; color:var(--muted); font-weight:800; margin-top:4px}
+    .mapFrameWrap{flex:1; min-height:0}
+    iframe{width:100%; height:100%; border:0; background:rgba(0,0,0,.2)}
 
-    /* Floating Districts button (shown after scroll on visitor view) */
-    .floatBtn{
+    /* floating districts button after scroll */
+    .dockBtn{
       position:fixed;
-      left:14px; top:14px;
-      z-index:9999;
-      display:flex;align-items:center;gap:10px;
+      left:14px;
+      bottom:14px;
+      z-index:999;
+      display:none;
       padding:10px 12px;
       border-radius:999px;
       border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.32);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 14px 40px rgba(0,0,0,.40);
-      color:rgba(236,242,255,.95);
+      background:rgba(0,0,0,.45);
+      backdrop-filter: blur(14px);
+      color:rgba(236,242,255,.92);
       font-weight:950;
       cursor:pointer;
-      transform: translateY(-20px);
-      opacity:0;
-      pointer-events:none;
-      transition: .2s ease;
+      box-shadow: 0 16px 34px rgba(0,0,0,.45);
     }
-    .floatBtn.show{
-      transform: translateY(0);
-      opacity:1;
-      pointer-events:auto;
-    }
-    .floatDot{
-      width:10px;height:10px;border-radius:50%;
-      background:linear-gradient(135deg,var(--brand),var(--brand2));
-      box-shadow:0 0 18px rgba(255,122,24,.55)
-    }
-    .floatBtn small{display:block;font-weight:850;color:var(--muted);margin-top:1px}
-
-    /* Drawer */
-    .drawerOverlay{
-      position:fixed; inset:0;
-      background:rgba(0,0,0,.55);
-      z-index:9998;
-      opacity:0; pointer-events:none;
-      transition:.2s ease;
-    }
-    .drawerOverlay.open{opacity:1; pointer-events:auto}
-    .drawer{
+    .dockBtn:hover{border-color:rgba(255,255,255,.24)}
+    .dockSheet{
       position:fixed;
-      left:0; top:0; bottom:0;
-      width:min(360px, 88vw);
-      z-index:9999;
-      border-right:1px solid rgba(255,255,255,.10);
-      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.35));
-      backdrop-filter: blur(var(--blur));
-      -webkit-backdrop-filter: blur(var(--blur));
-      padding:14px;
-      transform: translateX(-104%);
-      transition:.22s ease;
+      left:14px;
+      right:14px;
+      bottom:64px;
+      z-index:999;
+      display:none;
+      max-height: 62vh;
       overflow:auto;
-    }
-    .drawer.open{transform: translateX(0)}
-    .drawerHead{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-      margin-bottom:10px;
-    }
-    .xBtn{
+      border-radius:22px;
       border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.28);
-      color:rgba(236,242,255,.95);
+      background:rgba(0,0,0,.55);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 18px 50px rgba(0,0,0,.6);
+      padding:12px;
+    }
+    .dockSheet .grid{padding:0; grid-template-columns: repeat(3, minmax(0,1fr));}
+    .dockSheet .districtHead{padding:0 0 12px 0; background:transparent; border-bottom:0}
+    .dockClose{
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.35);
+      color:rgba(236,242,255,.92);
       font-weight:950;
-      padding:8px 10px;border-radius:12px;
+      padding:10px 12px;
+      border-radius:16px;
       cursor:pointer;
     }
-    .xBtn:hover{border-color:rgba(255,255,255,.22)}
 
-    .list{margin-top:12px;display:flex;flex-direction:column;gap:10px}
-    .d{
-      border-radius:16px;border:1px solid rgba(255,255,255,.12);
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.20));
-      padding:10px 11px;cursor:pointer;
-      transition:.18s transform ease, .18s border-color ease;
-    }
-    .d:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.22)}
-    .d.active{border-color:rgba(255,122,24,.48);box-shadow:0 0 0 1px rgba(255,122,24,.24) inset, 0 12px 26px rgba(0,0,0,.45)}
-    .d b{display:block;font-weight:950}
-    .d small{
-      display:block;margin-top:6px;color:var(--muted);
-      font-weight:800;font-size:11px;line-height:1.35;opacity:.95;
-    }
-
-    @media(max-width:1100px){
-      .districtGrid{grid-template-columns: repeat(2, minmax(0,1fr));}
-      .app{grid-template-columns:1fr}
-      .mapCol{position:relative;height:auto;border-left:0;border-top:1px solid rgba(255,255,255,.10)}
-      .mapShell{height:460px}
+    @media(max-width:1200px){
+      .grid{grid-template-columns: repeat(3, minmax(0,1fr));}
+      .cards{grid-template-columns: repeat(2, minmax(0,1fr));}
+      .app{grid-template-columns: 1fr}
+      .mapCol{position:relative; height:520px}
     }
     @media(max-width:520px){
-      .districtGrid{grid-template-columns: 1fr;}
-      .cards{grid-template-columns:1fr}
-      .floatBtn{left:10px;top:10px}
-      .landingMap{height:420px}
+      .grid{grid-template-columns: repeat(2, minmax(0,1fr));}
+      .cards{grid-template-columns: 1fr;}
     }
   </style>
 </head>
 
 <body>
-  <!-- Floating district button (visitor view) -->
-  <div class="floatBtn" id="floatBtn" title="Open district list">
-    <div class="floatDot"></div>
-    <div>
-      Districts
-      <small id="floatSub">Open list</small>
-    </div>
-  </div>
-
-  <!-- Drawer -->
-  <div class="drawerOverlay" id="drawerOverlay"></div>
-  <aside class="drawer" id="drawer">
-    <div class="drawerHead">
-      <div style="display:flex;gap:10px;align-items:center">
-        <div style="width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:0 0 22px rgba(255,122,24,.55)"></div>
-        <div>
-          <div style="font-weight:950">District List</div>
-          <div style="font-size:12px;color:var(--muted);font-weight:800">Select district • map sync</div>
-        </div>
-      </div>
-      <button class="xBtn" id="closeDrawer">✕</button>
-    </div>
-    <input id="q" class="search" placeholder="Search district…"/>
-    <div class="list" id="districtList">
-      <div class="d"><b>Loading…</b><small>Please wait</small></div>
-    </div>
-  </aside>
-
-  <!-- ✅ LANDING: District grid top, map below -->
-  <section class="landing" id="landing">
-    <div class="landingHero">
-      <div class="landingTop">
-        <h1>Himachal Explorer</h1>
-        <p>Choose a district to explore places, temples, treks, lakes & stays. Cards → map focus (when lat/lng exists).</p>
-
-        <div class="landingControls">
-          <input id="landingSearch" class="search" placeholder="Search district… (e.g., Shimla, Kullu, Kangra)"/>
-          <div class="hintPill">Tap any district card</div>
-        </div>
-      </div>
-
-      <div class="districtGridWrap">
-        <div class="districtGrid" id="districtGrid">
-          <!-- Filled by JS -->
-        </div>
-
-        <div class="landingMap">
-          <div class="landingMapHead">
-            <b>Himachal Map</b>
-            <span id="landingMapHint">Tap a district to focus map</span>
+  <div class="app">
+    <section class="hero" id="hero">
+      <div class="heroCover" id="heroCover"></div>
+      <div class="heroOverlay"></div>
+      <div class="heroInner">
+        <div class="topRow">
+          <div class="brand">
+            <div class="dot"></div>
+            <div>
+              <div class="title">Himachal Explorer</div>
+              <div class="sub">Stories by district • places • temples • lakes • treks • hotels</div>
+            </div>
           </div>
-          <div class="landingMapFrame">
-            <iframe id="landingMapFrame" title="HP Map" src="map.html"></iframe>
+
+          <div class="quoteBox">
+            <p class="quote" id="quoteText">“Where mountains whisper and rivers sing — welcome to Himachal.”</p>
+            <div class="quoteSmall" id="quoteBy">— Himachal Explorer</div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ✅ VISITOR APP (after district selected): content + sticky map -->
-  <div class="app" id="app">
-    <main class="main">
-      <section class="hero">
-        <div class="heroCover" id="heroCover"></div>
-        <div class="heroCoverOverlay"></div>
+        <div class="districtPanel" id="districtPanel">
+          <div class="districtHead">
+            <b>Pick a District</b>
+            <input id="q" class="search" placeholder="Search district…">
+          </div>
+          <div class="grid" id="districtGrid">
+            <div class="dCard"><b>Loading…</b><small>Please wait</small></div>
+          </div>
+        </div>
 
-        <div class="heroInner">
-          <div class="heroTop">
+        <div class="story" id="story">
+          <div class="storyTop">
             <h1 id="hTitle">Himachal Pradesh</h1>
-            <p id="hSub">District loaded details will appear here.</p>
+            <p id="hSub">Select any district above to read its story — brief, how to reach, and curated places.</p>
+            <div class="metaRow" id="metaRow"></div>
+          </div>
 
-            <div class="chipRow" id="typeChips" style="display:none">
-              <div class="chip active" data-type="all">All</div>
-              <div class="chip" data-type="destinations">Destinations</div>
-              <div class="chip" data-type="lakes">Lakes</div>
-              <div class="chip" data-type="temples">Temples</div>
-              <div class="chip" data-type="treks">Treks</div>
-              <div class="chip" data-type="hotels">Hotels</div>
+          <div class="section">
+            <div class="sectionTitle"><b>District Brief</b></div>
+            <div id="briefBox" style="margin-top:12px;color:rgba(236,242,255,.92);line-height:1.7;font-weight:650">
+              <div class="empty">Select a district to see a story-style overview…</div>
             </div>
           </div>
 
-          <div class="grid">
-            <div class="panel">
-              <div class="panelHead"><b>District Brief</b></div>
-              <div class="panelBody" id="briefBox"><div class="empty">Loading…</div></div>
+          <div class="section">
+            <div class="sectionTitle"><b>How to Reach</b></div>
+            <div id="reachBox" style="margin-top:12px;color:rgba(236,242,255,.92);line-height:1.7;font-weight:650">
+              <div class="empty">Select a district to see roads, rail and airports guidance…</div>
             </div>
+          </div>
 
-            <div class="panel">
-              <div class="panelHead"><b>How to Reach</b></div>
-              <div class="panelBody" id="reachBox"><div class="empty">Loading…</div></div>
-            </div>
-
-            <div class="panel">
-              <div class="panelHead"><b id="placesTitle">Places</b></div>
-              <div class="panelBody" id="cardsWrap"><div class="empty">Loading…</div></div>
-            </div>
+          <div class="section" id="placesRoot">
+            <!-- sections injected -->
           </div>
         </div>
-      </section>
-    </main>
+      </div>
+    </section>
 
     <aside class="mapCol">
       <div class="mapShell">
         <div class="mapHead">
-          <div>
-            <b>Map</b>
-            <div class="mapHint" id="mapHint">Select district to load map.</div>
-          </div>
+          <b>Map</b>
+          <div class="mapHint" id="mapHint">Map is secondary — click a place to focus here.</div>
         </div>
         <div class="mapFrameWrap">
           <iframe id="mapFrame" title="District Map" src="map.html"></iframe>
         </div>
       </div>
     </aside>
+  </div>
+
+  <!-- floating districts -->
+  <button class="dockBtn" id="dockBtn">☰ Districts</button>
+  <div class="dockSheet" id="dockSheet">
+    <div class="districtHead">
+      <b>Districts</b>
+      <button class="dockClose" id="dockClose">Close</button>
+    </div>
+    <input id="q2" class="search" placeholder="Search district…" style="margin-bottom:12px">
+    <div class="grid" id="districtGrid2"></div>
   </div>
 
   <script type="module">
@@ -531,54 +484,70 @@
       measurementId: "G-MGTDBCG896"
     };
 
-    const appFB = initializeApp(firebaseConfig);
-    try { getAnalytics(appFB); } catch(e) {}
-    const db = getDatabase(appFB);
+    const app = initializeApp(firebaseConfig);
+    try { getAnalytics(app); } catch(e) {}
+    const db = getDatabase(app);
 
     const ROOT = "tourism/hp/districts";
+
+    // ✅ canonical types
     const TYPES = ["destinations","lakes","temples","treks","hotels"];
-    const TYPE_LABEL = { destinations:"Destinations", lakes:"Lakes", temples:"Temples", treks:"Treks", hotels:"Hotels" };
+    const TYPE_LABEL = {
+      destinations:"Destinations",
+      lakes:"Lakes",
+      temples:"Temples",
+      treks:"Treks",
+      hotels:"Hotels"
+    };
 
-    // Landing
-    const landing = document.getElementById("landing");
-    const appEl = document.getElementById("app");
-    const landingSearch = document.getElementById("landingSearch");
+    // Himachal-ish fallback hero photos (safe, thematic)
+    const HERO_FALLBACKS = [
+      "https://source.unsplash.com/1600x1000/?Himachal,Mountains",
+      "https://source.unsplash.com/1600x1000/?Spiti,Monastery",
+      "https://source.unsplash.com/1600x1000/?Manali,Snow",
+      "https://source.unsplash.com/1600x1000/?Dharamshala,Mountains",
+      "https://source.unsplash.com/1600x1000/?Himachal,Lake",
+      "https://source.unsplash.com/1600x1000/?Himalaya,Valley"
+    ];
+
+    const QUOTES = [
+      {q:"Where mountains whisper and rivers sing — welcome to Himachal.", by:"Himachal Explorer"},
+      {q:"In Himachal, every bend of the road is a postcard.", by:"Travel Note"},
+      {q:"Breathe deeper — the Himalayas keep secrets in the pine-scented air.", by:"Himalayan Diaries"},
+      {q:"Not all who wander are lost… some are just in Himachal.", by:"Wander Quote"},
+      {q:"Chai tastes warmer when the view is colder.", by:"Hill Station Mood"},
+      {q:"Let the peaks reset your mind.", by:"Slow Travel"}
+    ];
+
+    // UI
+    const heroCover = document.getElementById("heroCover");
+    const quoteText = document.getElementById("quoteText");
+    const quoteBy = document.getElementById("quoteBy");
+
+    const q = document.getElementById("q");
     const districtGrid = document.getElementById("districtGrid");
-    const landingMapFrame = document.getElementById("landingMapFrame");
-    const landingMapHint = document.getElementById("landingMapHint");
+    const q2 = document.getElementById("q2");
+    const districtGrid2 = document.getElementById("districtGrid2");
 
-    // Drawer UI
-    const floatBtn = document.getElementById("floatBtn");
-    const floatSub = document.getElementById("floatSub");
-    const drawer = document.getElementById("drawer");
-    const drawerOverlay = document.getElementById("drawerOverlay");
-    const closeDrawerBtn = document.getElementById("closeDrawer");
-    const qEl = document.getElementById("q");
-    const districtList = document.getElementById("districtList");
-
-    // App UI
     const hTitle = document.getElementById("hTitle");
     const hSub = document.getElementById("hSub");
-    const heroCover = document.getElementById("heroCover");
+    const metaRow = document.getElementById("metaRow");
     const briefBox = document.getElementById("briefBox");
     const reachBox = document.getElementById("reachBox");
-    const cardsWrap = document.getElementById("cardsWrap");
-    const placesTitle = document.getElementById("placesTitle");
-    const typeChips = document.getElementById("typeChips");
+    const placesRoot = document.getElementById("placesRoot");
 
-    // Map (visitor view)
     const mapHint = document.getElementById("mapHint");
     const mapFrame = document.getElementById("mapFrame");
 
+    const dockBtn = document.getElementById("dockBtn");
+    const dockSheet = document.getElementById("dockSheet");
+    const dockClose = document.getElementById("dockClose");
+
     // state
+    let ROOT_SNAPSHOT = {};
     let DISTRICTS = [];
-    let DIST_PREVIEW = {};
+    let PREVIEW = {}; // district -> 2-3 popular destination names
     let ACTIVE_DIST = "";
-    let ACTIVE_TYPE = "all";
-    let ACTIVE_NODE = null;
-    let ALL_ITEMS = [];
-    let PLACE_QUERY = "";
-    let PLACE_SORT = "popular_desc";
 
     const safeObj = (x)=> (x && typeof x==="object") ? x : {};
     const norm = (s)=> String(s ?? "").trim();
@@ -589,20 +558,19 @@
         .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
         .replaceAll('"',"&quot;").replaceAll("'","&#039;");
     }
-    function toNum(v){
-      const s = String(v ?? "").trim();
-      if(!s) return NaN;
-      return Number(s);
+
+    function normalizeType(t){
+      // ✅ fix: if DB has lake/temple/destination etc
+      const s = low(t);
+      if(!s) return "";
+      if(s==="destination" || s==="dest") return "destinations";
+      if(s==="lake") return "lakes";
+      if(s==="temple") return "temples";
+      if(s==="trek") return "treks";
+      if(s==="hotel") return "hotels";
+      return s; // expects already plural
     }
-    function normalizeTypeKey(k){
-      k = low(k);
-      if(k==="destination" || k==="dest") return "destinations";
-      if(k==="lake") return "lakes";
-      if(k==="temple") return "temples";
-      if(k==="trek") return "treks";
-      if(k==="hotel") return "hotels";
-      return k;
-    }
+
     function extractPhotos(item){
       const a = [];
       const pushArr = (x)=> { if(Array.isArray(x)) x.forEach(u=>{ if(norm(u)) a.push(norm(u)); }); };
@@ -611,21 +579,201 @@
       if(norm(item.imageUrl)) a.push(norm(item.imageUrl));
       if(norm(item.cover)) a.push(norm(item.cover));
       if(norm(item.photo)) a.push(norm(item.photo));
+      // also support pipe-separated
       if(norm(item.photo) && String(item.photo).includes("|")){
         String(item.photo).split("|").map(x=>x.trim()).filter(Boolean).forEach(u=>a.push(u));
       }
-      return Array.from(new Set(a));
+      return Array.from(new Set(a)).filter(Boolean);
     }
+
     function pickTitle(it){
       return it.name || it.title || it.place || it.placeName || it.locationName || "Untitled";
     }
 
-    function flattenSegments(node){
-      const seg = safeObj(node.segments);
-      const out = [];
+    function computePreviewNames(dNode){
+      const seg = safeObj(dNode?.segments);
+      // ✅ preview ONLY from destinations
+      const bucket = safeObj(seg?.destinations);
+      const arr = Object.keys(bucket).map(id=>{
+        const it = safeObj(bucket[id]);
+        return {
+          title: pickTitle(it),
+          pop: Number(it.popularityScore ?? it.popularity ?? 0) || 0,
+          rating: Number(it.rating ?? 0) || 0
+        };
+      });
+      arr.sort((a,b)=> (b.pop-a.pop) || (b.rating-a.rating) || String(a.title).localeCompare(String(b.title)));
+      return arr.slice(0,3).map(x=>x.title).filter(Boolean);
+    }
 
+    function pickDistrictCover(dNode){
+      const info = safeObj(dNode?.districtInfo);
+      const a = [];
+      if(Array.isArray(info.coverPhotos)) a.push(...info.coverPhotos);
+      if(norm(info.coverPhoto)) a.push(info.coverPhoto);
+      if(norm(info.cover)) a.push(info.cover);
+      // fallback from any place photo
+      const seg = safeObj(dNode?.segments);
+      for(const t of TYPES){
+        const bucket = safeObj(seg[t]);
+        for(const id of Object.keys(bucket)){
+          const it = safeObj(bucket[id]);
+          const pics = extractPhotos(it);
+          if(pics[0]) { a.push(pics[0]); break; }
+        }
+        if(a.length) break;
+      }
+      const cover = a.map(norm).filter(Boolean)[0];
+      return cover || HERO_FALLBACKS[(Math.random()*HERO_FALLBACKS.length)|0];
+    }
+
+    function setHeroImage(url){
+      heroCover.style.backgroundImage = url ? `url('${String(url).replaceAll("'","%27")}')` : "none";
+    }
+
+    function rotateQuotes(){
+      let i=0;
+      const apply = ()=>{
+        const x = QUOTES[i % QUOTES.length];
+        quoteText.textContent = `“${x.q}”`;
+        quoteBy.textContent = `— ${x.by}`;
+        i++;
+      };
+      apply();
+      setInterval(apply, 5200);
+    }
+
+    function renderDistrictCards(targetEl, queryStr){
+      const query = low(queryStr);
+      const list = DISTRICTS.filter(d => !query || low(d).includes(query));
+
+      targetEl.innerHTML = (list.length ? list : [""]).map(d=>{
+        if(!d) return `<div class="dCard"><b>No district found</b><small>Try another search</small></div>`;
+        const active = (ACTIVE_DIST === d) ? "active" : "";
+        const pv = PREVIEW[d] || [];
+        const line = pv.length ? `<small>${pv.map(escapeHtml).join(" • ")}</small>` : `<small style="opacity:.65">—</small>`;
+        const count = countDistrictItems(ROOT_SNAPSHOT[d]);
+        return `
+          <div class="dCard ${active}" data-d="${escapeHtml(d)}">
+            <span class="miniTag">${count}</span>
+            <b>${escapeHtml(d)}</b>
+            ${line}
+          </div>
+        `;
+      }).join("");
+
+      [...targetEl.querySelectorAll(".dCard[data-d]")].forEach(el=>{
+        el.addEventListener("click", ()=> openDistrict(el.getAttribute("data-d")));
+      });
+    }
+
+    function countDistrictItems(dNode){
+      const seg = safeObj(dNode?.segments);
+      let total=0;
+      for(const t of TYPES){
+        total += Object.keys(safeObj(seg[t])).length;
+      }
+      return total;
+    }
+
+    function focusDistrictOnMap(d){
+      mapHint.textContent = `Map focus: ${d}`;
+      mapFrame.src = `map.html#district=${encodeURIComponent(d)}&t=${Date.now()}`;
+      setTimeout(()=> mapFrame.contentWindow?.postMessage({ type:"FOCUS_DISTRICT", district:d }, "*"), 500);
+    }
+    function focusPlaceOnMap(payload){
+      mapFrame.contentWindow?.postMessage({ type:"FOCUS_PLACE", ...payload }, "*");
+    }
+
+    function defaultBrief(d){
+      return `• ${d} is a beautiful district of Himachal Pradesh.\n• Explore curated places section-wise below.\n• Tap any card to focus on map (if location exists).`;
+    }
+    function defaultReach(d){
+      return `🛣️ Road: Well-connected by road from major towns.\n🚆 Train: nearest railhead depends on route.\n✈️ Air: nearest airport depends on region.\n\nTip: Map panel will help you visualize distance.`;
+    }
+
+    function metaPills(info, total){
+      const pills = [];
+      if(norm(info.bestSeason)) pills.push(`Best season: ${norm(info.bestSeason)}`);
+      if(norm(info.districtHQ)) pills.push(`HQ: ${norm(info.districtHQ)}`);
+      if(Number.isFinite(Number(info.popularityScore))) pills.push(`Popularity: ${Number(info.popularityScore)}`);
+      pills.push(`Records: ${total}`);
+      return pills;
+    }
+
+    function makeSectionHTML(type, items){
+      const label = TYPE_LABEL[type] || type;
+      return `
+        <div class="section">
+          <div class="sectionTitle">
+            <b>${escapeHtml(label)}</b>
+            <span class="countPill">${items.length}</span>
+          </div>
+          ${items.length ? `
+            <div class="cards">
+              ${items.slice(0, 24).map(cardHTML).join("")}
+            </div>
+            ${items.length>24 ? `<div class="meta" style="margin-top:10px">Showing top 24. Add filters later if you want.</div>` : ""}
+          ` : `<div class="empty">No records in this section.</div>`}
+        </div>
+      `;
+    }
+
+    function cardHTML(x){
+      const photos = x.photos || [];
+      const thumbUrl = photos[0] ? photos[0].replaceAll("'","%27") : "";
+      const label = TYPE_LABEL[x.type] || x.type;
+      const canMap = Number.isFinite(x.lat) && Number.isFinite(x.lng);
+
+      const extra = [
+        Number.isFinite(x.rating) ? `⭐ ${x.rating}` : "",
+        Number.isFinite(x.popularity) ? `🔥 ${x.popularity}` : "",
+        Number.isFinite(x.entryFee) ? `₹${x.entryFee}` : ""
+      ].filter(Boolean).join(" • ");
+
+      return `
+        <div class="card" data-id="${escapeHtml(x.id)}" data-type="${escapeHtml(x.type)}">
+          <div class="thumb" style="${thumbUrl ? `background-image:url('${thumbUrl}')` : ""}">
+            <div class="badge">${escapeHtml(label)}${canMap ? " • Map" : ""}</div>
+          </div>
+          <div class="pad">
+            <b>${escapeHtml(x.title)}</b>
+            <div class="meta">${escapeHtml(extra || "Tap to focus on map (if lat/lng available)")}</div>
+            ${x.notes ? `<div class="meta">${escapeHtml(x.notes).slice(0,120)}${x.notes.length>120?"…":""}</div>` : ""}
+          </div>
+        </div>
+      `;
+    }
+
+    function bindCardClicks(itemsById){
+      [...document.querySelectorAll(".card[data-id]")].forEach(el=>{
+        el.addEventListener("click", ()=>{
+          const id = el.getAttribute("data-id");
+          const p = itemsById.get(id);
+          if(!p) return;
+
+          // ✅ "place location not working" fix:
+          // ensure we send numeric lat/lng & correct type
+          if(Number.isFinite(p.lat) && Number.isFinite(p.lng)){
+            focusPlaceOnMap({
+              district: ACTIVE_DIST,
+              title: p.title,
+              lat: p.lat,
+              lng: p.lng,
+              type: p.type
+            });
+          } else {
+            focusDistrictOnMap(ACTIVE_DIST);
+          }
+        });
+      });
+    }
+
+    function flattenDistrict(dNode){
+      const seg = safeObj(dNode?.segments);
+      const out = [];
       for(const rawKey of Object.keys(seg)){
-        const t = normalizeTypeKey(rawKey);
+        const t = normalizeType(rawKey);
         if(!TYPES.includes(t)) continue;
 
         const bucket = safeObj(seg[rawKey]);
@@ -640,446 +788,117 @@
             rating: Number(it.rating ?? "") || null,
             popularity: Number(it.popularityScore ?? it.popularity ?? "") || null,
             entryFee: Number(it.entryFee ?? "") || null,
-            lat: toNum(it.lat ?? it.latitude),
-            lng: toNum(it.lng ?? it.longitude),
-            raw: it
+            lat: Number(it.lat ?? it.latitude ?? ""),
+            lng: Number(it.lng ?? it.longitude ?? "")
           });
         }
       }
       return out;
     }
 
-    function defaultBrief(d){
-      return `• ${d} is a beautiful district of Himachal Pradesh.\n• Explore nature, culture, temples, treks, lakes and stays.\n• Tap any place card → map focus (when lat/lng exists).`;
-    }
-    function defaultHowToReach(d){
-      return `🛣️ Road: Regular road connectivity.\n🚆 Train: Nearest railhead depends on route.\n✈️ Air: Nearest airport depends on region.\n\nRight side map will stay synced.`;
-    }
-
-    function setHeroCover(){
-      if(!ACTIVE_NODE){ heroCover.style.backgroundImage = "none"; return; }
-      const info = safeObj(ACTIVE_NODE.districtInfo);
-
-      let cover = null;
-      if(Array.isArray(info.coverPhotos) && info.coverPhotos.length) cover = norm(info.coverPhotos[0]);
-      if(!cover && norm(info.coverPhoto)) cover = norm(info.coverPhoto);
-      if(!cover && norm(info.cover)) cover = norm(info.cover);
-
-      if(!cover){
-        const fallback = ALL_ITEMS?.[0]?.photos?.[0];
-        cover = fallback || null;
-      }
-      heroCover.style.backgroundImage = cover ? `url('${cover.replaceAll("'", "%27")}')` : "none";
-    }
-
-    // map syncing
-    function focusDistrictOnMap(d){
-      mapHint.textContent = `Map: ${d}`;
-      mapFrame.src = `map.html#district=${encodeURIComponent(d)}&t=${Date.now()}`;
-      setTimeout(()=> mapFrame.contentWindow?.postMessage({ type:"FOCUS_DISTRICT", district:d }, "*"), 600);
-    }
-    function focusDistrictOnLandingMap(d){
-      landingMapHint.textContent = `Map focused: ${d}`;
-      landingMapFrame.src = `map.html#district=${encodeURIComponent(d)}&t=${Date.now()}`;
-      setTimeout(()=> landingMapFrame.contentWindow?.postMessage({ type:"FOCUS_DISTRICT", district:d }, "*"), 600);
-    }
-    function focusPlaceOnMap(place){
-      mapFrame.contentWindow?.postMessage({
-        type:"FOCUS_PLACE",
-        district: ACTIVE_DIST,
-        title: place.title,
-        lat: place.lat,
-        lng: place.lng,
-        type: place.type
-      }, "*");
-    }
-
-    function getFilteredItems(type){
-      let items = ALL_ITEMS.slice();
-      if(type && type !== "all") items = items.filter(x => x.type === type);
-
-      const q = low(PLACE_QUERY);
-      if(q){
-        items = items.filter(x => (`${x.title} ${x.notes} ${x.id} ${x.type}`.toLowerCase()).includes(q));
-      }
-
-      const byName = (a,b)=> String(a.title||"").localeCompare(String(b.title||""), undefined, {sensitivity:"base"});
-      const pop = (x)=> Number.isFinite(x.popularity) ? x.popularity : -Infinity;
-      const rat = (x)=> Number.isFinite(x.rating) ? x.rating : -Infinity;
-      const fee = (x)=> Number.isFinite(x.entryFee) ? x.entryFee : Infinity;
-
-      switch(PLACE_SORT){
-        case "popular_desc": items.sort((a,b)=> pop(b)-pop(a) || rat(b)-rat(a) || byName(a,b)); break;
-        case "rating_desc": items.sort((a,b)=> rat(b)-rat(a) || pop(b)-pop(a) || byName(a,b)); break;
-        case "fee_asc": items.sort((a,b)=> fee(a)-fee(b) || pop(b)-pop(a) || byName(a,b)); break;
-        case "name_asc": items.sort(byName); break;
-        default: items.sort((a,b)=> pop(b)-pop(a) || byName(a,b));
-      }
-      return items;
-    }
-
-    function wireControls(){
-      const search = document.getElementById("placeSearch");
-      const sort = document.getElementById("placeSort");
-      if(!search || !sort) return;
-
-      search.value = PLACE_QUERY;
-      sort.value = PLACE_SORT;
-
-      let t=null;
-      search.addEventListener("input", ()=>{
-        clearTimeout(t);
-        t=setTimeout(()=>{
-          PLACE_QUERY = search.value;
-          renderPlaces();
-        },120);
-      });
-
-      sort.addEventListener("change", ()=>{
-        PLACE_SORT = sort.value;
-        renderPlaces();
-      });
-    }
-
-    function cardHtml(x){
-      const thumbUrl = x.photos?.[0] ? x.photos[0].replaceAll("'", "%27") : "";
-      const thumb = thumbUrl ? `style="background-image:url('${thumbUrl}')"` : "";
-      const label = TYPE_LABEL[x.type] || x.type;
-
-      const extra = [
-        Number.isFinite(x.rating) ? `⭐ ${x.rating}` : "",
-        Number.isFinite(x.popularity) ? `🔥 ${x.popularity}` : "",
-        Number.isFinite(x.entryFee) ? `₹${x.entryFee}` : ""
-      ].filter(Boolean).join(" • ");
-
-      const canMap = Number.isFinite(x.lat) && Number.isFinite(x.lng);
-
-      return `
-        <div class="card" data-id="${escapeHtml(x.id)}">
-          <div class="thumb" ${thumb}>
-            <div class="badge">${escapeHtml(label)}${canMap ? " • Map" : ""}</div>
-          </div>
-          <div class="pad">
-            <b>${escapeHtml(x.title)}</b>
-            <div class="meta">${escapeHtml(extra || (canMap ? "Tap to focus on map" : "Add lat/lng to enable map focus"))}</div>
-            ${x.notes ? `<div class="meta">${escapeHtml(x.notes).slice(0,120)}${x.notes.length>120?"…":""}</div>` : ""}
-          </div>
-        </div>
-      `;
-    }
-
-    function bindCardClicks(){
-      [...cardsWrap.querySelectorAll(".card[data-id]")].forEach(el=>{
-        el.addEventListener("click", ()=>{
-          const id = el.getAttribute("data-id");
-          const place = ALL_ITEMS.find(p=>p.id===id);
-          if(!place) return;
-
-          if(Number.isFinite(place.lat) && Number.isFinite(place.lng)){
-            focusPlaceOnMap(place);
-          }else{
-            if(ACTIVE_DIST) focusDistrictOnMap(ACTIVE_DIST);
-          }
-        });
-      });
-    }
-
-    function renderAllSections(){
-      const controlsHtml = `
-        <div class="controls">
-          <input id="placeSearch" class="input" placeholder="Search in ALL categories…" />
-          <select id="placeSort" class="select">
-            <option value="popular_desc">Popularity (high → low)</option>
-            <option value="rating_desc">Rating (high → low)</option>
-            <option value="fee_asc">Entry fee (low → high)</option>
-            <option value="name_asc">Name (A → Z)</option>
-          </select>
-        </div>
-        <div style="margin-top:8px;color:rgba(236,242,255,.60);font-weight:800;font-size:12px">
-          Tip: “View all” pe click karke single category open hogi.
-        </div>
-      `;
-
-      let html = controlsHtml;
-
-      for(const t of TYPES){
-        const items = getFilteredItems(t);
-        const top = items.slice(0,6);
-
-        html += `
-          <div class="sectionTitle">
-            <b>${escapeHtml(TYPE_LABEL[t] || t)}</b>
-            <div class="right">
-              <span class="countPill">${items.length}</span>
-              <button class="linkBtn" data-view="${escapeHtml(t)}">View all</button>
-            </div>
-          </div>
-        `;
-
-        if(!top.length){
-          html += `<div class="empty" style="margin-top:10px">No items in this section.</div>`;
-          continue;
-        }
-
-        html += `<div class="cards">${top.map(cardHtml).join("")}</div>`;
-      }
-
-      cardsWrap.innerHTML = html;
-
-      [...cardsWrap.querySelectorAll("button[data-view]")].forEach(btn=>{
-        btn.addEventListener("click", ()=>{
-          setActiveType(btn.getAttribute("data-view"));
-          cardsWrap.scrollIntoView({behavior:"smooth", block:"start"});
-        });
-      });
-
-      wireControls();
-      bindCardClicks();
-    }
-
-    function renderSingleType(){
-      const niceType = ACTIVE_TYPE === "all" ? "All" : (TYPE_LABEL[ACTIVE_TYPE] || ACTIVE_TYPE);
-      const items = getFilteredItems(ACTIVE_TYPE);
-
-      const controlsHtml = `
-        <div class="controls">
-          <input id="placeSearch" class="input" placeholder="Search in ${escapeHtml(niceType)}…" />
-          <select id="placeSort" class="select">
-            <option value="popular_desc">Popularity (high → low)</option>
-            <option value="rating_desc">Rating (high → low)</option>
-            <option value="fee_asc">Entry fee (low → high)</option>
-            <option value="name_asc">Name (A → Z)</option>
-          </select>
-        </div>
-        <div style="margin-top:8px;color:rgba(236,242,255,.60);font-weight:800;font-size:12px">
-          Showing <b>${items.length}</b> items
-        </div>
-      `;
-
-      if(!items.length){
-        cardsWrap.innerHTML = controlsHtml + `<div class="empty" style="margin-top:12px">No items found.</div>`;
-        wireControls();
-        return;
-      }
-
-      cardsWrap.innerHTML = controlsHtml + `
-        <div class="cards">
-          ${items.slice(0,60).map(cardHtml).join("")}
-        </div>
-        ${items.length>60 ? `<div style="margin-top:10px;color:rgba(236,242,255,.60);font-weight:800;font-size:12px">Showing first 60 items.</div>` : ""}
-      `;
-
-      wireControls();
-      bindCardClicks();
-    }
-
-    function renderPlaces(){
-      if(!ACTIVE_NODE){
-        cardsWrap.innerHTML = `<div class="empty">Select a district…</div>`;
-        return;
-      }
-
-      if(ACTIVE_TYPE === "all"){
-        placesTitle.textContent = `All • ${ACTIVE_DIST}`;
-        renderAllSections();
-      }else{
-        placesTitle.textContent = `${TYPE_LABEL[ACTIVE_TYPE] || ACTIVE_TYPE} • ${ACTIVE_DIST}`;
-        renderSingleType();
-      }
-
-      setHeroCover();
-    }
-
-    function setActiveType(t){
-      ACTIVE_TYPE = t;
-      [...typeChips.querySelectorAll(".chip")].forEach(c=>{
-        c.classList.toggle("active", c.getAttribute("data-type")===t);
-      });
-      renderPlaces();
-    }
-
-    function showVisitorApp(){
-      landing.style.display = "none";
-      appEl.style.display = "grid";
-      // floating button should work after visitor view
-      handleScroll();
-    }
-
     async function openDistrict(d){
       ACTIVE_DIST = d;
-      ACTIVE_NODE = null;
-      ALL_ITEMS = [];
-      PLACE_QUERY = "";
-      PLACE_SORT = "popular_desc";
 
-      // Switch to visitor view
-      showVisitorApp();
+      // highlight
+      renderDistrictCards(districtGrid, q.value);
+      renderDistrictCards(districtGrid2, q2.value);
 
+      const node = ROOT_SNAPSHOT[d];
+      const info = safeObj(node?.districtInfo);
+      const total = countDistrictItems(node);
+
+      // hero
+      setHeroImage(pickDistrictCover(node));
+
+      // title + meta
       hTitle.textContent = d;
-      hSub.innerHTML = `Loading <b>${escapeHtml(d)}</b>…`;
+      hSub.textContent = "A short district story + curated sections below.";
+      metaRow.innerHTML = metaPills(info, total).map(t=>`<span class="pill">${escapeHtml(t)}</span>`).join("");
 
-      typeChips.style.display = "none";
-      heroCover.style.backgroundImage = "none";
-      briefBox.innerHTML = `<div class="empty">Loading…</div>`;
-      reachBox.innerHTML = `<div class="empty">Loading…</div>`;
-      cardsWrap.innerHTML = `<div class="empty">Loading…</div>`;
+      // brief/how to reach
+      const brief = norm(info.brief) || defaultBrief(d);
+      const reach = norm(info.howToReach) || defaultReach(d);
+      briefBox.innerHTML = `<div>${escapeHtml(brief).replaceAll("\n","<br/>")}</div>`;
+      reachBox.innerHTML = `<div>${escapeHtml(reach).replaceAll("\n","<br/>")}</div>`;
 
-      renderDistrictList();
+      // places sections
+      const all = flattenDistrict(node);
+      const byType = {};
+      for(const t of TYPES) byType[t] = [];
+      all.forEach(x=> byType[x.type].push(x));
+
+      // sort inside each type (popularity > rating > name)
+      for(const t of TYPES){
+        byType[t].sort((a,b)=>{
+          const pa = Number.isFinite(a.popularity)?a.popularity:-1e18;
+          const pb = Number.isFinite(b.popularity)?b.popularity:-1e18;
+          const ra = Number.isFinite(a.rating)?a.rating:-1e18;
+          const rb = Number.isFinite(b.rating)?b.rating:-1e18;
+          return (pb-pa) || (rb-ra) || String(a.title).localeCompare(String(b.title));
+        });
+      }
+
+      placesRoot.innerHTML =
+        makeSectionHTML("destinations", byType.destinations) +
+        makeSectionHTML("lakes", byType.lakes) +
+        makeSectionHTML("temples", byType.temples) +
+        makeSectionHTML("treks", byType.treks) +
+        makeSectionHTML("hotels", byType.hotels);
+
+      // card clicks -> map focus
+      const mapById = new Map(all.map(x=>[x.id,x]));
+      bindCardClicks(mapById);
+
+      // map focus (district)
       focusDistrictOnMap(d);
 
-      try{
-        const snap = await get(ref(db, `${ROOT}/${d}`));
-        if(!snap.exists()){
-          hSub.textContent = "No district data found.";
-          briefBox.innerHTML = `<div>${escapeHtml(defaultBrief(d)).replaceAll("\n","<br/>")}</div>`;
-          reachBox.innerHTML = `<div>${escapeHtml(defaultHowToReach(d)).replaceAll("\n","<br/>")}</div>`;
-          cardsWrap.innerHTML = `<div class="empty">No places found for this district.</div>`;
-          return;
-        }
+      // smooth scroll to story
+      document.getElementById("story").scrollIntoView({behavior:"smooth", block:"start"});
 
-        ACTIVE_NODE = safeObj(snap.val());
-        const info = safeObj(ACTIVE_NODE.districtInfo);
-
-        const brief = norm(info.brief) || defaultBrief(d);
-        const reach = norm(info.howToReach) || defaultHowToReach(d);
-
-        briefBox.innerHTML = `<div>${escapeHtml(brief).replaceAll("\n","<br/>")}</div>`;
-        reachBox.innerHTML = `<div>${escapeHtml(reach).replaceAll("\n","<br/>")}</div>`;
-
-        ALL_ITEMS = flattenSegments(ACTIVE_NODE);
-
-        typeChips.style.display = "flex";
-        setActiveType("all");
-
-        hSub.innerHTML = `Loaded ✅ <b>${escapeHtml(d)}</b> • Card click → map focus`;
-        floatSub.textContent = escapeHtml(d);
-
-        renderDistrictList();
-      }catch(e){
-        console.error(e);
-        hSub.textContent = "Load failed (rules/config?)";
-        briefBox.innerHTML = `<div class="empty">Firebase read failed.</div>`;
-        reachBox.innerHTML = `<div class="empty">Firebase read failed.</div>`;
-        cardsWrap.innerHTML = `<div class="empty">Firebase read failed.</div>`;
-      }
+      // close dock if open
+      dockSheet.style.display = "none";
     }
 
-    /* Drawer open/close */
-    function openDrawer(){
-      drawer.classList.add("open");
-      drawerOverlay.classList.add("open");
-    }
-    function closeDrawer(){
-      drawer.classList.remove("open");
-      drawerOverlay.classList.remove("open");
-    }
-    floatBtn.addEventListener("click", openDrawer);
-    closeDrawerBtn.addEventListener("click", closeDrawer);
-    drawerOverlay.addEventListener("click", closeDrawer);
-    window.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeDrawer(); });
-
-    // chips
-    typeChips.addEventListener("click", (e)=>{
-      const chip = e.target.closest(".chip");
-      if(!chip) return;
-      setActiveType(chip.getAttribute("data-type"));
-    });
-
-    function renderDistrictList(){
-      const q = low(qEl.value);
-      const filtered = DISTRICTS.filter(d => !q || low(d).includes(q));
-
-      districtList.innerHTML = (filtered.length ? filtered : [""]).map(d=>{
-        if(!d) return `<div class="d"><b>No district found</b><small>Try another keyword</small></div>`;
-        const active = (ACTIVE_DIST === d) ? "active" : "";
-        const pv = DIST_PREVIEW[d] || [];
-        const line = pv.length ? `<small>${pv.map(escapeHtml).join(" • ")}</small>` : `<small style="opacity:.65">—</small>`;
-        return `
-          <div class="d ${active}" data-d="${escapeHtml(d)}">
-            <b>${escapeHtml(d)}</b>
-            ${line}
-          </div>
-        `;
-      }).join("");
-
-      [...districtList.querySelectorAll(".d[data-d]")].forEach(el=>{
-        el.addEventListener("click", ()=>{
-          openDistrict(el.getAttribute("data-d"));
-          closeDrawer();
-        });
+    function setupDock(){
+      dockBtn.addEventListener("click", ()=>{
+        dockSheet.style.display = (dockSheet.style.display === "block") ? "none" : "block";
       });
+      dockClose.addEventListener("click", ()=> dockSheet.style.display="none");
+
+      // show dock button after you scroll past district panel
+      const districtPanel = document.getElementById("districtPanel");
+      const onScroll = ()=>{
+        const r = districtPanel.getBoundingClientRect();
+        const shouldShow = r.bottom < 40;
+        dockBtn.style.display = shouldShow ? "block" : "none";
+      };
+      window.addEventListener("scroll", onScroll, {passive:true});
+      onScroll();
     }
-    qEl.addEventListener("input", renderDistrictList);
-
-    /* ✅ Landing grid render */
-    function renderLandingGrid(){
-      const q = low(landingSearch.value);
-      const filtered = DISTRICTS.filter(d => !q || low(d).includes(q));
-
-      districtGrid.innerHTML = (filtered.length ? filtered : [""]).map(d=>{
-        if(!d) return `<div class="dCard" style="padding:14px"><b>No district found</b></div>`;
-        const pv = DIST_PREVIEW[d] || [];
-        const preview = pv.length ? pv.map(escapeHtml).join(" • ") : "Popular places will appear here";
-        return `
-          <div class="dCard" data-d="${escapeHtml(d)}">
-            <div class="dCardTop">
-              <b>${escapeHtml(d)}</b>
-              <span class="pill">Explore</span>
-            </div>
-            <div class="dCardBody">${preview}</div>
-          </div>
-        `;
-      }).join("");
-
-      [...districtGrid.querySelectorAll(".dCard[data-d]")].forEach(el=>{
-        el.addEventListener("mouseenter", ()=>{
-          // optional: hover focuses landing map
-          const d = el.getAttribute("data-d");
-          focusDistrictOnLandingMap(d);
-        });
-        el.addEventListener("click", ()=>{
-          openDistrict(el.getAttribute("data-d"));
-        });
-      });
-    }
-    landingSearch.addEventListener("input", renderLandingGrid);
-
-    /* Floating button visible after scroll (visitor view only) */
-    function handleScroll(){
-      const y = window.scrollY || document.documentElement.scrollTop || 0;
-      const show = (appEl.style.display === "grid") && (y > 80);
-      floatBtn.classList.toggle("show", show);
-    }
-    window.addEventListener("scroll", handleScroll, {passive:true});
 
     async function init(){
+      rotateQuotes();
+      setHeroImage(HERO_FALLBACKS[0]);
+
       const snap = await get(ref(db, ROOT));
-      const root = snap.exists() ? safeObj(snap.val()) : {};
+      ROOT_SNAPSHOT = snap.exists() ? safeObj(snap.val()) : {};
+      DISTRICTS = Object.keys(ROOT_SNAPSHOT).sort((a,b)=>a.localeCompare(b));
 
-      DISTRICTS = Object.keys(root).sort((a,b)=>a.localeCompare(b));
-
-      // preview 2-3 destination names
-      DIST_PREVIEW = {};
+      PREVIEW = {};
       for(const d of DISTRICTS){
-        const node = root[d];
-        const seg = safeObj(node?.segments);
-        const bucket = safeObj(seg?.destinations);
-        const arr = Object.keys(bucket).map(id=>{
-          const it = safeObj(bucket[id]);
-          return {
-            title: pickTitle(it),
-            pop: Number(it.popularityScore ?? it.popularity ?? 0) || 0,
-            rating: Number(it.rating ?? 0) || 0
-          };
-        });
-        arr.sort((a,b)=> (b.pop-a.pop) || (b.rating-a.rating) || String(a.title).localeCompare(String(b.title)));
-        DIST_PREVIEW[d] = arr.slice(0,3).map(x=>x.title).filter(Boolean);
+        PREVIEW[d] = computePreviewNames(ROOT_SNAPSHOT[d]);
       }
 
-      renderLandingGrid();
-      renderDistrictList();
+      renderDistrictCards(districtGrid, "");
+      renderDistrictCards(districtGrid2, "");
 
-      // deep link: index.html#district=Kullu
+      // searches
+      q.addEventListener("input", ()=> renderDistrictCards(districtGrid, q.value));
+      q2.addEventListener("input", ()=> renderDistrictCards(districtGrid2, q2.value));
+
+      setupDock();
+
+      // if URL has #district=Kullu
       const m = (location.hash || "").match(/district=([^&]+)/i);
       if(m){
         const d = decodeURIComponent(m[1]);
@@ -1087,9 +906,10 @@
       }
     }
 
-    init().catch(()=>{
-      districtGrid.innerHTML = `<div class="dCard"><div class="dCardTop"><b>Firebase not configured</b><span class="pill">Fix</span></div><div class="dCardBody">Check rules / config / database path</div></div>`;
-      districtList.innerHTML = `<div class="d"><b>Firebase not configured</b><small>Check rules/config</small></div>`;
+    init().catch((e)=>{
+      console.error(e);
+      districtGrid.innerHTML = `<div class="dCard"><b>Firebase not configured</b><small>Check config/rules/path</small></div>`;
+      districtGrid2.innerHTML = districtGrid.innerHTML;
     });
   </script>
 </body>
