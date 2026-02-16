@@ -3,134 +3,34 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>HP Map • Premium</title>
+  <title>HP Map</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
-    :root{
-      --bg:#060914;
-      --ink:#eaf0ff;
-      --muted:rgba(234,240,255,.72);
-      --stroke:rgba(255,255,255,.14);
-      --glass:rgba(0,0,0,.40);
-      --brand:#FF7A18;
-      --brand2:#FFB04A;
-      --shadow: 0 18px 55px rgba(0,0,0,.55);
-      --r:18px;
-    }
     html,body{height:100%;margin:0}
     body{
-      background:var(--bg);
+      background:#060914;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      color:var(--ink);
-      overflow:hidden;
+      color:#eaf0ff;
     }
     #map{height:100%;width:100%}
 
-    /* Top badge */
     .badge{
       position:absolute;left:12px;top:12px;z-index:9999;
-      background:rgba(0,0,0,.42);
+      background:rgba(0,0,0,.45);
       border:1px solid rgba(255,255,255,.16);
-      color:var(--ink);
-      padding:10px 12px;border-radius:16px;
-      backdrop-filter: blur(14px);
+      color:#eaf0ff;
+      padding:10px 12px;border-radius:14px;
+      backdrop-filter: blur(12px);
       font-weight:800;font-size:12px;
-      box-shadow: var(--shadow);
       max-width: calc(100% - 24px);
       box-sizing:border-box;
+      box-shadow: 0 10px 22px rgba(0,0,0,.45);
     }
     .badge b{display:block;font-size:13px}
-    .badge span{opacity:.85;font-weight:700}
-
-    /* Intro overlay */
-    .intro{
-      position:absolute; inset:0;
-      z-index:9998;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:18px;
-      background:
-        radial-gradient(900px 600px at 20% 20%, rgba(255,122,24,.22), transparent 60%),
-        radial-gradient(800px 540px at 80% 30%, rgba(0,210,255,.14), transparent 60%),
-        linear-gradient(180deg, rgba(6,9,20,.35), rgba(6,9,20,.92));
-    }
-    .introCard{
-      width:min(820px, 100%);
-      border-radius:26px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.42);
-      backdrop-filter: blur(18px);
-      box-shadow: 0 28px 90px rgba(0,0,0,.65);
-      overflow:hidden;
-      position:relative;
-    }
-    .introBg{
-      height: 190px;
-      background-size:cover;
-      background-position:center;
-      position:relative;
-    }
-    .introBg:after{
-      content:"";
-      position:absolute; inset:0;
-      background:linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.85));
-    }
-    .introBody{
-      padding:16px 16px 18px;
-    }
-    .kicker{
-      font-weight:900;
-      letter-spacing:.24em;
-      text-transform:uppercase;
-      font-size:12px;
-      color:rgba(234,240,255,.72);
-    }
-    .h1{
-      margin:8px 0 0;
-      font-size: clamp(22px, 2.6vw, 34px);
-      font-weight:950;
-      letter-spacing:-.4px;
-      line-height:1.12;
-    }
-    .h1 span{
-      background: linear-gradient(135deg, rgba(255,122,24,.98), rgba(255,176,74,.98));
-      -webkit-background-clip:text; background-clip:text; color:transparent;
-    }
-    .q{
-      margin:12px 0 0;
-      font-weight:900;
-      font-size:14px;
-      line-height:1.6;
-    }
-    .muted{color:var(--muted); font-weight:750; line-height:1.6; margin-top:8px}
-    .btnRow{
-      margin-top:14px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:flex-end;
-    }
-    .btn{
-      padding:10px 12px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.16);
-      background:rgba(0,0,0,.30);
-      color:rgba(234,240,255,.92);
-      font-weight:950;
-      cursor:pointer;
-      transition:.18s;
-    }
-    .btn:hover{
-      transform:translateY(-2px);
-      border-color:rgba(255,122,24,.45);
-      background:rgba(255,122,24,.14);
-      box-shadow:0 0 0 4px rgba(255,122,24,.10);
-    }
+    .badge span{opacity:.85;font-weight:700;display:block;margin-top:3px;line-height:1.25}
   </style>
 </head>
 <body>
@@ -138,62 +38,11 @@
 
   <div class="badge" id="badge">
     <b>Himachal Map</b>
-    <span>Select a district or tap a place</span>
-  </div>
-
-  <div class="intro" id="intro">
-    <div class="introCard">
-      <div class="introBg" id="introBg"></div>
-      <div class="introBody">
-        <div class="kicker">HIMACHAL PRADESH</div>
-        <div class="h1">A map that feels like a <span>journey</span>.</div>
-        <div class="q" id="introQuote">“Every mountain has a story — Himachal has a library.”</div>
-        <div class="muted">
-          Click any place card on the main page → this map will focus instantly.
-          District focus works even if lat/lng is missing.
-        </div>
-        <div class="btnRow">
-          <button class="btn" id="newQuote">New quote</button>
-          <button class="btn" id="continue">Continue to map</button>
-        </div>
-      </div>
-    </div>
+    <span>“Let the mountains reset your mind.”</span>
   </div>
 
   <script>
-    const HERO = [
-      "https://source.unsplash.com/1600x900/?Himachal,Mountains",
-      "https://source.unsplash.com/1600x900/?Spiti,Valley",
-      "https://source.unsplash.com/1600x900/?Himachal,Lake",
-      "https://source.unsplash.com/1600x900/?Manali,Snow",
-      "https://source.unsplash.com/1600x900/?Dharamshala,Mountains"
-    ];
-    const QUOTES = [
-      "Every mountain has a story — Himachal has a library.",
-      "The Himalayas don’t just rise… they inspire.",
-      "If peace had an address, it would be somewhere in Himachal.",
-      "The air here feels like a reset button.",
-      "Follow the rivers — they know the way.",
-      "Some views don’t need filters. Himachal is one of them."
-    ];
-
-    const intro = document.getElementById("intro");
-    const introBg = document.getElementById("introBg");
-    const introQuote = document.getElementById("introQuote");
-    const newQuoteBtn = document.getElementById("newQuote");
-    const contBtn = document.getElementById("continue");
-
-    function randomFrom(a){ return a[(Math.random()*a.length)|0]; }
-    function setIntro(){
-      introBg.style.backgroundImage = `url('${randomFrom(HERO)}')`;
-      introQuote.textContent = `“${randomFrom(QUOTES)}”`;
-    }
-    setIntro();
-    newQuoteBtn.onclick = setIntro;
-
-    contBtn.onclick = ()=> intro.style.display="none";
-
-    // District centers (approx)
+    // District centers (approx) - match your district names
     const DIST = {
       "Bilaspur": {lat:31.330, lng:76.760},
       "Chamba": {lat:32.556, lng:76.127},
@@ -202,17 +51,17 @@
       "Kinnaur": {lat:31.595, lng:78.400},
       "Kullu": {lat:31.957, lng:77.110},
       "Lahaul & Spiti": {lat:32.490, lng:77.600},
-      "Lahaul and Spiti": {lat:32.490, lng:77.600},
       "Mandi": {lat:31.708, lng:76.932},
       "Shimla": {lat:31.104, lng:77.173},
       "Sirmaur": {lat:30.570, lng:77.300},
       "Solan": {lat:30.910, lng:77.110},
-      "Una": {lat:31.470, lng:76.270}
+      "Una": {lat:31.470, lng:76.270},
+      // alternate key
+      "Lahaul and Spiti": {lat:32.490, lng:77.600}
     };
 
     const map = L.map("map", { zoomControl:true }).setView([31.9, 77.2], 7);
 
-    // Better tiles
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18,
       attribution: "&copy; OpenStreetMap"
@@ -239,16 +88,14 @@
     function focusDistrict(name){
       const key = findDistrictKey(name);
       if(!key){
-        setBadge("Himachal Map", "District not found in map centers list");
+        setBadge("Himachal Map", "District not found");
         return;
       }
       const {lat,lng} = DIST[key];
       map.setView([lat,lng], 9, {animate:true, duration:0.6});
 
       if(districtMarker) districtMarker.remove();
-      districtMarker = L.marker([lat,lng]).addTo(map)
-        .bindPopup(`<b>${escapeHtml(key)}</b><br/>District center`)
-        .openPopup();
+      districtMarker = L.marker([lat,lng]).addTo(map).bindPopup(`<b>${escapeHtml(key)}</b><br/>District center`).openPopup();
 
       setBadge(key, "District center");
     }
@@ -263,9 +110,7 @@
 
       map.setView([lat,lng], 13, {animate:true, duration:0.6});
       if(placeMarker) placeMarker.remove();
-      placeMarker = L.marker([lat,lng]).addTo(map)
-        .bindPopup(`<b>${escapeHtml(title)}</b><br/>${escapeHtml(sub)}`)
-        .openPopup();
+      placeMarker = L.marker([lat,lng]).addTo(map).bindPopup(`<b>${escapeHtml(title)}</b><br/>${escapeHtml(sub)}`).openPopup();
 
       setBadge(title, sub || "Selected place");
     }
@@ -274,18 +119,19 @@
       const m = (location.hash||"").match(/district=([^&]+)/i);
       if(m){
         focusDistrict(decodeURIComponent(m[1]));
-        intro.style.display="none"; // auto hide intro when deep-linked
+      }else{
+        setBadge("Himachal Map", "Select a district");
       }
     }
     window.addEventListener("hashchange", readDistrictFromHash);
     readDistrictFromHash();
 
+    // Receive focus from parent (index.html)
     window.addEventListener("message", (ev)=>{
       const data = ev.data;
       if(!data || typeof data !== "object") return;
       if(data.type === "FOCUS_DISTRICT") focusDistrict(data.district);
       if(data.type === "FOCUS_PLACE") focusPlace(data);
-      intro.style.display="none";
     });
   </script>
 </body>
