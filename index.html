@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Himachal Explorer • District Guide</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,19 +11,14 @@
 
   <style>
     :root{
-      --bg0:#040610; --bg1:#070A18;
-      --text:#ECF2FF; --muted:rgba(236,242,255,.72); --muted2:rgba(236,242,255,.56);
+      --bg0:#050712; --bg1:#080B18;
+      --text:#ECF2FF; --muted:rgba(236,242,255,.72); --muted2:rgba(236,242,255,.60);
       --stroke:rgba(255,255,255,.12);
-      --panel:rgba(255,255,255,.06);
-      --panel2:rgba(0,0,0,.22);
       --brand:#FF7A18; --brand2:#FFB04A;
       --blur:18px;
-      --shadow: 0 18px 60px rgba(0,0,0,.58);
-      --shadow2: 0 10px 28px rgba(0,0,0,.45);
-      --r16:16px; --r18:18px; --r22:22px; --r26:26px;
-      --tap: 44px;
+      --shadow: 0 18px 50px rgba(0,0,0,.55);
+      --shadow2: 0 10px 26px rgba(0,0,0,.45);
     }
-
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -31,25 +26,23 @@
       font-family:"Manrope",system-ui,-apple-system,Segoe UI,Roboto,Arial;
       color:var(--text);
       background:
-        radial-gradient(1200px 900px at 15% 10%, rgba(255,122,24,.16), transparent 60%),
+        radial-gradient(1200px 900px at 15% 10%, rgba(255,122,24,.14), transparent 60%),
         radial-gradient(900px 700px at 90% 20%, rgba(120,110,255,.14), transparent 55%),
-        radial-gradient(900px 700px at 70% 95%, rgba(0,210,255,.11), transparent 55%),
+        radial-gradient(900px 700px at 70% 95%, rgba(0,210,255,.10), transparent 55%),
         linear-gradient(180deg, var(--bg0), var(--bg1));
       overflow-x:hidden;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Desktop/tablet layout */
+    /* ✅ 3-column grid (sidebar 20%) */
     .app{
       display:grid;
-      grid-template-columns: 15% 55% 30%;
+      grid-template-columns: 20% 50% 30%;
       min-height:100vh;
     }
 
-    /* LEFT sidebar */
+    /* LEFT (district list only) */
     .side{
-      min-width:220px;
+      min-width:240px;
       border-right:1px solid rgba(255,255,255,.10);
       background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
       backdrop-filter: blur(var(--blur));
@@ -58,175 +51,125 @@
       overflow:auto;
       position:sticky; top:0; height:100vh;
     }
-
     .brand{
       display:flex; gap:10px; align-items:center;
-      padding:12px;border-radius:var(--r18);
+      padding:12px;border-radius:18px;
       border:1px solid rgba(255,255,255,.12);
-      background:
-        radial-gradient(520px 160px at 20% 0%, rgba(255,122,24,.24), transparent 70%),
-        rgba(0,0,0,.24);
+      background: radial-gradient(450px 120px at 20% 0%, rgba(255,122,24,.22), transparent 70%), rgba(0,0,0,.24);
       box-shadow: var(--shadow2);
     }
-    .dot{
-      width:12px;height:12px;border-radius:50%;
-      background:linear-gradient(135deg,var(--brand),var(--brand2));
-      box-shadow:0 0 24px rgba(255,122,24,.55);
-    }
-    .title{font-weight:950; letter-spacing:.1px}
-    .sub{font-size:12px;color:var(--muted);font-weight:850;margin-top:2px}
+    .dot{width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:0 0 24px rgba(255,122,24,.55)}
+    .title{font-weight:900}
+    .sub{font-size:12px;color:var(--muted);font-weight:800;margin-top:2px}
 
     .search{
-      width:100%;
-      margin-top:12px;
-      padding:12px 12px;
-      min-height:var(--tap);
-      border-radius:var(--r16);
+      width:100%;margin-top:12px;padding:11px 12px;border-radius:16px;
       border:1px solid rgba(255,255,255,.14);
-      outline:none;color:var(--text);
-      background:rgba(0,0,0,.22);
-      font-weight:850;
-      transition:.15s;
+      outline:none;color:var(--text);background:rgba(0,0,0,.22);
+      font-weight:800;transition:.15s;
     }
     .search:focus{
-      border-color:rgba(255,122,24,.50);
+      border-color:rgba(255,122,24,.45);
       box-shadow:0 0 0 4px rgba(255,122,24,.12);
+    }
+
+    .pillRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .pill{
+      padding:7px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.18);
+      font-weight:900;font-size:11px; color:rgba(236,242,255,.9);
     }
 
     .list{margin-top:12px;display:flex;flex-direction:column;gap:10px}
     .d{
-      border-radius:var(--r18);
-      border:1px solid rgba(255,255,255,.12);
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.22));
-      padding:11px 12px;
-      cursor:pointer;
-      transition:.18s transform ease, .18s border-color ease, .18s box-shadow ease;
-      min-height:var(--tap);
+      border-radius:16px;border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.20));
+      padding:10px 11px;cursor:pointer;
+      transition:.18s transform ease, .18s border-color ease;
     }
     .d:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.22)}
-    .d.active{
-      border-color:rgba(255,122,24,.52);
-      box-shadow:0 0 0 1px rgba(255,122,24,.24) inset, 0 14px 28px rgba(0,0,0,.50);
-    }
+    .d.active{border-color:rgba(255,122,24,.48);box-shadow:0 0 0 1px rgba(255,122,24,.24) inset, 0 12px 26px rgba(0,0,0,.45)}
     .d b{display:block;font-weight:950}
     .d small{
-      display:block;
-      margin-top:6px;
+      display:block;margin-top:6px;
       color:var(--muted);
-      font-weight:850;
+      font-weight:800;
       font-size:11px;
       line-height:1.35;
       opacity:.95;
     }
 
-    /* MIDDLE content */
+    /* MIDDLE */
     .main{padding:14px;min-width:0}
     .hero{
-      border-radius:var(--r26);
-      border:1px solid rgba(255,255,255,.12);
-      overflow:hidden;
-      background:var(--panel);
-      backdrop-filter: blur(var(--blur));
-      -webkit-backdrop-filter: blur(var(--blur));
+      border-radius:24px;border:1px solid rgba(255,255,255,.12);
+      overflow:hidden;background:rgba(255,255,255,.05);
+      backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur));
       box-shadow: var(--shadow);
-      position:relative; isolation:isolate;
+      position:relative;isolation:isolate;
     }
     .heroCover{
       position:absolute; inset:0;
       background-size:cover;background-position:center;
-      filter: blur(28px) saturate(1.15) contrast(1.06);
-      transform:scale(1.14);
+      filter: blur(26px) saturate(1.1) contrast(1.05);
+      transform:scale(1.12);
       opacity:.55; z-index:0;
     }
     .heroCoverOverlay{
       position:absolute; inset:0;
-      background:linear-gradient(180deg, rgba(3,5,14,.20), rgba(3,5,14,.88) 55%, rgba(3,5,14,.96));
+      background:linear-gradient(180deg, rgba(5,7,18,.20), rgba(5,7,18,.86) 55%, rgba(5,7,18,.95));
       z-index:1;
     }
     .heroInner{position:relative;z-index:2}
     .heroTop{
-      padding:16px;
-      border-bottom:1px solid rgba(255,255,255,.10);
+      padding:16px;border-bottom:1px solid rgba(255,255,255,.10);
       background:rgba(0,0,0,.18);
     }
-    .heroTop h1{
-      margin:0;
-      font-size:clamp(22px,2.6vw,40px);
-      font-weight:950;
-      letter-spacing:-.35px;
-      line-height:1.08;
-    }
-    .heroTop p{
-      margin:9px 0 0;
-      color:rgba(236,242,255,.86);
-      line-height:1.55;
-      font-weight:650;
-    }
+    .heroTop h1{margin:0;font-size:clamp(22px,2.6vw,40px);font-weight:950;letter-spacing:-.3px}
+    .heroTop p{margin:8px 0 0;color:rgba(236,242,255,.86);line-height:1.5;font-weight:650}
 
     .chipRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
     .chip{
-      padding:9px 12px;
-      min-height:38px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
+      padding:8px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.12);
       background:rgba(255,255,255,.06);
-      color:rgba(236,242,255,.94);
-      font-weight:900;
-      font-size:12px;
-      cursor:pointer;
-      user-select:none;
-      transition:.15s transform ease, .15s border-color ease, .15s background ease;
+      color:rgba(236,242,255,.92);font-weight:900;font-size:12px;
+      cursor:pointer;user-select:none;transition:.15s;
     }
     .chip:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.22)}
-    .chip.active{
-      background:rgba(255,122,24,.18);
-      border-color:rgba(255,122,24,.38);
-      box-shadow:0 0 0 3px rgba(255,122,24,.10);
-    }
+    .chip.active{background:rgba(255,122,24,.18);border-color:rgba(255,122,24,.35);box-shadow:0 0 0 3px rgba(255,122,24,.10)}
 
     .grid{display:grid;gap:12px;padding:14px}
     .panel{
-      border-radius:var(--r22);
-      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;border:1px solid rgba(255,255,255,.12);
       background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.22));
-      overflow:hidden;
-      box-shadow:0 10px 22px rgba(0,0,0,.28);
+      overflow:hidden;box-shadow:0 10px 22px rgba(0,0,0,.28);
     }
     .panelHead{
-      padding:12px 14px;
-      border-bottom:1px solid rgba(255,255,255,.10);
+      padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.10);
       background:rgba(0,0,0,.22);
       display:flex;align-items:center;justify-content:space-between;gap:10px;
     }
     .panelHead b{font-size:13px;letter-spacing:.3px}
-    .panelBody{padding:14px;color:rgba(236,242,255,.92);line-height:1.65;font-weight:650}
+    .panelBody{padding:14px;color:rgba(236,242,255,.92);line-height:1.6;font-weight:650}
 
     .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
     .input{
-      flex:1;min-width:220px;
-      padding:12px 12px;min-height:var(--tap);
-      border-radius:var(--r16);
+      flex:1;min-width:220px;padding:11px 12px;border-radius:16px;
       border:1px solid rgba(255,255,255,.14);
-      outline:none;color:var(--text);
-      background:rgba(0,0,0,.22);
-      font-weight:850;
+      outline:none;color:var(--text);background:rgba(0,0,0,.22);font-weight:800;
     }
     .select{
-      padding:12px 12px;min-height:var(--tap);
-      border-radius:var(--r16);
-      border:1px solid rgba(255,255,255,.14);
-      outline:none;color:var(--text);
-      background:rgba(0,0,0,.22);
-      font-weight:900;
-      cursor:pointer;
+      padding:11px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.14);
+      outline:none;color:var(--text);background:rgba(0,0,0,.22);font-weight:900;cursor:pointer;
     }
 
-    /* ALL sections */
+    /* Sections for ALL view */
     .sectionTitle{
       display:flex;align-items:center;justify-content:space-between;
       gap:10px;margin-top:12px;
       padding:10px 10px;
-      border-radius:var(--r18);
+      border-radius:14px;
       border:1px solid rgba(255,255,255,.10);
       background:rgba(0,0,0,.18);
     }
@@ -240,60 +183,40 @@
       font-weight:900;font-size:12px;
     }
     .linkBtn{
-      padding:8px 10px;
-      min-height:36px;
-      border-radius:999px;
+      padding:6px 10px;border-radius:999px;
       border:1px solid rgba(255,255,255,.14);
       background:rgba(0,0,0,.28);
       color:rgba(236,242,255,.92);
       font-weight:900;font-size:12px;
       cursor:pointer;
-      transition:.15s;
     }
-    .linkBtn:hover{border-color:rgba(255,255,255,.22);transform:translateY(-1px)}
+    .linkBtn:hover{border-color:rgba(255,255,255,.22)}
 
-    /* Cards */
-    .cards{
-      display:grid;
-      grid-template-columns:repeat(2, minmax(0, 1fr));
-      gap:12px;
-      margin-top:10px;
-    }
+    .cards{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px;margin-top:10px}
     .card{
-      border-radius:var(--r22);
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.18);
-      overflow:hidden;
-      transition:.18s;
-      box-shadow:0 10px 18px rgba(0,0,0,.24);
+      border-radius:18px;border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.18);overflow:hidden;
+      transition:.18s;box-shadow:0 10px 18px rgba(0,0,0,.24);
       cursor:pointer;
     }
     .card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.22);box-shadow:0 18px 34px rgba(0,0,0,.35)}
     .thumb{
-      height:142px;
-      background:rgba(255,255,255,.08);
-      background-size:cover;
-      background-position:center;
-      position:relative;
+      height:136px;background:rgba(255,255,255,.08);
+      background-size:cover;background-position:center;position:relative;
     }
     .thumb:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,.52))}
     .badge{
       position:absolute;top:10px;left:10px;z-index:2;
-      padding:7px 10px;border-radius:999px;font-size:11px;font-weight:950;
-      color:rgba(236,242,255,.96);
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.30);
-      backdrop-filter: blur(10px);
+      padding:6px 9px;border-radius:999px;font-size:11px;font-weight:950;
+      color:rgba(236,242,255,.95);border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.28);backdrop-filter: blur(10px);
     }
     .pad{padding:12px}
     .pad b{display:block;font-weight:950}
-    .meta{margin-top:6px;color:var(--muted);font-weight:850;font-size:12px;line-height:1.35}
+    .meta{margin-top:6px;color:var(--muted);font-weight:800;font-size:12px;line-height:1.35}
     .empty{
-      padding:16px;border-radius:var(--r22);
-      border:1px dashed rgba(255,255,255,.20);
-      background:rgba(0,0,0,.18);
-      color:rgba(236,242,255,.88);
-      font-weight:900
+      padding:16px;border-radius:18px;border:1px dashed rgba(255,255,255,.20);
+      background:rgba(0,0,0,.18);color:rgba(236,242,255,.88);font-weight:850
     }
 
     /* RIGHT MAP */
@@ -304,99 +227,54 @@
     }
     .mapShell{
       height:100%;
-      border-radius:var(--r26);
-      border:1px solid rgba(255,255,255,.12);
-      background:var(--panel);
+      border-radius:24px;border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.05);
       backdrop-filter: blur(var(--blur));-webkit-backdrop-filter: blur(var(--blur));
       box-shadow: var(--shadow);
-      overflow:hidden;
-      display:flex;
-      flex-direction:column;
+      overflow:hidden;display:flex;flex-direction:column;
     }
     .mapHead{
-      padding:14px;
-      border-bottom:1px solid rgba(255,255,255,.10);
+      padding:14px;border-bottom:1px solid rgba(255,255,255,.10);
       background:rgba(0,0,0,.20);
       display:flex;align-items:center;justify-content:space-between;gap:10px;
     }
     .mapHead b{font-size:13px;letter-spacing:.3px}
-    .mapHint{font-size:12px;color:var(--muted);font-weight:850}
+    .mapHint{font-size:12px;color:var(--muted);font-weight:800}
     .mapFrameWrap{flex:1;min-height:0}
     iframe{width:100%;height:100%;border:0;background:rgba(0,0,0,.2)}
 
-    /* ---------------- MOBILE ULTRA PRO ---------------- */
-    @media(max-width:980px){
+    @media(max-width:1100px){
       .app{grid-template-columns:1fr}
-      .side{
-        position:relative;
-        height:auto;
-        min-width:0;
-        border-right:0;
-        border-bottom:1px solid rgba(255,255,255,.10);
-        padding:12px;
-      }
-
-      /* district list becomes horizontal chips for mobile */
-      .list{
-        display:flex;
-        flex-direction:row;
-        gap:10px;
-        overflow:auto;
-        padding-bottom:6px;
-        scroll-snap-type:x mandatory;
-      }
-      .d{
-        min-width:220px;
-        scroll-snap-align:start;
-        flex:0 0 auto;
-      }
-
-      .main{padding:12px}
-      .grid{padding:12px}
-      .cards{grid-template-columns:repeat(2, minmax(0,1fr))}
-      .mapCol{
-        position:relative;
-        height:auto;
-        border-left:0;
-        border-top:1px solid rgba(255,255,255,.10);
-        padding:12px;
-      }
-      .mapShell{height:420px}
+      .side{position:relative;height:auto;border-right:0;border-bottom:1px solid rgba(255,255,255,.10)}
+      .mapCol{position:relative;height:auto;border-left:0;border-top:1px solid rgba(255,255,255,.10)}
+      .mapShell{height:460px}
     }
-
-    @media(max-width:560px){
-      .brand{border-radius:20px}
-      .hero{border-radius:24px}
-      .heroTop{padding:14px}
-      .grid{gap:10px}
-      .panel{border-radius:22px}
-      .cards{grid-template-columns:1fr} /* ✅ best for ultra small */
-      .thumb{height:160px}
-      .d{min-width:78vw}
-      .controls{gap:8px}
-      .input,.select{min-width:0;width:100%}
-      .select{flex:1}
-      .chipRow{gap:8px}
-    }
+    @media(max-width:520px){ .cards{grid-template-columns:1fr} }
   </style>
 </head>
 
 <body>
   <div class="app">
-    <!-- LEFT -->
+    <!-- LEFT: districts only -->
     <aside class="side">
       <div class="brand">
         <div class="dot"></div>
         <div>
           <div class="title">Himachal Explorer</div>
-          <div class="sub">Ultra Pro • Mobile Ready</div>
+          <div class="sub">Select a district • clean & fast</div>
         </div>
       </div>
 
       <input id="q" class="search" placeholder="Search district…"/>
 
+      <div class="pillRow">
+        <div class="pill">🗺️ Map Sync</div>
+        <div class="pill">📍 Place Focus</div>
+        <div class="pill">✨ Premium UI</div>
+      </div>
+
       <div class="list" id="districtList">
-        <div class="d"><b>Loading…</b><small>Fetching districts</small></div>
+        <div class="d"><b>Loading…</b><small>Please wait</small></div>
       </div>
     </aside>
 
@@ -409,7 +287,7 @@
         <div class="heroInner">
           <div class="heroTop">
             <h1 id="hTitle">Himachal Pradesh</h1>
-            <p id="hSub">Select district → Default is <b>All</b> (sections wise). Card tap → map focus (if lat/lng).</p>
+            <p id="hSub">District select karo → brief + how to reach + best places (map synced).</p>
 
             <div class="chipRow" id="typeChips" style="display:none">
               <div class="chip active" data-type="all">All</div>
@@ -451,6 +329,7 @@
           </div>
         </div>
         <div class="mapFrameWrap">
+          <!-- ✅ keep map.html in same folder -->
           <iframe id="mapFrame" title="District Map" src="map.html"></iframe>
         </div>
       </div>
@@ -478,6 +357,7 @@
     const db = getDatabase(app);
 
     const ROOT = "tourism/hp/districts";
+
     const TYPES = ["destinations","lakes","temples","treks","hotels"];
     const TYPE_LABEL = {
       destinations:"Destinations",
@@ -503,16 +383,17 @@
     const mapHint = document.getElementById("mapHint");
     const mapFrame = document.getElementById("mapFrame");
 
-    // state
+    // State
     let DISTRICTS = [];
-    let DIST_PREVIEW = {}; // district -> 2-3 popular destination names
+    let DIST_PREVIEW = {};     // district -> 2-3 popular destination names
     let ACTIVE_DIST = "";
-    let ACTIVE_TYPE = "all";
+    let ACTIVE_TYPE = "all";   // default
     let ACTIVE_NODE = null;
     let ALL_ITEMS = [];
     let PLACE_QUERY = "";
     let PLACE_SORT = "popular_desc";
 
+    // helpers
     const safeObj = (x)=> (x && typeof x==="object") ? x : {};
     const norm = (s)=> String(s ?? "").trim();
     const low = (s)=> norm(s).toLowerCase();
@@ -523,6 +404,23 @@
         .replaceAll('"',"&quot;").replaceAll("'","&#039;");
     }
 
+    function toNum(v){
+      if(v===null || v===undefined) return NaN;
+      const s = String(v).trim();
+      if(!s) return NaN;
+      return Number(s);
+    }
+
+    function normalizeTypeKey(k){
+      k = low(k);
+      if(k==="destination" || k==="dest") return "destinations";
+      if(k==="lake") return "lakes";
+      if(k==="temple") return "temples";
+      if(k==="trek") return "treks";
+      if(k==="hotel") return "hotels";
+      return k;
+    }
+
     function extractPhotos(item){
       const a = [];
       const pushArr = (x)=> { if(Array.isArray(x)) x.forEach(u=>{ if(norm(u)) a.push(norm(u)); }); };
@@ -531,6 +429,10 @@
       if(norm(item.imageUrl)) a.push(norm(item.imageUrl));
       if(norm(item.cover)) a.push(norm(item.cover));
       if(norm(item.photo)) a.push(norm(item.photo));
+      // support "url1|url2|url3"
+      if(norm(item.photo) && String(item.photo).includes("|")){
+        String(item.photo).split("|").map(x=>x.trim()).filter(Boolean).forEach(u=>a.push(u));
+      }
       return Array.from(new Set(a));
     }
 
@@ -538,23 +440,29 @@
       return it.name || it.title || it.place || it.placeName || it.locationName || "Untitled";
     }
 
+    /* ✅ FIX: strict reading of types from segments keys (so lakes never go under destinations) */
     function flattenSegments(node){
       const seg = safeObj(node.segments);
       const out = [];
-      for(const t of TYPES){
-        const bucket = safeObj(seg[t]);
+
+      for(const rawKey of Object.keys(seg)){
+        const t = normalizeTypeKey(rawKey);
+        if(!TYPES.includes(t)) continue; // ignore unknown
+        const bucket = safeObj(seg[rawKey]);
+
         for(const id of Object.keys(bucket)){
           const it = safeObj(bucket[id]);
           out.push({
-            id, type:t,
+            id,
+            type: t,
             title: pickTitle(it),
             photos: extractPhotos(it),
             notes: it.notes || it.description || "",
             rating: Number(it.rating ?? "") || null,
             popularity: Number(it.popularityScore ?? it.popularity ?? "") || null,
             entryFee: Number(it.entryFee ?? "") || null,
-            lat: Number(it.lat ?? it.latitude ?? ""),
-            lng: Number(it.lng ?? it.longitude ?? ""),
+            lat: toNum(it.lat ?? it.latitude),
+            lng: toNum(it.lng ?? it.longitude),
             raw: it
           });
         }
@@ -563,10 +471,10 @@
     }
 
     function defaultBrief(d){
-      return `• ${d} is one of the key districts of Himachal Pradesh.\n• Use chips to explore: destinations, lakes, temples, treks and hotels.\n• Tap a card to focus on map (if lat/lng present).`;
+      return `• ${d} is a beautiful district of Himachal Pradesh.\n• Explore nature, culture, temples, treks and stays.\n• Tap any place card → map focus (when lat/lng exists).`;
     }
     function defaultHowToReach(d){
-      return `🛣️ Road: ${d} is connected by road.\n🚆 Train: nearest station depends on route.\n✈️ Air: nearest airport depends on region.\n\nRight side map me district auto center hoga.`;
+      return `🛣️ Road: Regular road connectivity.\n🚆 Train: Nearest railhead depends on route.\n✈️ Air: Nearest airport depends on region.\n\nRight side map will stay synced.`;
     }
 
     function computeDistrictPreviewNames(node){
@@ -589,7 +497,7 @@
       const filtered = DISTRICTS.filter(d => !q || low(d).includes(q));
 
       districtList.innerHTML = (filtered.length ? filtered : [""]).map(d=>{
-        if(!d) return `<div class="d"><b>No district found</b><small>Try another search</small></div>`;
+        if(!d) return `<div class="d"><b>No district found</b><small>Try another keyword</small></div>`;
         const active = (ACTIVE_DIST === d) ? "active" : "";
         const pv = DIST_PREVIEW[d] || [];
         const line = pv.length ? `<small>${pv.map(escapeHtml).join(" • ")}</small>` : `<small style="opacity:.65">—</small>`;
@@ -622,6 +530,7 @@
       heroCover.style.backgroundImage = cover ? `url('${cover.replaceAll("'", "%27")}')` : "none";
     }
 
+    /* ✅ Map syncing */
     function focusDistrictOnMap(d){
       mapHint.textContent = `Map: ${d}`;
       mapFrame.src = `map.html#district=${encodeURIComponent(d)}&t=${Date.now()}`;
@@ -708,7 +617,7 @@
           </div>
           <div class="pad">
             <b>${escapeHtml(x.title)}</b>
-            <div class="meta">${escapeHtml(extra || "Tap to focus on map (if lat/lng available)")}</div>
+            <div class="meta">${escapeHtml(extra || (canMap ? "Tap to focus on map" : "Add lat/lng to enable map focus"))}</div>
             ${x.notes ? `<div class="meta">${escapeHtml(x.notes).slice(0,120)}${x.notes.length>120?"…":""}</div>` : ""}
           </div>
         </div>
@@ -720,10 +629,13 @@
         el.addEventListener("click", ()=>{
           const id = el.getAttribute("data-id");
           const place = ALL_ITEMS.find(p=>p.id===id);
-          if(place && Number.isFinite(place.lat) && Number.isFinite(place.lng)){
+          if(!place) return;
+
+          if(Number.isFinite(place.lat) && Number.isFinite(place.lng)){
             focusPlaceOnMap(place);
-          }else if(ACTIVE_DIST){
-            focusDistrictOnMap(ACTIVE_DIST);
+          }else{
+            // fallback: focus district
+            if(ACTIVE_DIST) focusDistrictOnMap(ACTIVE_DIST);
           }
         });
       });
@@ -740,8 +652,8 @@
             <option value="name_asc">Name (A → Z)</option>
           </select>
         </div>
-        <div style="margin-top:8px;color:var(--muted2);font-weight:850;font-size:12px">
-          “View all” → opens single category. Cards → map focus.
+        <div style="margin-top:8px;color:var(--muted2);font-weight:800;font-size:12px">
+          Tip: “View all” pe click karke single category open hogi.
         </div>
       `;
 
@@ -783,7 +695,7 @@
     }
 
     function renderSingleType(){
-      const niceType = TYPE_LABEL[ACTIVE_TYPE] || ACTIVE_TYPE;
+      const niceType = ACTIVE_TYPE === "all" ? "All" : (TYPE_LABEL[ACTIVE_TYPE] || ACTIVE_TYPE);
       const items = getFilteredItems(ACTIVE_TYPE);
 
       const controlsHtml = `
@@ -796,7 +708,7 @@
             <option value="name_asc">Name (A → Z)</option>
           </select>
         </div>
-        <div style="margin-top:8px;color:var(--muted2);font-weight:850;font-size:12px">
+        <div style="margin-top:8px;color:var(--muted2);font-weight:800;font-size:12px">
           Showing <b>${items.length}</b> items
         </div>
       `;
@@ -811,7 +723,7 @@
         <div class="cards">
           ${items.slice(0,60).map(cardHtml).join("")}
         </div>
-        ${items.length>60 ? `<div style="margin-top:10px;color:var(--muted2);font-weight:850;font-size:12px">Showing first 60 items.</div>` : ""}
+        ${items.length>60 ? `<div style="margin-top:10px;color:var(--muted2);font-weight:800;font-size:12px">Showing first 60 items.</div>` : ""}
       `;
 
       wireControls();
@@ -881,12 +793,14 @@
         briefBox.innerHTML = `<div>${escapeHtml(brief).replaceAll("\n","<br/>")}</div>`;
         reachBox.innerHTML = `<div>${escapeHtml(reach).replaceAll("\n","<br/>")}</div>`;
 
+        // ✅ FIX: correct categorization
         ALL_ITEMS = flattenSegments(ACTIVE_NODE);
 
+        // chips + default ALL
         typeChips.style.display = "flex";
         setActiveType("all");
 
-        hSub.innerHTML = `Loaded ✅ <b>All</b> shows sections. Chips se category open karo.`;
+        hSub.innerHTML = `Loaded ✅ <b>All</b> shows sections wise • Cards click → map focus`;
 
         renderDistrictList();
 
@@ -899,12 +813,14 @@
       }
     }
 
+    // chips
     typeChips.addEventListener("click", (e)=>{
       const chip = e.target.closest(".chip");
       if(!chip) return;
       setActiveType(chip.getAttribute("data-type"));
     });
 
+    // district search
     qEl.addEventListener("input", renderDistrictList);
 
     async function init(){
@@ -913,15 +829,14 @@
 
       DISTRICTS = Object.keys(root).sort((a,b)=>a.localeCompare(b));
 
-      // ✅ sidebar 2–3 popular destinations per district
       DIST_PREVIEW = {};
       for(const d of DISTRICTS){
-        const node = root[d];
-        DIST_PREVIEW[d] = computeDistrictPreviewNames(node);
+        DIST_PREVIEW[d] = computeDistrictPreviewNames(root[d]);
       }
 
       renderDistrictList();
 
+      // ✅ allow deep-link: index.html#district=Kullu
       const m = (location.hash || "").match(/district=([^&]+)/i);
       if(m){
         const d = decodeURIComponent(m[1]);
