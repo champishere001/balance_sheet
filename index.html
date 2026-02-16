@@ -1,912 +1,1015 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer • District Guide</title>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Himachal Explorer — Tourism Portal</title>
   <style>
     :root{
-      --bg0:#050812; --bg1:#070B17;
-      --text:#F3F6FF;
-      --muted: rgba(243,246,255,.74);
-      --muted2: rgba(243,246,255,.58);
-
-      --panel: rgba(255,255,255,.06);
-      --panel2: rgba(255,255,255,.09);
-      --stroke: rgba(255,255,255,.14);
-
-      --brand:#FF7A18; --brand2:#FFC062;
-
-      --r:14px; --r2:18px;
-      --shadow: 0 10px 26px rgba(0,0,0,.40);
-      --shadow2: 0 6px 16px rgba(0,0,0,.34);
+      --bg:#070a12;
+      --glass: rgba(255,255,255,.08);
+      --glass2: rgba(255,255,255,.12);
+      --stroke: rgba(255,255,255,.16);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius: 18px;
+      --radius2: 26px;
     }
+
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: radial-gradient(1200px 800px at 20% 10%, rgba(120,120,255,.18), transparent 60%),
+                  radial-gradient(1200px 800px at 80% 30%, rgba(0,255,200,.10), transparent 55%),
+                  var(--bg);
       color:var(--text);
-      background:
-        radial-gradient(900px 700px at 15% 10%, rgba(255,122,24,.10), transparent 60%),
-        radial-gradient(800px 600px at 90% 20%, rgba(90,120,255,.10), transparent 60%),
-        linear-gradient(180deg,var(--bg0),var(--bg1));
       overflow-x:hidden;
     }
 
-    /* Header */
-    .topbar{
-      position:sticky; top:0; z-index:30;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.35);
-      backdrop-filter: blur(10px);
+    /* Background image layer */
+    .bg{
+      position:fixed; inset:0;
+      background:
+        linear-gradient(180deg, rgba(5,8,16,.65), rgba(5,8,16,.85)),
+        url("https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=2400&q=80");
+      background-size:cover;
+      background-position:center;
+      filter:saturate(1.08) contrast(1.05);
+      z-index:-2;
     }
-    .topbarIn{
-      max-width:1200px; margin:0 auto;
-      padding:10px 12px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-    }
-    .brand{display:flex; gap:10px; align-items:center}
-    .dot{
-      width:10px;height:10px;border-radius:50%;
-      background:linear-gradient(135deg,var(--brand),var(--brand2));
-      box-shadow:0 0 16px rgba(255,122,24,.40);
-    }
-    .brand b{display:block; font-size:14px; letter-spacing:.2px}
-    .brand small{display:block; font-weight:700; color:var(--muted); margin-top:2px}
-
-    .actions{display:flex; gap:8px; align-items:center}
-    .btn{
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      padding:9px 10px;
-      border-radius:999px;
-      font-weight:850;
-      cursor:pointer;
-      font-size:12px;
-    }
-    .btnPrimary{
-      border:0;
-      background: linear-gradient(135deg, var(--brand), var(--brand2));
-      color:#0b1220;
-      box-shadow: 0 10px 20px rgba(255,122,24,.16);
+    .grain{
+      position:fixed; inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E");
+      opacity:.09;
+      z-index:-1;
+      pointer-events:none;
+      mix-blend-mode:overlay;
     }
 
     /* Layout */
-    .wrap{max-width:1200px;margin:0 auto;padding:12px; display:grid; gap:12px;}
-    .hero{
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:var(--r2);
-      overflow:hidden;
-      background: rgba(255,255,255,.04);
+    .wrap{
+      display:grid;
+      grid-template-columns: 310px 1fr;
+      min-height:100vh;
+      gap:18px;
+      padding:18px;
+    }
+
+    /* Sidebar */
+    .side{
+      position:sticky;
+      top:18px;
+      align-self:start;
+      height: calc(100vh - 36px);
+      border-radius: var(--radius2);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      backdrop-filter: blur(14px);
+      border:1px solid var(--stroke);
       box-shadow: var(--shadow);
-      position:relative;
-    }
-    .heroCover{
-      position:absolute; inset:0;
-      background-image:url("https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1600&q=70");
-      background-size:cover; background-position:center;
-      filter: blur(14px) saturate(1.05);
-      opacity:.35;
-      transform: scale(1.08);
-    }
-    .heroOverlay{
-      position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(5,8,18,.45), rgba(5,8,18,.92));
-    }
-    .heroIn{position:relative; padding:14px}
-    .heroH{
-      display:flex; gap:12px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap;
-    }
-    .heroTitle{margin:0; font-size:clamp(18px,2.2vw,30px); font-weight:950}
-    .quote{
-      margin-top:6px;
-      color: rgba(243,246,255,.88);
-      font-weight:650;
-      line-height:1.45;
-      font-size:13px;
-      max-width:900px;
-    }
-    .miniRow{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap}
-    .pill{
-      padding:7px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      font-size:12px;
-      font-weight:850;
-      color: rgba(243,246,255,.92);
-    }
-
-    /* District Grid first */
-    .panel{
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:var(--r2);
-      background: rgba(0,0,0,.22);
-      box-shadow: var(--shadow2);
-      overflow:hidden;
-    }
-    .panelHead{
-      padding:10px 12px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      background: rgba(0,0,0,.18);
-    }
-    .panelHead b{font-size:12px; letter-spacing:.2px}
-    .panelHead small{color:var(--muted); font-weight:800}
-    .panelBody{padding:12px}
-
-    .districtGrid{
-      display:grid;
-      grid-template-columns: repeat(4, minmax(0,1fr));
-      gap:10px;
-    }
-    .dTile{
-      border-radius: var(--r2);
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      overflow:hidden;
-      cursor:pointer;
-      transition:.12s;
-      box-shadow: var(--shadow2);
-      min-height: 104px;
-      position:relative;
-    }
-    .dTile:hover{transform: translateY(-2px); border-color:rgba(255,255,255,.22)}
-    .dTile.active{border-color:rgba(255,122,24,.55); background:rgba(255,122,24,.08)}
-    .dBg{
-      position:absolute; inset:0;
-      background-size:cover; background-position:center;
-      filter: saturate(1.05);
-      opacity:.35;
-    }
-    .dShade{position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.72))}
-    .dTxt{position:relative; padding:10px}
-    .dTxt b{display:block; font-size:13px; font-weight:950}
-    .dTxt small{display:block; margin-top:6px; font-size:11px; color:var(--muted); font-weight:750; line-height:1.25}
-
-    /* Content + Map area */
-    .contentGrid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr; /* map second priority */
-      gap:12px;
-      align-items:start;
-    }
-    .infoStack{display:grid; gap:12px}
-    .box{
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:var(--r2);
-      background: rgba(255,255,255,.04);
-      box-shadow: var(--shadow2);
-      overflow:hidden;
-    }
-    .boxHead{
-      padding:10px 12px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.18);
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-    }
-    .boxHead b{font-size:12px; letter-spacing:.2px}
-    .boxBody{padding:12px; font-size:13px; line-height:1.55; color: rgba(243,246,255,.90); font-weight:650}
-    .empty{
-      padding:12px;
-      border-radius:var(--r2);
-      border:1px dashed rgba(255,255,255,.22);
-      background: rgba(0,0,0,.18);
-      color: rgba(243,246,255,.86);
-      font-weight:850;
-    }
-
-    /* Tabs */
-    .tabs{display:flex; gap:8px; flex-wrap:wrap}
-    .tab{
-      padding:7px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      font-size:12px;
-      font-weight:900;
-      cursor:pointer;
-      user-select:none;
-    }
-    .tab.active{background: rgba(255,122,24,.16); border-color: rgba(255,122,24,.35)}
-    .toolsRow{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap}
-    .input{
-      flex:1; min-width:220px;
-      padding:10px 12px;
-      border-radius: var(--r);
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.22);
-      color: var(--text);
-      outline:none;
-      font-weight:750;
-    }
-    .select{
-      padding:10px 12px;
-      border-radius: var(--r);
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.22);
-      color: var(--text);
-      outline:none;
-      font-weight:850;
-      cursor:pointer;
-    }
-
-    /* Cards */
-    .cards{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:10px}
-    .card{
-      border-radius: var(--r2);
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      overflow:hidden;
-      cursor:pointer;
-      transition:.12s;
-      box-shadow: var(--shadow2);
-    }
-    .card:hover{transform: translateY(-2px); border-color: rgba(255,255,255,.22)}
-    .thumb{height:118px; background-size:cover; background-position:center; position:relative}
-    .thumb:after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.55))}
-    .badge{
-      position:absolute; top:10px; left:10px;
-      padding:5px 8px;
-      border-radius:999px;
-      font-size:11px;
-      font-weight:900;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.30);
-    }
-    .pad{padding:10px 12px}
-    .pad b{display:block; font-weight:950; font-size:13px}
-    .meta{margin-top:6px; color:var(--muted); font-weight:750; font-size:12px; line-height:1.25}
-    .meta2{margin-top:6px; color:var(--muted2); font-weight:750; font-size:12px; line-height:1.25}
-    .tagRow{margin-top:8px; display:flex; gap:6px; flex-wrap:wrap}
-    .tag{
-      font-size:11px; font-weight:850;
-      padding:4px 8px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.20);
-      color: rgba(243,246,255,.88);
-    }
-
-    /* Map box */
-    .mapFrameWrap{height: 560px}
-    iframe{width:100%; height:100%; border:0; background: rgba(0,0,0,.22)}
-
-    /* Floating drawer for district list on scroll */
-    .floatBtn{
-      position:fixed; right:14px; bottom:14px; z-index:40;
-      border:0;
-      padding:12px 14px;
-      border-radius:999px;
-      font-weight:950;
-      cursor:pointer;
-      background: linear-gradient(135deg, var(--brand), var(--brand2));
-      color:#0b1220;
-      box-shadow: 0 18px 40px rgba(255,122,24,.18);
-      display:none;
-    }
-    .drawerMask{
-      position:fixed; inset:0; background: rgba(0,0,0,.55);
-      display:none; z-index:50;
-    }
-    .drawer{
-      position:fixed; right:0; top:0; height:100vh; width:min(420px, 92vw);
-      background: rgba(5,8,18,.92);
-      border-left:1px solid rgba(255,255,255,.14);
-      box-shadow: -10px 0 30px rgba(0,0,0,.55);
-      display:none; z-index:60;
-      padding:12px;
+      padding:18px;
       overflow:auto;
     }
-    .drawerHead{display:flex; align-items:center; justify-content:space-between; gap:10px}
-    .drawerHead b{font-size:13px}
-    .xBtn{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      border-radius:999px;
-      padding:8px 10px;
-      cursor:pointer;
-      font-weight:900;
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .logo{
+      width:46px; height:46px;
+      border-radius:16px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.22), rgba(255,255,255,.06));
+      border:1px solid var(--stroke);
+      display:grid; place-items:center;
+      box-shadow: 0 12px 30px rgba(0,0,0,.35);
+      flex:0 0 auto;
+    }
+    .logo svg{opacity:.95}
+    .brand h1{
+      font-size:15px;
+      margin:0;
+      letter-spacing:.3px;
+      line-height:1.15;
+    }
+    .brand p{
+      margin:2px 0 0 0;
+      font-size:12px;
+      color:var(--muted);
     }
 
+    .nav{
+      display:grid;
+      gap:10px;
+      margin:14px 0 16px;
+    }
+    .nav button{
+      width:100%;
+      text-align:left;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding:12px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      transition:.22s ease;
+    }
+    .nav button:hover{transform:translateY(-1px); background: rgba(255,255,255,.10)}
+    .nav button.active{background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.22)}
+    .nav small{color:var(--muted); font-weight:600}
+
+    .panelTitle{
+      margin:14px 0 8px;
+      font-size:12px;
+      letter-spacing:.28em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.70);
+    }
+
+    .field{
+      display:grid; gap:8px;
+      margin-bottom:12px;
+    }
+    label{font-size:12px; color:rgba(255,255,255,.76)}
+    input, select{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(8,12,20,.55);
+      color:var(--text);
+      outline:none;
+    }
+    input::placeholder{color:rgba(255,255,255,.55)}
+    .row2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .chipRow{
+      display:flex; flex-wrap:wrap; gap:8px;
+      margin-top:8px;
+    }
+    .chip{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:rgba(255,255,255,.88);
+      padding:8px 10px;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:12px;
+      transition:.2s ease;
+      user-select:none;
+    }
+    .chip:hover{background: rgba(255,255,255,.10); transform:translateY(-1px)}
+    .chip.on{background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.22)}
+
+    .miniCard{
+      margin-top:12px;
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      padding:12px;
+    }
+    .miniCard p{margin:6px 0 0 0; color:var(--muted); font-size:12px; line-height:1.45}
+    .miniCard .btn{
+      width:100%;
+      margin-top:10px;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.12);
+      color:var(--text);
+      cursor:pointer;
+      transition:.2s ease;
+      font-weight:650;
+    }
+    .miniCard .btn:hover{transform:translateY(-1px); background: rgba(255,255,255,.18)}
+
+    /* Main */
+    .main{
+      border-radius: var(--radius2);
+      overflow:hidden;
+      position:relative;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+    }
+
+    .hero{
+      padding:22px 22px 18px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.02));
+      border-bottom:1px solid rgba(255,255,255,.12);
+    }
+    .heroTop{
+      display:flex;
+      gap:14px;
+      justify-content:space-between;
+      align-items:flex-end;
+      flex-wrap:wrap;
+    }
+    .hero h2{
+      margin:0;
+      font-size:28px;
+      letter-spacing:.2px;
+      line-height:1.15;
+    }
+    .hero p{
+      margin:8px 0 0;
+      color:var(--muted);
+      max-width:62ch;
+      line-height:1.5;
+    }
+
+    .searchBar{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .searchBar input{
+      flex: 1 1 320px;
+      min-width:240px;
+      background: rgba(0,0,0,.28);
+    }
+    .primary{
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.14);
+      color:var(--text);
+      padding:12px 14px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:750;
+      transition:.2s ease;
+    }
+    .primary:hover{transform:translateY(-1px); background: rgba(255,255,255,.20)}
+
+    .chipsMain{margin-top:12px}
+
+    .content{
+      padding:18px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:14px;
+    }
+    .card{
+      border-radius: 22px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      box-shadow: 0 18px 55px rgba(0,0,0,.30);
+      cursor:pointer;
+      transform: translateZ(0);
+      transition: transform .22s ease, background .22s ease, border-color .22s ease;
+      position:relative;
+      min-height: 280px;
+    }
+    .card:hover{
+      transform: translateY(-3px);
+      background: rgba(255,255,255,.10);
+      border-color: rgba(255,255,255,.20);
+    }
+
+    .thumb{
+      height: 185px;
+      background-size:cover;
+      background-position:center;
+      position:relative;
+    }
+    .thumb:after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.55));
+    }
+    .badge{
+      position:absolute;
+      left:12px; top:12px;
+      padding:8px 10px;
+      border-radius:999px;
+      background: rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.18);
+      font-size:12px;
+      z-index:1;
+      backdrop-filter: blur(10px);
+    }
+    .cardBody{
+      padding:12px 12px 14px;
+      display:grid;
+      gap:8px;
+    }
+    .titleRow{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .card h3{
+      margin:0;
+      font-size:15px;
+      line-height:1.2;
+      letter-spacing:.2px;
+    }
+    .meta{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+      margin:0;
+    }
+    .pillRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:2px;
+    }
+    .pill{
+      font-size:11px;
+      padding:7px 9px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:rgba(255,255,255,.86);
+    }
+
+    /* Drawer modal */
+    .modalBack{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding:16px;
+      z-index:50;
+    }
+    .modal{
+      width:min(980px, 100%);
+      border-radius: 26px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+      box-shadow: 0 30px 90px rgba(0,0,0,.65);
+      transform: translateY(14px);
+      opacity:0;
+      transition:.22s ease;
+    }
+    .modalBack.show{display:flex;}
+    .modalBack.show .modal{transform: translateY(0); opacity:1;}
+
+    .modalTop{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      padding:14px 14px;
+      border-bottom:1px solid rgba(255,255,255,.12);
+    }
+    .modalTop strong{font-size:14px}
+    .closeBtn{
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.10);
+      color:var(--text);
+      border-radius:12px;
+      padding:10px 12px;
+      cursor:pointer;
+      transition:.2s ease;
+      font-weight:750;
+    }
+    .closeBtn:hover{background: rgba(255,255,255,.16)}
+
+    .modalGrid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+      padding:14px;
+    }
+    .modalPhoto{
+      border-radius:20px;
+      min-height:290px;
+      background-size:cover;
+      background-position:center;
+      border:1px solid rgba(255,255,255,.12);
+      position:relative;
+      overflow:hidden;
+    }
+    .modalPhoto:after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.55));
+    }
+    .modalInfo{
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      padding:12px;
+    }
+    .modalInfo h4{margin:0 0 8px 0; font-size:14px}
+    .modalInfo p{margin:0 0 10px 0; color:var(--muted); font-size:12.5px; line-height:1.55}
+    .modalInfo .k{
+      display:grid;
+      gap:8px;
+      margin-top:8px;
+    }
+    .kv{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      font-size:12px;
+      color:rgba(255,255,255,.86);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      padding:10px 10px;
+      border-radius:14px;
+    }
+    .kv span{color:rgba(255,255,255,.70)}
+    .modalActions{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .ghost{
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.08);
+      color:var(--text);
+      padding:11px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      transition:.2s ease;
+      font-weight:700;
+    }
+    .ghost:hover{background: rgba(255,255,255,.14); transform:translateY(-1px)}
+
+    /* Capabilities popup */
+    .capBack{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.58);
+      display:none;
+      place-items:center;
+      z-index:60;
+      padding:16px;
+      backdrop-filter: blur(12px);
+    }
+    .cap{
+      width:min(920px, 100%);
+      border-radius: 26px;
+      border:1px solid rgba(255,255,255,.16);
+      background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
+      box-shadow: 0 35px 120px rgba(0,0,0,.70);
+      overflow:hidden;
+    }
+    .capHeader{
+      padding:14px 16px;
+      border-bottom:1px solid rgba(255,255,255,.12);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+    .capHeader strong{font-size:14px}
+    .capBody{
+      padding:14px 16px 16px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:12px;
+    }
+    .capItem{
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      padding:12px;
+    }
+    .capItem b{display:block; font-size:13px}
+    .capItem p{margin:6px 0 0; color:var(--muted); font-size:12px; line-height:1.45}
+
     /* Responsive */
-    @media(max-width:980px){
-      .districtGrid{grid-template-columns: repeat(2, minmax(0,1fr));}
-      .contentGrid{grid-template-columns:1fr}
-      .mapFrameWrap{height: 460px}
-      .cards{grid-template-columns:1fr}
+    @media (max-width: 1050px){
+      .wrap{grid-template-columns: 1fr; }
+      .side{position:relative; height:auto}
+      .grid{grid-template-columns: repeat(2, minmax(0,1fr))}
+      .modalGrid{grid-template-columns:1fr}
+    }
+    @media (max-width: 620px){
+      .grid{grid-template-columns:1fr}
+      .hero h2{font-size:22px}
+      .wrap{padding:12px}
+      .side{border-radius:22px}
+      .main{border-radius:22px}
     }
   </style>
 </head>
-
 <body>
-  <!-- Top bar -->
-  <header class="topbar">
-    <div class="topbarIn">
-      <div class="brand">
-        <span class="dot"></span>
-        <div>
-          <b>Himachal Explorer</b>
-          <small>District guide • routes on map • photo-first places</small>
-        </div>
-      </div>
-      <div class="actions">
-        <button class="btn" id="btnScrollDistricts">Districts</button>
-        <button class="btn btnPrimary" id="btnOpenMap">Open Map</button>
-      </div>
-    </div>
-  </header>
+  <div class="bg"></div>
+  <div class="grain"></div>
 
   <div class="wrap">
-    <!-- Hero -->
-    <section class="hero">
-      <div class="heroCover" id="heroCover"></div>
-      <div class="heroOverlay"></div>
-      <div class="heroIn">
-        <div class="heroH">
+    <!-- Sidebar -->
+    <aside class="side">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M3 20h18" stroke="white" opacity=".85" stroke-width="2" stroke-linecap="round"/>
+            <path d="M5 18l7-13 7 13" stroke="white" opacity=".9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 14h6" stroke="white" opacity=".85" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Himachal Explorer</h1>
+          <p>Photo-first tourism portal</p>
+        </div>
+      </div>
+
+      <div class="nav" id="nav">
+        <button class="active" data-tab="all">All <small>Everything</small></button>
+        <button data-tab="hotels">Hotels <small>Stay</small></button>
+        <button data-tab="temples">Temples <small>Faith</small></button>
+        <button data-tab="treks">Treks <small>Adventure</small></button>
+        <button data-tab="routes">Routes <small>Track</small></button>
+      </div>
+
+      <div class="panelTitle">Quick Filters</div>
+
+      <div class="field">
+        <label>District</label>
+        <select id="district">
+          <option value="all">All Himachal</option>
+          <option>Shimla</option>
+          <option>Kullu</option>
+          <option>Kangra</option>
+          <option>Chamba</option>
+          <option>Mandi</option>
+          <option>Solan</option>
+          <option>Bilaspur</option>
+          <option>Hamirpur</option>
+          <option>Una</option>
+          <option>Sirmaur</option>
+          <option>Kinnaur</option>
+          <option>Lahaul & Spiti</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Search by name</label>
+        <input id="q" placeholder="e.g., Narkanda, Bijli Mahadev, Triund..." />
+      </div>
+
+      <div class="chipRow" id="chipsSide">
+        <div class="chip on" data-chip="family">Family</div>
+        <div class="chip" data-chip="budget">Budget</div>
+        <div class="chip" data-chip="premium">Premium</div>
+        <div class="chip" data-chip="snow">Snow</div>
+        <div class="chip" data-chip="nature">Nature</div>
+        <div class="chip" data-chip="spiritual">Spiritual</div>
+      </div>
+
+      <div class="miniCard">
+        <b style="font-size:13px;">Tools (Tourism)</b>
+        <p>Route tracker + district-wise expense calculator in one place.</p>
+
+        <div class="panelTitle" style="margin-top:12px;">Expense Calculator</div>
+        <div class="row2">
+          <div class="field" style="margin:0;">
+            <label>Days</label>
+            <input id="days" type="number" value="3" min="1"/>
+          </div>
+          <div class="field" style="margin:0;">
+            <label>People</label>
+            <input id="people" type="number" value="2" min="1"/>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field" style="margin:0;">
+            <label>Per day stay (₹)</label>
+            <input id="stay" type="number" value="1800" min="0"/>
+          </div>
+          <div class="field" style="margin:0;">
+            <label>Per day food (₹)</label>
+            <input id="food" type="number" value="700" min="0"/>
+          </div>
+        </div>
+        <div class="field" style="margin:0;">
+          <label>Travel cost total (₹)</label>
+          <input id="travel" type="number" value="3500" min="0"/>
+        </div>
+
+        <button class="btn" id="calcBtn">Calculate Total</button>
+        <p id="calcOut" style="margin-top:8px; font-weight:750;">Total: ₹ —</p>
+        <p style="margin-top:4px;">Tip: adjust values district-wise for realistic budgeting.</p>
+
+        <button class="btn" style="margin-top:10px;" id="capBtn">Show Page Capabilities</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <section class="hero">
+        <div class="heroTop">
           <div>
-            <h1 class="heroTitle" id="heroTitle">Himachal Pradesh</h1>
-            <div class="quote" id="heroQuote">
-              “Where every turn is a view, and every valley tells a story.”
-            </div>
-            <div class="miniRow" id="miniRow">
-              <span class="pill" id="statDistricts">— districts</span>
-              <span class="pill" id="statPlaces">— places</span>
-              <span class="pill">Map is optional (2nd priority)</span>
-            </div>
+            <h2>Discover Himachal — photos first, info next.</h2>
+            <p>Explore hotels, temples, and treks district-wise. Click any card for route idea + travel budgeting.</p>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- District grid FIRST (as you asked) -->
-    <section class="panel" id="districtSection">
-      <div class="panelHead">
-        <b>Choose a District</b>
-        <small id="dHint">Click a tile to load brief + how to reach + places</small>
-      </div>
-      <div class="panelBody">
-        <div class="districtGrid" id="districtGrid">
-          <div class="empty">Loading districts…</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Info first, Map second -->
-    <section class="contentGrid">
-      <div class="infoStack">
-        <div class="box">
-          <div class="boxHead"><b>District Brief</b></div>
-          <div class="boxBody" id="briefBox"><div class="empty">Select a district to show information.</div></div>
+          <button class="primary" id="shuffleBtn">Shuffle Places</button>
         </div>
 
-        <div class="box">
-          <div class="boxHead"><b>How to Reach</b></div>
-          <div class="boxBody" id="reachBox"><div class="empty">Select a district to show routes guidance.</div></div>
+        <div class="searchBar">
+          <input id="qMain" placeholder="Search locations, temples, treks, hotels..." />
+          <button class="primary" id="searchBtn">Search</button>
+          <button class="ghost" id="resetBtn">Reset</button>
         </div>
 
-        <div class="box">
-          <div class="boxHead">
-            <b id="placesTitle">Places</b>
-            <div class="tabs" id="tabs" style="display:none">
-              <div class="tab active" data-t="all">All</div>
-              <div class="tab" data-t="destinations">Destinations</div>
-              <div class="tab" data-t="lakes">Lakes</div>
-              <div class="tab" data-t="temples">Temples</div>
-              <div class="tab" data-t="treks">Treks</div>
-              <div class="tab" data-t="hotels">Hotels</div>
-            </div>
-          </div>
-          <div class="boxBody" id="placesBox">
-            <div class="empty">Select a district…</div>
-          </div>
+        <div class="chipRow chipsMain" id="chipsMain">
+          <div class="chip on" data-chip="all">All</div>
+          <div class="chip" data-chip="hotels">Hotels</div>
+          <div class="chip" data-chip="temples">Temples</div>
+          <div class="chip" data-chip="treks">Treks</div>
+          <div class="chip" data-chip="snow">Snow</div>
+          <div class="chip" data-chip="nature">Nature</div>
         </div>
-      </div>
+      </section>
 
-      <div class="box">
-        <div class="boxHead">
-          <b>Map</b>
-          <small class="muted" id="mapHint">Select district → map auto centers</small>
-        </div>
-        <div class="boxBody" style="padding:0">
-          <div class="mapFrameWrap">
-            <iframe id="mapFrame" src="map.html" title="HP Map"></iframe>
-          </div>
-        </div>
-      </div>
-    </section>
+      <section class="content">
+        <div class="grid" id="grid"></div>
+      </section>
+    </main>
   </div>
 
-  <!-- Floating districts (shows on scroll) -->
-  <button class="floatBtn" id="floatBtn">Districts</button>
-  <div class="drawerMask" id="drawerMask"></div>
-  <aside class="drawer" id="drawer">
-    <div class="drawerHead">
-      <b>Districts</b>
-      <button class="xBtn" id="drawerClose">Close</button>
+  <!-- Place Modal -->
+  <div class="modalBack" id="modalBack" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="modalTop">
+        <strong id="mTitle">Place</strong>
+        <button class="closeBtn" id="mClose">Close</button>
+      </div>
+      <div class="modalGrid">
+        <div class="modalPhoto" id="mPhoto"></div>
+        <div class="modalInfo">
+          <h4>Quick Info</h4>
+          <p id="mDesc">—</p>
+
+          <div class="k">
+            <div class="kv"><span>Type</span><b id="mType">—</b></div>
+            <div class="kv"><span>District</span><b id="mDistrict">—</b></div>
+            <div class="kv"><span>Best for</span><b id="mTags">—</b></div>
+          </div>
+
+          <div class="modalActions">
+            <button class="ghost" id="openMaps">Open in Google Maps</button>
+            <button class="ghost" id="addRoute">Add to Route List</button>
+            <button class="ghost" id="copyBudget">Use for Budget</button>
+          </div>
+
+          <div class="miniCard" style="margin-top:12px;">
+            <b style="font-size:13px;">Route List</b>
+            <p id="routeList" style="margin-top:6px;">No route selected yet.</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <input class="input" id="drawerSearch" placeholder="Search district…" style="margin-top:10px"/>
-    <div style="margin-top:10px" id="drawerList"></div>
-  </aside>
+  </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+  <!-- Capabilities Popup -->
+  <div class="capBack" id="capBack">
+    <div class="cap">
+      <div class="capHeader">
+        <strong>What this page can do</strong>
+        <button class="closeBtn" id="capClose">Close</button>
+      </div>
+      <div class="capBody">
+        <div class="capItem"><b>Tourism Directory</b><p>Hotels, temples, treks in one clean dashboard.</p></div>
+        <div class="capItem"><b>District Filters</b><p>Pick district and instantly see photo cards.</p></div>
+        <div class="capItem"><b>Photo-First Cards</b><p>Images are priority, text is minimal and clean.</p></div>
+        <div class="capItem"><b>Route Tracking</b><p>Add places to route list and plan quickly.</p></div>
+        <div class="capItem"><b>Expense Calculator</b><p>Estimate trip cost by days, people, stay, food, travel.</p></div>
+        <div class="capItem"><b>Future Ready</b><p>Easy to connect database / Firebase later for real data.</p></div>
+      </div>
+    </div>
+  </div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
-      authDomain: "revnue-records.firebaseapp.com",
-      databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "revnue-records",
-      storageBucket: "revnue-records.firebasestorage.app",
-      messagingSenderId: "182348503564",
-      appId: "1:182348503564:web:480085405b09177245ac29",
-      measurementId: "G-MGTDBCG896"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    const ROOT = "tourism/hp/districts";
-    const TYPES = ["destinations","lakes","temples","treks","hotels"];
-    const TYPE_LABEL = { destinations:"Destinations", lakes:"Lakes", temples:"Temples", treks:"Treks", hotels:"Hotels" };
-
-    // UI refs
-    const districtGrid = document.getElementById("districtGrid");
-    const heroTitle = document.getElementById("heroTitle");
-    const heroQuote = document.getElementById("heroQuote");
-    const heroCover = document.getElementById("heroCover");
-    const statDistricts = document.getElementById("statDistricts");
-    const statPlaces = document.getElementById("statPlaces");
-
-    const briefBox = document.getElementById("briefBox");
-    const reachBox = document.getElementById("reachBox");
-    const placesTitle = document.getElementById("placesTitle");
-    const placesBox = document.getElementById("placesBox");
-    const tabs = document.getElementById("tabs");
-
-    const mapFrame = document.getElementById("mapFrame");
-    const mapHint = document.getElementById("mapHint");
-
-    // Drawer UI
-    const floatBtn = document.getElementById("floatBtn");
-    const drawer = document.getElementById("drawer");
-    const drawerMask = document.getElementById("drawerMask");
-    const drawerClose = document.getElementById("drawerClose");
-    const drawerSearch = document.getElementById("drawerSearch");
-    const drawerList = document.getElementById("drawerList");
-    const btnScrollDistricts = document.getElementById("btnScrollDistricts");
-    const btnOpenMap = document.getElementById("btnOpenMap");
-
-    // State
-    let DISTRICTS = [];
-    let ROOT_CACHE = {};
-    let ACTIVE_DIST = "";
-    let ACTIVE_TYPE = "all";
-    let ALL_ITEMS = [];
-    let PLACE_QUERY = "";
-    let PLACE_SORT = "popular_desc";
-    let TOTAL_PLACES = 0;
-
-    const QUOTES = [
-      "“Where every turn is a view, and every valley tells a story.”",
-      "“Himachal: snow peaks, pine air, and quiet roads to wonder.”",
-      "“Slow down. The mountains are doing something beautiful.”",
-      "“A place where the sky feels closer and time feels softer.”"
+  <script>
+    // Demo data (replace later with your real HP locations)
+    const places = [
+      {
+        id: "triund",
+        type: "treks",
+        name: "Triund Trek",
+        district: "Kangra",
+        tags: ["nature","budget","adventure"],
+        desc: "A classic beginner-friendly trek near McLeod Ganj with stunning views.",
+        img: "https://images.unsplash.com/photo-1520963575748-6b1d4a7b0c8b?auto=format&fit=crop&w=1400&q=80",
+        maps: "Triund Trek"
+      },
+      {
+        id: "bijli",
+        type: "temples",
+        name: "Bijli Mahadev Temple",
+        district: "Kullu",
+        tags: ["spiritual","nature"],
+        desc: "Famous temple with panoramic valley views. Known for lightning rituals.",
+        img: "https://images.unsplash.com/photo-1533658925626-7f6ef0c6d1ea?auto=format&fit=crop&w=1400&q=80",
+        maps: "Bijli Mahadev Temple"
+      },
+      {
+        id: "manali",
+        type: "hotels",
+        name: "Manali Riverside Stays",
+        district: "Kullu",
+        tags: ["family","premium","nature"],
+        desc: "Handpicked stay areas near the river for scenic mornings and cafes.",
+        img: "https://images.unsplash.com/photo-1500043357865-c6b8827edf6c?auto=format&fit=crop&w=1400&q=80",
+        maps: "Manali"
+      },
+      {
+        id: "narkanda",
+        type: "routes",
+        name: "Shimla → Narkanda Snow Drive",
+        district: "Shimla",
+        tags: ["snow","family","nature"],
+        desc: "A scenic drive route known for winter snow, orchards, and viewpoints.",
+        img: "https://images.unsplash.com/photo-1549880338-65ddcdfd017b?auto=format&fit=crop&w=1400&q=80",
+        maps: "Narkanda"
+      },
+      {
+        id: "jakhu",
+        type: "temples",
+        name: "Jakhu Temple",
+        district: "Shimla",
+        tags: ["spiritual","family"],
+        desc: "Famous hilltop temple with a giant Hanuman statue overlooking Shimla.",
+        img: "https://images.unsplash.com/photo-1611497582081-195c11e2bb24?auto=format&fit=crop&w=1400&q=80",
+        maps: "Jakhu Temple Shimla"
+      },
+      {
+        id: "dalhousie",
+        type: "hotels",
+        name: "Dalhousie View Hotels",
+        district: "Chamba",
+        tags: ["family","premium","nature"],
+        desc: "Stay zones with valley views, close to Khajjiar and pine walks.",
+        img: "https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?auto=format&fit=crop&w=1400&q=80",
+        maps: "Dalhousie"
+      },
+      {
+        id: "spiti",
+        type: "routes",
+        name: "Kinnaur → Spiti High Route",
+        district: "Lahaul & Spiti",
+        tags: ["adventure","nature","premium"],
+        desc: "High-altitude route planning hub: viewpoints, fuel stops, essentials.",
+        img: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1400&q=80",
+        maps: "Spiti Valley"
+      },
+      {
+        id: "parashar",
+        type: "temples",
+        name: "Prashar Lake Temple",
+        district: "Mandi",
+        tags: ["nature","spiritual","budget"],
+        desc: "A peaceful lake with a floating island and temple — great day trip.",
+        img: "https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=1400&q=80",
+        maps: "Prashar Lake"
+      },
+      {
+        id: "tattapani",
+        type: "hotels",
+        name: "Tattapani Hot Spring Stays",
+        district: "Mandi",
+        tags: ["family","budget","nature"],
+        desc: "Relaxing stay near hot water springs and riverside activities.",
+        img: "https://images.unsplash.com/photo-1528184039930-67b3b5f9d5f0?auto=format&fit=crop&w=1400&q=80",
+        maps: "Tattapani Himachal"
+      }
     ];
 
-    const safeObj = (x)=> (x && typeof x==="object") ? x : {};
-    const safeArr = (x)=> Array.isArray(x) ? x : [];
-    const norm = (s)=> String(s ?? "").trim();
-    const low = (s)=> norm(s).toLowerCase();
+    const grid = document.getElementById("grid");
+    const nav = document.getElementById("nav");
+    const districtSel = document.getElementById("district");
+    const qSide = document.getElementById("q");
+    const qMain = document.getElementById("qMain");
 
-    function escapeHtml(str){
-      return String(str ?? "")
-        .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+    const chipsSide = document.getElementById("chipsSide");
+    const chipsMain = document.getElementById("chipsMain");
+
+    let tab = "all";
+    let activeTag = "all";
+    let sideTags = new Set(["family"]); // default ON: family
+    let route = [];
+
+    function shuffle(arr){
+      const a = [...arr];
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+      }
+      return a;
     }
 
-    function normalizeType(t){
-      t = low(t);
-      if(t==="lake") return "lakes";
-      if(t==="temple") return "temples";
-      if(t==="trek") return "treks";
-      if(t==="hotel") return "hotels";
-      return t;
+    function matches(p){
+      const d = districtSel.value;
+      const q = (qMain.value || qSide.value || "").trim().toLowerCase();
+
+      const byTab = (tab === "all") ? true : (p.type === tab);
+      const byDistrict = (d === "all") ? true : (p.district === d);
+      const byQuery = !q ? true : (p.name.toLowerCase().includes(q) || p.district.toLowerCase().includes(q) || p.tags.join(" ").includes(q));
+
+      const byMainTag = (activeTag === "all") ? true : (p.type === activeTag || p.tags.includes(activeTag));
+      const bySideTags = (sideTags.size === 0) ? true : [...sideTags].some(t => p.tags.includes(t));
+
+      return byTab && byDistrict && byQuery && byMainTag && bySideTags;
     }
 
-    function extractPhotos(item){
-      // supports: photo (string with |), photos/images arrays, cover
-      const out = [];
-      const push = (u)=> { u = norm(u); if(u) out.push(u); };
+    function render(){
+      const filtered = places.filter(matches);
+      const list = (filtered.length ? filtered : places).slice(0, 60);
 
-      const pipeSplit = (s)=>{
-        s = norm(s);
-        if(!s) return [];
-        return s.split("|").map(x=>x.trim()).filter(Boolean);
+      grid.innerHTML = "";
+      list.forEach(p=>{
+        const el = document.createElement("div");
+        el.className = "card";
+        el.innerHTML = `
+          <div class="thumb" style="background-image:url('${p.img}')">
+            <div class="badge">${labelType(p.type)}</div>
+          </div>
+          <div class="cardBody">
+            <div class="titleRow">
+              <h3>${p.name}</h3>
+              <span class="pill">${p.district}</span>
+            </div>
+            <p class="meta">${p.desc}</p>
+            <div class="pillRow">
+              ${p.tags.slice(0,3).map(t=>`<span class="pill">${t}</span>`).join("")}
+            </div>
+          </div>
+        `;
+        el.addEventListener("click", ()=>openModal(p));
+        grid.appendChild(el);
+      });
+    }
+
+    function labelType(t){
+      if(t==="hotels") return "Hotel";
+      if(t==="temples") return "Temple";
+      if(t==="treks") return "Trek";
+      if(t==="routes") return "Route";
+      return "Place";
+    }
+
+    // Nav switching
+    nav.addEventListener("click", (e)=>{
+      const btn = e.target.closest("button");
+      if(!btn) return;
+      [...nav.querySelectorAll("button")].forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      tab = btn.dataset.tab;
+      render();
+    });
+
+    // Side chips (multi)
+    chipsSide.addEventListener("click", (e)=>{
+      const c = e.target.closest(".chip");
+      if(!c) return;
+      const key = c.dataset.chip;
+      if(c.classList.contains("on")){
+        c.classList.remove("on"); sideTags.delete(key);
+      }else{
+        c.classList.add("on"); sideTags.add(key);
+      }
+      render();
+    });
+
+    // Main chips (single)
+    chipsMain.addEventListener("click", (e)=>{
+      const c = e.target.closest(".chip");
+      if(!c) return;
+      [...chipsMain.querySelectorAll(".chip")].forEach(x=>x.classList.remove("on"));
+      c.classList.add("on");
+      activeTag = c.dataset.chip;
+      render();
+    });
+
+    // Search + reset
+    document.getElementById("searchBtn").addEventListener("click", ()=> render());
+    qMain.addEventListener("input", ()=> render());
+    qSide.addEventListener("input", ()=> render());
+    districtSel.addEventListener("change", ()=> render());
+
+    document.getElementById("resetBtn").addEventListener("click", ()=>{
+      qMain.value = "";
+      qSide.value = "";
+      districtSel.value = "all";
+      tab = "all";
+      activeTag = "all";
+      sideTags = new Set(["family"]);
+      [...nav.querySelectorAll("button")].forEach(b=>b.classList.remove("active"));
+      nav.querySelector('button[data-tab="all"]').classList.add("active");
+      [...chipsMain.querySelectorAll(".chip")].forEach(x=>x.classList.remove("on"));
+      chipsMain.querySelector('.chip[data-chip="all"]').classList.add("on");
+      [...chipsSide.querySelectorAll(".chip")].forEach(x=>x.classList.remove("on"));
+      chipsSide.querySelector('.chip[data-chip="family"]').classList.add("on");
+      render();
+    });
+
+    document.getElementById("shuffleBtn").addEventListener("click", ()=>{
+      const shuffled = shuffle(places);
+      places.splice(0, places.length, ...shuffled);
+      render();
+    });
+
+    // Expense calculator
+    document.getElementById("calcBtn").addEventListener("click", ()=>{
+      const days = +document.getElementById("days").value || 0;
+      const people = +document.getElementById("people").value || 1;
+      const stay = +document.getElementById("stay").value || 0;
+      const food = +document.getElementById("food").value || 0;
+      const travel = +document.getElementById("travel").value || 0;
+
+      const total = (days * (stay + food) * people) + travel;
+      document.getElementById("calcOut").textContent = "Total: ₹ " + total.toLocaleString("en-IN");
+    });
+
+    // Modal logic
+    const modalBack = document.getElementById("modalBack");
+    const mTitle = document.getElementById("mTitle");
+    const mDesc = document.getElementById("mDesc");
+    const mType = document.getElementById("mType");
+    const mDistrict = document.getElementById("mDistrict");
+    const mTags = document.getElementById("mTags");
+    const mPhoto = document.getElementById("mPhoto");
+    const routeList = document.getElementById("routeList");
+    let current = null;
+
+    function openModal(p){
+      current = p;
+      mTitle.textContent = p.name;
+      mDesc.textContent = p.desc;
+      mType.textContent = labelType(p.type);
+      mDistrict.textContent = p.district;
+      mTags.textContent = p.tags.join(", ");
+      mPhoto.style.backgroundImage = `url('${p.img}')`;
+      updateRouteList();
+      modalBack.classList.add("show");
+    }
+    function closeModal(){ modalBack.classList.remove("show"); current=null; }
+    document.getElementById("mClose").addEventListener("click", closeModal);
+    modalBack.addEventListener("click", (e)=>{ if(e.target === modalBack) closeModal(); });
+
+    document.getElementById("openMaps").addEventListener("click", ()=>{
+      if(!current) return;
+      const q = encodeURIComponent(current.maps || current.name);
+      window.open("https://www.google.com/maps/search/?api=1&query=" + q, "_blank");
+    });
+
+    document.getElementById("addRoute").addEventListener("click", ()=>{
+      if(!current) return;
+      if(!route.find(x=>x.id===current.id)) route.push(current);
+      updateRouteList();
+    });
+
+    function updateRouteList(){
+      if(route.length === 0){
+        routeList.textContent = "No route selected yet.";
+        return;
+      }
+      routeList.innerHTML = route.map((p,i)=>`${i+1}. ${p.name} <span style="opacity:.75">(${p.district})</span>`).join("<br/>");
+    }
+
+    document.getElementById("copyBudget").addEventListener("click", ()=>{
+      if(!current) return;
+      // simple demo: set district-wise suggested travel cost
+      const travel = document.getElementById("travel");
+      const map = {
+        "Shimla": 2500,
+        "Kullu": 4200,
+        "Kangra": 3800,
+        "Chamba": 4500,
+        "Lahaul & Spiti": 9000,
+        "Mandi": 3200
       };
-
-      safeArr(item.photos).forEach(push);
-      safeArr(item.images).forEach(push);
-      safeArr(item.gallery).forEach(push);
-      pipeSplit(item.photo).forEach(push);
-      push(item.cover);
-      push(item.photoUrl);
-      push(item.imageUrl);
-
-      // remove duplicates
-      return Array.from(new Set(out));
-    }
-
-    function pickTitle(it){
-      return norm(it.name) || norm(it.title) || norm(it.place) || norm(it.placeName) || "Untitled";
-    }
-
-    function hasGeo(x){
-      return Number.isFinite(Number(x.lat)) && Number.isFinite(Number(x.lng));
-    }
-
-    function flattenDistrict(node){
-      const seg = safeObj(node.segments);
-      const out = [];
-      for(const rawType of Object.keys(seg)){
-        const t = normalizeType(rawType);
-        if(!TYPES.includes(t)) continue;
-        const bucket = safeObj(seg[rawType]);
-        for(const id of Object.keys(bucket)){
-          const it = safeObj(bucket[id]);
-          out.push({
-            id,
-            type: t,
-            title: pickTitle(it),
-            notes: norm(it.notes || it.description || ""),
-            tags: norm(it.tags) ? norm(it.tags).split("|").map(s=>s.trim()).filter(Boolean) : safeArr(it.tags),
-            photos: extractPhotos(it),
-            rating: Number(it.rating ?? "") || null,
-            popularity: Number(it.popularityScore ?? it.popularity ?? "") || null,
-            entryFee: Number(it.entryFee ?? "") || null,
-            phone: norm(it.phone || ""),
-            bestSeason: norm(it.bestSeason || ""),
-            timing: norm(it.timing || ""),
-            lat: Number(it.lat ?? it.latitude ?? ""),
-            lng: Number(it.lng ?? it.longitude ?? ""),
-            raw: it
-          });
-        }
-      }
-      return out;
-    }
-
-    function defaultBrief(d){
-      return `• ${d} is a key district of Himachal Pradesh.\n• Explore destinations, lakes, temples, treks and hotels.\n• Click any place card to open it on the map.`;
-    }
-    function defaultHowToReach(d){
-      return `🛣️ Road: Well connected by road routes.\n🚆 Train: Nearest station depends on the route.\n✈️ Air: Nearest airport depends on the region.\n\nTip: Map will auto-focus when you select a place.`;
-    }
-
-    function districtCoverFallback(d){
-      // fixed & consistent covers (not random source.unsplash)
-      const q = encodeURIComponent(`${d} Himachal Pradesh mountains`);
-      return `https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=70`;
-    }
-
-    function setHero(d){
-      if(!d){
-        heroTitle.textContent = "Himachal Pradesh";
-        heroQuote.textContent = QUOTES[Math.floor(Math.random()*QUOTES.length)];
-        heroCover.style.backgroundImage = `url("https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1600&q=70")`;
-        return;
-      }
-      heroTitle.textContent = d;
-      heroQuote.textContent = QUOTES[Math.floor(Math.random()*QUOTES.length)];
-      heroCover.style.backgroundImage = `url("${districtCoverFallback(d)}")`;
-    }
-
-    function focusDistrictOnMap(d){
-      mapHint.textContent = `Map focused: ${d}`;
-      mapFrame.src = `map.html#district=${encodeURIComponent(d)}&t=${Date.now()}`;
-      setTimeout(()=>{
-        mapFrame.contentWindow?.postMessage({ type:"FOCUS_DISTRICT", district:d }, "*");
-      }, 600);
-    }
-
-    function focusPlaceOnMap(place){
-      if(!Number.isFinite(place.lat) || !Number.isFinite(place.lng)) return;
-      mapFrame.contentWindow?.postMessage({
-        type:"FOCUS_PLACE",
-        district: ACTIVE_DIST,
-        title: place.title,
-        lat: place.lat,
-        lng: place.lng,
-        type: place.type
-      }, "*");
-    }
-
-    function cardHtml(x){
-      const thumb = x.photos?.[0] ? x.photos[0] : "";
-      const badge = TYPE_LABEL[x.type] || x.type;
-      const parts = [
-        x.rating ? `⭐ ${x.rating}` : "",
-        x.popularity ? `🔥 ${x.popularity}` : "",
-        Number.isFinite(x.entryFee) ? `₹${x.entryFee}` : ""
-      ].filter(Boolean).join(" • ");
-
-      const geo = (Number.isFinite(x.lat) && Number.isFinite(x.lng)) ? " • Map" : "";
-
-      return `
-        <div class="card" data-id="${escapeHtml(x.id)}">
-          <div class="thumb" style="background-image:url('${escapeHtml(thumb || "")}')">
-            <div class="badge">${escapeHtml(badge)}${geo}</div>
-          </div>
-          <div class="pad">
-            <b>${escapeHtml(x.title)}</b>
-            <div class="meta">${escapeHtml(parts || "Tap to open on map (if lat/lng available)")}</div>
-            ${x.notes ? `<div class="meta2">${escapeHtml(x.notes).slice(0,120)}${x.notes.length>120?"…":""}</div>` : ""}
-            ${x.tags?.length ? `<div class="tagRow">${x.tags.slice(0,4).map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join("")}</div>` : ""}
-          </div>
-        </div>
-      `;
-    }
-
-    function sortItems(items){
-      const byName = (a,b)=> String(a.title||"").localeCompare(String(b.title||""), undefined, {sensitivity:"base"});
-      const pop = (x)=> Number.isFinite(x.popularity) ? x.popularity : -Infinity;
-      const rat = (x)=> Number.isFinite(x.rating) ? x.rating : -Infinity;
-
-      if(PLACE_SORT==="rating_desc") return items.sort((a,b)=> rat(b)-rat(a) || pop(b)-pop(a) || byName(a,b));
-      return items.sort((a,b)=> pop(b)-pop(a) || rat(b)-rat(a) || byName(a,b));
-    }
-
-    function renderPlaces(){
-      if(!ACTIVE_DIST){
-        placesBox.innerHTML = `<div class="empty">Select a district…</div>`;
-        return;
-      }
-
-      let items = ALL_ITEMS.slice();
-      if(ACTIVE_TYPE !== "all") items = items.filter(x=>x.type===ACTIVE_TYPE);
-
-      const q = low(PLACE_QUERY);
-      if(q){
-        items = items.filter(x => (`${x.title} ${x.notes} ${x.type} ${(x.tags||[]).join(" ")}`.toLowerCase()).includes(q));
-      }
-
-      items = sortItems(items);
-
-      placesTitle.textContent = `${ACTIVE_TYPE==="all" ? "Places" : (TYPE_LABEL[ACTIVE_TYPE]||ACTIVE_TYPE)} • ${ACTIVE_DIST}`;
-
-      placesBox.innerHTML = `
-        <div class="toolsRow">
-          <input class="input" id="placeSearch" placeholder="Search places…" value="${escapeHtml(PLACE_QUERY)}"/>
-          <select class="select" id="placeSort">
-            <option value="popular_desc">Popularity</option>
-            <option value="rating_desc">Rating</option>
-          </select>
-        </div>
-        ${!items.length ? `<div class="empty" style="margin-top:10px">No places found.</div>` : `
-          <div class="cards">
-            ${items.slice(0,60).map(cardHtml).join("")}
-          </div>
-          ${items.length>60 ? `<div style="margin-top:10px;color:var(--muted2);font-weight:800;font-size:12px">Showing first 60 items.</div>` : ""}
-        `}
-      `;
-
-      const s = document.getElementById("placeSearch");
-      const so = document.getElementById("placeSort");
-      if(so) so.value = PLACE_SORT;
-
-      let t=null;
-      s?.addEventListener("input", ()=>{
-        clearTimeout(t);
-        t=setTimeout(()=>{ PLACE_QUERY = s.value; renderPlaces(); },120);
-      });
-      so?.addEventListener("change", ()=>{
-        PLACE_SORT = so.value; renderPlaces();
-      });
-
-      [...placesBox.querySelectorAll(".card[data-id]")].forEach(el=>{
-        el.addEventListener("click", ()=>{
-          const id = el.getAttribute("data-id");
-          const place = ALL_ITEMS.find(p=>p.id===id);
-          if(place && Number.isFinite(place.lat) && Number.isFinite(place.lng)){
-            focusPlaceOnMap(place);
-          }else{
-            focusDistrictOnMap(ACTIVE_DIST);
-          }
-        });
-      });
-    }
-
-    function setActiveType(t){
-      ACTIVE_TYPE = t;
-      [...tabs.querySelectorAll(".tab")].forEach(tab=>{
-        tab.classList.toggle("active", tab.getAttribute("data-t")===t);
-      });
-      renderPlaces();
-    }
-
-    function renderDistrictTiles(){
-      districtGrid.innerHTML = DISTRICTS.map(d=>{
-        const active = (d===ACTIVE_DIST) ? "active" : "";
-        const bg = districtCoverFallback(d);
-        const pv = (ROOT_CACHE[d]?.__preview || []).slice(0,3);
-        const line = pv.length ? pv.join(" • ") : "Tap to explore";
-        return `
-          <div class="dTile ${active}" data-d="${escapeHtml(d)}">
-            <div class="dBg" style="background-image:url('${escapeHtml(bg)}')"></div>
-            <div class="dShade"></div>
-            <div class="dTxt">
-              <b>${escapeHtml(d)}</b>
-              <small>${escapeHtml(line)}</small>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      [...districtGrid.querySelectorAll(".dTile")].forEach(el=>{
-        el.addEventListener("click", ()=> openDistrict(el.getAttribute("data-d")));
-      });
-
-      renderDrawerList(); // keep drawer in sync
-    }
-
-    function computePreview(node){
-      // take top destinations only (as you wanted)
-      const seg = safeObj(node?.segments);
-      const dest = safeObj(seg?.destinations);
-      const arr = Object.keys(dest).map(id=>{
-        const it = safeObj(dest[id]);
-        return {
-          title: pickTitle(it),
-          pop: Number(it.popularityScore ?? it.popularity ?? 0) || 0,
-          rating: Number(it.rating ?? 0) || 0
-        };
-      });
-      arr.sort((a,b)=> (b.pop-a.pop) || (b.rating-a.rating) || a.title.localeCompare(b.title));
-      return arr.slice(0,3).map(x=>x.title).filter(Boolean);
-    }
-
-    async function openDistrict(d){
-      ACTIVE_DIST = d;
-      ACTIVE_TYPE = "all";
-      PLACE_QUERY = "";
-      PLACE_SORT = "popular_desc";
-
-      // UI
-      setHero(d);
-      briefBox.innerHTML = `<div class="empty">Loading…</div>`;
-      reachBox.innerHTML = `<div class="empty">Loading…</div>`;
-      placesBox.innerHTML = `<div class="empty">Loading…</div>`;
-      tabs.style.display = "flex";
-      setActiveType("all");
-      renderDistrictTiles();
-
-      focusDistrictOnMap(d);
-
-      try{
-        const snap = await get(ref(db, `${ROOT}/${d}`));
-        const node = snap.exists() ? safeObj(snap.val()) : null;
-
-        const info = safeObj(node?.districtInfo);
-        const brief = norm(info.brief) || defaultBrief(d);
-        const reach = norm(info.howToReach) || defaultHowToReach(d);
-
-        briefBox.innerHTML = escapeHtml(brief).replaceAll("\n","<br/>");
-        reachBox.innerHTML = escapeHtml(reach).replaceAll("\n","<br/>");
-
-        ALL_ITEMS = node ? flattenDistrict(node) : [];
-        renderPlaces();
-
-      }catch(e){
-        console.error(e);
-        briefBox.innerHTML = `<div class="empty">Firebase read failed (rules/config?).</div>`;
-        reachBox.innerHTML = `<div class="empty">Firebase read failed (rules/config?).</div>`;
-        placesBox.innerHTML = `<div class="empty">Firebase read failed (rules/config?).</div>`;
-      }
-
-      // close drawer if open
-      closeDrawer();
-    }
-
-    // Drawer list
-    function renderDrawerList(){
-      const q = low(drawerSearch.value);
-      const list = DISTRICTS.filter(d => !q || low(d).includes(q));
-      drawerList.innerHTML = list.map(d=>{
-        const active = (d===ACTIVE_DIST) ? `style="border-color:rgba(255,122,24,.55);background:rgba(255,122,24,.08)"` : "";
-        return `
-          <div class="dTile" ${active} data-d="${escapeHtml(d)}" style="min-height:86px;margin-bottom:10px">
-            <div class="dBg" style="background-image:url('${escapeHtml(districtCoverFallback(d))}')"></div>
-            <div class="dShade"></div>
-            <div class="dTxt">
-              <b>${escapeHtml(d)}</b>
-              <small>${escapeHtml((ROOT_CACHE[d]?.__preview||[]).slice(0,3).join(" • ") || "Tap to explore")}</small>
-            </div>
-          </div>
-        `;
-      }).join("");
-      [...drawerList.querySelectorAll(".dTile")].forEach(el=>{
-        el.addEventListener("click", ()=> openDistrict(el.getAttribute("data-d")));
-      });
-    }
-
-    function openDrawer(){
-      drawerMask.style.display = "block";
-      drawer.style.display = "block";
-      renderDrawerList();
-    }
-    function closeDrawer(){
-      drawerMask.style.display = "none";
-      drawer.style.display = "none";
-    }
-    drawerMask.addEventListener("click", closeDrawer);
-    drawerClose.addEventListener("click", closeDrawer);
-    floatBtn.addEventListener("click", openDrawer);
-    drawerSearch.addEventListener("input", renderDrawerList);
-
-    // Buttons
-    btnScrollDistricts.addEventListener("click", ()=>{
-      document.getElementById("districtSection").scrollIntoView({behavior:"smooth", block:"start"});
-    });
-    btnOpenMap.addEventListener("click", ()=>{
-      document.querySelector(".mapFrameWrap").scrollIntoView({behavior:"smooth", block:"start"});
+      travel.value = map[current.district] ?? 3500;
+      document.getElementById("calcOut").textContent = "Total: ₹ —";
+      closeModal();
+      // small feedback
+      alert("Budget applied for " + current.district + " (travel cost updated).");
     });
 
-    // show floating districts button on scroll
-    window.addEventListener("scroll", ()=>{
-      const y = window.scrollY || 0;
-      floatBtn.style.display = (y > 520) ? "block" : "none";
-    });
+    // Capabilities popup
+    const capBack = document.getElementById("capBack");
+    document.getElementById("capBtn").addEventListener("click", ()=> capBack.style.display="grid");
+    document.getElementById("capClose").addEventListener("click", ()=> capBack.style.display="none");
+    capBack.addEventListener("click", (e)=>{ if(e.target===capBack) capBack.style.display="none"; });
 
-    // Tabs
-    tabs.addEventListener("click", (e)=>{
-      const t = e.target.closest(".tab")?.getAttribute("data-t");
-      if(!t) return;
-      setActiveType(t);
-    });
-
-    // init
-    async function init(){
-      setHero("");
-      const snap = await get(ref(db, ROOT));
-      ROOT_CACHE = snap.exists() ? safeObj(snap.val()) : {};
-      DISTRICTS = Object.keys(ROOT_CACHE).sort((a,b)=>a.localeCompare(b));
-
-      // precompute previews + total places
-      TOTAL_PLACES = 0;
-      for(const d of DISTRICTS){
-        const node = ROOT_CACHE[d];
-        const pv = computePreview(node);
-        ROOT_CACHE[d].__preview = pv;
-
-        // count places quickly (all segment buckets)
-        const seg = safeObj(node?.segments);
-        for(const k of Object.keys(seg)){
-          const b = safeObj(seg[k]);
-          TOTAL_PLACES += Object.keys(b).length;
-        }
-      }
-
-      statDistricts.textContent = `${DISTRICTS.length} districts`;
-      statPlaces.textContent = `${TOTAL_PLACES} places`;
-
-      renderDistrictTiles();
-
-      // open district from URL
-      const m = (location.hash||"").match(/district=([^&]+)/i);
-      if(m){
-        const d = decodeURIComponent(m[1]);
-        if(DISTRICTS.includes(d)) openDistrict(d);
-      }
-    }
-
-    init().catch(()=>{
-      districtGrid.innerHTML = `<div class="empty">Firebase not configured / rules blocked.</div>`;
-    });
+    // initial render + open popup once (optional)
+    render();
+    setTimeout(()=>{ capBack.style.display="grid"; }, 600);
   </script>
 </body>
 </html>
