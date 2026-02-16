@@ -1,1 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Routes — HP Tourism</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="inner">
+      <a class="brand" href="index.html"><div class="logo"></div><div>HP Tourism Portal</div></a>
+      <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="districts.html">Districts</a>
+        <a href="hotels.html">Hotels</a>
+        <a href="temples.html">Temples</a>
+        <a href="treks.html">Treks</a>
+        <a href="routes.html">Routes</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="sectionHead">
+      <div>
+        <h2>Routes & Expenditure Tool (Demo)</h2>
+        <div class="meta">Later: connect Google Maps + live distance + route tracking</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="content">
+        <div class="panel">
+          <h3>How it works (now)</h3>
+          <div class="note">
+            This demo uses a small distance table in <b>assets/data.js</b>.  
+            Later you can replace it with Google Maps API / OpenRouteService and show real routes.
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:14px;">
+          <h3>Quick idea for your “district-wise expenditure tracking”</h3>
+          <div class="note">
+            • Select district → choose place → calculate estimate  
+            • Save trip logs to Firebase (date, km, fuel, stay, notes)  
+            • Dashboard shows district-wise spend
+          </div>
+        </div>
+
+        <div class="footer">Routes page is a placeholder for your future full route tracker.</div>
+      </div>
+
+      <aside class="sidebar">
+        <div class="side-title">Quick links <span class="small">HP</span></div>
+        <div class="divider"></div>
+        <a class="pill" href="index.html">Home (Filters)</a>
+        <a class="pill" href="districts.html">Districts</a>
+        <a class="pill" href="hotels.html">Hotels</a>
+        <a class="pill" href="temples.html">Temples</a>
+        <a class="pill" href="treks.html">Treks</a>
+        <div class="divider"></div>
+        <div class="panel">
+          <h3>Next upgrade</h3>
+          <div class="note">Tell me “Maps API” and I’ll add real route map + distance + expense save.</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script src="assets/ui.js"></script>
+  <script>UI.setActiveNav();</script>
+</body>
+</html>
 
