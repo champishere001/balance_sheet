@@ -1,167 +1,765 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Himachal Explorer • District + Master Map</title>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+
   <style>
-    :root{--bg:#070B15;--text:#ECF2FF;--muted:rgba(236,242,255,.78);--stroke:rgba(255,255,255,.12);--panel:rgba(255,255,255,.07);--brand:#FF7A18;}
+    :root{
+      --bg:#070B15; --text:#ECF2FF; --muted: rgba(236,242,255,.78);
+      --brand:#FF7A18; --stroke: rgba(255,255,255,.12);
+      --panel: rgba(255,255,255,.07);
+      --ok:#5CFF9A; --bad:#FF5C7A;
+    }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)}
-    .app{display:flex;min-height:100vh}
-    .side{width:30%;min-width:310px;max-width:460px;border-right:1px solid var(--stroke);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));padding:14px;overflow:auto}
-    .main{flex:1;min-width:0;padding:14px}
-    .brand{display:flex;gap:10px;align-items:center;padding:10px;border-radius:16px;border:1px solid var(--stroke);background:rgba(0,0,0,.22)}
+    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--text);}
+
+    .app{display:flex; min-height:100vh;}
+
+    /* ✅ Sidebar 20% */
+    .sidebar{
+      width:20%; min-width:270px; max-width:380px;
+      border-right:1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      backdrop-filter: blur(12px);
+      padding:14px;
+      overflow:auto;
+    }
+
+    .mapWrap{flex:1; min-width:0; position:relative;}
+    #map{height:100vh; width:100%;}
+
+    .brand{
+      display:flex; gap:10px; align-items:center;
+      padding:10px; border-radius:16px;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.22);
+      margin-bottom:12px;
+    }
     .dot{width:12px;height:12px;border-radius:50%;background:var(--brand);box-shadow:0 0 18px rgba(255,122,24,.75)}
     .title{font-weight:950}
     .sub{font-size:12px;color:var(--muted);margin-top:2px}
-    .btnRow{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
-    .btn{border:0;cursor:pointer;padding:10px 12px;border-radius:14px;font-weight:950;color:#0b1220;background:linear-gradient(135deg,var(--brand),#ff9a4a)}
-    .btnGhost{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:var(--text)}
-    .hero{border-radius:24px;border:1px solid var(--stroke);overflow:hidden;background:rgba(255,255,255,.06)}
-    .heroTop{padding:14px;background:rgba(0,0,0,.22);border-bottom:1px solid rgba(255,255,255,.10)}
-    .heroTop h1{margin:0;font-size:clamp(22px,3.2vw,40px)}
-    .heroTop p{margin:6px 0 0;color:rgba(236,242,255,.86);line-height:1.45}
-    .carousel{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;padding:14px}
-    .ph{height:120px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background-size:cover;background-position:center}
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:0 14px 14px}
-    .card{border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.16);padding:10px}
-    .card b{display:block;font-size:18px}
-    .card small{display:block;margin-top:2px;color:var(--muted);font-weight:900}
-    .list{margin-top:12px;display:flex;flex-direction:column;gap:10px}
-    .d{border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.18);padding:10px;cursor:pointer}
+
+    label{display:block; font-size:12px; color:var(--muted); font-weight:900; margin:10px 0 6px;}
+    select,input{
+      width:100%;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      padding:10px 12px;
+      outline:none;
+      font-weight:850;
+    }
+
+    .row{display:flex; gap:10px; margin-top:10px;}
+    .btn{
+      flex:1;
+      border:0; cursor:pointer;
+      padding:10px 12px;
+      border-radius:14px;
+      font-weight:950;
+      color:#0b1220;
+      background: linear-gradient(135deg, var(--brand), #ff9a4a);
+      box-shadow: 0 12px 24px rgba(255,122,24,.22);
+    }
+    .btnGhost{
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+      color: var(--text);
+      box-shadow:none;
+    }
+    .btnTiny{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      padding:8px 10px;
+      border-radius:12px;
+      font-weight:950;
+      cursor:pointer;
+      width:100%;
+      margin-top:10px;
+    }
+
+    .pill{
+      display:inline-block;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: rgba(236,242,255,.9);
+      font-weight:900;
+      margin-top:10px;
+    }
+
+    .counts{
+      margin-top:12px;
+      display:grid;
+      grid-template-columns: repeat(2,1fr);
+      gap:10px;
+    }
+    .cBox{
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.16);
+      padding:10px;
+    }
+    .cBox b{display:block; font-size:18px}
+    .cBox small{display:block; margin-top:2px; color:var(--muted); font-weight:900}
+
+    .listHead{
+      display:flex; align-items:center; justify-content:space-between;
+      margin-top:14px;
+      padding:10px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.16);
+    }
+    .listHead b{font-size:13px}
+    .listHead small{color:var(--muted); font-weight:900}
+
+    .list{
+      margin-top:10px;
+      display:flex; flex-direction:column; gap:10px;
+      max-height: 32vh;
+      overflow:auto;
+      padding-right:4px;
+    }
+    .item{
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      padding:10px;
+      display:flex; gap:10px;
+      cursor:pointer;
+      transition: transform .12s ease, border-color .12s ease;
+    }
+    .item:hover{transform: translateY(-2px); border-color: rgba(255,255,255,.20)}
+    .item.active{border-color: rgba(255,122,24,.45); box-shadow:0 0 0 1px rgba(255,122,24,.22) inset}
+
+    .thumb{
+      width:84px; height:64px; border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      object-fit:cover;
+      flex: 0 0 auto;
+    }
+    .meta{min-width:0}
+    .meta b{display:block; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+    .meta small{display:block; margin-top:4px; color:var(--muted); font-weight:900; line-height:1.25}
+    .tag{display:inline-block; margin:6px 6px 0 0; padding:4px 8px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.18); font-size:11px; font-weight:900;}
+
+    .districtList{
+      margin-top:12px;
+      display:flex; flex-direction:column; gap:10px;
+      max-height: 30vh;
+      overflow:auto;
+      padding-right:4px;
+    }
+    .d{
+      border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.18);
+      padding:10px;cursor:pointer;transition:.12s transform ease,.12s border-color ease
+    }
+    .d:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.20)}
+    .d.active{border-color:rgba(255,122,24,.45);box-shadow:0 0 0 1px rgba(255,122,24,.22) inset}
     .d b{display:block}
     .d small{color:var(--muted);font-weight:900;line-height:1.35}
-    @media(max-width:980px){.app{display:block}.side{width:auto;max-width:none;border-right:0;border-bottom:1px solid var(--stroke)}.carousel{grid-template-columns:repeat(3,1fr)}.stats{grid-template-columns:repeat(2,1fr)}}
+
+    .toast{
+      position:absolute; left:12px; bottom:12px;
+      background: rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(10px);
+      padding:10px 12px;
+      border-radius:14px;
+      color: rgba(236,242,255,.9);
+      font-weight:900;
+      max-width: min(640px, calc(100% - 24px));
+    }
+
+    .muted{color: rgba(236,242,255,.75); font-weight:900}
+
+    @media (max-width: 980px){
+      .app{display:block;}
+      .sidebar{width:auto; max-width:none; border-right:0; border-bottom:1px solid var(--stroke)}
+      #map{height: calc(100vh - 650px);}
+      .districtList{max-height: 24vh;}
+      .list{max-height: 28vh;}
+    }
   </style>
 </head>
+
 <body>
   <div class="app">
-    <aside class="side">
+    <!-- ✅ Index Sidebar (Districts) -->
+    <aside class="sidebar">
       <div class="brand">
         <div class="dot"></div>
         <div>
           <div class="title">Himachal Explorer</div>
-          <div class="sub">District-wise places • treks • temples • lakes • hotels</div>
+          <div class="sub">District list + Live Map (loads district data on click)</div>
         </div>
       </div>
 
-      <div class="btnRow">
-        <button class="btn" onclick="location.href='map.html'">Open Master Map</button>
-        <button class="btn btnGhost" onclick="location.href='admin.html'">Open Admin</button>
+      <label>Find District</label>
+      <input id="districtQ" placeholder="Search district…" />
+
+      <div class="districtList" id="districtList">
+        <div class="d"><b>Loading districts…</b><small>Please wait</small></div>
       </div>
 
-      <div class="list" id="districtList">
-        <div class="d"><b>Loading districts…</b><small>Please wait</small></div>
+      <button class="btnTiny" id="btnClearDistrict">Clear (no district)</button>
+
+      <label>Type (inside selected district)</label>
+      <select id="typeSel" disabled>
+        <option value="">All types</option>
+        <option value="destinations">Destinations</option>
+        <option value="lakes">Lakes</option>
+        <option value="temples">Temples</option>
+        <option value="treks">Treks</option>
+        <option value="hotels">Hotels</option>
+      </select>
+
+      <label>Search (inside selected district)</label>
+      <input id="q" placeholder="e.g., Triund, Chandratal, Jakhu…" disabled />
+
+      <div class="row">
+        <button class="btn" id="btnFit" disabled>Fit markers</button>
+        <button class="btn btnGhost" id="btnClearRoute">Clear route</button>
+      </div>
+
+      <div class="row">
+        <button class="btn" id="btnMe">📍 Use My Live Location</button>
+        <button class="btn btnGhost" id="btnReloadDistrict" disabled>Reload district</button>
+      </div>
+
+      <div class="pill" id="status">Status: loading districts…</div>
+      <div class="pill" id="meStatus">Live: not set</div>
+
+      <div class="counts">
+        <div class="cBox"><b id="cntAll">0</b><small>District items</small></div>
+        <div class="cBox"><b id="cntShown">0</b><small>Pins shown</small></div>
+        <div class="cBox"><b id="cntNoGeo">0</b><small>Missing lat/lng</small></div>
+        <div class="cBox"><b id="cntDistricts">0</b><small>Districts</small></div>
+      </div>
+
+      <div class="listHead">
+        <b>Nearby / Results</b>
+        <small id="listNote">Select a district</small>
+      </div>
+      <div class="list" id="list"></div>
+
+      <div style="margin-top:12px; color:rgba(236,242,255,.78); font-size:12px; line-height:1.45">
+        ✅ District data loads only when you click a district (fast).<br/>
+        ✅ Live location needs <b>HTTPS</b> (GitHub Pages OK).<br/>
+        ✅ If you store multiple photo URLs, keep as <b>photos[]</b> or <b>images[]</b> or <b>photoUrl</b>.
       </div>
     </aside>
 
-    <main class="main">
-      <section class="hero">
-        <div class="heroTop">
-          <h1>Himachal Pradesh</h1>
-          <p>Explore the state by district. Use the Master Map for live distance & routes, and the Admin panel to publish new places.</p>
-        </div>
-
-        <div class="carousel">
-          <div class="ph" style="background-image:url('https://source.unsplash.com/1200x800/?Himachal,Mountains')"></div>
-          <div class="ph" style="background-image:url('https://source.unsplash.com/1200x800/?Spiti,Monastery')"></div>
-          <div class="ph" style="background-image:url('https://source.unsplash.com/1200x800/?Manali,Snow')"></div>
-          <div class="ph" style="background-image:url('https://source.unsplash.com/1200x800/?Dharamshala,Monastery')"></div>
-          <div class="ph" style="background-image:url('https://source.unsplash.com/1200x800/?Dalhousie,Hills')"></div>
-          <div class="ph" style="background-image:url('https://source.unsplash.com/1200x800/?Himachal,Lake')"></div>
-        </div>
-
-        <div class="stats">
-          <div class="card"><b id="sDistricts">—</b><small>Districts</small></div>
-          <div class="card"><b id="sPins">—</b><small>Total Records</small></div>
-          <div class="card"><b id="sGeo">—</b><small>With lat/lng</small></div>
-          <div class="card"><b>Map + Admin</b><small>Live distance + publish</small></div>
-        </div>
-      </section>
+    <!-- ✅ Master Map -->
+    <main class="mapWrap">
+      <div id="map"></div>
+      <div class="toast" id="toast">Pick a district from left to load pins on the map.</div>
     </main>
   </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics.js";
 
-    // ✅ PASTE SAME CONFIG HERE (same in admin.html & map.html)
+    // ✅ Your Firebase config
     const firebaseConfig = {
-      apiKey: "PASTE_API_KEY",
+      apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
       authDomain: "revnue-records.firebaseapp.com",
       databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "revnue-records",
-      storageBucket: "revnue-records.appspot.com",
-      messagingSenderId: "PASTE_SENDER_ID",
-      appId: "PASTE_APP_ID",
-      measurementId: "PASTE_MEASUREMENT_ID"
+      storageBucket: "revnue-records.firebasestorage.app",
+      messagingSenderId: "182348503564",
+      appId: "1:182348503564:web:480085405b09177245ac29",
+      measurementId: "G-MGTDBCG896"
     };
 
     const app = initializeApp(firebaseConfig);
+    try { getAnalytics(app); } catch(e) {}
     const db = getDatabase(app);
 
+    // DB path
     const ROOT = "tourism/hp/districts";
-    const listEl = document.getElementById("districtList");
+    const TYPES = ["destinations","lakes","temples","treks","hotels"];
 
-    const sDistricts = document.getElementById("sDistricts");
-    const sPins = document.getElementById("sPins");
-    const sGeo = document.getElementById("sGeo");
+    // Map
+    const map = L.map("map", { zoomControl:true }).setView([31.8, 77.3], 7);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19, attribution: "&copy; OpenStreetMap"
+    }).addTo(map);
 
+    const cluster = L.markerClusterGroup({ chunkedLoading:true });
+    map.addLayer(cluster);
+
+    let meMarker = null;
+    let meLatLng = null;
+    let routeLine = null;
+
+    // UI
+    const districtQ = document.getElementById("districtQ");
+    const districtList = document.getElementById("districtList");
+
+    const typeSel = document.getElementById("typeSel");
+    const qEl = document.getElementById("q");
+
+    const btnFit = document.getElementById("btnFit");
+    const btnMe = document.getElementById("btnMe");
+    const btnClearRoute = document.getElementById("btnClearRoute");
+    const btnClearDistrict = document.getElementById("btnClearDistrict");
+    const btnReloadDistrict = document.getElementById("btnReloadDistrict");
+
+    const statusEl = document.getElementById("status");
+    const meStatusEl = document.getElementById("meStatus");
+    const toastEl = document.getElementById("toast");
+
+    const cntAll = document.getElementById("cntAll");
+    const cntShown = document.getElementById("cntShown");
+    const cntNoGeo = document.getElementById("cntNoGeo");
+    const cntDistricts = document.getElementById("cntDistricts");
+
+    const listEl = document.getElementById("list");
+    const listNote = document.getElementById("listNote");
+
+    // state
     const safeObj = (x)=> (x && typeof x==="object") ? x : {};
+    const safeArr = (x)=> Array.isArray(x) ? x : [];
+    const norm = (s)=> String(s ?? "").trim();
+    const low = (s)=> norm(s).toLowerCase();
 
-    function countSegments(seg){
-      seg = safeObj(seg);
-      const types = ["destinations","lakes","temples","treks","hotels"];
-      let total=0, geo=0;
-      for(const t of types){
-        const node = safeObj(seg[t]);
-        for(const id of Object.keys(node)){
-          total++;
-          const it = node[id]||{};
-          if(it.lat!=null && it.lng!=null && it.lat!=="" && it.lng!=="") geo++;
-        }
-      }
-      return {total, geo};
+    let DIST_NAMES = [];
+    let ACTIVE_DISTRICT = "";     // name
+    let ALL_ITEMS = [];           // district flattened items
+    let SHOWN = [];
+    let markerByKey = new Map();  // key => marker
+
+    function escapeHTML(str){
+      return String(str ?? "").replace(/[&<>"']/g, s=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[s]));
+    }
+    function escapeAttr(str){ return escapeHTML(str).replace(/"/g,"&quot;"); }
+
+    function isFiniteNumber(v){
+      if(v === null || v === undefined || v === "") return false;
+      const n = Number(v);
+      return Number.isFinite(n);
+    }
+    function hasGeo(it){ return isFiniteNumber(it.lat) && isFiniteNumber(it.lng); }
+
+    function iconEmoji(type){
+      if(type==="destinations") return "📍";
+      if(type==="lakes") return "🏞️";
+      if(type==="temples") return "🛕";
+      if(type==="treks") return "🥾";
+      if(type==="hotels") return "🏨";
+      return "📌";
     }
 
-    async function load(){
-      const snap = await get(ref(db, ROOT));
-      const root = snap.exists() ? snap.val() : {};
-      const districts = Object.keys(safeObj(root)).sort((a,b)=>a.localeCompare(b));
+    function distanceKm(a, b){
+      const R = 6371;
+      const toRad = (x)=> (x*Math.PI)/180;
+      const dLat = toRad(b.lat - a.lat);
+      const dLng = toRad(b.lng - a.lng);
+      const lat1 = toRad(a.lat);
+      const lat2 = toRad(b.lat);
+      const h = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLng/2)**2;
+      return 2*R*Math.asin(Math.sqrt(h));
+    }
 
-      let totalPins=0, geoPins=0;
+    function photosFromAny(item){
+      // supports: photos[], images[], gallery[], photoUrl, imageUrl, cover, photo (old)
+      const out = [];
+      const pushArr = (x)=> { if(Array.isArray(x)) x.forEach(u=>{ if(norm(u)) out.push(norm(u)); }); };
+      pushArr(item.photos);
+      pushArr(item.images);
+      pushArr(item.gallery);
+      if(norm(item.photoUrl)) out.push(norm(item.photoUrl));
+      if(norm(item.imageUrl)) out.push(norm(item.imageUrl));
+      if(norm(item.cover)) out.push(norm(item.cover));
+      if(norm(item.photo)) out.push(norm(item.photo)); // legacy
+      return Array.from(new Set(out));
+    }
 
-      listEl.innerHTML = districts.map(d=>{
-        const dn = root[d]||{};
-        const counts = dn.counts || {};
-        const c = {
-          destinations: counts.destinations ?? 0,
-          lakes: counts.lakes ?? 0,
-          temples: counts.temples ?? 0,
-          treks: counts.treks ?? 0,
-          hotels: counts.hotels ?? 0
-        };
-        const sum = c.destinations + c.lakes + c.temples + c.treks + c.hotels;
+    function pickTitle(it){
+      return it.name || it.title || it.place || it.placeName || it.locationName || "Unknown";
+    }
 
-        const segCount = countSegments(dn.segments);
-        totalPins += segCount.total;
-        geoPins += segCount.geo;
+    function matches(item, q){
+      if(!q) return true;
+      const hay = (`${item.name||""} ${item.district||""} ${item.type||""} ${(item.tags||[]).join(" ")} ${item.notes||""}`).toLowerCase();
+      return hay.includes(q.toLowerCase());
+    }
 
+    function popupHTML(item){
+      const pics = photosFromAny(item._raw);
+      const tags = safeArr(item.tags);
+      const dist = (meLatLng && item.__distKm != null) ? ` • 📏 ${item.__distKm.toFixed(1)} km` : "";
+      const thumbRow = pics.length
+        ? `<div style="display:flex;gap:8px;overflow:auto;padding-top:8px;">
+            ${pics.slice(0,5).map(u=>`<img src="${escapeAttr(u)}" style="height:74px;width:120px;object-fit:cover;border-radius:12px;border:1px solid rgba(255,255,255,.14)" alt="photo"/>`).join("")}
+          </div>`
+        : `<div style="margin-top:8px; color:rgba(236,242,255,.65); font-weight:900;">No photos</div>`;
+
+      return `
+        <div style="min-width:260px; max-width:360px;">
+          <div style="font-weight:950; font-size:14px;">
+            ${iconEmoji(item.type)} ${escapeHTML(item.name)}
+          </div>
+          <div style="margin-top:4px; color:rgba(236,242,255,.75); font-weight:900;">
+            ${escapeHTML(item.district)} • ${escapeHTML(item.type)}${dist}
+          </div>
+          ${item.notes ? `<div style="margin-top:6px; color:rgba(236,242,255,.86); font-weight:850; line-height:1.35;">
+            ${escapeHTML(item.notes)}
+          </div>` : ""}
+
+          <div style="margin-top:6px;">
+            ${tags.slice(0,10).map(t=>`<span style="display:inline-block;margin:6px 6px 0 0;padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.18);font-size:11px;font-weight:900;">${escapeHTML(t)}</span>`).join("")}
+          </div>
+
+          ${thumbRow}
+        </div>
+      `;
+    }
+
+    function clearMarkers(){
+      cluster.clearLayers();
+      markerByKey.clear();
+      SHOWN = [];
+      cntShown.textContent = "0";
+      listEl.innerHTML = "";
+    }
+
+    function fitToMarkers(){
+      const layers = cluster.getLayers();
+      if(!layers.length){ alert("No markers to fit."); return; }
+      const group = L.featureGroup(layers);
+      map.fitBounds(group.getBounds().pad(0.15));
+    }
+
+    function drawRouteTo(target){
+      if(!meLatLng) return;
+      if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
+      routeLine = L.polyline([[meLatLng.lat, meLatLng.lng],[target.lat, target.lng]], { weight: 4, opacity: 0.9 }).addTo(map);
+      const km = distanceKm(meLatLng, target).toFixed(1);
+      toastEl.textContent = `Route (straight-line): ${km} km`;
+    }
+
+    function clearRoute(){
+      if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
+      toastEl.textContent = "Route cleared.";
+    }
+
+    function setMeLocation(lat, lng, accuracyM){
+      meLatLng = {lat, lng};
+      if(!meMarker){
+        meMarker = L.marker([lat, lng], { title: "You are here" }).addTo(map);
+      } else {
+        meMarker.setLatLng([lat, lng]);
+      }
+      meStatusEl.textContent = `Live: set ✅ (±${Math.round(accuracyM || 0)} m)`;
+      toastEl.textContent = "Live location set. Tap any pin to draw route.";
+      applyFilters(); // refresh distances
+      map.setView([lat, lng], 12, {animate:true});
+    }
+
+    function useMyLocation(){
+      if(!navigator.geolocation){
+        alert("Geolocation not supported.");
+        return;
+      }
+      meStatusEl.textContent = "Live: requesting…";
+      toastEl.textContent = "Requesting GPS permission…";
+      navigator.geolocation.getCurrentPosition(
+        (pos)=> setMeLocation(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy),
+        ()=> { meStatusEl.textContent = "Live: denied/failed ❌"; alert("Live location failed. Use HTTPS and allow permission."); },
+        { enableHighAccuracy:true, timeout:12000, maximumAge: 10000 }
+      );
+    }
+
+    function renderDistrictList(){
+      const q = low(districtQ.value);
+      const filtered = DIST_NAMES.filter(n => !q || low(n).includes(q));
+
+      if(!filtered.length){
+        districtList.innerHTML = `<div class="d"><b>No district found</b><small>Try different search</small></div>`;
+        return;
+      }
+
+      districtList.innerHTML = filtered.map(name=>{
+        const active = (ACTIVE_DISTRICT === name) ? "active" : "";
         return `
-          <div class="d" onclick="location.href='map.html#district=${encodeURIComponent(d)}'">
-            <b>${d}</b>
-            <small>${sum} items • Dest ${c.destinations} • Lakes ${c.lakes} • Temples ${c.temples} • Treks ${c.treks} • Hotels ${c.hotels}</small>
+          <div class="d ${active}" data-d="${escapeAttr(name)}">
+            <b>${escapeHTML(name)}</b>
+            <small>Click to load district pins</small>
           </div>
         `;
       }).join("");
 
-      sDistricts.textContent = districts.length;
-      sPins.textContent = totalPins;
-      sGeo.textContent = geoPins;
+      [...districtList.querySelectorAll(".d[data-d]")].forEach(el=>{
+        el.addEventListener("click", ()=>{
+          const d = el.getAttribute("data-d");
+          openDistrict(d);
+        });
+      });
     }
 
-    load().catch(()=>{ listEl.innerHTML = `<div class="d"><b>Firebase not configured</b><small>Paste firebaseConfig in all pages</small></div>`; });
+    function flattenDistrictData(districtName, node){
+      const out = [];
+      const seg = safeObj(node.segments);
+      for(const t of TYPES){
+        const bucket = safeObj(seg[t]);
+        for(const id of Object.keys(bucket)){
+          const it = safeObj(bucket[id]);
+          out.push({
+            key: `${t}:${id}`,
+            id,
+            district: districtName,
+            type: t,
+            name: pickTitle(it),
+            tags: safeArr(it.tags),
+            notes: it.notes || it.description || "",
+            lat: it.lat ?? it.latitude ?? "",
+            lng: it.lng ?? it.longitude ?? "",
+            _raw: it
+          });
+        }
+      }
+      return out;
+    }
+
+    function applyFilters(){
+      clearMarkers();
+
+      if(!ACTIVE_DISTRICT){
+        statusEl.textContent = "Status: pick a district";
+        listNote.textContent = "Select a district";
+        cntAll.textContent = "0";
+        cntNoGeo.textContent = "0";
+        toastEl.textContent = "Pick a district from left to load pins on the map.";
+        return;
+      }
+
+      const t = typeSel.value;
+      const q = qEl.value.trim();
+
+      let missingGeo = 0;
+      SHOWN = [];
+
+      for(const item of ALL_ITEMS){
+        if(t && item.type !== t) continue;
+        if(!matches(item, q)) continue;
+
+        if(!hasGeo(item)){ missingGeo++; continue; }
+
+        const lat = Number(item.lat);
+        const lng = Number(item.lng);
+
+        if(meLatLng){
+          item.__distKm = distanceKm(meLatLng, {lat,lng});
+        } else item.__distKm = null;
+
+        const marker = L.marker([lat, lng]);
+        marker.bindPopup(popupHTML(item), { maxWidth: 420 });
+        marker.on("click", () => { if(meLatLng) drawRouteTo({lat,lng}); });
+
+        cluster.addLayer(marker);
+        markerByKey.set(item.key, marker);
+        SHOWN.push(item);
+      }
+
+      cntAll.textContent = String(ALL_ITEMS.length);
+      cntNoGeo.textContent = String(missingGeo);
+      cntShown.textContent = String(SHOWN.length);
+
+      statusEl.textContent = `Status: ${ACTIVE_DISTRICT} loaded ✅`;
+      toastEl.textContent = meLatLng
+        ? "Live on. Nearest list sorted by distance."
+        : "Loaded. Turn on live location to see distance + nearest list.";
+
+      renderList();
+      btnFit.disabled = (SHOWN.length === 0);
+    }
+
+    function pickThumb(item){
+      const pics = photosFromAny(item._raw);
+      return pics[0] || "";
+    }
+
+    function renderList(){
+      if(!ACTIVE_DISTRICT){
+        listEl.innerHTML = `<div style="color:rgba(236,242,255,.7); font-weight:900; font-size:12px; line-height:1.45">
+          Select a district to load items.
+        </div>`;
+        return;
+      }
+
+      if(SHOWN.length === 0){
+        listEl.innerHTML = `<div style="color:rgba(236,242,255,.7); font-weight:900; font-size:12px; line-height:1.45">
+          No pins (maybe missing lat/lng or filters too strict).
+        </div>`;
+        return;
+      }
+
+      let sorted = [...SHOWN];
+      if(meLatLng){
+        listNote.textContent = "Nearest first";
+        sorted.sort((a,b)=> (a.__distKm ?? 1e9) - (b.__distKm ?? 1e9));
+      } else {
+        listNote.textContent = "Filtered list";
+      }
+      sorted = sorted.slice(0, 80);
+
+      listEl.innerHTML = sorted.map(it=>{
+        const thumb = pickThumb(it);
+        const dist = (meLatLng && it.__distKm != null) ? it.__distKm.toFixed(1) + " km" : "";
+        const tags = safeArr(it.tags).slice(0,3);
+        return `
+          <div class="item" data-k="${escapeAttr(it.key)}">
+            ${thumb ? `<img class="thumb" src="${escapeAttr(thumb)}" alt="thumb"/>` : `<div class="thumb"></div>`}
+            <div class="meta">
+              <b>${iconEmoji(it.type)} ${escapeHTML(it.name)}</b>
+              <small>${escapeHTML(it.district)} • ${escapeHTML(it.type)} ${dist ? "• 📏 "+escapeHTML(dist) : ""}</small>
+              <small>${tags.length ? tags.map(t=>`<span class="tag">${escapeHTML(t)}</span>`).join("") : ""}</small>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      listEl.querySelectorAll(".item").forEach(el=>{
+        el.addEventListener("click", ()=>{
+          const k = el.getAttribute("data-k");
+          const it = sorted.find(x=>x.key === k);
+          if(!it) return;
+          const lat = Number(it.lat), lng = Number(it.lng);
+          map.setView([lat, lng], 13, {animate:true});
+          const m = markerByKey.get(k);
+          if(m) m.openPopup();
+          if(meLatLng) drawRouteTo({lat,lng});
+        });
+      });
+    }
+
+    async function openDistrict(name){
+      ACTIVE_DISTRICT = name;
+      statusEl.textContent = "Status: loading district…";
+      toastEl.textContent = `Loading ${name} from Firebase…`;
+      clearRoute();
+      clearMarkers();
+
+      // enable filters now
+      typeSel.disabled = false;
+      qEl.disabled = false;
+      btnReloadDistrict.disabled = false;
+
+      renderDistrictList();
+
+      try{
+        const snap = await get(ref(db, `${ROOT}/${name}`));
+        if(!snap.exists()){
+          ALL_ITEMS = [];
+          statusEl.textContent = "Status: district has no data";
+          toastEl.textContent = "No data found for this district.";
+          applyFilters();
+          return;
+        }
+        const node = safeObj(snap.val());
+        ALL_ITEMS = flattenDistrictData(name, node);
+
+        // reset filters each district
+        typeSel.value = "";
+        qEl.value = "";
+
+        applyFilters();
+        if(SHOWN.length) fitToMarkers();
+      }catch(e){
+        console.error(e);
+        statusEl.textContent = "Status: load failed ❌";
+        toastEl.textContent = "Firebase read failed. Check rules / path.";
+        ALL_ITEMS = [];
+        applyFilters();
+      }
+    }
+
+    function clearDistrict(){
+      ACTIVE_DISTRICT = "";
+      ALL_ITEMS = [];
+      typeSel.value = "";
+      qEl.value = "";
+      typeSel.disabled = true;
+      qEl.disabled = true;
+      btnReloadDistrict.disabled = true;
+      btnFit.disabled = true;
+
+      renderDistrictList();
+      clearRoute();
+      clearMarkers();
+      map.setView([31.8, 77.3], 7, {animate:true});
+
+      statusEl.textContent = "Status: pick a district";
+      listNote.textContent = "Select a district";
+      toastEl.textContent = "Pick a district from left to load pins on the map.";
+      cntAll.textContent = "0";
+      cntShown.textContent = "0";
+      cntNoGeo.textContent = "0";
+    }
+
+    async function loadDistrictNames(){
+      statusEl.textContent = "Status: loading districts…";
+      const snap = await get(ref(db, ROOT));
+      const root = snap.exists() ? safeObj(snap.val()) : {};
+      DIST_NAMES = Object.keys(root).sort((a,b)=>a.localeCompare(b));
+      cntDistricts.textContent = String(DIST_NAMES.length);
+
+      renderDistrictList();
+      statusEl.textContent = "Status: districts loaded ✅";
+
+      // optional: auto open from hash #district=Kullu
+      const m = (location.hash || "").match(/district=([^&]+)/i);
+      if(m){
+        const d = decodeURIComponent(m[1]);
+        if(DIST_NAMES.includes(d)) openDistrict(d);
+      }
+    }
+
+    // events
+    districtQ.addEventListener("input", renderDistrictList);
+
+    typeSel.addEventListener("change", applyFilters);
+    qEl.addEventListener("input", ()=>{
+      clearTimeout(window.__fltT);
+      window.__fltT = setTimeout(applyFilters, 150);
+    });
+
+    btnFit.addEventListener("click", fitToMarkers);
+    btnMe.addEventListener("click", useMyLocation);
+    btnClearRoute.addEventListener("click", clearRoute);
+    btnClearDistrict.addEventListener("click", clearDistrict);
+    btnReloadDistrict.addEventListener("click", ()=> { if(ACTIVE_DISTRICT) openDistrict(ACTIVE_DISTRICT); });
+
+    // start (auto load district list on open)
+    loadDistrictNames().catch((e)=>{
+      console.error(e);
+      statusEl.textContent = "Status: district list failed ❌";
+      districtList.innerHTML = `<div class="d"><b>Firebase read failed</b><small>Check rules/config</small></div>`;
+      toastEl.textContent = "Cannot load districts. Check Firebase rules.";
+    });
   </script>
 </body>
 </html>
