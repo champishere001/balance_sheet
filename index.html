@@ -1,516 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Himachal Explorer — Tourism Portal</title>
+  <title>Himachal Explorer — Google Auto Route Optimizer</title>
+
   <style>
     :root{
-      --bg:#070a12;
-      --glass: rgba(255,255,255,.08);
-      --glass2: rgba(255,255,255,.12);
-      --stroke: rgba(255,255,255,.16);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.72);
+      --bg:#070a12; --stroke: rgba(255,255,255,.16);
+      --text: rgba(255,255,255,.92); --muted: rgba(255,255,255,.72);
       --shadow: 0 18px 60px rgba(0,0,0,.55);
-      --radius: 18px;
-      --radius2: 26px;
+      --r: 18px; --r2: 26px;
     }
-
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
       background: radial-gradient(1200px 800px at 20% 10%, rgba(120,120,255,.18), transparent 60%),
                   radial-gradient(1200px 800px at 80% 30%, rgba(0,255,200,.10), transparent 55%),
                   var(--bg);
-      color:var(--text);
       overflow-x:hidden;
     }
-
-    /* Background image layer */
     .bg{
       position:fixed; inset:0;
       background:
-        linear-gradient(180deg, rgba(5,8,16,.65), rgba(5,8,16,.85)),
+        linear-gradient(180deg, rgba(5,8,16,.62), rgba(5,8,16,.86)),
         url("https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=2400&q=80");
-      background-size:cover;
-      background-position:center;
-      filter:saturate(1.08) contrast(1.05);
-      z-index:-2;
-    }
-    .grain{
-      position:fixed; inset:0;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E");
-      opacity:.09;
-      z-index:-1;
-      pointer-events:none;
-      mix-blend-mode:overlay;
+      background-size:cover; background-position:center;
+      z-index:-2; filter:saturate(1.08) contrast(1.05);
     }
 
-    /* Layout */
     .wrap{
-      display:grid;
-      grid-template-columns: 310px 1fr;
-      min-height:100vh;
-      gap:18px;
-      padding:18px;
+      display:grid; grid-template-columns: 310px 1fr;
+      gap:18px; padding:18px; min-height:100vh;
     }
 
     /* Sidebar */
     .side{
-      position:sticky;
-      top:18px;
-      align-self:start;
+      position:sticky; top:18px; align-self:start;
       height: calc(100vh - 36px);
-      border-radius: var(--radius2);
+      border-radius: var(--r2);
       background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
       backdrop-filter: blur(14px);
       border:1px solid var(--stroke);
       box-shadow: var(--shadow);
-      padding:18px;
-      overflow:auto;
+      padding:18px; overflow:auto;
     }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      margin-bottom:14px;
-    }
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:14px}
     .logo{
-      width:46px; height:46px;
-      border-radius:16px;
+      width:46px;height:46px;border-radius:16px;
       background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.22), rgba(255,255,255,.06));
-      border:1px solid var(--stroke);
-      display:grid; place-items:center;
+      border:1px solid var(--stroke); display:grid; place-items:center;
       box-shadow: 0 12px 30px rgba(0,0,0,.35);
       flex:0 0 auto;
     }
-    .logo svg{opacity:.95}
-    .brand h1{
-      font-size:15px;
-      margin:0;
-      letter-spacing:.3px;
-      line-height:1.15;
-    }
-    .brand p{
-      margin:2px 0 0 0;
-      font-size:12px;
-      color:var(--muted);
-    }
+    .brand h1{margin:0;font-size:15px;letter-spacing:.3px;line-height:1.15}
+    .brand p{margin:2px 0 0 0;font-size:12px;color:var(--muted)}
 
-    .nav{
-      display:grid;
-      gap:10px;
-      margin:14px 0 16px;
-    }
+    .nav{display:grid;gap:10px;margin:14px 0 16px}
     .nav button{
-      width:100%;
-      text-align:left;
+      width:100%; text-align:left;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
       color:var(--text);
-      padding:12px 12px;
-      border-radius:14px;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
+      padding:12px; border-radius:14px; cursor:pointer;
+      display:flex; align-items:center; justify-content:space-between;
       transition:.22s ease;
     }
-    .nav button:hover{transform:translateY(-1px); background: rgba(255,255,255,.10)}
-    .nav button.active{background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.22)}
-    .nav small{color:var(--muted); font-weight:600}
+    .nav button:hover{transform:translateY(-1px);background: rgba(255,255,255,.10)}
+    .nav button.active{background: rgba(255,255,255,.14);border-color: rgba(255,255,255,.22)}
+    .nav small{color:var(--muted);font-weight:600}
 
     .panelTitle{
-      margin:14px 0 8px;
-      font-size:12px;
-      letter-spacing:.28em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,.70);
+      margin:14px 0 8px; font-size:12px; letter-spacing:.28em;
+      text-transform:uppercase; color:rgba(255,255,255,.70);
     }
-
-    .field{
-      display:grid; gap:8px;
-      margin-bottom:12px;
-    }
-    label{font-size:12px; color:rgba(255,255,255,.76)}
+    .field{display:grid;gap:8px;margin-bottom:12px}
+    label{font-size:12px;color:rgba(255,255,255,.76)}
     input, select{
-      width:100%;
-      padding:12px 12px;
-      border-radius:14px;
+      width:100%; padding:12px; border-radius:14px;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(8,12,20,.55);
-      color:var(--text);
-      outline:none;
+      color:var(--text); outline:none;
     }
     input::placeholder{color:rgba(255,255,255,.55)}
-    .row2{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
-
-    .chipRow{
-      display:flex; flex-wrap:wrap; gap:8px;
-      margin-top:8px;
-    }
+    .chipRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
     .chip{
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
       color:rgba(255,255,255,.88);
-      padding:8px 10px;
-      border-radius:999px;
-      cursor:pointer;
-      font-size:12px;
-      transition:.2s ease;
-      user-select:none;
+      padding:8px 10px; border-radius:999px;
+      cursor:pointer; font-size:12px; transition:.2s ease; user-select:none;
     }
-    .chip:hover{background: rgba(255,255,255,.10); transform:translateY(-1px)}
-    .chip.on{background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.22)}
+    .chip:hover{background: rgba(255,255,255,.10);transform:translateY(-1px)}
+    .chip.on{background: rgba(255,255,255,.14);border-color: rgba(255,255,255,.22)}
 
     .miniCard{
-      margin-top:12px;
-      border-radius: var(--radius);
+      margin-top:12px; border-radius: var(--r);
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
       padding:12px;
     }
-    .miniCard p{margin:6px 0 0 0; color:var(--muted); font-size:12px; line-height:1.45}
-    .miniCard .btn{
-      width:100%;
-      margin-top:10px;
-      padding:12px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.12);
-      color:var(--text);
-      cursor:pointer;
-      transition:.2s ease;
-      font-weight:650;
+    .miniCard p{margin:6px 0 0 0;color:var(--muted);font-size:12px;line-height:1.45}
+    .btn{
+      width:100%; margin-top:10px; padding:12px;
+      border-radius:14px; border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.12); color:var(--text);
+      cursor:pointer; transition:.2s ease; font-weight:650;
     }
-    .miniCard .btn:hover{transform:translateY(-1px); background: rgba(255,255,255,.18)}
+    .btn:hover{transform:translateY(-1px);background: rgba(255,255,255,.18)}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .toggleRow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .toggleRow input{width:auto}
 
     /* Main */
     .main{
-      border-radius: var(--radius2);
+      border-radius: var(--r2);
       overflow:hidden;
-      position:relative;
       border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.04);
       backdrop-filter: blur(10px);
       box-shadow: var(--shadow);
+      display:flex; flex-direction:column;
+      min-height: calc(100vh - 36px);
     }
-
     .hero{
-      padding:22px 22px 18px;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.02));
+      padding:20px 20px 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.02));
       border-bottom:1px solid rgba(255,255,255,.12);
     }
-    .heroTop{
-      display:flex;
-      gap:14px;
-      justify-content:space-between;
-      align-items:flex-end;
-      flex-wrap:wrap;
-    }
-    .hero h2{
-      margin:0;
-      font-size:28px;
-      letter-spacing:.2px;
-      line-height:1.15;
-    }
-    .hero p{
-      margin:8px 0 0;
-      color:var(--muted);
-      max-width:62ch;
-      line-height:1.5;
-    }
-
-    .searchBar{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-      margin-top:14px;
-    }
-    .searchBar input{
-      flex: 1 1 320px;
-      min-width:240px;
-      background: rgba(0,0,0,.28);
-    }
+    .heroTop{display:flex;gap:12px;justify-content:space-between;align-items:flex-end;flex-wrap:wrap}
+    .hero h2{margin:0;font-size:26px;line-height:1.15}
+    .hero p{margin:8px 0 0;color:var(--muted);max-width:66ch;line-height:1.5}
+    .searchBar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+    .searchBar input{flex:1 1 320px;min-width:240px;background: rgba(0,0,0,.28)}
     .primary{
       border:1px solid rgba(255,255,255,.18);
       background: rgba(255,255,255,.14);
       color:var(--text);
-      padding:12px 14px;
-      border-radius:14px;
-      cursor:pointer;
-      font-weight:750;
-      transition:.2s ease;
+      padding:12px 14px; border-radius:14px;
+      cursor:pointer; font-weight:750; transition:.2s ease;
     }
-    .primary:hover{transform:translateY(-1px); background: rgba(255,255,255,.20)}
-
-    .chipsMain{margin-top:12px}
-
-    .content{
-      padding:18px;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap:14px;
-    }
-    .card{
-      border-radius: 22px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      box-shadow: 0 18px 55px rgba(0,0,0,.30);
-      cursor:pointer;
-      transform: translateZ(0);
-      transition: transform .22s ease, background .22s ease, border-color .22s ease;
-      position:relative;
-      min-height: 280px;
-    }
-    .card:hover{
-      transform: translateY(-3px);
-      background: rgba(255,255,255,.10);
-      border-color: rgba(255,255,255,.20);
-    }
-
-    .thumb{
-      height: 185px;
-      background-size:cover;
-      background-position:center;
-      position:relative;
-    }
-    .thumb:after{
-      content:"";
-      position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.55));
-    }
-    .badge{
-      position:absolute;
-      left:12px; top:12px;
-      padding:8px 10px;
-      border-radius:999px;
-      background: rgba(0,0,0,.35);
-      border:1px solid rgba(255,255,255,.18);
-      font-size:12px;
-      z-index:1;
-      backdrop-filter: blur(10px);
-    }
-    .cardBody{
-      padding:12px 12px 14px;
-      display:grid;
-      gap:8px;
-    }
-    .titleRow{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .card h3{
-      margin:0;
-      font-size:15px;
-      line-height:1.2;
-      letter-spacing:.2px;
-    }
-    .meta{
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.35;
-      margin:0;
-    }
-    .pillRow{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:2px;
-    }
-    .pill{
-      font-size:11px;
-      padding:7px 9px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color:rgba(255,255,255,.86);
-    }
-
-    /* Drawer modal */
-    .modalBack{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.55);
-      backdrop-filter: blur(10px);
-      display:none;
-      align-items:flex-end;
-      justify-content:center;
-      padding:16px;
-      z-index:50;
-    }
-    .modal{
-      width:min(980px, 100%);
-      border-radius: 26px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.14);
-      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
-      box-shadow: 0 30px 90px rgba(0,0,0,.65);
-      transform: translateY(14px);
-      opacity:0;
-      transition:.22s ease;
-    }
-    .modalBack.show{display:flex;}
-    .modalBack.show .modal{transform: translateY(0); opacity:1;}
-
-    .modalTop{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:center;
-      padding:14px 14px;
-      border-bottom:1px solid rgba(255,255,255,.12);
-    }
-    .modalTop strong{font-size:14px}
-    .closeBtn{
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.10);
-      color:var(--text);
-      border-radius:12px;
-      padding:10px 12px;
-      cursor:pointer;
-      transition:.2s ease;
-      font-weight:750;
-    }
-    .closeBtn:hover{background: rgba(255,255,255,.16)}
-
-    .modalGrid{
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:14px;
-      padding:14px;
-    }
-    .modalPhoto{
-      border-radius:20px;
-      min-height:290px;
-      background-size:cover;
-      background-position:center;
-      border:1px solid rgba(255,255,255,.12);
-      position:relative;
-      overflow:hidden;
-    }
-    .modalPhoto:after{
-      content:"";
-      position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.55));
-    }
-    .modalInfo{
-      border-radius:20px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-      padding:12px;
-    }
-    .modalInfo h4{margin:0 0 8px 0; font-size:14px}
-    .modalInfo p{margin:0 0 10px 0; color:var(--muted); font-size:12.5px; line-height:1.55}
-    .modalInfo .k{
-      display:grid;
-      gap:8px;
-      margin-top:8px;
-    }
-    .kv{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      font-size:12px;
-      color:rgba(255,255,255,.86);
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      padding:10px 10px;
-      border-radius:14px;
-    }
-    .kv span{color:rgba(255,255,255,.70)}
-    .modalActions{
-      display:flex; gap:10px; flex-wrap:wrap;
-      margin-top:12px;
-    }
+    .primary:hover{transform:translateY(-1px);background: rgba(255,255,255,.20)}
     .ghost{
       border:1px solid rgba(255,255,255,.16);
       background: rgba(255,255,255,.08);
       color:var(--text);
-      padding:11px 12px;
-      border-radius:14px;
-      cursor:pointer;
-      transition:.2s ease;
-      font-weight:700;
+      padding:11px 12px; border-radius:14px;
+      cursor:pointer; font-weight:700; transition:.2s ease;
     }
-    .ghost:hover{background: rgba(255,255,255,.14); transform:translateY(-1px)}
+    .ghost:hover{background: rgba(255,255,255,.14);transform:translateY(-1px)}
 
-    /* Capabilities popup */
-    .capBack{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.58);
-      display:none;
-      place-items:center;
-      z-index:60;
-      padding:16px;
-      backdrop-filter: blur(12px);
+    /* Side-by-side */
+    .split{
+      display:grid; grid-template-columns: 1.35fr .85fr;
+      gap:14px; padding:14px; flex:1; min-height:0;
     }
-    .cap{
-      width:min(920px, 100%);
-      border-radius: 26px;
-      border:1px solid rgba(255,255,255,.16);
-      background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
-      box-shadow: 0 35px 120px rgba(0,0,0,.70);
-      overflow:hidden;
+    .leftPane, .rightPane{
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      overflow:hidden; min-height:0;
     }
-    .capHeader{
-      padding:14px 16px;
-      border-bottom:1px solid rgba(255,255,255,.12);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
+    .paneHead{
+      padding:12px; border-bottom:1px solid rgba(255,255,255,.10);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      background: rgba(255,255,255,.05);
     }
-    .capHeader strong{font-size:14px}
-    .capBody{
-      padding:14px 16px 16px;
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap:12px;
+    .paneHead strong{font-size:13px}
+    .paneHead small{color:var(--muted)}
+    .paneBody{padding:12px; overflow:auto; height:100%}
+
+    /* Cards */
+    .grid{display:grid;grid-template-columns: repeat(3, minmax(0,1fr));gap:12px}
+    .card{
+      border-radius: 22px; overflow:hidden;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      box-shadow: 0 18px 55px rgba(0,0,0,.30);
+      cursor:pointer;
+      transition: transform .22s ease, background .22s ease, border-color .22s ease;
+      min-height: 270px;
     }
-    .capItem{
+    .card:hover{transform:translateY(-3px);background: rgba(255,255,255,.10);border-color: rgba(255,255,255,.20)}
+    .thumb{height:170px;background-size:cover;background-position:center;position:relative}
+    .thumb:after{content:"";position:absolute;inset:0;background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.55))}
+    .badge{
+      position:absolute; left:12px; top:12px;
+      padding:8px 10px; border-radius:999px;
+      background: rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.18);
+      font-size:12px; z-index:1; backdrop-filter: blur(10px);
+    }
+    .cardBody{padding:12px 12px 14px;display:grid;gap:8px}
+    .titleRow{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+    .card h3{margin:0;font-size:15px;line-height:1.2}
+    .meta{margin:0;color:var(--muted);font-size:12px;line-height:1.35}
+    .pill{font-size:11px;padding:7px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background: rgba(255,255,255,.06)}
+
+    /* Planner */
+    .routeStats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+    .stat{border-radius:16px;border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.06);padding:10px}
+    .stat b{display:block;font-size:13px}
+    .stat span{color:var(--muted);font-size:12px}
+
+    #map{
+      height:280px;
       border-radius:18px;
       border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-      padding:12px;
+      background:#0b1220;
+      overflow:hidden;
     }
-    .capItem b{display:block; font-size:13px}
-    .capItem p{margin:6px 0 0; color:var(--muted); font-size:12px; line-height:1.45}
 
-    /* Responsive */
-    @media (max-width: 1050px){
-      .wrap{grid-template-columns: 1fr; }
-      .side{position:relative; height:auto}
+    .routeList{display:grid;gap:10px;margin-top:10px}
+    .routeItem{
+      border-radius:18px;border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06); overflow:hidden;
+    }
+    .routeItemHead{
+      padding:10px; display:flex; justify-content:space-between; gap:10px; align-items:flex-start;
+    }
+    .routeItemHead b{font-size:13px;line-height:1.2}
+    .routeItemHead p{margin:4px 0 0;color:var(--muted);font-size:12px}
+    .routeBtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .tiny{
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.10);
+      color:var(--text);
+      border-radius:12px;
+      padding:8px 10px;
+      cursor:pointer;
+      font-weight:750;
+      transition:.2s ease;
+      font-size:12px; line-height:1; user-select:none;
+    }
+    .tiny:hover{background: rgba(255,255,255,.16);transform:translateY(-1px)}
+
+    .itinerary{
+      margin-top:12px;border-radius:18px;border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18); padding:10px;
+    }
+    .itinerary h4{margin:0 0 8px;font-size:13px}
+    .itinerary .day{
+      border-radius:14px;border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      padding:10px;margin-bottom:8px;
+    }
+    .itinerary .day:last-child{margin-bottom:0}
+    .itinerary .day b{font-size:12px}
+    .itinerary .day p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.4}
+
+    .hint{
+      margin-top:10px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      padding:10px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.4;
+    }
+
+    @media (max-width: 1180px){
+      .split{grid-template-columns:1fr}
       .grid{grid-template-columns: repeat(2, minmax(0,1fr))}
-      .modalGrid{grid-template-columns:1fr}
+    }
+    @media (max-width: 1050px){
+      .wrap{grid-template-columns:1fr}
+      .side{position:relative;height:auto}
     }
     @media (max-width: 620px){
+      .wrap{padding:12px}
       .grid{grid-template-columns:1fr}
       .hero h2{font-size:22px}
-      .wrap{padding:12px}
-      .side{border-radius:22px}
-      .main{border-radius:22px}
+      #map{height:260px}
     }
   </style>
 </head>
 <body>
   <div class="bg"></div>
-  <div class="grain"></div>
 
   <div class="wrap">
     <!-- Sidebar -->
@@ -525,7 +295,7 @@
         </div>
         <div>
           <h1>Himachal Explorer</h1>
-          <p>Photo-first tourism portal</p>
+          <p>Auto-optimize routes (Google)</p>
         </div>
       </div>
 
@@ -537,32 +307,24 @@
         <button data-tab="routes">Routes <small>Track</small></button>
       </div>
 
-      <div class="panelTitle">Quick Filters</div>
+      <div class="panelTitle">Filters</div>
 
       <div class="field">
         <label>District</label>
         <select id="district">
           <option value="all">All Himachal</option>
-          <option>Shimla</option>
-          <option>Kullu</option>
-          <option>Kangra</option>
-          <option>Chamba</option>
-          <option>Mandi</option>
-          <option>Solan</option>
-          <option>Bilaspur</option>
-          <option>Hamirpur</option>
-          <option>Una</option>
-          <option>Sirmaur</option>
-          <option>Kinnaur</option>
-          <option>Lahaul & Spiti</option>
+          <option>Shimla</option><option>Kullu</option><option>Kangra</option><option>Chamba</option>
+          <option>Mandi</option><option>Solan</option><option>Bilaspur</option><option>Hamirpur</option>
+          <option>Una</option><option>Sirmaur</option><option>Kinnaur</option><option>Lahaul & Spiti</option>
         </select>
       </div>
 
       <div class="field">
-        <label>Search by name</label>
-        <input id="q" placeholder="e.g., Narkanda, Bijli Mahadev, Triund..." />
+        <label>Search</label>
+        <input id="q" placeholder="Triund, Jakhu, Manali..." />
       </div>
 
+      <div class="panelTitle">Style Tags</div>
       <div class="chipRow" id="chipsSide">
         <div class="chip on" data-chip="family">Family</div>
         <div class="chip" data-chip="budget">Budget</div>
@@ -573,40 +335,65 @@
       </div>
 
       <div class="miniCard">
-        <b style="font-size:13px;">Tools (Tourism)</b>
-        <p>Route tracker + district-wise expense calculator in one place.</p>
+        <b style="font-size:13px;">Start location</b>
+        <p>GPS start or manual start. Any change auto-routes.</p>
+
+        <div class="field" style="margin-top:10px;">
+          <label>Start (manual)</label>
+          <input id="startInput" placeholder="e.g., Shimla, HP"/>
+        </div>
+
+        <div class="toggleRow">
+          <label style="margin:0;">Return to Start</label>
+          <input id="loopToggle" type="checkbox"/>
+        </div>
+
+        <button class="btn" id="gpsBtn">Use Current Location (GPS)</button>
+      </div>
+
+      <div class="miniCard">
+        <b style="font-size:13px;">Auto Route Settings</b>
+        <p>Auto-optimize runs when you change route/start.</p>
+
+        <div class="toggleRow" style="margin-top:10px;">
+          <label style="margin:0;">Auto optimize</label>
+          <input id="autoOpt" type="checkbox" checked/>
+        </div>
+
+        <div class="field" style="margin-top:10px;">
+          <label>Travel cost rate (₹/km)</label>
+          <input id="ratePerKm" type="number" value="12" min="0"/>
+        </div>
+
+        <button class="btn" id="optNow" title="Manual optimize if you want">Optimize Now</button>
+      </div>
+
+      <div class="miniCard">
+        <b style="font-size:13px;">Trip Budget</b>
+        <p>Distance updates travel cost automatically.</p>
 
         <div class="panelTitle" style="margin-top:12px;">Expense Calculator</div>
         <div class="row2">
           <div class="field" style="margin:0;">
-            <label>Days</label>
-            <input id="days" type="number" value="3" min="1"/>
+            <label>Days</label><input id="days" type="number" value="3" min="1"/>
           </div>
           <div class="field" style="margin:0;">
-            <label>People</label>
-            <input id="people" type="number" value="2" min="1"/>
+            <label>People</label><input id="people" type="number" value="2" min="1"/>
           </div>
         </div>
         <div class="row2">
           <div class="field" style="margin:0;">
-            <label>Per day stay (₹)</label>
-            <input id="stay" type="number" value="1800" min="0"/>
+            <label>Stay/day (₹)</label><input id="stay" type="number" value="1800" min="0"/>
           </div>
           <div class="field" style="margin:0;">
-            <label>Per day food (₹)</label>
-            <input id="food" type="number" value="700" min="0"/>
+            <label>Food/day (₹)</label><input id="food" type="number" value="700" min="0"/>
           </div>
         </div>
         <div class="field" style="margin:0;">
-          <label>Travel cost total (₹)</label>
-          <input id="travel" type="number" value="3500" min="0"/>
+          <label>Travel total (₹)</label><input id="travel" type="number" value="0" min="0"/>
         </div>
-
         <button class="btn" id="calcBtn">Calculate Total</button>
         <p id="calcOut" style="margin-top:8px; font-weight:750;">Total: ₹ —</p>
-        <p style="margin-top:4px;">Tip: adjust values district-wise for realistic budgeting.</p>
-
-        <button class="btn" style="margin-top:10px;" id="capBtn">Show Page Capabilities</button>
       </div>
     </aside>
 
@@ -615,224 +402,191 @@
       <section class="hero">
         <div class="heroTop">
           <div>
-            <h2>Discover Himachal — photos first, info next.</h2>
-            <p>Explore hotels, temples, and treks district-wise. Click any card for route idea + travel budgeting.</p>
+            <h2>Auto-Optimized Route Planner (Google)</h2>
+            <p>Click a place to add → route auto-optimizes. Reorder stops and it recalculates automatically.</p>
           </div>
-          <button class="primary" id="shuffleBtn">Shuffle Places</button>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="primary" id="shuffleBtn">Shuffle</button>
+            <button class="ghost" id="clearRouteBtn">Clear Route</button>
+          </div>
         </div>
 
         <div class="searchBar">
           <input id="qMain" placeholder="Search locations, temples, treks, hotels..." />
-          <button class="primary" id="searchBtn">Search</button>
-          <button class="ghost" id="resetBtn">Reset</button>
-        </div>
-
-        <div class="chipRow chipsMain" id="chipsMain">
-          <div class="chip on" data-chip="all">All</div>
-          <div class="chip" data-chip="hotels">Hotels</div>
-          <div class="chip" data-chip="temples">Temples</div>
-          <div class="chip" data-chip="treks">Treks</div>
-          <div class="chip" data-chip="snow">Snow</div>
-          <div class="chip" data-chip="nature">Nature</div>
+          <button class="primary" id="resetBtn">Reset Filters</button>
         </div>
       </section>
 
-      <section class="content">
-        <div class="grid" id="grid"></div>
+      <section class="split">
+        <!-- Left -->
+        <div class="leftPane">
+          <div class="paneHead">
+            <strong>Places</strong>
+            <small id="countOut">0 results</small>
+          </div>
+          <div class="paneBody">
+            <div class="grid" id="grid"></div>
+          </div>
+        </div>
+
+        <!-- Right -->
+        <div class="rightPane">
+          <div class="paneHead">
+            <strong>Route Planner</strong>
+            <small id="routeStatus">Waiting for Maps…</small>
+          </div>
+          <div class="paneBody">
+            <div class="routeStats">
+              <div class="stat"><b id="stopsOut">0</b><span>Stops</span></div>
+              <div class="stat"><b id="distanceOut">—</b><span>Distance</span></div>
+              <div class="stat"><b id="durationOut">—</b><span>Duration</span></div>
+              <div class="stat"><b id="totalOut">₹ —</b><span>Total trip est.</span></div>
+            </div>
+
+            <div id="map"></div>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+              <button class="btn" id="fitBtn" style="margin-top:0;">Fit Map to Route</button>
+              <button class="btn" id="openGmaps" style="margin-top:0;">Open in Google Maps</button>
+            </div>
+
+            <div class="routeList" id="routeList"></div>
+
+            <div class="itinerary" id="itinerary">
+              <h4>Day-wise Itinerary</h4>
+              <div class="day"><b>Day 1</b><p>Add stops to auto-fill itinerary.</p></div>
+            </div>
+
+            <div class="hint" style="margin-top:12px;">
+              Auto-optimize triggers after changes (600ms). If routing fails: check API key, billing, and enabled APIs.
+            </div>
+          </div>
+        </div>
       </section>
     </main>
   </div>
 
-  <!-- Place Modal -->
-  <div class="modalBack" id="modalBack" role="dialog" aria-modal="true">
-    <div class="modal">
-      <div class="modalTop">
-        <strong id="mTitle">Place</strong>
-        <button class="closeBtn" id="mClose">Close</button>
-      </div>
-      <div class="modalGrid">
-        <div class="modalPhoto" id="mPhoto"></div>
-        <div class="modalInfo">
-          <h4>Quick Info</h4>
-          <p id="mDesc">—</p>
-
-          <div class="k">
-            <div class="kv"><span>Type</span><b id="mType">—</b></div>
-            <div class="kv"><span>District</span><b id="mDistrict">—</b></div>
-            <div class="kv"><span>Best for</span><b id="mTags">—</b></div>
-          </div>
-
-          <div class="modalActions">
-            <button class="ghost" id="openMaps">Open in Google Maps</button>
-            <button class="ghost" id="addRoute">Add to Route List</button>
-            <button class="ghost" id="copyBudget">Use for Budget</button>
-          </div>
-
-          <div class="miniCard" style="margin-top:12px;">
-            <b style="font-size:13px;">Route List</b>
-            <p id="routeList" style="margin-top:6px;">No route selected yet.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Capabilities Popup -->
-  <div class="capBack" id="capBack">
-    <div class="cap">
-      <div class="capHeader">
-        <strong>What this page can do</strong>
-        <button class="closeBtn" id="capClose">Close</button>
-      </div>
-      <div class="capBody">
-        <div class="capItem"><b>Tourism Directory</b><p>Hotels, temples, treks in one clean dashboard.</p></div>
-        <div class="capItem"><b>District Filters</b><p>Pick district and instantly see photo cards.</p></div>
-        <div class="capItem"><b>Photo-First Cards</b><p>Images are priority, text is minimal and clean.</p></div>
-        <div class="capItem"><b>Route Tracking</b><p>Add places to route list and plan quickly.</p></div>
-        <div class="capItem"><b>Expense Calculator</b><p>Estimate trip cost by days, people, stay, food, travel.</p></div>
-        <div class="capItem"><b>Future Ready</b><p>Easy to connect database / Firebase later for real data.</p></div>
-      </div>
-    </div>
-  </div>
-
   <script>
-    // Demo data (replace later with your real HP locations)
+    /***********************
+     * GOOGLE KEY
+     ***********************/
+    const GOOGLE_MAPS_API_KEY = "AIzaSyCuaKwWIY-Mtff4WwXnmAdAGVnL5O8G6RI"; // <-- replace
+
+    /***********************
+     * Demo HP places
+     ***********************/
     const places = [
-      {
-        id: "triund",
-        type: "treks",
-        name: "Triund Trek",
-        district: "Kangra",
-        tags: ["nature","budget","adventure"],
-        desc: "A classic beginner-friendly trek near McLeod Ganj with stunning views.",
-        img: "https://images.unsplash.com/photo-1520963575748-6b1d4a7b0c8b?auto=format&fit=crop&w=1400&q=80",
-        maps: "Triund Trek"
-      },
-      {
-        id: "bijli",
-        type: "temples",
-        name: "Bijli Mahadev Temple",
-        district: "Kullu",
-        tags: ["spiritual","nature"],
-        desc: "Famous temple with panoramic valley views. Known for lightning rituals.",
-        img: "https://images.unsplash.com/photo-1533658925626-7f6ef0c6d1ea?auto=format&fit=crop&w=1400&q=80",
-        maps: "Bijli Mahadev Temple"
-      },
-      {
-        id: "manali",
-        type: "hotels",
-        name: "Manali Riverside Stays",
-        district: "Kullu",
-        tags: ["family","premium","nature"],
-        desc: "Handpicked stay areas near the river for scenic mornings and cafes.",
-        img: "https://images.unsplash.com/photo-1500043357865-c6b8827edf6c?auto=format&fit=crop&w=1400&q=80",
-        maps: "Manali"
-      },
-      {
-        id: "narkanda",
-        type: "routes",
-        name: "Shimla → Narkanda Snow Drive",
-        district: "Shimla",
-        tags: ["snow","family","nature"],
-        desc: "A scenic drive route known for winter snow, orchards, and viewpoints.",
-        img: "https://images.unsplash.com/photo-1549880338-65ddcdfd017b?auto=format&fit=crop&w=1400&q=80",
-        maps: "Narkanda"
-      },
-      {
-        id: "jakhu",
-        type: "temples",
-        name: "Jakhu Temple",
-        district: "Shimla",
-        tags: ["spiritual","family"],
-        desc: "Famous hilltop temple with a giant Hanuman statue overlooking Shimla.",
-        img: "https://images.unsplash.com/photo-1611497582081-195c11e2bb24?auto=format&fit=crop&w=1400&q=80",
-        maps: "Jakhu Temple Shimla"
-      },
-      {
-        id: "dalhousie",
-        type: "hotels",
-        name: "Dalhousie View Hotels",
-        district: "Chamba",
-        tags: ["family","premium","nature"],
-        desc: "Stay zones with valley views, close to Khajjiar and pine walks.",
-        img: "https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?auto=format&fit=crop&w=1400&q=80",
-        maps: "Dalhousie"
-      },
-      {
-        id: "spiti",
-        type: "routes",
-        name: "Kinnaur → Spiti High Route",
-        district: "Lahaul & Spiti",
-        tags: ["adventure","nature","premium"],
-        desc: "High-altitude route planning hub: viewpoints, fuel stops, essentials.",
-        img: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1400&q=80",
-        maps: "Spiti Valley"
-      },
-      {
-        id: "parashar",
-        type: "temples",
-        name: "Prashar Lake Temple",
-        district: "Mandi",
-        tags: ["nature","spiritual","budget"],
-        desc: "A peaceful lake with a floating island and temple — great day trip.",
-        img: "https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=1400&q=80",
-        maps: "Prashar Lake"
-      },
-      {
-        id: "tattapani",
-        type: "hotels",
-        name: "Tattapani Hot Spring Stays",
-        district: "Mandi",
-        tags: ["family","budget","nature"],
-        desc: "Relaxing stay near hot water springs and riverside activities.",
-        img: "https://images.unsplash.com/photo-1528184039930-67b3b5f9d5f0?auto=format&fit=crop&w=1400&q=80",
-        maps: "Tattapani Himachal"
-      }
+      {id:"triund", type:"treks", name:"Triund Trek", district:"Kangra", tags:["nature","budget","adventure"],
+        desc:"Beginner-friendly trek near McLeod Ganj with Dhauladhar views.",
+        img:"https://images.unsplash.com/photo-1520963575748-6b1d4a7b0c8b?auto=format&fit=crop&w=1400&q=80",
+        lat:32.2447, lng:76.3197 },
+      {id:"bijli", type:"temples", name:"Bijli Mahadev Temple", district:"Kullu", tags:["spiritual","nature"],
+        desc:"Famous temple with panoramic valley views. Short hike.",
+        img:"https://images.unsplash.com/photo-1533658925626-7f6ef0c6d1ea?auto=format&fit=crop&w=1400&q=80",
+        lat:31.9047, lng:77.1405 },
+      {id:"manali", type:"hotels", name:"Manali Riverside Stays", district:"Kullu", tags:["family","premium","nature"],
+        desc:"Riverside zones: scenic mornings, cafes, walks.",
+        img:"https://images.unsplash.com/photo-1500043357865-c6b8827edf6c?auto=format&fit=crop&w=1400&q=80",
+        lat:32.2432, lng:77.1892 },
+      {id:"narkanda", type:"routes", name:"Shimla → Narkanda Snow Drive", district:"Shimla", tags:["snow","family","nature"],
+        desc:"Winter drive: snow, orchards, viewpoints.",
+        img:"https://images.unsplash.com/photo-1549880338-65ddcdfd017b?auto=format&fit=crop&w=1400&q=80",
+        lat:31.2673, lng:77.4610 },
+      {id:"jakhu", type:"temples", name:"Jakhu Temple", district:"Shimla", tags:["spiritual","family"],
+        desc:"Hilltop temple with giant Hanuman statue overlooking Shimla.",
+        img:"https://images.unsplash.com/photo-1611497582081-195c11e2bb24?auto=format&fit=crop&w=1400&q=80",
+        lat:31.1119, lng:77.1722 },
+      {id:"dalhousie", type:"hotels", name:"Dalhousie View Hotels", district:"Chamba", tags:["family","premium","nature"],
+        desc:"Valley-view stays close to Khajjiar pine walks.",
+        img:"https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?auto=format&fit=crop&w=1400&q=80",
+        lat:32.5387, lng:75.9668 },
+      {id:"spiti", type:"routes", name:"Spiti Valley Route Hub", district:"Lahaul & Spiti", tags:["adventure","nature","premium"],
+        desc:"High-altitude planning hub: viewpoints, fuel stops, essentials.",
+        img:"https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1400&q=80",
+        lat:32.2396, lng:78.0660 },
+      {id:"prashar", type:"temples", name:"Prashar Lake Temple", district:"Mandi", tags:["nature","spiritual","budget"],
+        desc:"Peaceful lake + floating island. Great day trip.",
+        img:"https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=1400&q=80",
+        lat:31.7648, lng:76.8873 },
+      {id:"tattapani", type:"hotels", name:"Tattapani Hot Spring Stays", district:"Mandi", tags:["family","budget","nature"],
+        desc:"Relax near hot springs and riverside activities.",
+        img:"https://images.unsplash.com/photo-1528184039930-67b3b5f9d5f0?auto=format&fit=crop&w=1400&q=80",
+        lat:31.2406, lng:77.1247 },
     ];
 
+    /***********************
+     * UI refs
+     ***********************/
     const grid = document.getElementById("grid");
+    const countOut = document.getElementById("countOut");
     const nav = document.getElementById("nav");
     const districtSel = document.getElementById("district");
     const qSide = document.getElementById("q");
     const qMain = document.getElementById("qMain");
-
     const chipsSide = document.getElementById("chipsSide");
-    const chipsMain = document.getElementById("chipsMain");
+
+    const routeListEl = document.getElementById("routeList");
+    const routeStatus = document.getElementById("routeStatus");
+    const stopsOut = document.getElementById("stopsOut");
+    const distanceOut = document.getElementById("distanceOut");
+    const durationOut = document.getElementById("durationOut");
+    const totalOut = document.getElementById("totalOut");
+    const itineraryEl = document.getElementById("itinerary");
+
+    const startInput = document.getElementById("startInput");
+    const loopToggle = document.getElementById("loopToggle");
+    const autoOpt = document.getElementById("autoOpt");
+    const ratePerKmEl = document.getElementById("ratePerKm");
 
     let tab = "all";
-    let activeTag = "all";
-    let sideTags = new Set(["family"]); // default ON: family
+    let sideTags = new Set(["family"]);
     let route = [];
 
-    function shuffle(arr){
-      const a = [...arr];
-      for(let i=a.length-1;i>0;i--){
-        const j = Math.floor(Math.random()*(i+1));
-        [a[i],a[j]] = [a[j],a[i]];
-      }
-      return a;
+    /***********************
+     * Start location state
+     ***********************/
+    let startMode = "manual";     // "gps" | "manual"
+    let startLatLng = null;       // google.maps.LatLngLiteral when gps
+
+    /***********************
+     * Google Maps globals
+     ***********************/
+    let map, directionsService, directionsRenderer;
+    let startMarker = null;
+    let stopMarkers = [];
+    let lastDirections = null;
+
+    /***********************
+     * Helpers
+     ***********************/
+    function labelType(t){
+      if(t==="hotels") return "Hotel";
+      if(t==="temples") return "Temple";
+      if(t==="treks") return "Trek";
+      if(t==="routes") return "Route";
+      return "Place";
     }
 
     function matches(p){
       const d = districtSel.value;
       const q = (qMain.value || qSide.value || "").trim().toLowerCase();
-
       const byTab = (tab === "all") ? true : (p.type === tab);
       const byDistrict = (d === "all") ? true : (p.district === d);
-      const byQuery = !q ? true : (p.name.toLowerCase().includes(q) || p.district.toLowerCase().includes(q) || p.tags.join(" ").includes(q));
-
-      const byMainTag = (activeTag === "all") ? true : (p.type === activeTag || p.tags.includes(activeTag));
+      const byQuery = !q ? true : (
+        p.name.toLowerCase().includes(q) ||
+        p.district.toLowerCase().includes(q) ||
+        p.tags.join(" ").includes(q)
+      );
       const bySideTags = (sideTags.size === 0) ? true : [...sideTags].some(t => p.tags.includes(t));
-
-      return byTab && byDistrict && byQuery && byMainTag && bySideTags;
+      return byTab && byDistrict && byQuery && bySideTags;
     }
 
-    function render(){
+    function renderPlaces(){
       const filtered = places.filter(matches);
-      const list = (filtered.length ? filtered : places).slice(0, 60);
-
+      countOut.textContent = `${filtered.length} results`;
       grid.innerHTML = "";
-      list.forEach(p=>{
+
+      filtered.forEach(p=>{
         const el = document.createElement("div");
         el.className = "card";
         el.innerHTML = `
@@ -845,35 +599,400 @@
               <span class="pill">${p.district}</span>
             </div>
             <p class="meta">${p.desc}</p>
-            <div class="pillRow">
-              ${p.tags.slice(0,3).map(t=>`<span class="pill">${t}</span>`).join("")}
+          </div>
+        `;
+        el.addEventListener("click", ()=> addToRoute(p));
+        grid.appendChild(el);
+      });
+
+      if(filtered.length === 0){
+        grid.innerHTML = `<div style="opacity:.8; padding:12px;">No results. Try different filters.</div>`;
+      }
+    }
+
+    /***********************
+     * Budget
+     ***********************/
+    function calcBudget(){
+      const days = +document.getElementById("days").value || 0;
+      const people = +document.getElementById("people").value || 1;
+      const stay = +document.getElementById("stay").value || 0;
+      const food = +document.getElementById("food").value || 0;
+      const travel = +document.getElementById("travel").value || 0;
+      const total = (days * (stay + food) * people) + travel;
+      return {days, people, stay, food, travel, total};
+    }
+    function updateTotalOnly(){
+      const {total} = calcBudget();
+      totalOut.textContent = "₹ " + total.toLocaleString("en-IN");
+    }
+    document.getElementById("calcBtn").addEventListener("click", ()=>{
+      const {total} = calcBudget();
+      document.getElementById("calcOut").textContent = "Total: ₹ " + total.toLocaleString("en-IN");
+      updateTotalOnly();
+    });
+    ["days","people","stay","food","travel"].forEach(id=>{
+      document.getElementById(id).addEventListener("input", ()=>{
+        updateTotalOnly();
+        renderItinerary();
+      });
+    });
+
+    /***********************
+     * Route Planner
+     ***********************/
+    document.getElementById("clearRouteBtn").addEventListener("click", ()=>{
+      route = [];
+      renderRoute();
+      scheduleRoute(false);
+    });
+
+    function addToRoute(p){
+      if(!route.find(x=>x.id===p.id)){
+        route.push(p);
+        renderRoute();
+        scheduleRoute(true);
+      } else {
+        flash(`Already added: ${p.name}`);
+      }
+    }
+
+    function move(i, dir){
+      const j = i + dir;
+      if(j < 0 || j >= route.length) return;
+      [route[i], route[j]] = [route[j], route[i]];
+      renderRoute();
+      scheduleRoute(true);
+    }
+
+    function removeStop(i){
+      route.splice(i,1);
+      renderRoute();
+      scheduleRoute(true);
+    }
+
+    function renderRoute(){
+      routeListEl.innerHTML = "";
+
+      route.forEach((p,i)=>{
+        const item = document.createElement("div");
+        item.className = "routeItem";
+        item.innerHTML = `
+          <div class="routeItemHead">
+            <div>
+              <b>${i+1}. ${p.name}</b>
+              <p>${p.district} • ${labelType(p.type)}</p>
+            </div>
+            <div class="routeBtns">
+              <button class="tiny" title="Move up">↑</button>
+              <button class="tiny" title="Move down">↓</button>
+              <button class="tiny" title="Open in Maps">Map</button>
+              <button class="tiny" title="Remove">✕</button>
             </div>
           </div>
         `;
-        el.addEventListener("click", ()=>openModal(p));
-        grid.appendChild(el);
+        const [up, down, mapBtn, del] = item.querySelectorAll("button");
+        up.addEventListener("click", ()=>move(i,-1));
+        down.addEventListener("click", ()=>move(i,+1));
+        mapBtn.addEventListener("click", ()=>{
+          const q = encodeURIComponent(p.name + " " + p.district + " Himachal Pradesh");
+          window.open("https://www.google.com/maps/search/?api=1&query=" + q, "_blank");
+        });
+        del.addEventListener("click", ()=>removeStop(i));
+        routeListEl.appendChild(item);
+      });
+
+      if(route.length === 0){
+        routeListEl.innerHTML = `<div style="opacity:.8; padding:10px;">No stops yet. Click any place card to add.</div>`;
+      }
+      stopsOut.textContent = route.length.toString();
+      renderItinerary();
+    }
+
+    function renderItinerary(){
+      const days = Math.max(1, +document.getElementById("days").value || 1);
+      const buckets = Array.from({length: days}, ()=>[]);
+      route.forEach((p, idx)=> buckets[idx % days].push(p));
+
+      itineraryEl.innerHTML = `<h4>Day-wise Itinerary</h4>`;
+      for(let d=0; d<days; d++){
+        const stops = buckets[d];
+        const text = stops.length
+          ? stops.map((s,i)=> `${i+1}) ${s.name}`).join(" • ")
+          : "No stops planned for this day.";
+        const el = document.createElement("div");
+        el.className = "day";
+        el.innerHTML = `<b>Day ${d+1}</b><p>${text}</p>`;
+        itineraryEl.appendChild(el);
+      }
+    }
+
+    /***********************
+     * GPS start
+     ***********************/
+    document.getElementById("gpsBtn").addEventListener("click", ()=>{
+      if(!navigator.geolocation){
+        flash("Geolocation not supported.");
+        return;
+      }
+      routeStatus.textContent = "Getting GPS…";
+      navigator.geolocation.getCurrentPosition(
+        (pos)=>{
+          startMode = "gps";
+          startLatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          routeStatus.textContent = "GPS start set";
+          flash("Start set to current location.");
+          placeStartMarker();
+          scheduleRoute(true);
+        },
+        ()=>{
+          routeStatus.textContent = "GPS blocked";
+          flash("GPS permission denied. Use manual start input.");
+        },
+        { enableHighAccuracy:true, timeout:10000 }
+      );
+    });
+
+    function getOrigin(){
+      if(startMode === "gps" && startLatLng) return startLatLng;
+      const manual = (startInput.value || "").trim();
+      if(manual) return manual;
+      return "Shimla, Himachal Pradesh";
+    }
+
+    /***********************
+     * AUTO ROUTING + DEBOUNCE
+     ***********************/
+    let routeTimer = null;
+    function scheduleRoute(shouldOptimize){
+      // Optimize only if checkbox ON, and user asked to optimize
+      const doOpt = !!autoOpt.checked && !!shouldOptimize;
+      clearTimeout(routeTimer);
+      routeTimer = setTimeout(()=> computeDirections(doOpt), 600);
+      routeStatus.textContent = doOpt ? "Auto-optimizing…" : "Auto-routing…";
+    }
+
+    // Manual optimize button
+    document.getElementById("optNow").addEventListener("click", ()=>{
+      computeDirections(true);
+    });
+
+    // Fit
+    document.getElementById("fitBtn").addEventListener("click", ()=>{
+      if(lastDirections && lastDirections.routes?.[0]?.bounds){
+        map.fitBounds(lastDirections.routes[0].bounds);
+      } else {
+        fitMarkers();
+      }
+    });
+
+    // Open in Google Maps (shareable)
+    document.getElementById("openGmaps").addEventListener("click", ()=>{
+      const origin = getOrigin();
+      const loop = !!loopToggle.checked;
+
+      // Build URL using destination and waypoints
+      // If loop: destination=origin, waypoints=all stops
+      // Else: destination=last stop, waypoints=others
+      let destination;
+      let waypoints = [];
+
+      if(route.length === 0){
+        window.open("https://www.google.com/maps", "_blank");
+        return;
+      }
+
+      if(loop){
+        destination = origin;
+        waypoints = route.map(p => `${p.lat},${p.lng}`);
+      }else{
+        const last = route[route.length-1];
+        destination = `${last.lat},${last.lng}`;
+        waypoints = route.slice(0,-1).map(p => `${p.lat},${p.lng}`);
+      }
+
+      const originStr = (typeof origin === "string") ? origin : `${origin.lat},${origin.lng}`;
+      const wpStr = waypoints.length ? `&waypoints=${encodeURIComponent(waypoints.join("|"))}` : "";
+      const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(originStr)}&destination=${encodeURIComponent(destination)}${wpStr}&travelmode=driving`;
+      window.open(url, "_blank");
+    });
+
+    // Start manual changes should trigger routing
+    startInput.addEventListener("input", ()=> scheduleRoute(true));
+    loopToggle.addEventListener("change", ()=> scheduleRoute(true));
+    autoOpt.addEventListener("change", ()=> scheduleRoute(false));
+    ratePerKmEl.addEventListener("input", ()=>{
+      // Recompute cost from existing distance if available by rerunning without optimize (cheap, but still a call).
+      // Instead we recalc from lastDirections (no API call).
+      recalcFromLastDirections();
+    });
+
+    /***********************
+     * Google Directions compute + optimization
+     ***********************/
+    let applyingOptimizedOrder = false;
+
+    async function computeDirections(allowOptimize){
+      if(!directionsService || !directionsRenderer){
+        routeStatus.textContent = "Maps not ready";
+        return;
+      }
+
+      if(route.length === 0){
+        directionsRenderer.set("directions", null);
+        distanceOut.textContent = "—";
+        durationOut.textContent = "—";
+        document.getElementById("travel").value = 0;
+        updateTotalOnly();
+        clearStopMarkers();
+        placeStartMarker();
+        routeStatus.textContent = "Ready";
+        return;
+      }
+
+      const loop = !!loopToggle.checked;
+      const origin = getOrigin();
+
+      let destination, waypoints;
+
+      if(loop){
+        destination = origin;
+        waypoints = route.map(p => ({ location: {lat:p.lat, lng:p.lng}, stopover:true }));
+      }else{
+        destination = {lat: route[route.length-1].lat, lng: route[route.length-1].lng};
+        waypoints = route.slice(0, -1).map(p => ({ location: {lat:p.lat, lng:p.lng}, stopover:true }));
+      }
+
+      routeStatus.textContent = allowOptimize ? "Optimizing…" : "Routing…";
+
+      const request = {
+        origin,
+        destination,
+        waypoints,
+        optimizeWaypoints: !!allowOptimize,
+        travelMode: google.maps.TravelMode.DRIVING
+      };
+
+      try{
+        const res = await directionsService.route(request);
+        lastDirections = res;
+        directionsRenderer.setDirections(res);
+
+        // reorder route[] to match optimized
+        if(allowOptimize && !applyingOptimizedOrder){
+          const r0 = res.routes?.[0];
+          const order = r0?.waypoint_order || [];
+
+          applyingOptimizedOrder = true;
+
+          if(loop){
+            // waypoints == all stops
+            const newRoute = order.map(idx => route[idx]).filter(Boolean);
+            if(newRoute.length === route.length) route = newRoute;
+          } else {
+            // waypoints == all except last (destination)
+            const head = order.map(idx => route[idx]).filter(Boolean);
+            const dest = route[route.length-1];
+            route = [...head, dest];
+          }
+
+          renderRoute();
+          applyingOptimizedOrder = false;
+        }
+
+        // stats + cost
+        updateStatsFromDirections(res);
+
+        placeStartMarker();
+        placeStopMarkers();
+
+        routeStatus.textContent = allowOptimize ? "Auto-optimized" : "Auto-routed";
+      }catch(err){
+        console.error(err);
+        routeStatus.textContent = "Routing failed";
+        flash("Routing failed. Check key, billing, enabled APIs, quota.");
+      }
+    }
+
+    function updateStatsFromDirections(res){
+      const legs = res.routes?.[0]?.legs || [];
+      let meters = 0, seconds = 0;
+      legs.forEach(l=>{
+        meters += (l.distance?.value || 0);
+        seconds += (l.duration?.value || 0);
+      });
+
+      const km = meters / 1000;
+      distanceOut.textContent = km ? `${km.toFixed(1)} km` : "—";
+
+      const mins = Math.round(seconds / 60);
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      durationOut.textContent = mins ? (h>0 ? `${h}h ${m}m` : `${m}m`) : "—";
+
+      const ratePerKm = Math.max(0, +ratePerKmEl.value || 0);
+      const travelCost = Math.round(km * ratePerKm);
+      document.getElementById("travel").value = isFinite(travelCost) ? travelCost : 0;
+      updateTotalOnly();
+    }
+
+    function recalcFromLastDirections(){
+      if(!lastDirections) return;
+      updateStatsFromDirections(lastDirections);
+      routeStatus.textContent = "Cost updated";
+    }
+
+    /***********************
+     * Markers
+     ***********************/
+    function placeStartMarker(){
+      if(!map) return;
+      if(startMarker){ startMarker.setMap(null); startMarker = null; }
+      if(startMode === "gps" && startLatLng){
+        startMarker = new google.maps.Marker({
+          map, position: startLatLng, title: "Start: Current Location"
+        });
+      }
+    }
+
+    function clearStopMarkers(){
+      stopMarkers.forEach(m=>m.setMap(null));
+      stopMarkers = [];
+    }
+
+    function placeStopMarkers(){
+      clearStopMarkers();
+      route.forEach((p, idx)=>{
+        const m = new google.maps.Marker({
+          map,
+          position: {lat:p.lat, lng:p.lng},
+          title: `${idx+1}. ${p.name}`,
+          label: String(idx+1)
+        });
+        stopMarkers.push(m);
       });
     }
 
-    function labelType(t){
-      if(t==="hotels") return "Hotel";
-      if(t==="temples") return "Temple";
-      if(t==="treks") return "Trek";
-      if(t==="routes") return "Route";
-      return "Place";
+    function fitMarkers(){
+      if(!map) return;
+      const bounds = new google.maps.LatLngBounds();
+      if(startMode==="gps" && startLatLng) bounds.extend(startLatLng);
+      route.forEach(p=>bounds.extend({lat:p.lat, lng:p.lng}));
+      if(!bounds.isEmpty()) map.fitBounds(bounds);
     }
 
-    // Nav switching
+    /***********************
+     * Filters wiring
+     ***********************/
     nav.addEventListener("click", (e)=>{
       const btn = e.target.closest("button");
       if(!btn) return;
       [...nav.querySelectorAll("button")].forEach(b=>b.classList.remove("active"));
       btn.classList.add("active");
       tab = btn.dataset.tab;
-      render();
+      renderPlaces();
     });
 
-    // Side chips (multi)
     chipsSide.addEventListener("click", (e)=>{
       const c = e.target.closest(".chip");
       if(!c) return;
@@ -883,133 +1002,100 @@
       }else{
         c.classList.add("on"); sideTags.add(key);
       }
-      render();
+      renderPlaces();
     });
 
-    // Main chips (single)
-    chipsMain.addEventListener("click", (e)=>{
-      const c = e.target.closest(".chip");
-      if(!c) return;
-      [...chipsMain.querySelectorAll(".chip")].forEach(x=>x.classList.remove("on"));
-      c.classList.add("on");
-      activeTag = c.dataset.chip;
-      render();
-    });
-
-    // Search + reset
-    document.getElementById("searchBtn").addEventListener("click", ()=> render());
-    qMain.addEventListener("input", ()=> render());
-    qSide.addEventListener("input", ()=> render());
-    districtSel.addEventListener("change", ()=> render());
+    qMain.addEventListener("input", renderPlaces);
+    qSide.addEventListener("input", renderPlaces);
+    districtSel.addEventListener("change", renderPlaces);
 
     document.getElementById("resetBtn").addEventListener("click", ()=>{
-      qMain.value = "";
-      qSide.value = "";
-      districtSel.value = "all";
-      tab = "all";
-      activeTag = "all";
+      qMain.value=""; qSide.value="";
+      districtSel.value="all";
+      tab="all";
       sideTags = new Set(["family"]);
       [...nav.querySelectorAll("button")].forEach(b=>b.classList.remove("active"));
       nav.querySelector('button[data-tab="all"]').classList.add("active");
-      [...chipsMain.querySelectorAll(".chip")].forEach(x=>x.classList.remove("on"));
-      chipsMain.querySelector('.chip[data-chip="all"]').classList.add("on");
       [...chipsSide.querySelectorAll(".chip")].forEach(x=>x.classList.remove("on"));
       chipsSide.querySelector('.chip[data-chip="family"]').classList.add("on");
-      render();
+      renderPlaces();
     });
 
     document.getElementById("shuffleBtn").addEventListener("click", ()=>{
-      const shuffled = shuffle(places);
-      places.splice(0, places.length, ...shuffled);
-      render();
+      places.sort(()=>Math.random()-0.5);
+      renderPlaces();
     });
 
-    // Expense calculator
-    document.getElementById("calcBtn").addEventListener("click", ()=>{
-      const days = +document.getElementById("days").value || 0;
-      const people = +document.getElementById("people").value || 1;
-      const stay = +document.getElementById("stay").value || 0;
-      const food = +document.getElementById("food").value || 0;
-      const travel = +document.getElementById("travel").value || 0;
-
-      const total = (days * (stay + food) * people) + travel;
-      document.getElementById("calcOut").textContent = "Total: ₹ " + total.toLocaleString("en-IN");
-    });
-
-    // Modal logic
-    const modalBack = document.getElementById("modalBack");
-    const mTitle = document.getElementById("mTitle");
-    const mDesc = document.getElementById("mDesc");
-    const mType = document.getElementById("mType");
-    const mDistrict = document.getElementById("mDistrict");
-    const mTags = document.getElementById("mTags");
-    const mPhoto = document.getElementById("mPhoto");
-    const routeList = document.getElementById("routeList");
-    let current = null;
-
-    function openModal(p){
-      current = p;
-      mTitle.textContent = p.name;
-      mDesc.textContent = p.desc;
-      mType.textContent = labelType(p.type);
-      mDistrict.textContent = p.district;
-      mTags.textContent = p.tags.join(", ");
-      mPhoto.style.backgroundImage = `url('${p.img}')`;
-      updateRouteList();
-      modalBack.classList.add("show");
+    /***********************
+     * Toast
+     ***********************/
+    let toastTimer = null;
+    function flash(msg){
+      let t = document.getElementById("toast");
+      if(!t){
+        t = document.createElement("div");
+        t.id="toast";
+        t.style.cssText = `
+          position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+          background: rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.16);
+          color:white; padding:10px 12px; border-radius:999px; backdrop-filter: blur(10px);
+          box-shadow: 0 20px 60px rgba(0,0,0,.55); z-index:99; font-weight:650;
+          transition: opacity .2s ease;
+        `;
+        document.body.appendChild(t);
+      }
+      t.textContent = msg;
+      t.style.opacity="1";
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>{ t.style.opacity="0"; }, 1600);
     }
-    function closeModal(){ modalBack.classList.remove("show"); current=null; }
-    document.getElementById("mClose").addEventListener("click", closeModal);
-    modalBack.addEventListener("click", (e)=>{ if(e.target === modalBack) closeModal(); });
 
-    document.getElementById("openMaps").addEventListener("click", ()=>{
-      if(!current) return;
-      const q = encodeURIComponent(current.maps || current.name);
-      window.open("https://www.google.com/maps/search/?api=1&query=" + q, "_blank");
-    });
-
-    document.getElementById("addRoute").addEventListener("click", ()=>{
-      if(!current) return;
-      if(!route.find(x=>x.id===current.id)) route.push(current);
-      updateRouteList();
-    });
-
-    function updateRouteList(){
-      if(route.length === 0){
-        routeList.textContent = "No route selected yet.";
+    /***********************
+     * Google Maps loader
+     ***********************/
+    function loadGoogleMaps(){
+      if(!GOOGLE_MAPS_API_KEY || GOOGLE_MAPS_API_KEY.includes("PASTE_YOUR_GOOGLE_KEY")){
+        routeStatus.textContent = "Add Google API key";
+        flash("Paste your Google Maps API key in the code.");
         return;
       }
-      routeList.innerHTML = route.map((p,i)=>`${i+1}. ${p.name} <span style="opacity:.75">(${p.district})</span>`).join("<br/>");
+      const s = document.createElement("script");
+      s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(GOOGLE_MAPS_API_KEY)}&callback=initMap`;
+      s.async = true; s.defer = true;
+      window.initMap = initMap;
+      document.head.appendChild(s);
     }
 
-    document.getElementById("copyBudget").addEventListener("click", ()=>{
-      if(!current) return;
-      // simple demo: set district-wise suggested travel cost
-      const travel = document.getElementById("travel");
-      const map = {
-        "Shimla": 2500,
-        "Kullu": 4200,
-        "Kangra": 3800,
-        "Chamba": 4500,
-        "Lahaul & Spiti": 9000,
-        "Mandi": 3200
-      };
-      travel.value = map[current.district] ?? 3500;
-      document.getElementById("calcOut").textContent = "Total: ₹ —";
-      closeModal();
-      // small feedback
-      alert("Budget applied for " + current.district + " (travel cost updated).");
-    });
+    function initMap(){
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: {lat:31.9, lng:77.2},
+        zoom: 7,
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: false
+      });
 
-    // Capabilities popup
-    const capBack = document.getElementById("capBack");
-    document.getElementById("capBtn").addEventListener("click", ()=> capBack.style.display="grid");
-    document.getElementById("capClose").addEventListener("click", ()=> capBack.style.display="none");
-    capBack.addEventListener("click", (e)=>{ if(e.target===capBack) capBack.style.display="none"; });
+      directionsService = new google.maps.DirectionsService();
+      directionsRenderer = new google.maps.DirectionsRenderer({
+        map,
+        suppressMarkers: false,
+        preserveViewport: false
+      });
 
-    // initial render + open popup once (optional)
-    render();
-    setTimeout(()=>{ capBack.style.display="grid"; }, 600);
+      routeStatus.textContent = "Ready";
+      renderPlaces();
+      renderRoute();
+      updateTotalOnly();
+      scheduleRoute(false);
+    }
+
+    /***********************
+     * Boot
+     ***********************/
+    renderPlaces();
+    renderRoute();
+    updateTotalOnly();
+    loadGoogleMaps();
   </script>
 </body>
 </html>
