@@ -3,22 +3,299 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>HP Tourism Portal — Single Page</title>
-  <link rel="stylesheet" href="assets/style.css"/>
+  <title>HP Tourism Portal — Single Page (Firebase)</title>
 
   <!-- Optional Map (works without key) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
-    /* Small helpers for single-page tabs */
+    :root{
+      --bg:#0b1220; --card:#111a2e; --text:#e9eefc; --muted:#b6c2e2;
+      --line:rgba(255,255,255,.10); --pill:rgba(255,255,255,.10);
+      --accent:#67e8f9; --accent2:#a78bfa;
+      --shadow:0 18px 50px rgba(0,0,0,.35);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 600px at 15% 10%, rgba(103,232,249,.18), transparent 60%),
+        radial-gradient(900px 600px at 85% 20%, rgba(167,139,250,.18), transparent 60%),
+        linear-gradient(180deg, #070b14, var(--bg));
+    }
+    a{color:inherit; text-decoration:none}
+    img{max-width:100%; display:block}
+
+    .topbar{
+      position:sticky; top:0; z-index:40;
+      backdrop-filter: blur(10px);
+      background: rgba(7,11,20,.55);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar .inner{
+      max-width:1220px; margin:0 auto; padding:10px 18px;
+      display:flex; align-items:center; justify-content:space-between; gap:16px;
+    }
+    .brand{display:flex; align-items:center; gap:10px; font-weight:900; letter-spacing:.3px}
+    .brand .logo{
+      width:38px; height:38px; border-radius:14px;
+      background: linear-gradient(135deg, rgba(103,232,249,.9), rgba(167,139,250,.9));
+      box-shadow: var(--shadow);
+    }
+    .nav{display:flex; gap:10px; flex-wrap:wrap}
+    .nav a{
+      padding:9px 12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      border-radius: 999px;
+      color:var(--muted);
+      font-weight:800;
+    }
+    .nav a:hover{
+      color:var(--text);
+      border-color: rgba(103,232,249,.35);
+      box-shadow: 0 8px 24px rgba(103,232,249,.12);
+    }
+
+    .container{max-width:1220px; margin:0 auto; padding:18px}
+    .row{display:flex; gap:18px}
+    .sidebar{
+      width:320px; flex:0 0 320px;
+      border:1px solid var(--line);
+      background: rgba(17,26,46,.50);
+      border-radius: 22px;
+      padding:14px;
+      position:sticky;
+      top:72px;
+      height: calc(100vh - 96px);
+      overflow:auto;
+    }
+    .content{flex:1}
+
+    .hero{
+      border:1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.60)),
+        url("https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=2400&q=70") center/cover;
+      border-radius: 26px;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+    }
+    .hero .wrap{padding:22px}
+    .hero h1{margin:0; font-size:34px; line-height:1.1}
+    .hero p{margin:10px 0 16px; color:rgba(233,238,252,.85); max-width:760px}
+
+    .searchbar{
+      display:grid;
+      grid-template-columns: 1.1fr .8fr .9fr auto;
+      gap:10px;
+      background: rgba(17,26,46,.72);
+      border:1px solid var(--line);
+      padding:10px;
+      border-radius: 18px;
+    }
+    .input{
+      display:flex; align-items:center; gap:10px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(7,11,20,.35);
+    }
+    .input label{font-size:12px; color:var(--muted); display:block}
+    .input select,.input input{
+      width:100%;
+      background:transparent;
+      border:none;
+      color:var(--text);
+      outline:none;
+      font-size:14px;
+    }
+
+    .btn{
+      border:none;
+      border-radius: 14px;
+      padding:12px 14px;
+      font-weight:900;
+      cursor:pointer;
+      color:#06101c;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 18px 40px rgba(103,232,249,.15);
+    }
+    .btn.ghost{
+      background: rgba(255,255,255,.05);
+      color:var(--text);
+      border:1px solid var(--line);
+      box-shadow:none;
+    }
+
+    .shell{margin-top:16px}
+    .side-title{font-weight:900; font-size:14px; display:flex; justify-content:space-between; align-items:center}
+    .small{font-size:12px; color:var(--muted)}
+    .divider{height:1px; background:var(--line); margin:12px 0}
+    .panel{
+      border:1px solid var(--line);
+      background: rgba(7,11,20,.35);
+      border-radius: 18px;
+      padding:12px;
+    }
+    .panel h3{margin:0 0 8px; font-size:15px}
+    .note{color:rgba(233,238,252,.78); font-size:12px; line-height:1.4}
+
+    .pills{display:flex; gap:8px; flex-wrap:wrap}
+    .pill{
+      padding:8px 10px;
+      border-radius: 999px;
+      background: var(--pill);
+      border:1px solid var(--line);
+      color:var(--muted);
+      font-weight:800;
+      cursor:pointer;
+      user-select:none;
+    }
+    .pill.active{
+      color:var(--text);
+      border-color: rgba(103,232,249,.35);
+      box-shadow: 0 10px 26px rgba(103,232,249,.10);
+    }
+
+    .sectionHead{display:flex; align-items:end; justify-content:space-between; gap:14px; margin:6px 0 10px}
+    .sectionHead h2{margin:0; font-size:18px}
+    .sectionHead .meta{color:var(--muted); font-size:12px}
+
+    .cards{display:grid; grid-template-columns: repeat(3, 1fr); gap:16px}
+    .card{
+      border:1px solid var(--line);
+      background: rgba(17,26,46,.45);
+      border-radius: var(--radius);
+      overflow:hidden;
+      box-shadow: 0 10px 26px rgba(0,0,0,.20);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      cursor:pointer;
+    }
+    .card:hover{
+      transform: translateY(-2px);
+      border-color: rgba(103,232,249,.35);
+      box-shadow: 0 20px 55px rgba(0,0,0,.30);
+    }
+    .card .img{height:175px; background:#0c1324; position:relative}
+    .card .img img{width:100%; height:100%; object-fit:cover; transform:scale(1); transition: transform .25s ease}
+    .card:hover .img img{transform:scale(1.05)}
+    .badges{position:absolute; left:10px; bottom:10px; display:flex; gap:8px; flex-wrap:wrap}
+    .badge{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius: 999px;
+      background: rgba(7,11,20,.55);
+      border:1px solid rgba(255,255,255,.12);
+      color: rgba(233,238,252,.95);
+      backdrop-filter: blur(8px);
+    }
+    .card .body{padding:12px 12px 13px}
+    .card h3{margin:0; font-size:15px}
+    .card p{margin:8px 0 0; color:rgba(233,238,252,.78); font-size:13px; line-height:1.35}
+    .quickIcons{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+    .iconChip{
+      font-size:12px; font-weight:900;
+      padding:7px 9px;
+      border-radius: 12px;
+      border:1px solid var(--line);
+      background: rgba(7,11,20,.35);
+      color:rgba(233,238,252,.9);
+    }
+    .footer{margin:20px 0 10px; color:var(--muted); font-size:12px; text-align:center; opacity:.9}
+
+    /* Pages */
     .page{display:none}
     .page.active{display:block}
     .tabsTop{display:flex; gap:10px; flex-wrap:wrap; margin:12px 0 0}
     .tabsTop .pill{padding:10px 12px}
+
+    /* Detail */
     .twoCol{display:grid; grid-template-columns: 1.2fr .8fr; gap:14px}
-    @media (max-width: 1000px){ .twoCol{grid-template-columns:1fr} }
+    .kv{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
+    .kv .item{
+      border:1px solid var(--line);
+      border-radius: 14px;
+      padding:10px;
+      background: rgba(255,255,255,.03);
+    }
+    .kv .item b{display:block; font-size:12px; color:var(--muted)}
+    .kv .item span{display:block; margin-top:6px; font-weight:900}
+    .formRow{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
+
     .mapBox{height:420px; border-radius:18px; overflow:hidden; border:1px solid rgba(255,255,255,.10); background:rgba(7,11,20,.35)}
+
+    /* Modal */
+    .hidden{display:none !important}
+    .modalBack{
+      position:fixed; inset:0; z-index:70;
+      background: rgba(0,0,0,.55);
+      display:flex; align-items:center; justify-content:center;
+      padding:18px;
+    }
+    .modal{
+      width:min(760px, 100%);
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(17,26,46,.95), rgba(7,11,20,.95));
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .modal .top{
+      padding:16px 16px 0;
+      display:flex; justify-content:space-between; gap:12px; align-items:start;
+    }
+    .modal h3{margin:0; font-size:18px}
+    .modal .x{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      color:var(--text);
+      padding:8px 10px; border-radius: 14px; cursor:pointer; font-weight:900;
+    }
+    .modal .body{padding:12px 16px 16px}
+    .featureGrid{display:grid; grid-template-columns: repeat(2, 1fr); gap:12px}
+    .feature{
+      border:1px solid var(--line);
+      border-radius: 18px;
+      padding:12px;
+      background: rgba(255,255,255,.04);
+    }
+    .feature b{display:block; margin-bottom:6px}
+    .feature span{color:rgba(233,238,252,.78); font-size:13px}
+
+    .loadingBar{
+      display:flex; align-items:center; gap:10px;
+      border:1px solid var(--line);
+      background: rgba(17,26,46,.55);
+      border-radius: 16px;
+      padding:10px 12px;
+      margin: 12px 0;
+    }
+    .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 10px 30px rgba(103,232,249,.25);
+      animation: pulse 1s infinite ease-in-out;
+    }
+    @keyframes pulse{0%{transform:scale(.9); opacity:.6}50%{transform:scale(1.15); opacity:1}100%{transform:scale(.9); opacity:.6}}
+
+    @media (max-width: 1000px){
+      .cards{grid-template-columns: repeat(2, 1fr)}
+      .sidebar{position:relative; top:auto; height:auto; width:auto; flex:1}
+      .row{flex-direction:column}
+      .searchbar{grid-template-columns: 1fr 1fr}
+      .twoCol{grid-template-columns:1fr}
+    }
+    @media (max-width: 560px){
+      .cards{grid-template-columns: 1fr}
+      .hero h1{font-size:26px}
+      .featureGrid{grid-template-columns:1fr}
+    }
   </style>
 </head>
 <body>
@@ -44,6 +321,14 @@
   </div>
 
   <div class="container">
+
+    <div id="loading" class="loadingBar">
+      <div class="dot"></div>
+      <div>
+        <b>Loading live data from Firebase…</b>
+        <div class="small" id="loadingMsg">tourism/hp/districts</div>
+      </div>
+    </div>
 
     <!-- HOME -->
     <section id="page-home" class="page active">
@@ -145,7 +430,7 @@
       <div class="footer">Click a district → back to Home with filter</div>
     </section>
 
-    <!-- PACKAGES -->
+    <!-- PACKAGES (Demo; you can later store packages in Firebase too) -->
     <section id="page-packages" class="page">
       <div class="sectionHead">
         <div>
@@ -175,7 +460,7 @@
           <div class="divider"></div>
           <div class="panel">
             <h3>Next</h3>
-            <div class="note">Add WhatsApp inquiry button later.</div>
+            <div class="note">Packages अभी demo हैं. चाहो तो Firebase में भी डाल देंगे.</div>
           </div>
         </aside>
 
@@ -185,7 +470,7 @@
       </div>
     </section>
 
-    <!-- LISTINGS (Hotels/Temples/Treks) -->
+    <!-- LISTINGS -->
     <section id="page-list" class="page">
       <div class="sectionHead">
         <div>
@@ -230,7 +515,7 @@
       <div class="sectionHead">
         <div>
           <h2>Routes & Map (OpenStreetMap)</h2>
-          <div class="meta">Pins from data.js coords</div>
+          <div class="meta">Pins from Firebase coords (lat/lng)</div>
         </div>
       </div>
 
@@ -244,7 +529,7 @@
       <div class="footer">Map works without API key</div>
     </section>
 
-    <!-- PLACE DETAIL (IN PAGE) -->
+    <!-- PLACE DETAIL -->
     <section id="page-detail" class="page">
       <div class="sectionHead">
         <div>
@@ -319,7 +604,7 @@
           <div class="feature"><b>District-wise browsing</b><span>Filter instantly.</span></div>
           <div class="feature"><b>Photo-first cards</b><span>Premium tourism feel.</span></div>
           <div class="feature"><b>Routes map</b><span>OpenStreetMap pins, no key.</span></div>
-          <div class="feature"><b>Packages</b><span>Tour packages section.</span></div>
+          <div class="feature"><b>Firebase live</b><span>Sheet → Firebase → Website</span></div>
           <div class="feature"><b>Place detail</b><span>Detail opens inside same page.</span></div>
         </div>
         <div style="display:flex; gap:10px; margin-top:12px; justify-content:flex-end;">
@@ -330,13 +615,120 @@
     </div>
   </div>
 
-  <!-- JS -->
-  <script src="assets/data.js"></script>
-  <script src="assets/ui.js"></script>
-  <script src="assets/app.js"></script>
-
   <script>
-    // ---- Single Page Controller (no extra files) ----
+    // -----------------------
+    // CONFIG: Your Firebase RTDB
+    // -----------------------
+    const FIREBASE_DB = "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app";
+
+    // Your structure:
+    // /tourism/hp/districts/{District}/segments/{destinations|hotels|temples|treks}/{itemKey}
+    const SEGMENT_MAP = {
+      destinations: "place",
+      hotels: "hotel",
+      temples: "temple",
+      treks: "trek"
+    };
+
+    // -----------------------
+    // UI helper (replacing assets/ui.js)
+    // -----------------------
+    const UI = {
+      qs:(s,r=document)=>r.querySelector(s),
+      qsa:(s,r=document)=>[...r.querySelectorAll(s)],
+      fmtINR(n){
+        try { return new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR",maximumFractionDigits:0}).format(n); }
+        catch(e){ return "₹"+Math.round(n||0); }
+      }
+    };
+
+    function slug(s){
+      return (s||"").toString().trim().toLowerCase()
+        .replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");
+    }
+    function titleFromSlug(s){
+      return (s||"").toString().replace(/-/g," ").replace(/\b\w/g,c=>c.toUpperCase());
+    }
+    function parseTags(t){
+      if(!t) return [];
+      if(Array.isArray(t)) return t.map(x=>String(x).trim()).filter(Boolean);
+      return String(t).split(/[,|]/).map(x=>x.trim()).filter(Boolean);
+    }
+
+    // Global data (replacing assets/data.js)
+    let HP_DATA = { districts:[], items:[], packages:[] };
+
+    // Demo packages (optional)
+    HP_DATA.packages = [
+      { id:"shimla-kufri-2d", name:"Shimla + Kufri (2 Days)", district:"shimla", days:2, priceFrom:4999,
+        includes:["Mall Road","Jakhoo","Kufri points","Local sightseeing"],
+        img:"https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1600&q=70"
+      },
+      { id:"manali-solang-3d", name:"Manali + Solang (3 Days)", district:"kullu", days:3, priceFrom:8999,
+        includes:["Old Manali","Solang Valley","Atal Tunnel route","Cafe walk"],
+        img:"https://images.unsplash.com/photo-1627920769842-6887c6df05ca?auto=format&fit=crop&w=1600&q=70"
+      }
+    ];
+
+    async function loadHPDataFromFirebase(){
+      UI.qs("#loadingMsg").textContent = "Fetching: /tourism/hp/districts";
+      const res = await fetch(`${FIREBASE_DB}/tourism/hp/districts.json`, {cache:"no-store"});
+      const districtsNode = await res.json();
+
+      if(!districtsNode) throw new Error("No data found at /tourism/hp/districts");
+
+      const districts = [];
+      const items = [];
+
+      for(const districtName of Object.keys(districtsNode)){
+        const districtId = slug(districtName);
+        districts.push({ id: districtId, name: districtName });
+
+        const segments = districtsNode[districtName]?.segments || {};
+
+        for(const segName of Object.keys(SEGMENT_MAP)){
+          const segItems = segments?.[segName] || {};
+          for(const key of Object.keys(segItems)){
+            const r = segItems[key] || {};
+            const lat = (r.lat!==undefined && r.lat!=="") ? Number(r.lat) : null;
+            const lng = (r.lng!==undefined && r.lng!=="") ? Number(r.lng) : null;
+
+            items.push({
+              id: slug(r.name || key),
+              name: (r.name || key || "Untitled").toString(),
+              district: districtId,
+              type: SEGMENT_MAP[segName],
+              tags: parseTags(r.tags),
+              short: (r.notes || "").toString(),
+              img: (r.photo || "").toString() ||
+                   "https://images.unsplash.com/photo-1482192596544-9eb780fc7f66?auto=format&fit=crop&w=1600&q=70",
+              bestTime: (r.bestSeason || r.bestSeasonason || "").toString() || "-",
+              rating: (r.rating!==undefined && r.rating!=="") ? Number(r.rating) : null,
+              phone: (r.phone || "").toString(),
+              coords: (lat && lng) ? [lat, lng] : null,
+              entryFee: (r.entryFee || "").toString(),
+              timing: (r.timing || "").toString(),
+              priceMin: (r.priceMin!==undefined && r.priceMin!=="") ? Number(r.priceMin) : null,
+              priceMax: (r.priceMax!==undefined && r.priceMax!=="") ? Number(r.priceMax) : null
+            });
+          }
+        }
+      }
+
+      // sort districts
+      districts.sort((a,b)=>a.name.localeCompare(b.name));
+
+      // attach
+      HP_DATA.districts = districts;
+      HP_DATA.items = items;
+
+      // hide loading bar
+      UI.qs("#loading").classList.add("hidden");
+    }
+
+    // -----------------------
+    // SPA Controller (replacing assets/app.js)
+    // -----------------------
     const SPA = {
       state: { district:"all", type:"all", q:"", listType:"hotel", pkgDistrict:"all", pkgQ:"", selected:null },
       mapAll:null, mapDetail:null, allMarkers:[],
@@ -356,18 +748,18 @@
 
       fillDistrictSelect(sel, all=true){
         const opts = (all?`<option value="all">All Districts</option>`:"") +
-          HP_DATA.districts.map(d=>`<option value="${d.id}">${d.name}</option>`).join("");
+          (HP_DATA.districts||[]).map(d=>`<option value="${d.id}">${d.name}</option>`).join("");
         sel.innerHTML = opts;
       },
 
       init(){
-        // HERO + SIDEBAR dropdowns/pills
+        // HERO dropdown
         SPA.fillDistrictSelect(UI.qs("#heroDistrict"), true);
 
         // district pills
         const pills = UI.qs("#districtPills");
         pills.innerHTML = `<div class="pill active" data-d="all">All</div>` +
-          HP_DATA.districts.map(d=>`<div class="pill" data-d="${d.id}">${d.name}</div>`).join("");
+          (HP_DATA.districts||[]).map(d=>`<div class="pill" data-d="${d.id}">${d.name}</div>`).join("");
 
         pills.addEventListener("click", (e)=>{
           const p = e.target.closest(".pill"); if(!p) return;
@@ -392,10 +784,11 @@
           SPA.renderHomeCards();
         });
 
-        // search inputs
-        UI.qs("#searchInput").addEventListener("input", e=>{ SPA.state.q = e.target.value.trim().toLowerCase(); SPA.renderHomeCards(); });
+        UI.qs("#searchInput").addEventListener("input", e=>{
+          SPA.state.q = e.target.value.trim().toLowerCase();
+          SPA.renderHomeCards();
+        });
 
-        // hero go
         UI.qs("#heroGo").addEventListener("click", ()=>{
           SPA.state.district = UI.qs("#heroDistrict").value;
           SPA.state.type = UI.qs("#heroCategory").value;
@@ -412,21 +805,23 @@
 
       filterItems(typeOverride=null){
         const t = typeOverride ?? SPA.state.type;
+        const q = SPA.state.q;
         return (HP_DATA.items||[]).filter(x=>{
           const okD = SPA.state.district==="all" || x.district===SPA.state.district;
           const okT = t==="all" || x.type===t;
-          const q = SPA.state.q;
-          const okQ = !q || (x.name||"").toLowerCase().includes(q) || (x.short||"").toLowerCase().includes(q) || (x.tags||[]).join(" ").toLowerCase().includes(q);
+          const okQ = !q || (x.name||"").toLowerCase().includes(q)
+                         || (x.short||"").toLowerCase().includes(q)
+                         || (x.tags||[]).join(" ").toLowerCase().includes(q);
           return okD && okT && okQ;
         });
       },
 
       cardHTML(item){
-        const distName = HP_DATA.districts.find(d=>d.id===item.district)?.name || item.district;
+        const distName = HP_DATA.districts.find(d=>d.id===item.district)?.name || titleFromSlug(item.district);
         const icons = {place:"📍 Place", hotel:"🏨 Hotel", temple:"🛕 Temple", trek:"🥾 Trek"};
         const chips = (item.tags||[]).slice(0,3).map(t=>`<div class="iconChip">${t}</div>`).join("");
         return `
-          <div class="card" style="cursor:pointer" onclick="SPA.openDetail('${item.id}')">
+          <div class="card" onclick="SPA.openDetail('${item.id}')">
             <div class="img">
               <img src="${item.img}" alt="${item.name}">
               <div class="badges">
@@ -451,8 +846,8 @@
 
       renderDistricts(){
         const wrap = UI.qs("#districtGrid");
-        wrap.innerHTML = HP_DATA.districts.map(d=>`
-          <div class="card" style="cursor:pointer" onclick="SPA.state.district='${d.id}'; SPA.go('home'); SPA.renderHomeCards();">
+        wrap.innerHTML = (HP_DATA.districts||[]).map(d=>`
+          <div class="card" onclick="SPA.state.district='${d.id}'; SPA.go('home'); SPA.renderHomeCards();">
             <div class="img">
               <img src="https://images.unsplash.com/photo-1482192596544-9eb780fc7f66?auto=format&fit=crop&w=1600&q=70" alt="${d.name}">
               <div class="badges"><div class="badge">District</div></div>
@@ -488,18 +883,22 @@
 
         UI.qs("#pkgMeta").textContent = `${items.length} packages`;
         UI.qs("#pkgWrap").innerHTML = items.map(p=>{
-          const distName = HP_DATA.districts.find(d=>d.id===p.district)?.name || p.district;
+          const distName = HP_DATA.districts.find(d=>d.id===p.district)?.name || titleFromSlug(p.district);
           return `
             <div class="card">
-              <div class="img"><img src="${p.img}" alt="${p.name}">
-                <div class="badges"><div class="badge">${distName}</div><div class="badge">${p.days} Days</div></div>
+              <div class="img">
+                <img src="${p.img}" alt="${p.name}">
+                <div class="badges">
+                  <div class="badge">${distName}</div>
+                  <div class="badge">${p.days} Days</div>
+                </div>
               </div>
               <div class="body">
                 <h3>${p.name}</h3>
                 <p>Includes: ${(p.includes||[]).slice(0,3).join(", ")}...</p>
                 <div class="quickIcons">
                   <div class="iconChip">From ${UI.fmtINR(p.priceFrom||0)}</div>
-                  <div class="iconChip" style="cursor:pointer" onclick="SPA.state.district='${p.district}'; SPA.go('home'); SPA.renderHomeCards();">Explore District</div>
+                  <div class="iconChip" onclick="SPA.state.district='${p.district}'; SPA.go('home'); SPA.renderHomeCards();">Explore District</div>
                 </div>
               </div>
             </div>
@@ -531,7 +930,7 @@
         if(!item){ alert("Not found"); return; }
         SPA.state.selected = item;
 
-        const distName = HP_DATA.districts.find(d=>d.id===item.district)?.name || item.district;
+        const distName = HP_DATA.districts.find(d=>d.id===item.district)?.name || titleFromSlug(item.district);
 
         UI.qs("#dName").textContent = item.name;
         UI.qs("#detailTitle").textContent = item.name;
@@ -553,7 +952,6 @@
           L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom:18, attribution:"© OpenStreetMap"}).addTo(SPA.mapAll);
         }
 
-        // clear markers
         SPA.allMarkers.forEach(m=>SPA.mapAll.removeLayer(m));
         SPA.allMarkers = [];
 
@@ -575,7 +973,6 @@
         const it = SPA.state.selected;
         const center = it?.coords || [31.7,77.2];
 
-        // destroy old map safely
         const el = document.getElementById("detailMap");
         el.innerHTML = "";
 
@@ -586,7 +983,6 @@
       },
 
       calc(){
-        const it = SPA.state.selected;
         const approxKm = 35; // demo
         const fuelCost = Number(UI.qs("#fuelCost").value||0);
         const kmpl = Math.max(1, Number(UI.qs("#kmpl").value||12));
@@ -594,8 +990,7 @@
         const days = Math.max(1, Number(UI.qs("#days").value||1));
         const perDay = Number(UI.qs("#perDay").value||0);
 
-        const fuelLiters = approxKm / kmpl;
-        const fuelTotal = fuelLiters * fuelCost;
+        const fuelTotal = (approxKm / kmpl) * fuelCost;
         const stay = days * perDay;
         const total = fuelTotal + toll + stay;
 
@@ -611,8 +1006,17 @@
       }
     };
 
-    // init after scripts loaded
-    document.addEventListener("DOMContentLoaded", SPA.init);
+    // BOOT: Load Firebase first, then init SPA
+    document.addEventListener("DOMContentLoaded", async ()=>{
+      try{
+        await loadHPDataFromFirebase();
+        SPA.init();
+      }catch(err){
+        console.error(err);
+        UI.qs("#loadingMsg").textContent = "ERROR: " + (err?.message || err);
+        alert("Firebase data load failed. Check Rules (read=true) and path /tourism/hp/districts");
+      }
+    });
   </script>
 </body>
 </html>
