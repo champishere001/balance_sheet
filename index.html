@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Himachal Explorer — Google Auto Route Optimizer</title>
+  <title>Himachal Explorer — Firebase + Google Route Optimizer</title>
 
   <style>
     :root{
@@ -32,15 +32,10 @@
       z-index:-2; filter:saturate(1.08) contrast(1.05);
     }
 
-    .wrap{
-      display:grid; grid-template-columns: 310px 1fr;
-      gap:18px; padding:18px; min-height:100vh;
-    }
+    .wrap{display:grid; grid-template-columns: 310px 1fr; gap:18px; padding:18px; min-height:100vh;}
 
-    /* Sidebar */
     .side{
-      position:sticky; top:18px; align-self:start;
-      height: calc(100vh - 36px);
+      position:sticky; top:18px; align-self:start; height: calc(100vh - 36px);
       border-radius: var(--r2);
       background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
       backdrop-filter: blur(14px);
@@ -58,7 +53,6 @@
     }
     .brand h1{margin:0;font-size:15px;letter-spacing:.3px;line-height:1.15}
     .brand p{margin:2px 0 0 0;font-size:12px;color:var(--muted)}
-
     .nav{display:grid;gap:10px;margin:14px 0 16px}
     .nav button{
       width:100%; text-align:left;
@@ -72,7 +66,6 @@
     .nav button:hover{transform:translateY(-1px);background: rgba(255,255,255,.10)}
     .nav button.active{background: rgba(255,255,255,.14);border-color: rgba(255,255,255,.22)}
     .nav small{color:var(--muted);font-weight:600}
-
     .panelTitle{
       margin:14px 0 8px; font-size:12px; letter-spacing:.28em;
       text-transform:uppercase; color:rgba(255,255,255,.70);
@@ -96,7 +89,6 @@
     }
     .chip:hover{background: rgba(255,255,255,.10);transform:translateY(-1px)}
     .chip.on{background: rgba(255,255,255,.14);border-color: rgba(255,255,255,.22)}
-
     .miniCard{
       margin-top:12px; border-radius: var(--r);
       border:1px solid rgba(255,255,255,.14);
@@ -114,8 +106,17 @@
     .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .toggleRow{display:flex;align-items:center;justify-content:space-between;gap:10px}
     .toggleRow input{width:auto}
+    .hint{
+      margin-top:10px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      padding:10px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.4;
+    }
 
-    /* Main */
     .main{
       border-radius: var(--r2);
       overflow:hidden;
@@ -153,16 +154,10 @@
     }
     .ghost:hover{background: rgba(255,255,255,.14);transform:translateY(-1px)}
 
-    /* Side-by-side */
-    .split{
-      display:grid; grid-template-columns: 1.35fr .85fr;
-      gap:14px; padding:14px; flex:1; min-height:0;
-    }
+    .split{display:grid; grid-template-columns: 1.35fr .85fr; gap:14px; padding:14px; flex:1; min-height:0;}
     .leftPane, .rightPane{
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      overflow:hidden; min-height:0;
+      border-radius: 22px; border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18); overflow:hidden; min-height:0;
     }
     .paneHead{
       padding:12px; border-bottom:1px solid rgba(255,255,255,.10);
@@ -173,7 +168,6 @@
     .paneHead small{color:var(--muted)}
     .paneBody{padding:12px; overflow:auto; height:100%}
 
-    /* Cards */
     .grid{display:grid;grid-template-columns: repeat(3, minmax(0,1fr));gap:12px}
     .card{
       border-radius: 22px; overflow:hidden;
@@ -200,28 +194,18 @@
     .meta{margin:0;color:var(--muted);font-size:12px;line-height:1.35}
     .pill{font-size:11px;padding:7px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background: rgba(255,255,255,.06)}
 
-    /* Planner */
     .routeStats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
     .stat{border-radius:16px;border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.06);padding:10px}
     .stat b{display:block;font-size:13px}
     .stat span{color:var(--muted);font-size:12px}
-
     #map{
-      height:280px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background:#0b1220;
-      overflow:hidden;
+      height:280px; border-radius:18px; border:1px solid rgba(255,255,255,.12);
+      background:#0b1220; overflow:hidden;
     }
 
     .routeList{display:grid;gap:10px;margin-top:10px}
-    .routeItem{
-      border-radius:18px;border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06); overflow:hidden;
-    }
-    .routeItemHead{
-      padding:10px; display:flex; justify-content:space-between; gap:10px; align-items:flex-start;
-    }
+    .routeItem{border-radius:18px;border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.06);overflow:hidden}
+    .routeItemHead{padding:10px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
     .routeItemHead b{font-size:13px;line-height:1.2}
     .routeItemHead p{margin:4px 0 0;color:var(--muted);font-size:12px}
     .routeBtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
@@ -252,31 +236,9 @@
     .itinerary .day b{font-size:12px}
     .itinerary .day p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.4}
 
-    .hint{
-      margin-top:10px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      padding:10px;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.4;
-    }
-
-    @media (max-width: 1180px){
-      .split{grid-template-columns:1fr}
-      .grid{grid-template-columns: repeat(2, minmax(0,1fr))}
-    }
-    @media (max-width: 1050px){
-      .wrap{grid-template-columns:1fr}
-      .side{position:relative;height:auto}
-    }
-    @media (max-width: 620px){
-      .wrap{padding:12px}
-      .grid{grid-template-columns:1fr}
-      .hero h2{font-size:22px}
-      #map{height:260px}
-    }
+    @media (max-width: 1180px){ .split{grid-template-columns:1fr} .grid{grid-template-columns: repeat(2, minmax(0,1fr))} }
+    @media (max-width: 1050px){ .wrap{grid-template-columns:1fr} .side{position:relative;height:auto} }
+    @media (max-width: 620px){ .wrap{padding:12px} .grid{grid-template-columns:1fr} .hero h2{font-size:22px} #map{height:260px} }
   </style>
 </head>
 <body>
@@ -295,7 +257,7 @@
         </div>
         <div>
           <h1>Himachal Explorer</h1>
-          <p>Auto-optimize routes (Google)</p>
+          <p>Firebase data + Google routing</p>
         </div>
       </div>
 
@@ -303,40 +265,31 @@
         <button class="active" data-tab="all">All <small>Everything</small></button>
         <button data-tab="hotels">Hotels <small>Stay</small></button>
         <button data-tab="temples">Temples <small>Faith</small></button>
-        <button data-tab="treks">Treks <small>Adventure</small></button>
-        <button data-tab="routes">Routes <small>Track</small></button>
+        <button data-tab="routes">Destinations <small>Explore</small></button>
       </div>
 
       <div class="panelTitle">Filters</div>
-
       <div class="field">
         <label>District</label>
-        <select id="district">
-          <option value="all">All Himachal</option>
-          <option>Shimla</option><option>Kullu</option><option>Kangra</option><option>Chamba</option>
-          <option>Mandi</option><option>Solan</option><option>Bilaspur</option><option>Hamirpur</option>
-          <option>Una</option><option>Sirmaur</option><option>Kinnaur</option><option>Lahaul & Spiti</option>
-        </select>
+        <select id="district"><option value="all">All Himachal</option></select>
       </div>
-
       <div class="field">
         <label>Search</label>
-        <input id="q" placeholder="Triund, Jakhu, Manali..." />
+        <input id="q" placeholder="Bhakra Dam, Jakhu..." />
       </div>
 
-      <div class="panelTitle">Style Tags</div>
+      <div class="panelTitle">Tags</div>
       <div class="chipRow" id="chipsSide">
         <div class="chip on" data-chip="family">Family</div>
         <div class="chip" data-chip="budget">Budget</div>
         <div class="chip" data-chip="premium">Premium</div>
-        <div class="chip" data-chip="snow">Snow</div>
         <div class="chip" data-chip="nature">Nature</div>
         <div class="chip" data-chip="spiritual">Spiritual</div>
       </div>
 
       <div class="miniCard">
         <b style="font-size:13px;">Start location</b>
-        <p>GPS start or manual start. Any change auto-routes.</p>
+        <p>GPS start or manual start. Auto route updates.</p>
 
         <div class="field" style="margin-top:10px;">
           <label>Start (manual)</label>
@@ -352,8 +305,8 @@
       </div>
 
       <div class="miniCard">
-        <b style="font-size:13px;">Auto Route Settings</b>
-        <p>Auto-optimize runs when you change route/start.</p>
+        <b style="font-size:13px;">Auto route</b>
+        <p>Auto-optimize route order with Google.</p>
 
         <div class="toggleRow" style="margin-top:10px;">
           <label style="margin:0;">Auto optimize</label>
@@ -364,8 +317,6 @@
           <label>Travel cost rate (₹/km)</label>
           <input id="ratePerKm" type="number" value="12" min="0"/>
         </div>
-
-        <button class="btn" id="optNow" title="Manual optimize if you want">Optimize Now</button>
       </div>
 
       <div class="miniCard">
@@ -395,6 +346,8 @@
         <button class="btn" id="calcBtn">Calculate Total</button>
         <p id="calcOut" style="margin-top:8px; font-weight:750;">Total: ₹ —</p>
       </div>
+
+      <div class="hint" id="firebaseStatus">Firebase: loading…</div>
     </aside>
 
     <!-- Main -->
@@ -402,17 +355,17 @@
       <section class="hero">
         <div class="heroTop">
           <div>
-            <h2>Auto-Optimized Route Planner (Google)</h2>
-            <p>Click a place to add → route auto-optimizes. Reorder stops and it recalculates automatically.</p>
+            <h2>Side-by-side: Firebase Places + Route Planner</h2>
+            <p>Cards are loaded from your Firebase district segments. Click to add stops; route auto-optimizes.</p>
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="primary" id="shuffleBtn">Shuffle</button>
+            <button class="primary" id="reloadBtn">Reload Firebase</button>
             <button class="ghost" id="clearRouteBtn">Clear Route</button>
           </div>
         </div>
 
         <div class="searchBar">
-          <input id="qMain" placeholder="Search locations, temples, treks, hotels..." />
+          <input id="qMain" placeholder="Search places..." />
           <button class="primary" id="resetBtn">Reset Filters</button>
         </div>
       </section>
@@ -458,7 +411,7 @@
             </div>
 
             <div class="hint" style="margin-top:12px;">
-              Auto-optimize triggers after changes (600ms). If routing fails: check API key, billing, and enabled APIs.
+              If Firebase shows permission denied → update RTDB rules for read.
             </div>
           </div>
         </div>
@@ -468,51 +421,11 @@
 
   <script>
     /***********************
-     * GOOGLE KEY
+     * CONFIG
      ***********************/
-    const GOOGLE_MAPS_API_KEY = "AIzaSyCuaKwWIY-Mtff4WwXnmAdAGVnL5O8G6RI"; // <-- replace
-
-    /***********************
-     * Demo HP places
-     ***********************/
-    const places = [
-      {id:"triund", type:"treks", name:"Triund Trek", district:"Kangra", tags:["nature","budget","adventure"],
-        desc:"Beginner-friendly trek near McLeod Ganj with Dhauladhar views.",
-        img:"https://images.unsplash.com/photo-1520963575748-6b1d4a7b0c8b?auto=format&fit=crop&w=1400&q=80",
-        lat:32.2447, lng:76.3197 },
-      {id:"bijli", type:"temples", name:"Bijli Mahadev Temple", district:"Kullu", tags:["spiritual","nature"],
-        desc:"Famous temple with panoramic valley views. Short hike.",
-        img:"https://images.unsplash.com/photo-1533658925626-7f6ef0c6d1ea?auto=format&fit=crop&w=1400&q=80",
-        lat:31.9047, lng:77.1405 },
-      {id:"manali", type:"hotels", name:"Manali Riverside Stays", district:"Kullu", tags:["family","premium","nature"],
-        desc:"Riverside zones: scenic mornings, cafes, walks.",
-        img:"https://images.unsplash.com/photo-1500043357865-c6b8827edf6c?auto=format&fit=crop&w=1400&q=80",
-        lat:32.2432, lng:77.1892 },
-      {id:"narkanda", type:"routes", name:"Shimla → Narkanda Snow Drive", district:"Shimla", tags:["snow","family","nature"],
-        desc:"Winter drive: snow, orchards, viewpoints.",
-        img:"https://images.unsplash.com/photo-1549880338-65ddcdfd017b?auto=format&fit=crop&w=1400&q=80",
-        lat:31.2673, lng:77.4610 },
-      {id:"jakhu", type:"temples", name:"Jakhu Temple", district:"Shimla", tags:["spiritual","family"],
-        desc:"Hilltop temple with giant Hanuman statue overlooking Shimla.",
-        img:"https://images.unsplash.com/photo-1611497582081-195c11e2bb24?auto=format&fit=crop&w=1400&q=80",
-        lat:31.1119, lng:77.1722 },
-      {id:"dalhousie", type:"hotels", name:"Dalhousie View Hotels", district:"Chamba", tags:["family","premium","nature"],
-        desc:"Valley-view stays close to Khajjiar pine walks.",
-        img:"https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?auto=format&fit=crop&w=1400&q=80",
-        lat:32.5387, lng:75.9668 },
-      {id:"spiti", type:"routes", name:"Spiti Valley Route Hub", district:"Lahaul & Spiti", tags:["adventure","nature","premium"],
-        desc:"High-altitude planning hub: viewpoints, fuel stops, essentials.",
-        img:"https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1400&q=80",
-        lat:32.2396, lng:78.0660 },
-      {id:"prashar", type:"temples", name:"Prashar Lake Temple", district:"Mandi", tags:["nature","spiritual","budget"],
-        desc:"Peaceful lake + floating island. Great day trip.",
-        img:"https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=1400&q=80",
-        lat:31.7648, lng:76.8873 },
-      {id:"tattapani", type:"hotels", name:"Tattapani Hot Spring Stays", district:"Mandi", tags:["family","budget","nature"],
-        desc:"Relax near hot springs and riverside activities.",
-        img:"https://images.unsplash.com/photo-1528184039930-67b3b5f9d5f0?auto=format&fit=crop&w=1400&q=80",
-        lat:31.2406, lng:77.1247 },
-    ];
+    const GOOGLE_MAPS_API_KEY = "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug"; // <-- paste here
+    const DB_BASE = "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app";
+    const FIREBASE_DISTRICTS_PATH = "/tourism/hp/districts"; // from your screenshot
 
     /***********************
      * UI refs
@@ -524,6 +437,7 @@
     const qSide = document.getElementById("q");
     const qMain = document.getElementById("qMain");
     const chipsSide = document.getElementById("chipsSide");
+    const firebaseStatus = document.getElementById("firebaseStatus");
 
     const routeListEl = document.getElementById("routeList");
     const routeStatus = document.getElementById("routeStatus");
@@ -540,30 +454,94 @@
 
     let tab = "all";
     let sideTags = new Set(["family"]);
+    let places = []; // <-- Loaded from Firebase
     let route = [];
 
     /***********************
      * Start location state
      ***********************/
-    let startMode = "manual";     // "gps" | "manual"
-    let startLatLng = null;       // google.maps.LatLngLiteral when gps
+    let startMode = "manual";
+    let startLatLng = null;
 
     /***********************
      * Google Maps globals
      ***********************/
     let map, directionsService, directionsRenderer;
-    let startMarker = null;
-    let stopMarkers = [];
     let lastDirections = null;
+    let routeTimer = null;
+    let applyingOptimizedOrder = false;
 
     /***********************
-     * Helpers
+     * Firebase loader (your structure)
+     * /tourism/hp/districts/{District}/segments/{destinations,hotels,temples}
+     ***********************/
+    async function loadPlacesFromFirebase(){
+      firebaseStatus.textContent = "Firebase: loading…";
+      const url = `${DB_BASE}${FIREBASE_DISTRICTS_PATH}.json`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if(!res.ok){
+        throw new Error("Firebase HTTP error " + res.status);
+      }
+      if(data && data.error){
+        throw new Error(data.error);
+      }
+
+      const out = [];
+      const districts = Object.entries(data || {});
+
+      districts.forEach(([districtName, districtObj])=>{
+        const seg = districtObj?.segments || {};
+
+        // destinations -> type routes
+        Object.entries(seg.destinations || {}).forEach(([id, p])=>{
+          out.push(normalizePlace(id, p, districtName, "routes"));
+        });
+
+        // hotels
+        Object.entries(seg.hotels || {}).forEach(([id, p])=>{
+          out.push(normalizePlace(id, p, districtName, "hotels"));
+        });
+
+        // temples
+        Object.entries(seg.temples || {}).forEach(([id, p])=>{
+          out.push(normalizePlace(id, p, districtName, "temples"));
+        });
+      });
+
+      // Filter valid lat/lng
+      places = out.filter(p => Number.isFinite(p.lat) && Number.isFinite(p.lng));
+
+      // Fill district dropdown dynamically
+      const districtNames = [...new Set(places.map(p => p.district))].sort((a,b)=>a.localeCompare(b));
+      districtSel.innerHTML = `<option value="all">All Himachal</option>` + districtNames.map(d=>`<option>${escapeHtml(d)}</option>`).join("");
+
+      firebaseStatus.textContent = `Firebase: loaded ${places.length} places ✅`;
+    }
+
+    function normalizePlace(id, p, districtName, type){
+      return {
+        id,
+        type,
+        name: (p?.name || id).toString(),
+        district: districtName,
+        desc: (p?.desc || p?.description || "").toString(),
+        img: (p?.img || p?.image || "").toString(),
+        lat: Number(p?.lat),
+        lng: Number(p?.lng),
+        tags: Array.isArray(p?.tags) ? p.tags : []
+      };
+    }
+
+    /***********************
+     * UI helpers
      ***********************/
     function labelType(t){
       if(t==="hotels") return "Hotel";
       if(t==="temples") return "Temple";
-      if(t==="treks") return "Trek";
-      if(t==="routes") return "Route";
+      if(t==="routes") return "Destination";
       return "Place";
     }
 
@@ -575,10 +553,15 @@
       const byQuery = !q ? true : (
         p.name.toLowerCase().includes(q) ||
         p.district.toLowerCase().includes(q) ||
-        p.tags.join(" ").includes(q)
+        (p.desc || "").toLowerCase().includes(q) ||
+        (p.tags || []).join(" ").toLowerCase().includes(q)
       );
-      const bySideTags = (sideTags.size === 0) ? true : [...sideTags].some(t => p.tags.includes(t));
+      const bySideTags = (sideTags.size === 0) ? true : [...sideTags].some(t => (p.tags || []).includes(t));
       return byTab && byDistrict && byQuery && bySideTags;
+    }
+
+    function fallbackImg(){
+      return "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1400&q=80";
     }
 
     function renderPlaces(){
@@ -589,16 +572,19 @@
       filtered.forEach(p=>{
         const el = document.createElement("div");
         el.className = "card";
+
+        const img = p.img ? p.img : fallbackImg();
+
         el.innerHTML = `
-          <div class="thumb" style="background-image:url('${p.img}')">
+          <div class="thumb" style="background-image:url('${escapeAttr(img)}')">
             <div class="badge">${labelType(p.type)}</div>
           </div>
           <div class="cardBody">
             <div class="titleRow">
-              <h3>${p.name}</h3>
-              <span class="pill">${p.district}</span>
+              <h3>${escapeHtml(p.name)}</h3>
+              <span class="pill">${escapeHtml(p.district)}</span>
             </div>
-            <p class="meta">${p.desc}</p>
+            <p class="meta">${escapeHtml(p.desc || "")}</p>
           </div>
         `;
         el.addEventListener("click", ()=> addToRoute(p));
@@ -608,6 +594,13 @@
       if(filtered.length === 0){
         grid.innerHTML = `<div style="opacity:.8; padding:12px;">No results. Try different filters.</div>`;
       }
+    }
+
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+    function escapeAttr(s){
+      return String(s).replace(/'/g, "%27");
     }
 
     /***********************
@@ -620,7 +613,7 @@
       const food = +document.getElementById("food").value || 0;
       const travel = +document.getElementById("travel").value || 0;
       const total = (days * (stay + food) * people) + travel;
-      return {days, people, stay, food, travel, total};
+      return {total};
     }
     function updateTotalOnly(){
       const {total} = calcBudget();
@@ -639,7 +632,7 @@
     });
 
     /***********************
-     * Route Planner
+     * Route planner
      ***********************/
     document.getElementById("clearRouteBtn").addEventListener("click", ()=>{
       route = [];
@@ -653,7 +646,7 @@
         renderRoute();
         scheduleRoute(true);
       } else {
-        flash(`Already added: ${p.name}`);
+        toast(`Already added: ${p.name}`);
       }
     }
 
@@ -680,8 +673,8 @@
         item.innerHTML = `
           <div class="routeItemHead">
             <div>
-              <b>${i+1}. ${p.name}</b>
-              <p>${p.district} • ${labelType(p.type)}</p>
+              <b>${i+1}. ${escapeHtml(p.name)}</b>
+              <p>${escapeHtml(p.district)} • ${labelType(p.type)}</p>
             </div>
             <div class="routeBtns">
               <button class="tiny" title="Move up">↑</button>
@@ -705,6 +698,7 @@
       if(route.length === 0){
         routeListEl.innerHTML = `<div style="opacity:.8; padding:10px;">No stops yet. Click any place card to add.</div>`;
       }
+
       stopsOut.textContent = route.length.toString();
       renderItinerary();
     }
@@ -718,7 +712,7 @@
       for(let d=0; d<days; d++){
         const stops = buckets[d];
         const text = stops.length
-          ? stops.map((s,i)=> `${i+1}) ${s.name}`).join(" • ")
+          ? stops.map((s,i)=> `${i+1}) ${escapeHtml(s.name)}`).join(" • ")
           : "No stops planned for this day.";
         const el = document.createElement("div");
         el.className = "day";
@@ -728,11 +722,11 @@
     }
 
     /***********************
-     * GPS start
+     * Start location
      ***********************/
     document.getElementById("gpsBtn").addEventListener("click", ()=>{
       if(!navigator.geolocation){
-        flash("Geolocation not supported.");
+        toast("Geolocation not supported.");
         return;
       }
       routeStatus.textContent = "Getting GPS…";
@@ -741,13 +735,12 @@
           startMode = "gps";
           startLatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
           routeStatus.textContent = "GPS start set";
-          flash("Start set to current location.");
-          placeStartMarker();
+          toast("Start set to current location.");
           scheduleRoute(true);
         },
         ()=>{
           routeStatus.textContent = "GPS blocked";
-          flash("GPS permission denied. Use manual start input.");
+          toast("GPS permission denied. Use manual start input.");
         },
         { enableHighAccuracy:true, timeout:10000 }
       );
@@ -761,77 +754,23 @@
     }
 
     /***********************
-     * AUTO ROUTING + DEBOUNCE
+     * Auto route debounce
      ***********************/
-    let routeTimer = null;
     function scheduleRoute(shouldOptimize){
-      // Optimize only if checkbox ON, and user asked to optimize
       const doOpt = !!autoOpt.checked && !!shouldOptimize;
       clearTimeout(routeTimer);
       routeTimer = setTimeout(()=> computeDirections(doOpt), 600);
       routeStatus.textContent = doOpt ? "Auto-optimizing…" : "Auto-routing…";
     }
 
-    // Manual optimize button
-    document.getElementById("optNow").addEventListener("click", ()=>{
-      computeDirections(true);
-    });
-
-    // Fit
-    document.getElementById("fitBtn").addEventListener("click", ()=>{
-      if(lastDirections && lastDirections.routes?.[0]?.bounds){
-        map.fitBounds(lastDirections.routes[0].bounds);
-      } else {
-        fitMarkers();
-      }
-    });
-
-    // Open in Google Maps (shareable)
-    document.getElementById("openGmaps").addEventListener("click", ()=>{
-      const origin = getOrigin();
-      const loop = !!loopToggle.checked;
-
-      // Build URL using destination and waypoints
-      // If loop: destination=origin, waypoints=all stops
-      // Else: destination=last stop, waypoints=others
-      let destination;
-      let waypoints = [];
-
-      if(route.length === 0){
-        window.open("https://www.google.com/maps", "_blank");
-        return;
-      }
-
-      if(loop){
-        destination = origin;
-        waypoints = route.map(p => `${p.lat},${p.lng}`);
-      }else{
-        const last = route[route.length-1];
-        destination = `${last.lat},${last.lng}`;
-        waypoints = route.slice(0,-1).map(p => `${p.lat},${p.lng}`);
-      }
-
-      const originStr = (typeof origin === "string") ? origin : `${origin.lat},${origin.lng}`;
-      const wpStr = waypoints.length ? `&waypoints=${encodeURIComponent(waypoints.join("|"))}` : "";
-      const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(originStr)}&destination=${encodeURIComponent(destination)}${wpStr}&travelmode=driving`;
-      window.open(url, "_blank");
-    });
-
-    // Start manual changes should trigger routing
     startInput.addEventListener("input", ()=> scheduleRoute(true));
     loopToggle.addEventListener("change", ()=> scheduleRoute(true));
     autoOpt.addEventListener("change", ()=> scheduleRoute(false));
-    ratePerKmEl.addEventListener("input", ()=>{
-      // Recompute cost from existing distance if available by rerunning without optimize (cheap, but still a call).
-      // Instead we recalc from lastDirections (no API call).
-      recalcFromLastDirections();
-    });
+    ratePerKmEl.addEventListener("input", ()=> recalcFromLastDirections());
 
     /***********************
-     * Google Directions compute + optimization
+     * Google directions
      ***********************/
-    let applyingOptimizedOrder = false;
-
     async function computeDirections(allowOptimize){
       if(!directionsService || !directionsRenderer){
         routeStatus.textContent = "Maps not ready";
@@ -844,8 +783,6 @@
         durationOut.textContent = "—";
         document.getElementById("travel").value = 0;
         updateTotalOnly();
-        clearStopMarkers();
-        placeStartMarker();
         routeStatus.textContent = "Ready";
         return;
       }
@@ -878,19 +815,14 @@
         lastDirections = res;
         directionsRenderer.setDirections(res);
 
-        // reorder route[] to match optimized
         if(allowOptimize && !applyingOptimizedOrder){
-          const r0 = res.routes?.[0];
-          const order = r0?.waypoint_order || [];
-
+          const order = res.routes?.[0]?.waypoint_order || [];
           applyingOptimizedOrder = true;
 
           if(loop){
-            // waypoints == all stops
             const newRoute = order.map(idx => route[idx]).filter(Boolean);
             if(newRoute.length === route.length) route = newRoute;
           } else {
-            // waypoints == all except last (destination)
             const head = order.map(idx => route[idx]).filter(Boolean);
             const dest = route[route.length-1];
             route = [...head, dest];
@@ -900,17 +832,12 @@
           applyingOptimizedOrder = false;
         }
 
-        // stats + cost
         updateStatsFromDirections(res);
-
-        placeStartMarker();
-        placeStopMarkers();
-
-        routeStatus.textContent = allowOptimize ? "Auto-optimized" : "Auto-routed";
+        routeStatus.textContent = allowOptimize ? "Auto-optimized ✅" : "Auto-routed ✅";
       }catch(err){
         console.error(err);
         routeStatus.textContent = "Routing failed";
-        flash("Routing failed. Check key, billing, enabled APIs, quota.");
+        toast("Routing failed. Check Google key, billing, enabled APIs.");
       }
     }
 
@@ -943,43 +870,43 @@
     }
 
     /***********************
-     * Markers
+     * Buttons
      ***********************/
-    function placeStartMarker(){
-      if(!map) return;
-      if(startMarker){ startMarker.setMap(null); startMarker = null; }
-      if(startMode === "gps" && startLatLng){
-        startMarker = new google.maps.Marker({
-          map, position: startLatLng, title: "Start: Current Location"
-        });
+    document.getElementById("fitBtn").addEventListener("click", ()=>{
+      const r0 = lastDirections?.routes?.[0];
+      if(r0?.bounds && map) map.fitBounds(r0.bounds);
+    });
+
+    document.getElementById("openGmaps").addEventListener("click", ()=>{
+      const origin = getOrigin();
+      const loop = !!loopToggle.checked;
+
+      if(route.length === 0){
+        window.open("https://www.google.com/maps", "_blank");
+        return;
       }
-    }
 
-    function clearStopMarkers(){
-      stopMarkers.forEach(m=>m.setMap(null));
-      stopMarkers = [];
-    }
+      let destination;
+      let waypoints = [];
 
-    function placeStopMarkers(){
-      clearStopMarkers();
-      route.forEach((p, idx)=>{
-        const m = new google.maps.Marker({
-          map,
-          position: {lat:p.lat, lng:p.lng},
-          title: `${idx+1}. ${p.name}`,
-          label: String(idx+1)
-        });
-        stopMarkers.push(m);
-      });
-    }
+      if(loop){
+        destination = origin;
+        waypoints = route.map(p => `${p.lat},${p.lng}`);
+      }else{
+        const last = route[route.length-1];
+        destination = `${last.lat},${last.lng}`;
+        waypoints = route.slice(0,-1).map(p => `${p.lat},${p.lng}`);
+      }
 
-    function fitMarkers(){
-      if(!map) return;
-      const bounds = new google.maps.LatLngBounds();
-      if(startMode==="gps" && startLatLng) bounds.extend(startLatLng);
-      route.forEach(p=>bounds.extend({lat:p.lat, lng:p.lng}));
-      if(!bounds.isEmpty()) map.fitBounds(bounds);
-    }
+      const originStr = (typeof origin === "string") ? origin : `${origin.lat},${origin.lng}`;
+      const wpStr = waypoints.length ? `&waypoints=${encodeURIComponent(waypoints.join("|"))}` : "";
+      const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(originStr)}&destination=${encodeURIComponent(destination)}${wpStr}&travelmode=driving`;
+      window.open(url, "_blank");
+    });
+
+    document.getElementById("reloadBtn").addEventListener("click", async ()=>{
+      await boot();
+    });
 
     /***********************
      * Filters wiring
@@ -1021,16 +948,11 @@
       renderPlaces();
     });
 
-    document.getElementById("shuffleBtn").addEventListener("click", ()=>{
-      places.sort(()=>Math.random()-0.5);
-      renderPlaces();
-    });
-
     /***********************
      * Toast
      ***********************/
     let toastTimer = null;
-    function flash(msg){
+    function toast(msg){
       let t = document.getElementById("toast");
       if(!t){
         t = document.createElement("div");
@@ -1039,7 +961,7 @@
           position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
           background: rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.16);
           color:white; padding:10px 12px; border-radius:999px; backdrop-filter: blur(10px);
-          box-shadow: 0 20px 60px rgba(0,0,0,.55); z-index:99; font-weight:650;
+          box-shadow: 0 20px 60px rgba(0,0,0,.55); z-index:999; font-weight:650;
           transition: opacity .2s ease;
         `;
         document.body.appendChild(t);
@@ -1051,19 +973,21 @@
     }
 
     /***********************
-     * Google Maps loader
+     * Google maps loader
      ***********************/
     function loadGoogleMaps(){
-      if(!GOOGLE_MAPS_API_KEY || GOOGLE_MAPS_API_KEY.includes("PASTE_YOUR_GOOGLE_KEY")){
-        routeStatus.textContent = "Add Google API key";
-        flash("Paste your Google Maps API key in the code.");
-        return;
-      }
-      const s = document.createElement("script");
-      s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(GOOGLE_MAPS_API_KEY)}&callback=initMap`;
-      s.async = true; s.defer = true;
-      window.initMap = initMap;
-      document.head.appendChild(s);
+      return new Promise((resolve, reject)=>{
+        if(!GOOGLE_MAPS_API_KEY || GOOGLE_MAPS_API_KEY.includes("PASTE_YOUR_GOOGLE_KEY")){
+          reject(new Error("Missing Google API key"));
+          return;
+        }
+        const s = document.createElement("script");
+        s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(GOOGLE_MAPS_API_KEY)}&callback=__initMap`;
+        s.async = true; s.defer = true;
+        window.__initMap = () => resolve();
+        s.onerror = () => reject(new Error("Failed to load Google Maps script"));
+        document.head.appendChild(s);
+      });
     }
 
     function initMap(){
@@ -1083,19 +1007,36 @@
       });
 
       routeStatus.textContent = "Ready";
-      renderPlaces();
-      renderRoute();
-      updateTotalOnly();
-      scheduleRoute(false);
     }
 
     /***********************
-     * Boot
+     * BOOT
      ***********************/
-    renderPlaces();
-    renderRoute();
-    updateTotalOnly();
-    loadGoogleMaps();
+    async function boot(){
+      try{
+        await loadPlacesFromFirebase();
+        renderPlaces();
+        renderRoute();
+      }catch(e){
+        console.error(e);
+        firebaseStatus.textContent = "Firebase: error ❌ " + e.message;
+        toast("Firebase load failed: " + e.message);
+      }
+    }
+
+    // Startup
+    (async ()=>{
+      try{
+        await loadGoogleMaps();
+        initMap();
+      }catch(e){
+        console.error(e);
+        routeStatus.textContent = "Google Maps load failed";
+        toast("Google Maps failed. Check API key / restrictions.");
+      }
+      await boot();
+      updateTotalOnly();
+    })();
   </script>
 </body>
 </html>
