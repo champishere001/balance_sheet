@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Himachal Explorer — Firebase + Google Route Optimizer</title>
+  <title>Himachal Explorer — Firebase Places + Route Planner</title>
 
   <style>
     :root{
@@ -11,6 +11,7 @@
       --text: rgba(255,255,255,.92); --muted: rgba(255,255,255,.72);
       --shadow: 0 18px 60px rgba(0,0,0,.55);
       --r: 18px; --r2: 26px;
+      --ok:#49f2c2; --warn:#ffcf5a; --bad:#ff6b6b;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -53,6 +54,7 @@
     }
     .brand h1{margin:0;font-size:15px;letter-spacing:.3px;line-height:1.15}
     .brand p{margin:2px 0 0 0;font-size:12px;color:var(--muted)}
+
     .nav{display:grid;gap:10px;margin:14px 0 16px}
     .nav button{
       width:100%; text-align:left;
@@ -66,6 +68,7 @@
     .nav button:hover{transform:translateY(-1px);background: rgba(255,255,255,.10)}
     .nav button.active{background: rgba(255,255,255,.14);border-color: rgba(255,255,255,.22)}
     .nav small{color:var(--muted);font-weight:600}
+
     .panelTitle{
       margin:14px 0 8px; font-size:12px; letter-spacing:.28em;
       text-transform:uppercase; color:rgba(255,255,255,.70);
@@ -79,6 +82,7 @@
       color:var(--text); outline:none;
     }
     input::placeholder{color:rgba(255,255,255,.55)}
+
     .chipRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
     .chip{
       border:1px solid rgba(255,255,255,.14);
@@ -89,6 +93,7 @@
     }
     .chip:hover{background: rgba(255,255,255,.10);transform:translateY(-1px)}
     .chip.on{background: rgba(255,255,255,.14);border-color: rgba(255,255,255,.22)}
+
     .miniCard{
       margin-top:12px; border-radius: var(--r);
       border:1px solid rgba(255,255,255,.14);
@@ -96,6 +101,7 @@
       padding:12px;
     }
     .miniCard p{margin:6px 0 0 0;color:var(--muted);font-size:12px;line-height:1.45}
+
     .btn{
       width:100%; margin-top:10px; padding:12px;
       border-radius:14px; border:1px solid rgba(255,255,255,.16);
@@ -106,6 +112,7 @@
     .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .toggleRow{display:flex;align-items:center;justify-content:space-between;gap:10px}
     .toggleRow input{width:auto}
+
     .hint{
       margin-top:10px;
       border-radius:16px;
@@ -117,6 +124,18 @@
       line-height:1.4;
       white-space:pre-wrap;
     }
+    .hint b{color:rgba(255,255,255,.9)}
+    .pillMini{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      font-weight:750; font-size:12px;
+      margin-top:8px;
+    }
+    .dot{width:8px;height:8px;border-radius:999px;background:var(--ok);display:inline-block}
+    .dot.bad{background:var(--bad)}
+    .dot.warn{background:var(--warn)}
 
     .main{
       border-radius: var(--r2);
@@ -177,11 +196,12 @@
       box-shadow: 0 18px 55px rgba(0,0,0,.30);
       cursor:pointer;
       transition: transform .22s ease, background .22s ease, border-color .22s ease;
-      min-height: 270px;
+      min-height: 280px;
+      position:relative;
     }
     .card:hover{transform:translateY(-3px);background: rgba(255,255,255,.10);border-color: rgba(255,255,255,.20)}
     .thumb{height:170px;background-size:cover;background-position:center;position:relative}
-    .thumb:after{content:"";position:absolute;inset:0;background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.55))}
+    .thumb:after{content:"";position:absolute;inset:0;background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.65))}
     .badge{
       position:absolute; left:12px; top:12px;
       padding:8px 10px; border-radius:999px;
@@ -194,6 +214,8 @@
     .card h3{margin:0;font-size:15px;line-height:1.2}
     .meta{margin:0;color:var(--muted);font-size:12px;line-height:1.35}
     .pill{font-size:11px;padding:7px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background: rgba(255,255,255,.06)}
+    .submeta{display:flex;gap:8px;flex-wrap:wrap}
+    .subpill{font-size:11px;padding:6px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background: rgba(0,0,0,.16);color:rgba(255,255,255,.88)}
 
     .routeStats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
     .stat{border-radius:16px;border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.06);padding:10px}
@@ -237,8 +259,55 @@
     .itinerary .day b{font-size:12px}
     .itinerary .day p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.4}
 
+    /* Modal */
+    .modalBack{
+      position:fixed; inset:0; background: rgba(0,0,0,.55);
+      display:none; align-items:center; justify-content:center;
+      padding:14px; z-index:9999;
+      backdrop-filter: blur(10px);
+    }
+    .modal{
+      width:min(920px, 96vw);
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.35));
+      box-shadow: 0 22px 70px rgba(0,0,0,.65);
+      overflow:hidden;
+    }
+    .modalHead{
+      padding:12px 14px;
+      display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
+      border-bottom:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+    }
+    .modalHead h3{margin:0;font-size:16px}
+    .modalHead p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.45}
+    .modalBody{display:grid; grid-template-columns: 1.2fr .8fr; gap:12px; padding:12px; min-height: 320px;}
+    .modalCard{
+      border-radius:18px;border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      padding:12px; overflow:auto;
+    }
+    .kv{display:grid; gap:8px}
+    .kv .k{color:rgba(255,255,255,.70);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+    .kv .v{color:rgba(255,255,255,.90);font-size:13px;line-height:1.45}
+    .modalBtns{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    .xBtn{
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.08);
+      color:var(--text);
+      border-radius:12px;
+      padding:10px 12px;
+      cursor:pointer;
+      font-weight:800;
+    }
+    .xBtn:hover{background: rgba(255,255,255,.14)}
+    .linkBtn{border-color: rgba(255,255,255,.20); background: rgba(255,255,255,.12)}
+    .linkBtn:hover{background: rgba(255,255,255,.18)}
+
     @media (max-width: 1180px){ .split{grid-template-columns:1fr} .grid{grid-template-columns: repeat(2, minmax(0,1fr))} }
     @media (max-width: 1050px){ .wrap{grid-template-columns:1fr} .side{position:relative;height:auto} }
+    @media (max-width: 820px){ .modalBody{grid-template-columns:1fr} }
     @media (max-width: 620px){ .wrap{padding:12px} .grid{grid-template-columns:1fr} .hero h2{font-size:22px} #map{height:260px} }
   </style>
 </head>
@@ -264,9 +333,9 @@
 
       <div class="nav" id="nav">
         <button class="active" data-tab="all">All <small>Everything</small></button>
-        <button data-tab="hotels">Hotels <small>Stay</small></button>
-        <button data-tab="temples">Temples <small>Faith</small></button>
-        <button data-tab="routes">Destinations <small>Explore</small></button>
+        <button data-tab="Destination">Destinations <small>Explore</small></button>
+        <button data-tab="Hotel">Hotels <small>Stay</small></button>
+        <button data-tab="Temple">Temples <small>Faith</small></button>
       </div>
 
       <div class="panelTitle">Filters</div>
@@ -276,21 +345,21 @@
       </div>
       <div class="field">
         <label>Search</label>
-        <input id="q" placeholder="Bhakra Dam, Jakhu..." />
+        <input id="q" placeholder="The Ridge, Jakhu..." />
       </div>
 
-      <div class="panelTitle">Tags</div>
+      <div class="panelTitle">Quick Tags</div>
       <div class="chipRow" id="chipsSide">
         <div class="chip on" data-chip="family">Family</div>
-        <div class="chip" data-chip="budget">Budget</div>
-        <div class="chip" data-chip="premium">Premium</div>
         <div class="chip" data-chip="nature">Nature</div>
         <div class="chip" data-chip="spiritual">Spiritual</div>
+        <div class="chip" data-chip="heritage">Heritage</div>
+        <div class="chip" data-chip="adventure">Adventure</div>
       </div>
 
       <div class="miniCard">
         <b style="font-size:13px;">Start location</b>
-        <p>GPS start or manual start. Auto route updates.</p>
+        <p>GPS start or manual start. Route updates automatically.</p>
 
         <div class="field" style="margin-top:10px;">
           <label>Start (manual)</label>
@@ -350,6 +419,18 @@
 
       <div class="hint" id="firebaseStatus">Firebase: loading…</div>
       <div class="hint" id="debugOut">Debug: —</div>
+
+      <div class="hint">
+        <b>Important:</b> Your screenshot shows data at:
+        <div class="pillMini"><span class="dot"></span> himachal_explorer/locations</div>
+        <div style="margin-top:8px;opacity:.95">
+          If you get <b>Permission denied</b>, set RTDB rules (quick test):
+          <br><br>
+          <code style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas; font-size:11px;">
+            {"rules":{"himachal_explorer":{".read":"auth!=null",".write":false}}}
+          </code>
+        </div>
+      </div>
     </aside>
 
     <!-- Main -->
@@ -357,8 +438,8 @@
       <section class="hero">
         <div class="heroTop">
           <div>
-            <h2>Side-by-side: Firebase Places + Route Planner</h2>
-            <p>Cards are loaded from your Firebase district segments. Click to add stops; route auto-optimizes.</p>
+            <h2>Firebase Places (your schema) + Route Planner</h2>
+            <p>Reads from <b>himachal_explorer/locations</b>. Click any card to add as a stop. Tap a card’s “Details” to see your fields (best time, how to reach, key features, tasks).</p>
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <button class="primary" id="reloadBtn">Reload Firebase</button>
@@ -411,30 +492,93 @@
               <h4>Day-wise Itinerary</h4>
               <div class="day"><b>Day 1</b><p>Add stops to auto-fill itinerary.</p></div>
             </div>
-
-            <div class="hint" style="margin-top:12px;">
-              ✅ Your DB path matches screenshots:
-              /tourism/hp/districts/{District}/segments/{destinations|hotels|temples}
-              \nIf you see “Permission denied” → Rules must allow auth read.
-            </div>
           </div>
         </div>
       </section>
     </main>
   </div>
 
-  <!-- Firebase SDK (CDN) -->
+  <!-- Details Modal -->
+  <div class="modalBack" id="modalBack" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="modalHead">
+        <div>
+          <h3 id="mTitle">—</h3>
+          <p id="mSub">—</p>
+        </div>
+        <button class="xBtn" id="mClose">Close ✕</button>
+      </div>
+      <div class="modalBody">
+        <div class="modalCard">
+          <div class="kv">
+            <div>
+              <div class="k">Overview</div>
+              <div class="v" id="mOverview">—</div>
+            </div>
+            <div>
+              <div class="k">Short description</div>
+              <div class="v" id="mShort">—</div>
+            </div>
+            <div>
+              <div class="k">How to reach</div>
+              <div class="v" id="mReach">—</div>
+            </div>
+            <div>
+              <div class="k">Key features</div>
+              <div class="v" id="mFeatures">—</div>
+            </div>
+            <div>
+              <div class="k">Task for location</div>
+              <div class="v" id="mTask">—</div>
+            </div>
+          </div>
+        </div>
+        <div class="modalCard">
+          <div class="kv">
+            <div>
+              <div class="k">District</div>
+              <div class="v" id="mDistrict">—</div>
+            </div>
+            <div>
+              <div class="k">Segment type</div>
+              <div class="v" id="mSeg">—</div>
+            </div>
+            <div>
+              <div class="k">Location type</div>
+              <div class="v" id="mType">—</div>
+            </div>
+            <div>
+              <div class="k">Best time to visit</div>
+              <div class="v" id="mBest">—</div>
+            </div>
+            <div>
+              <div class="k">Coordinates</div>
+              <div class="v" id="mCoords">—</div>
+            </div>
+            <div class="modalBtns">
+              <button class="xBtn linkBtn" id="mOpenMaps">Open Map</button>
+              <button class="xBtn linkBtn" id="mAddStop">Add as Stop</button>
+            </div>
+            <div class="hint" id="mMeta" style="margin-top:10px;">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase + Google Maps -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
     /***********************
-     * CONFIG (from your screenshot)
+     * CONFIG (MATCH YOUR SCREENSHOT)
      ***********************/
     const GOOGLE_MAPS_API_KEY = "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug";
-    const FIREBASE_DISTRICTS_PATH = "tourism/hp/districts"; // (NO leading slash for SDK)
+    const FIREBASE_LOCATIONS_PATH = "himachal_explorer/locations"; // ✅ this is what your screenshot shows
 
+    // ✅ Your project config (as you shared)
     const firebaseConfig = {
       apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
       authDomain: "revnue-records.firebaseapp.com",
@@ -443,7 +587,6 @@
       storageBucket: "revnue-records.appspot.com",
       messagingSenderId: "182348503564",
       appId: "1:182348503564:web:480085405b09177245ad"
-      // measurementId optional
     };
 
     /***********************
@@ -472,6 +615,25 @@
     const autoOpt = document.getElementById("autoOpt");
     const ratePerKmEl = document.getElementById("ratePerKm");
 
+    // Modal refs
+    const modalBack = document.getElementById("modalBack");
+    const mClose = document.getElementById("mClose");
+    const mTitle = document.getElementById("mTitle");
+    const mSub = document.getElementById("mSub");
+    const mOverview = document.getElementById("mOverview");
+    const mShort = document.getElementById("mShort");
+    const mReach = document.getElementById("mReach");
+    const mFeatures = document.getElementById("mFeatures");
+    const mTask = document.getElementById("mTask");
+    const mDistrict = document.getElementById("mDistrict");
+    const mSeg = document.getElementById("mSeg");
+    const mType = document.getElementById("mType");
+    const mBest = document.getElementById("mBest");
+    const mCoords = document.getElementById("mCoords");
+    const mMeta = document.getElementById("mMeta");
+    const mOpenMaps = document.getElementById("mOpenMaps");
+    const mAddStop = document.getElementById("mAddStop");
+
     let tab = "all";
     let sideTags = new Set(["family"]);
     let places = [];
@@ -484,6 +646,8 @@
     let lastDirections = null;
     let routeTimer = null;
     let applyingOptimizedOrder = false;
+
+    let selectedForModal = null;
 
     /***********************
      * Firebase init + anon auth
@@ -505,7 +669,7 @@
     }
 
     /***********************
-     * Load from RTDB using SDK (BEST)
+     * Load from RTDB (your schema: himachal_explorer/locations/<pushId>)
      ***********************/
     async function loadPlacesFromFirebase(){
       firebaseStatus.textContent = "Firebase: loading…";
@@ -514,94 +678,140 @@
       await ensureAuth();
 
       try{
-        const snap = await get(ref(db, FIREBASE_DISTRICTS_PATH));
+        const snap = await get(ref(db, FIREBASE_LOCATIONS_PATH));
         const data = snap.exists() ? snap.val() : null;
 
         if(!data){
           firebaseStatus.textContent = "Firebase: path returned null ❌";
           debugOut.textContent =
-            "Debug: No data at path: " + FIREBASE_DISTRICTS_PATH +
-            "\nFix: check path or insert data under tourism/hp/districts.";
-          throw new Error("No data at tourism/hp/districts");
+            "Debug: No data at path: " + FIREBASE_LOCATIONS_PATH +
+            "\nFix: ensure your data is under himachal_explorer/locations";
+          throw new Error("No data at " + FIREBASE_LOCATIONS_PATH);
         }
 
         const out = [];
-        const districts = Object.entries(data || {});
-        districts.forEach(([districtName, districtObj])=>{
-          const seg = districtObj?.segments || {};
-
-          Object.entries(seg.destinations || {}).forEach(([id, p])=>{
-            out.push(normalizePlace(id, p, districtName, "routes"));
-          });
-          Object.entries(seg.hotels || {}).forEach(([id, p])=>{
-            out.push(normalizePlace(id, p, districtName, "hotels"));
-          });
-          Object.entries(seg.temples || {}).forEach(([id, p])=>{
-            out.push(normalizePlace(id, p, districtName, "temples"));
-          });
+        Object.entries(data).forEach(([id, p])=>{
+          const np = normalizePlace(id, p);
+          if(Number.isFinite(np.lat) && Number.isFinite(np.lng)) out.push(np);
         });
 
-        places = out.filter(p => Number.isFinite(p.lat) && Number.isFinite(p.lng));
+        // Sort nice
+        out.sort((a,b)=> (a.district||"").localeCompare(b.district||"") || (a.name||"").localeCompare(b.name||""));
 
-        const districtNames = [...new Set(places.map(p => p.district))].sort((a,b)=>a.localeCompare(b));
+        places = out;
+
+        // District dropdown
+        const districtNames = [...new Set(places.map(p => p.district).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
         districtSel.innerHTML =
           `<option value="all">All Himachal</option>` +
           districtNames.map(d=>`<option>${escapeHtml(d)}</option>`).join("");
 
         firebaseStatus.textContent = `Firebase: loaded ${places.length} places ✅`;
-        debugOut.textContent = `Debug: districts=${districts.length}, places=${places.length}\nPath: ${FIREBASE_DISTRICTS_PATH}`;
+        debugOut.textContent =
+          `Debug: places=${places.length}\nPath: ${FIREBASE_LOCATIONS_PATH}\nSchema: locationName, district, segmentType, map.lat/map.lng`;
 
       }catch(e){
         const msg = (e?.message || String(e));
         firebaseStatus.textContent = "Firebase: error ❌ " + msg;
         debugOut.textContent =
           "Debug error:\n" + msg +
-          "\n\nIf you see Permission denied:\nRules should allow auth read:\n{\n  \"rules\": {\"tourism\": {\".read\": \"auth != null\", \".write\": false}}\n}";
+          "\n\nIf you see Permission denied:\nRules quick test:\n{\n  \"rules\": {\"himachal_explorer\": {\".read\": \"auth != null\", \".write\": false}}\n}";
         throw e;
       }
     }
 
-    function normalizePlace(id, p, districtName, type){
+    function normalizePlace(id, p){
+      const mapObj = p?.map || {};
+      const lat = Number(mapObj?.lat ?? p?.lat ?? p?.latitude);
+      const lng = Number(mapObj?.lng ?? p?.lng ?? p?.longitude);
+
+      const segmentType = (p?.segmentType || "").toString().trim(); // Destination / Hotel / Temple etc (as per your data)
+      const locationType = (p?.locationType || "").toString().trim(); // Public Square etc (as per your data)
+
+      const name = (p?.locationName || p?.name || "").toString().trim() || id;
+      const district = (p?.district || "").toString().trim();
+
+      // Build tags from your fields + chips
+      const tags = new Set();
+      const s = (segmentType + " " + locationType + " " + (p?.keyFeatures||"") + " " + (p?.taskForLocation||"") + " " + (p?.overview||"") + " " + (p?.shortDescription||""))
+        .toLowerCase();
+
+      // simple keyword tagging
+      if(/temple|mandir|devi|mahadev|shiva|shiv/.test(s)) tags.add("spiritual");
+      if(/lake|river|waterfall|forest|valley|meadow|peak|mount|snow|nature|view|sunset/.test(s)) tags.add("nature");
+      if(/trek|hike|trail|camp|adventure|paragliding|rafting|ski/.test(s)) tags.add("adventure");
+      if(/heritage|colonial|fort|palace|museum|monastery|old/.test(s)) tags.add("heritage");
+      if(/family|kids|picnic|easy/.test(s)) tags.add("family");
+
+      // optional image url support if you add later
+      const img = (p?.imageUrl || p?.img || p?.image || "").toString().trim();
+
       return {
         id,
-        type,
-        name: (p?.name || id).toString(),
-        district: districtName,
-        desc: (p?.desc || p?.description || "").toString(),
-        img: (p?.img || p?.image || "").toString(),
-        lat: Number(p?.lat ?? p?.latitude),
-        lng: Number(p?.lng ?? p?.longitude),
-        tags: Array.isArray(p?.tags) ? p.tags : []
+        name,
+        district,
+        segmentType: segmentType || "Place",
+        locationType: locationType || "—",
+        overview: (p?.overview || "").toString(),
+        shortDescription: (p?.shortDescription || "").toString(),
+        howToReach: (p?.howToReach || "").toString(),
+        keyFeatures: (p?.keyFeatures || "").toString(),
+        bestTimeToVisit: (p?.bestTimeToVisit || "").toString(),
+        taskForLocation: (p?.taskForLocation || "").toString(),
+        mapUrl: (mapObj?.url || "").toString(),
+        meta: p?.meta || null,
+        lat, lng,
+        img,
+        tags: [...tags]
       };
     }
 
     /***********************
      * UI helpers
      ***********************/
-    function labelType(t){
-      if(t==="hotels") return "Hotel";
-      if(t==="temples") return "Temple";
-      if(t==="routes") return "Destination";
-      return "Place";
+    function labelType(p){
+      // Use segmentType exactly like your DB (Destination/Hotel/Temple)
+      return (p.segmentType || "Place").toString();
+    }
+
+    function segmentMatchesTab(p){
+      if(tab === "all") return true;
+      // tab values are: Destination / Hotel / Temple
+      return (p.segmentType || "").toLowerCase() === tab.toLowerCase();
     }
 
     function matches(p){
       const d = districtSel.value;
       const q = (qMain.value || qSide.value || "").trim().toLowerCase();
-      const byTab = (tab === "all") ? true : (p.type === tab);
+
+      const byTab = segmentMatchesTab(p);
       const byDistrict = (d === "all") ? true : (p.district === d);
-      const byQuery = !q ? true : (
-        p.name.toLowerCase().includes(q) ||
-        p.district.toLowerCase().includes(q) ||
-        (p.desc || "").toLowerCase().includes(q) ||
-        (p.tags || []).join(" ").toLowerCase().includes(q)
-      );
+
+      const hay = (
+        p.name + " " +
+        p.district + " " +
+        p.segmentType + " " +
+        p.locationType + " " +
+        (p.shortDescription||"") + " " +
+        (p.overview||"") + " " +
+        (p.keyFeatures||"") + " " +
+        (p.howToReach||"") + " " +
+        (p.taskForLocation||"") + " " +
+        (p.bestTimeToVisit||"") + " " +
+        (p.tags||[]).join(" ")
+      ).toLowerCase();
+
+      const byQuery = !q ? true : hay.includes(q);
+
       const bySideTags = (sideTags.size === 0) ? true : [...sideTags].some(t => (p.tags || []).includes(t));
       return byTab && byDistrict && byQuery && bySideTags;
     }
 
-    function fallbackImg(){
-      return "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1400&q=80";
+    function fallbackImgFor(p){
+      // nice “type based” background using Unsplash source (no API key required)
+      // This is deterministic-ish and looks good even if you have no image field in DB.
+      const seed = encodeURIComponent(`${p.segmentType} ${p.locationType} ${p.district} himachal`);
+      return `https://source.unsplash.com/1200x800/?${seed}`;
     }
 
     function renderPlaces(){
@@ -612,21 +822,43 @@
       filtered.forEach(p=>{
         const el = document.createElement("div");
         el.className = "card";
-        const img = p.img ? p.img : fallbackImg();
+        const img = p.img ? p.img : fallbackImgFor(p);
+
+        const sub1 = p.bestTimeToVisit ? `Best: ${p.bestTimeToVisit}` : "";
+        const sub2 = p.locationType && p.locationType !== "—" ? p.locationType : "";
+        const hasMap = (Number.isFinite(p.lat) && Number.isFinite(p.lng));
+        const mapPill = hasMap ? "Map ✓" : "No coords";
 
         el.innerHTML = `
           <div class="thumb" style="background-image:url('${escapeAttr(img)}')">
-            <div class="badge">${labelType(p.type)}</div>
+            <div class="badge">${escapeHtml(labelType(p))}</div>
           </div>
           <div class="cardBody">
             <div class="titleRow">
               <h3>${escapeHtml(p.name)}</h3>
-              <span class="pill">${escapeHtml(p.district)}</span>
+              <span class="pill">${escapeHtml(p.district || "—")}</span>
             </div>
-            <p class="meta">${escapeHtml(p.desc || "")}</p>
+            <p class="meta">${escapeHtml(p.shortDescription || p.overview || "")}</p>
+            <div class="submeta">
+              ${sub2 ? `<span class="subpill">${escapeHtml(sub2)}</span>` : ``}
+              ${sub1 ? `<span class="subpill">${escapeHtml(sub1)}</span>` : ``}
+              <span class="subpill">${escapeHtml(mapPill)}</span>
+              <span class="subpill" style="margin-left:auto; cursor:pointer" data-details="1">Details →</span>
+            </div>
           </div>
         `;
-        el.addEventListener("click", ()=> addToRoute(p));
+
+        // Click card = add to route
+        el.addEventListener("click", (ev)=>{
+          const detailsClicked = ev.target?.closest?.("[data-details='1']");
+          if(detailsClicked){
+            ev.stopPropagation();
+            openModal(p);
+            return;
+          }
+          addToRoute(p);
+        });
+
         grid.appendChild(el);
       });
 
@@ -634,6 +866,56 @@
         grid.innerHTML = `<div style="opacity:.8; padding:12px;">No results. Try different filters.</div>`;
       }
     }
+
+    function openModal(p){
+      selectedForModal = p;
+
+      mTitle.textContent = p.name || "—";
+      mSub.textContent = `${p.district || "—"} • ${p.segmentType || "Place"} • ${p.locationType || "—"}`;
+
+      mOverview.textContent = p.overview || "—";
+      mShort.textContent = p.shortDescription || "—";
+      mReach.textContent = p.howToReach || "—";
+      mFeatures.textContent = p.keyFeatures || "—";
+      mTask.textContent = p.taskForLocation || "—";
+
+      mDistrict.textContent = p.district || "—";
+      mSeg.textContent = p.segmentType || "—";
+      mType.textContent = p.locationType || "—";
+      mBest.textContent = p.bestTimeToVisit || "—";
+      mCoords.textContent = (Number.isFinite(p.lat) && Number.isFinite(p.lng)) ? `${p.lat}, ${p.lng}` : "—";
+
+      const meta = p.meta ? JSON.stringify(p.meta, null, 2) : "No meta";
+      mMeta.textContent = "Meta:\n" + meta;
+
+      modalBack.style.display = "flex";
+    }
+
+    function closeModal(){
+      modalBack.style.display = "none";
+      selectedForModal = null;
+    }
+
+    mClose.addEventListener("click", closeModal);
+    modalBack.addEventListener("click", (e)=>{
+      if(e.target === modalBack) closeModal();
+    });
+
+    mOpenMaps.addEventListener("click", ()=>{
+      if(!selectedForModal) return;
+      const p = selectedForModal;
+      const url = p.mapUrl
+        || (Number.isFinite(p.lat) && Number.isFinite(p.lng)
+            ? `https://www.google.com/maps?q=${p.lat},${p.lng}`
+            : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + " " + (p.district||"") + " Himachal Pradesh")}`);
+      window.open(url, "_blank");
+    });
+
+    mAddStop.addEventListener("click", ()=>{
+      if(!selectedForModal) return;
+      addToRoute(selectedForModal);
+      closeModal();
+    });
 
     function escapeHtml(s){
       return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -680,6 +962,10 @@
     });
 
     function addToRoute(p){
+      if(!Number.isFinite(p.lat) || !Number.isFinite(p.lng)){
+        toast("This place has no lat/lng in Firebase.");
+        return;
+      }
       if(!route.find(x=>x.id===p.id)){
         route.push(p);
         renderRoute();
@@ -713,7 +999,7 @@
           <div class="routeItemHead">
             <div>
               <b>${i+1}. ${escapeHtml(p.name)}</b>
-              <p>${escapeHtml(p.district)} • ${labelType(p.type)}</p>
+              <p>${escapeHtml(p.district)} • ${escapeHtml(p.segmentType)}</p>
             </div>
             <div class="routeBtns">
               <button class="tiny" title="Move up">↑</button>
@@ -727,8 +1013,8 @@
         up.addEventListener("click", ()=>move(i,-1));
         down.addEventListener("click", ()=>move(i,+1));
         mapBtn.addEventListener("click", ()=>{
-          const q = encodeURIComponent(p.name + " " + p.district + " Himachal Pradesh");
-          window.open("https://www.google.com/maps/search/?api=1&query=" + q, "_blank");
+          const url = p.mapUrl || `https://www.google.com/maps?q=${p.lat},${p.lng}`;
+          window.open(url, "_blank");
         });
         del.addEventListener("click", ()=>removeStop(i));
         routeListEl.appendChild(item);
@@ -953,7 +1239,7 @@
       if(!btn) return;
       [...nav.querySelectorAll("button")].forEach(b=>b.classList.remove("active"));
       btn.classList.add("active");
-      tab = btn.dataset.tab;
+      tab = btn.dataset.tab; // all / Destination / Hotel / Temple
       renderPlaces();
     });
 
@@ -1000,6 +1286,8 @@
           color:white; padding:10px 12px; border-radius:999px; backdrop-filter: blur(10px);
           box-shadow: 0 20px 60px rgba(0,0,0,.55); z-index:999; font-weight:650;
           transition: opacity .2s ease;
+          max-width:min(92vw, 900px);
+          text-align:center;
         `;
         document.body.appendChild(t);
       }
@@ -1068,7 +1356,7 @@
       }catch(e){
         console.error(e);
         routeStatus.textContent = "Google Maps load failed";
-        toast("Google Maps failed. Check API key / restrictions.");
+        toast("Google Maps failed. Check API key / restrictions / billing.");
       }
       await boot();
       updateTotalOnly();
