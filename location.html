@@ -1,20 +1,15 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — Master (Firebase)</title>
-
-  <!-- Leaflet (no key) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Location Details — Himachal Explorer</title>
   <style>
     :root{
       --bg:#070a12; --stroke: rgba(255,255,255,.16);
       --text: rgba(255,255,255,.92); --muted: rgba(255,255,255,.72);
       --shadow: 0 18px 60px rgba(0,0,0,.55);
-      --r: 18px; --r2: 26px; --card: rgba(255,255,255,.06);
+      --r: 18px; --r2: 26px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -25,7 +20,7 @@
       background: radial-gradient(1200px 800px at 20% 10%, rgba(120,120,255,.18), transparent 60%),
                   radial-gradient(1200px 800px at 80% 30%, rgba(0,255,200,.10), transparent 55%),
                   var(--bg);
-      overflow:hidden;
+      overflow-x:hidden;
     }
     .bg{
       position:fixed; inset:0;
@@ -35,289 +30,146 @@
       background-size:cover; background-position:center;
       z-index:-2; filter:saturate(1.08) contrast(1.05);
     }
-
-    .wrap{display:grid; grid-template-columns: 360px 1fr; gap:14px; padding:14px; height:100%;}
-    @media(max-width: 980px){ .wrap{grid-template-columns:1fr; overflow:auto; height:auto} body{overflow:auto} }
-
-    .panel{
+    .wrap{
+      max-width:1100px; margin:0 auto; padding:18px;
+      display:grid; gap:14px;
+    }
+    .topbar{
+      display:flex; gap:10px; align-items:center; justify-content:space-between;
       border-radius: var(--r2);
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
-      backdrop-filter: blur(14px);
-      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+      padding:12px 14px;
+    }
+    .btn{
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.10);
+      color:var(--text);
+      padding:10px 12px; border-radius:14px;
+      font-weight:800; cursor:pointer;
+      transition:.2s ease;
+    }
+    .btn:hover{background: rgba(255,255,255,.16); transform: translateY(-1px);}
+    .card{
+      border-radius: var(--r2);
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(12px);
       box-shadow: var(--shadow);
       overflow:hidden;
-      min-height:0;
     }
-
-    /* left */
-    .left{display:flex; flex-direction:column; min-height:0;}
-    .head{
-      padding:14px 14px 10px;
+    .hero{
+      padding:18px;
+      background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.02));
       border-bottom:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      display:flex; gap:10px; align-items:center; justify-content:space-between;
     }
-    .brand{display:flex; gap:10px; align-items:center}
-    .logo{
-      width:42px;height:42px;border-radius:14px;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.22), rgba(255,255,255,.06));
-      border:1px solid var(--stroke); display:grid; place-items:center;
-      box-shadow: 0 12px 30px rgba(0,0,0,.35);
-      flex:0 0 auto;
+    h1{margin:0;font-size:26px}
+    .sub{margin:8px 0 0;color:var(--muted);line-height:1.5}
+    .grid{
+      display:grid; grid-template-columns: 1.25fr .75fr; gap:14px;
+      padding:14px;
     }
-    .brand b{display:block; font-size:14px; letter-spacing:.2px}
-    .brand small{display:block; color:var(--muted); font-weight:650; margin-top:2px}
-
-    .filters{padding:12px 14px; display:grid; gap:10px; border-bottom:1px solid rgba(255,255,255,.10)}
-    label{font-size:12px; color:rgba(255,255,255,.78)}
-    input, select{
-      width:100%; padding:12px; border-radius:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(8,12,20,.55);
-      color:var(--text); outline:none;
-    }
-    .row2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
-    .chips{display:flex; gap:8px; flex-wrap:wrap}
-    .chip{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color:rgba(255,255,255,.88);
-      padding:8px 10px; border-radius:999px;
-      cursor:pointer; font-size:12px; transition:.2s ease; user-select:none;
-    }
-    .chip.on{background: rgba(255,255,255,.14);border-color: rgba(255,255,255,.22)}
-    .chip:hover{background: rgba(255,255,255,.10);transform:translateY(-1px)}
-
-    .list{
-      padding:12px 10px;
-      overflow:auto;
-      min-height:0;
-    }
-    .item{
-      display:grid; grid-template-columns:74px 1fr; gap:10px;
-      padding:10px; margin:0 4px 10px;
+    .box{
       border-radius: 18px;
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.18);
-      cursor:pointer;
-      transition:.2s ease;
-    }
-    .item:hover{transform:translateY(-1px); background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.22)}
-    .thumb{width:74px; height:64px; border-radius:16px; background-size:cover; background-position:center; border:1px solid rgba(255,255,255,.12)}
-    .ititle{margin:0; font-size:13px; font-weight:850; line-height:1.2}
-    .isub{margin:6px 0 0; color:var(--muted); font-size:12px; line-height:1.25}
-    .pill{display:inline-block; margin-top:8px; font-size:11px; padding:7px 9px; border-radius:999px; border:1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.06)}
-
-    /* right */
-    .right{display:flex; flex-direction:column; min-height:0;}
-    .detailTop{
-      padding:14px;
-      border-bottom:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      display:flex; justify-content:space-between; align-items:flex-end; gap:10px; flex-wrap:wrap;
-    }
-    .detailTop h1{margin:0; font-size:22px; line-height:1.15}
-    .detailTop p{margin:6px 0 0; color:var(--muted); max-width:70ch; line-height:1.45}
-    .btnRow{display:flex; gap:10px; flex-wrap:wrap}
-    .btn{
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.12);
-      color:var(--text);
-      padding:11px 12px; border-radius:14px;
-      cursor:pointer; font-weight:800;
-      text-decoration:none; display:inline-block;
-      transition:.2s ease;
-    }
-    .btn:hover{transform:translateY(-1px); background: rgba(255,255,255,.18)}
-    .danger{background: rgba(255,120,120,.14); border-color: rgba(255,120,120,.22)}
-    .detailBody{padding:14px; overflow:auto; min-height:0;}
-
-    .heroCard{
-      border-radius: 22px; overflow:hidden;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      box-shadow: 0 18px 55px rgba(0,0,0,.30);
-      margin-bottom:14px;
-    }
-    .heroImg{height:240px; background-size:cover; background-position:center; position:relative}
-    .heroImg:after{content:"";position:absolute;inset:0;background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.60))}
-    .heroInfo{padding:12px}
-    .metaRow{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; color:var(--muted); font-size:12px}
-    .grid2{display:grid; grid-template-columns: 1.2fr .8fr; gap:12px}
-    @media(max-width: 980px){ .grid2{grid-template-columns:1fr} }
-
-    .box{
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
       padding:12px;
     }
-    .box b{display:block; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:rgba(255,255,255,.72)}
-    .box p{margin:8px 0 0; color:rgba(255,255,255,.90); line-height:1.55; white-space:pre-wrap}
-    .kv{display:grid; gap:8px; margin-top:10px}
-    .kv div{display:flex; justify-content:space-between; gap:10px; font-size:12px; color:rgba(255,255,255,.86)}
-    .kv span{color:var(--muted)}
-
-    #leafMap{
-      height:320px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      overflow:hidden;
-      background:#0b1220;
+    .k{color:rgba(255,255,255,.70);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+    .v{margin-top:6px;color:rgba(255,255,255,.92);font-size:14px;line-height:1.55; white-space:pre-wrap}
+    .row{display:grid; gap:10px}
+    #map{
+      height:280px; border-radius:16px; border:1px solid rgba(255,255,255,.12);
+      background:#0b1220; overflow:hidden;
+      display:grid; place-items:center; color:rgba(255,255,255,.75);
+      font-size:12px; text-align:center; padding:10px;
     }
-
-    .wGrid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:10px}
-    @media(max-width: 560px){ .wGrid{grid-template-columns:1fr} }
-    .wItem{
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      padding:10px;
+    .pillRow{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+    .pill{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      border-radius:999px;
+      padding:7px 10px;
       font-size:12px;
+      color:rgba(255,255,255,.88);
     }
-    .wItem b{display:block; font-size:13px}
-    .wItem span{color:var(--muted)}
-    .status{
-      padding:10px 14px;
-      border-top:1px solid rgba(255,255,255,.10);
-      color:var(--muted);
-      font-size:12px;
-      white-space:pre-wrap;
-    }
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
   </style>
 </head>
+
 <body>
   <div class="bg"></div>
 
   <div class="wrap">
-    <!-- LEFT: List -->
-    <aside class="panel left">
-      <div class="head">
-        <div class="brand">
-          <div class="logo" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-              <path d="M3 20h18" stroke="white" opacity=".85" stroke-width="2" stroke-linecap="round"/>
-              <path d="M5 18l7-13 7 13" stroke="white" opacity=".9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M9 14h6" stroke="white" opacity=".85" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <div>
-            <b>Himachal Explorer</b>
-            <small>Master • Firebase auto fetch</small>
-          </div>
-        </div>
+    <div class="topbar">
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <b>Himachal Explorer</b>
+        <small style="color:rgba(255,255,255,.72)">Location Details (Firebase)</small>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end">
+        <button class="btn" id="backBtn">← Back</button>
+        <button class="btn" id="openMapsBtn">Open in Maps</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="hero">
+        <h1 id="title">Loading…</h1>
+        <div class="sub" id="subtitle">Please wait</div>
+        <div class="pillRow" id="pills"></div>
       </div>
 
-      <div class="filters">
-        <div class="row2">
-          <div>
-            <label>District</label>
-            <select id="districtSel"><option value="all">All</option></select>
-          </div>
-          <div>
-            <label>Type</label>
-            <select id="typeSel">
-              <option value="all">All</option>
-              <option value="destinations">Destinations</option>
-              <option value="lakes">Lakes</option>
-              <option value="treks">Treks</option>
-              <option value="temples">Temples</option>
-              <option value="hotels">Hotels</option>
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label>Search</label>
-          <input id="q" placeholder="Jakhu, Dalhousie, Bhrigu…" />
-        </div>
-
-        <div>
-          <label>Quick Tags (optional)</label>
-          <div class="chips" id="chips">
-            <div class="chip" data-tag="family">Family</div>
-            <div class="chip" data-tag="nature">Nature</div>
-            <div class="chip" data-tag="spiritual">Spiritual</div>
-            <div class="chip" data-tag="budget">Budget</div>
-            <div class="chip" data-tag="premium">Premium</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="list" id="list"></div>
-
-      <div class="status" id="leftStatus">Firebase: loading…</div>
-    </aside>
-
-    <!-- RIGHT: Detail -->
-    <main class="panel right">
-      <div class="detailTop">
-        <div>
-          <h1 id="dTitle">Select a location</h1>
-          <p id="dSub">Choose any item from the left. Details + map + weather will appear here.</p>
-        </div>
-        <div class="btnRow">
-          <a class="btn" id="openMaps" href="#" target="_blank" rel="noopener">Open Maps</a>
-          <button class="btn" id="copyLink">Copy Link</button>
-          <button class="btn danger" id="clearSel">Clear</button>
-        </div>
-      </div>
-
-      <div class="detailBody" id="detailBody">
-        <div class="heroCard">
-          <div class="heroImg" id="heroImg"></div>
-          <div class="heroInfo">
-            <div class="metaRow" id="metaRow"></div>
-          </div>
-        </div>
-
-        <div class="grid2">
+      <div class="grid">
+        <div class="row">
           <div class="box">
-            <b>Brief</b>
-            <p id="brief">—</p>
-            <div style="height:10px"></div>
-            <b>History</b>
-            <p id="history">—</p>
+            <div class="k">Overview</div>
+            <div class="v" id="overview">—</div>
           </div>
-
           <div class="box">
-            <b>Details</b>
-            <div class="kv" id="kv"></div>
+            <div class="k">Short Description</div>
+            <div class="v" id="shortDesc">—</div>
+          </div>
+          <div class="box">
+            <div class="k">Key Features</div>
+            <div class="v" id="features">—</div>
+          </div>
+          <div class="box">
+            <div class="k">How to Reach</div>
+            <div class="v" id="reach">—</div>
+          </div>
+          <div class="box">
+            <div class="k">Task for Location</div>
+            <div class="v" id="task">—</div>
           </div>
         </div>
 
-        <div style="height:12px"></div>
-
-        <div class="box">
-          <b>Map</b>
-          <div id="leafMap"></div>
+        <div class="row">
+          <div class="box">
+            <div class="k">Meta</div>
+            <div class="v" id="meta">—</div>
+          </div>
+          <div class="box">
+            <div class="k">Map</div>
+            <div id="map">Google map loading…</div>
+            <div class="v" id="coords" style="margin-top:10px;">—</div>
+          </div>
+          <div class="box">
+            <div class="k">Debug</div>
+            <div class="v" id="debug">—</div>
+          </div>
         </div>
-
-        <div style="height:12px"></div>
-
-        <div class="box">
-          <b>Weather forecast (7 days)</b>
-          <p id="wStatus" style="margin:8px 0 0; color:var(--muted)">—</p>
-          <div id="wGrid" class="wGrid" style="display:none;"></div>
-        </div>
-
-        <div style="height:14px"></div>
-        <div class="status" id="rightStatus">Ready.</div>
       </div>
-    </main>
+    </div>
   </div>
 
-  <!-- Firebase (module) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-    /***********************
-     * CONFIG
-     ***********************/
-    const FIREBASE_DISTRICTS_PATH = "tourism/hp/districts"; // your structure
-
+    const GOOGLE_MAPS_API_KEY = "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug";
     const firebaseConfig = {
       apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
       authDomain: "revnue-records.firebaseapp.com",
@@ -328,456 +180,182 @@
       appId: "1:182348503564:web:480085405b09177245ad"
     };
 
-    /***********************
-     * UI
-     ***********************/
-    const listEl = document.getElementById("list");
-    const leftStatus = document.getElementById("leftStatus");
-    const rightStatus = document.getElementById("rightStatus");
+    const titleEl = document.getElementById("title");
+    const subtitleEl = document.getElementById("subtitle");
+    const pillsEl = document.getElementById("pills");
 
-    const districtSel = document.getElementById("districtSel");
-    const typeSel = document.getElementById("typeSel");
-    const qEl = document.getElementById("q");
-    const chips = document.getElementById("chips");
+    const overviewEl = document.getElementById("overview");
+    const shortEl = document.getElementById("shortDesc");
+    const featuresEl = document.getElementById("features");
+    const reachEl = document.getElementById("reach");
+    const taskEl = document.getElementById("task");
+    const metaEl = document.getElementById("meta");
+    const coordsEl = document.getElementById("coords");
+    const debugEl = document.getElementById("debug");
 
-    const dTitle = document.getElementById("dTitle");
-    const dSub = document.getElementById("dSub");
-    const heroImg = document.getElementById("heroImg");
-    const metaRow = document.getElementById("metaRow");
-    const briefEl = document.getElementById("brief");
-    const historyEl = document.getElementById("history");
-    const kvEl = document.getElementById("kv");
-    const openMaps = document.getElementById("openMaps");
-    const copyLink = document.getElementById("copyLink");
-    const clearSel = document.getElementById("clearSel");
+    const backBtn = document.getElementById("backBtn");
+    const openMapsBtn = document.getElementById("openMapsBtn");
 
-    const wStatus = document.getElementById("wStatus");
-    const wGrid = document.getElementById("wGrid");
-
-    /***********************
-     * State
-     ***********************/
-    let allPlaces = [];     // flattened
-    let selected = null;    // selected place object
-    let tagFilter = new Set(); // from chips
-
-    // Leaflet map
-    let lmap = null;
-    let lmarker = null;
-
-    function escapeHtml(s){
-      return String(s ?? "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-    }
-
-    function fallbackImg(){
-      return "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=2400&q=80";
-    }
-
-    function normalizeType(t){
-      const x = String(t||"").toLowerCase().trim();
-      if (["destination","destinations","routes","route","place","places","spot","spots"].includes(x)) return "destinations";
-      if (["lake","lakes"].includes(x)) return "lakes";
-      if (["trek","treks","trail","trails","hike","hikes"].includes(x)) return "treks";
-      if (["temple","temples","mandir","mandirs"].includes(x)) return "temples";
-      if (["hotel","hotels","stay","stays"].includes(x)) return "hotels";
-      return x || "destinations";
-    }
-
-    function labelType(t){
-      if(t==="destinations") return "Destination";
-      if(t==="lakes") return "Lake";
-      if(t==="treks") return "Trek";
-      if(t==="temples") return "Temple";
-      if(t==="hotels") return "Hotel";
-      return "Place";
-    }
-
-    function parseTags(raw){
-      if(Array.isArray(raw)) return raw.map(String).map(s=>s.trim()).filter(Boolean);
-      const s = String(raw||"").trim();
-      if(!s) return [];
-      return s.split(/[|,]/g).map(x=>x.trim()).filter(Boolean);
-    }
-
-    function toNum(x){
-      const n = Number(x);
-      return Number.isFinite(n) ? n : null;
-    }
-
-    function buildMapsLink(p){
-      if(Number.isFinite(p.lat) && Number.isFinite(p.lng)){
-        return `https://www.google.com/maps?q=${p.lat},${p.lng}`;
-      }
-      const q = encodeURIComponent(`${p.name} ${p.district} Himachal Pradesh`);
-      return `https://www.google.com/maps/search/?api=1&query=${q}`;
-    }
-
-    /***********************
-     * Firebase init + anon auth
-     ***********************/
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const auth = getAuth(app);
 
+    let placeId = null;
+    let place = null;
+    let map = null;
+
+    backBtn.addEventListener("click", ()=>{
+      if(history.length > 1) history.back();
+      else window.location.href = "index.html";
+    });
+
+    function pick(p, keys, fallback=""){
+      for(const k of keys){
+        if(p && p[k] !== undefined && p[k] !== null && String(p[k]).trim() !== "") return p[k];
+      }
+      return fallback;
+    }
+
+    function parseLatLng(p){
+      const lat = Number(p?.lat ?? p?.latitude ?? p?.Latitude ?? p?.LAT);
+      const lng = Number(p?.lng ?? p?.longitude ?? p?.Longitude ?? p?.LNG);
+      if(Number.isFinite(lat) && Number.isFinite(lng)) return {lat, lng};
+
+      const m = String(p?.Map ?? p?.map ?? "").trim();
+      const mm = m.match(/(-?\d+(\.\d+)?)\s*,\s*(-?\d+(\.\d+)?)/);
+      if(mm) return { lat: Number(mm[1]), lng: Number(mm[3]) };
+
+      return {lat: NaN, lng: NaN};
+    }
+
     async function ensureAuth(){
       try{
         if(!auth.currentUser) await signInAnonymously(auth);
-      }catch(e){
-        // If your rules allow public read, it may still work.
-      }
+      }catch{}
     }
 
-    /***********************
-     * Load all places
-     ***********************/
-    async function loadAll(){
-      leftStatus.textContent = "Firebase: loading…";
-      rightStatus.textContent = "Loading…";
+    async function loadPlace(){
+      const params = new URLSearchParams(location.search);
+      placeId = params.get("id");
+      if(!placeId){
+        titleEl.textContent = "Missing id";
+        subtitleEl.textContent = "Open from index page (card click).";
+        debugEl.textContent = "URL should be: location.html?id=akhand-chandi";
+        return;
+      }
 
       await ensureAuth();
 
       try{
-        const snap = await get(ref(db, FIREBASE_DISTRICTS_PATH));
-        const data = snap.exists() ? snap.val() : null;
-
-        if(!data){
-          leftStatus.textContent = "Firebase: path returned null ❌";
-          rightStatus.textContent = "No data found.";
+        const snap = await get(ref(db, "/" + placeId));
+        if(!snap.exists()){
+          titleEl.textContent = "Not found";
+          subtitleEl.textContent = "No record at /" + placeId;
+          debugEl.textContent = "Check the key exists in RTDB root.";
           return;
         }
+        place = snap.val();
 
-        const out = [];
-        const districtEntries = Object.entries(data);
+        const name = String(pick(place, ["Location Name","locationName","name"], placeId)).trim();
+        const district = String(pick(place, ["District","district"], "—")).trim();
+        const seg = String(pick(place, ["Segment Type","segmentType"], "Place")).trim();
+        const type = String(pick(place, ["Location Type","locationType"], "—")).trim();
 
-        districtEntries.forEach(([districtName, districtObj])=>{
-          const seg = districtObj?.segments || {};
+        const overview = String(pick(place, ["Overview","overview"], "")).trim();
+        const shortDesc = String(pick(place, ["Short Description","shortDescription"], "")).trim();
+        const features = String(pick(place, ["Key Features","keyFeatures"], "")).trim();
+        const reach = String(pick(place, ["How to Reach","howToReach"], "")).trim();
+        const task = String(pick(place, ["Task for Location","taskForLocation"], "")).trim();
+        const best = String(pick(place, ["Best Time to Visit","bestTimeToVisit"], "")).trim();
+        const distHQ = String(pick(place, ["Dist from HQ","Dist From HQ"], "")).trim();
+        const mapUrl = String(pick(place, ["Map","mapUrl"], "")).trim();
 
-          Object.entries(seg).forEach(([segName, segObj])=>{
-            const type = normalizeType(segName);
+        titleEl.textContent = name;
+        subtitleEl.textContent = `${district} • ${seg} • ${type}`;
 
-            Object.entries(segObj || {}).forEach(([id, p])=>{
-              out.push({
-                id,
-                district: districtName,
-                type,
-                name: String(p?.name || p?.title || id),
-                desc: String(p?.desc || p?.description || p?.overview || ""),
-                notes: String(p?.notes || ""),
-                overview: String(p?.overview || p?.["overview of place"] || ""),
-                history: String(p?.history || ""),
-                img: String(p?.img || p?.image || p?.photo || ""),
-                tags: parseTags(p?.tags || ""),
-                phone: String(p?.phone || ""),
-                rating: p?.rating ?? "",
-                priceMin: p?.priceMin ?? p?.pricemin ?? "",
-                priceMax: p?.priceMax ?? p?.pricemax ?? "",
-                bestSeason: String(p?.bestSeason || p?.bestseason || ""),
-                timing: String(p?.timing || ""),
-                entryFee: String(p?.entryFee || p?.entryfee || ""),
-                popularityScore: p?.popularityScore ?? p?.popularity ?? "",
-                districtHqDistanceKm: p?.districtHqDistanceKm ?? p?.distanceKm ?? "",
-                lat: toNum(p?.lat ?? p?.latitude),
-                lng: toNum(p?.lng ?? p?.longitude),
-                _raw: p || {}
-              });
-            });
+        pillsEl.innerHTML = "";
+        [best ? ("Best: " + best) : "", distHQ ? ("Dist from HQ: " + distHQ) : ""]
+          .filter(Boolean)
+          .forEach(t=>{
+            const s = document.createElement("span");
+            s.className="pill";
+            s.textContent=t;
+            pillsEl.appendChild(s);
           });
-        });
 
-        allPlaces = out;
+        overviewEl.textContent = overview || "—";
+        shortEl.textContent = shortDesc || "—";
+        featuresEl.textContent = features || "—";
+        reachEl.textContent = reach || "—";
+        taskEl.textContent = task || "—";
 
-        // district dropdown
-        const districts = [...new Set(allPlaces.map(p=>p.district))].sort((a,b)=>a.localeCompare(b));
-        districtSel.innerHTML = `<option value="all">All</option>` + districts.map(d=>`<option>${escapeHtml(d)}</option>`).join("");
+        metaEl.textContent = JSON.stringify(place, null, 2);
 
-        leftStatus.textContent = `Firebase: loaded ${allPlaces.length} places ✅`;
-        rightStatus.textContent = "Ready.";
+        const {lat, lng} = parseLatLng(place);
+        const hasCoords = Number.isFinite(lat) && Number.isFinite(lng);
+        coordsEl.textContent = hasCoords ? `Coordinates: ${lat}, ${lng}` : "Coordinates: — (add lat/lng fields in Firebase)";
 
-        // If URL has ?id=...&district=...&type=...
-        applyFromQuery();
-        renderList();
+        openMapsBtn.onclick = ()=>{
+          const url = mapUrl
+            || (hasCoords ? `https://www.google.com/maps?q=${lat},${lng}`
+                          : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name+" "+district+" Himachal Pradesh")}`);
+          window.open(url, "_blank");
+        };
 
+        debugEl.textContent = `Loaded /${placeId}`;
+
+        // optional map
+        await loadGoogleMaps();
+        initMap(lat, lng, hasCoords, name);
       }catch(e){
-        console.error(e);
-        leftStatus.textContent = "Firebase: error ❌ " + (e?.message || e);
-        rightStatus.textContent =
-          "If Permission denied → set rules like:\n" +
-          "{ \"rules\": { \"tourism\": { \".read\": \"auth != null\" } } }";
+        titleEl.textContent = "Error";
+        subtitleEl.textContent = "Failed to load place";
+        debugEl.textContent = String(e?.message || e);
       }
     }
 
-    /***********************
-     * Filtering + list render
-     ***********************/
-    function matches(p){
-      const d = districtSel.value;
-      const t = typeSel.value;
-      const q = (qEl.value||"").trim().toLowerCase();
-
-      const byDistrict = (d==="all") ? true : (p.district === d);
-      const byType = (t==="all") ? true : (p.type === t);
-
-      const hay = (p.name + " " + p.district + " " + p.type + " " + (p.desc||"") + " " + (p.overview||"") + " " + p.tags.join(" ")).toLowerCase();
-      const byQuery = !q ? true : hay.includes(q);
-
-      const byTag = (tagFilter.size===0) ? true : [...tagFilter].some(tag => p.tags.map(x=>x.toLowerCase()).includes(tag));
-
-      return byDistrict && byType && byQuery && byTag;
-    }
-
-    function renderList(){
-      const filtered = allPlaces.filter(matches);
-
-      listEl.innerHTML = "";
-      filtered.slice(0, 500).forEach(p=>{
-        const item = document.createElement("div");
-        item.className = "item";
-
-        const img = p.img || fallbackImg();
-
-        item.innerHTML = `
-          <div class="thumb" style="background-image:url('${img.replace(/'/g,"%27")}')"></div>
-          <div>
-            <p class="ititle">${escapeHtml(p.name)}</p>
-            <p class="isub">${escapeHtml(p.district)} • ${escapeHtml(labelType(p.type))}</p>
-            <span class="pill">${escapeHtml(p.type)}</span>
-          </div>
-        `;
-        item.addEventListener("click", ()=> selectPlace(p));
-        listEl.appendChild(item);
+    function loadGoogleMaps(){
+      return new Promise((resolve)=>{
+        if(window.google && google.maps){ resolve(); return; }
+        if(!GOOGLE_MAPS_API_KEY){
+          document.getElementById("map").textContent = "Missing Google API key";
+          resolve(); return;
+        }
+        const s = document.createElement("script");
+        s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(GOOGLE_MAPS_API_KEY)}&callback=__initMap2`;
+        s.async = true; s.defer = true;
+        window.__initMap2 = () => resolve();
+        s.onerror = () => {
+          document.getElementById("map").textContent =
+            "Google Maps not loaded.\nFix: billing + enable Maps JS API.\nAlso set HTTP referrer for GitHub Pages.";
+          resolve();
+        };
+        document.head.appendChild(s);
       });
-
-      if(filtered.length === 0){
-        listEl.innerHTML = `<div style="opacity:.8;padding:10px;">No results. Try different filters.</div>`;
-      }
     }
 
-    /***********************
-     * Detail render
-     ***********************/
-    function selectPlace(p){
-      selected = p;
-
-      // title + subtitle
-      dTitle.textContent = p.name;
-      dSub.textContent = `${p.district} • ${labelType(p.type)}`;
-
-      // hero image
-      heroImg.style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.78)), url('${(p.img||fallbackImg()).replace(/'/g,"%27")}')`;
-
-      // meta row
-      const pills = [];
-      pills.push(`<span class="pill">${escapeHtml(p.type)}</span>`);
-      pills.push(`<span class="pill">${escapeHtml(p.district)}</span>`);
-      if(p.rating) pills.push(`<span class="pill">⭐ ${escapeHtml(p.rating)}</span>`);
-      if(p.bestSeason) pills.push(`<span class="pill">Best: ${escapeHtml(p.bestSeason)}</span>`);
-      if(p.timing) pills.push(`<span class="pill">Timing: ${escapeHtml(p.timing)}</span>`);
-      if(p.entryFee) pills.push(`<span class="pill">Entry: ${escapeHtml(p.entryFee)}</span>`);
-      metaRow.innerHTML = pills.join("");
-
-      // brief + history
-      const brief = (p.overview || p.desc || p.notes || "").trim();
-      const history = (p.history || "").trim() || (p.notes || p.overview || p.desc || "").trim();
-      briefEl.textContent = brief || "—";
-      historyEl.textContent = history || "—";
-
-      // details kv
-      const kv = [];
-      const add = (k,v)=>{ if(v!==null && v!==undefined && String(v).trim()!=="") kv.push(`<div><span>${escapeHtml(k)}</span><b>${escapeHtml(v)}</b></div>`); };
-
-      add("Tags", p.tags.length ? p.tags.join(", ") : "");
-      add("Phone", p.phone);
-      add("Price", (p.priceMin||p.priceMax) ? `₹${p.priceMin||"—"} - ₹${p.priceMax||"—"}` : "");
-      add("Popularity", p.popularityScore);
-      add("HQ Distance (km)", p.districtHqDistanceKm);
-      add("Coordinates", (Number.isFinite(p.lat) && Number.isFinite(p.lng)) ? `${p.lat}, ${p.lng}` : "");
-
-      // show any extra raw fields (optional)
-      // add("Extra", JSON.stringify(p._raw));
-
-      kvEl.innerHTML = kv.length ? kv.join("") : `<div style="color:rgba(255,255,255,.75);font-size:12px;">No extra details available.</div>`;
-
-      // maps link
-      openMaps.href = buildMapsLink(p);
-
-      // update URL for sharing
-      setQuery(p);
-
-      // map
-      renderLeaflet(p);
-
-      // weather
-      loadWeather(p);
-
-      rightStatus.textContent = "Loaded ✅";
-    }
-
-    function clearSelection(){
-      selected = null;
-      dTitle.textContent = "Select a location";
-      dSub.textContent = "Choose any item from the left.";
-      heroImg.style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.78)), url('${fallbackImg()}')`;
-      metaRow.innerHTML = "";
-      briefEl.textContent = "—";
-      historyEl.textContent = "—";
-      kvEl.innerHTML = "";
-      wGrid.style.display = "none";
-      wStatus.textContent = "—";
-      openMaps.href = "#";
-      rightStatus.textContent = "Ready.";
-      clearQuery();
-      renderLeaflet(null);
-    }
-
-    /***********************
-     * Leaflet map
-     ***********************/
-    function renderLeaflet(p){
-      const el = document.getElementById("leafMap");
-
-      if(!lmap){
-        lmap = L.map(el, { zoomControl:true });
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          maxZoom: 18,
-          attribution: "&copy; OpenStreetMap"
-        }).addTo(lmap);
-      }
-
-      if(lmarker){
-        lmarker.remove();
-        lmarker = null;
-      }
-
-      if(p && Number.isFinite(p.lat) && Number.isFinite(p.lng)){
-        const latlng = [p.lat, p.lng];
-        lmap.setView(latlng, 12, { animate:true });
-        lmarker = L.marker(latlng).addTo(lmap).bindPopup(`<b>${escapeHtml(p.name)}</b><br/>${escapeHtml(p.district)} • ${escapeHtml(labelType(p.type))}`).openPopup();
-      } else {
-        lmap.setView([31.9, 77.2], 7, { animate:true }); // Himachal center
-      }
-    }
-
-    /***********************
-     * Weather (Open-Meteo)
-     ***********************/
-    async function loadWeather(p){
-      wGrid.style.display = "none";
-      wGrid.innerHTML = "";
-      if(!(p && Number.isFinite(p.lat) && Number.isFinite(p.lng))){
-        wStatus.textContent = "Add lat/lng to show weather.";
+    function initMap(lat, lng, hasCoords, name){
+      const mapEl = document.getElementById("map");
+      if(!(window.google && google.maps)){
+        // already handled
         return;
       }
+      mapEl.textContent = "";
+      const center = hasCoords ? {lat, lng} : {lat:31.9, lng:77.2};
+      map = new google.maps.Map(mapEl, {
+        center,
+        zoom: hasCoords ? 13 : 7,
+        mapTypeControl:false,
+        streetViewControl:false,
+        fullscreenControl:false
+      });
 
-      wStatus.textContent = "Loading weather…";
-
-      const url = "https://api.open-meteo.com/v1/forecast"
-        + `?latitude=${encodeURIComponent(p.lat)}`
-        + `&longitude=${encodeURIComponent(p.lng)}`
-        + `&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max`
-        + `&timezone=auto`;
-
-      try{
-        const res = await fetch(url);
-        const j = await res.json();
-        const d = j?.daily;
-        if(!d?.time?.length){
-          wStatus.textContent = "Weather unavailable.";
-          return;
-        }
-
-        wStatus.textContent = "";
-        wGrid.style.display = "grid";
-
-        for(let i=0; i<Math.min(7, d.time.length); i++){
-          const date = d.time[i];
-          const tmax = d.temperature_2m_max?.[i];
-          const tmin = d.temperature_2m_min?.[i];
-          const pop  = d.precipitation_probability_max?.[i];
-
-          const el = document.createElement("div");
-          el.className = "wItem";
-          el.innerHTML = `
-            <b>${escapeHtml(date)}</b>
-            <span>Max: ${escapeHtml(tmax)}°C • Min: ${escapeHtml(tmin)}°C</span><br/>
-            <span>Rain chance: ${escapeHtml(pop ?? "—")}%</span>
-          `;
-          wGrid.appendChild(el);
-        }
-      }catch(e){
-        wStatus.textContent = "Weather load failed (network).";
+      if(hasCoords){
+        new google.maps.Marker({ position:{lat, lng}, map, title:name });
       }
     }
 
-    /***********************
-     * URL share / deep link
-     ***********************/
-    function setQuery(p){
-      const u = new URL(location.href);
-      u.searchParams.set("district", p.district);
-      u.searchParams.set("type", p.type);
-      u.searchParams.set("id", p.id);
-      history.replaceState({}, "", u.toString());
-    }
-    function clearQuery(){
-      const u = new URL(location.href);
-      u.searchParams.delete("district");
-      u.searchParams.delete("type");
-      u.searchParams.delete("id");
-      history.replaceState({}, "", u.toString());
-    }
-    function applyFromQuery(){
-      const u = new URL(location.href);
-      const id = u.searchParams.get("id");
-      const district = u.searchParams.get("district");
-      const type = u.searchParams.get("type");
-      if(!id) return;
-
-      const found = allPlaces.find(p =>
-        p.id === id &&
-        (!district || p.district === district) &&
-        (!type || p.type === type)
-      );
-      if(found) selectPlace(found);
-    }
-
-    /***********************
-     * Events
-     ***********************/
-    districtSel.addEventListener("change", renderList);
-    typeSel.addEventListener("change", renderList);
-    qEl.addEventListener("input", renderList);
-
-    chips.addEventListener("click", (e)=>{
-      const c = e.target.closest(".chip");
-      if(!c) return;
-      const tag = String(c.dataset.tag||"").toLowerCase();
-      if(!tag) return;
-
-      if(c.classList.contains("on")){
-        c.classList.remove("on");
-        tagFilter.delete(tag);
-      } else {
-        c.classList.add("on");
-        tagFilter.add(tag);
-      }
-      renderList();
-    });
-
-    clearSel.addEventListener("click", clearSelection);
-
-    copyLink.addEventListener("click", async ()=>{
-      try{
-        await navigator.clipboard.writeText(location.href);
-        rightStatus.textContent = "Link copied ✅";
-      }catch(e){
-        rightStatus.textContent = "Copy failed (browser blocked).";
-      }
-    });
-
-    // Init
-    clearSelection();
-    renderLeaflet(null);
-    loadAll();
+    loadPlace();
   </script>
 </body>
 </html>
