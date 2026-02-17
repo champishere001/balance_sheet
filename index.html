@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Himachal Explorer — Firebase + Route Planner</title>
+  <title>Himachal Explorer — Firebase Places + Route Planner</title>
 
   <style>
     :root{
@@ -125,15 +125,6 @@
       white-space:pre-wrap;
     }
     .hint b{color:rgba(255,255,255,.9)}
-    .pillMini{
-      display:inline-flex; gap:8px; align-items:center;
-      padding:6px 10px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      font-weight:750; font-size:12px;
-      margin-top:8px;
-    }
-    .dot{width:8px;height:8px;border-radius:999px;background:var(--ok);display:inline-block}
 
     .main{
       border-radius: var(--r2);
@@ -153,7 +144,6 @@
     .heroTop{display:flex;gap:12px;justify-content:space-between;align-items:flex-end;flex-wrap:wrap}
     .hero h2{margin:0;font-size:26px;line-height:1.15}
     .hero p{margin:8px 0 0;color:var(--muted);max-width:66ch;line-height:1.5}
-
     .searchBar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
     .searchBar input{flex:1 1 320px;min-width:240px;background: rgba(0,0,0,.28)}
     .ghost{
@@ -225,7 +215,6 @@
     .stat{border-radius:16px;border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.06);padding:10px}
     .stat b{display:block;font-size:13px}
     .stat span{color:var(--muted);font-size:12px}
-
     #map{
       height:280px; border-radius:18px; border:1px solid rgba(255,255,255,.12);
       background:#0b1220; overflow:hidden; display:grid; place-items:center;
@@ -275,7 +264,6 @@
   <div class="bg"></div>
 
   <div class="wrap">
-    <!-- Sidebar -->
     <aside class="side">
       <div class="brand">
         <div class="logo" aria-hidden="true">
@@ -308,9 +296,8 @@
         <input id="q" placeholder="The Ridge, Jakhu..." />
       </div>
 
-      <div class="panelTitle">Quick Tags <span style="opacity:.7; font-weight:700; letter-spacing:0; text-transform:none;">(optional)</span></div>
+      <div class="panelTitle">Quick Tags (optional)</div>
       <div class="chipRow" id="chipsSide">
-        <!-- ✅ All OFF by default -->
         <div class="chip" data-chip="family">Family</div>
         <div class="chip" data-chip="nature">Nature</div>
         <div class="chip" data-chip="spiritual">Spiritual</div>
@@ -380,20 +367,15 @@
 
       <div class="hint" id="firebaseStatus">Firebase: loading…</div>
       <div class="hint" id="debugOut">Debug: —</div>
-
-      <div class="hint">
-        <b>Data Path:</b> Your data is at DB root (keys like <i>akhand-chandi</i>, <i>annandale</i>…)
-        <div class="pillMini"><span class="dot"></span> / (root)</div>
-      </div>
+      <div class="hint"><b>Data Path:</b> <span style="opacity:.95">/locations</span></div>
     </aside>
 
-    <!-- Main -->
     <main class="main">
       <section class="hero">
         <div class="heroTop">
           <div>
             <h2>Places (Firebase) + Route Planner</h2>
-            <p>Tap any card to open details page. Use <b>+ Add</b> to build route (needs coordinates).</p>
+            <p>Card tap = open details page. Use <b>+ Add</b> to build route.</p>
           </div>
           <button class="ghost" id="resetBtn">Reset</button>
         </div>
@@ -404,7 +386,6 @@
       </section>
 
       <section class="split">
-        <!-- Left -->
         <div class="leftPane">
           <div class="paneHead">
             <strong>Places</strong>
@@ -415,7 +396,6 @@
           </div>
         </div>
 
-        <!-- Right -->
         <div class="rightPane">
           <div class="paneHead">
             <strong>Route Planner</strong>
@@ -450,8 +430,11 @@
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
+    /***********************
+     * CONFIG
+     ***********************/
     const GOOGLE_MAPS_API_KEY = "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug";
-    const FIREBASE_LOCATIONS_PATH = "/";
+    const FIREBASE_LOCATIONS_PATH = "/locations"; // ✅ FIXED (your data is inside /locations)
 
     const firebaseConfig = {
       apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
@@ -463,6 +446,9 @@
       appId: "1:182348503564:web:480085405b09177245ad"
     };
 
+    /***********************
+     * UI refs
+     ***********************/
     const grid = document.getElementById("grid");
     const countOut = document.getElementById("countOut");
     const nav = document.getElementById("nav");
@@ -487,10 +473,7 @@
     const ratePerKmEl = document.getElementById("ratePerKm");
 
     let tab = "all";
-
-    // ✅ FIX: start with NO tags selected
-    let sideTags = new Set();
-
+    let sideTags = new Set(); // ✅ none by default
     let places = [];
 
     const ROUTE_LS_KEY = "hp_route_v1";
@@ -504,14 +487,22 @@
     let routeTimer = null;
     let applyingOptimizedOrder = false;
 
+    /***********************
+     * Firebase init + auth
+     ***********************/
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const auth = getAuth(app);
 
     async function ensureAuth(){
-      try{ if(!auth.currentUser) await signInAnonymously(auth); }catch{}
+      try{ if(!auth.currentUser) await signInAnonymously(auth); }catch(e){
+        debugOut.textContent = "Debug: Auth failed (ok if rules are public): " + (e?.message || e);
+      }
     }
 
+    /***********************
+     * Helpers for your DB keys
+     ***********************/
     function pick(p, keys, fallback=""){
       for(const k of keys){
         if(p && p[k] !== undefined && p[k] !== null && String(p[k]).trim() !== "") return p[k];
@@ -520,11 +511,11 @@
     }
 
     function parseLatLng(p){
-      const lat = Number(p?.lat ?? p?.latitude ?? p?.Latitude ?? p?.LAT);
-      const lng = Number(p?.lng ?? p?.longitude ?? p?.Longitude ?? p?.LNG);
+      const lat = Number(p?.lat ?? p?.latitude ?? p?.Latitude);
+      const lng = Number(p?.lng ?? p?.longitude ?? p?.Longitude);
       if(Number.isFinite(lat) && Number.isFinite(lng)) return {lat, lng};
 
-      const m = String(p?.Map ?? p?.map ?? "").trim();
+      const m = String(p?.Map ?? p?.map ?? "").trim(); // sometimes you keep Map:""
       const mm = m.match(/(-?\d+(\.\d+)?)\s*,\s*(-?\d+(\.\d+)?)/);
       if(mm) return { lat: Number(mm[1]), lng: Number(mm[3]) };
 
@@ -560,6 +551,9 @@
         keyFeatures, bestTimeToVisit, taskForLocation, distFromHQ, mapUrl, lat, lng, tags:[...tags] };
     }
 
+    /***********************
+     * Load from RTDB (/locations)
+     ***********************/
     async function loadPlacesFromFirebase(){
       firebaseStatus.textContent = "Firebase: loading…";
       debugOut.textContent = "Debug: connecting…";
@@ -569,17 +563,18 @@
         const snap = await get(ref(db, FIREBASE_LOCATIONS_PATH));
         const data = snap.exists() ? snap.val() : null;
 
-        if(!data){
-          firebaseStatus.textContent = "Firebase: root returned null ❌";
-          debugOut.textContent = "No data at root. Check rules / databaseURL.";
+        if(!data || typeof data !== "object"){
+          firebaseStatus.textContent = "Firebase: /locations returned null ❌";
+          debugOut.textContent = "Debug: No data at " + FIREBASE_LOCATIONS_PATH + "\nCheck that your node is exactly: /locations";
           places = [];
           return;
         }
 
         const out = [];
-        for(const [id, p] of Object.entries(data)){
-          if(!p || typeof p !== "object") continue;
-          out.push(normalizePlace(id, p));
+        for(const [id, p] of Object.entries(data || {})){
+          if(p && typeof p === "object"){
+            out.push(normalizePlace(id, p));
+          }
         }
 
         out.sort((a,b)=>
@@ -595,15 +590,18 @@
           districtNames.map(d=>`<option value="${escapeAttr(d)}">${escapeHtml(d)}</option>`).join("");
 
         firebaseStatus.textContent = `Firebase: loaded ${places.length} places ✅`;
-        debugOut.textContent = `Debug: path=/ (root)\nFields: "Location Name", "District", "Segment Type"...`;
+        debugOut.textContent = `Debug:\nPath: ${FIREBASE_LOCATIONS_PATH}\nKeys sample: ${Object.keys(data).slice(0,10).join(", ")}`;
 
       }catch(e){
-        firebaseStatus.textContent = "Firebase: error ❌ " + (e?.message || e);
-        debugOut.textContent = "Debug error:\n" + (e?.message || e);
-        places = [];
+        const msg = (e?.message || String(e));
+        firebaseStatus.textContent = "Firebase: error ❌ " + msg;
+        debugOut.textContent = "Debug error:\n" + msg + "\n\nIf Permission denied → allow read in RTDB rules.";
       }
     }
 
+    /***********************
+     * Filters + render
+     ***********************/
     function segmentMatchesTab(p){
       if(tab === "all") return true;
       return (p.segmentType || "").toLowerCase() === tab.toLowerCase();
@@ -625,10 +623,7 @@
       ).toLowerCase();
 
       const byQuery = !q ? true : hay.includes(q);
-
-      // ✅ FIX: only apply tag filter if user selected tags
       const bySideTags = (sideTags.size === 0) ? true : [...sideTags].some(t => (p.tags || []).includes(t));
-
       return byTab && byDistrict && byQuery && bySideTags;
     }
 
@@ -645,7 +640,6 @@
       filtered.forEach(p=>{
         const el = document.createElement("div");
         el.className = "card";
-
         const img = fallbackImgFor(p);
         const best = p.bestTimeToVisit ? `Best: ${p.bestTimeToVisit}` : "";
         const lt = p.locationType && p.locationType !== "—" ? p.locationType : "";
@@ -678,6 +672,7 @@
             addToRoute(p);
             return;
           }
+          // ✅ Open location.html with id
           window.location.href = `location.html?id=${encodeURIComponent(p.id)}`;
         });
 
@@ -689,6 +684,9 @@
       }
     }
 
+    /***********************
+     * Route LS
+     ***********************/
     function loadRouteFromLS(){
       try{
         const raw = localStorage.getItem(ROUTE_LS_KEY);
@@ -772,6 +770,9 @@
       }
     }
 
+    /***********************
+     * Budget
+     ***********************/
     function calcBudget(){
       const days = +document.getElementById("days").value || 0;
       const people = +document.getElementById("people").value || 1;
@@ -797,6 +798,9 @@
       });
     });
 
+    /***********************
+     * Start location
+     ***********************/
     document.getElementById("gpsBtn").addEventListener("click", ()=>{
       if(!navigator.geolocation){ toast("Geolocation not supported."); return; }
       routeStatus.textContent = "Getting GPS…";
@@ -823,10 +827,17 @@
       return "Shimla, Himachal Pradesh";
     }
 
+    /***********************
+     * Google routing
+     ***********************/
+    function mapsReady(){
+      return !!(window.google && google.maps && directionsService && directionsRenderer);
+    }
+
     function scheduleRoute(shouldOptimize){
       const doOpt = !!autoOpt.checked && !!shouldOptimize;
       clearTimeout(routeTimer);
-      routeTimer = setTimeout(()=> computeDirections(doOpt), 600);
+      routeTimer = setTimeout(()=> computeDirections(doOpt), 650);
       routeStatus.textContent = mapsReady() ? (doOpt ? "Auto-optimizing…" : "Auto-routing…") : "Maps not ready";
     }
 
@@ -835,15 +846,9 @@
     autoOpt.addEventListener("change", ()=> scheduleRoute(false));
     ratePerKmEl.addEventListener("input", ()=> recalcFromLastDirections());
 
-    function mapsReady(){
-      return !!(window.google && google.maps && directionsService && directionsRenderer);
-    }
-
     async function computeDirections(allowOptimize){
-      if(!mapsReady()){
-        // no crash; just keep UI clean
-        return;
-      }
+      if(!mapsReady()) return;
+
       if(route.length === 0){
         directionsRenderer.set("directions", null);
         distanceOut.textContent = "—";
@@ -934,11 +939,10 @@
       routeStatus.textContent = "Cost updated";
     }
 
-    // ✅ clean fallback if Maps fails (no ugly UI break)
     function showMapsFixMessage(){
       const mapEl = document.getElementById("map");
       mapEl.textContent =
-        "Google Maps not loaded.\n\nFix in Google Cloud:\n1) Enable Billing\n2) Enable: Maps JavaScript API + Directions API\n3) API Key → HTTP referrers add:\n   https://champishere001.github.io/*\n4) Wait 5 min, reload";
+        "Google Maps not loaded.\n\nFix:\n1) Enable Billing\n2) Enable: Maps JavaScript API + Directions API\n3) API Key → HTTP referrers add:\n   https://champishere001.github.io/*\n4) Wait 5 min, reload";
       routeStatus.textContent = "Maps failed";
     }
 
@@ -966,21 +970,19 @@
       });
 
       directionsService = new google.maps.DirectionsService();
-      directionsRenderer = new google.maps.DirectionsRenderer({
-        map,
-        suppressMarkers: false,
-        preserveViewport: false
-      });
-
+      directionsRenderer = new google.maps.DirectionsRenderer({ map });
       routeStatus.textContent = "Ready";
     }
 
+    /***********************
+     * Filters wiring
+     ***********************/
     nav.addEventListener("click", (e)=>{
       const btn = e.target.closest("button");
       if(!btn) return;
       [...nav.querySelectorAll("button")].forEach(b=>b.classList.remove("active"));
       btn.classList.add("active");
-      tab = btn.dataset.tab;
+      tab = btn.dataset.tab; // all / Destination / Hotel / Temple
       renderPlaces();
     });
 
@@ -1004,18 +1006,17 @@
       qMain.value=""; qSide.value="";
       districtSel.value="all";
       tab="all";
-
-      // ✅ FIX reset tags to NONE selected
       sideTags = new Set();
       [...chipsSide.querySelectorAll(".chip")].forEach(x=>x.classList.remove("on"));
-
       [...nav.querySelectorAll("button")].forEach(b=>b.classList.remove("active"));
       nav.querySelector('button[data-tab="all"]').classList.add("active");
-
       renderPlaces();
       toast("Reset done");
     });
 
+    /***********************
+     * Toast
+     ***********************/
     let toastTimer = null;
     function toast(msg){
       let t = document.getElementById("toast");
@@ -1042,10 +1043,11 @@
     function escapeHtml(s){
       return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     }
-    function escapeAttr(s){
-      return String(s).replace(/'/g, "%27");
-    }
+    function escapeAttr(s){ return String(s).replace(/'/g, "%27"); }
 
+    /***********************
+     * BOOT
+     ***********************/
     async function boot(){
       await loadPlacesFromFirebase();
       renderPlaces();
