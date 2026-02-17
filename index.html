@@ -25,13 +25,28 @@
       overflow-x:hidden;
     }
     .bg{
-      position:fixed; inset:0;
-      background:
-        linear-gradient(180deg, rgba(5,8,16,.62), rgba(5,8,16,.86)),
-        url("201-himalaya.jpg");
-      background-size:cover; background-position:center;
-      z-index:-2; filter:saturate(1.08) contrast(1.05);
-    }
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  background-size:cover;
+  background-position:center;
+  filter:saturate(1.08) contrast(1.05);
+  animation:bgSlide 18s infinite;
+}
+
+/* dark overlay (keeps text readable) */
+.bg::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(5,8,16,.62), rgba(5,8,16,.86));
+}
+
+@keyframes bgSlide{
+  0%,30%   { background-image:url("201-himalaya.jpg"); }
+  35%,65%  { background-image:url("Dark.jpg"); }
+  70%,100% { background-image:url("Travelers.jpg"); }
+}
 
     .wrap{display:grid; grid-template-columns: 310px 1fr; gap:18px; padding:18px; min-height:100vh;}
 
