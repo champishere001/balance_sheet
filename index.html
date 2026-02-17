@@ -134,8 +134,6 @@
       margin-top:8px;
     }
     .dot{width:8px;height:8px;border-radius:999px;background:var(--ok);display:inline-block}
-    .dot.bad{background:var(--bad)}
-    .dot.warn{background:var(--warn)}
 
     .main{
       border-radius: var(--r2);
@@ -155,16 +153,9 @@
     .heroTop{display:flex;gap:12px;justify-content:space-between;align-items:flex-end;flex-wrap:wrap}
     .hero h2{margin:0;font-size:26px;line-height:1.15}
     .hero p{margin:8px 0 0;color:var(--muted);max-width:66ch;line-height:1.5}
+
     .searchBar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
     .searchBar input{flex:1 1 320px;min-width:240px;background: rgba(0,0,0,.28)}
-    .primary{
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.14);
-      color:var(--text);
-      padding:12px 14px; border-radius:14px;
-      cursor:pointer; font-weight:750; transition:.2s ease;
-    }
-    .primary:hover{transform:translateY(-1px);background: rgba(255,255,255,.20)}
     .ghost{
       border:1px solid rgba(255,255,255,.16);
       background: rgba(255,255,255,.08);
@@ -214,8 +205,20 @@
     .card h3{margin:0;font-size:15px;line-height:1.2}
     .meta{margin:0;color:var(--muted);font-size:12px;line-height:1.35}
     .pill{font-size:11px;padding:7px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background: rgba(255,255,255,.06)}
-    .submeta{display:flex;gap:8px;flex-wrap:wrap}
+    .submeta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .subpill{font-size:11px;padding:6px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background: rgba(0,0,0,.16);color:rgba(255,255,255,.88)}
+    .miniAdd{
+      margin-left:auto;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.12);
+      padding:7px 10px;
+      border-radius:999px;
+      font-weight:900;
+      font-size:12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .miniAdd:hover{background: rgba(255,255,255,.18)}
 
     .routeStats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
     .stat{border-radius:16px;border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.06);padding:10px}
@@ -225,7 +228,6 @@
       height:280px; border-radius:18px; border:1px solid rgba(255,255,255,.12);
       background:#0b1220; overflow:hidden;
     }
-
     .routeList{display:grid;gap:10px;margin-top:10px}
     .routeItem{border-radius:18px;border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.06);overflow:hidden}
     .routeItemHead{padding:10px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
@@ -259,55 +261,8 @@
     .itinerary .day b{font-size:12px}
     .itinerary .day p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.4}
 
-    /* Modal */
-    .modalBack{
-      position:fixed; inset:0; background: rgba(0,0,0,.55);
-      display:none; align-items:center; justify-content:center;
-      padding:14px; z-index:9999;
-      backdrop-filter: blur(10px);
-    }
-    .modal{
-      width:min(920px, 96vw);
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.14);
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.35));
-      box-shadow: 0 22px 70px rgba(0,0,0,.65);
-      overflow:hidden;
-    }
-    .modalHead{
-      padding:12px 14px;
-      display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
-      border-bottom:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-    }
-    .modalHead h3{margin:0;font-size:16px}
-    .modalHead p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.45}
-    .modalBody{display:grid; grid-template-columns: 1.2fr .8fr; gap:12px; padding:12px; min-height: 320px;}
-    .modalCard{
-      border-radius:18px;border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      padding:12px; overflow:auto;
-    }
-    .kv{display:grid; gap:8px}
-    .kv .k{color:rgba(255,255,255,.70);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
-    .kv .v{color:rgba(255,255,255,.90);font-size:13px;line-height:1.45}
-    .modalBtns{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
-    .xBtn{
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.08);
-      color:var(--text);
-      border-radius:12px;
-      padding:10px 12px;
-      cursor:pointer;
-      font-weight:800;
-    }
-    .xBtn:hover{background: rgba(255,255,255,.14)}
-    .linkBtn{border-color: rgba(255,255,255,.20); background: rgba(255,255,255,.12)}
-    .linkBtn:hover{background: rgba(255,255,255,.18)}
-
     @media (max-width: 1180px){ .split{grid-template-columns:1fr} .grid{grid-template-columns: repeat(2, minmax(0,1fr))} }
     @media (max-width: 1050px){ .wrap{grid-template-columns:1fr} .side{position:relative;height:auto} }
-    @media (max-width: 820px){ .modalBody{grid-template-columns:1fr} }
     @media (max-width: 620px){ .wrap{padding:12px} .grid{grid-template-columns:1fr} .hero h2{font-size:22px} #map{height:260px} }
   </style>
 </head>
@@ -421,15 +376,8 @@
       <div class="hint" id="debugOut">Debug: —</div>
 
       <div class="hint">
-        <b>Important:</b> Your screenshot shows data at:
+        <b>Important:</b> Your data path:
         <div class="pillMini"><span class="dot"></span> himachal_explorer/locations</div>
-        <div style="margin-top:8px;opacity:.95">
-          If you get <b>Permission denied</b>, set RTDB rules (quick test):
-          <br><br>
-          <code style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas; font-size:11px;">
-            {"rules":{"himachal_explorer":{".read":"auth!=null",".write":false}}}
-          </code>
-        </div>
       </div>
     </aside>
 
@@ -438,18 +386,14 @@
       <section class="hero">
         <div class="heroTop">
           <div>
-            <h2>Firebase Places (your schema) + Route Planner</h2>
-            <p>Reads from <b>himachal_explorer/locations</b>. Click any card to add as a stop. Tap a card’s “Details” to see your fields (best time, how to reach, key features, tasks).</p>
+            <h2>Places + Route Planner</h2>
+            <p>Tap any card to open full details (location.html). Use <b>+ Add</b> to add it into route.</p>
           </div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="primary" id="reloadBtn">Reload Firebase</button>
-            <button class="ghost" id="clearRouteBtn">Clear Route</button>
-          </div>
+          <button class="ghost" id="resetBtn">Reset</button>
         </div>
 
         <div class="searchBar">
           <input id="qMain" placeholder="Search places..." />
-          <button class="primary" id="resetBtn">Reset Filters</button>
         </div>
       </section>
 
@@ -481,11 +425,6 @@
 
             <div id="map"></div>
 
-            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
-              <button class="btn" id="fitBtn" style="margin-top:0;">Fit Map to Route</button>
-              <button class="btn" id="openGmaps" style="margin-top:0;">Open in Google Maps</button>
-            </div>
-
             <div class="routeList" id="routeList"></div>
 
             <div class="itinerary" id="itinerary">
@@ -498,87 +437,14 @@
     </main>
   </div>
 
-  <!-- Details Modal -->
-  <div class="modalBack" id="modalBack" role="dialog" aria-modal="true">
-    <div class="modal">
-      <div class="modalHead">
-        <div>
-          <h3 id="mTitle">—</h3>
-          <p id="mSub">—</p>
-        </div>
-        <button class="xBtn" id="mClose">Close ✕</button>
-      </div>
-      <div class="modalBody">
-        <div class="modalCard">
-          <div class="kv">
-            <div>
-              <div class="k">Overview</div>
-              <div class="v" id="mOverview">—</div>
-            </div>
-            <div>
-              <div class="k">Short description</div>
-              <div class="v" id="mShort">—</div>
-            </div>
-            <div>
-              <div class="k">How to reach</div>
-              <div class="v" id="mReach">—</div>
-            </div>
-            <div>
-              <div class="k">Key features</div>
-              <div class="v" id="mFeatures">—</div>
-            </div>
-            <div>
-              <div class="k">Task for location</div>
-              <div class="v" id="mTask">—</div>
-            </div>
-          </div>
-        </div>
-        <div class="modalCard">
-          <div class="kv">
-            <div>
-              <div class="k">District</div>
-              <div class="v" id="mDistrict">—</div>
-            </div>
-            <div>
-              <div class="k">Segment type</div>
-              <div class="v" id="mSeg">—</div>
-            </div>
-            <div>
-              <div class="k">Location type</div>
-              <div class="v" id="mType">—</div>
-            </div>
-            <div>
-              <div class="k">Best time to visit</div>
-              <div class="v" id="mBest">—</div>
-            </div>
-            <div>
-              <div class="k">Coordinates</div>
-              <div class="v" id="mCoords">—</div>
-            </div>
-            <div class="modalBtns">
-              <button class="xBtn linkBtn" id="mOpenMaps">Open Map</button>
-              <button class="xBtn linkBtn" id="mAddStop">Add as Stop</button>
-            </div>
-            <div class="hint" id="mMeta" style="margin-top:10px;">—</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Firebase + Google Maps -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-    /***********************
-     * CONFIG (MATCH YOUR SCREENSHOT)
-     ***********************/
     const GOOGLE_MAPS_API_KEY = "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug";
-    const FIREBASE_LOCATIONS_PATH = "himachal_explorer/locations"; // ✅ this is what your screenshot shows
+    const FIREBASE_LOCATIONS_PATH = "himachal_explorer/locations";
 
-    // ✅ Your project config (as you shared)
     const firebaseConfig = {
       apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
       authDomain: "revnue-records.firebaseapp.com",
@@ -589,9 +455,6 @@
       appId: "1:182348503564:web:480085405b09177245ad"
     };
 
-    /***********************
-     * UI refs
-     ***********************/
     const grid = document.getElementById("grid");
     const countOut = document.getElementById("countOut");
     const nav = document.getElementById("nav");
@@ -615,29 +478,13 @@
     const autoOpt = document.getElementById("autoOpt");
     const ratePerKmEl = document.getElementById("ratePerKm");
 
-    // Modal refs
-    const modalBack = document.getElementById("modalBack");
-    const mClose = document.getElementById("mClose");
-    const mTitle = document.getElementById("mTitle");
-    const mSub = document.getElementById("mSub");
-    const mOverview = document.getElementById("mOverview");
-    const mShort = document.getElementById("mShort");
-    const mReach = document.getElementById("mReach");
-    const mFeatures = document.getElementById("mFeatures");
-    const mTask = document.getElementById("mTask");
-    const mDistrict = document.getElementById("mDistrict");
-    const mSeg = document.getElementById("mSeg");
-    const mType = document.getElementById("mType");
-    const mBest = document.getElementById("mBest");
-    const mCoords = document.getElementById("mCoords");
-    const mMeta = document.getElementById("mMeta");
-    const mOpenMaps = document.getElementById("mOpenMaps");
-    const mAddStop = document.getElementById("mAddStop");
-
     let tab = "all";
     let sideTags = new Set(["family"]);
     let places = [];
+
+    // route stored in localStorage so location.html can add to it
     let route = [];
+    const ROUTE_LS_KEY = "hp_route_v1";
 
     let startMode = "manual";
     let startLatLng = null;
@@ -647,11 +494,6 @@
     let routeTimer = null;
     let applyingOptimizedOrder = false;
 
-    let selectedForModal = null;
-
-    /***********************
-     * Firebase init + anon auth
-     ***********************/
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const auth = getAuth(app);
@@ -664,60 +506,39 @@
         }
       }catch(e){
         debugOut.textContent = "Debug: Auth failed ❌ " + (e?.message || e);
-        // continue; sometimes read is public
       }
     }
 
-    /***********************
-     * Load from RTDB (your schema: himachal_explorer/locations/<pushId>)
-     ***********************/
     async function loadPlacesFromFirebase(){
       firebaseStatus.textContent = "Firebase: loading…";
       debugOut.textContent = "Debug: connecting…";
-
       await ensureAuth();
 
-      try{
-        const snap = await get(ref(db, FIREBASE_LOCATIONS_PATH));
-        const data = snap.exists() ? snap.val() : null;
+      const snap = await get(ref(db, FIREBASE_LOCATIONS_PATH));
+      const data = snap.exists() ? snap.val() : null;
 
-        if(!data){
-          firebaseStatus.textContent = "Firebase: path returned null ❌";
-          debugOut.textContent =
-            "Debug: No data at path: " + FIREBASE_LOCATIONS_PATH +
-            "\nFix: ensure your data is under himachal_explorer/locations";
-          throw new Error("No data at " + FIREBASE_LOCATIONS_PATH);
-        }
-
-        const out = [];
-        Object.entries(data).forEach(([id, p])=>{
-          const np = normalizePlace(id, p);
-          if(Number.isFinite(np.lat) && Number.isFinite(np.lng)) out.push(np);
-        });
-
-        // Sort nice
-        out.sort((a,b)=> (a.district||"").localeCompare(b.district||"") || (a.name||"").localeCompare(b.name||""));
-
-        places = out;
-
-        // District dropdown
-        const districtNames = [...new Set(places.map(p => p.district).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
-        districtSel.innerHTML =
-          `<option value="all">All Himachal</option>` +
-          districtNames.map(d=>`<option>${escapeHtml(d)}</option>`).join("");
-
-        firebaseStatus.textContent = `Firebase: loaded ${places.length} places ✅`;
-        debugOut.textContent =
-          `Debug: places=${places.length}\nPath: ${FIREBASE_LOCATIONS_PATH}\nSchema: locationName, district, segmentType, map.lat/map.lng`;
-
-      }catch(e){
-        const msg = (e?.message || String(e));
-        firebaseStatus.textContent = "Firebase: error ❌ " + msg;
-        debugOut.textContent =
-          "Debug error:\n" + msg +
-          "\n\nIf you see Permission denied:\nRules quick test:\n{\n  \"rules\": {\"himachal_explorer\": {\".read\": \"auth != null\", \".write\": false}}\n}";
-        throw e;
+      if(!data){
+        firebaseStatus.textContent = "Firebase: path returned null ❌";
+        debugOut.textContent = "Debug: No data at " + FIREBASE_LOCATIONS_PATH;
+        return;
       }
+
+      const out = [];
+      Object.entries(data).forEach(([id, p])=>{
+        const np = normalizePlace(id, p);
+        if(Number.isFinite(np.lat) && Number.isFinite(np.lng)) out.push(np);
+      });
+
+      out.sort((a,b)=> (a.district||"").localeCompare(b.district||"") || (a.name||"").localeCompare(b.name||""));
+      places = out;
+
+      const districtNames = [...new Set(places.map(p => p.district).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+      districtSel.innerHTML =
+        `<option value="all">All Himachal</option>` +
+        districtNames.map(d=>`<option>${escapeHtml(d)}</option>`).join("");
+
+      firebaseStatus.textContent = `Firebase: loaded ${places.length} places ✅`;
+      debugOut.textContent = `Debug: places=${places.length}\nPath: ${FIREBASE_LOCATIONS_PATH}`;
     }
 
     function normalizePlace(id, p){
@@ -725,25 +546,21 @@
       const lat = Number(mapObj?.lat ?? p?.lat ?? p?.latitude);
       const lng = Number(mapObj?.lng ?? p?.lng ?? p?.longitude);
 
-      const segmentType = (p?.segmentType || "").toString().trim(); // Destination / Hotel / Temple etc (as per your data)
-      const locationType = (p?.locationType || "").toString().trim(); // Public Square etc (as per your data)
-
+      const segmentType = (p?.segmentType || "").toString().trim();
+      const locationType = (p?.locationType || "").toString().trim();
       const name = (p?.locationName || p?.name || "").toString().trim() || id;
       const district = (p?.district || "").toString().trim();
 
-      // Build tags from your fields + chips
       const tags = new Set();
       const s = (segmentType + " " + locationType + " " + (p?.keyFeatures||"") + " " + (p?.taskForLocation||"") + " " + (p?.overview||"") + " " + (p?.shortDescription||""))
         .toLowerCase();
 
-      // simple keyword tagging
       if(/temple|mandir|devi|mahadev|shiva|shiv/.test(s)) tags.add("spiritual");
       if(/lake|river|waterfall|forest|valley|meadow|peak|mount|snow|nature|view|sunset/.test(s)) tags.add("nature");
       if(/trek|hike|trail|camp|adventure|paragliding|rafting|ski/.test(s)) tags.add("adventure");
       if(/heritage|colonial|fort|palace|museum|monastery|old/.test(s)) tags.add("heritage");
       if(/family|kids|picnic|easy/.test(s)) tags.add("family");
 
-      // optional image url support if you add later
       const img = (p?.imageUrl || p?.img || p?.image || "").toString().trim();
 
       return {
@@ -766,24 +583,14 @@
       };
     }
 
-    /***********************
-     * UI helpers
-     ***********************/
-    function labelType(p){
-      // Use segmentType exactly like your DB (Destination/Hotel/Temple)
-      return (p.segmentType || "Place").toString();
-    }
-
     function segmentMatchesTab(p){
       if(tab === "all") return true;
-      // tab values are: Destination / Hotel / Temple
       return (p.segmentType || "").toLowerCase() === tab.toLowerCase();
     }
 
     function matches(p){
       const d = districtSel.value;
       const q = (qMain.value || qSide.value || "").trim().toLowerCase();
-
       const byTab = segmentMatchesTab(p);
       const byDistrict = (d === "all") ? true : (p.district === d);
 
@@ -802,14 +609,11 @@
       ).toLowerCase();
 
       const byQuery = !q ? true : hay.includes(q);
-
       const bySideTags = (sideTags.size === 0) ? true : [...sideTags].some(t => (p.tags || []).includes(t));
       return byTab && byDistrict && byQuery && bySideTags;
     }
 
     function fallbackImgFor(p){
-      // nice “type based” background using Unsplash source (no API key required)
-      // This is deterministic-ish and looks good even if you have no image field in DB.
       const seed = encodeURIComponent(`${p.segmentType} ${p.locationType} ${p.district} himachal`);
       return `https://source.unsplash.com/1200x800/?${seed}`;
     }
@@ -823,15 +627,13 @@
         const el = document.createElement("div");
         el.className = "card";
         const img = p.img ? p.img : fallbackImgFor(p);
-
-        const sub1 = p.bestTimeToVisit ? `Best: ${p.bestTimeToVisit}` : "";
         const sub2 = p.locationType && p.locationType !== "—" ? p.locationType : "";
         const hasMap = (Number.isFinite(p.lat) && Number.isFinite(p.lng));
         const mapPill = hasMap ? "Map ✓" : "No coords";
 
         el.innerHTML = `
           <div class="thumb" style="background-image:url('${escapeAttr(img)}')">
-            <div class="badge">${escapeHtml(labelType(p))}</div>
+            <div class="badge">${escapeHtml(p.segmentType || "Place")}</div>
           </div>
           <div class="cardBody">
             <div class="titleRow">
@@ -841,22 +643,21 @@
             <p class="meta">${escapeHtml(p.shortDescription || p.overview || "")}</p>
             <div class="submeta">
               ${sub2 ? `<span class="subpill">${escapeHtml(sub2)}</span>` : ``}
-              ${sub1 ? `<span class="subpill">${escapeHtml(sub1)}</span>` : ``}
               <span class="subpill">${escapeHtml(mapPill)}</span>
-              <span class="subpill" style="margin-left:auto; cursor:pointer" data-details="1">Details →</span>
+              <span class="miniAdd" data-add="1">+ Add</span>
             </div>
           </div>
         `;
 
-        // Click card = add to route
+        // click card -> open location page
         el.addEventListener("click", (ev)=>{
-          const detailsClicked = ev.target?.closest?.("[data-details='1']");
-          if(detailsClicked){
+          const addClicked = ev.target?.closest?.("[data-add='1']");
+          if(addClicked){
             ev.stopPropagation();
-            openModal(p);
+            addToRoute(p);
             return;
           }
-          addToRoute(p);
+          window.location.href = `location.html?id=${encodeURIComponent(p.id)}`;
         });
 
         grid.appendChild(el);
@@ -867,56 +668,6 @@
       }
     }
 
-    function openModal(p){
-      selectedForModal = p;
-
-      mTitle.textContent = p.name || "—";
-      mSub.textContent = `${p.district || "—"} • ${p.segmentType || "Place"} • ${p.locationType || "—"}`;
-
-      mOverview.textContent = p.overview || "—";
-      mShort.textContent = p.shortDescription || "—";
-      mReach.textContent = p.howToReach || "—";
-      mFeatures.textContent = p.keyFeatures || "—";
-      mTask.textContent = p.taskForLocation || "—";
-
-      mDistrict.textContent = p.district || "—";
-      mSeg.textContent = p.segmentType || "—";
-      mType.textContent = p.locationType || "—";
-      mBest.textContent = p.bestTimeToVisit || "—";
-      mCoords.textContent = (Number.isFinite(p.lat) && Number.isFinite(p.lng)) ? `${p.lat}, ${p.lng}` : "—";
-
-      const meta = p.meta ? JSON.stringify(p.meta, null, 2) : "No meta";
-      mMeta.textContent = "Meta:\n" + meta;
-
-      modalBack.style.display = "flex";
-    }
-
-    function closeModal(){
-      modalBack.style.display = "none";
-      selectedForModal = null;
-    }
-
-    mClose.addEventListener("click", closeModal);
-    modalBack.addEventListener("click", (e)=>{
-      if(e.target === modalBack) closeModal();
-    });
-
-    mOpenMaps.addEventListener("click", ()=>{
-      if(!selectedForModal) return;
-      const p = selectedForModal;
-      const url = p.mapUrl
-        || (Number.isFinite(p.lat) && Number.isFinite(p.lng)
-            ? `https://www.google.com/maps?q=${p.lat},${p.lng}`
-            : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + " " + (p.district||"") + " Himachal Pradesh")}`);
-      window.open(url, "_blank");
-    });
-
-    mAddStop.addEventListener("click", ()=>{
-      if(!selectedForModal) return;
-      addToRoute(selectedForModal);
-      closeModal();
-    });
-
     function escapeHtml(s){
       return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     }
@@ -924,9 +675,7 @@
       return String(s).replace(/'/g, "%27");
     }
 
-    /***********************
-     * Budget
-     ***********************/
+    // Budget
     function calcBudget(){
       const days = +document.getElementById("days").value || 0;
       const people = +document.getElementById("people").value || 1;
@@ -952,22 +701,27 @@
       });
     });
 
-    /***********************
-     * Route planner
-     ***********************/
-    document.getElementById("clearRouteBtn").addEventListener("click", ()=>{
-      route = [];
-      renderRoute();
-      scheduleRoute(false);
-    });
+    // Route localStorage helpers
+    function loadRouteFromLS(){
+      try{
+        const raw = localStorage.getItem(ROUTE_LS_KEY);
+        route = raw ? JSON.parse(raw) : [];
+        if(!Array.isArray(route)) route = [];
+      }catch{ route = []; }
+    }
+    function saveRouteToLS(){
+      try{ localStorage.setItem(ROUTE_LS_KEY, JSON.stringify(route)); }catch{}
+    }
 
+    // Route planner
     function addToRoute(p){
       if(!Number.isFinite(p.lat) || !Number.isFinite(p.lng)){
         toast("This place has no lat/lng in Firebase.");
         return;
       }
       if(!route.find(x=>x.id===p.id)){
-        route.push(p);
+        route.push({ id:p.id, name:p.name, district:p.district, segmentType:p.segmentType, lat:p.lat, lng:p.lng, mapUrl:p.mapUrl });
+        saveRouteToLS();
         renderRoute();
         scheduleRoute(true);
       } else {
@@ -979,12 +733,14 @@
       const j = i + dir;
       if(j < 0 || j >= route.length) return;
       [route[i], route[j]] = [route[j], route[i]];
+      saveRouteToLS();
       renderRoute();
       scheduleRoute(true);
     }
 
     function removeStop(i){
       route.splice(i,1);
+      saveRouteToLS();
       renderRoute();
       scheduleRoute(true);
     }
@@ -999,29 +755,24 @@
           <div class="routeItemHead">
             <div>
               <b>${i+1}. ${escapeHtml(p.name)}</b>
-              <p>${escapeHtml(p.district)} • ${escapeHtml(p.segmentType)}</p>
+              <p>${escapeHtml(p.district || "—")} • ${escapeHtml(p.segmentType || "Place")}</p>
             </div>
             <div class="routeBtns">
               <button class="tiny" title="Move up">↑</button>
               <button class="tiny" title="Move down">↓</button>
-              <button class="tiny" title="Open in Maps">Map</button>
               <button class="tiny" title="Remove">✕</button>
             </div>
           </div>
         `;
-        const [up, down, mapBtn, del] = item.querySelectorAll("button");
+        const [up, down, del] = item.querySelectorAll("button");
         up.addEventListener("click", ()=>move(i,-1));
         down.addEventListener("click", ()=>move(i,+1));
-        mapBtn.addEventListener("click", ()=>{
-          const url = p.mapUrl || `https://www.google.com/maps?q=${p.lat},${p.lng}`;
-          window.open(url, "_blank");
-        });
         del.addEventListener("click", ()=>removeStop(i));
         routeListEl.appendChild(item);
       });
 
       if(route.length === 0){
-        routeListEl.innerHTML = `<div style="opacity:.8; padding:10px;">No stops yet. Click any place card to add.</div>`;
+        routeListEl.innerHTML = `<div style="opacity:.8; padding:10px;">No stops yet. Use + Add on any place.</div>`;
       }
 
       stopsOut.textContent = route.length.toString();
@@ -1046,9 +797,7 @@
       }
     }
 
-    /***********************
-     * Start location
-     ***********************/
+    // Start location
     document.getElementById("gpsBtn").addEventListener("click", ()=>{
       if(!navigator.geolocation){
         toast("Geolocation not supported.");
@@ -1078,9 +827,6 @@
       return "Shimla, Himachal Pradesh";
     }
 
-    /***********************
-     * Auto route debounce
-     ***********************/
     function scheduleRoute(shouldOptimize){
       const doOpt = !!autoOpt.checked && !!shouldOptimize;
       clearTimeout(routeTimer);
@@ -1093,9 +839,6 @@
     autoOpt.addEventListener("change", ()=> scheduleRoute(false));
     ratePerKmEl.addEventListener("input", ()=> recalcFromLastDirections());
 
-    /***********************
-     * Google directions
-     ***********************/
     async function computeDirections(allowOptimize){
       if(!directionsService || !directionsRenderer){
         routeStatus.textContent = "Maps not ready";
@@ -1125,8 +868,6 @@
         waypoints = route.slice(0, -1).map(p => ({ location: {lat:p.lat, lng:p.lng}, stopover:true }));
       }
 
-      routeStatus.textContent = allowOptimize ? "Optimizing…" : "Routing…";
-
       const request = {
         origin,
         destination,
@@ -1153,6 +894,7 @@
             route = [...head, dest];
           }
 
+          saveRouteToLS();
           renderRoute();
           applyingOptimizedOrder = false;
         }
@@ -1194,52 +936,13 @@
       routeStatus.textContent = "Cost updated";
     }
 
-    /***********************
-     * Buttons
-     ***********************/
-    document.getElementById("fitBtn").addEventListener("click", ()=>{
-      const r0 = lastDirections?.routes?.[0];
-      if(r0?.bounds && map) map.fitBounds(r0.bounds);
-    });
-
-    document.getElementById("openGmaps").addEventListener("click", ()=>{
-      const origin = getOrigin();
-      const loop = !!loopToggle.checked;
-
-      if(route.length === 0){
-        window.open("https://www.google.com/maps", "_blank");
-        return;
-      }
-
-      let destination;
-      let waypoints = [];
-
-      if(loop){
-        destination = origin;
-        waypoints = route.map(p => `${p.lat},${p.lng}`);
-      }else{
-        const last = route[route.length-1];
-        destination = `${last.lat},${last.lng}`;
-        waypoints = route.slice(0,-1).map(p => `${p.lat},${p.lng}`);
-      }
-
-      const originStr = (typeof origin === "string") ? origin : `${origin.lat},${origin.lng}`;
-      const wpStr = waypoints.length ? `&waypoints=${encodeURIComponent(waypoints.join("|"))}` : "";
-      const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(originStr)}&destination=${encodeURIComponent(destination)}${wpStr}&travelmode=driving`;
-      window.open(url, "_blank");
-    });
-
-    document.getElementById("reloadBtn").addEventListener("click", async ()=> boot());
-
-    /***********************
-     * Filters wiring
-     ***********************/
+    // Filters
     nav.addEventListener("click", (e)=>{
       const btn = e.target.closest("button");
       if(!btn) return;
       [...nav.querySelectorAll("button")].forEach(b=>b.classList.remove("active"));
       btn.classList.add("active");
-      tab = btn.dataset.tab; // all / Destination / Hotel / Temple
+      tab = btn.dataset.tab;
       renderPlaces();
     });
 
@@ -1271,9 +974,7 @@
       renderPlaces();
     });
 
-    /***********************
-     * Toast
-     ***********************/
+    // Toast
     let toastTimer = null;
     function toast(msg){
       let t = document.getElementById("toast");
@@ -1297,15 +998,9 @@
       toastTimer = setTimeout(()=>{ t.style.opacity="0"; }, 1800);
     }
 
-    /***********************
-     * Google maps loader
-     ***********************/
+    // Google maps loader
     function loadGoogleMaps(){
       return new Promise((resolve, reject)=>{
-        if(!GOOGLE_MAPS_API_KEY){
-          reject(new Error("Missing Google API key"));
-          return;
-        }
         const s = document.createElement("script");
         s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(GOOGLE_MAPS_API_KEY)}&callback=__initMap`;
         s.async = true; s.defer = true;
@@ -1334,32 +1029,21 @@
       routeStatus.textContent = "Ready";
     }
 
-    /***********************
-     * BOOT
-     ***********************/
     async function boot(){
-      try{
-        await loadPlacesFromFirebase();
-        renderPlaces();
-        renderRoute();
-      }catch(e){
-        console.error(e);
-        toast("Firebase load failed: " + (e?.message || e));
-      }
+      loadRouteFromLS();
+      renderRoute();
+
+      await loadPlacesFromFirebase();
+      renderPlaces();
+
+      updateTotalOnly();
+      scheduleRoute(false);
     }
 
-    // Startup
     (async ()=>{
-      try{
-        await loadGoogleMaps();
-        initMap();
-      }catch(e){
-        console.error(e);
-        routeStatus.textContent = "Google Maps load failed";
-        toast("Google Maps failed. Check API key / restrictions / billing.");
-      }
+      try{ await loadGoogleMaps(); initMap(); }
+      catch(e){ console.error(e); routeStatus.textContent = "Google Maps load failed"; toast("Google Maps failed. Check API key / billing / restrictions."); }
       await boot();
-      updateTotalOnly();
     })();
   </script>
 </body>
