@@ -115,6 +115,7 @@
       color:var(--muted);
       font-size:12px;
       line-height:1.4;
+      white-space:pre-wrap;
     }
 
     .main{
@@ -348,6 +349,7 @@
       </div>
 
       <div class="hint" id="firebaseStatus">Firebase: loading…</div>
+      <div class="hint" id="debugOut" style="margin-top:10px;">Debug: —</div>
     </aside>
 
     <!-- Main -->
@@ -411,7 +413,8 @@
             </div>
 
             <div class="hint" style="margin-top:12px;">
-              If Firebase shows permission denied → update RTDB rules for read.
+              If Firebase shows <b>Permission denied</b> → Realtime Database Rules need read access (temporary test):
+              {"rules":{".read":true,".write":false}}
             </div>
           </div>
         </div>
@@ -423,9 +426,9 @@
     /***********************
      * CONFIG
      ***********************/
-    const GOOGLE_MAPS_API_KEY = "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug"; // <-- paste here
+    const GOOGLE_MAPS_API_KEY = "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug";
     const DB_BASE = "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app";
-    const FIREBASE_DISTRICTS_PATH = "/tourism/hp/districts"; // from your screenshot
+    const FIREBASE_DISTRICTS_PATH = "/tourism/hp/districts"; // expected path
 
     /***********************
      * UI refs
@@ -438,6 +441,7 @@
     const qMain = document.getElementById("qMain");
     const chipsSide = document.getElementById("chipsSide");
     const firebaseStatus = document.getElementById("firebaseStatus");
+    const debugOut = document.getElementById("debugOut");
 
     const routeListEl = document.getElementById("routeList");
     const routeStatus = document.getElementById("routeStatus");
@@ -454,7 +458,7 @@
 
     let tab = "all";
     let sideTags = new Set(["family"]);
-    let places = []; // <-- Loaded from Firebase
+    let places = [];
     let route = [];
 
     /***********************
@@ -472,53 +476,79 @@
     let applyingOptimizedOrder = false;
 
     /***********************
-     * Firebase loader (your structure)
-     * /tourism/hp/districts/{District}/segments/{destinations,hotels,temples}
+     * Robust Firebase loader + auto-detect structure
      ***********************/
+    async function fetchJson(url){
+      const res = await fetch(url, { cache:"no-store" });
+      const text = await res.text();
+      let data = null;
+      try{ data = text ? JSON.parse(text) : null; }catch(_e){}
+      return {res, text, data};
+    }
+
     async function loadPlacesFromFirebase(){
       firebaseStatus.textContent = "Firebase: loading…";
-      const url = `${DB_BASE}${FIREBASE_DISTRICTS_PATH}.json`;
+      debugOut.textContent = "Debug: fetching districts…";
 
-      const res = await fetch(url);
-      const data = await res.json();
+      const url = `${DB_BASE}${FIREBASE_DISTRICTS_PATH}.json?print=silent`;
+      const {res, text, data} = await fetchJson(url);
 
+      // HTTP error
       if(!res.ok){
-        throw new Error("Firebase HTTP error " + res.status);
+        firebaseStatus.textContent = `Firebase: HTTP ${res.status} ❌`;
+        debugOut.textContent = `Debug: ${url}\nHTTP ${res.status}\n${text.slice(0,300)}`;
+        throw new Error(`HTTP ${res.status}`);
       }
+
+      // Firebase error object
       if(data && data.error){
+        firebaseStatus.textContent = `Firebase: ${data.error} ❌`;
+        debugOut.textContent = `Debug: ${url}\n${text.slice(0,300)}`;
         throw new Error(data.error);
       }
 
+      // null path
+      if(data === null){
+        firebaseStatus.textContent = "Firebase: path returned null ❌";
+        debugOut.textContent = `Debug: ${url}\nReturned: null\nFix: Check FIREBASE_DISTRICTS_PATH spelling OR data location.`;
+        throw new Error("Path returned null");
+      }
+
+      // Convert districts -> places
       const out = [];
       const districts = Object.entries(data || {});
+      debugOut.textContent = `Debug: districts keys = ${districts.length}\nTrying: {district}/segments/...`;
 
+      // Detect structure:
+      // A) districtObj.segments.{destinations,hotels,temples}
+      // B) districtObj.{destinations,hotels,temples}
       districts.forEach(([districtName, districtObj])=>{
-        const seg = districtObj?.segments || {};
+        const hasSegments = !!districtObj?.segments;
+        const seg = hasSegments ? (districtObj.segments || {}) : (districtObj || {});
 
         // destinations -> type routes
         Object.entries(seg.destinations || {}).forEach(([id, p])=>{
           out.push(normalizePlace(id, p, districtName, "routes"));
         });
-
-        // hotels
         Object.entries(seg.hotels || {}).forEach(([id, p])=>{
           out.push(normalizePlace(id, p, districtName, "hotels"));
         });
-
-        // temples
         Object.entries(seg.temples || {}).forEach(([id, p])=>{
           out.push(normalizePlace(id, p, districtName, "temples"));
         });
       });
 
-      // Filter valid lat/lng
+      // keep only valid lat/lng
       places = out.filter(p => Number.isFinite(p.lat) && Number.isFinite(p.lng));
 
       // Fill district dropdown dynamically
       const districtNames = [...new Set(places.map(p => p.district))].sort((a,b)=>a.localeCompare(b));
-      districtSel.innerHTML = `<option value="all">All Himachal</option>` + districtNames.map(d=>`<option>${escapeHtml(d)}</option>`).join("");
+      districtSel.innerHTML =
+        `<option value="all">All Himachal</option>` +
+        districtNames.map(d=>`<option>${escapeHtml(d)}</option>`).join("");
 
       firebaseStatus.textContent = `Firebase: loaded ${places.length} places ✅`;
+      debugOut.textContent = `Debug: Loaded OK ✅\nURL: ${url}\nPlaces: ${places.length}\nTip: If places=0 check lat/lng keys.`;
     }
 
     function normalizePlace(id, p, districtName, type){
@@ -529,8 +559,9 @@
         district: districtName,
         desc: (p?.desc || p?.description || "").toString(),
         img: (p?.img || p?.image || "").toString(),
-        lat: Number(p?.lat),
-        lng: Number(p?.lng),
+        // supports lat/lng OR latitude/longitude
+        lat: Number(p?.lat ?? p?.latitude),
+        lng: Number(p?.lng ?? p?.longitude),
         tags: Array.isArray(p?.tags) ? p.tags : []
       };
     }
@@ -969,7 +1000,7 @@
       t.textContent = msg;
       t.style.opacity="1";
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(()=>{ t.style.opacity="0"; }, 1600);
+      toastTimer = setTimeout(()=>{ t.style.opacity="0"; }, 1800);
     }
 
     /***********************
@@ -977,7 +1008,7 @@
      ***********************/
     function loadGoogleMaps(){
       return new Promise((resolve, reject)=>{
-        if(!GOOGLE_MAPS_API_KEY || GOOGLE_MAPS_API_KEY.includes("PASTE_YOUR_GOOGLE_KEY")){
+        if(!GOOGLE_MAPS_API_KEY){
           reject(new Error("Missing Google API key"));
           return;
         }
