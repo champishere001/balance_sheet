@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Himachal Explorer — Firebase Places + Route Planner</title>
+  <title>Himachal Explorer — Firebase + Route Planner</title>
 
   <style>
     :root{
@@ -161,7 +161,7 @@
       background: rgba(255,255,255,.08);
       color:var(--text);
       padding:11px 12px; border-radius:14px;
-      cursor:pointer; font-weight:700; transition:.2s ease;
+      cursor:pointer; font-weight:800; transition:.2s ease;
     }
     .ghost:hover{background: rgba(255,255,255,.14);transform:translateY(-1px)}
 
@@ -213,21 +213,25 @@
       background: rgba(255,255,255,.12);
       padding:7px 10px;
       border-radius:999px;
-      font-weight:900;
+      font-weight:950;
       font-size:12px;
       cursor:pointer;
       user-select:none;
     }
     .miniAdd:hover{background: rgba(255,255,255,.18)}
+    .miniAdd.disabled{opacity:.55; cursor:not-allowed}
 
     .routeStats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
     .stat{border-radius:16px;border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.06);padding:10px}
     .stat b{display:block;font-size:13px}
     .stat span{color:var(--muted);font-size:12px}
+
     #map{
       height:280px; border-radius:18px; border:1px solid rgba(255,255,255,.12);
-      background:#0b1220; overflow:hidden;
+      background:#0b1220; overflow:hidden; display:grid; place-items:center;
+      color:rgba(255,255,255,.75); font-size:12px; text-align:center; padding:10px;
     }
+
     .routeList{display:grid;gap:10px;margin-top:10px}
     .routeItem{border-radius:18px;border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.06);overflow:hidden}
     .routeItemHead{padding:10px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
@@ -241,7 +245,7 @@
       border-radius:12px;
       padding:8px 10px;
       cursor:pointer;
-      font-weight:750;
+      font-weight:800;
       transition:.2s ease;
       font-size:12px; line-height:1; user-select:none;
     }
@@ -266,6 +270,7 @@
     @media (max-width: 620px){ .wrap{padding:12px} .grid{grid-template-columns:1fr} .hero h2{font-size:22px} #map{height:260px} }
   </style>
 </head>
+
 <body>
   <div class="bg"></div>
 
@@ -282,7 +287,7 @@
         </div>
         <div>
           <h1>Himachal Explorer</h1>
-          <p>Firebase data + Google routing</p>
+          <p>Realtime DB + Route Planner</p>
         </div>
       </div>
 
@@ -376,8 +381,8 @@
       <div class="hint" id="debugOut">Debug: —</div>
 
       <div class="hint">
-        <b>Important:</b> Your data path:
-        <div class="pillMini"><span class="dot"></span> himachal_explorer/locations</div>
+        <b>Data Path:</b> Your data is at DB root (keys like <i>akhand-chandi</i>, <i>annandale</i>…)
+        <div class="pillMini"><span class="dot"></span> / (root)</div>
       </div>
     </aside>
 
@@ -386,8 +391,8 @@
       <section class="hero">
         <div class="heroTop">
           <div>
-            <h2>Places + Route Planner</h2>
-            <p>Tap any card to open full details (location.html). Use <b>+ Add</b> to add it into route.</p>
+            <h2>Places (Firebase) + Route Planner</h2>
+            <p>Tap any card to open details page. Use <b>+ Add</b> to build route (needs coordinates).</p>
           </div>
           <button class="ghost" id="resetBtn">Reset</button>
         </div>
@@ -423,7 +428,7 @@
               <div class="stat"><b id="totalOut">₹ —</b><span>Total trip est.</span></div>
             </div>
 
-            <div id="map"></div>
+            <div id="map">Google Maps loading…</div>
 
             <div class="routeList" id="routeList"></div>
 
@@ -431,6 +436,8 @@
               <h4>Day-wise Itinerary</h4>
               <div class="day"><b>Day 1</b><p>Add stops to auto-fill itinerary.</p></div>
             </div>
+
+            <button class="btn" id="clearRouteBtn" style="margin-top:12px;">Clear Route</button>
           </div>
         </div>
       </section>
@@ -442,8 +449,13 @@
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
+    /***********************
+     * CONFIG
+     ***********************/
     const GOOGLE_MAPS_API_KEY = "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug";
-    const FIREBASE_LOCATIONS_PATH = "himachal_explorer/locations";
+
+    // ✅ your DB keys are at ROOT
+    const FIREBASE_LOCATIONS_PATH = "/";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
@@ -455,6 +467,9 @@
       appId: "1:182348503564:web:480085405b09177245ad"
     };
 
+    /***********************
+     * UI refs
+     ***********************/
     const grid = document.getElementById("grid");
     const countOut = document.getElementById("countOut");
     const nav = document.getElementById("nav");
@@ -478,22 +493,27 @@
     const autoOpt = document.getElementById("autoOpt");
     const ratePerKmEl = document.getElementById("ratePerKm");
 
+    /***********************
+     * State
+     ***********************/
     let tab = "all";
     let sideTags = new Set(["family"]);
     let places = [];
 
-    // route stored in localStorage so location.html can add to it
-    let route = [];
     const ROUTE_LS_KEY = "hp_route_v1";
+    let route = loadRouteFromLS(); // array of {id, lat, lng, name, district, segmentType}
 
     let startMode = "manual";
     let startLatLng = null;
 
-    let map, directionsService, directionsRenderer;
+    let map = null, directionsService = null, directionsRenderer = null;
     let lastDirections = null;
     let routeTimer = null;
     let applyingOptimizedOrder = false;
 
+    /***********************
+     * Firebase init + anon auth
+     ***********************/
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const auth = getAuth(app);
@@ -505,84 +525,134 @@
           debugOut.textContent = "Debug: Anonymous auth ✅";
         }
       }catch(e){
-        debugOut.textContent = "Debug: Auth failed ❌ " + (e?.message || e);
+        debugOut.textContent = "Debug: Auth failed (ok if public read)";
       }
     }
 
-    async function loadPlacesFromFirebase(){
-      firebaseStatus.textContent = "Firebase: loading…";
-      debugOut.textContent = "Debug: connecting…";
-      await ensureAuth();
-
-      const snap = await get(ref(db, FIREBASE_LOCATIONS_PATH));
-      const data = snap.exists() ? snap.val() : null;
-
-      if(!data){
-        firebaseStatus.textContent = "Firebase: path returned null ❌";
-        debugOut.textContent = "Debug: No data at " + FIREBASE_LOCATIONS_PATH;
-        return;
+    /***********************
+     * Key mapping helpers (your REAL keys with spaces)
+     ***********************/
+    function pick(p, keys, fallback=""){
+      for(const k of keys){
+        if(p && p[k] !== undefined && p[k] !== null && String(p[k]).trim() !== "") return p[k];
       }
+      return fallback;
+    }
 
-      const out = [];
-      Object.entries(data).forEach(([id, p])=>{
-        const np = normalizePlace(id, p);
-        if(Number.isFinite(np.lat) && Number.isFinite(np.lng)) out.push(np);
-      });
+    function parseLatLng(p){
+      // If you later add lat/lng fields, this will auto-detect
+      const lat = Number(p?.lat ?? p?.latitude ?? p?.Latitude ?? p?.LAT);
+      const lng = Number(p?.lng ?? p?.longitude ?? p?.Longitude ?? p?.LNG);
+      if(Number.isFinite(lat) && Number.isFinite(lng)) return {lat, lng};
 
-      out.sort((a,b)=> (a.district||"").localeCompare(b.district||"") || (a.name||"").localeCompare(b.name||""));
-      places = out;
+      // If Map contains "lat,lng" or url with coords
+      const m = String(p?.Map ?? p?.map ?? "").trim();
+      const mm = m.match(/(-?\d+(\.\d+)?)\s*,\s*(-?\d+(\.\d+)?)/);
+      if(mm) return { lat: Number(mm[1]), lng: Number(mm[3]) };
 
-      const districtNames = [...new Set(places.map(p => p.district).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
-      districtSel.innerHTML =
-        `<option value="all">All Himachal</option>` +
-        districtNames.map(d=>`<option>${escapeHtml(d)}</option>`).join("");
-
-      firebaseStatus.textContent = `Firebase: loaded ${places.length} places ✅`;
-      debugOut.textContent = `Debug: places=${places.length}\nPath: ${FIREBASE_LOCATIONS_PATH}`;
+      return {lat: NaN, lng: NaN};
     }
 
     function normalizePlace(id, p){
-      const mapObj = p?.map || {};
-      const lat = Number(mapObj?.lat ?? p?.lat ?? p?.latitude);
-      const lng = Number(mapObj?.lng ?? p?.lng ?? p?.longitude);
+      const {lat, lng} = parseLatLng(p);
 
-      const segmentType = (p?.segmentType || "").toString().trim();
-      const locationType = (p?.locationType || "").toString().trim();
-      const name = (p?.locationName || p?.name || "").toString().trim() || id;
-      const district = (p?.district || "").toString().trim();
+      const name = String(pick(p, ["Location Name","locationName","name","Location_Name"], id)).trim();
+      const district = String(pick(p, ["District","district"], "")).trim();
+      const segmentType = String(pick(p, ["Segment Type","segmentType"], "Place")).trim();
+      const locationType = String(pick(p, ["Location Type","locationType"], "—")).trim();
+
+      const overview = String(pick(p, ["Overview","overview"], "")).trim();
+      const shortDescription = String(pick(p, ["Short Description","shortDescription"], "")).trim();
+      const howToReach = String(pick(p, ["How to Reach","howToReach"], "")).trim();
+      const keyFeatures = String(pick(p, ["Key Features","keyFeatures"], "")).trim();
+      const bestTimeToVisit = String(pick(p, ["Best Time to Visit","bestTimeToVisit"], "")).trim();
+      const taskForLocation = String(pick(p, ["Task for Location","taskForLocation"], "")).trim();
+      const distFromHQ = String(pick(p, ["Dist from HQ","Dist From HQ","Distance from HQ","Distance From HQ"], "")).trim();
+
+      const mapUrl = String(pick(p, ["Map","mapUrl"], "")).trim();
 
       const tags = new Set();
-      const s = (segmentType + " " + locationType + " " + (p?.keyFeatures||"") + " " + (p?.taskForLocation||"") + " " + (p?.overview||"") + " " + (p?.shortDescription||""))
-        .toLowerCase();
-
+      const s = (segmentType+" "+locationType+" "+overview+" "+shortDescription+" "+keyFeatures+" "+taskForLocation).toLowerCase();
       if(/temple|mandir|devi|mahadev|shiva|shiv/.test(s)) tags.add("spiritual");
       if(/lake|river|waterfall|forest|valley|meadow|peak|mount|snow|nature|view|sunset/.test(s)) tags.add("nature");
       if(/trek|hike|trail|camp|adventure|paragliding|rafting|ski/.test(s)) tags.add("adventure");
       if(/heritage|colonial|fort|palace|museum|monastery|old/.test(s)) tags.add("heritage");
       if(/family|kids|picnic|easy/.test(s)) tags.add("family");
 
-      const img = (p?.imageUrl || p?.img || p?.image || "").toString().trim();
-
       return {
         id,
         name,
         district,
-        segmentType: segmentType || "Place",
-        locationType: locationType || "—",
-        overview: (p?.overview || "").toString(),
-        shortDescription: (p?.shortDescription || "").toString(),
-        howToReach: (p?.howToReach || "").toString(),
-        keyFeatures: (p?.keyFeatures || "").toString(),
-        bestTimeToVisit: (p?.bestTimeToVisit || "").toString(),
-        taskForLocation: (p?.taskForLocation || "").toString(),
-        mapUrl: (mapObj?.url || "").toString(),
-        meta: p?.meta || null,
+        segmentType,
+        locationType,
+        overview,
+        shortDescription,
+        howToReach,
+        keyFeatures,
+        bestTimeToVisit,
+        taskForLocation,
+        distFromHQ,
+        mapUrl,
         lat, lng,
-        img,
         tags: [...tags]
       };
     }
 
+    /***********************
+     * Firebase load (root)
+     ***********************/
+    async function loadPlacesFromFirebase(){
+      firebaseStatus.textContent = "Firebase: loading…";
+      debugOut.textContent = "Debug: connecting…";
+
+      await ensureAuth();
+
+      try{
+        const snap = await get(ref(db, FIREBASE_LOCATIONS_PATH));
+        const data = snap.exists() ? snap.val() : null;
+
+        if(!data){
+          firebaseStatus.textContent = "Firebase: root returned null ❌";
+          debugOut.textContent = "Debug: No data at root. Check RTDB rules / correct databaseURL.";
+          return [];
+        }
+
+        const out = [];
+        for(const [id, p] of Object.entries(data)){
+          if(!p || typeof p !== "object") continue;
+          out.push(normalizePlace(id, p));
+        }
+
+        out.sort((a,b)=>
+          (a.district||"").localeCompare(b.district||"") ||
+          (a.segmentType||"").localeCompare(b.segmentType||"") ||
+          (a.name||"").localeCompare(b.name||"")
+        );
+
+        places = out;
+
+        const districtNames = [...new Set(places.map(p => p.district).filter(Boolean))]
+          .sort((a,b)=>a.localeCompare(b));
+        districtSel.innerHTML =
+          `<option value="all">All Himachal</option>` +
+          districtNames.map(d=>`<option value="${escapeAttr(d)}">${escapeHtml(d)}</option>`).join("");
+
+        firebaseStatus.textContent = `Firebase: loaded ${places.length} places ✅`;
+        debugOut.textContent = `Debug: path=/ (root)\nFields: "Location Name", "District", "Segment Type"...`;
+
+        return out;
+      }catch(e){
+        firebaseStatus.textContent = "Firebase: error ❌ " + (e?.message || e);
+        debugOut.textContent =
+          "Debug error:\n" + (e?.message || e) +
+          "\n\nIf Permission denied:\nSet RTDB rules to allow read:\n{\n  \"rules\": { \".read\": true, \".write\": false }\n}";
+        return [];
+      }
+    }
+
+    /***********************
+     * Filters + rendering
+     ***********************/
     function segmentMatchesTab(p){
       if(tab === "all") return true;
       return (p.segmentType || "").toLowerCase() === tab.toLowerCase();
@@ -591,6 +661,7 @@
     function matches(p){
       const d = districtSel.value;
       const q = (qMain.value || qSide.value || "").trim().toLowerCase();
+
       const byTab = segmentMatchesTab(p);
       const byDistrict = (d === "all") ? true : (p.district === d);
 
@@ -626,10 +697,11 @@
       filtered.forEach(p=>{
         const el = document.createElement("div");
         el.className = "card";
-        const img = p.img ? p.img : fallbackImgFor(p);
-        const sub2 = p.locationType && p.locationType !== "—" ? p.locationType : "";
-        const hasMap = (Number.isFinite(p.lat) && Number.isFinite(p.lng));
-        const mapPill = hasMap ? "Map ✓" : "No coords";
+
+        const img = fallbackImgFor(p);
+        const best = p.bestTimeToVisit ? `Best: ${p.bestTimeToVisit}` : "";
+        const lt = p.locationType && p.locationType !== "—" ? p.locationType : "";
+        const hasCoords = Number.isFinite(p.lat) && Number.isFinite(p.lng);
 
         el.innerHTML = `
           <div class="thumb" style="background-image:url('${escapeAttr(img)}')">
@@ -642,21 +714,28 @@
             </div>
             <p class="meta">${escapeHtml(p.shortDescription || p.overview || "")}</p>
             <div class="submeta">
-              ${sub2 ? `<span class="subpill">${escapeHtml(sub2)}</span>` : ``}
-              <span class="subpill">${escapeHtml(mapPill)}</span>
-              <span class="miniAdd" data-add="1">+ Add</span>
+              ${lt ? `<span class="subpill">${escapeHtml(lt)}</span>` : ``}
+              ${best ? `<span class="subpill">${escapeHtml(best)}</span>` : ``}
+              <span class="subpill">${hasCoords ? "Coords ✓" : "No coords"}</span>
+
+              <span class="miniAdd ${hasCoords ? "" : "disabled"}" data-add="1" title="${hasCoords ? "Add stop" : "No coordinates in DB"}">+ Add</span>
             </div>
           </div>
         `;
 
-        // click card -> open location page
+        // Card click -> open location.html
         el.addEventListener("click", (ev)=>{
-          const addClicked = ev.target?.closest?.("[data-add='1']");
-          if(addClicked){
+          const addBtn = ev.target?.closest?.("[data-add='1']");
+          if(addBtn){
             ev.stopPropagation();
+            if(!hasCoords){
+              toast("No coordinates for this place. Add lat/lng in Firebase.");
+              return;
+            }
             addToRoute(p);
             return;
           }
+          // open detail page with id
           window.location.href = `location.html?id=${encodeURIComponent(p.id)}`;
         });
 
@@ -664,69 +743,38 @@
       });
 
       if(filtered.length === 0){
-        grid.innerHTML = `<div style="opacity:.8; padding:12px;">No results. Try different filters.</div>`;
+        grid.innerHTML = `<div style="opacity:.85; padding:12px;">No results. Try different filters.</div>`;
       }
     }
 
-    function escapeHtml(s){
-      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-    }
-    function escapeAttr(s){
-      return String(s).replace(/'/g, "%27");
-    }
-
-    // Budget
-    function calcBudget(){
-      const days = +document.getElementById("days").value || 0;
-      const people = +document.getElementById("people").value || 1;
-      const stay = +document.getElementById("stay").value || 0;
-      const food = +document.getElementById("food").value || 0;
-      const travel = +document.getElementById("travel").value || 0;
-      const total = (days * (stay + food) * people) + travel;
-      return {total};
-    }
-    function updateTotalOnly(){
-      const {total} = calcBudget();
-      totalOut.textContent = "₹ " + total.toLocaleString("en-IN");
-    }
-    document.getElementById("calcBtn").addEventListener("click", ()=>{
-      const {total} = calcBudget();
-      document.getElementById("calcOut").textContent = "Total: ₹ " + total.toLocaleString("en-IN");
-      updateTotalOnly();
-    });
-    ["days","people","stay","food","travel"].forEach(id=>{
-      document.getElementById(id).addEventListener("input", ()=>{
-        updateTotalOnly();
-        renderItinerary();
-      });
-    });
-
-    // Route localStorage helpers
+    /***********************
+     * Route storage
+     ***********************/
     function loadRouteFromLS(){
       try{
         const raw = localStorage.getItem(ROUTE_LS_KEY);
-        route = raw ? JSON.parse(raw) : [];
-        if(!Array.isArray(route)) route = [];
-      }catch{ route = []; }
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
+      }catch{ return []; }
     }
     function saveRouteToLS(){
-      try{ localStorage.setItem(ROUTE_LS_KEY, JSON.stringify(route)); }catch{}
+      localStorage.setItem(ROUTE_LS_KEY, JSON.stringify(route));
     }
 
-    // Route planner
     function addToRoute(p){
       if(!Number.isFinite(p.lat) || !Number.isFinite(p.lng)){
-        toast("This place has no lat/lng in Firebase.");
+        toast("This place has no lat/lng.");
         return;
       }
-      if(!route.find(x=>x.id===p.id)){
-        route.push({ id:p.id, name:p.name, district:p.district, segmentType:p.segmentType, lat:p.lat, lng:p.lng, mapUrl:p.mapUrl });
-        saveRouteToLS();
-        renderRoute();
-        scheduleRoute(true);
-      } else {
-        toast(`Already added: ${p.name}`);
+      if(route.find(x=>x.id===p.id)){
+        toast("Already in route: " + p.name);
+        return;
       }
+      route.push({ id:p.id, name:p.name, district:p.district, segmentType:p.segmentType, lat:p.lat, lng:p.lng });
+      saveRouteToLS();
+      renderRoute();
+      scheduleRoute(true);
+      toast("Added: " + p.name);
     }
 
     function move(i, dir){
@@ -737,13 +785,20 @@
       renderRoute();
       scheduleRoute(true);
     }
-
     function removeStop(i){
       route.splice(i,1);
       saveRouteToLS();
       renderRoute();
       scheduleRoute(true);
     }
+
+    document.getElementById("clearRouteBtn").addEventListener("click", ()=>{
+      route = [];
+      saveRouteToLS();
+      renderRoute();
+      scheduleRoute(false);
+      toast("Route cleared");
+    });
 
     function renderRoute(){
       routeListEl.innerHTML = "";
@@ -772,10 +827,10 @@
       });
 
       if(route.length === 0){
-        routeListEl.innerHTML = `<div style="opacity:.8; padding:10px;">No stops yet. Use + Add on any place.</div>`;
+        routeListEl.innerHTML = `<div style="opacity:.85; padding:10px;">No stops yet. Use <b>+ Add</b> on a place.</div>`;
       }
 
-      stopsOut.textContent = route.length.toString();
+      stopsOut.textContent = String(route.length);
       renderItinerary();
     }
 
@@ -797,7 +852,37 @@
       }
     }
 
-    // Start location
+    /***********************
+     * Budget
+     ***********************/
+    function calcBudget(){
+      const days = +document.getElementById("days").value || 0;
+      const people = +document.getElementById("people").value || 1;
+      const stay = +document.getElementById("stay").value || 0;
+      const food = +document.getElementById("food").value || 0;
+      const travel = +document.getElementById("travel").value || 0;
+      const total = (days * (stay + food) * people) + travel;
+      return {total};
+    }
+    function updateTotalOnly(){
+      const {total} = calcBudget();
+      totalOut.textContent = "₹ " + total.toLocaleString("en-IN");
+    }
+    document.getElementById("calcBtn").addEventListener("click", ()=>{
+      const {total} = calcBudget();
+      document.getElementById("calcOut").textContent = "Total: ₹ " + total.toLocaleString("en-IN");
+      updateTotalOnly();
+    });
+    ["days","people","stay","food","travel"].forEach(id=>{
+      document.getElementById(id).addEventListener("input", ()=>{
+        updateTotalOnly();
+        renderItinerary();
+      });
+    });
+
+    /***********************
+     * Start location
+     ***********************/
     document.getElementById("gpsBtn").addEventListener("click", ()=>{
       if(!navigator.geolocation){
         toast("Geolocation not supported.");
@@ -827,11 +912,14 @@
       return "Shimla, Himachal Pradesh";
     }
 
+    /***********************
+     * Route (Google Directions)
+     ***********************/
     function scheduleRoute(shouldOptimize){
       const doOpt = !!autoOpt.checked && !!shouldOptimize;
       clearTimeout(routeTimer);
       routeTimer = setTimeout(()=> computeDirections(doOpt), 600);
-      routeStatus.textContent = doOpt ? "Auto-optimizing…" : "Auto-routing…";
+      routeStatus.textContent = mapsReady() ? (doOpt ? "Auto-optimizing…" : "Auto-routing…") : "Maps not ready";
     }
 
     startInput.addEventListener("input", ()=> scheduleRoute(true));
@@ -839,8 +927,12 @@
     autoOpt.addEventListener("change", ()=> scheduleRoute(false));
     ratePerKmEl.addEventListener("input", ()=> recalcFromLastDirections());
 
+    function mapsReady(){
+      return !!(window.google && google.maps && directionsService && directionsRenderer);
+    }
+
     async function computeDirections(allowOptimize){
-      if(!directionsService || !directionsRenderer){
+      if(!mapsReady()){
         routeStatus.textContent = "Maps not ready";
         return;
       }
@@ -867,6 +959,8 @@
         destination = {lat: route[route.length-1].lat, lng: route[route.length-1].lng};
         waypoints = route.slice(0, -1).map(p => ({ location: {lat:p.lat, lng:p.lng}, stopover:true }));
       }
+
+      routeStatus.textContent = allowOptimize ? "Optimizing…" : "Routing…";
 
       const request = {
         origin,
@@ -904,7 +998,7 @@
       }catch(err){
         console.error(err);
         routeStatus.textContent = "Routing failed";
-        toast("Routing failed. Check Google key, billing, enabled APIs.");
+        toast("Routing failed. Check key/billing/APIs/restrictions.");
       }
     }
 
@@ -936,7 +1030,48 @@
       routeStatus.textContent = "Cost updated";
     }
 
-    // Filters
+    /***********************
+     * Google maps loader
+     ***********************/
+    function loadGoogleMaps(){
+      return new Promise((resolve, reject)=>{
+        if(!GOOGLE_MAPS_API_KEY){
+          reject(new Error("Missing Google API key"));
+          return;
+        }
+        const s = document.createElement("script");
+        s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(GOOGLE_MAPS_API_KEY)}&callback=__initMap`;
+        s.async = true; s.defer = true;
+        window.__initMap = () => resolve();
+        s.onerror = () => reject(new Error("Failed to load Google Maps script"));
+        document.head.appendChild(s);
+      });
+    }
+
+    function initMap(){
+      const mapEl = document.getElementById("map");
+      mapEl.textContent = "";
+      map = new google.maps.Map(mapEl, {
+        center: {lat:31.9, lng:77.2},
+        zoom: 7,
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: false
+      });
+
+      directionsService = new google.maps.DirectionsService();
+      directionsRenderer = new google.maps.DirectionsRenderer({
+        map,
+        suppressMarkers: false,
+        preserveViewport: false
+      });
+
+      routeStatus.textContent = "Ready";
+    }
+
+    /***********************
+     * Reset + wiring
+     ***********************/
     nav.addEventListener("click", (e)=>{
       const btn = e.target.closest("button");
       if(!btn) return;
@@ -972,9 +1107,12 @@
       [...chipsSide.querySelectorAll(".chip")].forEach(x=>x.classList.remove("on"));
       chipsSide.querySelector('.chip[data-chip="family"]').classList.add("on");
       renderPlaces();
+      toast("Filters reset");
     });
 
-    // Toast
+    /***********************
+     * Toast + escaping
+     ***********************/
     let toastTimer = null;
     function toast(msg){
       let t = document.getElementById("toast");
@@ -985,7 +1123,7 @@
           position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
           background: rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.16);
           color:white; padding:10px 12px; border-radius:999px; backdrop-filter: blur(10px);
-          box-shadow: 0 20px 60px rgba(0,0,0,.55); z-index:999; font-weight:650;
+          box-shadow: 0 20px 60px rgba(0,0,0,.55); z-index:999; font-weight:750;
           transition: opacity .2s ease;
           max-width:min(92vw, 900px);
           text-align:center;
@@ -998,51 +1136,35 @@
       toastTimer = setTimeout(()=>{ t.style.opacity="0"; }, 1800);
     }
 
-    // Google maps loader
-    function loadGoogleMaps(){
-      return new Promise((resolve, reject)=>{
-        const s = document.createElement("script");
-        s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(GOOGLE_MAPS_API_KEY)}&callback=__initMap`;
-        s.async = true; s.defer = true;
-        window.__initMap = () => resolve();
-        s.onerror = () => reject(new Error("Failed to load Google Maps script"));
-        document.head.appendChild(s);
-      });
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+    function escapeAttr(s){
+      return String(s).replace(/'/g, "%27");
     }
 
-    function initMap(){
-      map = new google.maps.Map(document.getElementById("map"), {
-        center: {lat:31.9, lng:77.2},
-        zoom: 7,
-        mapTypeControl: false,
-        streetViewControl: false,
-        fullscreenControl: false
-      });
-
-      directionsService = new google.maps.DirectionsService();
-      directionsRenderer = new google.maps.DirectionsRenderer({
-        map,
-        suppressMarkers: false,
-        preserveViewport: false
-      });
-
-      routeStatus.textContent = "Ready";
-    }
-
+    /***********************
+     * BOOT
+     ***********************/
     async function boot(){
-      loadRouteFromLS();
-      renderRoute();
-
       await loadPlacesFromFirebase();
       renderPlaces();
-
+      renderRoute();
       updateTotalOnly();
       scheduleRoute(false);
     }
 
     (async ()=>{
-      try{ await loadGoogleMaps(); initMap(); }
-      catch(e){ console.error(e); routeStatus.textContent = "Google Maps load failed"; toast("Google Maps failed. Check API key / billing / restrictions."); }
+      // maps first (optional)
+      try{
+        await loadGoogleMaps();
+        initMap();
+      }catch(e){
+        console.warn(e);
+        document.getElementById("map").textContent =
+          "Google Maps not loaded.\nFix: enable billing + Maps JavaScript API + Directions API,\nthen add GitHub Pages domain in API key HTTP referrers.";
+        routeStatus.textContent = "Maps failed";
+      }
       await boot();
     })();
   </script>
