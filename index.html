@@ -11,6 +11,7 @@
       --text: rgba(255,255,255,.92); --muted: rgba(255,255,255,.72);
       --shadow: 0 18px 60px rgba(0,0,0,.55);
       --r: 18px; --r2: 26px;
+      --ok:#49f2c2;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -36,7 +37,7 @@
       background:linear-gradient(180deg, rgba(5,8,16,.62), rgba(5,8,16,.86));
     }
     @keyframes bgSlide{
-      0% 100%   { background-image:url("Kee_monastery.jpg"); }
+      0%, 100% { background-image:url("Kee_monastery.jpg"); }
     }
 
     /* ✅ Always-visible top-right logo */
@@ -93,7 +94,87 @@
     }
     .splashText{color:rgba(255,255,255,.85); font-size:14px}
 
-    /* ✅ Role selection */
+    /* ✅ Center Start Options (NEW) */
+    .startScreen{
+      position:fixed; inset:0; z-index:9500;
+      display:grid; place-items:center;
+      background: linear-gradient(180deg, rgba(7,10,18,.75), rgba(5,8,16,.92));
+      backdrop-filter: blur(10px);
+    }
+    .startCard{
+      width:min(920px, 94vw);
+      border-radius:26px;
+      padding:22px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.07);
+      box-shadow:0 28px 90px rgba(0,0,0,.62);
+      overflow:hidden;
+    }
+    .startTop{
+      display:flex; gap:14px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+      padding:6px 6px 14px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .startBrand{
+      display:flex; gap:12px; align-items:center;
+    }
+    .startBrand .mark{
+      width:56px; height:56px; border-radius:18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.22), rgba(255,255,255,.06));
+      display:grid; place-items:center; overflow:hidden;
+      box-shadow: 0 14px 40px rgba(0,0,0,.35);
+    }
+    .startBrand .mark img{width:100%;height:100%;object-fit:cover}
+    .startTop h1{margin:0; font-size:22px; letter-spacing:.2px}
+    .startTop p{margin:6px 0 0; color:rgba(255,255,255,.72); max-width:70ch; line-height:1.45; font-size:13px}
+    .startGrid{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap:12px;
+      margin-top:14px;
+    }
+    @media (max-width: 980px){ .startGrid{grid-template-columns: repeat(2, minmax(0,1fr));} }
+    @media (max-width: 560px){ .startGrid{grid-template-columns: 1fr;} }
+
+    .startBtn{
+      text-align:left;
+      padding:16px 14px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.18);
+      color:rgba(255,255,255,.92);
+      cursor:pointer;
+      transition:transform .15s ease, background .15s ease, border-color .15s ease;
+      min-height:112px;
+    }
+    .startBtn:hover{
+      transform:translateY(-2px);
+      background:rgba(255,255,255,.10);
+      border-color: rgba(255,255,255,.20);
+    }
+    .startBtn b{display:block; font-size:15px; margin-bottom:6px}
+    .startBtn span{display:block; color:rgba(255,255,255,.72); font-size:12.5px; line-height:1.4}
+    .startFooter{
+      margin-top:14px;
+      display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+      color:rgba(255,255,255,.74); font-size:12.5px;
+    }
+    .remember{display:flex;gap:10px;align-items:center}
+    .remember input{width:auto}
+    .smallLink{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.90);
+      padding:9px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:850;
+      transition:.2s ease;
+    }
+    .smallLink:hover{background: rgba(255,255,255,.14);transform:translateY(-1px)}
+
+    /* ✅ Role selection (kept) */
     .onboarding{
       position:fixed; inset:0; z-index:9000;
       display:grid; place-items:center;
@@ -135,8 +216,6 @@
       display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
       color:rgba(255,255,255,.75); font-size:13px;
     }
-    .remember{display:flex;gap:10px;align-items:center}
-    .remember input{width:auto}
 
     /* App layout */
     .wrap{display:grid; grid-template-columns: 330px 1fr; gap:18px; padding:18px; min-height:100vh;}
@@ -423,7 +502,52 @@
     </div>
   </div>
 
-  <!-- ✅ Role selection -->
+  <!-- ✅ Center Start Options (NEW) -->
+  <div id="startScreen" class="startScreen hidden">
+    <div class="startCard">
+      <div class="startTop">
+        <div class="startBrand">
+          <div class="mark">
+            <img src="logo.png" alt="" onerror="this.remove()">
+          </div>
+          <div>
+            <h1>Start your journey</h1>
+            <p>Choose what you want to do first. We will NOT show all locations until you pick an option.</p>
+          </div>
+        </div>
+        <button class="smallLink" id="skipStart">Skip</button>
+      </div>
+
+      <div class="startGrid">
+        <button class="startBtn" data-go="browse">
+          <b>Browse Locations</b>
+          <span>See places by district & type (no route tools).</span>
+        </button>
+        <button class="startBtn" data-go="packages">
+          <b>Get Packages</b>
+          <span>Answer 2–3 questions → 2–3 best packages + linked itinerary.</span>
+        </button>
+        <button class="startBtn" data-go="tracker">
+          <b>Route Planner</b>
+          <span>Add stops → auto route + distance + cost calculator.</span>
+        </button>
+        <button class="startBtn" data-go="researcher">
+          <b>Research Mode</b>
+          <span>Clean browsing for details only (debug visible).</span>
+        </button>
+      </div>
+
+      <div class="startFooter">
+        <label class="remember">
+          <input type="checkbox" id="rememberStart" checked>
+          Remember my start option
+        </label>
+        <span style="opacity:.9">You can change mode anytime from the left panel.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Role selection (kept for manual change / fallback) -->
   <div id="onboarding" class="onboarding hidden">
     <div class="obCard">
       <div class="obTop">
@@ -705,6 +829,11 @@
      ***********************/
     const splash = document.getElementById("splash");
     const splashText = document.getElementById("splashText");
+
+    const startScreen = document.getElementById("startScreen");
+    const rememberStart = document.getElementById("rememberStart");
+    const skipStart = document.getElementById("skipStart");
+
     const onboarding = document.getElementById("onboarding");
     const appWrap = document.getElementById("appWrap");
     const rememberMode = document.getElementById("rememberMode");
@@ -763,6 +892,7 @@
 
     const ROUTE_LS_KEY = "hp_route_v1";
     const MODE_LS_KEY = "hp_mode_v1";
+    const START_LS_KEY = "hp_start_option_v1";
     let route = loadRouteFromLS();
 
     let startMode = "manual";
@@ -786,7 +916,6 @@
 
     async function ensureAuth(){
       try{ if(!auth.currentUser) await signInAnonymously(auth); }catch(e){
-        // keep silent in visitor mode; show only if researcher
         if(currentMode === "researcher") debugOut.classList.remove("hidden");
         debugOut.textContent = "Debug: Auth failed (ok if rules are public): " + (e?.message || e);
       }
@@ -877,18 +1006,53 @@
       parts.push(mapsLoaded ? "Maps ✅" : "Maps…");
       splashText.textContent = "Loading: " + parts.join(" • ");
     }
-    function maybeHideSplash(){
+
+    function maybeProceedAfterSplash(){
       updateSplash();
-      if(dbLoaded && mapsLoaded){
-        splash.classList.add("hidden");
-        const saved = localStorage.getItem(MODE_LS_KEY);
-        if(saved){
-          setMode(saved, {skipOnboarding:true});
-        }else{
-          onboarding.classList.remove("hidden");
-        }
+      if(!(dbLoaded && mapsLoaded)) return;
+
+      splash.classList.add("hidden");
+
+      // If a start option saved, apply immediately; else show start options
+      const savedStart = localStorage.getItem(START_LS_KEY);
+      if(savedStart){
+        const mappedMode = startToMode(savedStart);
+        setMode(mappedMode, {skipOnboarding:true});
+        return;
       }
+
+      // No saved start → show Start Screen in center
+      startScreen.classList.remove("hidden");
     }
+
+    function startToMode(go){
+      // map "browse" to tourist
+      if(go === "browse") return "tourist";
+      if(go === "packages") return "packages";
+      if(go === "tracker") return "tracker";
+      if(go === "researcher") return "researcher";
+      return "tourist";
+    }
+
+    function finishStart(go){
+      const mappedMode = startToMode(go);
+      if(rememberStart.checked){
+        localStorage.setItem(START_LS_KEY, go);
+      }
+      startScreen.classList.add("hidden");
+      setMode(mappedMode, {skipOnboarding:true});
+    }
+
+    // start screen clicks
+    startScreen.addEventListener("click", (e)=>{
+      const btn = e.target.closest(".startBtn");
+      if(!btn) return;
+      finishStart(btn.dataset.go);
+    });
+    skipStart.addEventListener("click", ()=>{
+      startScreen.classList.add("hidden");
+      onboarding.classList.remove("hidden");
+    });
 
     /***********************
      * Load from RTDB (/locations)
@@ -927,8 +1091,6 @@
           districtNames.map(d=>`<option value="${escapeAttr(d)}">${escapeHtml(d)}</option>`).join("");
 
         firebaseStatus.textContent = `Firebase: loaded ${places.length} places ✅`;
-
-        // only show debug in Researcher mode
         debugOut.textContent = `Debug:\nPath: ${FIREBASE_LOCATIONS_PATH}\nKeys sample: ${Object.keys(data).slice(0,10).join(", ")}`;
 
       }catch(e){
@@ -999,6 +1161,10 @@
       if(!opts.skipOnboarding && rememberMode.checked){
         localStorage.setItem(MODE_LS_KEY, mode);
       }
+      // also store when called from start screen
+      if(opts.skipOnboarding && rememberMode?.checked){
+        localStorage.setItem(MODE_LS_KEY, mode);
+      }
 
       clearGrid();
       toast("Mode set: " + nice + " ✅");
@@ -1013,8 +1179,11 @@
     });
 
     changeModeBtn.addEventListener("click", ()=>{
+      // allow user to choose again
       appWrap.classList.add("hidden");
       onboarding.classList.remove("hidden");
+      // if they want start screen again, clear start choice:
+      // localStorage.removeItem(START_LS_KEY);
     });
 
     /***********************
@@ -1039,7 +1208,6 @@
     }
 
     function fallbackImgFor(p){
-      // ✅ prefer images from DB if available
       if(p.images && p.images.length) return p.images[0];
       const seed = encodeURIComponent(`${p.segmentType} ${p.locationType} ${p.district} himachal`);
       return `https://source.unsplash.com/1200x800/?${seed}`;
@@ -1095,7 +1263,6 @@
           window.location.href = `location.html?id=${encodeURIComponent(p.id)}`;
         });
 
-        // ✅ tap on image cycles through 2-3 images (if present)
         if(p.images && p.images.length > 1){
           const thumb = el.querySelector(".thumb");
           let i = 0;
@@ -1121,7 +1288,6 @@
     }
     clearGridBtn.addEventListener("click", clearGrid);
 
-    // Only render when user searches/filters
     qMain.addEventListener("input", ()=> renderPlaces());
     qSide.addEventListener("input", ()=> renderPlaces());
     districtSel.addEventListener("change", ()=> renderPlaces());
@@ -1240,12 +1406,8 @@
     /***********************
      * Refined Expense Calculator
      ***********************/
-    function roomsNeeded(people){
-      // simple assumption: 2 people per room
-      return Math.max(1, Math.ceil(people / 2));
-    }
+    function roomsNeeded(people){ return Math.max(1, Math.ceil(people / 2)); }
     function stopIntensity(place){
-      // extra cost weight by type
       const t = ((place.locationType||"") + " " + (place.segmentType||"")).toLowerCase();
       if(/trek|adventure|ski|rafting|paragliding/.test(t)) return 1.35;
       if(/lake|waterfall|valley|forest/.test(t)) return 1.15;
@@ -1269,7 +1431,6 @@
       const stayTotal = nights * stayPerNightPerRoom * rooms;
       const foodTotal = days * foodPerDayPerPerson * people;
 
-      // If route has stops, we distribute per-stop cost using intensity
       let stopsTotal = 0;
       if(route.length){
         for(const s of route){
@@ -1520,10 +1681,8 @@
       const pkgs = generatePackages({ start, days, people, budgetStyle, interests }, places);
       renderPackages(pkgs);
 
-      // ✅ sync calculator with package inputs
       daysEl.value = days;
       peopleEl.value = people;
-      // adjust defaults by budget style
       if(budgetStyle === "low"){ stayEl.value = 1300; foodEl.value = 550; }
       if(budgetStyle === "mid"){ stayEl.value = 1800; foodEl.value = 700; }
       if(budgetStyle === "high"){ stayEl.value = 3200; foodEl.value = 1200; }
@@ -1538,12 +1697,11 @@
       for(const i of interests){
         if(tags.includes(i)) s += 5;
       }
-      // quality boosts
       if((p.segmentType||"").toLowerCase() === "destination") s += 1;
       const lt = (p.locationType||"").toLowerCase();
       if(lt.includes("lake")) s += 1;
       if(lt.includes("trek")) s += 2;
-      if(p.images && p.images.length) s += 1; // prefer places with photos
+      if(p.images && p.images.length) s += 1;
       return s;
     }
 
@@ -1595,17 +1753,14 @@
       const buckets = Array.from({length: days}, ()=>[]);
       stops.forEach((p, idx)=> buckets[idx % days].push(p));
 
-      // rough distance estimate if maps not used
       const estKm = Math.round(stops.length * 32);
       const rate = Math.max(0, +ratePerKmEl.value || 12);
       const travelCost = estKm * rate;
 
-      // use refined budget formula (stay is nights, food is per day per person, stops are per stop)
       const people = Math.max(1, +inputs.people || 1);
       const nights = Math.max(0, days - 1);
       const rooms = roomsNeeded(people);
 
-      // budget style factor
       const mult = inputs.budgetStyle === "low" ? 0.85 : inputs.budgetStyle === "high" ? 1.35 : 1.0;
 
       const stay = Math.round((+stayEl.value || 1800) * mult);
@@ -1674,7 +1829,6 @@
           </div>
         `;
 
-        // open place (chips + itinerary buttons)
         box.querySelectorAll("[data-open]").forEach(el=>{
           el.addEventListener("click", ()=>{
             const id = el.getAttribute("data-open");
@@ -1682,13 +1836,11 @@
           });
         });
 
-        // show places in grid
         box.querySelector("[data-act='show']").addEventListener("click", ()=>{
           renderPlaces(pkg.stops);
           toast("Showing package places ✅");
         });
 
-        // build route from package
         box.querySelector("[data-act='route']").addEventListener("click", ()=>{
           route = pkg.stops.slice(0, 18).map(p=>({id:p.id,name:p.name,district:p.district,segmentType:p.segmentType,lat:p.lat,lng:p.lng}));
           saveRouteToLS();
@@ -1698,11 +1850,9 @@
           updateTotalOnly();
         });
 
-        // apply to budget calculator
         box.querySelector("[data-act='budget']").addEventListener("click", ()=>{
           daysEl.value = pkg.days;
           peopleEl.value = pkg.people;
-          // approximate travel into calculator immediately
           travelEl.value = pkg.travelCost;
           updateTotalOnly();
           toast("Calculator updated ✅");
@@ -1721,13 +1871,12 @@
       dbLoaded = true;
       updateSplash();
 
-      // default empty grid (no mass listing)
       clearGrid();
       updateTotalOnly();
       renderRoute();
       scheduleRoute(false);
 
-      maybeHideSplash();
+      maybeProceedAfterSplash();
     }
 
     (async ()=>{
