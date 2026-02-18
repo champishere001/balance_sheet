@@ -1,4 +1,3 @@
-<!-- location.html (FINAL) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,51 +7,56 @@
 
   <style>
     :root{
-      --bg:#070a12; --stroke: rgba(255,255,255,.16);
-      --text: rgba(255,255,255,.92); --muted: rgba(255,255,255,.72);
+      --bg:#070a12;
+      --stroke: rgba(255,255,255,.16);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
       --shadow: 0 18px 60px rgba(0,0,0,.55);
       --r: 18px; --r2: 26px;
-      --ok:#49f2c2; --warn:#ffcf5a; --bad:#ff6b6b;
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--text);
-      background: radial-gradient(1200px 800px at 20% 10%, rgba(120,120,255,.18), transparent 60%),
-                  radial-gradient(1200px 800px at 80% 30%, rgba(0,255,200,.10), transparent 55%),
-                  var(--bg);
-      overflow-x:hidden;
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(120,120,255,.18), transparent 60%),
+        radial-gradient(1200px 800px at 80% 30%, rgba(0,255,200,.10), transparent 55%),
+        var(--bg);
+      min-height:100vh;
     }
     .bg{
-      position:fixed; inset:0;
-      background:
-        linear-gradient(180deg, rgba(5,8,16,.55), rgba(5,8,16,.90)),
-        url("https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=2400&q=80");
+      position:fixed; inset:0; z-index:-2;
       background-size:cover; background-position:center;
-      z-index:-2; filter:saturate(1.08) contrast(1.05);
+      filter:saturate(1.12) contrast(1.08);
+      opacity:.75;
+    }
+    .bg::before{
+      content:""; position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(5,8,16,.55), rgba(5,8,16,.92));
     }
 
-    .wrap{max-width:1100px; margin:0 auto; padding:18px;}
-    .topbar{
-      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
-      padding:12px 12px;
-      border-radius: var(--r2);
+    .wrap{max-width:1120px; margin:0 auto; padding:18px;}
+    .topBar{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:14px;
+      border-radius:22px;
       border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.06);
       backdrop-filter: blur(14px);
       box-shadow: var(--shadow);
     }
-    .leftTop{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
-    .pill{
+    .brand{display:flex; align-items:center; gap:12px}
+    .logo{
+      width:46px; height:46px; border-radius:16px;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(0,0,0,.18);
-      padding:8px 10px;
-      border-radius:999px;
-      font-size:12px;
-      color:rgba(255,255,255,.86);
+      display:grid; place-items:center;
+      overflow:hidden;
     }
+    .logo img{width:70%;height:70%;object-fit:contain}
+    .brand b{display:block}
+    .brand small{color:var(--muted)}
     .btn{
       border:1px solid rgba(255,255,255,.16);
       background: rgba(255,255,255,.10);
@@ -60,181 +64,187 @@
       padding:10px 12px;
       border-radius:14px;
       cursor:pointer;
-      font-weight:850;
+      font-weight:900;
       transition:.2s ease;
-      user-select:none;
-      text-decoration:none;
-      display:inline-flex; align-items:center; gap:8px;
     }
-    .btn:hover{background: rgba(255,255,255,.16); transform:translateY(-1px)}
-
-    .hero{
+    .btn:hover{transform:translateY(-1px); background: rgba(255,255,255,.16)}
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
       margin-top:14px;
-      border-radius: var(--r2);
+    }
+    @media(max-width:980px){ .grid{grid-template-columns:1fr} }
+
+    .card{
+      border-radius:22px;
       border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      backdrop-filter: blur(14px);
-      box-shadow: var(--shadow);
+      background: rgba(0,0,0,.18);
       overflow:hidden;
+      box-shadow: var(--shadow);
     }
     .heroImg{
-      height:260px;
+      height:320px;
+      background:#0b1220;
       background-size:cover;
       background-position:center;
       position:relative;
     }
-    .heroImg:after{
-      content:"";
-      position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.78));
+    .heroImg::after{
+      content:""; position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.70));
     }
-    .heroBody{padding:14px}
-    h1{margin:0;font-size:26px;line-height:1.15}
-    .sub{margin:8px 0 0; color:var(--muted); line-height:1.5; max-width:70ch}
-    .badges{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+    .heroInfo{
+      position:absolute; left:14px; right:14px; bottom:14px;
+      display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; justify-content:space-between;
+    }
+    .heroInfo h1{margin:0; font-size:24px; line-height:1.1}
+    .pillRow{display:flex; gap:8px; flex-wrap:wrap}
+    .pill{
+      font-size:11px; padding:7px 9px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.28);
+      backdrop-filter: blur(10px);
+    }
 
-    .grid{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:14px;
-      min-height: 320px;
+    .body{padding:14px}
+    .sectionTitle{
+      margin:12px 0 8px;
+      font-size:12px; letter-spacing:.28em;
+      text-transform:uppercase; color:rgba(255,255,255,.72);
     }
-    .card{
-      border-radius: var(--r2);
+    .muted{color:var(--muted); font-size:13px; line-height:1.55}
+    .kv{
+      display:grid; gap:10px;
+      grid-template-columns: 1fr 1fr;
+    }
+    @media(max-width:560px){ .kv{grid-template-columns:1fr} }
+    .kv .box{
+      border-radius:18px;
       border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .cardHead{
-      padding:12px 14px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-    }
-    .cardHead b{font-size:13px}
-    .cardBody{padding:12px 14px}
-    .kv{display:grid; gap:10px}
-    .k{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.70)}
-    .v{font-size:13px; line-height:1.55; color:rgba(255,255,255,.90)}
-    .muted{color:var(--muted)}
-    .rowBtns{display:flex; gap:10px; flex-wrap:wrap}
-    #map{
-      height:320px;
-      background:#0b1220;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.12);
-      overflow:hidden;
-      display:grid; place-items:center;
-      color:rgba(255,255,255,.75); font-size:12px; text-align:center; padding:10px;
-    }
-    pre{
-      margin:0;
-      white-space:pre-wrap;
-      word-break:break-word;
-      font-size:12px;
-      color:rgba(255,255,255,.80);
-      background: rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius: 16px;
+      background: rgba(255,255,255,.06);
       padding:10px;
     }
+    .kv .box b{display:block; font-size:12px}
+    .kv .box span{color:var(--muted); font-size:12px}
 
-    @media (max-width: 980px){ .grid{grid-template-columns:1fr} #map{height:280px} }
+    .gallery{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:10px;
+    }
+    @media(max-width:820px){ .gallery{grid-template-columns: repeat(2, minmax(0,1fr))} }
+    @media(max-width:520px){ .gallery{grid-template-columns: 1fr} }
+    .gimg{
+      height:120px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:#0b1220;
+      background-size:cover;
+      background-position:center;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+    .gimg:hover{transform:translateY(-2px); border-color: rgba(255,255,255,.20)}
+
+    #map{
+      height:280px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:#0b1220;
+      display:grid;
+      place-items:center;
+      color:rgba(255,255,255,.75);
+      padding:10px;
+      text-align:center;
+    }
+
+    .toast{
+      position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+      background: rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.16);
+      color:white; padding:10px 12px; border-radius:999px; backdrop-filter: blur(10px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.55); z-index:999; font-weight:850;
+      transition: opacity .2s ease;
+      max-width:min(92vw, 900px);
+      text-align:center;
+      opacity:0;
+      pointer-events:none;
+    }
   </style>
 </head>
+
 <body>
-  <div class="bg"></div>
+  <div class="bg" id="bg"></div>
 
   <div class="wrap">
-    <div class="topbar">
-      <div class="leftTop">
-        <a class="btn" href="index.html">← Back</a>
-        <span class="pill" id="pDistrict">District: —</span>
-        <span class="pill" id="pSeg">Segment: —</span>
-        <span class="pill" id="pType">Type: —</span>
+    <div class="topBar">
+      <div class="brand">
+        <div class="logo"><img src="logo.png" alt="Logo" onerror="this.style.display='none'"></div>
+        <div>
+          <b>Himachal Explorer</b>
+          <small id="sub">Loading location…</small>
+        </div>
       </div>
-      <div class="rowBtns">
-        <a class="btn" id="openMapsBtn" target="_blank" rel="noopener">Open in Maps ↗</a>
-        <button class="btn" id="addRouteBtn">+ Add to Route</button>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn" id="backBtn">← Back</button>
+        <button class="btn" id="openMapsBtn">Open in Google Maps</button>
       </div>
     </div>
 
-    <section class="hero">
-      <div class="heroImg" id="heroImg"></div>
-      <div class="heroBody">
-        <h1 id="title">Loading…</h1>
-        <p class="sub" id="subtitle">Fetching from Firebase…</p>
-        <div class="badges" id="badges"></div>
-      </div>
-    </section>
-
-    <section class="grid">
+    <div class="grid">
       <div class="card">
-        <div class="cardHead"><b>Details</b><span class="muted" id="coords">—</span></div>
-        <div class="cardBody">
+        <div class="heroImg" id="heroImg">
+          <div class="heroInfo">
+            <div>
+              <h1 id="title">—</h1>
+              <div class="pillRow" id="pills"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="body">
+          <div class="sectionTitle">Overview</div>
+          <div class="muted" id="overview">—</div>
+
+          <div class="sectionTitle">Key Info</div>
           <div class="kv">
-            <div>
-              <div class="k">Overview</div>
-              <div class="v" id="overview">—</div>
-            </div>
-            <div>
-              <div class="k">Short description</div>
-              <div class="v" id="short">—</div>
-            </div>
-            <div>
-              <div class="k">How to reach</div>
-              <div class="v" id="reach">—</div>
-            </div>
-            <div>
-              <div class="k">Key features</div>
-              <div class="v" id="features">—</div>
-            </div>
-            <div>
-              <div class="k">Task for location</div>
-              <div class="v" id="task">—</div>
-            </div>
-            <div>
-              <div class="k">Dist from HQ</div>
-              <div class="v" id="distHq">—</div>
-            </div>
+            <div class="box"><b>How to Reach</b><span id="reach">—</span></div>
+            <div class="box"><b>Best Time</b><span id="best">—</span></div>
+            <div class="box"><b>Distance from HQ</b><span id="hq">—</span></div>
+            <div class="box"><b>Tags</b><span id="tags">—</span></div>
           </div>
 
-          <div style="margin-top:12px;">
-            <div class="k">Raw Firebase object</div>
-            <pre id="raw">—</pre>
-          </div>
+          <div class="sectionTitle">Gallery</div>
+          <div class="gallery" id="gallery"></div>
         </div>
       </div>
 
       <div class="card">
-        <div class="cardHead"><b>Map</b><span class="muted" id="mapStatus">—</span></div>
-        <div class="cardBody">
-          <div id="map">Google Maps loading…</div>
-          <div class="muted" style="margin-top:10px;font-size:12px;line-height:1.4">
-            If map doesn’t load: enable Billing + Maps JavaScript API, and add your GitHub domain in HTTP referrers.
+        <div class="body">
+          <div class="sectionTitle">Map</div>
+          <div id="map">Loading map…</div>
+
+          <div class="sectionTitle">Actions</div>
+          <button class="btn" id="addToRouteBtn" style="width:100%;">+ Add to Route (from main page)</button>
+          <div class="muted" style="margin-top:10px;">
+            Tip: If you opened this from <b>Tracker/Packages mode</b>, build route there for full optimization.
           </div>
         </div>
-      </div>
-    </section>
-
-    <div style="margin-top:14px;" class="card">
-      <div class="cardHead"><b>Nearby / Similar</b><span class="muted">Same district + segment</span></div>
-      <div class="cardBody">
-        <div id="similar" class="muted">Loading…</div>
       </div>
     </div>
   </div>
+
+  <div class="toast" id="toast"></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-    /******** CONFIG (same as index) ********/
     const GOOGLE_MAPS_API_KEY = "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug";
-    const FIREBASE_LOCATIONS_PATH = "/locations"; // ✅ your data path
+    const FIREBASE_LOCATIONS_PATH = "/locations";
+    const ROUTE_LS_KEY = "hp_route_v1";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
@@ -246,40 +256,51 @@
       appId: "1:182348503564:web:480085405b09177245ad"
     };
 
-    const ROUTE_LS_KEY = "hp_route_v1";
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
 
-    /******** UI refs ********/
-    const titleEl = document.getElementById("title");
-    const subtitleEl = document.getElementById("subtitle");
-    const heroImgEl = document.getElementById("heroImg");
-    const badgesEl = document.getElementById("badges");
+    const qs = new URLSearchParams(location.search);
+    const id = qs.get("id");
 
-    const pDistrict = document.getElementById("pDistrict");
-    const pSeg = document.getElementById("pSeg");
-    const pType = document.getElementById("pType");
+    const bg = document.getElementById("bg");
+    const sub = document.getElementById("sub");
+    const title = document.getElementById("title");
+    const overview = document.getElementById("overview");
+    const reach = document.getElementById("reach");
+    const best = document.getElementById("best");
+    const hq = document.getElementById("hq");
+    const tagsEl = document.getElementById("tags");
+    const pills = document.getElementById("pills");
+    const heroImg = document.getElementById("heroImg");
+    const gallery = document.getElementById("gallery");
+    const mapEl = document.getElementById("map");
 
-    const coordsEl = document.getElementById("coords");
-    const overviewEl = document.getElementById("overview");
-    const shortEl = document.getElementById("short");
-    const reachEl = document.getElementById("reach");
-    const featuresEl = document.getElementById("features");
-    const taskEl = document.getElementById("task");
-    const distHqEl = document.getElementById("distHq");
-    const rawEl = document.getElementById("raw");
-
+    const backBtn = document.getElementById("backBtn");
     const openMapsBtn = document.getElementById("openMapsBtn");
-    const addRouteBtn = document.getElementById("addRouteBtn");
-    const similarEl = document.getElementById("similar");
-    const mapStatus = document.getElementById("mapStatus");
+    const addToRouteBtn = document.getElementById("addToRouteBtn");
 
-    /******** Helpers for your DB keys ********/
     function pick(p, keys, fallback=""){
       for(const k of keys){
         if(p && p[k] !== undefined && p[k] !== null && String(p[k]).trim() !== "") return p[k];
       }
       return fallback;
     }
+    function normalizeImages(p){
+      const raw =
+        pick(p, ["images","Images","Image URLs","Image Urls","imageUrls","photoUrls","photos","Photos"], "") ||
+        [
+          pick(p, ["Image 1","image1","Photo 1","photo1"], ""),
+          pick(p, ["Image 2","image2","Photo 2","photo2"], ""),
+          pick(p, ["Image 3","image3","Photo 3","photo3"], "")
+        ].filter(Boolean).join(",");
 
+      if(Array.isArray(raw)) return raw.map(x=>String(x).trim()).filter(Boolean);
+      const s = String(raw || "").trim();
+      if(!s) return [];
+      if(s.includes(",")) return s.split(",").map(x=>x.trim()).filter(Boolean);
+      return [s];
+    }
     function parseLatLng(p){
       const lat = Number(p?.lat ?? p?.latitude ?? p?.Latitude);
       const lng = Number(p?.lng ?? p?.longitude ?? p?.Longitude);
@@ -288,94 +309,29 @@
       const m = String(p?.Map ?? p?.map ?? "").trim();
       const mm = m.match(/(-?\d+(\.\d+)?)\s*,\s*(-?\d+(\.\d+)?)/);
       if(mm) return { lat: Number(mm[1]), lng: Number(mm[3]) };
-
       return {lat: NaN, lng: NaN};
     }
-
-    function fallbackImgFor(place){
-      const seed = encodeURIComponent(`${place.segmentType} ${place.locationType} ${place.district} himachal`);
-      return `https://source.unsplash.com/2400x1400/?${seed}`;
+    function fallbackImg(name){
+      const seed = encodeURIComponent(`${name} himachal`);
+      return `https://source.unsplash.com/1200x800/?${seed}`;
     }
 
-    function pill(text){
-      const s = document.createElement("span");
-      s.className = "pill";
-      s.textContent = text;
-      return s;
+    async function ensureAuth(){
+      try{ if(!auth.currentUser) await signInAnonymously(auth); }catch(e){}
     }
 
     function toast(msg){
-      let t = document.getElementById("toast");
-      if(!t){
-        t = document.createElement("div");
-        t.id="toast";
-        t.style.cssText = `
-          position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
-          background: rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.16);
-          color:white; padding:10px 12px; border-radius:999px; backdrop-filter: blur(10px);
-          box-shadow: 0 20px 60px rgba(0,0,0,.55); z-index:999; font-weight:850;
-          transition: opacity .2s ease;
-          max-width:min(92vw, 900px);
-          text-align:center;
-        `;
-        document.body.appendChild(t);
-      }
+      const t = document.getElementById("toast");
       t.textContent = msg;
-      t.style.opacity="1";
-      setTimeout(()=>{ t.style.opacity="0"; }, 1700);
+      t.style.opacity = "1";
+      clearTimeout(window.__tt);
+      window.__tt = setTimeout(()=> t.style.opacity="0", 1800);
     }
 
-    /******** Firebase ********/
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const auth = getAuth(app);
+    backBtn.addEventListener("click", ()=>{
+      history.length > 1 ? history.back() : (location.href="index.html");
+    });
 
-    async function ensureAuth(){
-      try{ if(!auth.currentUser) await signInAnonymously(auth); }catch{}
-    }
-
-    function getIdFromQuery(){
-      const u = new URL(window.location.href);
-      return u.searchParams.get("id");
-    }
-
-    async function loadOne(id){
-      await ensureAuth();
-      const snap = await get(ref(db, `${FIREBASE_LOCATIONS_PATH}/${id}`));
-      return snap.exists() ? snap.val() : null;
-    }
-
-    async function loadAll(){
-      await ensureAuth();
-      const snap = await get(ref(db, FIREBASE_LOCATIONS_PATH));
-      return snap.exists() ? snap.val() : {};
-    }
-
-    function normalizePlace(id, p){
-      const {lat, lng} = parseLatLng(p);
-
-      const name = String(pick(p, ["Location Name","locationName","name"], id)).trim();
-      const district = String(pick(p, ["District","district"], "")).trim();
-      const segmentType = String(pick(p, ["Segment Type","segmentType"], "Place")).trim();
-      const locationType = String(pick(p, ["Location Type","locationType"], "—")).trim();
-
-      return {
-        id,
-        name, district, segmentType, locationType,
-        overview: String(pick(p, ["Overview","overview"], "")).trim(),
-        shortDescription: String(pick(p, ["Short Description","shortDescription"], "")).trim(),
-        howToReach: String(pick(p, ["How to Reach","howToReach"], "")).trim(),
-        keyFeatures: String(pick(p, ["Key Features","keyFeatures"], "")).trim(),
-        bestTimeToVisit: String(pick(p, ["Best Time to Visit","bestTimeToVisit"], "")).trim(),
-        taskForLocation: String(pick(p, ["Task for Location","taskForLocation"], "")).trim(),
-        distFromHQ: String(pick(p, ["Dist from HQ","Dist From HQ"], "")).trim(),
-        mapUrl: String(pick(p, ["Map","mapUrl"], "")).trim(),
-        lat, lng,
-        raw: p
-      };
-    }
-
-    /******** Route storage ********/
     function loadRoute(){
       try{
         const raw = localStorage.getItem(ROUTE_LS_KEY);
@@ -387,187 +343,163 @@
       localStorage.setItem(ROUTE_LS_KEY, JSON.stringify(route));
     }
 
-    /******** Google Map ********/
+    function setMapFallback(lat,lng){
+      if(!Number.isFinite(lat) || !Number.isFinite(lng)){
+        mapEl.textContent = "No coordinates available for this location.";
+        return;
+      }
+      // no Google Maps? show link
+      mapEl.innerHTML = `
+        <div>
+          Coordinates: ${lat.toFixed(5)}, ${lng.toFixed(5)}<br><br>
+          <a style="color:white;" target="_blank" rel="noopener"
+             href="https://www.google.com/maps?q=${lat},${lng}">Open Google Maps</a>
+        </div>
+      `;
+    }
+
     function loadGoogleMaps(){
       return new Promise((resolve, reject)=>{
         const s = document.createElement("script");
-        s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(GOOGLE_MAPS_API_KEY)}&callback=__initMap`;
+        s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(GOOGLE_MAPS_API_KEY)}&callback=__initMap2`;
         s.async = true; s.defer = true;
-        window.__initMap = () => resolve();
-        s.onerror = () => reject(new Error("Google Maps script failed"));
+        window.__initMap2 = () => resolve();
+        s.onerror = () => reject(new Error("Failed to load Google Maps"));
         document.head.appendChild(s);
       });
     }
 
-    function showMapFixMessage(){
-      mapStatus.textContent = "Maps failed";
-      const mapEl = document.getElementById("map");
-      mapEl.textContent =
-        "Google Maps not loaded.\n\nFix:\n1) Enable Billing\n2) Enable Maps JavaScript API\n3) API Key restrictions: HTTP referrers add:\n   https://champishere001.github.io/*\n4) Wait 5 min and reload";
-    }
-
-    function renderMap(place){
-      const mapEl = document.getElementById("map");
-
-      if(!(window.google && google.maps)){
-        showMapFixMessage();
+    async function renderMap(lat,lng){
+      if(!Number.isFinite(lat) || !Number.isFinite(lng)){
+        setMapFallback(lat,lng);
         return;
       }
-      if(!Number.isFinite(place.lat) || !Number.isFinite(place.lng)){
-        mapStatus.textContent = "No coords";
-        mapEl.textContent = "No coordinates for this location.";
-        return;
-      }
-
-      mapStatus.textContent = "Ready";
-      mapEl.textContent = "";
-      const m = new google.maps.Map(mapEl, {
-        center: {lat: place.lat, lng: place.lng},
-        zoom: 12,
-        mapTypeControl:false,
-        streetViewControl:false,
-        fullscreenControl:false
-      });
-
-      new google.maps.Marker({
-        position: {lat: place.lat, lng: place.lng},
-        map: m,
-        title: place.name
-      });
-    }
-
-    /******** Render ********/
-    function setOpenMapsLink(place){
-      const url = place.mapUrl
-        || (Number.isFinite(place.lat) && Number.isFinite(place.lng)
-          ? `https://www.google.com/maps?q=${place.lat},${place.lng}`
-          : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name + " " + (place.district||"") + " Himachal Pradesh")}`);
-
-      openMapsBtn.href = url;
-    }
-
-    function renderPlace(place){
-      titleEl.textContent = place.name || place.id;
-      subtitleEl.textContent = (place.shortDescription || place.overview || "—");
-      heroImgEl.style.backgroundImage = `url('${fallbackImgFor(place)}')`;
-
-      pDistrict.textContent = "District: " + (place.district || "—");
-      pSeg.textContent = "Segment: " + (place.segmentType || "—");
-      pType.textContent = "Type: " + (place.locationType || "—");
-
-      badgesEl.innerHTML = "";
-      if(place.bestTimeToVisit) badgesEl.appendChild(pill("Best: " + place.bestTimeToVisit));
-      if(place.distFromHQ) badgesEl.appendChild(pill("From HQ: " + place.distFromHQ));
-
-      coordsEl.textContent = (Number.isFinite(place.lat) && Number.isFinite(place.lng))
-        ? `${place.lat}, ${place.lng}`
-        : "No coordinates";
-
-      overviewEl.textContent = place.overview || "—";
-      shortEl.textContent = place.shortDescription || "—";
-      reachEl.textContent = place.howToReach || "—";
-      featuresEl.textContent = place.keyFeatures || "—";
-      taskEl.textContent = place.taskForLocation || "—";
-      distHqEl.textContent = place.distFromHQ || "—";
-
-      rawEl.textContent = JSON.stringify(place.raw || {}, null, 2);
-
-      setOpenMapsLink(place);
-
-      addRouteBtn.onclick = ()=>{
-        if(!Number.isFinite(place.lat) || !Number.isFinite(place.lng)){
-          toast("No coordinates. Add lat/lng first.");
-          return;
-        }
-        const route = loadRoute();
-        if(route.find(x=>x.id===place.id)){
-          toast("Already in route");
-          return;
-        }
-        route.push({ id: place.id, name: place.name, district: place.district, segmentType: place.segmentType, lat: place.lat, lng: place.lng });
-        saveRoute(route);
-        toast("Added to route ✅");
-      };
-    }
-
-    function renderSimilar(list, current){
-      const same = list
-        .filter(x => x.id !== current.id)
-        .filter(x => (x.district || "") === (current.district || ""))
-        .filter(x => (x.segmentType || "") === (current.segmentType || ""))
-        .slice(0, 12);
-
-      if(!same.length){
-        similarEl.textContent = "No similar places found.";
-        return;
-      }
-
-      const wrap = document.createElement("div");
-      wrap.style.display = "grid";
-      wrap.style.gridTemplateColumns = "repeat(auto-fit, minmax(220px, 1fr))";
-      wrap.style.gap = "10px";
-
-      same.forEach(p=>{
-        const a = document.createElement("a");
-        a.href = `location.html?id=${encodeURIComponent(p.id)}`;
-        a.className = "btn";
-        a.style.justifyContent = "space-between";
-        a.style.width = "100%";
-        a.innerHTML = `<span>${p.name}</span><span style="opacity:.75;font-size:12px">${p.locationType || ""}</span>`;
-        wrap.appendChild(a);
-      });
-
-      similarEl.innerHTML = "";
-      similarEl.appendChild(wrap);
-    }
-
-    /******** Boot ********/
-    (async ()=>{
-      const id = getIdFromQuery();
-      if(!id){
-        titleEl.textContent = "Missing location id";
-        subtitleEl.textContent = "Open from index page (card click).";
-        document.getElementById("map").textContent = "—";
-        similarEl.textContent = "—";
-        return;
-      }
-
-      let placeRaw = null;
-      try{
-        placeRaw = await loadOne(id);
-      }catch(e){
-        titleEl.textContent = "Firebase error";
-        subtitleEl.textContent = String(e?.message || e);
-        return;
-      }
-
-      if(!placeRaw){
-        titleEl.textContent = "Location not found";
-        subtitleEl.textContent = "No data at /locations/" + id;
-        similarEl.textContent = "—";
-        return;
-      }
-
-      const place = normalizePlace(id, placeRaw);
-      renderPlace(place);
-
-      // load similar
-      try{
-        const all = await loadAll();
-        const list = Object.entries(all || {}).map(([k,v])=> normalizePlace(k, v));
-        renderSimilar(list, place);
-      }catch{
-        similarEl.textContent = "Similar places failed to load.";
-      }
-
-      // maps
       try{
         await loadGoogleMaps();
-        renderMap(place);
-      }catch{
-        showMapFixMessage();
+        mapEl.textContent = "";
+        const m = new google.maps.Map(mapEl, {
+          center:{lat,lng},
+          zoom: 11,
+          mapTypeControl:false,
+          streetViewControl:false,
+          fullscreenControl:false
+        });
+        new google.maps.Marker({position:{lat,lng}, map:m});
+      }catch(e){
+        setMapFallback(lat,lng);
       }
-    })();
+    }
+
+    async function loadLocation(){
+      if(!id){
+        sub.textContent = "Missing location id.";
+        toast("Missing id in URL");
+        return;
+      }
+
+      await ensureAuth();
+
+      const snap = await get(ref(db, `${FIREBASE_LOCATIONS_PATH}/${id}`));
+      if(!snap.exists()){
+        sub.textContent = "Location not found.";
+        toast("Not found in Firebase");
+        return;
+      }
+
+      const p = snap.val();
+      const name = String(pick(p, ["Location Name","locationName","name"], id)).trim();
+      const district = String(pick(p, ["District","district"], "")).trim();
+      const segmentType = String(pick(p, ["Segment Type","segmentType"], "Place")).trim();
+      const locationType = String(pick(p, ["Location Type","locationType"], "—")).trim();
+
+      const ov = String(pick(p, ["Overview","overview","Short Description","shortDescription"], "")).trim();
+      const ht = String(pick(p, ["How to Reach","howToReach"], "")).trim();
+      const bt = String(pick(p, ["Best Time to Visit","bestTimeToVisit"], "")).trim();
+      const distHQ = String(pick(p, ["Dist from HQ","Dist From HQ","Distance from HQ"], "")).trim();
+      const imgs = normalizeImages(p);
+      const {lat,lng} = parseLatLng(p);
+
+      title.textContent = name;
+      sub.textContent = (district ? district + " • " : "") + segmentType;
+      overview.textContent = ov || "No overview found in database yet.";
+      reach.textContent = ht || "—";
+      best.textContent = bt || "—";
+      hq.textContent = distHQ || "—";
+
+      // pills
+      pills.innerHTML = "";
+      [
+        segmentType,
+        district || "—",
+        locationType || "—",
+        (Number.isFinite(lat)&&Number.isFinite(lng)) ? "Coords ✓" : "No coords"
+      ].forEach(x=>{
+        const s = document.createElement("span");
+        s.className = "pill";
+        s.textContent = x;
+        pills.appendChild(s);
+      });
+
+      // tags (simple)
+      const tagSet = [];
+      const text = (segmentType+" "+locationType+" "+ov+" "+ht).toLowerCase();
+      if(/temple|mandir|devi|mahadev|shiva|shiv/.test(text)) tagSet.push("spiritual");
+      if(/lake|river|waterfall|forest|valley|meadow|peak|mount|snow|nature|view|sunset/.test(text)) tagSet.push("nature");
+      if(/trek|hike|trail|camp|adventure|paragliding|rafting|ski/.test(text)) tagSet.push("adventure");
+      if(/heritage|colonial|fort|palace|museum|monastery|old/.test(text)) tagSet.push("heritage");
+      if(/family|kids|picnic|easy/.test(text)) tagSet.push("family");
+      tagsEl.textContent = tagSet.length ? tagSet.join(", ") : "—";
+
+      // hero image + bg
+      const hero = imgs[0] || fallbackImg(name);
+      heroImg.style.backgroundImage = `url('${hero.replace(/'/g,"%27")}')`;
+      bg.style.backgroundImage = `url('${hero.replace(/'/g,"%27")}')`;
+
+      // gallery
+      gallery.innerHTML = "";
+      const all = (imgs.length ? imgs : [fallbackImg(name)]);
+      all.slice(0,9).forEach(url=>{
+        const d = document.createElement("div");
+        d.className = "gimg";
+        d.style.backgroundImage = `url('${String(url).replace(/'/g,"%27")}')`;
+        d.title = "Open image";
+        d.addEventListener("click", ()=> window.open(url, "_blank", "noopener"));
+        gallery.appendChild(d);
+      });
+
+      // map + open maps
+      openMapsBtn.addEventListener("click", ()=>{
+        if(Number.isFinite(lat) && Number.isFinite(lng)){
+          window.open(`https://www.google.com/maps?q=${lat},${lng}`, "_blank", "noopener");
+        }else{
+          window.open(`https://www.google.com/maps?q=${encodeURIComponent(name + " " + district + " Himachal Pradesh")}`, "_blank", "noopener");
+        }
+      });
+
+      // add to route (LS shared with main page)
+      addToRouteBtn.addEventListener("click", ()=>{
+        if(!Number.isFinite(lat) || !Number.isFinite(lng)){
+          toast("Can't add — coordinates missing.");
+          return;
+        }
+        const r = loadRoute();
+        if(r.find(x=>x.id===id)){
+          toast("Already in route.");
+          return;
+        }
+        r.push({id, name, district, segmentType, lat, lng});
+        saveRoute(r);
+        toast("Added to route ✅ (go back to main page)");
+      });
+
+      await renderMap(lat,lng);
+    }
+
+    loadLocation().catch(e=>{
+      sub.textContent = "Failed to load.";
+      toast("Error loading location");
+      console.error(e);
+    });
   </script>
 </body>
 </html>
