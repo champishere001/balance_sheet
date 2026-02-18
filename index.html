@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- Optional: Firebase (works if you fill config + enable RTDB rules) -->
+  <!-- Firebase (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
 
@@ -365,8 +365,7 @@
       width:92px; height:72px;
       border-radius:16px;
       background:
-        linear-gradient(135deg, rgba(103,232,249,.12), rgba(167,139,250,.10)),
-        url("https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=800&q=60") center/cover no-repeat;
+        linear-gradient(135deg, rgba(103,232,249,.12), rgba(167,139,250,.10));
       border:1px solid rgba(255,255,255,.12);
       overflow:hidden;
       position:relative;
@@ -504,6 +503,7 @@
       font-weight:650;
       line-height:1.45;
       font-size:12.5px;
+      white-space:pre-wrap;
     }
     .msg.me{
       margin-left:auto;
@@ -758,6 +758,7 @@
           <div class="row">
             <button class="btn" id="routeBtn">Route on map</button>
             <button class="btn ghost" id="pkgBtn">3–4 Packages</button>
+            <button class="btn ghost" id="fullBtn">Open Full Page</button>
           </div>
           <div class="panel" style="margin-top:6px">
             <div class="panelHead">
@@ -795,72 +796,21 @@
 
 <script>
 /* =========================
-   1) DATA SOURCE
-   =========================
-   If Firebase not configured, demo data is used.
-   You can connect Firebase RTDB later by setting:
-   - firebaseConfig
-   - dbPath (where your places live)
-*/
+   1) DATA SOURCE (Firebase RTDB)
+   ========================= */
 const firebaseConfig = {
-  // TODO: paste your firebase config here
-  // apiKey: "",
-  // authDomain: "",
-  // databaseURL: "",
-  // projectId: "",
-  // storageBucket: "",
-  // messagingSenderId: "",
-  // appId: ""
+  apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
+  authDomain: "revnue-records.firebaseapp.com",
+  databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "revnue-records",
+  storageBucket: "revnue-records.firebasestorage.app",
+  messagingSenderId: "182348503564",
+  appId: "1:182348503564:web:480085405b09177245ac29",
+  measurementId: "G-MGTDBCG896"
 };
 
-const dbPath = "places"; // your RTDB node name e.g. "locations" / "places"
-
-/* Expected place format:
-{
-  id: "auto",
-  name: "Khajjiar",
-  district: "Chamba",
-  type: "Lake",
-  lat: 32.55,
-  lng: 76.06,
-  brief: "Mini Switzerland…",
-  how: "Drive from Dalhousie",
-  images: ["url1","url2"...] OR image: "url"
-}
-*/
-
-const DEMO_PLACES = [
-  {name:"Shimla (The Ridge)", district:"Shimla", type:"Destination", lat:31.1048, lng:77.1734,
-   brief:"The iconic heart of Shimla—colonial vibes, views, cafes, evening strolls.", how:"Road from Chandigarh / Kalka-Shimla toy train",
-   images:[
-     "https://upload.wikimedia.org/wikipedia/commons/4/4c/The_Ridge_Shimla_5.jpg",
-     "https://upload.wikimedia.org/wikipedia/commons/8/8e/Shimla_India_Ridge.JPG"
-   ]
-  },
-  {name:"Kufri", district:"Shimla", type:"Destination", lat:31.0976, lng:77.2673,
-   brief:"Snow viewpoints, forests and fun rides—best for quick day trips.", how:"Drive ~16 km from Shimla",
-   images:["https://images.unsplash.com/photo-1599249300675-c39f1dd2d6be?auto=format&fit=crop&w=1200&q=70"]
-  },
-  {name:"Manali", district:"Kullu", type:"Destination", lat:32.2432, lng:77.1892,
-   brief:"Riverside town with cafes, snow routes, valleys and adventure.", how:"Road via Mandi–Kullu",
-   images:[
-     "https://upload.wikimedia.org/wikipedia/commons/0/0e/Manali_view.jpg",
-     "https://upload.wikimedia.org/wikipedia/commons/d/d3/Hadimba_Temple_Manali.jpg"
-   ]
-  },
-  {name:"Triund Trek", district:"Kangra", type:"Trek", lat:32.2423, lng:76.3202,
-   brief:"Classic Himalayan trek with Dhauladhar views near McLeod Ganj.", how:"Start from McLeod Ganj / Dharamkot",
-   images:["https://upload.wikimedia.org/wikipedia/commons/2/2b/Triund_Trek.jpg"]
-  },
-  {name:"Khajjiar", district:"Chamba", type:"Lake", lat:32.5495, lng:76.0669,
-   brief:"Meadows + lake + pine forests—popular scenic stop near Dalhousie.", how:"Drive from Dalhousie (~22 km)",
-   images:["https://upload.wikimedia.org/wikipedia/commons/9/96/Khajjiar_Lake.jpg"]
-  },
-  {name:"Chandratal Lake", district:"Lahaul-Spiti", type:"Lake", lat:32.4762, lng:77.6156,
-   brief:"High-altitude ‘Moon Lake’—unreal colors, best in summer season.", how:"Via Kunzum Pass; requires permits/road status check",
-   images:["https://upload.wikimedia.org/wikipedia/commons/4/45/Chandratal_Lake.jpg"]
-  }
-];
+// ✅ Your real path from screenshot:
+const dbPath = "locations";
 
 /* =========================
    2) UI + MAP SETUP
@@ -874,11 +824,32 @@ let map, markerLayer;
 
 function safeText(v){ return (v ?? "").toString().trim(); }
 
+function escapeHtml(str){
+  return safeText(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;");
+}
+
+function parseLatLngFromMapUrl(url){
+  url = safeText(url);
+  if(!url) return {lat:null,lng:null};
+
+  const q = url.match(/q=([-0-9.]+)\s*,\s*([-0-9.]+)/i);
+  if(q) return {lat:Number(q[1])||null, lng:Number(q[2])||null};
+
+  const at = url.match(/@([-0-9.]+)\s*,\s*([-0-9.]+)/i);
+  if(at) return {lat:Number(at[1])||null, lng:Number(at[2])||null};
+
+  return {lat:null,lng:null};
+}
+
 function normalizeType(t){
   t = safeText(t);
   if(!t) return "Destination";
   const low = t.toLowerCase();
-  if(low.includes("temple")) return "Temple";
+  if(low.includes("temple") || low.includes("mandir")) return "Temple";
   if(low.includes("lake")) return "Lake";
   if(low.includes("trek") || low.includes("trail")) return "Trek";
   if(low.includes("hotel") || low.includes("stay")) return "Hotel";
@@ -906,12 +877,10 @@ function typeColor(type){
 
 function initMap(){
   map = L.map('map', {zoomControl:true}).setView([31.9, 77.2], 7);
-
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 18,
     attribution: '&copy; OpenStreetMap'
   }).addTo(map);
-
   markerLayer = L.layerGroup().addTo(map);
 }
 
@@ -924,69 +893,79 @@ function addMarkers(list){
   clearMarkers();
   list.forEach((p)=>{
     if(!p.lat || !p.lng) return;
-    const t = p.type || "Destination";
     const m = L.marker([p.lat, p.lng]).addTo(markerLayer);
-    m.bindPopup(`<b>${escapeHtml(p.name)}</b><br/><span style="opacity:.8">${escapeHtml(p.district)} • ${escapeHtml(t)}</span>`);
+    m.bindPopup(`<b>${escapeHtml(p.name)}</b><br/><span style="opacity:.8">${escapeHtml(p.district)} • ${escapeHtml(p.type)}</span>`);
     m.on('click', ()=> openDrawer(p));
     markers.push(m);
   });
 
-  // Fit bounds if enough points
   const pts = list.filter(p=>p.lat && p.lng).map(p=>[p.lat, p.lng]);
-  if(pts.length >= 2){
-    map.fitBounds(pts, {padding:[30,30]});
-  }else if(pts.length === 1){
-    map.setView(pts[0], 11);
-  }
-}
-
-function escapeHtml(str){
-  return safeText(str)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;");
+  if(pts.length >= 2) map.fitBounds(pts, {padding:[30,30]});
+  else if(pts.length === 1) map.setView(pts[0], 11);
 }
 
 /* =========================
-   3) LOAD DATA (Firebase or Demo)
+   3) LOAD DATA (Firebase)
    ========================= */
 async function loadPlaces(){
-  const hasFirebase = firebaseConfig && firebaseConfig.databaseURL && firebaseConfig.apiKey;
-  if(!hasFirebase){
-    allPlaces = DEMO_PLACES.map(p=>({
-      ...p,
-      type: normalizeType(p.type),
-      district: safeText(p.district) || "Unknown",
-      lat: Number(p.lat) || null,
-      lng: Number(p.lng) || null
-    }));
-    return;
-  }
-
   try{
-    firebase.initializeApp(firebaseConfig);
+    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const snap = await db.ref(dbPath).once('value');
+
+    const snap = await db.ref(dbPath).once("value");
     const val = snap.val() || {};
 
-    // Accept both array-like and object
-    const arr = Array.isArray(val) ? val.filter(Boolean) : Object.values(val);
+    // ✅ Your DB: /locations/{firebase_id}/{fields...}
+    const arr = Object.entries(val).map(([id, o])=>{
+      o = o || {};
 
-    allPlaces = arr.map(p=>({
-      ...p,
-      name: safeText(p.name || p.title),
-      district: safeText(p.district),
-      type: normalizeType(p.type || p.category),
-      lat: Number(p.lat || p.latitude) || null,
-      lng: Number(p.lng || p.longitude) || null,
-      brief: safeText(p.brief || p.description || p.about),
-      how: safeText(p.how || p.howToReach || p.reach)
-    })).filter(p=>p.name);
+      const name = safeText(o["Location Name"] || o.name || o.title || id);
+      const district = safeText(o["District"] || o.district || "Unknown");
+      const segment = safeText(o["Segment Type"] || o.segment || "Destination");
+      const locationType = safeText(o["Location Type"] || o.type || "");
+      const overview = safeText(o["Overview"] || o.overview || "");
+      const short = safeText(o["Short Description"] || o.short || "");
+      const keyFeatures = safeText(o["Key Features"] || o.features || "");
+      const how = safeText(o["How to Reach"] || o.how || "");
+      const bestTime = safeText(o["Best Time to Visit"] || o.bestTime || "");
+      const distFromHQ = safeText(o["Dist from HQ"] || o.distFromHQ || "");
+      const task = safeText(o["Task for Location"] || o.task || "");
+      const mapUrl = safeText(o["Map"] || o.map || "");
 
+      const {lat, lng} = parseLatLngFromMapUrl(mapUrl);
+
+      // Optional (if you add later):
+      const images = Array.isArray(o.images) ? o.images : (o.image ? [o.image] : []);
+
+      // For your UI "type" filter we use segment (Destination/Temple/Lake/Trek etc.)
+      const type = normalizeType(segment);
+
+      // brief: prioritize Overview, then Short, then Key Features
+      const brief = overview || short || keyFeatures || "Explore this place in Himachal Pradesh.";
+
+      return {
+        id,
+        name,
+        district,
+        type,
+        segment,
+        locationType,
+        brief,
+        how,
+        bestTime,
+        distFromHQ,
+        task,
+        mapUrl,
+        lat,
+        lng,
+        images
+      };
+    }).filter(p=>p.name);
+
+    allPlaces = arr;
   }catch(e){
-    console.warn("Firebase load failed. Using demo.", e);
-    allPlaces = DEMO_PLACES;
+    console.error("Firebase load failed:", e);
+    allPlaces = [];
   }
 }
 
@@ -1018,11 +997,7 @@ function buildDistrictGrid(){
   grid.innerHTML = districts.map(d=>{
     const info = by.get(d);
     const types = [...info.types].slice(0,3);
-    const tags = [
-      `${info.count} places`,
-      ...types
-    ].slice(0,3);
-
+    const tags = [`${info.count} places`, ...types].slice(0,3);
     return `
       <div class="dItem" data-d="${escapeHtml(d)}">
         <b>${escapeHtml(d)}</b>
@@ -1041,7 +1016,6 @@ function buildDistrictGrid(){
     });
   });
 
-  // quick show all
   $("showAllDistricts").onclick = ()=>{
     $("district").value = "all";
     applyFilters(true);
@@ -1060,18 +1034,13 @@ function applyFilters(scrollToList=false){
     if(t !== "all" && p.type !== t) return false;
 
     if(q){
-      const hay = `${p.name} ${p.district} ${p.type} ${p.brief} ${p.how}`.toLowerCase();
+      const hay = `${p.name} ${p.district} ${p.type} ${p.brief} ${p.how} ${p.locationType} ${p.segment}`.toLowerCase();
       if(!hay.includes(q)) return false;
     }
 
-    // Lightweight days logic (optional)
+    // lightweight day preference (same as your original)
     if(days){
-      // rough heuristics
-      const type = p.type;
-      if(days <= 2){
-        // Prefer near-city / easy
-        if(type === "Trek") return false;
-      }
+      if(days <= 2 && p.type === "Trek") return false;
     }
     return true;
   });
@@ -1126,12 +1095,12 @@ function renderList(list){
     const thumb = imgs[0] || "";
     const badgeBg = typeColor(p.type);
     const brief = safeText(p.brief) || "Explore this place in Himachal Pradesh.";
-    const meta = `${safeText(p.district)} • ${safeText(p.type)}`;
+    const meta = `${safeText(p.district)} • ${safeText(p.type)}${p.locationType ? " • " + p.locationType : ""}`;
 
     return `
       <div class="place" data-i="${idx}">
         <div class="thumb">
-          ${thumb ? `<img src="${thumb}" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.style.display='none'">` : ``}
+          ${thumb ? `<img src="${thumb}" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.remove()">` : ``}
         </div>
         <div>
           <p class="pTitle">${escapeHtml(p.name)}</p>
@@ -1139,6 +1108,7 @@ function renderList(list){
           <div class="pBadges">
             <span class="badge" style="background:${badgeBg}">${escapeHtml(p.type)}</span>
             <span class="badge">${escapeHtml(p.district)}</span>
+            ${p.distFromHQ ? `<span class="badge">${escapeHtml(p.distFromHQ)}</span>` : ``}
             ${p.lat && p.lng ? `<span class="badge">📍 ${p.lat.toFixed(3)}, ${p.lng.toFixed(3)}</span>` : ``}
           </div>
         </div>
@@ -1162,7 +1132,7 @@ let currentPlace = null;
 function openDrawer(p){
   currentPlace = p;
   $("dTitle").textContent = p.name;
-  $("dSub").textContent = `${p.district} • ${p.type}`;
+  $("dSub").textContent = `${p.district} • ${p.type}${p.locationType ? " • " + p.locationType : ""}`;
   $("dDesc").textContent = safeText(p.brief) || "No description available yet.";
   $("dType").textContent = p.type;
   $("dDistrict").textContent = p.district;
@@ -1173,17 +1143,16 @@ function openDrawer(p){
   const g = $("gallery");
   if(imgs.length){
     g.innerHTML = imgs.map(u=>`
-      <div class="gImg"><img src="${u}" alt="${escapeHtml(p.name)}" loading="lazy"/></div>
+      <div class="gImg"><img src="${u}" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.remove()"/></div>
     `).join("");
   }else{
     g.innerHTML = `
       <div class="gImg" style="display:flex; align-items:center; justify-content:center; padding:14px; color:rgba(255,255,255,.7); font-weight:750">
-        No images yet
+        No images yet (add images[] in Firebase)
       </div>`;
   }
 
   $("miniPlan").textContent = buildMiniPlan(p);
-
   $("drawerWrap").style.display = "flex";
 }
 
@@ -1215,10 +1184,8 @@ $("routeBtn").onclick = ()=>{
 
 $("pkgBtn").onclick = ()=>{
   if(!currentPlace) return;
-  // quick package suggestions
   const base = currentPlace.name;
   const district = currentPlace.district;
-  const type = currentPlace.type;
 
   const pack = [
     `Package A: ${district} Highlights (2D/1N) — ${base} + 2 nearby spots + local food.`,
@@ -1228,6 +1195,12 @@ $("pkgBtn").onclick = ()=>{
   ].slice(0,4);
 
   alert(pack.join("\n\n"));
+};
+
+// ✅ NEW: open full place page
+$("fullBtn").onclick = ()=>{
+  if(!currentPlace) return;
+  window.location.href = `place.html?id=${encodeURIComponent(currentPlace.id)}`;
 };
 
 /* =========================
@@ -1246,7 +1219,6 @@ $("nearby").onclick = ()=>{
       radius:8, weight:2, fillOpacity:.25
     }).addTo(markerLayer).bindPopup("You are here").openPopup();
 
-    // sort by distance (simple)
     const withDist = allPlaces
       .filter(p=>p.lat && p.lng)
       .map(p=>({p, km: haversine(me.lat, me.lng, p.lat, p.lng)}))
@@ -1254,7 +1226,6 @@ $("nearby").onclick = ()=>{
       .slice(0, 20)
       .map(x=>({...x.p, _km:x.km}));
 
-    // show nearest 20
     shownPlaces = withDist;
     renderList(shownPlaces);
     addMarkers(shownPlaces);
@@ -1297,15 +1268,12 @@ function pushMsg(text, who="bot"){
 }
 
 function aiSuggest(userText){
-  // Lightweight deterministic "AI-like" suggestion using your loaded places.
   const t = userText.toLowerCase();
 
-  // parse days
   let days = 0;
   const m = t.match(/(\d+)\s*(day|days|d)/);
   if(m) days = Number(m[1]);
 
-  // detect interests
   const wants = {
     trek: /trek|hike|trail|adventure/.test(t),
     lake: /lake|chandratal|prashar|rewalsar|manimahesh/.test(t),
@@ -1314,14 +1282,12 @@ function aiSuggest(userText){
     relax: /relax|peace|family|easy/.test(t),
   };
 
-  // starting district / place hint
   let districtHint = null;
   const districts = [...new Set(allPlaces.map(p=>p.district))];
   for(const d of districts){
     if(t.includes(d.toLowerCase())) { districtHint = d; break; }
   }
 
-  // score places
   const scored = allPlaces.map(p=>{
     let s=0;
     if(districtHint && p.district===districtHint) s += 3;
@@ -1333,7 +1299,11 @@ function aiSuggest(userText){
     return {p, s};
   }).sort((a,b)=>b.s-a.s);
 
-  const pick = scored.filter(x=>x.s>0).slice(0, Math.min(6, days? Math.max(3, Math.min(6, Math.ceil(days*1.2))) : 5)).map(x=>x.p);
+  const pick = scored
+    .filter(x=>x.s>0)
+    .slice(0, Math.min(6, days? Math.max(3, Math.min(6, Math.ceil(days*1.2))) : 5))
+    .map(x=>x.p);
+
   const fallback = allPlaces.slice(0,5);
 
   const list = (pick.length ? pick : fallback)
@@ -1355,9 +1325,7 @@ $("sendChat").onclick = ()=>{
   if(!v) return;
   pushMsg(v, "me");
   $("chatInput").value = "";
-
-  const reply = aiSuggest(v);
-  pushMsg(reply, "bot");
+  pushMsg(aiSuggest(v), "bot");
 };
 
 function seedChat(){
@@ -1397,20 +1365,13 @@ $("openAdmin").onclick = ()=>{
   initMap();
   await loadPlaces();
 
-  // normalize
-  allPlaces = allPlaces.map(p=>({
-    ...p,
-    name: safeText(p.name),
-    district: safeText(p.district) || "Unknown",
-    type: normalizeType(p.type),
-  }));
-
-  $("status").textContent = `Loaded ${allPlaces.length} places.`;
+  $("status").textContent = allPlaces.length
+    ? `Loaded ${allPlaces.length} places from Firebase /${dbPath}`
+    : "No data loaded. Check RTDB Rules + path.";
 
   buildDistrictDropdown();
   buildDistrictGrid();
 
-  // initial view: show "must visit" (Destination)
   shownPlaces = allPlaces.slice();
   applyFilters(false);
 
