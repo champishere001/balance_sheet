@@ -5,13 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Himachal Explorer — Firebase Places + Packages + Route Planner</title>
 
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://maps.googleapis.com" crossorigin>
+
   <style>
     :root{
-      --bg:#070a12; --stroke: rgba(255,255,255,.16);
-      --text: rgba(255,255,255,.92); --muted: rgba(255,255,255,.72);
+      --bg:#070a12;
+      --stroke: rgba(255,255,255,.16);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
       --shadow: 0 18px 60px rgba(0,0,0,.55);
       --r: 18px; --r2: 26px;
-      --ok:#49f2c2;
+      --ok:#49f2c2; --warn:#ffcf5a; --bad:#ff6b6b;
+      --accent:#7cf7ff;
+      --accent2:#b388ff;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -19,28 +27,45 @@
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--text);
-      background: radial-gradient(1200px 800px at 20% 10%, rgba(120,120,255,.18), transparent 60%),
-                  radial-gradient(1200px 800px at 80% 30%, rgba(0,255,200,.10), transparent 55%),
-                  var(--bg);
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(120,120,255,.18), transparent 60%),
+        radial-gradient(1200px 800px at 80% 30%, rgba(0,255,200,.10), transparent 55%),
+        var(--bg);
       overflow-x:hidden;
     }
 
-    /* ✅ multi-image background */
+    /* ✅ multi-image background (smooth crossfade + subtle zoom) */
     .bg{
       position:fixed; inset:0; z-index:-2;
       background-size:cover; background-position:center;
-      filter:saturate(1.08) contrast(1.05);
-      animation:bgSlide 18s infinite;
+      filter:saturate(1.12) contrast(1.08);
+      animation:bgSlide 28s infinite;
+      transform: scale(1.02);
     }
     .bg::before{
       content:""; position:absolute; inset:0;
-      background:linear-gradient(180deg, rgba(5,8,16,.62), rgba(5,8,16,.86));
+      background:
+        radial-gradient(900px 500px at 15% 18%, rgba(124,247,255,.16), transparent 60%),
+        radial-gradient(900px 500px at 85% 30%, rgba(179,136,255,.12), transparent 62%),
+        linear-gradient(180deg, rgba(5,8,16,.55), rgba(5,8,16,.88));
+      backdrop-filter: blur(1px);
+    }
+    .bg::after{
+      content:""; position:absolute; inset:-40px;
+      background: linear-gradient(135deg, rgba(255,255,255,.02), transparent 35%, rgba(255,255,255,.02));
+      transform: rotate(6deg);
+      opacity:.75;
+      pointer-events:none;
     }
     @keyframes bgSlide{
-      0%, 100% { background-image:url("Kee_monastery.jpg"); }
+      0%   { background-image:url("Kee_monastery.jpg"); }
+      25%  { background-image:url("Triund.jpg"); }
+      50%  { background-image:url("Spiti_valley.jpg"); }
+      75%  { background-image:url("Manali.jpg"); }
+      100% { background-image:url("Kee_monastery.jpg"); }
     }
 
-    /* ✅ Always-visible top-right logo */
+    /* ✅ Top-right logo */
     .topRightLogo{
       position:fixed; top:14px; right:14px; z-index:12000;
       width:54px; height:54px;
@@ -51,29 +76,41 @@
       box-shadow: 0 18px 60px rgba(0,0,0,.45);
       display:grid; place-items:center;
       overflow:hidden;
+      transition:.2s ease;
     }
+    .topRightLogo:hover{ transform: translateY(-2px); background: rgba(255,255,255,.10); }
     .topRightLogo img{width:70%; height:70%; object-fit:contain; display:block}
 
-    /* ✅ Splash while DB + Maps load (FULL SCREEN with logo) */
+    /* ✅ Splash */
     .hidden{display:none !important}
     .splash{
       position:fixed; inset:0; z-index:9999;
       display:grid; place-items:center;
-      background: radial-gradient(1200px 800px at 20% 10%, rgba(120,120,255,.18), transparent 55%),
-                  linear-gradient(180deg, rgba(7,10,18,.92), rgba(5,8,16,.98));
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(120,120,255,.18), transparent 55%),
+        linear-gradient(180deg, rgba(7,10,18,.92), rgba(5,8,16,.98));
     }
     .splashCard{
-      width:min(520px, 92vw);
-      padding:28px 22px;
-      border-radius:22px;
+      width:min(560px, 92vw);
+      padding:30px 24px;
+      border-radius:24px;
       border:1px solid rgba(255,255,255,.12);
       background:rgba(255,255,255,.06);
-      box-shadow:0 24px 80px rgba(0,0,0,.55);
+      box-shadow:0 28px 90px rgba(0,0,0,.58);
       text-align:center;
+      position:relative;
+      overflow:hidden;
     }
+    .splashCard::before{
+      content:""; position:absolute; inset:-2px;
+      background: radial-gradient(480px 280px at 20% 20%, rgba(124,247,255,.18), transparent 60%),
+                  radial-gradient(480px 280px at 80% 30%, rgba(179,136,255,.14), transparent 62%);
+      opacity:.9; pointer-events:none;
+    }
+    .splashInner{ position:relative; z-index:1; }
     .splashLogo{
       width:92px;height:92px;object-fit:contain;
-      display:block;margin:6px auto 12px;
+      display:block;margin:8px auto 12px;
       filter: drop-shadow(0 18px 40px rgba(0,0,0,.45));
     }
     .loaderLine{
@@ -94,104 +131,34 @@
     }
     .splashText{color:rgba(255,255,255,.85); font-size:14px}
 
-    /* ✅ Center Start Options (NEW) */
-    .startScreen{
-      position:fixed; inset:0; z-index:9500;
-      display:grid; place-items:center;
-      background: linear-gradient(180deg, rgba(7,10,18,.75), rgba(5,8,16,.92));
-      backdrop-filter: blur(10px);
-    }
-    .startCard{
-      width:min(920px, 94vw);
-      border-radius:26px;
-      padding:22px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.07);
-      box-shadow:0 28px 90px rgba(0,0,0,.62);
-      overflow:hidden;
-    }
-    .startTop{
-      display:flex; gap:14px; align-items:center; justify-content:space-between; flex-wrap:wrap;
-      padding:6px 6px 14px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-    }
-    .startBrand{
-      display:flex; gap:12px; align-items:center;
-    }
-    .startBrand .mark{
-      width:56px; height:56px; border-radius:18px;
-      border:1px solid rgba(255,255,255,.14);
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.22), rgba(255,255,255,.06));
-      display:grid; place-items:center; overflow:hidden;
-      box-shadow: 0 14px 40px rgba(0,0,0,.35);
-    }
-    .startBrand .mark img{width:100%;height:100%;object-fit:cover}
-    .startTop h1{margin:0; font-size:22px; letter-spacing:.2px}
-    .startTop p{margin:6px 0 0; color:rgba(255,255,255,.72); max-width:70ch; line-height:1.45; font-size:13px}
-    .startGrid{
-      display:grid;
-      grid-template-columns: repeat(4, minmax(0,1fr));
-      gap:12px;
-      margin-top:14px;
-    }
-    @media (max-width: 980px){ .startGrid{grid-template-columns: repeat(2, minmax(0,1fr));} }
-    @media (max-width: 560px){ .startGrid{grid-template-columns: 1fr;} }
-
-    .startBtn{
-      text-align:left;
-      padding:16px 14px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.18);
-      color:rgba(255,255,255,.92);
-      cursor:pointer;
-      transition:transform .15s ease, background .15s ease, border-color .15s ease;
-      min-height:112px;
-    }
-    .startBtn:hover{
-      transform:translateY(-2px);
-      background:rgba(255,255,255,.10);
-      border-color: rgba(255,255,255,.20);
-    }
-    .startBtn b{display:block; font-size:15px; margin-bottom:6px}
-    .startBtn span{display:block; color:rgba(255,255,255,.72); font-size:12.5px; line-height:1.4}
-    .startFooter{
-      margin-top:14px;
-      display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
-      color:rgba(255,255,255,.74); font-size:12.5px;
-    }
-    .remember{display:flex;gap:10px;align-items:center}
-    .remember input{width:auto}
-    .smallLink{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      color: rgba(255,255,255,.90);
-      padding:9px 12px;
-      border-radius:999px;
-      cursor:pointer;
-      font-weight:850;
-      transition:.2s ease;
-    }
-    .smallLink:hover{background: rgba(255,255,255,.14);transform:translateY(-1px)}
-
-    /* ✅ Role selection (kept) */
+    /* ✅ Onboarding */
     .onboarding{
       position:fixed; inset:0; z-index:9000;
       display:grid; place-items:center;
-      background: linear-gradient(180deg, rgba(7,10,18,.80), rgba(5,8,16,.94));
+      background: linear-gradient(180deg, rgba(7,10,18,.74), rgba(5,8,16,.94));
     }
     .obCard{
-      width:min(980px, 94vw);
-      border-radius:26px;
+      width:min(1020px, 94vw);
+      border-radius:28px;
       padding:26px;
       border:1px solid rgba(255,255,255,.12);
       background:rgba(255,255,255,.06);
-      box-shadow:0 24px 80px rgba(0,0,0,.55);
+      box-shadow:0 26px 90px rgba(0,0,0,.58);
       color:rgba(255,255,255,.92);
+      position:relative;
+      overflow:hidden;
     }
+    .obCard::before{
+      content:""; position:absolute; inset:-2px;
+      background: radial-gradient(600px 300px at 15% 20%, rgba(124,247,255,.14), transparent 60%),
+                  radial-gradient(600px 300px at 85% 30%, rgba(179,136,255,.12), transparent 62%);
+      opacity:.9; pointer-events:none;
+    }
+    .obTop{position:relative; z-index:1}
     .obTop h1{margin:0;font-size:26px}
-    .obTop p{margin:8px 0 0;color:rgba(255,255,255,.72);max-width:70ch;line-height:1.45}
+    .obTop p{margin:8px 0 0;color:rgba(255,255,255,.72);max-width:74ch;line-height:1.45}
     .obGrid{
+      position:relative; z-index:1;
       display:grid;
       grid-template-columns: repeat(2, minmax(0,1fr));
       gap:12px;
@@ -206,16 +173,28 @@
       background:rgba(255,255,255,.07);
       color:rgba(255,255,255,.92);
       cursor:pointer;
-      transition:transform .15s ease, background .15s ease;
+      transition:transform .15s ease, background .15s ease, border-color .15s ease;
+      position:relative;
+      overflow:hidden;
     }
-    .obBtn:hover{transform:translateY(-2px); background:rgba(255,255,255,.10)}
-    .obBtn b{display:block; font-size:16px; margin-bottom:4px}
-    .obBtn span{display:block; color:rgba(255,255,255,.72); font-size:13px}
+    .obBtn::before{
+      content:""; position:absolute; inset:-2px;
+      background: radial-gradient(260px 140px at 20% 20%, rgba(124,247,255,.14), transparent 60%),
+                  radial-gradient(260px 140px at 80% 40%, rgba(179,136,255,.12), transparent 62%);
+      opacity:.75;
+      pointer-events:none;
+    }
+    .obBtn:hover{transform:translateY(-2px); background:rgba(255,255,255,.10); border-color: rgba(255,255,255,.18)}
+    .obBtn b{display:block; font-size:16px; margin-bottom:4px; position:relative; z-index:1}
+    .obBtn span{display:block; color:rgba(255,255,255,.72); font-size:13px; position:relative; z-index:1}
     .obFooter{
+      position:relative; z-index:1;
       margin-top:14px;
       display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
       color:rgba(255,255,255,.75); font-size:13px;
     }
+    .remember{display:flex;gap:10px;align-items:center}
+    .remember input{width:auto}
 
     /* App layout */
     .wrap{display:grid; grid-template-columns: 330px 1fr; gap:18px; padding:18px; min-height:100vh;}
@@ -223,16 +202,17 @@
     .side{
       position:sticky; top:18px; align-self:start; height: calc(100vh - 36px);
       border-radius: var(--r2);
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.06));
       backdrop-filter: blur(14px);
       border:1px solid var(--stroke);
       box-shadow: var(--shadow);
       padding:18px; overflow:auto;
     }
+
     .brand{display:flex;align-items:center;gap:12px;margin-bottom:10px}
     .logoBox{
       width:46px;height:46px;border-radius:16px;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.22), rgba(255,255,255,.06));
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.24), rgba(255,255,255,.06));
       border:1px solid var(--stroke); display:grid; place-items:center;
       box-shadow: 0 12px 30px rgba(0,0,0,.35);
       flex:0 0 auto;
@@ -267,13 +247,14 @@
     }
     .field{display:grid;gap:8px;margin-bottom:12px}
     label{font-size:12px;color:rgba(255,255,255,.76)}
-    input, select{
+    input, select, textarea{
       width:100%; padding:12px; border-radius:14px;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(8,12,20,.55);
       color:var(--text); outline:none;
     }
     input::placeholder{color:rgba(255,255,255,.55)}
+    textarea{min-height:90px; resize:vertical}
 
     .chipRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
     .chip{
@@ -305,7 +286,6 @@
     .toggleRow{display:flex;align-items:center;justify-content:space-between;gap:10px}
     .toggleRow input{width:auto}
 
-    /* ✅ Visitor-friendly status (no raw debug) */
     .hint{
       margin-top:10px;
       border-radius:16px;
@@ -331,13 +311,21 @@
     }
     .hero{
       padding:20px 20px 14px;
-      background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.02));
+      background: linear-gradient(135deg, rgba(255,255,255,.11), rgba(255,255,255,.02));
       border-bottom:1px solid rgba(255,255,255,.12);
+      position:relative;
     }
-    .heroTop{display:flex;gap:12px;justify-content:space-between;align-items:flex-end;flex-wrap:wrap}
+    .hero::after{
+      content:""; position:absolute; inset:0;
+      background: radial-gradient(700px 260px at 10% 30%, rgba(124,247,255,.12), transparent 55%),
+                  radial-gradient(700px 260px at 90% 25%, rgba(179,136,255,.10), transparent 55%);
+      pointer-events:none;
+      opacity:.9;
+    }
+    .heroTop{display:flex;gap:12px;justify-content:space-between;align-items:flex-end;flex-wrap:wrap; position:relative; z-index:1}
     .hero h2{margin:0;font-size:26px;line-height:1.15}
     .hero p{margin:8px 0 0;color:var(--muted);max-width:72ch;line-height:1.5}
-    .searchBar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+    .searchBar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px; position:relative; z-index:1}
     .searchBar input{flex:1 1 320px;min-width:240px;background: rgba(0,0,0,.28)}
     .ghost{
       border:1px solid rgba(255,255,255,.16);
@@ -478,16 +466,103 @@
     }
     .placeChip:hover{background: rgba(255,255,255,.12)}
 
+    /* ✅ AI Guide (floating) */
+    .aiFab{
+      position:fixed; right:18px; bottom:18px; z-index:15000;
+      display:flex; gap:10px; align-items:center;
+    }
+    .aiBtn{
+      width:56px;height:56px;border-radius:20px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.28);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.55);
+      display:grid; place-items:center;
+      cursor:pointer; user-select:none;
+      transition:.2s ease;
+      font-size:20px;
+    }
+    .aiBtn:hover{transform:translateY(-2px); background: rgba(255,255,255,.10)}
+    .aiHintBubble{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.28);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      font-size:12px;
+      color: rgba(255,255,255,.88);
+      max-width:min(56vw, 360px);
+    }
+    .aiPanel{
+      position:fixed; right:18px; bottom:88px; z-index:15000;
+      width:min(440px, 92vw);
+      max-height:min(70vh, 560px);
+      border-radius:24px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(8,12,20,.62);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 26px 90px rgba(0,0,0,.60);
+      overflow:hidden;
+      display:none;
+    }
+    .aiPanel.on{display:flex; flex-direction:column;}
+    .aiHead{
+      padding:12px 12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      background: rgba(255,255,255,.06);
+    }
+    .aiHead b{font-size:13px}
+    .aiHead small{color:var(--muted)}
+    .aiBody{padding:12px; overflow:auto; display:grid; gap:10px}
+    .aiMsg{
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      padding:10px;
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.90);
+      font-size:12px;
+      line-height:1.45;
+      white-space:pre-wrap;
+    }
+    .aiMsg.me{
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,255,255,.14);
+    }
+    .aiComposer{
+      padding:10px;
+      border-top:1px solid rgba(255,255,255,.10);
+      display:flex; gap:8px;
+      background: rgba(0,0,0,.18);
+    }
+    .aiComposer input{
+      flex:1;
+      background: rgba(0,0,0,.28);
+      border-radius:14px;
+    }
+    .aiComposer button{
+      border-radius:14px;
+      padding:10px 12px;
+      font-weight:900;
+      background: rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.14);
+      color: var(--text);
+      cursor:pointer;
+      transition:.2s ease;
+    }
+    .aiComposer button:hover{ transform: translateY(-1px); background: rgba(255,255,255,.18) }
+
     @media (max-width: 1180px){ .split{grid-template-columns:1fr} .grid{grid-template-columns: repeat(2, minmax(0,1fr))} }
     @media (max-width: 1050px){ .wrap{grid-template-columns:1fr} .side{position:relative;height:auto} }
-    @media (max-width: 620px){ .wrap{padding:12px} .grid{grid-template-columns:1fr} .hero h2{font-size:22px} #map{height:240px} }
+    @media (max-width: 620px){ .wrap{padding:12px} .grid{grid-template-columns:1fr} .hero h2{font-size:22px} #map{height:240px} .aiHintBubble{display:none} }
   </style>
 </head>
 
 <body>
   <div class="bg"></div>
 
-  <!-- ✅ Top-right logo (always visible) -->
+  <!-- ✅ Top-right logo -->
   <div class="topRightLogo" title="Himachal Explorer">
     <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
   </div>
@@ -495,59 +570,17 @@
   <!-- ✅ Splash while DB + Maps load -->
   <div id="splash" class="splash">
     <div class="splashCard">
-      <img src="logo.png" class="splashLogo" alt="Logo" onerror="this.style.display='none'">
-      <div style="font-weight:900; font-size:18px; letter-spacing:.4px;">Himachal Explorer</div>
-      <div class="loaderLine"></div>
-      <div class="splashText" id="splashText">Loading…</div>
-    </div>
-  </div>
-
-  <!-- ✅ Center Start Options (NEW) -->
-  <div id="startScreen" class="startScreen hidden">
-    <div class="startCard">
-      <div class="startTop">
-        <div class="startBrand">
-          <div class="mark">
-            <img src="logo.png" alt="" onerror="this.remove()">
-          </div>
-          <div>
-            <h1>Start your journey</h1>
-            <p>Choose what you want to do first. We will NOT show all locations until you pick an option.</p>
-          </div>
-        </div>
-        <button class="smallLink" id="skipStart">Skip</button>
-      </div>
-
-      <div class="startGrid">
-        <button class="startBtn" data-go="browse">
-          <b>Browse Locations</b>
-          <span>See places by district & type (no route tools).</span>
-        </button>
-        <button class="startBtn" data-go="packages">
-          <b>Get Packages</b>
-          <span>Answer 2–3 questions → 2–3 best packages + linked itinerary.</span>
-        </button>
-        <button class="startBtn" data-go="tracker">
-          <b>Route Planner</b>
-          <span>Add stops → auto route + distance + cost calculator.</span>
-        </button>
-        <button class="startBtn" data-go="researcher">
-          <b>Research Mode</b>
-          <span>Clean browsing for details only (debug visible).</span>
-        </button>
-      </div>
-
-      <div class="startFooter">
-        <label class="remember">
-          <input type="checkbox" id="rememberStart" checked>
-          Remember my start option
-        </label>
-        <span style="opacity:.9">You can change mode anytime from the left panel.</span>
+      <div class="splashInner">
+        <img src="logo.png" class="splashLogo" alt="Logo" onerror="this.style.display='none'">
+        <div style="font-weight:950; font-size:18px; letter-spacing:.4px;">Himachal Explorer</div>
+        <div style="opacity:.85; font-size:12px; margin-top:6px;">Dream • Discover • Drive</div>
+        <div class="loaderLine"></div>
+        <div class="splashText" id="splashText">Loading…</div>
       </div>
     </div>
   </div>
 
-  <!-- ✅ Role selection (kept for manual change / fallback) -->
+  <!-- ✅ Role selection -->
   <div id="onboarding" class="onboarding hidden">
     <div class="obCard">
       <div class="obTop">
@@ -609,7 +642,7 @@
         <p>Answer 2–3 questions → we’ll generate 2–3 best packages and link all places.</p>
 
         <div class="field" style="margin-top:10px;">
-          <label>Start (type or write GPS)</label>
+          <label>Start (type place or write GPS)</label>
           <input id="pkgStart" placeholder="Shimla / Manali / GPS"/>
         </div>
 
@@ -735,7 +768,7 @@
         </div>
 
         <button class="btn" id="calcBtn">Calculate Total</button>
-        <p id="calcOut" style="margin-top:8px; font-weight:750;">Total: ₹ —</p>
+        <p id="calcOut" style="margin-top:8px; font-weight:850;">Total: ₹ —</p>
       </div>
 
       <div class="hint" id="firebaseStatus">Firebase: loading…</div>
@@ -803,6 +836,27 @@
     </main>
   </div>
 
+  <!-- ✅ AI Guide -->
+  <div class="aiFab">
+    <div class="aiHintBubble" id="aiHintBubble">Ask me: “3-day nature trip from Shimla”</div>
+    <div class="aiBtn" id="aiToggleBtn" title="AI Guide">✨</div>
+  </div>
+
+  <div class="aiPanel" id="aiPanel">
+    <div class="aiHead">
+      <div>
+        <b>AI Guide</b><br>
+        <small id="aiSub">Offline smart suggestions</small>
+      </div>
+      <button class="tiny" id="aiCloseBtn">Close</button>
+    </div>
+    <div class="aiBody" id="aiBody"></div>
+    <div class="aiComposer">
+      <input id="aiInput" placeholder="Type: days, start, interests, budget..." />
+      <button id="aiSendBtn">Send</button>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
@@ -829,11 +883,6 @@
      ***********************/
     const splash = document.getElementById("splash");
     const splashText = document.getElementById("splashText");
-
-    const startScreen = document.getElementById("startScreen");
-    const rememberStart = document.getElementById("rememberStart");
-    const skipStart = document.getElementById("skipStart");
-
     const onboarding = document.getElementById("onboarding");
     const appWrap = document.getElementById("appWrap");
     const rememberMode = document.getElementById("rememberMode");
@@ -887,12 +936,21 @@
     const miscPerStopEl = document.getElementById("miscPerStop");
     const calcOutEl = document.getElementById("calcOut");
 
+    // AI widget
+    const aiToggleBtn = document.getElementById("aiToggleBtn");
+    const aiPanel = document.getElementById("aiPanel");
+    const aiCloseBtn = document.getElementById("aiCloseBtn");
+    const aiBody = document.getElementById("aiBody");
+    const aiInput = document.getElementById("aiInput");
+    const aiSendBtn = document.getElementById("aiSendBtn");
+    const aiSub = document.getElementById("aiSub");
+    const aiHintBubble = document.getElementById("aiHintBubble");
+
     let sideTags = new Set();
     let places = [];
 
     const ROUTE_LS_KEY = "hp_route_v1";
     const MODE_LS_KEY = "hp_mode_v1";
-    const START_LS_KEY = "hp_start_option_v1";
     let route = loadRouteFromLS();
 
     let startMode = "manual";
@@ -915,7 +973,9 @@
     const auth = getAuth(app);
 
     async function ensureAuth(){
-      try{ if(!auth.currentUser) await signInAnonymously(auth); }catch(e){
+      try{
+        if(!auth.currentUser) await signInAnonymously(auth);
+      }catch(e){
         if(currentMode === "researcher") debugOut.classList.remove("hidden");
         debugOut.textContent = "Debug: Auth failed (ok if rules are public): " + (e?.message || e);
       }
@@ -947,7 +1007,6 @@
       return {lat: NaN, lng: NaN};
     }
 
-    // ✅ read 2–3 images from Firebase fields (supports many column names)
     function normalizeImages(p){
       const raw =
         pick(p, ["images","Images","Image URLs","Image Urls","imageUrls","photoUrls","photos","Photos"], "") ||
@@ -981,7 +1040,6 @@
       const distFromHQ = String(pick(p, ["Dist from HQ","Dist From HQ","Distance from HQ"], "")).trim();
       const mapUrl = String(pick(p, ["Map","mapUrl"], "")).trim();
 
-      // ✅ tags auto
       const tags = new Set();
       const s = (segmentType+" "+locationType+" "+overview+" "+shortDescription+" "+keyFeatures+" "+taskForLocation).toLowerCase();
       if(/temple|mandir|devi|mahadev|shiva|shiv/.test(s)) tags.add("spiritual");
@@ -1006,53 +1064,18 @@
       parts.push(mapsLoaded ? "Maps ✅" : "Maps…");
       splashText.textContent = "Loading: " + parts.join(" • ");
     }
-
-    function maybeProceedAfterSplash(){
+    function maybeHideSplash(){
       updateSplash();
-      if(!(dbLoaded && mapsLoaded)) return;
-
-      splash.classList.add("hidden");
-
-      // If a start option saved, apply immediately; else show start options
-      const savedStart = localStorage.getItem(START_LS_KEY);
-      if(savedStart){
-        const mappedMode = startToMode(savedStart);
-        setMode(mappedMode, {skipOnboarding:true});
-        return;
+      if(dbLoaded && mapsLoaded){
+        splash.classList.add("hidden");
+        const saved = localStorage.getItem(MODE_LS_KEY);
+        if(saved){
+          setMode(saved, {skipOnboarding:true});
+        }else{
+          onboarding.classList.remove("hidden");
+        }
       }
-
-      // No saved start → show Start Screen in center
-      startScreen.classList.remove("hidden");
     }
-
-    function startToMode(go){
-      // map "browse" to tourist
-      if(go === "browse") return "tourist";
-      if(go === "packages") return "packages";
-      if(go === "tracker") return "tracker";
-      if(go === "researcher") return "researcher";
-      return "tourist";
-    }
-
-    function finishStart(go){
-      const mappedMode = startToMode(go);
-      if(rememberStart.checked){
-        localStorage.setItem(START_LS_KEY, go);
-      }
-      startScreen.classList.add("hidden");
-      setMode(mappedMode, {skipOnboarding:true});
-    }
-
-    // start screen clicks
-    startScreen.addEventListener("click", (e)=>{
-      const btn = e.target.closest(".startBtn");
-      if(!btn) return;
-      finishStart(btn.dataset.go);
-    });
-    skipStart.addEventListener("click", ()=>{
-      startScreen.classList.add("hidden");
-      onboarding.classList.remove("hidden");
-    });
 
     /***********************
      * Load from RTDB (/locations)
@@ -1161,13 +1184,16 @@
       if(!opts.skipOnboarding && rememberMode.checked){
         localStorage.setItem(MODE_LS_KEY, mode);
       }
-      // also store when called from start screen
-      if(opts.skipOnboarding && rememberMode?.checked){
-        localStorage.setItem(MODE_LS_KEY, mode);
-      }
 
       clearGrid();
       toast("Mode set: " + nice + " ✅");
+
+      // AI hints become mode-aware
+      aiSub.textContent = (mode === "packages")
+        ? "Ask: “2–3 packages for 4 days adventure”"
+        : (mode === "tracker")
+          ? "Ask: “optimize route for 6 stops from Shimla”"
+          : "Ask: “top nature places in Kullu”";
     }
 
     document.querySelectorAll(".obBtn").forEach(btn=>{
@@ -1179,11 +1205,8 @@
     });
 
     changeModeBtn.addEventListener("click", ()=>{
-      // allow user to choose again
       appWrap.classList.add("hidden");
       onboarding.classList.remove("hidden");
-      // if they want start screen again, clear start choice:
-      // localStorage.removeItem(START_LS_KEY);
     });
 
     /***********************
@@ -1263,6 +1286,7 @@
           window.location.href = `location.html?id=${encodeURIComponent(p.id)}`;
         });
 
+        // tap on image cycles through images
         if(p.images && p.images.length > 1){
           const thumb = el.querySelector(".thumb");
           let i = 0;
@@ -1283,7 +1307,10 @@
     }
 
     function clearGrid(){
-      grid.innerHTML = `<div style="opacity:.85; padding:12px;">Use search / filters or <b>Package Builder</b> to show relevant places.</div>`;
+      grid.innerHTML = `<div style="opacity:.85; padding:12px;">
+        Use search / filters or <b>Package Builder</b> to show relevant places.<br>
+        <span style="opacity:.7;">(We don’t spam all locations by default — visitor stays satisfied.)</span>
+      </div>`;
       countOut.textContent = `0 results`;
     }
     clearGridBtn.addEventListener("click", clearGrid);
@@ -1406,7 +1433,9 @@
     /***********************
      * Refined Expense Calculator
      ***********************/
-    function roomsNeeded(people){ return Math.max(1, Math.ceil(people / 2)); }
+    function roomsNeeded(people){
+      return Math.max(1, Math.ceil(people / 2));
+    }
     function stopIntensity(place){
       const t = ((place.locationType||"") + " " + (place.segmentType||"")).toLowerCase();
       if(/trek|adventure|ski|rafting|paragliding/.test(t)) return 1.35;
@@ -1441,7 +1470,7 @@
       }
 
       const total = Math.round(stayTotal + foodTotal + travel + stopsTotal);
-      return { total, stayTotal, foodTotal, travel, stopsTotal, days, people, rooms, nights };
+      return { total, stayTotal, foodTotal, travel, stopsTotal };
     }
 
     function updateTotalOnly(){
@@ -1637,7 +1666,7 @@
     }
 
     /***********************
-     * PACKAGE BUILDER (2–3 packages) + LINKED LOCATIONS
+     * PACKAGE BUILDER
      ***********************/
     const pkgStartEl = document.getElementById("pkgStart");
     const pkgDaysEl = document.getElementById("pkgDays");
@@ -1681,6 +1710,7 @@
       const pkgs = generatePackages({ start, days, people, budgetStyle, interests }, places);
       renderPackages(pkgs);
 
+      // sync calculator
       daysEl.value = days;
       peopleEl.value = people;
       if(budgetStyle === "low"){ stayEl.value = 1300; foodEl.value = 550; }
@@ -1863,6 +1893,131 @@
     }
 
     /***********************
+     * AI GUIDE (magic logic inside page)
+     * - Offline understanding: days, district, interests, budget keywords
+     * - Returns 6–12 matched places + optionally triggers package mode
+     ***********************/
+    function aiAddMsg(text, who="bot"){
+      const el = document.createElement("div");
+      el.className = "aiMsg" + (who==="me" ? " me" : "");
+      el.textContent = text;
+      aiBody.appendChild(el);
+      aiBody.scrollTop = aiBody.scrollHeight;
+    }
+
+    function aiOpen(){
+      aiPanel.classList.add("on");
+      aiHintBubble.style.display = "none";
+      if(aiBody.childElementCount === 0){
+        aiAddMsg("Tell me:\n• Start city (Shimla/Manali/etc)\n• Days\n• Interests (nature/adventure/spiritual/heritage/family)\n• Budget (low/mid/high)\n\nExample: “4 days nature + heritage from Shimla, mid budget”");
+      }
+    }
+    function aiClose(){
+      aiPanel.classList.remove("on");
+    }
+    aiToggleBtn.addEventListener("click", ()=> aiPanel.classList.contains("on") ? aiClose() : aiOpen());
+    aiCloseBtn.addEventListener("click", aiClose);
+
+    function parseAI(text){
+      const t = (text||"").toLowerCase();
+
+      // days
+      const dm = t.match(/(\d+)\s*(day|days)/);
+      const days = dm ? Math.max(1, Math.min(10, +dm[1])) : null;
+
+      // budget
+      const budget = t.includes("low") ? "low" : t.includes("high") ? "high" : t.includes("mid") ? "mid" : null;
+
+      // interests
+      const interests = [];
+      ["nature","adventure","spiritual","heritage","family"].forEach(k=>{
+        if(t.includes(k)) interests.push(k);
+      });
+
+      // district guess
+      let district = null;
+      const dnames = [...new Set(places.map(p=>p.district).filter(Boolean))];
+      for(const d of dnames){
+        if(t.includes(d.toLowerCase())) { district = d; break; }
+      }
+
+      // start
+      let start = null;
+      const starts = ["shimla","manali","kullu","dharamshala","dalhousie","spiti","chamba","mandi","kangra","solan","kasauli"];
+      for(const s of starts){
+        if(t.includes(s)) { start = s[0].toUpperCase() + s.slice(1); break; }
+      }
+
+      return {days, budget, interests, district, start};
+    }
+
+    function aiRecommend({days, interests, district}){
+      let list = places.slice();
+
+      if(district){
+        list = list.filter(p => (p.district||"") === district);
+      }
+      if(interests && interests.length){
+        list = list.filter(p => interests.some(i => (p.tags||[]).includes(i)));
+      }
+
+      // prefer with photos + coords
+      list.sort((a,b)=>{
+        const ap = (a.images?.length||0) + (Number.isFinite(a.lat)&&Number.isFinite(a.lng) ? 1 : 0);
+        const bp = (b.images?.length||0) + (Number.isFinite(b.lat)&&Number.isFinite(b.lng) ? 1 : 0);
+        return bp - ap;
+      });
+
+      const n = days ? Math.max(6, Math.min(14, days*3)) : 10;
+      return list.slice(0, n);
+    }
+
+    function aiHandle(text){
+      if(!dbLoaded || !places.length){
+        aiAddMsg("Database still loading. Try again in a few seconds.");
+        return;
+      }
+
+      const info = parseAI(text);
+      const interests = info.interests.length ? info.interests : ["nature"];
+
+      aiAddMsg(`Got it ✅\nDays: ${info.days ?? "—"}\nInterests: ${interests.join(", ")}\nDistrict: ${info.district ?? "Any"}\nBudget: ${info.budget ?? "mid"}`, "bot");
+
+      const rec = aiRecommend({days: info.days, interests, district: info.district});
+
+      if(!rec.length){
+        aiAddMsg("I couldn’t find matching places with current filters. Try removing district or use “nature + adventure”.");
+        return;
+      }
+
+      // show in grid
+      renderPlaces(rec);
+
+      // if user is in packages mode OR asked package words -> generate packages
+      const wantsPkg = /package|itinerary|plan/.test((text||"").toLowerCase());
+      if(currentMode === "packages" || wantsPkg){
+        // auto-fill package wizard (best effort)
+        if(info.days) document.getElementById("pkgDays").value = info.days;
+        if(info.budget) document.getElementById("pkgBudgetStyle").value = info.budget;
+        // trigger packages using current wizard settings
+        document.getElementById("genPkgsBtn").click();
+        aiAddMsg("I also generated 2–3 packages for you ✅ (see left panel).");
+      } else {
+        aiAddMsg("I’ve shown the best matching places on your screen ✅\nTip: Switch to “Packages” mode to auto-build 2–3 packages.");
+      }
+    }
+
+    function aiSend(){
+      const text = (aiInput.value || "").trim();
+      if(!text) return;
+      aiAddMsg(text, "me");
+      aiInput.value = "";
+      aiHandle(text);
+    }
+    aiSendBtn.addEventListener("click", aiSend);
+    aiInput.addEventListener("keydown", (e)=>{ if(e.key==="Enter") aiSend(); });
+
+    /***********************
      * BOOT
      ***********************/
     async function boot(){
@@ -1876,7 +2031,7 @@
       renderRoute();
       scheduleRoute(false);
 
-      maybeProceedAfterSplash();
+      maybeHideSplash();
     }
 
     (async ()=>{
@@ -1905,7 +2060,7 @@
           position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
           background: rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.16);
           color:white; padding:10px 12px; border-radius:999px; backdrop-filter: blur(10px);
-          box-shadow: 0 20px 60px rgba(0,0,0,.55); z-index:999; font-weight:750;
+          box-shadow: 0 20px 60px rgba(0,0,0,.55); z-index:999; font-weight:850;
           transition: opacity .2s ease;
           max-width:min(92vw, 900px);
           text-align:center;
