@@ -36,14 +36,25 @@
       background:linear-gradient(180deg, rgba(5,8,16,.62), rgba(5,8,16,.86));
     }
     @keyframes bgSlide{
-      0%,30%   { background-image:url("201-himalaya.jpg"); }
-      35%,65%  { background-image:url("Dark.jpg"); }
-      70%,100% { background-image:url("Travelers.jpg"); }
+      0% 100%   { background-image:url("Kee_monastery.jpg"); }
     }
 
-    /* ✅ Splash + Onboarding */
-    .hidden{display:none !important}
+    /* ✅ Always-visible top-right logo */
+    .topRightLogo{
+      position:fixed; top:14px; right:14px; z-index:12000;
+      width:54px; height:54px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.22);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      display:grid; place-items:center;
+      overflow:hidden;
+    }
+    .topRightLogo img{width:70%; height:70%; object-fit:contain; display:block}
 
+    /* ✅ Splash while DB + Maps load (FULL SCREEN with logo) */
+    .hidden{display:none !important}
     .splash{
       position:fixed; inset:0; z-index:9999;
       display:grid; place-items:center;
@@ -82,6 +93,7 @@
     }
     .splashText{color:rgba(255,255,255,.85); font-size:14px}
 
+    /* ✅ Role selection */
     .onboarding{
       position:fixed; inset:0; z-index:9000;
       display:grid; place-items:center;
@@ -214,6 +226,7 @@
     .toggleRow{display:flex;align-items:center;justify-content:space-between;gap:10px}
     .toggleRow input{width:auto}
 
+    /* ✅ Visitor-friendly status (no raw debug) */
     .hint{
       margin-top:10px;
       border-radius:16px;
@@ -291,6 +304,13 @@
       border:1px solid rgba(255,255,255,.18);
       font-size:12px; z-index:1; backdrop-filter: blur(10px);
     }
+    .imgCount{
+      position:absolute; right:12px; top:12px; z-index:1;
+      padding:8px 10px; border-radius:999px;
+      background: rgba(0,0,0,.28);
+      border:1px solid rgba(255,255,255,.16);
+      font-size:12px; backdrop-filter: blur(10px);
+    }
     .cardBody{padding:12px 12px 14px;display:grid;gap:8px}
     .titleRow{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
     .card h3{margin:0;font-size:15px;line-height:1.2}
@@ -354,6 +374,11 @@
     .itinerary .day:last-child{margin-bottom:0}
     .itinerary .day b{font-size:12px}
     .itinerary .day p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.4}
+    .itinerary .day ul{margin:8px 0 0 18px;padding:0}
+    .itinerary .day li{margin:6px 0; display:flex; gap:8px; justify-content:space-between; align-items:center}
+    .itinerary .day li span{opacity:.92}
+    .itinerary .day li button{padding:7px 9px}
+
     .pkgCard{
       border-radius:18px;border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.06);
@@ -365,6 +390,14 @@
     .pkgPill{font-size:11px;padding:7px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background: rgba(0,0,0,.18)}
     .pkgActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
     .pkgActions .tiny{padding:9px 10px}
+    .placeChips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .placeChip{
+      font-size:11px;padding:7px 9px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      cursor:pointer; user-select:none;
+    }
+    .placeChip:hover{background: rgba(255,255,255,.12)}
 
     @media (max-width: 1180px){ .split{grid-template-columns:1fr} .grid{grid-template-columns: repeat(2, minmax(0,1fr))} }
     @media (max-width: 1050px){ .wrap{grid-template-columns:1fr} .side{position:relative;height:auto} }
@@ -374,6 +407,11 @@
 
 <body>
   <div class="bg"></div>
+
+  <!-- ✅ Top-right logo (always visible) -->
+  <div class="topRightLogo" title="Himachal Explorer">
+    <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+  </div>
 
   <!-- ✅ Splash while DB + Maps load -->
   <div id="splash" class="splash">
@@ -403,7 +441,7 @@
         </button>
 
         <button class="obBtn" data-mode="researcher">
-          <b>Researcher</b><span>Data focused browsing (no route tools)</span>
+          <b>Researcher</b><span>Browse info (route tools hidden)</span>
         </button>
 
         <button class="obBtn" data-mode="packages">
@@ -441,10 +479,10 @@
         <button id="changeModeBtn">Change</button>
       </div>
 
-      <!-- ✅ Package Wizard is visible ONLY in Packages mode -->
+      <!-- ✅ Package Wizard (ONLY in Packages mode) -->
       <div class="miniCard hidden" id="pkgWizard" style="margin-top:0;">
         <b style="font-size:13px;">Package Builder</b>
-        <p>Answer 2–3 questions → we’ll generate 2–3 best packages.</p>
+        <p>Answer 2–3 questions → we’ll generate 2–3 best packages and link all places.</p>
 
         <div class="field" style="margin-top:10px;">
           <label>Start (type or write GPS)</label>
@@ -463,8 +501,12 @@
         </div>
 
         <div class="field" style="margin-top:10px;">
-          <label>Budget (₹) optional</label>
-          <input id="pkgBudget" type="number" value="15000" min="0"/>
+          <label>Budget style</label>
+          <select id="pkgBudgetStyle">
+            <option value="low">Low</option>
+            <option value="mid" selected>Mid</option>
+            <option value="high">High</option>
+          </select>
         </div>
 
         <div class="panelTitle" style="margin-top:10px;">Interests</div>
@@ -534,7 +576,7 @@
 
       <div class="miniCard" id="blockBudget">
         <b style="font-size:13px;">Trip Budget</b>
-        <p>Distance updates travel cost automatically.</p>
+        <p>Refined calculator — distributes costs by days + stops.</p>
 
         <div class="panelTitle" style="margin-top:12px;">Expense Calculator</div>
         <div class="row2">
@@ -545,23 +587,35 @@
             <label>People</label><input id="people" type="number" value="2" min="1"/>
           </div>
         </div>
+
         <div class="row2">
           <div class="field" style="margin:0;">
-            <label>Stay/day (₹)</label><input id="stay" type="number" value="1800" min="0"/>
+            <label>Stay/night (₹ per room)</label><input id="stay" type="number" value="1800" min="0"/>
           </div>
           <div class="field" style="margin:0;">
-            <label>Food/day (₹)</label><input id="food" type="number" value="700" min="0"/>
+            <label>Food/day (₹ per person)</label><input id="food" type="number" value="700" min="0"/>
           </div>
         </div>
+
+        <div class="row2">
+          <div class="field" style="margin:0;">
+            <label>Entry/stop (₹ per person)</label><input id="entryPerStop" type="number" value="50" min="0"/>
+          </div>
+          <div class="field" style="margin:0;">
+            <label>Local/misc/stop (₹ per person)</label><input id="miscPerStop" type="number" value="120" min="0"/>
+          </div>
+        </div>
+
         <div class="field" style="margin:0;">
           <label>Travel total (₹)</label><input id="travel" type="number" value="0" min="0"/>
         </div>
+
         <button class="btn" id="calcBtn">Calculate Total</button>
         <p id="calcOut" style="margin-top:8px; font-weight:750;">Total: ₹ —</p>
       </div>
 
       <div class="hint" id="firebaseStatus">Firebase: loading…</div>
-      <div class="hint" id="debugOut">Debug: —</div>
+      <div class="hint hidden" id="debugOut">Debug: —</div>
       <div class="hint"><b>Data Path:</b> <span style="opacity:.95">/locations</span></div>
     </aside>
 
@@ -694,6 +748,16 @@
 
     const clearGridBtn = document.getElementById("clearGridBtn");
 
+    // Budget fields
+    const daysEl = document.getElementById("days");
+    const peopleEl = document.getElementById("people");
+    const stayEl = document.getElementById("stay");
+    const foodEl = document.getElementById("food");
+    const travelEl = document.getElementById("travel");
+    const entryPerStopEl = document.getElementById("entryPerStop");
+    const miscPerStopEl = document.getElementById("miscPerStop");
+    const calcOutEl = document.getElementById("calcOut");
+
     let sideTags = new Set();
     let places = [];
 
@@ -722,6 +786,8 @@
 
     async function ensureAuth(){
       try{ if(!auth.currentUser) await signInAnonymously(auth); }catch(e){
+        // keep silent in visitor mode; show only if researcher
+        if(currentMode === "researcher") debugOut.classList.remove("hidden");
         debugOut.textContent = "Debug: Auth failed (ok if rules are public): " + (e?.message || e);
       }
     }
@@ -735,6 +801,11 @@
       }
       return fallback;
     }
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+    function escapeAttr(s){ return String(s).replace(/'/g, "%27"); }
+
     function parseLatLng(p){
       const lat = Number(p?.lat ?? p?.latitude ?? p?.Latitude);
       const lng = Number(p?.lng ?? p?.longitude ?? p?.Longitude);
@@ -746,6 +817,24 @@
 
       return {lat: NaN, lng: NaN};
     }
+
+    // ✅ read 2–3 images from Firebase fields (supports many column names)
+    function normalizeImages(p){
+      const raw =
+        pick(p, ["images","Images","Image URLs","Image Urls","imageUrls","photoUrls","photos","Photos"], "") ||
+        [
+          pick(p, ["Image 1","image1","Photo 1","photo1"], ""),
+          pick(p, ["Image 2","image2","Photo 2","photo2"], ""),
+          pick(p, ["Image 3","image3","Photo 3","photo3"], "")
+        ].filter(Boolean).join(",");
+
+      if(Array.isArray(raw)) return raw.map(x=>String(x).trim()).filter(Boolean);
+      const s = String(raw || "").trim();
+      if(!s) return [];
+      if(s.includes(",")) return s.split(",").map(x=>x.trim()).filter(Boolean);
+      return [s];
+    }
+
     function normalizePlace(id, p){
       const {lat, lng} = parseLatLng(p);
 
@@ -760,9 +849,10 @@
       const keyFeatures = String(pick(p, ["Key Features","keyFeatures"], "")).trim();
       const bestTimeToVisit = String(pick(p, ["Best Time to Visit","bestTimeToVisit"], "")).trim();
       const taskForLocation = String(pick(p, ["Task for Location","taskForLocation"], "")).trim();
-      const distFromHQ = String(pick(p, ["Dist from HQ","Dist From HQ"], "")).trim();
+      const distFromHQ = String(pick(p, ["Dist from HQ","Dist From HQ","Distance from HQ"], "")).trim();
       const mapUrl = String(pick(p, ["Map","mapUrl"], "")).trim();
 
+      // ✅ tags auto
       const tags = new Set();
       const s = (segmentType+" "+locationType+" "+overview+" "+shortDescription+" "+keyFeatures+" "+taskForLocation).toLowerCase();
       if(/temple|mandir|devi|mahadev|shiva|shiv/.test(s)) tags.add("spiritual");
@@ -771,13 +861,15 @@
       if(/heritage|colonial|fort|palace|museum|monastery|old/.test(s)) tags.add("heritage");
       if(/family|kids|picnic|easy/.test(s)) tags.add("family");
 
-      return { id, name, district, segmentType, locationType, overview, shortDescription, howToReach,
-        keyFeatures, bestTimeToVisit, taskForLocation, distFromHQ, mapUrl, lat, lng, tags:[...tags] };
+      const images = normalizeImages(p);
+
+      return {
+        id, name, district, segmentType, locationType,
+        overview, shortDescription, howToReach, keyFeatures,
+        bestTimeToVisit, taskForLocation, distFromHQ, mapUrl,
+        lat, lng, tags:[...tags], images
+      };
     }
-    function escapeHtml(s){
-      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-    }
-    function escapeAttr(s){ return String(s).replace(/'/g, "%27"); }
 
     function updateSplash(){
       const parts = [];
@@ -811,8 +903,8 @@
         const data = snap.exists() ? snap.val() : null;
 
         if(!data || typeof data !== "object"){
-          firebaseStatus.textContent = "Firebase: /locations returned null ❌";
-          debugOut.textContent = "Debug: No data at " + FIREBASE_LOCATIONS_PATH + "\nCheck that your node is exactly: /locations";
+          firebaseStatus.textContent = "Firebase: /locations returned empty ❌";
+          debugOut.textContent = "Debug: No data at " + FIREBASE_LOCATIONS_PATH;
           places = [];
           return;
         }
@@ -835,12 +927,14 @@
           districtNames.map(d=>`<option value="${escapeAttr(d)}">${escapeHtml(d)}</option>`).join("");
 
         firebaseStatus.textContent = `Firebase: loaded ${places.length} places ✅`;
+
+        // only show debug in Researcher mode
         debugOut.textContent = `Debug:\nPath: ${FIREBASE_LOCATIONS_PATH}\nKeys sample: ${Object.keys(data).slice(0,10).join(", ")}`;
 
       }catch(e){
         const msg = (e?.message || String(e));
         firebaseStatus.textContent = "Firebase: error ❌ " + msg;
-        debugOut.textContent = "Debug error:\n" + msg + "\n\nIf Permission denied → allow read in RTDB rules.";
+        debugOut.textContent = "Debug error:\n" + msg + "\nIf Permission denied → allow read in RTDB rules.";
       }
     }
 
@@ -861,7 +955,7 @@
       modeSub.textContent = ({
         tourist: "Highlights + easy explore",
         tracker: "Routes + budget + optimized order",
-        researcher: "Data focused browsing",
+        researcher: "Browse info (route tools hidden)",
         packages: "Answer 2–3 questions → 2–3 packages"
       })[mode] || "Personalized view";
 
@@ -869,11 +963,11 @@
       heroDesc.textContent = ({
         tourist: "Browse and open details pages. Route tools hidden.",
         tracker: "Build routes, optimize order, track distance and trip cost.",
-        researcher: "Data focused browsing. Route panel hidden.",
-        packages: "Use Package Builder on the left to generate 2–3 itineraries."
+        researcher: "Browse content cleanly. No route tools.",
+        packages: "Generate packages and link all places. Build route in one click."
       })[mode] || "Welcome";
 
-      // show package wizard only in packages mode
+      // package wizard
       if(mode === "packages"){
         pkgWizard.classList.remove("hidden");
         packageResults.classList.remove("hidden");
@@ -882,7 +976,7 @@
         packageResults.classList.add("hidden");
       }
 
-      // route visibility by mode
+      // route visibility
       if(mode === "researcher" || mode === "tourist"){
         routePane.classList.add("hidden");
         blockStart.classList.add("hidden");
@@ -895,6 +989,10 @@
         blockBudget.classList.remove("hidden");
       }
 
+      // debug only in researcher
+      if(mode === "researcher") debugOut.classList.remove("hidden");
+      else debugOut.classList.add("hidden");
+
       onboarding.classList.add("hidden");
       appWrap.classList.remove("hidden");
 
@@ -902,7 +1000,6 @@
         localStorage.setItem(MODE_LS_KEY, mode);
       }
 
-      // IMPORTANT: don't show everything instantly
       clearGrid();
       toast("Mode set: " + nice + " ✅");
     }
@@ -942,6 +1039,8 @@
     }
 
     function fallbackImgFor(p){
+      // ✅ prefer images from DB if available
+      if(p.images && p.images.length) return p.images[0];
       const seed = encodeURIComponent(`${p.segmentType} ${p.locationType} ${p.district} himachal`);
       return `https://source.unsplash.com/1200x800/?${seed}`;
     }
@@ -960,10 +1059,12 @@
         const hasCoords = Number.isFinite(p.lat) && Number.isFinite(p.lng);
 
         const canAdd = (currentMode === "tracker" || currentMode === "packages") && hasCoords;
+        const imgCount = (p.images && p.images.length > 1) ? p.images.length : 0;
 
         el.innerHTML = `
           <div class="thumb" style="background-image:url('${escapeAttr(img)}')">
             <div class="badge">${escapeHtml(p.segmentType || "Place")}</div>
+            ${imgCount ? `<div class="imgCount">📷 ${imgCount}</div>` : ``}
           </div>
           <div class="cardBody">
             <div class="titleRow">
@@ -974,6 +1075,7 @@
             <div class="submeta">
               ${lt ? `<span class="subpill">${escapeHtml(lt)}</span>` : ``}
               ${best ? `<span class="subpill">${escapeHtml(best)}</span>` : ``}
+              ${p.distFromHQ ? `<span class="subpill">HQ: ${escapeHtml(p.distFromHQ)}</span>` : ``}
               <span class="subpill">${hasCoords ? "Coords ✓" : "No coords"}</span>
               ${(currentMode === "tracker" || currentMode === "packages")
                 ? `<span class="miniAdd ${canAdd ? "" : "disabled"}" data-add="1">+ Add</span>`
@@ -993,6 +1095,18 @@
           window.location.href = `location.html?id=${encodeURIComponent(p.id)}`;
         });
 
+        // ✅ tap on image cycles through 2-3 images (if present)
+        if(p.images && p.images.length > 1){
+          const thumb = el.querySelector(".thumb");
+          let i = 0;
+          thumb.style.cursor = "pointer";
+          thumb.addEventListener("click", (e)=>{
+            e.stopPropagation();
+            i = (i + 1) % p.images.length;
+            thumb.style.backgroundImage = `url('${escapeAttr(p.images[i])}')`;
+          });
+        }
+
         grid.appendChild(el);
       });
 
@@ -1002,12 +1116,12 @@
     }
 
     function clearGrid(){
-      grid.innerHTML = `<div style="opacity:.85; padding:12px;">Use search / filters or Package Builder to show relevant places.</div>`;
+      grid.innerHTML = `<div style="opacity:.85; padding:12px;">Use search / filters or <b>Package Builder</b> to show relevant places.</div>`;
       countOut.textContent = `0 results`;
     }
     clearGridBtn.addEventListener("click", clearGrid);
 
-    // Only render when user searches/filters (not immediately)
+    // Only render when user searches/filters
     qMain.addEventListener("input", ()=> renderPlaces());
     qSide.addEventListener("input", ()=> renderPlaces());
     districtSel.addEventListener("change", ()=> renderPlaces());
@@ -1052,6 +1166,7 @@
       renderRoute();
       scheduleRoute(true);
       toast("Added: " + p.name);
+      updateTotalOnly();
     }
     function move(i, dir){
       const j = i + dir;
@@ -1062,10 +1177,12 @@
     function removeStop(i){
       route.splice(i,1);
       saveRouteToLS(); renderRoute(); scheduleRoute(true);
+      updateTotalOnly();
     }
     document.getElementById("clearRouteBtn").addEventListener("click", ()=>{
       route = []; saveRouteToLS(); renderRoute(); scheduleRoute(false);
       toast("Route cleared");
+      updateTotalOnly();
     });
 
     function renderRoute(){
@@ -1103,7 +1220,7 @@
     }
 
     function renderItinerary(){
-      const days = Math.max(1, +document.getElementById("days").value || 1);
+      const days = Math.max(1, +daysEl.value || 1);
       const buckets = Array.from({length: days}, ()=>[]);
       route.forEach((p, idx)=> buckets[idx % days].push(p));
 
@@ -1121,27 +1238,64 @@
     }
 
     /***********************
-     * BUDGET
+     * Refined Expense Calculator
      ***********************/
-    function calcBudget(){
-      const days = +document.getElementById("days").value || 0;
-      const people = +document.getElementById("people").value || 1;
-      const stay = +document.getElementById("stay").value || 0;
-      const food = +document.getElementById("food").value || 0;
-      const travel = +document.getElementById("travel").value || 0;
-      const total = (days * (stay + food) * people) + travel;
-      return {total};
+    function roomsNeeded(people){
+      // simple assumption: 2 people per room
+      return Math.max(1, Math.ceil(people / 2));
     }
+    function stopIntensity(place){
+      // extra cost weight by type
+      const t = ((place.locationType||"") + " " + (place.segmentType||"")).toLowerCase();
+      if(/trek|adventure|ski|rafting|paragliding/.test(t)) return 1.35;
+      if(/lake|waterfall|valley|forest/.test(t)) return 1.15;
+      if(/heritage|palace|fort|museum|monastery/.test(t)) return 1.10;
+      if(/temple|mandir|spiritual/.test(t)) return 1.05;
+      return 1.0;
+    }
+
+    function calcBudget(){
+      const days = Math.max(1, +daysEl.value || 1);
+      const people = Math.max(1, +peopleEl.value || 1);
+      const stayPerNightPerRoom = Math.max(0, +stayEl.value || 0);
+      const foodPerDayPerPerson = Math.max(0, +foodEl.value || 0);
+      const travel = Math.max(0, +travelEl.value || 0);
+      const entryPerStop = Math.max(0, +entryPerStopEl.value || 0);
+      const miscPerStop = Math.max(0, +miscPerStopEl.value || 0);
+
+      const nights = Math.max(0, days - 1);
+      const rooms = roomsNeeded(people);
+
+      const stayTotal = nights * stayPerNightPerRoom * rooms;
+      const foodTotal = days * foodPerDayPerPerson * people;
+
+      // If route has stops, we distribute per-stop cost using intensity
+      let stopsTotal = 0;
+      if(route.length){
+        for(const s of route){
+          const full = places.find(p=>p.id===s.id) || s;
+          const k = stopIntensity(full);
+          stopsTotal += people * (entryPerStop + miscPerStop) * k;
+        }
+      }
+
+      const total = Math.round(stayTotal + foodTotal + travel + stopsTotal);
+      return { total, stayTotal, foodTotal, travel, stopsTotal, days, people, rooms, nights };
+    }
+
     function updateTotalOnly(){
       const {total} = calcBudget();
       totalOut.textContent = "₹ " + total.toLocaleString("en-IN");
     }
+
     document.getElementById("calcBtn").addEventListener("click", ()=>{
-      const {total} = calcBudget();
-      document.getElementById("calcOut").textContent = "Total: ₹ " + total.toLocaleString("en-IN");
+      const r = calcBudget();
+      calcOutEl.textContent =
+        `Total: ₹ ${r.total.toLocaleString("en-IN")}  (Stay ₹${Math.round(r.stayTotal).toLocaleString("en-IN")} • Food ₹${Math.round(r.foodTotal).toLocaleString("en-IN")} • Stops ₹${Math.round(r.stopsTotal).toLocaleString("en-IN")} • Travel ₹${Math.round(r.travel).toLocaleString("en-IN")})`;
       updateTotalOnly();
     });
-    ["days","people","stay","food","travel"].forEach(id=>{
+
+    ["days","people","stay","food","travel","entryPerStop","miscPerStop"].forEach(id=>{
       document.getElementById(id).addEventListener("input", ()=>{
         updateTotalOnly();
         renderItinerary();
@@ -1202,7 +1356,7 @@
         directionsRenderer.set("directions", null);
         distanceOut.textContent = "—";
         durationOut.textContent = "—";
-        document.getElementById("travel").value = 0;
+        travelEl.value = 0;
         updateTotalOnly();
         routeStatus.textContent = "Ready";
         return;
@@ -1278,7 +1432,7 @@
 
       const ratePerKm = Math.max(0, +ratePerKmEl.value || 0);
       const travelCost = Math.round(km * ratePerKm);
-      document.getElementById("travel").value = isFinite(travelCost) ? travelCost : 0;
+      travelEl.value = isFinite(travelCost) ? travelCost : 0;
       updateTotalOnly();
     }
     function recalcFromLastDirections(){
@@ -1322,12 +1476,12 @@
     }
 
     /***********************
-     * PACKAGE BUILDER (2–3 packages)
+     * PACKAGE BUILDER (2–3 packages) + LINKED LOCATIONS
      ***********************/
     const pkgStartEl = document.getElementById("pkgStart");
     const pkgDaysEl = document.getElementById("pkgDays");
     const pkgPeopleEl = document.getElementById("pkgPeople");
-    const pkgBudgetEl = document.getElementById("pkgBudget");
+    const pkgBudgetStyleEl = document.getElementById("pkgBudgetStyle");
     const pkgChips = document.getElementById("pkgChips");
     const genPkgsBtn = document.getElementById("genPkgsBtn");
 
@@ -1358,15 +1512,23 @@
       }
       const days = Math.max(1, Math.min(10, +pkgDaysEl.value || 3));
       const people = Math.max(1, +pkgPeopleEl.value || 2);
-      const budget = Math.max(0, +pkgBudgetEl.value || 0);
-
+      const budgetStyle = pkgBudgetStyleEl.value || "mid";
       const startText = (pkgStartEl.value || "").trim();
       const start = startText.toLowerCase() === "gps" ? getOrigin() : (startText || "Shimla, Himachal Pradesh");
-
       const interests = [...pkgInterests];
 
-      const pkgs = generatePackages({ start, days, people, budget, interests }, places);
+      const pkgs = generatePackages({ start, days, people, budgetStyle, interests }, places);
       renderPackages(pkgs);
+
+      // ✅ sync calculator with package inputs
+      daysEl.value = days;
+      peopleEl.value = people;
+      // adjust defaults by budget style
+      if(budgetStyle === "low"){ stayEl.value = 1300; foodEl.value = 550; }
+      if(budgetStyle === "mid"){ stayEl.value = 1800; foodEl.value = 700; }
+      if(budgetStyle === "high"){ stayEl.value = 3200; foodEl.value = 1200; }
+      updateTotalOnly();
+
       toast("Packages generated ✅");
     });
 
@@ -1374,11 +1536,14 @@
       const tags = p.tags || [];
       let s = 0;
       for(const i of interests){
-        if(tags.includes(i)) s += 4;
+        if(tags.includes(i)) s += 5;
       }
+      // quality boosts
       if((p.segmentType||"").toLowerCase() === "destination") s += 1;
-      if((p.locationType||"").toLowerCase().includes("lake")) s += 1;
-      if((p.locationType||"").toLowerCase().includes("trek")) s += 2;
+      const lt = (p.locationType||"").toLowerCase();
+      if(lt.includes("lake")) s += 1;
+      if(lt.includes("trek")) s += 2;
+      if(p.images && p.images.length) s += 1; // prefer places with photos
       return s;
     }
 
@@ -1387,32 +1552,24 @@
       const candidates = allPlaces.filter(p => Number.isFinite(p.lat) && Number.isFinite(p.lng));
       const scored = candidates
         .map(p => ({ p, s: scorePlaceForInterests(p, interests) }))
-        .filter(x => x.s > 0)
         .sort((a,b)=> b.s - a.s);
 
-      const fallback = candidates
-        .filter(p => (p.segmentType||"").toLowerCase() !== "hotel")
-        .slice(0, 120)
-        .map(p => ({p, s: 1}));
-
-      const pool = scored.length >= 25 ? scored : [...scored, ...fallback];
-
-      const stopsLight = Math.max(3, Math.min(12, days * 2));
-      const stopsHeavy = Math.max(4, Math.min(16, days * 3));
+      const stopsLight = Math.max(6, Math.min(14, days * 3));
+      const stopsHeavy = Math.max(8, Math.min(18, days * 4));
 
       const pickUnique = (n, mustTag=null) => {
         const out = [];
         const seenDistrict = new Set();
-        for(const x of pool){
+        for(const x of scored){
           if(out.length >= n) break;
           const p = x.p;
           if(mustTag && !(p.tags||[]).includes(mustTag)) continue;
-          if(seenDistrict.has(p.district) && Math.random() < 0.65) continue;
+          if(seenDistrict.has(p.district) && Math.random() < 0.70) continue;
           seenDistrict.add(p.district);
           out.push(p);
         }
         if(out.length < n){
-          for(const x of pool){
+          for(const x of scored){
             if(out.length >= n) break;
             const p = x.p;
             if(out.find(z=>z.id===p.id)) continue;
@@ -1438,16 +1595,35 @@
       const buckets = Array.from({length: days}, ()=>[]);
       stops.forEach((p, idx)=> buckets[idx % days].push(p));
 
-      const estKm = Math.round(stops.length * 35);
-      const rate = Math.max(0, +document.getElementById("ratePerKm").value || 12);
+      // rough distance estimate if maps not used
+      const estKm = Math.round(stops.length * 32);
+      const rate = Math.max(0, +ratePerKmEl.value || 12);
       const travelCost = estKm * rate;
 
-      const stay = Math.max(0, +document.getElementById("stay").value || 0);
-      const food = Math.max(0, +document.getElementById("food").value || 0);
+      // use refined budget formula (stay is nights, food is per day per person, stops are per stop)
       const people = Math.max(1, +inputs.people || 1);
-      const total = (days * (stay + food) * people) + travelCost;
+      const nights = Math.max(0, days - 1);
+      const rooms = roomsNeeded(people);
 
-      return { title, subtitle, buckets, estKm, travelCost, total, stops };
+      // budget style factor
+      const mult = inputs.budgetStyle === "low" ? 0.85 : inputs.budgetStyle === "high" ? 1.35 : 1.0;
+
+      const stay = Math.round((+stayEl.value || 1800) * mult);
+      const food = Math.round((+foodEl.value || 700) * mult);
+      const entryPerStop = Math.round((+entryPerStopEl.value || 50) * mult);
+      const miscPerStop = Math.round((+miscPerStopEl.value || 120) * mult);
+
+      const stayTotal = nights * stay * rooms;
+      const foodTotal = days * food * people;
+
+      let stopsTotal = 0;
+      for(const p of stops){
+        stopsTotal += people * (entryPerStop + miscPerStop) * stopIntensity(p);
+      }
+
+      const total = Math.round(stayTotal + foodTotal + travelCost + stopsTotal);
+
+      return { title, subtitle, buckets, estKm, travelCost, total, stops, days, people, budgetStyle: inputs.budgetStyle };
     }
 
     function renderPackages(pkgs){
@@ -1456,44 +1632,80 @@
 
       pkgs.slice(0,3).forEach((pkg, idx)=>{
         const daysHtml = pkg.buckets.map((arr, i)=>{
-          const list = arr.length ? arr.map(x=>escapeHtml(x.name)).join(" • ") : "Rest / Buffer day";
-          return `<div class="day"><b>Day ${i+1}</b><p>${list}</p></div>`;
+          const listItems = arr.length
+            ? arr.map(x=>`<li><span>${escapeHtml(x.name)}</span><button class="tiny" data-open="${escapeAttr(x.id)}">Open</button></li>`).join("")
+            : `<li><span>Rest / Buffer day</span><button class="tiny" disabled>—</button></li>`;
+
+          return `
+            <div class="day">
+              <b>Day ${i+1}</b>
+              <ul>${listItems}</ul>
+            </div>
+          `;
         }).join("");
+
+        const chips = pkg.stops.slice(0,14).map(p=>`<span class="placeChip" data-open="${escapeAttr(p.id)}">${escapeHtml(p.name)}</span>`).join("");
 
         const box = document.createElement("div");
         box.className = "pkgCard";
         box.innerHTML = `
           <h5>${idx+1}. ${escapeHtml(pkg.title)}</h5>
           <p>${escapeHtml(pkg.subtitle)}</p>
+
           <div class="pkgRow">
+            <span class="pkgPill">Days: ${pkg.days}</span>
+            <span class="pkgPill">People: ${pkg.people}</span>
             <span class="pkgPill">Est. Distance: ~${pkg.estKm} km</span>
             <span class="pkgPill">Travel: ₹ ${pkg.travelCost.toLocaleString("en-IN")}</span>
-            <span class="pkgPill">Total: ₹ ${pkg.total.toLocaleString("en-IN")}</span>
+            <span class="pkgPill"><b>Total: ₹ ${pkg.total.toLocaleString("en-IN")}</b></span>
           </div>
+
+          <div class="placeChips">${chips}</div>
+
           <div class="pkgActions">
             <button class="tiny" data-act="show">Show these places</button>
             <button class="tiny" data-act="route">Build route</button>
+            <button class="tiny" data-act="budget">Apply to calculator</button>
           </div>
+
           <div class="itinerary" style="margin-top:10px;">
-            <h4>Day-wise Plan</h4>
+            <h4>Day-wise Plan (linked)</h4>
             ${daysHtml}
           </div>
         `;
 
-        const btnShow = box.querySelector("[data-act='show']");
-        const btnRoute = box.querySelector("[data-act='route']");
+        // open place (chips + itinerary buttons)
+        box.querySelectorAll("[data-open]").forEach(el=>{
+          el.addEventListener("click", ()=>{
+            const id = el.getAttribute("data-open");
+            window.location.href = `location.html?id=${encodeURIComponent(id)}`;
+          });
+        });
 
-        btnShow.addEventListener("click", ()=>{
+        // show places in grid
+        box.querySelector("[data-act='show']").addEventListener("click", ()=>{
           renderPlaces(pkg.stops);
           toast("Showing package places ✅");
         });
 
-        btnRoute.addEventListener("click", ()=>{
-          route = pkg.stops.slice(0, 12).map(p=>({id:p.id,name:p.name,district:p.district,segmentType:p.segmentType,lat:p.lat,lng:p.lng}));
+        // build route from package
+        box.querySelector("[data-act='route']").addEventListener("click", ()=>{
+          route = pkg.stops.slice(0, 18).map(p=>({id:p.id,name:p.name,district:p.district,segmentType:p.segmentType,lat:p.lat,lng:p.lng}));
           saveRouteToLS();
           renderRoute();
           scheduleRoute(true);
           toast("Route built from package ✅");
+          updateTotalOnly();
+        });
+
+        // apply to budget calculator
+        box.querySelector("[data-act='budget']").addEventListener("click", ()=>{
+          daysEl.value = pkg.days;
+          peopleEl.value = pkg.people;
+          // approximate travel into calculator immediately
+          travelEl.value = pkg.travelCost;
+          updateTotalOnly();
+          toast("Calculator updated ✅");
         });
 
         packageResults.appendChild(box);
