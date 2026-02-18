@@ -24,30 +24,111 @@
                   var(--bg);
       overflow-x:hidden;
     }
+
+    /* ✅ multi-image background */
     .bg{
-  position:fixed;
-  inset:0;
-  z-index:-2;
-  background-size:cover;
-  background-position:center;
-  filter:saturate(1.08) contrast(1.05);
-  animation:bgSlide 18s infinite;
-}
+      position:fixed; inset:0; z-index:-2;
+      background-size:cover; background-position:center;
+      filter:saturate(1.08) contrast(1.05);
+      animation:bgSlide 18s infinite;
+    }
+    .bg::before{
+      content:""; position:absolute; inset:0;
+      background:linear-gradient(180deg, rgba(5,8,16,.62), rgba(5,8,16,.86));
+    }
+    @keyframes bgSlide{
+      0%,30%   { background-image:url("201-himalaya.jpg"); }
+      35%,65%  { background-image:url("Dark.jpg"); }
+      70%,100% { background-image:url("Travelers.jpg"); }
+    }
 
-/* dark overlay (keeps text readable) */
-.bg::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(180deg, rgba(5,8,16,.62), rgba(5,8,16,.86));
-}
+    /* ✅ Splash + Onboarding */
+    .hidden{display:none !important}
 
-@keyframes bgSlide{
-  0%,30%   { background-image:url("201-himalaya.jpg"); }
-  35%,65%  { background-image:url("Dark.jpg"); }
-  70%,100% { background-image:url("Travelers.jpg"); }
-}
+    .splash{
+      position:fixed; inset:0; z-index:9999;
+      display:grid; place-items:center;
+      background: radial-gradient(1200px 800px at 20% 10%, rgba(120,120,255,.18), transparent 55%),
+                  linear-gradient(180deg, rgba(7,10,18,.92), rgba(5,8,16,.98));
+    }
+    .splashCard{
+      width:min(520px, 92vw);
+      padding:28px 22px;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06);
+      box-shadow:0 24px 80px rgba(0,0,0,.55);
+      text-align:center;
+    }
+    .splashLogo{
+      width:92px;height:92px;object-fit:contain;
+      display:block;margin:6px auto 12px;
+      filter: drop-shadow(0 18px 40px rgba(0,0,0,.45));
+    }
+    .loaderLine{
+      height:3px; border-radius:999px;
+      background:rgba(255,255,255,.12);
+      overflow:hidden; margin:14px 0 10px;
+      position:relative;
+    }
+    .loaderLine::after{
+      content:""; position:absolute; inset:0;
+      width:35%;
+      background:rgba(255,255,255,.65);
+      animation:line 1.2s infinite ease-in-out;
+    }
+    @keyframes line{
+      0%{transform:translateX(-120%)}
+      100%{transform:translateX(320%)}
+    }
+    .splashText{color:rgba(255,255,255,.85); font-size:14px}
 
+    .onboarding{
+      position:fixed; inset:0; z-index:9000;
+      display:grid; place-items:center;
+      background: linear-gradient(180deg, rgba(7,10,18,.80), rgba(5,8,16,.94));
+    }
+    .obCard{
+      width:min(980px, 94vw);
+      border-radius:26px;
+      padding:26px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06);
+      box-shadow:0 24px 80px rgba(0,0,0,.55);
+      color:rgba(255,255,255,.92);
+    }
+    .obTop{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .obTop h1{margin:0;font-size:26px}
+    .obTop p{margin:8px 0 0;color:rgba(255,255,255,.72);max-width:70ch;line-height:1.45}
+    .obGrid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:12px;
+      margin-top:16px;
+    }
+    @media(max-width:680px){ .obGrid{grid-template-columns:1fr} }
+    .obBtn{
+      text-align:left;
+      padding:16px 14px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.07);
+      color:rgba(255,255,255,.92);
+      cursor:pointer;
+      transition:transform .15s ease, background .15s ease;
+    }
+    .obBtn:hover{transform:translateY(-2px); background:rgba(255,255,255,.10)}
+    .obBtn b{display:block; font-size:16px; margin-bottom:4px}
+    .obBtn span{display:block; color:rgba(255,255,255,.72); font-size:13px}
+    .obFooter{
+      margin-top:14px;
+      display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+      color:rgba(255,255,255,.75); font-size:13px;
+    }
+    .remember{display:flex;gap:10px;align-items:center}
+    .remember input{width:auto}
+
+    /* App layout */
     .wrap{display:grid; grid-template-columns: 310px 1fr; gap:18px; padding:18px; min-height:100vh;}
 
     .side{
@@ -69,6 +150,25 @@
     }
     .brand h1{margin:0;font-size:15px;letter-spacing:.3px;line-height:1.15}
     .brand p{margin:2px 0 0 0;font-size:12px;color:var(--muted)}
+
+    .modeBar{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      border-radius:16px;border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18); padding:10px; margin-bottom:12px;
+    }
+    .modeBar b{font-size:12px}
+    .modeBar span{font-size:12px;color:var(--muted)}
+    .modeBar button{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color:var(--text);
+      padding:9px 10px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:850;
+      transition:.2s ease;
+    }
+    .modeBar button:hover{background: rgba(255,255,255,.14);transform:translateY(-1px)}
 
     .nav{display:grid;gap:10px;margin:14px 0 16px}
     .nav button{
@@ -278,7 +378,56 @@
 <body>
   <div class="bg"></div>
 
-  <div class="wrap">
+  <!-- ✅ Splash while DB + Maps load -->
+  <div id="splash" class="splash">
+    <div class="splashCard">
+      <!-- 🔁 Put your logo file name here -->
+      <img src="logo.png" class="splashLogo" alt="Logo" onerror="this.style.display='none'">
+      <div style="font-weight:900; font-size:18px; letter-spacing:.4px;">Himachal Explorer</div>
+      <div class="loaderLine"></div>
+      <div class="splashText" id="splashText">Loading…</div>
+    </div>
+  </div>
+
+  <!-- ✅ Role selection (do NOT show locations directly) -->
+  <div id="onboarding" class="onboarding hidden">
+    <div class="obCard">
+      <div class="obTop">
+        <div>
+          <h1>Welcome 👋</h1>
+          <p>Select your purpose — we’ll personalize the experience (tourist, tracker, researcher, or multi-day packages).</p>
+        </div>
+      </div>
+
+      <div class="obGrid">
+        <button class="obBtn" data-mode="tourist">
+          <b>Tourist</b><span>Highlights + easy explore</span>
+        </button>
+
+        <button class="obBtn" data-mode="tracker">
+          <b>Tourist Tracker</b><span>Routes + check-ins + budget</span>
+        </button>
+
+        <button class="obBtn" data-mode="researcher">
+          <b>Researcher</b><span>Advanced filters + data focus</span>
+        </button>
+
+        <button class="obBtn" data-mode="packages">
+          <b>Multi-day Packages</b><span>Day-wise itinerary builder</span>
+        </button>
+      </div>
+
+      <div class="obFooter">
+        <label class="remember">
+          <input type="checkbox" id="rememberMode" checked>
+          Remember my choice
+        </label>
+        <span style="opacity:.85">You can change mode anytime.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap hidden" id="appWrap">
     <aside class="side">
       <div class="brand">
         <div class="logo" aria-hidden="true">
@@ -290,8 +439,17 @@
         </div>
         <div>
           <h1>Himachal Explorer</h1>
-          <p>Realtime DB + Route Planner</p>
+          <p id="modeLabel">Mode: —</p>
         </div>
+      </div>
+
+      <!-- ✅ Mode bar -->
+      <div class="modeBar">
+        <div>
+          <b>Experience</b><br>
+          <span id="modeSub">Choose mode to start</span>
+        </div>
+        <button id="changeModeBtn">Change</button>
       </div>
 
       <div class="nav" id="nav">
@@ -320,7 +478,7 @@
         <div class="chip" data-chip="adventure">Adventure</div>
       </div>
 
-      <div class="miniCard">
+      <div class="miniCard" id="blockStart">
         <b style="font-size:13px;">Start location</b>
         <p>GPS start or manual start. Route updates automatically.</p>
 
@@ -337,7 +495,7 @@
         <button class="btn" id="gpsBtn">Use Current Location (GPS)</button>
       </div>
 
-      <div class="miniCard">
+      <div class="miniCard" id="blockAutoRoute">
         <b style="font-size:13px;">Auto route</b>
         <p>Auto-optimize route order with Google.</p>
 
@@ -352,7 +510,7 @@
         </div>
       </div>
 
-      <div class="miniCard">
+      <div class="miniCard" id="blockBudget">
         <b style="font-size:13px;">Trip Budget</b>
         <p>Distance updates travel cost automatically.</p>
 
@@ -389,8 +547,8 @@
       <section class="hero">
         <div class="heroTop">
           <div>
-            <h2>Places (Firebase) + Route Planner</h2>
-            <p>Card tap = open details page. Use <b>+ Add</b> to build route.</p>
+            <h2 id="heroTitle">Experience</h2>
+            <p id="heroDesc">Choose a mode to begin.</p>
           </div>
           <button class="ghost" id="resetBtn">Reset</button>
         </div>
@@ -403,7 +561,7 @@
       <section class="split">
         <div class="leftPane">
           <div class="paneHead">
-            <strong>Places</strong>
+            <strong id="placesHead">Places</strong>
             <small id="countOut">0 results</small>
           </div>
           <div class="paneBody">
@@ -411,9 +569,9 @@
           </div>
         </div>
 
-        <div class="rightPane">
+        <div class="rightPane" id="routePane">
           <div class="paneHead">
-            <strong>Route Planner</strong>
+            <strong id="routeHead">Route Planner</strong>
             <small id="routeStatus">Waiting for Maps…</small>
           </div>
           <div class="paneBody">
@@ -449,7 +607,7 @@
      * CONFIG
      ***********************/
     const GOOGLE_MAPS_API_KEY = "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug";
-    const FIREBASE_LOCATIONS_PATH = "/locations"; // ✅ FIXED (your data is inside /locations)
+    const FIREBASE_LOCATIONS_PATH = "/locations";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
@@ -464,6 +622,21 @@
     /***********************
      * UI refs
      ***********************/
+    const splash = document.getElementById("splash");
+    const splashText = document.getElementById("splashText");
+    const onboarding = document.getElementById("onboarding");
+    const appWrap = document.getElementById("appWrap");
+    const rememberMode = document.getElementById("rememberMode");
+
+    const modeLabel = document.getElementById("modeLabel");
+    const modeSub = document.getElementById("modeSub");
+    const changeModeBtn = document.getElementById("changeModeBtn");
+
+    const heroTitle = document.getElementById("heroTitle");
+    const heroDesc = document.getElementById("heroDesc");
+    const placesHead = document.getElementById("placesHead");
+    const routePane = document.getElementById("routePane");
+
     const grid = document.getElementById("grid");
     const countOut = document.getElementById("countOut");
     const nav = document.getElementById("nav");
@@ -487,11 +660,16 @@
     const autoOpt = document.getElementById("autoOpt");
     const ratePerKmEl = document.getElementById("ratePerKm");
 
+    const blockStart = document.getElementById("blockStart");
+    const blockAutoRoute = document.getElementById("blockAutoRoute");
+    const blockBudget = document.getElementById("blockBudget");
+
     let tab = "all";
-    let sideTags = new Set(); // ✅ none by default
+    let sideTags = new Set();
     let places = [];
 
     const ROUTE_LS_KEY = "hp_route_v1";
+    const MODE_LS_KEY = "hp_mode_v1";
     let route = loadRouteFromLS();
 
     let startMode = "manual";
@@ -501,6 +679,10 @@
     let lastDirections = null;
     let routeTimer = null;
     let applyingOptimizedOrder = false;
+
+    let mapsLoaded = false;
+    let dbLoaded = false;
+    let currentMode = null;
 
     /***********************
      * Firebase init + auth
@@ -516,7 +698,7 @@
     }
 
     /***********************
-     * Helpers for your DB keys
+     * Helpers
      ***********************/
     function pick(p, keys, fallback=""){
       for(const k of keys){
@@ -530,7 +712,7 @@
       const lng = Number(p?.lng ?? p?.longitude ?? p?.Longitude);
       if(Number.isFinite(lat) && Number.isFinite(lng)) return {lat, lng};
 
-      const m = String(p?.Map ?? p?.map ?? "").trim(); // sometimes you keep Map:""
+      const m = String(p?.Map ?? p?.map ?? "").trim();
       const mm = m.match(/(-?\d+(\.\d+)?)\s*,\s*(-?\d+(\.\d+)?)/);
       if(mm) return { lat: Number(mm[1]), lng: Number(mm[3]) };
 
@@ -566,6 +748,31 @@
         keyFeatures, bestTimeToVisit, taskForLocation, distFromHQ, mapUrl, lat, lng, tags:[...tags] };
     }
 
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+    function escapeAttr(s){ return String(s).replace(/'/g, "%27"); }
+
+    function updateSplash(){
+      const parts = [];
+      parts.push(dbLoaded ? "Database ✅" : "Database…");
+      parts.push(mapsLoaded ? "Maps ✅" : "Maps…");
+      splashText.textContent = "Loading: " + parts.join(" • ");
+    }
+
+    function maybeHideSplash(){
+      updateSplash();
+      if(dbLoaded && mapsLoaded){
+        splash.classList.add("hidden");
+        const saved = localStorage.getItem(MODE_LS_KEY);
+        if(saved){
+          setMode(saved, {skipOnboarding:true});
+        }else{
+          onboarding.classList.remove("hidden");
+        }
+      }
+    }
+
     /***********************
      * Load from RTDB (/locations)
      ***********************/
@@ -580,16 +787,14 @@
 
         if(!data || typeof data !== "object"){
           firebaseStatus.textContent = "Firebase: /locations returned null ❌";
-          debugOut.textContent = "Debug: No data at " + FIREBASE_LOCATIONS_PATH + "\nCheck that your node is exactly: /locations";
+          debugOut.textContent = "Debug: No data at " + FIREBASE_LOCATIONS_PATH + "\\nCheck that your node is exactly: /locations";
           places = [];
           return;
         }
 
         const out = [];
         for(const [id, p] of Object.entries(data || {})){
-          if(p && typeof p === "object"){
-            out.push(normalizePlace(id, p));
-          }
+          if(p && typeof p === "object") out.push(normalizePlace(id, p));
         }
 
         out.sort((a,b)=>
@@ -605,14 +810,97 @@
           districtNames.map(d=>`<option value="${escapeAttr(d)}">${escapeHtml(d)}</option>`).join("");
 
         firebaseStatus.textContent = `Firebase: loaded ${places.length} places ✅`;
-        debugOut.textContent = `Debug:\nPath: ${FIREBASE_LOCATIONS_PATH}\nKeys sample: ${Object.keys(data).slice(0,10).join(", ")}`;
+        debugOut.textContent = `Debug:\\nPath: ${FIREBASE_LOCATIONS_PATH}\\nKeys sample: ${Object.keys(data).slice(0,10).join(", ")}`;
 
       }catch(e){
         const msg = (e?.message || String(e));
         firebaseStatus.textContent = "Firebase: error ❌ " + msg;
-        debugOut.textContent = "Debug error:\n" + msg + "\n\nIf Permission denied → allow read in RTDB rules.";
+        debugOut.textContent = "Debug error:\\n" + msg + "\\n\\nIf Permission denied → allow read in RTDB rules.";
       }
     }
+
+    /***********************
+     * Mode system (Tourist / Tracker / Researcher / Packages)
+     ***********************/
+    function setMode(mode, opts={}){
+      currentMode = mode;
+
+      const nice = ({
+        tourist: "Tourist",
+        tracker: "Tourist Tracker",
+        researcher: "Researcher",
+        packages: "Multi-day Packages"
+      })[mode] || mode;
+
+      modeLabel.textContent = "Mode: " + nice;
+      modeSub.textContent = ({
+        tourist: "Highlights + easy explore",
+        tracker: "Routes + check-ins + budget",
+        researcher: "Advanced filters + data focus",
+        packages: "Day-wise itinerary builder"
+      })[mode] || "Personalized view";
+
+      heroTitle.textContent = nice;
+      heroDesc.textContent = ({
+        tourist: "Explore curated places. Use filters and open details pages.",
+        tracker: "Build routes, optimize order, track distance and trip cost.",
+        researcher: "Focus on searchable dataset. Route tools are hidden.",
+        packages: "Plan multi-day trips with day-wise itinerary from your stops."
+      })[mode] || "Welcome";
+
+      // ✅ Show/hide route pane based on mode
+      if(mode === "researcher"){
+        routePane.classList.add("hidden");
+      }else{
+        routePane.classList.remove("hidden");
+      }
+
+      // ✅ Some blocks in sidebar can be hidden for Tourist/Researcher
+      if(mode === "tourist"){
+        blockStart.classList.add("hidden");
+        blockAutoRoute.classList.add("hidden");
+        blockBudget.classList.add("hidden");
+      }else{
+        blockStart.classList.remove("hidden");
+        blockAutoRoute.classList.remove("hidden");
+        blockBudget.classList.remove("hidden");
+      }
+
+      // Packages still needs itinerary/budget/route
+      if(mode === "packages"){
+        blockStart.classList.remove("hidden");
+        blockAutoRoute.classList.remove("hidden");
+        blockBudget.classList.remove("hidden");
+        routePane.classList.remove("hidden");
+      }
+
+      onboarding.classList.add("hidden");
+      appWrap.classList.remove("hidden");
+
+      if(!opts.skipOnboarding && document.getElementById("rememberMode").checked){
+        localStorage.setItem(MODE_LS_KEY, mode);
+      }
+
+      // render after mode switch
+      renderPlaces();
+      renderRoute();
+      updateTotalOnly();
+      scheduleRoute(false);
+    }
+
+    // onboarding buttons
+    document.querySelectorAll(".obBtn").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const mode = btn.dataset.mode;
+        if(rememberMode.checked) localStorage.setItem(MODE_LS_KEY, mode);
+        setMode(mode);
+      });
+    });
+
+    changeModeBtn.addEventListener("click", ()=>{
+      appWrap.classList.add("hidden");
+      onboarding.classList.remove("hidden");
+    });
 
     /***********************
      * Filters + render
@@ -639,6 +927,8 @@
 
       const byQuery = !q ? true : hay.includes(q);
       const bySideTags = (sideTags.size === 0) ? true : [...sideTags].some(t => (p.tags || []).includes(t));
+
+      // ✅ Researcher: allow everything; Tourist: same; (no extra restriction)
       return byTab && byDistrict && byQuery && bySideTags;
     }
 
@@ -660,6 +950,10 @@
         const lt = p.locationType && p.locationType !== "—" ? p.locationType : "";
         const hasCoords = Number.isFinite(p.lat) && Number.isFinite(p.lng);
 
+        // ✅ In Tourist mode, hide add route button (since route hidden)
+        const canAdd =
+          (currentMode === "tracker" || currentMode === "packages") && hasCoords;
+
         el.innerHTML = `
           <div class="thumb" style="background-image:url('${escapeAttr(img)}')">
             <div class="badge">${escapeHtml(p.segmentType || "Place")}</div>
@@ -674,7 +968,11 @@
               ${lt ? `<span class="subpill">${escapeHtml(lt)}</span>` : ``}
               ${best ? `<span class="subpill">${escapeHtml(best)}</span>` : ``}
               <span class="subpill">${hasCoords ? "Coords ✓" : "No coords"}</span>
-              <span class="miniAdd ${hasCoords ? "" : "disabled"}" data-add="1">+ Add</span>
+              ${
+                (currentMode === "tracker" || currentMode === "packages")
+                ? `<span class="miniAdd ${canAdd ? "" : "disabled"}" data-add="1">+ Add</span>`
+                : ``
+              }
             </div>
           </div>
         `;
@@ -683,11 +981,11 @@
           const addBtn = ev.target?.closest?.("[data-add='1']");
           if(addBtn){
             ev.stopPropagation();
+            if(!(currentMode === "tracker" || currentMode === "packages")) return;
             if(!hasCoords){ toast("No coordinates for this place."); return; }
             addToRoute(p);
             return;
           }
-          // ✅ Open location.html with id
           window.location.href = `location.html?id=${encodeURIComponent(p.id)}`;
         });
 
@@ -736,6 +1034,9 @@
     });
 
     function renderRoute(){
+      // If route pane hidden, no need
+      if(routePane.classList.contains("hidden")) return;
+
       routeListEl.innerHTML = "";
       route.forEach((p,i)=>{
         const item = document.createElement("div");
@@ -850,6 +1151,7 @@
     }
 
     function scheduleRoute(shouldOptimize){
+      if(routePane.classList.contains("hidden")) return;
       const doOpt = !!autoOpt.checked && !!shouldOptimize;
       clearTimeout(routeTimer);
       routeTimer = setTimeout(()=> computeDirections(doOpt), 650);
@@ -997,7 +1299,7 @@
       if(!btn) return;
       [...nav.querySelectorAll("button")].forEach(b=>b.classList.remove("active"));
       btn.classList.add("active");
-      tab = btn.dataset.tab; // all / Destination / Hotel / Temple
+      tab = btn.dataset.tab;
       renderPlaces();
     });
 
@@ -1055,32 +1357,92 @@
       toastTimer = setTimeout(()=>{ t.style.opacity="0"; }, 1800);
     }
 
-    function escapeHtml(s){
-      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-    }
-    function escapeAttr(s){ return String(s).replace(/'/g, "%27"); }
-
     /***********************
      * BOOT
      ***********************/
     async function boot(){
+      splashText.textContent = "Loading: Database… • Maps…";
+      updateSplash();
+
+      // Load DB first (so it always works even if maps fails)
       await loadPlacesFromFirebase();
+      dbLoaded = true;
+      updateSplash();
+
       renderPlaces();
       renderRoute();
       updateTotalOnly();
-      scheduleRoute(false);
+
+      // If mode already selected earlier, keep UI hidden until splash done
+      // (splash hides only when db+maps ready)
     }
 
     (async ()=>{
       try{
         await loadGoogleMaps();
         initMap();
+        mapsLoaded = true;
       }catch(e){
         console.warn(e);
         showMapsFixMessage();
+        // still allow app without maps
+        mapsLoaded = true;
       }
+
       await boot();
+      maybeHideSplash();
     })();
+
+    // In case DB finishes later
+    const dbWatch = setInterval(()=>{
+      if(dbLoaded && mapsLoaded){
+        clearInterval(dbWatch);
+        maybeHideSplash();
+      }
+    }, 150);
+
+    // If user refreshed and has saved mode, show it after splash
+    // Onboarding click also sets mode.
+
+    // If saved mode exists, mode will be set after splash hides:
+    window.addEventListener("keydown", (e)=>{
+      if(e.key === "Escape" && !splash.classList.contains("hidden")){
+        // keep splash during load; no action
+      }
+    });
   </script>
+
+  <script>
+    // Non-module quick init after module loads: handle saved mode after splash hides
+    // (module will call maybeHideSplash)
+    window.addEventListener("DOMContentLoaded", ()=>{
+      // Nothing needed here
+    });
+  </script>
+
+  <script>
+    // Mode init helper accessible in module scope?
+    // No-op (kept for safety)
+  </script>
+
+  <script type="module">
+    // Small bridge: if mode saved and splash hidden after module finishes,
+    // set mode once DOM is ready.
+    const MODE_LS_KEY = "hp_mode_v1";
+    const trySet = () => {
+      const splash = document.getElementById("splash");
+      const appWrap = document.getElementById("appWrap");
+      const onboarding = document.getElementById("onboarding");
+      if(!splash || !appWrap || !onboarding) return;
+
+      // When splash is hidden, module has already loaded and functions exist
+      if(splash.classList.contains("hidden")){
+        // If onboarding still visible but mode exists, user must pick or keep saved choice.
+        // (Main module already handles this.)
+      }
+    };
+    setTimeout(trySet, 500);
+  </script>
+
 </body>
 </html>
