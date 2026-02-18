@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Himachal Explorer — Firebase Places + Route Planner</title>
+  <title>Himachal Explorer — Firebase Places + Packages + Route Planner</title>
 
   <style>
     :root{
@@ -11,7 +11,6 @@
       --text: rgba(255,255,255,.92); --muted: rgba(255,255,255,.72);
       --shadow: 0 18px 60px rgba(0,0,0,.55);
       --r: 18px; --r2: 26px;
-      --ok:#49f2c2; --warn:#ffcf5a; --bad:#ff6b6b;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -97,7 +96,6 @@
       box-shadow:0 24px 80px rgba(0,0,0,.55);
       color:rgba(255,255,255,.92);
     }
-    .obTop{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
     .obTop h1{margin:0;font-size:26px}
     .obTop p{margin:8px 0 0;color:rgba(255,255,255,.72);max-width:70ch;line-height:1.45}
     .obGrid{
@@ -129,7 +127,7 @@
     .remember input{width:auto}
 
     /* App layout */
-    .wrap{display:grid; grid-template-columns: 310px 1fr; gap:18px; padding:18px; min-height:100vh;}
+    .wrap{display:grid; grid-template-columns: 330px 1fr; gap:18px; padding:18px; min-height:100vh;}
 
     .side{
       position:sticky; top:18px; align-self:start; height: calc(100vh - 36px);
@@ -140,21 +138,23 @@
       box-shadow: var(--shadow);
       padding:18px; overflow:auto;
     }
-    .brand{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-    .logo{
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+    .logoBox{
       width:46px;height:46px;border-radius:16px;
       background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.22), rgba(255,255,255,.06));
       border:1px solid var(--stroke); display:grid; place-items:center;
       box-shadow: 0 12px 30px rgba(0,0,0,.35);
       flex:0 0 auto;
+      overflow:hidden;
     }
+    .logoBox img{width:100%;height:100%;object-fit:cover}
     .brand h1{margin:0;font-size:15px;letter-spacing:.3px;line-height:1.15}
     .brand p{margin:2px 0 0 0;font-size:12px;color:var(--muted)}
 
     .modeBar{
       display:flex;align-items:center;justify-content:space-between;gap:10px;
       border-radius:16px;border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18); padding:10px; margin-bottom:12px;
+      background: rgba(0,0,0,.18); padding:10px; margin:10px 0 12px;
     }
     .modeBar b{font-size:12px}
     .modeBar span{font-size:12px;color:var(--muted)}
@@ -169,20 +169,6 @@
       transition:.2s ease;
     }
     .modeBar button:hover{background: rgba(255,255,255,.14);transform:translateY(-1px)}
-
-    .nav{display:grid;gap:10px;margin:14px 0 16px}
-    .nav button{
-      width:100%; text-align:left;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color:var(--text);
-      padding:12px; border-radius:14px; cursor:pointer;
-      display:flex; align-items:center; justify-content:space-between;
-      transition:.22s ease;
-    }
-    .nav button:hover{transform:translateY(-1px);background: rgba(255,255,255,.10)}
-    .nav button.active{background: rgba(255,255,255,.14);border-color: rgba(255,255,255,.22)}
-    .nav small{color:var(--muted);font-weight:600}
 
     .panelTitle{
       margin:14px 0 8px; font-size:12px; letter-spacing:.28em;
@@ -239,8 +225,8 @@
       line-height:1.4;
       white-space:pre-wrap;
     }
-    .hint b{color:rgba(255,255,255,.9)}
 
+    /* Main */
     .main{
       border-radius: var(--r2);
       overflow:hidden;
@@ -258,7 +244,7 @@
     }
     .heroTop{display:flex;gap:12px;justify-content:space-between;align-items:flex-end;flex-wrap:wrap}
     .hero h2{margin:0;font-size:26px;line-height:1.15}
-    .hero p{margin:8px 0 0;color:var(--muted);max-width:66ch;line-height:1.5}
+    .hero p{margin:8px 0 0;color:var(--muted);max-width:72ch;line-height:1.5}
     .searchBar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
     .searchBar input{flex:1 1 320px;min-width:240px;background: rgba(0,0,0,.28)}
     .ghost{
@@ -331,7 +317,7 @@
     .stat b{display:block;font-size:13px}
     .stat span{color:var(--muted);font-size:12px}
     #map{
-      height:280px; border-radius:18px; border:1px solid rgba(255,255,255,.12);
+      height:260px; border-radius:18px; border:1px solid rgba(255,255,255,.12);
       background:#0b1220; overflow:hidden; display:grid; place-items:center;
       color:rgba(255,255,255,.75); font-size:12px; text-align:center; padding:10px;
     }
@@ -368,10 +354,21 @@
     .itinerary .day:last-child{margin-bottom:0}
     .itinerary .day b{font-size:12px}
     .itinerary .day p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.4}
+    .pkgCard{
+      border-radius:18px;border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      padding:12px; margin-top:10px;
+    }
+    .pkgCard h5{margin:0;font-size:13px}
+    .pkgCard p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.4}
+    .pkgRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+    .pkgPill{font-size:11px;padding:7px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background: rgba(0,0,0,.18)}
+    .pkgActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .pkgActions .tiny{padding:9px 10px}
 
     @media (max-width: 1180px){ .split{grid-template-columns:1fr} .grid{grid-template-columns: repeat(2, minmax(0,1fr))} }
     @media (max-width: 1050px){ .wrap{grid-template-columns:1fr} .side{position:relative;height:auto} }
-    @media (max-width: 620px){ .wrap{padding:12px} .grid{grid-template-columns:1fr} .hero h2{font-size:22px} #map{height:260px} }
+    @media (max-width: 620px){ .wrap{padding:12px} .grid{grid-template-columns:1fr} .hero h2{font-size:22px} #map{height:240px} }
   </style>
 </head>
 
@@ -381,7 +378,6 @@
   <!-- ✅ Splash while DB + Maps load -->
   <div id="splash" class="splash">
     <div class="splashCard">
-      <!-- 🔁 Put your logo file name here -->
       <img src="logo.png" class="splashLogo" alt="Logo" onerror="this.style.display='none'">
       <div style="font-weight:900; font-size:18px; letter-spacing:.4px;">Himachal Explorer</div>
       <div class="loaderLine"></div>
@@ -389,14 +385,12 @@
     </div>
   </div>
 
-  <!-- ✅ Role selection (do NOT show locations directly) -->
+  <!-- ✅ Role selection -->
   <div id="onboarding" class="onboarding hidden">
     <div class="obCard">
       <div class="obTop">
-        <div>
-          <h1>Welcome 👋</h1>
-          <p>Select your purpose — we’ll personalize the experience (tourist, tracker, researcher, or multi-day packages).</p>
-        </div>
+        <h1>Welcome 👋</h1>
+        <p>Select your purpose — we’ll personalize your experience. You won’t see all locations until you choose a mode.</p>
       </div>
 
       <div class="obGrid">
@@ -405,15 +399,15 @@
         </button>
 
         <button class="obBtn" data-mode="tracker">
-          <b>Tourist Tracker</b><span>Routes + check-ins + budget</span>
+          <b>Tourist Tracker</b><span>Routes + budget + optimized order</span>
         </button>
 
         <button class="obBtn" data-mode="researcher">
-          <b>Researcher</b><span>Advanced filters + data focus</span>
+          <b>Researcher</b><span>Data focused browsing (no route tools)</span>
         </button>
 
         <button class="obBtn" data-mode="packages">
-          <b>Multi-day Packages</b><span>Day-wise itinerary builder</span>
+          <b>Packages</b><span>Answer 2–3 questions → 2–3 packages</span>
         </button>
       </div>
 
@@ -430,12 +424,8 @@
   <div class="wrap hidden" id="appWrap">
     <aside class="side">
       <div class="brand">
-        <div class="logo" aria-hidden="true">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M3 20h18" stroke="white" opacity=".85" stroke-width="2" stroke-linecap="round"/>
-            <path d="M5 18l7-13 7 13" stroke="white" opacity=".9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M9 14h6" stroke="white" opacity=".85" stroke-width="2" stroke-linecap="round"/>
-          </svg>
+        <div class="logoBox" aria-hidden="true">
+          <img src="logo.png" alt="" onerror="this.remove()">
         </div>
         <div>
           <h1>Himachal Explorer</h1>
@@ -443,7 +433,6 @@
         </div>
       </div>
 
-      <!-- ✅ Mode bar -->
       <div class="modeBar">
         <div>
           <b>Experience</b><br>
@@ -452,13 +441,45 @@
         <button id="changeModeBtn">Change</button>
       </div>
 
-      <div class="nav" id="nav">
-        <button class="active" data-tab="all">All <small>Everything</small></button>
-        <button data-tab="Destination">Destinations <small>Explore</small></button>
-        <button data-tab="Hotel">Hotels <small>Stay</small></button>
-        <button data-tab="Temple">Temples <small>Faith</small></button>
+      <!-- ✅ Package Wizard is visible ONLY in Packages mode -->
+      <div class="miniCard hidden" id="pkgWizard" style="margin-top:0;">
+        <b style="font-size:13px;">Package Builder</b>
+        <p>Answer 2–3 questions → we’ll generate 2–3 best packages.</p>
+
+        <div class="field" style="margin-top:10px;">
+          <label>Start (type or write GPS)</label>
+          <input id="pkgStart" placeholder="Shimla / Manali / GPS"/>
+        </div>
+
+        <div class="row2">
+          <div class="field" style="margin:0;">
+            <label>Days</label>
+            <input id="pkgDays" type="number" value="3" min="1" max="10"/>
+          </div>
+          <div class="field" style="margin:0;">
+            <label>People</label>
+            <input id="pkgPeople" type="number" value="2" min="1" max="20"/>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:10px;">
+          <label>Budget (₹) optional</label>
+          <input id="pkgBudget" type="number" value="15000" min="0"/>
+        </div>
+
+        <div class="panelTitle" style="margin-top:10px;">Interests</div>
+        <div class="chipRow" id="pkgChips">
+          <div class="chip on" data-i="nature">Nature</div>
+          <div class="chip" data-i="adventure">Adventure</div>
+          <div class="chip" data-i="spiritual">Spiritual</div>
+          <div class="chip" data-i="heritage">Heritage</div>
+          <div class="chip" data-i="family">Family</div>
+        </div>
+
+        <button class="btn" id="genPkgsBtn">Generate 2–3 Packages</button>
       </div>
 
+      <!-- Filters -->
       <div class="panelTitle">Filters</div>
       <div class="field">
         <label>District</label>
@@ -478,6 +499,7 @@
         <div class="chip" data-chip="adventure">Adventure</div>
       </div>
 
+      <!-- Route blocks (hidden for Tourist/Researcher, shown for Tracker/Packages) -->
       <div class="miniCard" id="blockStart">
         <b style="font-size:13px;">Start location</b>
         <p>GPS start or manual start. Route updates automatically.</p>
@@ -547,7 +569,7 @@
       <section class="hero">
         <div class="heroTop">
           <div>
-            <h2 id="heroTitle">Experience</h2>
+            <h2 id="heroTitle">Himachal Explorer</h2>
             <p id="heroDesc">Choose a mode to begin.</p>
           </div>
           <button class="ghost" id="resetBtn">Reset</button>
@@ -555,6 +577,7 @@
 
         <div class="searchBar">
           <input id="qMain" placeholder="Search places..." />
+          <button class="ghost" id="clearGridBtn">Clear Results</button>
         </div>
       </section>
 
@@ -565,13 +588,17 @@
             <small id="countOut">0 results</small>
           </div>
           <div class="paneBody">
+            <div id="packageResults" class="itinerary hidden">
+              <h4>Recommended Packages</h4>
+              <div class="day"><b>Generate packages</b><p>Use Package Builder on the left.</p></div>
+            </div>
             <div class="grid" id="grid"></div>
           </div>
         </div>
 
         <div class="rightPane" id="routePane">
           <div class="paneHead">
-            <strong id="routeHead">Route Planner</strong>
+            <strong>Route Planner</strong>
             <small id="routeStatus">Waiting for Maps…</small>
           </div>
           <div class="paneBody">
@@ -634,12 +661,13 @@
 
     const heroTitle = document.getElementById("heroTitle");
     const heroDesc = document.getElementById("heroDesc");
-    const placesHead = document.getElementById("placesHead");
     const routePane = document.getElementById("routePane");
+
+    const pkgWizard = document.getElementById("pkgWizard");
+    const packageResults = document.getElementById("packageResults");
 
     const grid = document.getElementById("grid");
     const countOut = document.getElementById("countOut");
-    const nav = document.getElementById("nav");
     const districtSel = document.getElementById("district");
     const qSide = document.getElementById("q");
     const qMain = document.getElementById("qMain");
@@ -664,7 +692,8 @@
     const blockAutoRoute = document.getElementById("blockAutoRoute");
     const blockBudget = document.getElementById("blockBudget");
 
-    let tab = "all";
+    const clearGridBtn = document.getElementById("clearGridBtn");
+
     let sideTags = new Set();
     let places = [];
 
@@ -706,7 +735,6 @@
       }
       return fallback;
     }
-
     function parseLatLng(p){
       const lat = Number(p?.lat ?? p?.latitude ?? p?.Latitude);
       const lng = Number(p?.lng ?? p?.longitude ?? p?.Longitude);
@@ -718,7 +746,6 @@
 
       return {lat: NaN, lng: NaN};
     }
-
     function normalizePlace(id, p){
       const {lat, lng} = parseLatLng(p);
 
@@ -747,7 +774,6 @@
       return { id, name, district, segmentType, locationType, overview, shortDescription, howToReach,
         keyFeatures, bestTimeToVisit, taskForLocation, distFromHQ, mapUrl, lat, lng, tags:[...tags] };
     }
-
     function escapeHtml(s){
       return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     }
@@ -759,7 +785,6 @@
       parts.push(mapsLoaded ? "Maps ✅" : "Maps…");
       splashText.textContent = "Loading: " + parts.join(" • ");
     }
-
     function maybeHideSplash(){
       updateSplash();
       if(dbLoaded && mapsLoaded){
@@ -787,7 +812,7 @@
 
         if(!data || typeof data !== "object"){
           firebaseStatus.textContent = "Firebase: /locations returned null ❌";
-          debugOut.textContent = "Debug: No data at " + FIREBASE_LOCATIONS_PATH + "\\nCheck that your node is exactly: /locations";
+          debugOut.textContent = "Debug: No data at " + FIREBASE_LOCATIONS_PATH + "\nCheck that your node is exactly: /locations";
           places = [];
           return;
         }
@@ -810,17 +835,17 @@
           districtNames.map(d=>`<option value="${escapeAttr(d)}">${escapeHtml(d)}</option>`).join("");
 
         firebaseStatus.textContent = `Firebase: loaded ${places.length} places ✅`;
-        debugOut.textContent = `Debug:\\nPath: ${FIREBASE_LOCATIONS_PATH}\\nKeys sample: ${Object.keys(data).slice(0,10).join(", ")}`;
+        debugOut.textContent = `Debug:\nPath: ${FIREBASE_LOCATIONS_PATH}\nKeys sample: ${Object.keys(data).slice(0,10).join(", ")}`;
 
       }catch(e){
         const msg = (e?.message || String(e));
         firebaseStatus.textContent = "Firebase: error ❌ " + msg;
-        debugOut.textContent = "Debug error:\\n" + msg + "\\n\\nIf Permission denied → allow read in RTDB rules.";
+        debugOut.textContent = "Debug error:\n" + msg + "\n\nIf Permission denied → allow read in RTDB rules.";
       }
     }
 
     /***********************
-     * Mode system (Tourist / Tracker / Researcher / Packages)
+     * MODE SYSTEM
      ***********************/
     function setMode(mode, opts={}){
       currentMode = mode;
@@ -829,66 +854,59 @@
         tourist: "Tourist",
         tracker: "Tourist Tracker",
         researcher: "Researcher",
-        packages: "Multi-day Packages"
+        packages: "Packages"
       })[mode] || mode;
 
       modeLabel.textContent = "Mode: " + nice;
       modeSub.textContent = ({
         tourist: "Highlights + easy explore",
-        tracker: "Routes + check-ins + budget",
-        researcher: "Advanced filters + data focus",
-        packages: "Day-wise itinerary builder"
+        tracker: "Routes + budget + optimized order",
+        researcher: "Data focused browsing",
+        packages: "Answer 2–3 questions → 2–3 packages"
       })[mode] || "Personalized view";
 
-      heroTitle.textContent = nice;
+      heroTitle.textContent = "Himachal Explorer — " + nice;
       heroDesc.textContent = ({
-        tourist: "Explore curated places. Use filters and open details pages.",
+        tourist: "Browse and open details pages. Route tools hidden.",
         tracker: "Build routes, optimize order, track distance and trip cost.",
-        researcher: "Focus on searchable dataset. Route tools are hidden.",
-        packages: "Plan multi-day trips with day-wise itinerary from your stops."
+        researcher: "Data focused browsing. Route panel hidden.",
+        packages: "Use Package Builder on the left to generate 2–3 itineraries."
       })[mode] || "Welcome";
 
-      // ✅ Show/hide route pane based on mode
-      if(mode === "researcher"){
-        routePane.classList.add("hidden");
+      // show package wizard only in packages mode
+      if(mode === "packages"){
+        pkgWizard.classList.remove("hidden");
+        packageResults.classList.remove("hidden");
       }else{
-        routePane.classList.remove("hidden");
+        pkgWizard.classList.add("hidden");
+        packageResults.classList.add("hidden");
       }
 
-      // ✅ Some blocks in sidebar can be hidden for Tourist/Researcher
-      if(mode === "tourist"){
+      // route visibility by mode
+      if(mode === "researcher" || mode === "tourist"){
+        routePane.classList.add("hidden");
         blockStart.classList.add("hidden");
         blockAutoRoute.classList.add("hidden");
         blockBudget.classList.add("hidden");
       }else{
-        blockStart.classList.remove("hidden");
-        blockAutoRoute.classList.remove("hidden");
-        blockBudget.classList.remove("hidden");
-      }
-
-      // Packages still needs itinerary/budget/route
-      if(mode === "packages"){
-        blockStart.classList.remove("hidden");
-        blockAutoRoute.classList.remove("hidden");
-        blockBudget.classList.remove("hidden");
         routePane.classList.remove("hidden");
+        blockStart.classList.remove("hidden");
+        blockAutoRoute.classList.remove("hidden");
+        blockBudget.classList.remove("hidden");
       }
 
       onboarding.classList.add("hidden");
       appWrap.classList.remove("hidden");
 
-      if(!opts.skipOnboarding && document.getElementById("rememberMode").checked){
+      if(!opts.skipOnboarding && rememberMode.checked){
         localStorage.setItem(MODE_LS_KEY, mode);
       }
 
-      // render after mode switch
-      renderPlaces();
-      renderRoute();
-      updateTotalOnly();
-      scheduleRoute(false);
+      // IMPORTANT: don't show everything instantly
+      clearGrid();
+      toast("Mode set: " + nice + " ✅");
     }
 
-    // onboarding buttons
     document.querySelectorAll(".obBtn").forEach(btn=>{
       btn.addEventListener("click", ()=>{
         const mode = btn.dataset.mode;
@@ -903,18 +921,11 @@
     });
 
     /***********************
-     * Filters + render
+     * FILTERS + RENDER
      ***********************/
-    function segmentMatchesTab(p){
-      if(tab === "all") return true;
-      return (p.segmentType || "").toLowerCase() === tab.toLowerCase();
-    }
-
     function matches(p){
       const d = districtSel.value;
       const q = (qMain.value || qSide.value || "").trim().toLowerCase();
-
-      const byTab = segmentMatchesTab(p);
       const byDistrict = (d === "all") ? true : (p.district === d);
 
       const hay = (
@@ -927,9 +938,7 @@
 
       const byQuery = !q ? true : hay.includes(q);
       const bySideTags = (sideTags.size === 0) ? true : [...sideTags].some(t => (p.tags || []).includes(t));
-
-      // ✅ Researcher: allow everything; Tourist: same; (no extra restriction)
-      return byTab && byDistrict && byQuery && bySideTags;
+      return byDistrict && byQuery && bySideTags;
     }
 
     function fallbackImgFor(p){
@@ -937,12 +946,12 @@
       return `https://source.unsplash.com/1200x800/?${seed}`;
     }
 
-    function renderPlaces(){
-      const filtered = places.filter(matches);
-      countOut.textContent = `${filtered.length} results`;
+    function renderPlaces(customList=null){
+      const list = (customList ? customList : places.filter(matches));
+      countOut.textContent = `${list.length} results`;
       grid.innerHTML = "";
 
-      filtered.forEach(p=>{
+      list.forEach(p=>{
         const el = document.createElement("div");
         el.className = "card";
         const img = fallbackImgFor(p);
@@ -950,9 +959,7 @@
         const lt = p.locationType && p.locationType !== "—" ? p.locationType : "";
         const hasCoords = Number.isFinite(p.lat) && Number.isFinite(p.lng);
 
-        // ✅ In Tourist mode, hide add route button (since route hidden)
-        const canAdd =
-          (currentMode === "tracker" || currentMode === "packages") && hasCoords;
+        const canAdd = (currentMode === "tracker" || currentMode === "packages") && hasCoords;
 
         el.innerHTML = `
           <div class="thumb" style="background-image:url('${escapeAttr(img)}')">
@@ -968,11 +975,9 @@
               ${lt ? `<span class="subpill">${escapeHtml(lt)}</span>` : ``}
               ${best ? `<span class="subpill">${escapeHtml(best)}</span>` : ``}
               <span class="subpill">${hasCoords ? "Coords ✓" : "No coords"}</span>
-              ${
-                (currentMode === "tracker" || currentMode === "packages")
+              ${(currentMode === "tracker" || currentMode === "packages")
                 ? `<span class="miniAdd ${canAdd ? "" : "disabled"}" data-add="1">+ Add</span>`
-                : ``
-              }
+                : ``}
             </div>
           </div>
         `;
@@ -981,8 +986,7 @@
           const addBtn = ev.target?.closest?.("[data-add='1']");
           if(addBtn){
             ev.stopPropagation();
-            if(!(currentMode === "tracker" || currentMode === "packages")) return;
-            if(!hasCoords){ toast("No coordinates for this place."); return; }
+            if(!canAdd){ toast("Can't add (coords missing or mode not allowed)."); return; }
             addToRoute(p);
             return;
           }
@@ -992,13 +996,45 @@
         grid.appendChild(el);
       });
 
-      if(filtered.length === 0){
+      if(list.length === 0){
         grid.innerHTML = `<div style="opacity:.85; padding:12px;">No results. Try different filters.</div>`;
       }
     }
 
+    function clearGrid(){
+      grid.innerHTML = `<div style="opacity:.85; padding:12px;">Use search / filters or Package Builder to show relevant places.</div>`;
+      countOut.textContent = `0 results`;
+    }
+    clearGridBtn.addEventListener("click", clearGrid);
+
+    // Only render when user searches/filters (not immediately)
+    qMain.addEventListener("input", ()=> renderPlaces());
+    qSide.addEventListener("input", ()=> renderPlaces());
+    districtSel.addEventListener("change", ()=> renderPlaces());
+
+    chipsSide.addEventListener("click", (e)=>{
+      const c = e.target.closest(".chip");
+      if(!c) return;
+      const key = c.dataset.chip;
+      if(c.classList.contains("on")){
+        c.classList.remove("on"); sideTags.delete(key);
+      }else{
+        c.classList.add("on"); sideTags.add(key);
+      }
+      renderPlaces();
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", ()=>{
+      qMain.value=""; qSide.value="";
+      districtSel.value="all";
+      sideTags = new Set();
+      [...chipsSide.querySelectorAll(".chip")].forEach(x=>x.classList.remove("on"));
+      clearGrid();
+      toast("Reset done");
+    });
+
     /***********************
-     * Route LS
+     * ROUTE (LS)
      ***********************/
     function loadRouteFromLS(){
       try{
@@ -1027,14 +1063,12 @@
       route.splice(i,1);
       saveRouteToLS(); renderRoute(); scheduleRoute(true);
     }
-
     document.getElementById("clearRouteBtn").addEventListener("click", ()=>{
       route = []; saveRouteToLS(); renderRoute(); scheduleRoute(false);
       toast("Route cleared");
     });
 
     function renderRoute(){
-      // If route pane hidden, no need
       if(routePane.classList.contains("hidden")) return;
 
       routeListEl.innerHTML = "";
@@ -1062,7 +1096,7 @@
       });
 
       if(route.length === 0){
-        routeListEl.innerHTML = `<div style="opacity:.85; padding:10px;">No stops yet. Use <b>+ Add</b>.</div>`;
+        routeListEl.innerHTML = `<div style="opacity:.85; padding:10px;">No stops yet. Use <b>+ Add</b> on cards.</div>`;
       }
       stopsOut.textContent = String(route.length);
       renderItinerary();
@@ -1087,7 +1121,7 @@
     }
 
     /***********************
-     * Budget
+     * BUDGET
      ***********************/
     function calcBudget(){
       const days = +document.getElementById("days").value || 0;
@@ -1149,7 +1183,6 @@
     function mapsReady(){
       return !!(window.google && google.maps && directionsService && directionsRenderer);
     }
-
     function scheduleRoute(shouldOptimize){
       if(routePane.classList.contains("hidden")) return;
       const doOpt = !!autoOpt.checked && !!shouldOptimize;
@@ -1157,7 +1190,6 @@
       routeTimer = setTimeout(()=> computeDirections(doOpt), 650);
       routeStatus.textContent = mapsReady() ? (doOpt ? "Auto-optimizing…" : "Auto-routing…") : "Maps not ready";
     }
-
     startInput.addEventListener("input", ()=> scheduleRoute(true));
     loopToggle.addEventListener("change", ()=> scheduleRoute(true));
     autoOpt.addEventListener("change", ()=> scheduleRoute(false));
@@ -1249,7 +1281,6 @@
       document.getElementById("travel").value = isFinite(travelCost) ? travelCost : 0;
       updateTotalOnly();
     }
-
     function recalcFromLastDirections(){
       if(!lastDirections) return;
       updateStatsFromDirections(lastDirections);
@@ -1285,51 +1316,220 @@
         streetViewControl: false,
         fullscreenControl: false
       });
-
       directionsService = new google.maps.DirectionsService();
       directionsRenderer = new google.maps.DirectionsRenderer({ map });
       routeStatus.textContent = "Ready";
     }
 
     /***********************
-     * Filters wiring
+     * PACKAGE BUILDER (2–3 packages)
      ***********************/
-    nav.addEventListener("click", (e)=>{
-      const btn = e.target.closest("button");
-      if(!btn) return;
-      [...nav.querySelectorAll("button")].forEach(b=>b.classList.remove("active"));
-      btn.classList.add("active");
-      tab = btn.dataset.tab;
-      renderPlaces();
-    });
+    const pkgStartEl = document.getElementById("pkgStart");
+    const pkgDaysEl = document.getElementById("pkgDays");
+    const pkgPeopleEl = document.getElementById("pkgPeople");
+    const pkgBudgetEl = document.getElementById("pkgBudget");
+    const pkgChips = document.getElementById("pkgChips");
+    const genPkgsBtn = document.getElementById("genPkgsBtn");
 
-    chipsSide.addEventListener("click", (e)=>{
+    let pkgInterests = new Set(["nature"]);
+
+    pkgChips?.addEventListener("click", (e)=>{
       const c = e.target.closest(".chip");
       if(!c) return;
-      const key = c.dataset.chip;
+      const k = c.dataset.i;
       if(c.classList.contains("on")){
-        c.classList.remove("on"); sideTags.delete(key);
+        c.classList.remove("on");
+        pkgInterests.delete(k);
       }else{
-        c.classList.add("on"); sideTags.add(key);
+        c.classList.add("on");
+        pkgInterests.add(k);
       }
-      renderPlaces();
+      if(pkgInterests.size === 0){
+        const first = pkgChips.querySelector(".chip[data-i='nature']");
+        first.classList.add("on");
+        pkgInterests.add("nature");
+      }
     });
 
-    qMain.addEventListener("input", renderPlaces);
-    qSide.addEventListener("input", renderPlaces);
-    districtSel.addEventListener("change", renderPlaces);
+    genPkgsBtn?.addEventListener("click", ()=>{
+      if(!places || places.length === 0){
+        toast("Database not loaded yet.");
+        return;
+      }
+      const days = Math.max(1, Math.min(10, +pkgDaysEl.value || 3));
+      const people = Math.max(1, +pkgPeopleEl.value || 2);
+      const budget = Math.max(0, +pkgBudgetEl.value || 0);
 
-    document.getElementById("resetBtn").addEventListener("click", ()=>{
-      qMain.value=""; qSide.value="";
-      districtSel.value="all";
-      tab="all";
-      sideTags = new Set();
-      [...chipsSide.querySelectorAll(".chip")].forEach(x=>x.classList.remove("on"));
-      [...nav.querySelectorAll("button")].forEach(b=>b.classList.remove("active"));
-      nav.querySelector('button[data-tab="all"]').classList.add("active");
-      renderPlaces();
-      toast("Reset done");
+      const startText = (pkgStartEl.value || "").trim();
+      const start = startText.toLowerCase() === "gps" ? getOrigin() : (startText || "Shimla, Himachal Pradesh");
+
+      const interests = [...pkgInterests];
+
+      const pkgs = generatePackages({ start, days, people, budget, interests }, places);
+      renderPackages(pkgs);
+      toast("Packages generated ✅");
     });
+
+    function scorePlaceForInterests(p, interests){
+      const tags = p.tags || [];
+      let s = 0;
+      for(const i of interests){
+        if(tags.includes(i)) s += 4;
+      }
+      if((p.segmentType||"").toLowerCase() === "destination") s += 1;
+      if((p.locationType||"").toLowerCase().includes("lake")) s += 1;
+      if((p.locationType||"").toLowerCase().includes("trek")) s += 2;
+      return s;
+    }
+
+    function generatePackages(inputs, allPlaces){
+      const { days, interests } = inputs;
+      const candidates = allPlaces.filter(p => Number.isFinite(p.lat) && Number.isFinite(p.lng));
+      const scored = candidates
+        .map(p => ({ p, s: scorePlaceForInterests(p, interests) }))
+        .filter(x => x.s > 0)
+        .sort((a,b)=> b.s - a.s);
+
+      const fallback = candidates
+        .filter(p => (p.segmentType||"").toLowerCase() !== "hotel")
+        .slice(0, 120)
+        .map(p => ({p, s: 1}));
+
+      const pool = scored.length >= 25 ? scored : [...scored, ...fallback];
+
+      const stopsLight = Math.max(3, Math.min(12, days * 2));
+      const stopsHeavy = Math.max(4, Math.min(16, days * 3));
+
+      const pickUnique = (n, mustTag=null) => {
+        const out = [];
+        const seenDistrict = new Set();
+        for(const x of pool){
+          if(out.length >= n) break;
+          const p = x.p;
+          if(mustTag && !(p.tags||[]).includes(mustTag)) continue;
+          if(seenDistrict.has(p.district) && Math.random() < 0.65) continue;
+          seenDistrict.add(p.district);
+          out.push(p);
+        }
+        if(out.length < n){
+          for(const x of pool){
+            if(out.length >= n) break;
+            const p = x.p;
+            if(out.find(z=>z.id===p.id)) continue;
+            out.push(p);
+          }
+        }
+        return out.slice(0,n);
+      };
+
+      const pkg1Stops = pickUnique(stopsLight);
+      const pkg2Stops = pickUnique(stopsLight, interests[0] || null);
+      const pkg3Stops = pickUnique(stopsHeavy);
+
+      return [
+        buildPkg("Balanced Explorer", "Balanced sights + comfort pace", inputs, pkg1Stops),
+        buildPkg("Interest Focused", `More ${interests.join(" + ")} places`, inputs, pkg2Stops),
+        buildPkg("Packed Adventure", "Maximum coverage for energetic trips", inputs, pkg3Stops),
+      ];
+    }
+
+    function buildPkg(title, subtitle, inputs, stops){
+      const days = Math.max(1, +inputs.days || 1);
+      const buckets = Array.from({length: days}, ()=>[]);
+      stops.forEach((p, idx)=> buckets[idx % days].push(p));
+
+      const estKm = Math.round(stops.length * 35);
+      const rate = Math.max(0, +document.getElementById("ratePerKm").value || 12);
+      const travelCost = estKm * rate;
+
+      const stay = Math.max(0, +document.getElementById("stay").value || 0);
+      const food = Math.max(0, +document.getElementById("food").value || 0);
+      const people = Math.max(1, +inputs.people || 1);
+      const total = (days * (stay + food) * people) + travelCost;
+
+      return { title, subtitle, buckets, estKm, travelCost, total, stops };
+    }
+
+    function renderPackages(pkgs){
+      packageResults.classList.remove("hidden");
+      packageResults.innerHTML = `<h4>Recommended Packages (2–3)</h4>`;
+
+      pkgs.slice(0,3).forEach((pkg, idx)=>{
+        const daysHtml = pkg.buckets.map((arr, i)=>{
+          const list = arr.length ? arr.map(x=>escapeHtml(x.name)).join(" • ") : "Rest / Buffer day";
+          return `<div class="day"><b>Day ${i+1}</b><p>${list}</p></div>`;
+        }).join("");
+
+        const box = document.createElement("div");
+        box.className = "pkgCard";
+        box.innerHTML = `
+          <h5>${idx+1}. ${escapeHtml(pkg.title)}</h5>
+          <p>${escapeHtml(pkg.subtitle)}</p>
+          <div class="pkgRow">
+            <span class="pkgPill">Est. Distance: ~${pkg.estKm} km</span>
+            <span class="pkgPill">Travel: ₹ ${pkg.travelCost.toLocaleString("en-IN")}</span>
+            <span class="pkgPill">Total: ₹ ${pkg.total.toLocaleString("en-IN")}</span>
+          </div>
+          <div class="pkgActions">
+            <button class="tiny" data-act="show">Show these places</button>
+            <button class="tiny" data-act="route">Build route</button>
+          </div>
+          <div class="itinerary" style="margin-top:10px;">
+            <h4>Day-wise Plan</h4>
+            ${daysHtml}
+          </div>
+        `;
+
+        const btnShow = box.querySelector("[data-act='show']");
+        const btnRoute = box.querySelector("[data-act='route']");
+
+        btnShow.addEventListener("click", ()=>{
+          renderPlaces(pkg.stops);
+          toast("Showing package places ✅");
+        });
+
+        btnRoute.addEventListener("click", ()=>{
+          route = pkg.stops.slice(0, 12).map(p=>({id:p.id,name:p.name,district:p.district,segmentType:p.segmentType,lat:p.lat,lng:p.lng}));
+          saveRouteToLS();
+          renderRoute();
+          scheduleRoute(true);
+          toast("Route built from package ✅");
+        });
+
+        packageResults.appendChild(box);
+      });
+    }
+
+    /***********************
+     * BOOT
+     ***********************/
+    async function boot(){
+      updateSplash();
+      await loadPlacesFromFirebase();
+      dbLoaded = true;
+      updateSplash();
+
+      // default empty grid (no mass listing)
+      clearGrid();
+      updateTotalOnly();
+      renderRoute();
+      scheduleRoute(false);
+
+      maybeHideSplash();
+    }
+
+    (async ()=>{
+      try{
+        await loadGoogleMaps();
+        initMap();
+        mapsLoaded = true;
+      }catch(e){
+        console.warn(e);
+        showMapsFixMessage();
+        mapsLoaded = true; // allow app without maps
+      }
+      await boot();
+    })();
 
     /***********************
      * Toast
@@ -1356,93 +1556,6 @@
       clearTimeout(toastTimer);
       toastTimer = setTimeout(()=>{ t.style.opacity="0"; }, 1800);
     }
-
-    /***********************
-     * BOOT
-     ***********************/
-    async function boot(){
-      splashText.textContent = "Loading: Database… • Maps…";
-      updateSplash();
-
-      // Load DB first (so it always works even if maps fails)
-      await loadPlacesFromFirebase();
-      dbLoaded = true;
-      updateSplash();
-
-      renderPlaces();
-      renderRoute();
-      updateTotalOnly();
-
-      // If mode already selected earlier, keep UI hidden until splash done
-      // (splash hides only when db+maps ready)
-    }
-
-    (async ()=>{
-      try{
-        await loadGoogleMaps();
-        initMap();
-        mapsLoaded = true;
-      }catch(e){
-        console.warn(e);
-        showMapsFixMessage();
-        // still allow app without maps
-        mapsLoaded = true;
-      }
-
-      await boot();
-      maybeHideSplash();
-    })();
-
-    // In case DB finishes later
-    const dbWatch = setInterval(()=>{
-      if(dbLoaded && mapsLoaded){
-        clearInterval(dbWatch);
-        maybeHideSplash();
-      }
-    }, 150);
-
-    // If user refreshed and has saved mode, show it after splash
-    // Onboarding click also sets mode.
-
-    // If saved mode exists, mode will be set after splash hides:
-    window.addEventListener("keydown", (e)=>{
-      if(e.key === "Escape" && !splash.classList.contains("hidden")){
-        // keep splash during load; no action
-      }
-    });
   </script>
-
-  <script>
-    // Non-module quick init after module loads: handle saved mode after splash hides
-    // (module will call maybeHideSplash)
-    window.addEventListener("DOMContentLoaded", ()=>{
-      // Nothing needed here
-    });
-  </script>
-
-  <script>
-    // Mode init helper accessible in module scope?
-    // No-op (kept for safety)
-  </script>
-
-  <script type="module">
-    // Small bridge: if mode saved and splash hidden after module finishes,
-    // set mode once DOM is ready.
-    const MODE_LS_KEY = "hp_mode_v1";
-    const trySet = () => {
-      const splash = document.getElementById("splash");
-      const appWrap = document.getElementById("appWrap");
-      const onboarding = document.getElementById("onboarding");
-      if(!splash || !appWrap || !onboarding) return;
-
-      // When splash is hidden, module has already loaded and functions exist
-      if(splash.classList.contains("hidden")){
-        // If onboarding still visible but mode exists, user must pick or keep saved choice.
-        // (Main module already handles this.)
-      }
-    };
-    setTimeout(trySet, 500);
-  </script>
-
 </body>
 </html>
