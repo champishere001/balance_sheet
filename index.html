@@ -112,63 +112,77 @@
       padding:18px 16px 44px;
     }
 
-    /* HERO */
-    .hero{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:14px;
-      align-items:stretch;
-      margin-top:10px;
-    }
-    .heroCard{
-      border-radius: var(--r2);
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.78);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      position:relative;
-      min-height: 360px;
-    }
-    .heroCard::before{
-      content:"";
-      position:absolute; inset:0;
-      background:
-        linear-gradient(120deg, rgba(255,255,255,.92), rgba(255,255,255,.55)),
-        url("./Kee_monastery.jpg") center/cover no-repeat;
-      filter: saturate(1.05);
-      transform: scale(1.02);
-    }
-    .heroCard::after{
-      content:"";
-      position:absolute; inset:0;
-      background:
-        radial-gradient(700px 420px at 20% 30%, rgba(37,99,235,.14), transparent 62%),
-        radial-gradient(700px 420px at 78% 30%, rgba(124,58,237,.12), transparent 62%);
-      mix-blend-mode: multiply;
-      opacity:.85;
-      pointer-events:none;
-    }
-    .heroInner{
-      position:relative;
-      padding:22px;
-      display:flex;
-      flex-direction:column;
-      height:100%;
-      justify-content:space-between;
-      gap:14px;
-    }
-    .heroTitle{
-      margin:0;
-      font-size: clamp(26px, 3vw, 46px);
-      letter-spacing:-.6px;
-      line-height:1.05;
-    }
-    .heroSub{
-      margin:10px 0 0;
-      color: rgba(11,18,32,.70);
-      font-weight:700;
-      max-width: 70ch;
-    }
+  /* HERO LAYOUT */
+.hero{
+  display:grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap:14px;
+  align-items:stretch;
+  margin-top:10px;
+}
+
+@media(max-width:900px){
+  .hero{ grid-template-columns:1fr; }
+}
+
+/* HERO CARD */
+.heroCard{
+  border-radius: var(--r2);
+  border:1px solid var(--stroke);
+  background: rgba(255,255,255,.85);
+  box-shadow: var(--shadow);
+  overflow:hidden;
+  position:relative;
+  min-height:360px;
+}
+
+/* remove old pseudo bg */
+.heroCard::before{ content:none; }
+
+/* soft glow overlay */
+.heroCard::after{
+  content:"";
+  position:absolute; inset:0;
+  background:
+    radial-gradient(700px 420px at 20% 30%, rgba(37,99,235,.12), transparent 62%),
+    radial-gradient(700px 420px at 78% 30%, rgba(124,58,237,.10), transparent 62%);
+  mix-blend-mode:multiply;
+  opacity:.85;
+  pointer-events:none;
+}
+
+/* HERO INNER WITH IMAGE */
+.heroInner{
+  position:relative;
+  padding:26px;
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  justify-content:space-between;
+  gap:16px;
+
+  background:
+    linear-gradient(120deg, rgba(255,255,255,.92), rgba(255,255,255,.60)),
+    url("./Kee_monastery.jpg") center/cover no-repeat;
+
+  border-radius: var(--r2);
+}
+
+/* TEXT */
+.heroTitle{
+  margin:0;
+  font-size: clamp(28px,3.2vw,48px);
+  letter-spacing:-.6px;
+  line-height:1.05;
+}
+
+.heroSub{
+  margin:10px 0 0;
+  color: rgba(11,18,32,.70);
+  font-weight:700;
+  max-width:70ch;
+}
+
 
     .chips{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
     .chip{
