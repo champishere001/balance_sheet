@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — New Index (Ultra Pro)</title>
+  <title>Himachal Explorer — Ultra Pro</title>
 
-  <!-- Leaflet (Map without API key) -->
+  <!-- Leaflet (no API key) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -15,8 +15,7 @@
 
   <style>
     :root{
-      --bg0:#05070d;
-      --bg1:#070b15;
+      --bg0:#05070d; --bg1:#070b15;
       --card:rgba(255,255,255,.06);
       --card2:rgba(255,255,255,.08);
       --stroke:rgba(255,255,255,.12);
@@ -24,77 +23,72 @@
       --muted:rgba(255,255,255,.68);
       --shadow: 0 24px 80px rgba(0,0,0,.55);
       --r:18px; --r2:26px;
-      --a:#67e8f9; /* cyan */
-      --b:#a78bfa; /* violet */
-      --c:#34d399; /* green */
-      --d:#ffcf5a; /* amber */
-      --e:#ff6b6b; /* red */
+      --a:#67e8f9; --b:#a78bfa; --c:#34d399; --d:#ffcf5a; --e:#ff6b6b;
       --max:1200px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-  body{
-  margin:0; color:var(--text);
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-  overflow-x:hidden;
+    body{
+      margin:0; color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      overflow-x:hidden;
 
-  /* Full page background image */
-  background-image:
-    linear-gradient(180deg, rgba(5,7,13,.75), rgba(7,11,21,.85)),
-    url("./Kee_monastery.jpg");
-
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  /* ✅ keeps image fixed while scrolling (premium look) */
-  background-attachment: fixed;
-}
-
+      /* ✅ FULL PAGE BACKGROUND */
+      background-image:
+        linear-gradient(180deg, rgba(5,7,13,.76), rgba(7,11,21,.88)),
+        url("./Kee_monastery.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+    body::before{
+      content:"";
+      position: fixed;
+      inset: 0;
+      pointer-events:none;
+      z-index:-1;
+      background:
+        radial-gradient(1200px 700px at 12% 10%, rgba(103,232,249,.18), transparent 55%),
+        radial-gradient(1000px 700px at 82% 18%, rgba(167,139,250,.17), transparent 56%),
+        radial-gradient(1000px 700px at 52% 92%, rgba(52,211,153,.12), transparent 55%);
+      mix-blend-mode: screen;
+    }
     a{color:inherit; text-decoration:none}
-    .wrap{max-width:var(--max); margin:0 auto; padding:22px 16px 42px}
+    .wrap{max-width:var(--max); margin:0 auto; padding:22px 16px 44px}
+
+    /* TOPBAR */
     .topbar{
-      position:sticky; top:0; z-index:20;
+      position:sticky; top:0; z-index:40;
       backdrop-filter: blur(12px);
-      background: linear-gradient(180deg, rgba(5,7,13,.78), rgba(5,7,13,.35));
+      background: linear-gradient(180deg, rgba(5,7,13,.82), rgba(5,7,13,.40));
       border-bottom:1px solid rgba(255,255,255,.08);
     }
     .topbar .inner{
       max-width:var(--max);
       margin:0 auto;
       padding:14px 16px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
     }
-    .brand{
-      display:flex; align-items:center; gap:10px; min-width:220px;
-    }
+    .brand{display:flex; align-items:center; gap:10px; min-width:220px}
     .logo{
       width:40px; height:40px; border-radius:14px;
       background:
         radial-gradient(12px 12px at 28% 28%, rgba(255,255,255,.24), transparent 55%),
         linear-gradient(135deg, rgba(103,232,249,.95), rgba(167,139,250,.92));
-      box-shadow: 0 12px 30px rgba(103,232,249,.08);
+      box-shadow: 0 12px 30px rgba(103,232,249,.10);
       border:1px solid rgba(255,255,255,.18);
     }
-    .brand h1{
-      font-size:14px; margin:0; letter-spacing:.2px;
-      line-height:1.1;
-    }
-    .brand small{display:block; color:var(--muted); font-weight:500; margin-top:2px}
-    .nav{
-      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
-      justify-content:flex-end;
-    }
+    .brand h1{font-size:14px; margin:0; letter-spacing:.2px; line-height:1.1}
+    .brand small{display:block; color:var(--muted); font-weight:600; margin-top:2px}
+    .nav{display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end}
     .pill{
       display:inline-flex; align-items:center; gap:8px;
       padding:10px 12px; border-radius:999px;
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.12);
       transition:.2s ease;
-      font-weight:700; font-size:12px;
+      font-weight:800; font-size:12px;
     }
     .pill:hover{transform: translateY(-1px); background:rgba(255,255,255,.08)}
     .pill .dot{
@@ -109,21 +103,19 @@
       background: linear-gradient(135deg, rgba(103,232,249,.18), rgba(167,139,250,.14));
       border:1px solid rgba(255,255,255,.14);
       box-shadow: 0 18px 50px rgba(0,0,0,.35);
-      font-weight:800; font-size:12px;
+      font-weight:900; font-size:12px;
       transition:.18s ease;
       display:inline-flex; align-items:center; gap:10px;
+      white-space:nowrap;
     }
     .btn:hover{transform: translateY(-1px)}
-    .btn.ghost{
-      background:rgba(255,255,255,.06);
-      box-shadow:none;
-    }
+    .btn.ghost{background:rgba(255,255,255,.06); box-shadow:none}
 
     /* HERO */
     .hero{
       margin-top:16px;
       display:grid;
-      grid-template-columns: 1.25fr .75fr;
+      grid-template-columns: 1.22fr .78fr;
       gap:14px;
       align-items:stretch;
     }
@@ -133,29 +125,25 @@
       border-radius: var(--r2);
       border:1px solid rgba(255,255,255,.12);
       box-shadow: var(--shadow);
-      min-height: 360px;
-      background:
-        linear-gradient(120deg, rgba(0,0,0,.55), rgba(0,0,0,.10)),
-        url("Kee_monastery.jpg") center/cover no-repeat;
+      min-height: 370px;
+
+      /* Rotating hero backgrounds */
+      background-image:
+        linear-gradient(120deg, rgba(0,0,0,.60), rgba(0,0,0,.10)),
+        var(--heroUrl, url("./Kee_monastery.jpg"));
+      background-position:center;
+      background-size:cover;
+      background-repeat:no-repeat;
     }
-    .heroMain{
-  position: relative;
-  overflow: hidden;
-  border-radius: var(--r2, 26px);
-  border: 1px solid rgba(255,255,255,.12);
-  box-shadow: var(--shadow, 0 24px 80px rgba(0,0,0,.55));
-  min-height: 360px;
-
-  /* ✅ easier to debug + GitHub-pages friendly */
-  background-image:
-    linear-gradient(120deg, rgba(0,0,0,.55), rgba(0,0,0,.10)),
-    url("./images/Kee_monastery.jpg");   /* change path as per your folder */
-
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
+    .heroMain::after{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(700px 420px at 20% 35%, rgba(103,232,249,.14), transparent 62%),
+        radial-gradient(700px 420px at 78% 30%, rgba(167,139,250,.16), transparent 62%);
+      pointer-events:none;
+      mix-blend-mode: screen;
+    }
     .heroInner{
       position:relative;
       padding:22px;
@@ -167,25 +155,23 @@
     }
     .heroTitle{
       margin:0;
-      font-size: clamp(24px, 3vw, 40px);
+      font-size: clamp(24px, 3vw, 42px);
       letter-spacing:-.4px;
       line-height:1.05;
     }
     .heroSub{
       margin:10px 0 0 0;
-      color:rgba(255,255,255,.80);
+      color:rgba(255,255,255,.82);
       max-width:64ch;
-      font-weight:600;
+      font-weight:650;
     }
-    .heroChips{
-      display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;
-    }
+    .heroChips{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
     .chip{
       padding:9px 11px;
       border-radius:999px;
       background: rgba(0,0,0,.28);
       border:1px solid rgba(255,255,255,.16);
-      font-size:12px; font-weight:800;
+      font-size:12px; font-weight:900;
       color:rgba(255,255,255,.88);
     }
     .chip i{
@@ -203,12 +189,10 @@
       display:grid;
       grid-template-columns: 1fr 170px 170px 160px;
       gap:10px;
-      align-items:center;
+      align-items:end;
     }
-    .field{
-      display:flex; flex-direction:column; gap:6px;
-    }
-    label{font-size:11px; color:var(--muted); font-weight:800; letter-spacing:.25px}
+    .field{display:flex; flex-direction:column; gap:6px}
+    label{font-size:11px; color:var(--muted); font-weight:900; letter-spacing:.25px}
     .input, .select{
       width:100%;
       padding:12px 12px;
@@ -217,20 +201,48 @@
       background: rgba(255,255,255,.06);
       color:var(--text);
       outline:none;
-      font-weight:700;
+      font-weight:800;
     }
     .input::placeholder{color:rgba(255,255,255,.45)}
     .select{cursor:pointer}
-    .heroActions{
-      display:flex; gap:10px; flex-wrap:wrap;
+    .heroActions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+
+    /* Sticky Search Bar (appears when scrolling) */
+    .stickySearch{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      top:66px;
+      width:min(var(--max), calc(100% - 32px));
+      z-index:45;
+      display:none;
+    }
+    .stickyCard{
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(10,12,20,.66);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 18px 80px rgba(0,0,0,.55);
+      padding:10px;
+    }
+    .stickyRow{
+      display:grid;
+      grid-template-columns: 1fr 170px 170px 160px 150px;
+      gap:10px;
+      align-items:center;
+    }
+    .miniBtn{
+      height:42px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: linear-gradient(135deg, rgba(103,232,249,.18), rgba(167,139,250,.14));
+      color:var(--text);
+      font-weight:900;
+      cursor:pointer;
     }
 
     /* Right panel */
-    .heroSide{
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-    }
+    .heroSide{display:flex; flex-direction:column; gap:14px}
     .panel{
       background: rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.12);
@@ -245,7 +257,7 @@
       background: linear-gradient(180deg, rgba(255,255,255,.06), transparent);
     }
     .panelHead h3{margin:0; font-size:13px}
-    .panelHead small{color:var(--muted); font-weight:700}
+    .panelHead small{color:var(--muted); font-weight:800}
     .stats{
       display:grid;
       grid-template-columns: 1fr 1fr;
@@ -260,20 +272,9 @@
       min-height:72px;
     }
     .stat b{display:block; font-size:18px}
-    .stat span{color:var(--muted); font-weight:700; font-size:12px}
-    .spark{
-      margin-top:10px;
-      height:8px;
-      border-radius:999px;
-      background: rgba(255,255,255,.10);
-      overflow:hidden;
-    }
-    .spark > i{
-      display:block; height:100%;
-      width:55%;
-      background: linear-gradient(90deg, rgba(103,232,249,.95), rgba(167,139,250,.95));
-      border-radius:999px;
-    }
+    .stat span{color:var(--muted); font-weight:800; font-size:12px}
+    .spark{margin-top:10px; height:8px; border-radius:999px; background: rgba(255,255,255,.10); overflow:hidden}
+    .spark > i{display:block; height:100%; width:55%; background: linear-gradient(90deg, rgba(103,232,249,.95), rgba(167,139,250,.95)); border-radius:999px}
     .quickLinks{
       padding:14px;
       display:grid;
@@ -290,28 +291,16 @@
     }
     .qcard:hover{transform: translateY(-1px); background: rgba(255,255,255,.07)}
     .qcard b{display:block; font-size:12px}
-    .qcard p{margin:6px 0 0; color:var(--muted); font-weight:650; font-size:12px; line-height:1.35}
+    .qcard p{margin:6px 0 0; color:var(--muted); font-weight:700; font-size:12px; line-height:1.35}
 
     /* Sections */
-    .section{
-      margin-top:18px;
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:14px;
-    }
-    .sectionTitle{
-      display:flex; align-items:flex-end; justify-content:space-between; gap:12px;
-      margin:8px 0 0;
-    }
+    .section{margin-top:18px; display:grid; grid-template-columns: 1fr; gap:14px}
+    .sectionTitle{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin:8px 0 0}
     .sectionTitle h2{margin:0; font-size:16px}
-    .sectionTitle p{margin:0; color:var(--muted); font-weight:700; font-size:12px}
+    .sectionTitle p{margin:0; color:var(--muted); font-weight:800; font-size:12px}
 
     /* District grid */
-    .districts{
-      display:grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap:10px;
-    }
+    .districts{display:grid; grid-template-columns: repeat(6, 1fr); gap:10px}
     .dItem{
       position:relative;
       border-radius:18px;
@@ -321,7 +310,7 @@
       cursor:pointer;
       overflow:hidden;
       transition:.18s ease;
-      min-height:86px;
+      min-height:92px;
     }
     .dItem:hover{transform: translateY(-2px); background: rgba(255,255,255,.08)}
     .dItem::after{
@@ -333,38 +322,32 @@
       pointer-events:none;
     }
     .dItem b{display:block; font-size:13px}
-    .dMeta{
-      margin-top:8px;
-      display:flex; gap:8px; flex-wrap:wrap;
-    }
+    .dSub2{margin-top:6px; color:rgba(255,255,255,.74); font-weight:750; font-size:12px; line-height:1.25}
+    .dMeta{margin-top:8px; display:flex; gap:8px; flex-wrap:wrap}
     .tag{
-      font-size:11px; font-weight:800;
+      font-size:11px; font-weight:900;
       padding:6px 9px;
       border-radius:999px;
       background: rgba(0,0,0,.18);
       border:1px solid rgba(255,255,255,.12);
-      color:rgba(255,255,255,.80);
+      color:rgba(255,255,255,.82);
     }
 
     /* Results + Map */
     .grid2{
       display:grid;
-      grid-template-columns: .95fr 1.05fr;
+      grid-template-columns: .78fr 1.22fr; /* ✅ Map bigger */
       gap:14px;
       align-items:stretch;
     }
-    .results{
-      min-height:420px;
-      display:flex;
-      flex-direction:column;
-    }
+    .results{min-height:440px; display:flex; flex-direction:column}
     .list{
       padding:14px;
       display:grid;
       grid-template-columns: 1fr;
       gap:10px;
       overflow:auto;
-      max-height: 520px;
+      max-height: 560px;
     }
     .place{
       display:grid;
@@ -381,30 +364,41 @@
     .thumb{
       width:92px; height:72px;
       border-radius:16px;
-      background:
-        linear-gradient(135deg, rgba(103,232,249,.12), rgba(167,139,250,.10));
+      background: linear-gradient(135deg, rgba(103,232,249,.12), rgba(167,139,250,.10));
       border:1px solid rgba(255,255,255,.12);
       overflow:hidden;
       position:relative;
     }
     .thumb img{width:100%; height:100%; object-fit:cover; display:block}
     .pTitle{margin:0; font-size:13px}
-    .pSub{margin:6px 0 0; color:var(--muted); font-weight:700; font-size:12px; line-height:1.35}
+    .pSub{margin:6px 0 0; color:var(--muted); font-weight:750; font-size:12px; line-height:1.35}
     .pBadges{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap}
     .badge{
-      font-size:11px; font-weight:850;
+      font-size:11px; font-weight:950;
       padding:6px 9px;
       border-radius:999px;
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.18);
     }
-    .mapBox{min-height:420px}
+    .mapBox{min-height:440px}
     #map{
       width:100%; height:100%;
       border-radius: var(--r2);
       border:1px solid rgba(255,255,255,.12);
       overflow:hidden;
       box-shadow: var(--shadow);
+    }
+    /* marker pulse */
+    .pulseDot{
+      width:12px; height:12px; border-radius:50%;
+      background: rgba(103,232,249,.95);
+      box-shadow: 0 0 0 0 rgba(103,232,249,.45);
+      animation: pulse 1.7s infinite;
+    }
+    @keyframes pulse{
+      0%{ box-shadow:0 0 0 0 rgba(103,232,249,.45) }
+      70%{ box-shadow:0 0 0 16px rgba(103,232,249,0) }
+      100%{ box-shadow:0 0 0 0 rgba(103,232,249,0) }
     }
 
     /* Drawer */
@@ -415,7 +409,7 @@
       align-items:flex-end;
       justify-content:center;
       padding:14px;
-      z-index:50;
+      z-index:60;
     }
     .drawer{
       width:min(980px, 100%);
@@ -426,8 +420,7 @@
       box-shadow: 0 30px 120px rgba(0,0,0,.65);
       overflow:hidden;
       max-height: 86vh;
-      display:flex;
-      flex-direction:column;
+      display:flex; flex-direction:column;
     }
     .drawerTop{
       padding:14px 14px 12px;
@@ -442,11 +435,7 @@
       gap:14px;
       overflow:auto;
     }
-    .gallery{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:10px;
-    }
+    .gallery{display:grid; grid-template-columns: repeat(3, 1fr); gap:10px}
     .gImg{
       border-radius:18px;
       border:1px solid rgba(255,255,255,.12);
@@ -460,15 +449,10 @@
       border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.06);
       padding:12px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+      display:flex; flex-direction:column; gap:10px;
     }
-    .infoCard p{margin:0; color:var(--muted); font-weight:650; line-height:1.45; font-size:12px}
-    .row{
-      display:flex; gap:10px; flex-wrap:wrap;
-      align-items:center;
-    }
+    .infoCard p{margin:0; color:var(--muted); font-weight:700; line-height:1.45; font-size:12px}
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
     .row .btn{flex:1}
     .closeX{
       width:42px; height:42px; border-radius:14px;
@@ -487,7 +471,7 @@
       align-items:center;
       justify-content:center;
       padding:14px;
-      z-index:60;
+      z-index:70;
     }
     .modal{
       width:min(820px, 100%);
@@ -517,19 +501,15 @@
       border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.06);
       color:var(--text);
-      font-weight:650;
+      font-weight:700;
       line-height:1.45;
       font-size:12.5px;
       white-space:pre-wrap;
     }
-    .msg.me{
-      margin-left:auto;
-      background: linear-gradient(135deg, rgba(103,232,249,.14), rgba(167,139,250,.12));
-    }
+    .msg.me{margin-left:auto; background: linear-gradient(135deg, rgba(103,232,249,.14), rgba(167,139,250,.12))}
     .composer{
       padding:12px 14px 14px;
-      display:flex;
-      gap:10px;
+      display:flex; gap:10px;
       border-top:1px solid rgba(255,255,255,.10);
     }
     .composer input{
@@ -540,25 +520,27 @@
       background: rgba(255,255,255,.06);
       color:var(--text);
       outline:none;
-      font-weight:700;
+      font-weight:800;
     }
 
     /* Mobile */
     @media (max-width: 980px){
       .hero{grid-template-columns: 1fr}
-      .finder{grid-template-columns: 1fr 1fr; }
+      .finder{grid-template-columns: 1fr 1fr}
       .finder .field:nth-child(1){grid-column:1 / -1}
-      .finder .field:nth-child(4){grid-column:1 / -1}
       .grid2{grid-template-columns: 1fr}
       .districts{grid-template-columns: repeat(3, 1fr)}
       .drawerBody{grid-template-columns: 1fr}
       .gallery{grid-template-columns: repeat(2, 1fr)}
       .brand{min-width:auto}
+      .stickyRow{grid-template-columns: 1fr 1fr; }
+      .stickyRow > *:nth-child(1){grid-column:1/-1}
+      .stickyRow > *:nth-child(5){grid-column:1/-1}
     }
     @media (max-width: 520px){
       .districts{grid-template-columns: repeat(2, 1fr)}
       .heroMain{min-height: 340px}
-      .list{max-height: 420px}
+      .list{max-height: 440px}
       .gallery{grid-template-columns: 1fr}
     }
   </style>
@@ -585,16 +567,42 @@
     </div>
   </div>
 
+  <!-- Sticky Search -->
+  <div class="stickySearch" id="stickySearch" aria-label="Sticky search">
+    <div class="stickyCard">
+      <div class="stickyRow">
+        <input class="input" id="sq" placeholder="Search: Triund, Manimahesh, Kufri, Chandratal..." />
+        <select class="select" id="sd"><option value="all">All Districts</option></select>
+        <select class="select" id="st">
+          <option value="all">All Types</option>
+          <option value="Destination">Destination</option>
+          <option value="Temple">Temple</option>
+          <option value="Lake">Lake</option>
+          <option value="Trek">Trek</option>
+          <option value="Hotel">Hotel</option>
+          <option value="Activity">Activity</option>
+        </select>
+        <select class="select" id="sdays">
+          <option value="0">Any Days</option>
+          <option value="1">1–2</option>
+          <option value="3">3–4</option>
+          <option value="5">5–7</option>
+          <option value="8">8–12</option>
+        </select>
+        <button class="miniBtn" id="sapply">Explore</button>
+      </div>
+    </div>
+  </div>
+
   <div class="wrap">
     <!-- HERO -->
     <section class="hero" aria-label="hero">
-      <div class="heroMain">
+      <div class="heroMain" id="heroMain">
         <div class="heroInner">
           <div>
             <h2 class="heroTitle">Make your Himachal trip feel effortless.</h2>
             <p class="heroSub">
-              Search places by <b>district</b>, <b>type</b> and <b>days</b>.
-              Get a clean map view + quick packages. No messy layout.
+              Search places by <b>district</b>, <b>type</b> and <b>days</b>. Get a clean map view + quick packages.
             </p>
 
             <div class="heroChips">
@@ -603,7 +611,7 @@
               <div class="chip"><i>Pro</i>AI trip suggestions</div>
             </div>
 
-            <div class="finder" style="margin-top:16px">
+            <div class="finder" id="finderAnchor" style="margin-top:16px">
               <div class="field">
                 <label>Search (place / temple / lake / trek)</label>
                 <input class="input" id="q" placeholder="Example: Triund, Manimahesh, Kufri, Chandratal..."/>
@@ -641,7 +649,7 @@
               </div>
             </div>
 
-            <div class="heroActions" style="margin-top:12px">
+            <div class="heroActions">
               <button class="btn" id="apply">Explore Now</button>
               <button class="btn ghost" id="nearby">Show Nearby</button>
               <button class="btn ghost" id="reset">Reset</button>
@@ -649,10 +657,10 @@
           </div>
 
           <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap">
-            <small style="color:rgba(255,255,255,.75); font-weight:700">
+            <small style="color:rgba(255,255,255,.75); font-weight:800">
               Tip: Click a district card → you’ll instantly get filtered places.
             </small>
-            <small id="status" style="color:rgba(255,255,255,.75); font-weight:800">Loading places…</small>
+            <small id="status" style="color:rgba(255,255,255,.75); font-weight:900">Loading places…</small>
           </div>
         </div>
       </div>
@@ -665,23 +673,19 @@
           </div>
           <div class="stats">
             <div class="stat">
-              <b id="statPlaces">—</b>
-              <span>Total places</span>
+              <b id="statPlaces">—</b><span>Total places</span>
               <div class="spark"><i style="width:72%"></i></div>
             </div>
             <div class="stat">
-              <b id="statDistricts">—</b>
-              <span>Districts covered</span>
+              <b id="statDistricts">—</b><span>Districts covered</span>
               <div class="spark"><i style="width:56%"></i></div>
             </div>
             <div class="stat">
-              <b id="statTypes">—</b>
-              <span>Types</span>
+              <b id="statTypes">—</b><span>Types</span>
               <div class="spark"><i style="width:62%"></i></div>
             </div>
             <div class="stat">
-              <b id="statShown">—</b>
-              <span>Shown now</span>
+              <b id="statShown">—</b><span>Shown now</span>
               <div class="spark"><i style="width:44%"></i></div>
             </div>
           </div>
@@ -693,18 +697,10 @@
             <small>one tap</small>
           </div>
           <div class="quickLinks">
-            <div class="qcard" data-quick="Trek">
-              <b>Top Treks</b><p>Triund, Prashar, Hampta…</p>
-            </div>
-            <div class="qcard" data-quick="Lake">
-              <b>Famous Lakes</b><p>Chandratal, Rewalsar…</p>
-            </div>
-            <div class="qcard" data-quick="Temple">
-              <b>Temples</b><p>Jwalamukhi, Bijli Mahadev…</p>
-            </div>
-            <div class="qcard" data-quick="Destination">
-              <b>Must Visit</b><p>Manali, Shimla, Spiti…</p>
-            </div>
+            <div class="qcard" data-quick="Trek"><b>Top Treks</b><p>Triund, Prashar, Hampta…</p></div>
+            <div class="qcard" data-quick="Lake"><b>Famous Lakes</b><p>Chandratal, Rewalsar…</p></div>
+            <div class="qcard" data-quick="Temple"><b>Temples</b><p>Jwalamukhi, Bijli Mahadev…</p></div>
+            <div class="qcard" data-quick="Destination"><b>Must Visit</b><p>Manali, Shimla, Spiti…</p></div>
           </div>
         </div>
       </div>
@@ -721,7 +717,6 @@
           <button class="btn ghost" id="showAllDistricts">Show All</button>
         </div>
       </div>
-
       <div class="districts" id="districtGrid"></div>
     </section>
 
@@ -759,12 +754,14 @@
       <div class="drawerTop">
         <div>
           <h3 id="dTitle">Place</h3>
-          <small id="dSub" style="color:var(--muted); font-weight:750">—</small>
+          <small id="dSub" style="color:var(--muted); font-weight:850">—</small>
         </div>
         <button class="closeX" id="closeDrawer">✕</button>
       </div>
+
       <div class="drawerBody">
         <div class="gallery" id="gallery"></div>
+
         <div class="infoCard">
           <p id="dDesc">—</p>
           <div class="row" style="gap:8px">
@@ -777,17 +774,29 @@
             <button class="btn ghost" id="pkgBtn">3–4 Packages</button>
             <button class="btn ghost" id="fullBtn">Open Full Page</button>
           </div>
+
           <div class="panel" style="margin-top:6px">
             <div class="panelHead">
               <h3>Suggested mini-plan</h3>
               <small>auto</small>
             </div>
             <div style="padding:12px">
-              <p id="miniPlan" style="margin:0; color:var(--muted); font-weight:650; line-height:1.45; font-size:12px">
+              <p id="miniPlan" style="margin:0; color:var(--muted); font-weight:750; line-height:1.45; font-size:12px">
                 —
               </p>
             </div>
           </div>
+
+          <div class="panel" style="margin-top:10px">
+            <div class="panelHead">
+              <h3>Distance info</h3>
+              <small>auto</small>
+            </div>
+            <div style="padding:12px">
+              <p id="distInfo" style="margin:0; color:var(--muted); font-weight:750; line-height:1.45; font-size:12px">—</p>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -799,7 +808,7 @@
       <div class="modalHead">
         <div>
           <h3>AI Trip Planner (On-page)</h3>
-          <small style="color:var(--muted); font-weight:750">Ask days, people, interests → get suggestions</small>
+          <small style="color:var(--muted); font-weight:850">Ask days, people, interests → get suggestions</small>
         </div>
         <button class="closeX" id="closeAI">✕</button>
       </div>
@@ -813,7 +822,7 @@
 
 <script>
 /* =========================
-   1) DATA SOURCE (Firebase RTDB)
+   1) FIREBASE CONFIG
    ========================= */
 const firebaseConfig = {
   apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
@@ -825,22 +834,19 @@ const firebaseConfig = {
   appId: "1:182348503564:web:480085405b09177245ac29",
   measurementId: "G-MGTDBCG896"
 };
-
-// ✅ Your real path from screenshot:
 const dbPath = "locations";
 
 /* =========================
-   2) UI + MAP SETUP
+   2) HELPERS
    ========================= */
 const $ = (id)=>document.getElementById(id);
-
 let allPlaces = [];
 let shownPlaces = [];
-let markers = [];
 let map, markerLayer;
+let currentPlace = null;
+let myPos = null;
 
 function safeText(v){ return (v ?? "").toString().trim(); }
-
 function escapeHtml(str){
   return safeText(str)
     .replaceAll("&","&amp;")
@@ -848,20 +854,6 @@ function escapeHtml(str){
     .replaceAll(">","&gt;")
     .replaceAll('"',"&quot;");
 }
-
-function parseLatLngFromMapUrl(url){
-  url = safeText(url);
-  if(!url) return {lat:null,lng:null};
-
-  const q = url.match(/q=([-0-9.]+)\s*,\s*([-0-9.]+)/i);
-  if(q) return {lat:Number(q[1])||null, lng:Number(q[2])||null};
-
-  const at = url.match(/@([-0-9.]+)\s*,\s*([-0-9.]+)/i);
-  if(at) return {lat:Number(at[1])||null, lng:Number(at[2])||null};
-
-  return {lat:null,lng:null};
-}
-
 function normalizeType(t){
   t = safeText(t);
   if(!t) return "Destination";
@@ -874,14 +866,21 @@ function normalizeType(t){
   if(low.includes("dest") || low.includes("place")) return "Destination";
   return t[0].toUpperCase() + t.slice(1);
 }
-
+function parseLatLngFromMapUrl(url){
+  url = safeText(url);
+  if(!url) return {lat:null,lng:null};
+  const q = url.match(/q=([-0-9.]+)\s*,\s*([-0-9.]+)/i);
+  if(q) return {lat:Number(q[1])||null, lng:Number(q[2])||null};
+  const at = url.match(/@([-0-9.]+)\s*,\s*([-0-9.]+)/i);
+  if(at) return {lat:Number(at[1])||null, lng:Number(at[2])||null};
+  return {lat:null,lng:null};
+}
 function placeImages(p){
   if(Array.isArray(p.images) && p.images.length) return p.images.filter(Boolean);
   if(p.image) return [p.image];
   return [];
 }
-
-function typeColor(type){
+function typeBg(type){
   switch(type){
     case "Trek": return "rgba(103,232,249,.22)";
     case "Lake": return "rgba(52,211,153,.20)";
@@ -891,29 +890,63 @@ function typeColor(type){
     default: return "rgba(255,255,255,.10)";
   }
 }
+function haversine(lat1, lon1, lat2, lon2){
+  const R = 6371;
+  const toRad = (d)=> d * Math.PI/180;
+  const dLat = toRad(lat2-lat1);
+  const dLon = toRad(lon2-lon1);
+  const a = Math.sin(dLat/2)**2 +
+            Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(a));
+}
 
+/* =========================
+   3) HERO ROTATION (uses your repo images)
+   ========================= */
+const heroImgs = [
+  "./Kee_monastery.jpg",
+  "./201-himalaya.jpg",
+  "./Travelers.jpg",
+  "./n1.jpg",
+  "./Dark.jpg"
+];
+let heroIdx = 0;
+function setHeroBg(url){
+  const el = $("heroMain");
+  el.style.setProperty("--heroUrl", `url("${url}")`);
+}
+function rotateHero(){
+  heroIdx = (heroIdx + 1) % heroImgs.length;
+  const url = heroImgs[heroIdx];
+  // pre-load, then set
+  const img = new Image();
+  img.onload = ()=> setHeroBg(url);
+  img.onerror = ()=> {}; // ignore missing files
+  img.src = url;
+}
+
+/* =========================
+   4) MAP
+   ========================= */
 function initMap(){
   map = L.map('map', {zoomControl:true}).setView([31.9, 77.2], 7);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 18,
-    attribution: '&copy; OpenStreetMap'
+    maxZoom: 18, attribution: '&copy; OpenStreetMap'
   }).addTo(map);
   markerLayer = L.layerGroup().addTo(map);
 }
-
-function clearMarkers(){
-  markerLayer.clearLayers();
-  markers = [];
-}
-
+function clearMarkers(){ markerLayer.clearLayers(); }
 function addMarkers(list){
   clearMarkers();
+
   list.forEach((p)=>{
     if(!p.lat || !p.lng) return;
-    const m = L.marker([p.lat, p.lng]).addTo(markerLayer);
+
+    // custom pulse icon for selected markers vibe
+    const icon = L.divIcon({className:"", html:`<div class="pulseDot"></div>`, iconSize:[12,12], iconAnchor:[6,6]});
+    const m = L.marker([p.lat, p.lng], {icon}).addTo(markerLayer);
     m.bindPopup(`<b>${escapeHtml(p.name)}</b><br/><span style="opacity:.8">${escapeHtml(p.district)} • ${escapeHtml(p.type)}</span>`);
     m.on('click', ()=> openDrawer(p));
-    markers.push(m);
   });
 
   const pts = list.filter(p=>p.lat && p.lng).map(p=>[p.lat, p.lng]);
@@ -922,20 +955,17 @@ function addMarkers(list){
 }
 
 /* =========================
-   3) LOAD DATA (Firebase)
+   5) LOAD DATA
    ========================= */
 async function loadPlaces(){
   try{
     if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-
     const snap = await db.ref(dbPath).once("value");
     const val = snap.val() || {};
 
-    // ✅ Your DB: /locations/{firebase_id}/{fields...}
-    const arr = Object.entries(val).map(([id, o])=>{
+    allPlaces = Object.entries(val).map(([id, o])=>{
       o = o || {};
-
       const name = safeText(o["Location Name"] || o.name || o.title || id);
       const district = safeText(o["District"] || o.district || "Unknown");
       const segment = safeText(o["Segment Type"] || o.segment || "Destination");
@@ -946,40 +976,15 @@ async function loadPlaces(){
       const how = safeText(o["How to Reach"] || o.how || "");
       const bestTime = safeText(o["Best Time to Visit"] || o.bestTime || "");
       const distFromHQ = safeText(o["Dist from HQ"] || o.distFromHQ || "");
-      const task = safeText(o["Task for Location"] || o.task || "");
       const mapUrl = safeText(o["Map"] || o.map || "");
-
       const {lat, lng} = parseLatLngFromMapUrl(mapUrl);
-
-      // Optional (if you add later):
       const images = Array.isArray(o.images) ? o.images : (o.image ? [o.image] : []);
-
-      // For your UI "type" filter we use segment (Destination/Temple/Lake/Trek etc.)
       const type = normalizeType(segment);
-
-      // brief: prioritize Overview, then Short, then Key Features
       const brief = overview || short || keyFeatures || "Explore this place in Himachal Pradesh.";
 
-      return {
-        id,
-        name,
-        district,
-        type,
-        segment,
-        locationType,
-        brief,
-        how,
-        bestTime,
-        distFromHQ,
-        task,
-        mapUrl,
-        lat,
-        lng,
-        images
-      };
+      return { id, name, district, type, segment, locationType, brief, how, bestTime, distFromHQ, mapUrl, lat, lng, images };
     }).filter(p=>p.name);
 
-    allPlaces = arr;
   }catch(e){
     console.error("Firebase load failed:", e);
     allPlaces = [];
@@ -987,37 +992,45 @@ async function loadPlaces(){
 }
 
 /* =========================
-   4) BUILD DISTRICT GRID + FILTERS
+   6) DISTRICTS + FILTERS
    ========================= */
+function buildDistrictDropdown(){
+  const distSel = $("district");
+  const sd = $("sd");
+  const districts = [...new Set(allPlaces.map(p=>p.district).filter(Boolean))].sort();
+  const options = `<option value="all">All</option>` + districts.map(d=>`<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join("");
+  distSel.innerHTML = options;
+  sd.innerHTML = `<option value="all">All Districts</option>` + districts.map(d=>`<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join("");
+}
+
 function getDistrictStats(){
   const by = new Map();
   allPlaces.forEach(p=>{
     const d = p.district || "Unknown";
-    if(!by.has(d)) by.set(d, {count:0, types:new Set()});
+    if(!by.has(d)) by.set(d, {count:0, types:new Set(), samples:[]});
     const obj = by.get(d);
-    obj.count += 1;
+    obj.count++;
     obj.types.add(p.type);
+    if(obj.samples.length < 3) obj.samples.push(p.name);
   });
   return by;
-}
-
-function buildDistrictDropdown(){
-  const distSel = $("district");
-  const districts = [...new Set(allPlaces.map(p=>p.district).filter(Boolean))].sort();
-  distSel.innerHTML = `<option value="all">All</option>` + districts.map(d=>`<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join("");
 }
 
 function buildDistrictGrid(){
   const grid = $("districtGrid");
   const by = getDistrictStats();
   const districts = [...by.keys()].sort((a,b)=>a.localeCompare(b));
+
   grid.innerHTML = districts.map(d=>{
     const info = by.get(d);
     const types = [...info.types].slice(0,3);
     const tags = [`${info.count} places`, ...types].slice(0,3);
+    const preview = info.samples.slice(0,3).join(" • ");
+
     return `
       <div class="dItem" data-d="${escapeHtml(d)}">
         <b>${escapeHtml(d)}</b>
+        <div class="dSub2">📍 ${escapeHtml(preview || "Explore highlights")}</div>
         <div class="dMeta">
           ${tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join("")}
         </div>
@@ -1027,7 +1040,9 @@ function buildDistrictGrid(){
 
   grid.querySelectorAll(".dItem").forEach(el=>{
     el.addEventListener("click", ()=>{
-      $("district").value = el.getAttribute("data-d");
+      const d = el.getAttribute("data-d");
+      $("district").value = d;
+      $("sd").value = d;
       applyFilters(true);
       location.hash = "#explore";
     });
@@ -1035,6 +1050,7 @@ function buildDistrictGrid(){
 
   $("showAllDistricts").onclick = ()=>{
     $("district").value = "all";
+    $("sd").value = "all";
     applyFilters(true);
     location.hash = "#explore";
   };
@@ -1055,7 +1071,7 @@ function applyFilters(scrollToList=false){
       if(!hay.includes(q)) return false;
     }
 
-    // lightweight day preference (same as your original)
+    // simple day preference
     if(days){
       if(days <= 2 && p.type === "Trek") return false;
     }
@@ -1081,7 +1097,6 @@ function updateActiveFilters(){
   if(t !== "all") parts.push(t);
   if(days) parts.push(`${days}+ days`);
   if(q) parts.push(`“${q}”`);
-
   $("activeFilters").textContent = parts.length ? parts.join(" • ") : "No filters";
 }
 
@@ -1096,12 +1111,12 @@ function updateStats(){
 }
 
 /* =========================
-   5) RENDER LIST
+   7) LIST RENDER
    ========================= */
 function renderList(list){
   const box = $("list");
   if(!list.length){
-    box.innerHTML = `<div style="padding:14px; color:rgba(255,255,255,.7); font-weight:750">
+    box.innerHTML = `<div style="padding:14px; color:rgba(255,255,255,.75); font-weight:850">
       No results. Try changing district/type or search.
     </div>`;
     return;
@@ -1110,9 +1125,11 @@ function renderList(list){
   box.innerHTML = list.map((p, idx)=>{
     const imgs = placeImages(p);
     const thumb = imgs[0] || "";
-    const badgeBg = typeColor(p.type);
+    const badgeBg = typeBg(p.type);
     const brief = safeText(p.brief) || "Explore this place in Himachal Pradesh.";
     const meta = `${safeText(p.district)} • ${safeText(p.type)}${p.locationType ? " • " + p.locationType : ""}`;
+
+    const km = (myPos && p.lat && p.lng) ? haversine(myPos.lat, myPos.lng, p.lat, p.lng) : null;
 
     return `
       <div class="place" data-i="${idx}">
@@ -1126,7 +1143,8 @@ function renderList(list){
             <span class="badge" style="background:${badgeBg}">${escapeHtml(p.type)}</span>
             <span class="badge">${escapeHtml(p.district)}</span>
             ${p.distFromHQ ? `<span class="badge">${escapeHtml(p.distFromHQ)}</span>` : ``}
-            ${p.lat && p.lng ? `<span class="badge">📍 ${p.lat.toFixed(3)}, ${p.lng.toFixed(3)}</span>` : ``}
+            ${km ? `<span class="badge">📍 ${km.toFixed(1)} km from you</span>` : ``}
+            ${p.lat && p.lng ? `<span class="badge">(${p.lat.toFixed(3)}, ${p.lng.toFixed(3)})</span>` : ``}
           </div>
         </div>
       </div>
@@ -1142,9 +1160,16 @@ function renderList(list){
 }
 
 /* =========================
-   6) DRAWER (PLACE DETAILS)
+   8) DRAWER
    ========================= */
-let currentPlace = null;
+function buildMiniPlan(p){
+  const type = p.type;
+  if(type === "Trek") return "Start early • carry water + warm layer • avoid late return • add one viewpoint + one café stop.";
+  if(type === "Lake") return "Sunrise/sunset best • buffer for road • pair with nearby temple/meadow • keep light snacks.";
+  if(type === "Temple") return "Morning darshan + local market • add 1 nature spot nearby • keep relaxed pace.";
+  if(type === "Hotel") return "Use as base • add 2 nearby places + 1 sunset point • evening walk + local dinner.";
+  return "1 main attraction + 2 nearby spots + food stop • keep time for photos + slow travel.";
+}
 
 function openDrawer(p){
   currentPlace = p;
@@ -1154,9 +1179,18 @@ function openDrawer(p){
   $("dType").textContent = p.type;
   $("dDistrict").textContent = p.district;
   $("dHow").textContent = (safeText(p.how) ? `Reach: ${p.how}` : "Reach: —");
+  $("miniPlan").textContent = buildMiniPlan(p);
 
-  // Gallery max 5
-  const imgs = placeImages(p).slice(0,5);
+  // distance box
+  let distLine = "Turn on Nearby to see distance from you.";
+  if(myPos && p.lat && p.lng){
+    const km = haversine(myPos.lat, myPos.lng, p.lat, p.lng);
+    distLine = `Approx distance from you: ${km.toFixed(1)} km.`;
+  }
+  $("distInfo").textContent = distLine;
+
+  // Gallery max 6
+  const imgs = placeImages(p).slice(0,6);
   const g = $("gallery");
   if(imgs.length){
     g.innerHTML = imgs.map(u=>`
@@ -1164,12 +1198,11 @@ function openDrawer(p){
     `).join("");
   }else{
     g.innerHTML = `
-      <div class="gImg" style="display:flex; align-items:center; justify-content:center; padding:14px; color:rgba(255,255,255,.7); font-weight:750">
+      <div class="gImg" style="display:flex; align-items:center; justify-content:center; padding:14px; color:rgba(255,255,255,.75); font-weight:850">
         No images yet (add images[] in Firebase)
       </div>`;
   }
 
-  $("miniPlan").textContent = buildMiniPlan(p);
   $("drawerWrap").style.display = "flex";
 }
 
@@ -1177,20 +1210,8 @@ function closeDrawer(){
   $("drawerWrap").style.display = "none";
   currentPlace = null;
 }
-
-function buildMiniPlan(p){
-  const type = p.type;
-  if(type === "Trek") return "Suggested: start early, carry water + warm layer, plan return before sunset. Add one nearby viewpoint & one cafe stop.";
-  if(type === "Lake") return "Suggested: visit sunrise/sunset for best photos. Keep buffer for road conditions. Pair with a nearby temple or meadow.";
-  if(type === "Temple") return "Suggested: morning darshan + explore local market/food. Add 1 nature spot nearby to balance the day.";
-  if(type === "Hotel") return "Suggested: use this as base. Add 2 nearby places + 1 sunset point. Keep a relaxed evening walk & local dinner.";
-  return "Suggested: 1 main attraction + 2 nearby spots + local food stop. Keep time for photos + slow travel.";
-}
-
 $("closeDrawer").onclick = closeDrawer;
-$("drawerWrap").addEventListener("click", (e)=>{
-  if(e.target === $("drawerWrap")) closeDrawer();
-});
+$("drawerWrap").addEventListener("click", (e)=>{ if(e.target === $("drawerWrap")) closeDrawer(); });
 
 $("routeBtn").onclick = ()=>{
   if(!currentPlace || !currentPlace.lat || !currentPlace.lng) return;
@@ -1203,25 +1224,23 @@ $("pkgBtn").onclick = ()=>{
   if(!currentPlace) return;
   const base = currentPlace.name;
   const district = currentPlace.district;
-
   const pack = [
     `Package A: ${district} Highlights (2D/1N) — ${base} + 2 nearby spots + local food.`,
     `Package B: Nature & Photos (3D/2N) — ${base} + scenic points + relaxed pace.`,
     `Package C: Family Comfort (4D/3N) — easy routes + viewpoints + market + cafés.`,
     `Package D: Adventure Mix (5D/4N) — trek/activities + lake + sunset point.`
   ].slice(0,4);
-
   alert(pack.join("\n\n"));
 };
 
-// ✅ NEW: open full place page
 $("fullBtn").onclick = ()=>{
   if(!currentPlace) return;
+  // expects place.html in same repo (you already have it)
   window.location.href = `place.html?id=${encodeURIComponent(currentPlace.id)}`;
 };
 
 /* =========================
-   7) NEARBY (GPS)
+   9) NEARBY (GPS)
    ========================= */
 $("nearby").onclick = ()=>{
   if(!navigator.geolocation){
@@ -1230,15 +1249,18 @@ $("nearby").onclick = ()=>{
   }
   $("status").textContent = "Getting your location…";
   navigator.geolocation.getCurrentPosition((pos)=>{
-    const me = {lat: pos.coords.latitude, lng: pos.coords.longitude};
-    map.setView([me.lat, me.lng], 10);
-    L.circleMarker([me.lat, me.lng], {
-      radius:8, weight:2, fillOpacity:.25
-    }).addTo(markerLayer).bindPopup("You are here").openPopup();
+    myPos = {lat: pos.coords.latitude, lng: pos.coords.longitude};
 
+    map.setView([myPos.lat, myPos.lng], 10);
+    L.circleMarker([myPos.lat, myPos.lng], { radius:8, weight:2, fillOpacity:.25 })
+      .addTo(markerLayer)
+      .bindPopup("You are here")
+      .openPopup();
+
+    // show closest 20
     const withDist = allPlaces
       .filter(p=>p.lat && p.lng)
-      .map(p=>({p, km: haversine(me.lat, me.lng, p.lat, p.lng)}))
+      .map(p=>({p, km: haversine(myPos.lat, myPos.lng, p.lat, p.lng)}))
       .sort((a,b)=>a.km-b.km)
       .slice(0, 20)
       .map(x=>({...x.p, _km:x.km}));
@@ -1256,20 +1278,10 @@ $("nearby").onclick = ()=>{
   }, {enableHighAccuracy:true, timeout:12000});
 };
 
-function haversine(lat1, lon1, lat2, lon2){
-  const R = 6371;
-  const toRad = (d)=> d * Math.PI/180;
-  const dLat = toRad(lat2-lat1);
-  const dLon = toRad(lon2-lon1);
-  const a = Math.sin(dLat/2)**2 +
-            Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
-  return 2*R*Math.asin(Math.sqrt(a));
-}
-
 /* =========================
-   8) AI MODAL (On-page logic)
+   10) AI MODAL (on-page logic)
    ========================= */
-function openAI(){ $("modalWrap").style.display="flex"; }
+function openAI(){ $("modalWrap").style.display="flex"; seedChat(); }
 function closeAI(){ $("modalWrap").style.display="none"; }
 
 $("openAI").onclick = openAI;
@@ -1283,7 +1295,11 @@ function pushMsg(text, who="bot"){
   $("chat").appendChild(div);
   $("chat").scrollTop = $("chat").scrollHeight;
 }
-
+function seedChat(){
+  $("chat").innerHTML = "";
+  pushMsg("Tell me: days + people + interests (trek/lake/temple/snow/relax) + starting place/district.", "bot");
+  pushMsg("Example: 4 days, couple, nature + temples, starting Shimla", "bot");
+}
 function aiSuggest(userText){
   const t = userText.toLowerCase();
 
@@ -1316,27 +1332,16 @@ function aiSuggest(userText){
     return {p, s};
   }).sort((a,b)=>b.s-a.s);
 
-  const pick = scored
-    .filter(x=>x.s>0)
-    .slice(0, Math.min(6, days? Math.max(3, Math.min(6, Math.ceil(days*1.2))) : 5))
-    .map(x=>x.p);
-
-  const fallback = allPlaces.slice(0,5);
+  const cap = days ? Math.max(3, Math.min(8, Math.ceil(days*1.3))) : 6;
+  const pick = scored.filter(x=>x.s>0).slice(0, cap).map(x=>x.p);
+  const fallback = allPlaces.slice(0,6);
 
   const list = (pick.length ? pick : fallback)
     .map((p,i)=>`${i+1}. ${p.name} (${p.district} • ${p.type})`)
     .join("\n");
 
-  const packs = [
-    "Package 1 (Comfort): 2–3 core places + easy driving + good food stops",
-    "Package 2 (Balanced): 1 trek + 1 lake/temple + 1 market/day cafe time",
-    "Package 3 (Adventure): trek/activity heavy + sunrise/sunset points",
-    "Package 4 (Family): short transfers + viewpoints + local experiences"
-  ];
-
-  return `Based on your message, here are good picks:\n${list}\n\nSuggested package styles:\n- ${packs.slice(0,4).join("\n- ")}`;
+  return `Based on your message, here are good picks:\n${list}\n\nWant me to filter them on the page? Tell me district + type.`;
 }
-
 $("sendChat").onclick = ()=>{
   const v = safeText($("chatInput").value);
   if(!v) return;
@@ -1344,47 +1349,88 @@ $("sendChat").onclick = ()=>{
   $("chatInput").value = "";
   pushMsg(aiSuggest(v), "bot");
 };
-
-function seedChat(){
-  $("chat").innerHTML = "";
-  pushMsg("Tell me: days + people + interests (trek/lake/temple/snow/relax) + starting place/district.", "bot");
-  pushMsg("Example: 4 days, couple, nature + temples, starting Shimla", "bot");
-}
+$("chatInput").addEventListener("keydown",(e)=>{ if(e.key==="Enter") $("sendChat").click(); });
 
 /* =========================
-   9) ACTIONS
+   11) ACTIONS
    ========================= */
 $("apply").onclick = ()=>{ applyFilters(true); location.hash="#explore"; };
 $("reset").onclick = ()=>{
-  $("q").value = "";
-  $("district").value = "all";
-  $("type").value = "all";
-  $("days").value = "0";
+  $("q").value = ""; $("district").value="all"; $("type").value="all"; $("days").value="0";
+  $("sq").value = ""; $("sd").value="all"; $("st").value="all"; $("sdays").value="0";
   applyFilters(true);
 };
-
 document.querySelectorAll(".qcard").forEach(el=>{
   el.addEventListener("click", ()=>{
-    $("type").value = el.getAttribute("data-quick");
+    const v = el.getAttribute("data-quick");
+    $("type").value = v;
+    $("st").value = v;
     applyFilters(true);
     location.hash="#explore";
   });
 });
-
 $("openAdmin").onclick = ()=>{
-  alert("Admin page is optional. If you want, I’ll create /admin.html for adding places + uploading images + pushing to Firebase.");
+  // if you already have admin.html, open it; else show message
+  const go = confirm("Open admin page (admin.html)?");
+  if(go) window.location.href = "admin.html";
 };
 
+/* Sticky search sync */
+function syncStickyFromMain(){
+  $("sq").value = $("q").value;
+  $("sd").value = $("district").value;
+  $("st").value = $("type").value;
+  $("sdays").value = $("days").value;
+}
+function syncMainFromSticky(){
+  $("q").value = $("sq").value;
+  $("district").value = $("sd").value;
+  $("type").value = $("st").value;
+  $("days").value = $("sdays").value;
+}
+["q","district","type","days"].forEach(id=>{
+  $(id).addEventListener("input", syncStickyFromMain);
+  $(id).addEventListener("change", syncStickyFromMain);
+});
+["sq","sd","st","sdays"].forEach(id=>{
+  $(id).addEventListener("input", syncMainFromSticky);
+  $(id).addEventListener("change", syncMainFromSticky);
+});
+$("sapply").onclick = ()=>{ syncMainFromSticky(); applyFilters(true); location.hash="#explore"; };
+
 /* =========================
-   10) INIT
+   12) STICKY SEARCH VISIBILITY
+   ========================= */
+function initStickyObserver(){
+  const anchor = $("finderAnchor");
+  const sticky = $("stickySearch");
+  const obs = new IntersectionObserver((entries)=>{
+    const e = entries[0];
+    if(!e.isIntersecting){
+      sticky.style.display = "block";
+      syncStickyFromMain();
+    }else{
+      sticky.style.display = "none";
+    }
+  }, {threshold: 0.15});
+  obs.observe(anchor);
+}
+
+/* =========================
+   13) INIT
    ========================= */
 (async function init(){
   initMap();
+
+  // set initial hero
+  setHeroBg(heroImgs[0]);
+  setInterval(rotateHero, 6500);
+
   await loadPlaces();
 
   $("status").textContent = allPlaces.length
     ? `Loaded ${allPlaces.length} places from Firebase /${dbPath}`
-    : "No data loaded. Check RTDB Rules + path.";
+    : "No data loaded. Check RTDB rules + path.";
 
   buildDistrictDropdown();
   buildDistrictGrid();
@@ -1392,6 +1438,7 @@ $("openAdmin").onclick = ()=>{
   shownPlaces = allPlaces.slice();
   applyFilters(false);
 
+  initStickyObserver();
   seedChat();
 })();
 </script>
