@@ -33,16 +33,24 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{
-      margin:0; color:var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      background:
-        radial-gradient(1200px 700px at 12% 10%, rgba(103,232,249,.18), transparent 55%),
-        radial-gradient(1000px 700px at 82% 18%, rgba(167,139,250,.17), transparent 56%),
-        radial-gradient(1000px 700px at 52% 92%, rgba(52,211,153,.12), transparent 55%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
-      overflow-x:hidden;
-    }
+  body{
+  margin:0; color:var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  overflow-x:hidden;
+
+  /* Full page background image */
+  background-image:
+    linear-gradient(180deg, rgba(5,7,13,.75), rgba(7,11,21,.85)),
+    url("./Kee_monastery.jpg");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* ✅ keeps image fixed while scrolling (premium look) */
+  background-attachment: fixed;
+}
+
     a{color:inherit; text-decoration:none}
     .wrap{max-width:var(--max); margin:0 auto; padding:22px 16px 42px}
     .topbar{
