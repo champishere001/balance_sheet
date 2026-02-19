@@ -15,9 +15,7 @@
 
   <style>
     :root{
-      /* Light premium palette */
-      --bg0:#f7f9ff;
-      --bg1:#ffffff;
+      --bg0:#f7f9ff; --bg1:#ffffff;
       --card:rgba(255,255,255,.86);
       --card2:rgba(255,255,255,.72);
       --stroke:rgba(10,18,40,.10);
@@ -26,10 +24,7 @@
       --shadow: 0 20px 55px rgba(15,23,42,.10);
       --shadow2: 0 14px 28px rgba(15,23,42,.08);
       --r:18px; --r2:26px;
-      --a:#2563eb; /* blue */
-      --b:#7c3aed; /* violet */
-      --c:#16a34a; /* green */
-      --d:#f59e0b; /* amber */
+      --a:#2563eb; --b:#7c3aed; --c:#16a34a; --d:#f59e0b;
       --max:1400px;
     }
     *{box-sizing:border-box}
@@ -46,7 +41,6 @@
     }
     a{color:inherit; text-decoration:none}
 
-    /* Topbar */
     .topbar{
       position:sticky; top:0; z-index:50;
       background: rgba(255,255,255,.70);
@@ -113,7 +107,6 @@
       padding:18px 16px 44px;
     }
 
-    /* HERO LAYOUT */
     .hero{
       display:grid;
       grid-template-columns: 1.2fr .8fr;
@@ -123,7 +116,6 @@
     }
     @media(max-width:900px){ .hero{ grid-template-columns:1fr; } }
 
-    /* HERO CARD */
     .heroCard{
       border-radius: var(--r2);
       border:1px solid var(--stroke);
@@ -210,7 +202,6 @@
     .input::placeholder{color:rgba(11,18,32,.45)}
     .heroActions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
 
-    /* Right: Trip Builder */
     .panel{
       border-radius: var(--r2);
       border:1px solid var(--stroke);
@@ -257,7 +248,6 @@
       font-size:12px;
     }
 
-    /* Packages UI */
     .pkgCard{
       border:1px solid var(--stroke);
       border-radius:18px;
@@ -303,7 +293,6 @@
     .pkgTile b{display:block; font-size:12px}
     .pkgTile span{display:block; font-size:11px; color:rgba(11,18,32,.68); font-weight:800}
 
-    /* Sections */
     .section{margin-top:18px; display:grid; grid-template-columns:1fr; gap:14px}
     .sectionTitle{
       display:flex; align-items:flex-end; justify-content:space-between; gap:12px;
@@ -312,31 +301,23 @@
     .sectionTitle h2{margin:0; font-size:16px}
     .sectionTitle p{margin:0; color:var(--muted); font-weight:800; font-size:12px}
 
-    /* Explore layout: sidebar + list + (map hidden) */
     .exploreGrid{
       display:grid;
       grid-template-columns: 320px 1fr;
       gap:14px;
       align-items:start;
     }
-    @media(max-width:980px){
-      .exploreGrid{grid-template-columns:1fr}
-    }
+    @media(max-width:980px){ .exploreGrid{grid-template-columns:1fr} }
 
-    /* Sidebar */
     .sidebar{
-      position:sticky;
-      top:78px;
+      position:sticky; top:78px;
       max-height: calc(100vh - 96px);
       overflow:auto;
     }
     .sideHead{
       padding:14px;
       border-bottom:1px solid var(--stroke);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
       background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.75));
     }
     .sideHead h3{margin:0; font-size:13px}
@@ -351,8 +332,7 @@
     .segTop{
       padding:12px 12px;
       display:flex; align-items:center; justify-content:space-between; gap:10px;
-      cursor:pointer;
-      user-select:none;
+      cursor:pointer; user-select:none;
     }
     .segTop b{font-size:12px}
     .segTop span{font-size:12px; color:rgba(11,18,32,.62); font-weight:850}
@@ -379,7 +359,6 @@
     .segBtn small{font-size:11px; opacity:.75}
     .segBtn:hover{transform: translateY(-1px)}
 
-    /* List */
     .results{min-height:460px; display:flex; flex-direction:column}
     .list{
       padding:14px;
@@ -420,7 +399,6 @@
       background: rgba(255,255,255,.86);
     }
 
-    /* Map panel stays hidden until click */
     .mapPanel{display:none; margin-top:14px}
     #map{
       width:100%;
@@ -431,7 +409,6 @@
       overflow:hidden;
     }
 
-    /* Mobile sidebar drawer */
     .sideMobileWrap{
       position:fixed; inset:0;
       background: rgba(15,23,42,.35);
@@ -465,7 +442,6 @@
       box-shadow: var(--shadow2);
     }
 
-    /* AI Modal */
     .modalWrap{
       position:fixed; inset:0;
       background: rgba(15,23,42,.35);
@@ -553,7 +529,7 @@
         </div>
         <div>
           <h1>Himachal Explorer</h1>
-          <small>Light premium • fast search • type sidebar</small>
+          <small>Light premium • route-aware list • rigorous packages</small>
         </div>
       </div>
 
@@ -568,19 +544,19 @@
 
   <div class="wrap">
     <section class="hero">
-      <!-- LEFT -->
       <div class="heroCard">
         <div class="heroInner">
           <div>
             <h2 class="heroTitle">Plan Himachal like a pro — without clutter.</h2>
             <p class="heroSub">
               Search + filters + <b>Type sidebar</b>. Map loads only when you click <b>Show Map</b>.
+              <br/><span style="opacity:.85">List cards show <b>How to Reach</b> summary first (route-aware).</span>
             </p>
 
             <div class="chips">
               <div class="chip"><i>Clean</i>Light premium theme</div>
-              <div class="chip"><i>Smart</i>Type-based sidebar</div>
-              <div class="chip"><i>Fast</i>Map on demand</div>
+              <div class="chip"><i>Smart</i>Route-coherent packages</div>
+              <div class="chip"><i>Strict</i>Cost breakdown visible</div>
             </div>
 
             <div class="finder">
@@ -625,6 +601,7 @@
               <button class="btn" id="apply">Explore Now</button>
               <button class="btn ghost" id="nearby">Nearby</button>
               <button class="btn ghost" id="reset">Reset</button>
+              <button class="btn ghost" id="showMapBtn">Show Map</button>
             </div>
           </div>
 
@@ -637,14 +614,13 @@
         </div>
       </div>
 
-      <!-- RIGHT -->
       <div class="panel">
         <div class="panelHead">
           <h3>Trip Builder</h3>
-          <small>live packages</small>
+          <small>route + rigorous cost</small>
         </div>
         <div class="builder">
-          <div class="primaryLine" id="builderLine">Pick your preferences → we’ll suggest 3–4 packages.</div>
+          <div class="primaryLine" id="builderLine">Pick your preferences → we’ll suggest 3–4 route-coherent packages.</div>
 
           <div class="bRow">
             <div class="field">
@@ -680,7 +656,7 @@
           </div>
 
           <div class="helper" id="packagesBox">
-            Click <b>Get Packages</b> — you’ll see 3–4 options here (rates + tiles).
+            Click <b>Get Packages</b> — you’ll see 3–4 <b>route-coherent</b> options here with a <b>strict cost breakdown</b>.
           </div>
 
           <div style="display:flex; gap:10px; flex-wrap:wrap">
@@ -705,7 +681,6 @@
       </div>
 
       <div class="exploreGrid">
-        <!-- LEFT SIDEBAR (Desktop) -->
         <div class="panel sidebar">
           <div class="sideHead">
             <h3>Types</h3>
@@ -714,7 +689,6 @@
           <div class="segBox" id="segBox"></div>
         </div>
 
-        <!-- MIDDLE: LIST + MAP -->
         <div>
           <div class="panel results">
             <div class="panelHead">
@@ -738,7 +712,6 @@
     </section>
   </div>
 
-  <!-- MOBILE SIDEBAR DRAWER -->
   <div class="sideMobileWrap" id="sideMobileWrap" aria-modal="true" role="dialog">
     <div class="sideMobile">
       <div class="sideMobileTop">
@@ -752,7 +725,6 @@
     </div>
   </div>
 
-  <!-- AI MODAL -->
   <div class="modalWrap" id="modalWrap" role="dialog" aria-modal="true">
     <div class="modal">
       <div class="modalHead">
@@ -801,12 +773,9 @@ let myPos = null;
    HELPERS
 ========================= */
 function safeText(v){ return (v ?? "").toString().trim(); }
+function safeNum(v){ const n = Number(v); return Number.isFinite(n) ? n : null; }
 function escapeHtml(str){
-  return safeText(str)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;");
+  return safeText(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
 }
 function normalizeType(t){
   t = safeText(t);
@@ -840,25 +809,10 @@ function typeBg(type){
   }
 }
 function haversine(lat1, lon1, lat2, lon2){
-  const R = 6371;
-  const toRad = (d)=> d * Math.PI/180;
-  const dLat = toRad(lat2-lat1);
-  const dLon = toRad(lon2-lon1);
-  const a = Math.sin(dLat/2)**2 +
-            Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+  const R = 6371, toRad = (d)=> d * Math.PI/180;
+  const dLat = toRad(lat2-lat1), dLon = toRad(lon2-lon1);
+  const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
   return 2*R*Math.asin(Math.sqrt(a));
-}
-function pickRate(p, people){
-  const r = p.rates || {};
-  const solo = r.solo ?? p.Rate_Solo ?? null;
-  const couple = r.couple ?? p.Rate_Couple ?? null;
-  const family = r.family ?? p.Rate_Family ?? null;
-  const group = r.group ?? p.Rate_Group ?? null;
-  if(people==="solo") return solo;
-  if(people==="couple") return couple;
-  if(people==="family") return family;
-  if(people==="group") return group;
-  return null;
 }
 function getImagesFromObj(o){
   const arr = [];
@@ -866,24 +820,29 @@ function getImagesFromObj(o){
   const p1 = safeText(o["photo 1"] || o.photo1 || o["photo1"]);
   const p2 = safeText(o["photo 2"] || o.photo2 || o["photo2"]);
   const p3 = safeText(o["photo 3"] || o.photo3 || o["photo3"]);
-  if(p1) arr.push(p1);
-  if(p2) arr.push(p2);
-  if(p3) arr.push(p3);
+  if(p1) arr.push(p1); if(p2) arr.push(p2); if(p3) arr.push(p3);
   return arr.filter(Boolean);
 }
-function bestThumb(p){
-  const imgs = (p.images || []).filter(Boolean);
-  return imgs[0] || "";
-}
-function rateLabel(people){
-  if(people==="solo") return "Solo";
-  if(people==="couple") return "Couple";
-  if(people==="family") return "Family";
-  return "Group";
-}
-function currency(n){
-  if(n==null || !Number.isFinite(Number(n))) return null;
-  return "₹" + Number(n).toLocaleString("en-IN");
+function bestThumb(p){ return ((p.images||[]).filter(Boolean)[0]) || ""; }
+function rateLabel(people){ return people==="solo"?"Solo":people==="couple"?"Couple":people==="family"?"Family":"Group"; }
+function currency(n){ if(n==null||!Number.isFinite(Number(n))) return null; return "₹" + Number(n).toLocaleString("en-IN"); }
+
+/* ✅ ROUTE SUMMARY: uses "How to Reach" deeply */
+function routeSummaryFromHow(how){
+  const t = safeText(how);
+  if(!t) return "";
+  const s = t.replace(/\s+/g," ").trim();
+
+  const picks = [];
+  if(/airport|flight/i.test(s)) picks.push("✈ Airport");
+  if(/rail|train/i.test(s)) picks.push("🚆 Rail");
+  if(/bus|volvo/i.test(s)) picks.push("🚌 Bus");
+  if(/trek|hike|trail/i.test(s)) picks.push("🥾 Trek");
+  if(/\bkm\b/i.test(s)) picks.push("📏 KM");
+  if(/\bhour|hours|hrs\b/i.test(s)) picks.push("⏱ Time");
+
+  const head = s.length > 170 ? (s.slice(0,170) + "…") : s;
+  return head + (picks.length ? (" • " + picks.join(" • ")) : "");
 }
 
 /* =========================
@@ -903,10 +862,7 @@ function ensureMap(){
   mapReady = true;
   setTimeout(()=> map.invalidateSize(), 120);
 }
-function clearMarkers(){
-  if(!mapReady) return;
-  markerLayer.clearLayers();
-}
+function clearMarkers(){ if(mapReady) markerLayer.clearLayers(); }
 function addMarkers(list){
   if(!mapReady) return;
   clearMarkers();
@@ -945,16 +901,23 @@ async function loadPlaces(){
       const brief = overview || short || keyFeatures || "Explore this place in Himachal Pradesh.";
       const images = getImagesFromObj(o);
 
-      const rates = o.rates || {
-        solo: o.Rate_Solo ?? null,
-        couple: o.Rate_Couple ?? null,
-        family: o.Rate_Family ?? null,
-        group: o.Rate_Group ?? null
-      };
-      const tdMin = o.TripDays_Min ?? null;
-      const tdMax = o.TripDays_Max ?? null;
+      // Optional cost fields (if you add in Firebase, estimator becomes very accurate)
+      const StayCost_Low = safeNum(o.StayCost_Low ?? o["StayCost_Low"]);
+      const StayCost_Mid = safeNum(o.StayCost_Mid ?? o["StayCost_Mid"]);
+      const StayCost_High = safeNum(o.StayCost_High ?? o["StayCost_High"]);
+      const FoodCost_PerPersonPerDay = safeNum(o.FoodCost_PerPersonPerDay ?? o["FoodCost_PerPersonPerDay"]);
+      const LocalTransport_PerDay = safeNum(o.LocalTransport_PerDay ?? o["LocalTransport_PerDay"]);
+      const EntryFees = safeNum(o.EntryFees ?? o["EntryFees"]);
+      const SeasonMultiplier = safeNum(o.SeasonMultiplier ?? o["SeasonMultiplier"]);
+      const AvgTravelSpeedKmph = safeNum(o.AvgTravelSpeedKmph ?? o["AvgTravelSpeedKmph"]);
 
-      return { id, name, district, type, segment, locationType, brief, how, mapUrl, lat, lng, images, rates, TripDays_Min: tdMin, TripDays_Max: tdMax };
+      return {
+        id, name, district, type, segment, locationType,
+        brief, how, mapUrl, lat, lng, images,
+        StayCost_Low, StayCost_Mid, StayCost_High,
+        FoodCost_PerPersonPerDay, LocalTransport_PerDay, EntryFees,
+        SeasonMultiplier, AvgTravelSpeedKmph
+      };
     }).filter(p=>p.name);
   }catch(e){
     console.error("Firebase load failed:", e);
@@ -981,16 +944,8 @@ async function fetchPlaceById(id){
   const images = getImagesFromObj(o);
   const type = normalizeType(segment);
   const brief = overview || short || keyFeatures || "Explore this place in Himachal Pradesh.";
-  const rates = o.rates || {
-    solo: o.Rate_Solo ?? null,
-    couple: o.Rate_Couple ?? null,
-    family: o.Rate_Family ?? null,
-    group: o.Rate_Group ?? null
-  };
-  const tdMin = o.TripDays_Min ?? null;
-  const tdMax = o.TripDays_Max ?? null;
 
-  return { id, name, district, type, segment, locationType, brief, how, mapUrl, lat, lng, images, rates, TripDays_Min: tdMin, TripDays_Max: tdMax, raw:o };
+  return { id, name, district, type, segment, locationType, brief, how, mapUrl, lat, lng, images, raw:o };
 }
 
 /* =========================
@@ -1003,9 +958,7 @@ function buildDistrictDropdown(){
 }
 function updateActiveFilters(){
   const parts = [];
-  const d = $("district").value;
-  const t = $("type").value;
-  const q = safeText($("q").value);
+  const d = $("district").value, t = $("type").value, q = safeText($("q").value);
   const days = Number($("days").value||0);
   if(d !== "all") parts.push(d);
   if(t !== "all") parts.push(t);
@@ -1035,12 +988,12 @@ function applyFilters(scrollToList=false){
   renderList(shownPlaces);
   $("count").textContent = `${shownPlaces.length} results`;
   updateActiveFilters();
-  renderTypeSidebar(); // important
+  renderTypeSidebar();
   if(scrollToList) $("list").scrollTo({top:0, behavior:"smooth"});
 }
 
 /* =========================
-   LIST RENDER
+   LIST RENDER (route-aware)
 ========================= */
 function renderList(list){
   const box = $("list");
@@ -1053,7 +1006,9 @@ function renderList(list){
 
   box.innerHTML = list.map((p, idx)=>{
     const thumb = bestThumb(p);
-    const brief = safeText(p.brief);
+    const routeLine = routeSummaryFromHow(p.how);
+    const line = routeLine || safeText(p.brief);
+
     const meta = `${safeText(p.district)} • ${safeText(p.type)}${p.locationType ? " • " + p.locationType : ""}`;
     const km = (myPos && p.lat && p.lng) ? haversine(myPos.lat, myPos.lng, p.lat, p.lng) : null;
 
@@ -1064,11 +1019,12 @@ function renderList(list){
         </div>
         <div>
           <p class="pTitle">${escapeHtml(p.name)}</p>
-          <p class="pSub">${escapeHtml(meta)} — ${escapeHtml(brief)}</p>
+          <p class="pSub">${escapeHtml(meta)} — ${escapeHtml(line)}</p>
           <div class="badges">
             <span class="badge" style="background:${typeBg(p.type)}">${escapeHtml(p.type)}</span>
             <span class="badge">${escapeHtml(p.district)}</span>
             ${km ? `<span class="badge">📍 ${km.toFixed(1)} km</span>` : ``}
+            ${routeLine ? `<span class="badge">🧭 How to reach</span>` : ``}
           </div>
         </div>
       </div>
@@ -1085,75 +1041,54 @@ function renderList(list){
     });
   });
 }
-function openPlacePage(id){
-  window.location.href = `place.html?id=${encodeURIComponent(id)}`;
-}
+function openPlacePage(id){ window.location.href = `place.html?id=${encodeURIComponent(id)}`; }
 
 /* =========================
-   TYPE SIDEBAR (FIXED)
+   TYPE SIDEBAR
 ========================= */
 const TYPE_ORDER = ["Destination","Temple","Lake","Trek","Hotel","Activity"];
-
 function typeCountsFrom(list){
   const counts = {};
-  list.forEach(p=>{
-    const t = p.type || "Destination";
-    counts[t] = (counts[t]||0) + 1;
-  });
+  list.forEach(p=>{ counts[p.type||"Destination"] = (counts[p.type||"Destination"]||0)+1; });
   return counts;
 }
-
 function renderTypeSidebar(){
   const base = shownPlaces.length ? shownPlaces : allPlaces;
   const counts = typeCountsFrom(base);
   TYPE_ORDER.forEach(t=>{ if(counts[t]==null) counts[t]=0; });
 
-  const rows = TYPE_ORDER
-    .sort((a,b)=> (counts[b]||0) - (counts[a]||0))
-    .map(t=>{
-      return `
-        <div class="segRow">
-          <div class="segTop" data-toggle-type="${escapeHtml(t)}">
-            <div>
-              <b>${escapeHtml(t)}</b>
-              <span> • ${counts[t]||0}</span>
-            </div>
-            <div class="chev" data-chev-type="${escapeHtml(t)}">▾</div>
-          </div>
-
-          <div class="segList" id="typelist-${escapeHtml(t)}">
-            <button class="segBtn" data-type-pick="${escapeHtml(t)}">
-              <span>Show all ${escapeHtml(t)}</span>
-              <small>${counts[t]||0}</small>
-            </button>
-
-            ${base.filter(p=>p.type===t).slice(0,8).map(p=>`
-              <button class="segBtn" data-open-place="${escapeHtml(p.id)}">
-                <span>${escapeHtml(p.name)}</span>
-                <small>${escapeHtml(p.district)}</small>
-              </button>
-            `).join("")}
-          </div>
+  const rows = TYPE_ORDER.slice().sort((a,b)=> (counts[b]||0) - (counts[a]||0)).map(t=>{
+    return `
+      <div class="segRow">
+        <div class="segTop" data-toggle-type="${escapeHtml(t)}">
+          <div><b>${escapeHtml(t)}</b><span> • ${counts[t]||0}</span></div>
+          <div class="chev" data-chev-type="${escapeHtml(t)}">▾</div>
         </div>
-      `;
-    }).join("");
+        <div class="segList" id="typelist-${escapeHtml(t)}">
+          <button class="segBtn" data-type-pick="${escapeHtml(t)}">
+            <span>Show all ${escapeHtml(t)}</span><small>${counts[t]||0}</small>
+          </button>
+          ${base.filter(p=>p.type===t).slice(0,8).map(p=>`
+            <button class="segBtn" data-open-place="${escapeHtml(p.id)}">
+              <span>${escapeHtml(p.name)}</span><small>${escapeHtml(p.district)}</small>
+            </button>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  }).join("");
 
-  const html =
-    rows +
-    `
+  const html = rows + `
     <div class="segRow">
       <div class="segTop" data-toggle-type="__quick__">
         <div><b>Quick</b><span> • tools</span></div>
         <div class="chev" data-chev-type="__quick__">▾</div>
       </div>
       <div class="segList" id="typelist-__quick__">
-        <button class="segBtn" data-reset-all="1">
-          <span>Show All Places</span>
-          <small>${base.length}</small>
-        </button>
+        <button class="segBtn" data-reset-all="1"><span>Show All Places</span><small>${base.length}</small></button>
       </div>
     </div>
-    `;
+  `;
 
   $("segBox").innerHTML = html;
   $("segBoxMobile").innerHTML = html;
@@ -1169,41 +1104,25 @@ function renderTypeSidebar(){
         if(chev) chev.textContent = open ? "▾" : "▴";
       });
     });
-
     root.querySelectorAll("[data-type-pick]").forEach(b=>{
       b.addEventListener("click", ()=>{
-        const t = b.getAttribute("data-type-pick");
-        $("type").value = t;
-        applyFilters(true);
-        location.hash = "#explore";
-        closeSidebarMobile();
+        $("type").value = b.getAttribute("data-type-pick");
+        applyFilters(true); location.hash = "#explore"; closeSidebarMobile();
       });
     });
-
     root.querySelectorAll("[data-open-place]").forEach(b=>{
-      b.addEventListener("click", ()=>{
-        const id = b.getAttribute("data-open-place");
-        openPlacePage(id);
-      });
+      b.addEventListener("click", ()=> openPlacePage(b.getAttribute("data-open-place")));
     });
-
     root.querySelectorAll("[data-reset-all]").forEach(b=>{
       b.addEventListener("click", ()=>{
-        $("q").value = "";
-        $("district").value = "all";
-        $("type").value = "all";
-        $("days").value = "0";
-        applyFilters(true);
-        location.hash = "#explore";
-        closeSidebarMobile();
+        $("q").value=""; $("district").value="all"; $("type").value="all"; $("days").value="0";
+        applyFilters(true); location.hash="#explore"; closeSidebarMobile();
       });
     });
   }
-
   bind($("segBox"));
   bind($("segBoxMobile"));
 }
-
 function collapseAllTypes(){
   ["segBox","segBoxMobile"].forEach(id=>{
     const root = $(id);
@@ -1239,21 +1158,73 @@ $("nearby").onclick = ()=>{
 };
 
 /* =========================
-   PACKAGES (LIVE)
+   PACKAGES (Route + Rigorous Cost)
 ========================= */
-function shuffle(arr){
-  const a = arr.slice();
-  for(let i=a.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [a[i],a[j]] = [a[j],a[i]];
-  }
-  return a;
+const COST_RULES = {
+  kmFactorHills: 1.28,
+  avgSpeedKmph: 35,
+  bufferPct: 0.10,
+  driverAllowancePerDay: 350,
+  tollsPct: 0.03,
+  perKm: { low: 12, mid: 18, high: 26 },
+  stayPerNight: { low: 1400, mid: 2600, high: 5200 },
+  foodPerPersonPerDay: { low: 450, mid: 750, high: 1200 },
+  localPerDay: { low: 350, mid: 650, high: 1100 }
+};
+function peopleCount(people){ return people==="solo"?1:people==="couple"?2:people==="family"?4:8; }
+function nightsFromDays(days){ const d=Number(days||0); if(!d) return 2; return Math.max(1,d-1); }
+function getCostFields(p){
+  return {
+    stayLow: safeNum(p.StayCost_Low),
+    stayMid: safeNum(p.StayCost_Mid),
+    stayHigh: safeNum(p.StayCost_High),
+    foodPPD: safeNum(p.FoodCost_PerPersonPerDay),
+    localPerDay: safeNum(p.LocalTransport_PerDay),
+    entryFees: safeNum(p.EntryFees),
+    seasonMult: safeNum(p.SeasonMultiplier),
+    speed: safeNum(p.AvgTravelSpeedKmph)
+  };
 }
-function pickPackageSpots(baseList, count, wantsType){
-  const list = baseList.slice();
-  const typed = list.filter(p => !wantsType || p.type === wantsType);
-  const pool = typed.length ? typed : list;
-  return shuffle(pool).slice(0, count);
+function routeKm(orderedPlaces){
+  if(!orderedPlaces || orderedPlaces.length < 2) return 0;
+  let km = 0;
+  for(let i=0;i<orderedPlaces.length-1;i++){
+    const a=orderedPlaces[i], b=orderedPlaces[i+1];
+    if(!a.lat||!a.lng||!b.lat||!b.lng) continue;
+    km += haversine(a.lat,a.lng,b.lat,b.lng) * COST_RULES.kmFactorHills;
+  }
+  return km;
+}
+function orderByNearestNeighbor(list){
+  const pts = list.filter(p=>p.lat && p.lng);
+  if(pts.length <= 2) return list.slice();
+
+  let startIdx = 0;
+  if(myPos){
+    let best = Infinity;
+    pts.forEach((p,i)=>{
+      const d = haversine(myPos.lat,myPos.lng,p.lat,p.lng);
+      if(d < best){ best=d; startIdx=i; }
+    });
+  }
+
+  const unvisited = pts.slice();
+  const route = [];
+  route.push(unvisited.splice(startIdx,1)[0]);
+
+  while(unvisited.length){
+    const last = route[route.length-1];
+    let bestJ=0, bestD=Infinity;
+    for(let j=0;j<unvisited.length;j++){
+      const p = unvisited[j];
+      const d = haversine(last.lat,last.lng,p.lat,p.lng);
+      if(d < bestD){ bestD=d; bestJ=j; }
+    }
+    route.push(unvisited.splice(bestJ,1)[0]);
+  }
+
+  const noGeo = list.filter(p=>!(p.lat && p.lng));
+  return route.concat(noGeo);
 }
 function packageTitle(interest){
   if(interest==="temples") return "Culture + Temples";
@@ -1261,21 +1232,143 @@ function packageTitle(interest){
   if(interest==="relax") return "Easy + Relax";
   return "Nature + Views";
 }
-function interestTypeHint(interest){
-  if(interest==="temples") return "Temple";
-  if(interest==="adventure") return "Trek";
-  if(interest==="relax") return "Destination";
-  return null;
+function scorePlaceForInterest(p, interest){
+  let s = 0;
+  if(interest==="temples" && p.type==="Temple") s += 8;
+  if(interest==="adventure" && p.type==="Trek") s += 8;
+  if(interest==="relax" && (p.type==="Destination" || p.type==="Hotel" || p.type==="Lake")) s += 6;
+  if(interest==="nature" && (p.type==="Lake" || p.type==="Destination" || p.type==="Trek")) s += 6;
+
+  const how = safeText(p.how).toLowerCase();
+  if(how.includes("bus") || how.includes("volvo")) s += 2;
+  if(how.includes("rail") || how.includes("train")) s += 2;
+  if(how.includes("airport") || how.includes("flight")) s += 2;
+  if(how.includes("trek") || how.includes("km") || how.includes("hours") || how.includes("hrs")) s += 2;
+
+  if(p.lat && p.lng) s += 2;
+  return s;
+}
+function buildRoutePackages(base, opts){
+  const {interest, days, district} = opts;
+
+  let pool = base.slice();
+  if(district) pool = pool.filter(p=>p.district===district);
+
+  const scored = pool.map(p=>({p, s: scorePlaceForInterest(p, interest)}))
+    .sort((a,b)=> b.s - a.s || a.p.name.localeCompare(b.p.name));
+
+  const spotsCount = days ? Math.max(3, Math.min(7, Math.ceil(days*1.2))) : 4;
+
+  let chosen = [];
+  if(!district){
+    const tally = {};
+    scored.slice(0, 30).forEach(x=>{
+      const k = x.p.district || "Unknown";
+      tally[k] = (tally[k]||0) + x.s;
+    });
+    const topDistrict = Object.entries(tally).sort((a,b)=>b[1]-a[1])[0]?.[0] || null;
+
+    if(topDistrict){
+      chosen = scored.filter(x=>x.p.district===topDistrict).slice(0, spotsCount).map(x=>x.p);
+      if(chosen.length < spotsCount){
+        const extra = scored.map(x=>x.p).filter(p=>!chosen.some(c=>c.id===p.id));
+        chosen = chosen.concat(extra.slice(0, spotsCount-chosen.length));
+      }
+    } else {
+      chosen = scored.slice(0, spotsCount).map(x=>x.p);
+    }
+  } else {
+    chosen = scored.slice(0, spotsCount).map(x=>x.p);
+  }
+
+  const route = orderByNearestNeighbor(chosen);
+
+  const A = route;
+  const B = orderByNearestNeighbor(route.slice().reverse());
+  const C = orderByNearestNeighbor(route.filter(p=>p.type!=="Trek").concat(route.filter(p=>p.type==="Trek")).slice(0, spotsCount));
+  const D = orderByNearestNeighbor(route.slice(0, Math.max(3, Math.floor(spotsCount*0.75))));
+
+  const pkgs = [
+    {code:"A", mood: packageTitle(interest), spots: A},
+    {code:"B", mood:"Scenic loop", spots: B},
+    {code:"C", mood:"Comfort-first", spots: C},
+    {code:"D", mood:"Short highlight", spots: D}
+  ];
+
+  const seen = new Set();
+  return pkgs.filter(pkg=>{
+    const sig = pkg.spots.map(s=>s.id).join("|");
+    if(seen.has(sig)) return false;
+    seen.add(sig);
+    return true;
+  }).slice(0,4);
+}
+function estimatePackageCost(pkg, opts){
+  const {people, budget, days} = opts;
+  const pax = peopleCount(people);
+  const d = Number(days||0) || 3;
+  const nights = nightsFromDays(d);
+
+  const km = routeKm(pkg.spots);
+  const perKm = COST_RULES.perKm[budget] ?? COST_RULES.perKm.mid;
+  const travel = km * perKm;
+
+  const first = pkg.spots[0] || {};
+  const cf = getCostFields(first);
+
+  const speed = (cf.speed ?? COST_RULES.avgSpeedKmph);
+  const driveHours = km ? (km / speed) : 0;
+
+  const stayRate =
+    (budget==="low"  ? (cf.stayLow  ?? COST_RULES.stayPerNight.low)  :
+     budget==="high" ? (cf.stayHigh ?? COST_RULES.stayPerNight.high) :
+                      (cf.stayMid  ?? COST_RULES.stayPerNight.mid));
+
+  const rooms = (people==="solo" || people==="couple") ? 1 : (people==="family" ? 2 : 3);
+  const stay = nights * stayRate * rooms;
+
+  const foodPPD = cf.foodPPD ?? COST_RULES.foodPerPersonPerDay[budget] ?? COST_RULES.foodPerPersonPerDay.mid;
+  const food = foodPPD * pax * d;
+
+  const localPerDay = cf.localPerDay ?? COST_RULES.localPerDay[budget] ?? COST_RULES.localPerDay.mid;
+  const local = localPerDay * d;
+
+  const entry = pkg.spots.reduce((s,p)=> s + (safeNum(p.EntryFees) || 0), 0) || (cf.entryFees || 0);
+  const allowance = (budget==="low") ? 0 : (COST_RULES.driverAllowancePerDay * d);
+  const tolls = travel * COST_RULES.tollsPct;
+
+  const season = cf.seasonMult ?? 1.0;
+
+  const subtotal = (travel + stay + food + local + entry + allowance + tolls) * season;
+  const buffer = subtotal * COST_RULES.bufferPct;
+  const total = Math.round(subtotal + buffer);
+
+  return {
+    total,
+    breakdown: {
+      routeKm: Math.round(km),
+      driveHours: Math.round(driveHours*10)/10,
+      travel: Math.round(travel),
+      stay: Math.round(stay),
+      food: Math.round(food),
+      local: Math.round(local),
+      entry: Math.round(entry),
+      allowance: Math.round(allowance),
+      tolls: Math.round(tolls),
+      buffer: Math.round(buffer),
+      seasonMult: season
+    }
+  };
 }
 
 async function buildPackages(){
   const people = $("people").value;
   const interest = $("interest").value;
   const budget = $("budget").value;
-  const days = Number($("days").value||0);
+  const days = Number($("days").value||0) || 3;
   const district = $("district").value !== "all" ? $("district").value : null;
 
-  let base = shownPlaces.slice();
+  let base = shownPlaces.length ? shownPlaces.slice() : allPlaces.slice();
   if(district) base = base.filter(p=>p.district===district);
 
   if(!base.length){
@@ -1283,35 +1376,18 @@ async function buildPackages(){
     return;
   }
 
-  base.sort((a,b)=>{
-    const ra = pickRate(a, people);
-    const rb = pickRate(b, people);
-    const A = ra==null ? 1e18 : ra;
-    const B = rb==null ? 1e18 : rb;
-    if(budget==="low") return A-B;
-    if(budget==="high") return B-A;
-    return 0;
-  });
+  const pkgs = buildRoutePackages(base, {interest, days, district});
 
-  const hintType = interestTypeHint(interest);
-
-  const pkgs = [
-    {name:`Package A (${days?days:"3"}D)`, mood: packageTitle(interest), spots: pickPackageSpots(base, 4, hintType)},
-    {name:`Package B (${days?days:"3"}D)`, mood:"Scenic + Photos", spots: pickPackageSpots(base, 4, null)},
-    {name:`Package C (${days?days:"3"}D)`, mood:"Local + Food", spots: pickPackageSpots(base, 4, "Destination")},
-    {name:`Package D (${days?days:"3"}D)`, mood:"Mix + Nearby", spots: pickPackageSpots(base, 4, null)}
-  ];
-
-  const daysFactor = days ? Math.max(1, Math.min(4, Math.ceil(days/3))) : 1;
-
-  const html = pkgs.map(pkg=>{
-    const rates = pkg.spots.map(p=>pickRate(p, people)).filter(n=>n!=null);
-    const avg = rates.length ? Math.round(rates.reduce((s,x)=>s+Number(x),0)/rates.length) : null;
-    const total = avg!=null ? avg*daysFactor : null;
-
-    const priceText = total!=null
-      ? `${currency(total)} / ${rateLabel(people)}`
-      : `Rate missing`;
+  $("packagesBox").innerHTML = pkgs.map(pkg=>{
+    const cost = estimatePackageCost(pkg, {people, budget, days});
+    const b = cost.breakdown;
+    const breakdownText = `
+Route: ~${b.routeKm} km • ~${b.driveHours} h driving
+Travel: ${currency(b.travel)} • Stay: ${currency(b.stay)}
+Food: ${currency(b.food)} • Local: ${currency(b.local)}
+Fees: ${currency(b.entry)} • Allowance: ${currency(b.allowance)} • Tolls: ${currency(b.tolls)}
+Season×${b.seasonMult} • Buffer: ${currency(b.buffer)}
+`.trim();
 
     const tiles = pkg.spots.map(p=>{
       const thumb = bestThumb(p);
@@ -1330,17 +1406,20 @@ async function buildPackages(){
       <div class="pkgCard">
         <div class="pkgTop">
           <div>
-            <p class="pkgTitle">${escapeHtml(pkg.name)} • ${escapeHtml(pkg.mood)}</p>
+            <p class="pkgTitle">Package ${pkg.code} (${days}D) • ${escapeHtml(pkg.mood)}</p>
             <p class="pkgMeta">People: <b>${escapeHtml(rateLabel(people))}</b> • Budget: <b>${escapeHtml(budget)}</b> • Interest: <b>${escapeHtml(interest)}</b></p>
           </div>
-          <div class="pricePill">${priceText}</div>
+          <div class="pricePill">${currency(cost.total)} / ${rateLabel(people)} (est.)</div>
         </div>
+
+        <div class="pkgMeta" style="margin-top:8px; white-space:pre-line">
+          <b>Cost breakdown (strict):</b><br/>${escapeHtml(breakdownText)}
+        </div>
+
         <div class="pkgTiles">${tiles}</div>
       </div>
     `;
   }).join("<div style='height:10px'></div>");
-
-  $("packagesBox").innerHTML = html;
 
   $("packagesBox").querySelectorAll("[data-open]").forEach(el=>{
     el.addEventListener("click", async ()=>{
@@ -1353,9 +1432,7 @@ async function buildPackages(){
 }
 $("makePackages").onclick = buildPackages;
 
-/* =========================
-   QUICK TYPE PILLS
-========================= */
+/* Quick type pills */
 document.querySelectorAll("[data-quick]").forEach(el=>{
   el.addEventListener("click", ()=>{
     $("type").value = el.getAttribute("data-quick");
@@ -1364,9 +1441,7 @@ document.querySelectorAll("[data-quick]").forEach(el=>{
   });
 });
 
-/* =========================
-   AI MODAL
-========================= */
+/* AI */
 function openAI(){ $("modalWrap").style.display="flex"; seedChat(); }
 function closeAI(){ $("modalWrap").style.display="none"; }
 $("openAI").onclick = openAI;
@@ -1409,6 +1484,7 @@ function aiSuggest(userText){
     if(wants.lake && p.type==="Lake") s += 3;
     if(wants.temple && p.type==="Temple") s += 3;
     if(wants.relax && p.type!=="Trek") s += 1;
+    if(p.how && p.how.length > 40) s += 1;
     return {p, s};
   }).sort((a,b)=>b.s-a.s);
 
@@ -1431,9 +1507,7 @@ $("sendChat").onclick = ()=>{
 };
 $("chatInput").addEventListener("keydown",(e)=>{ if(e.key==="Enter") $("sendChat").click(); });
 
-/* =========================
-   ACTIONS
-========================= */
+/* ACTIONS */
 $("apply").onclick = ()=>{ applyFilters(true); location.hash="#explore"; };
 $("reset").onclick = ()=>{
   $("q").value = "";
@@ -1445,13 +1519,18 @@ $("reset").onclick = ()=>{
 $("openAdmin").onclick = ()=>{ window.location.href = "admin.html"; };
 $("collapseAll").onclick = collapseAllTypes;
 
+$("showMapBtn").onclick = ()=>{
+  ensureMap();
+  addMarkers(shownPlaces.length ? shownPlaces : allPlaces);
+  $("mapHint").textContent = "Click a marker to open place";
+  location.hash = "#explore";
+};
+
 $("district").addEventListener("change", ()=> $("builderLine").textContent = "District updated. Click Get Packages.");
 $("type").addEventListener("change", ()=> $("builderLine").textContent = "Type updated. Click Get Packages.");
 $("days").addEventListener("change", ()=> $("builderLine").textContent = "Days updated. Click Get Packages.");
 
-/* =========================
-   INIT
-========================= */
+/* INIT */
 (async function init(){
   await loadPlaces();
   buildDistrictDropdown();
@@ -1463,11 +1542,8 @@ $("days").addEventListener("change", ()=> $("builderLine").textContent = "Days u
   shownPlaces = allPlaces.slice();
   applyFilters(false);
 
-  // show mobile button only on small screens (CSS hides sidebar, but we also toggle this)
   const mq = window.matchMedia("(max-width: 980px)");
-  function syncMobileBtn(){
-    $("openSideMobile").style.display = mq.matches ? "inline-flex" : "none";
-  }
+  function syncMobileBtn(){ $("openSideMobile").style.display = mq.matches ? "inline-flex" : "none"; }
   mq.addEventListener?.("change", syncMobileBtn);
   syncMobileBtn();
 })();
