@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — Ultra Pro</title>
+  <title>Himachal Explorer — Light Tourism Theme</title>
 
-  <!-- Leaflet (no API key) -->
+  <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -15,319 +15,376 @@
 
   <style>
     :root{
-      --bg0:#05070d; --bg1:#070b15;
-      --card:rgba(255,255,255,.06);
-      --stroke:rgba(255,255,255,.12);
-      --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.68);
-      --shadow: 0 24px 80px rgba(0,0,0,.55);
-      --r:18px; --r2:26px;
-      --a:#67e8f9; --b:#a78bfa; --c:#34d399; --d:#ffcf5a;
-      --max:1400px;            /* wider max */
+      /* Chandigarh-tourism inspired light beige */
+      --bg:#f6f0e6;
+      --paper:#fffaf2;
+      --card:#ffffff;
+      --stroke:rgba(60,42,18,.18);
+      --stroke2:rgba(60,42,18,.12);
+      --text:#1f2328;
+      --muted:rgba(31,35,40,.68);
+      --accent:#7c6b4f;  /* khaki */
+      --accent2:#2f5f88; /* calm blue */
+      --accent3:#2f7a57; /* green */
+      --shadow:0 18px 40px rgba(40,25,10,.14);
+      --shadow2:0 10px 22px rgba(40,25,10,.10);
+      --r:16px; --r2:22px;
+      --max:1400px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0; color:var(--text);
+      margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      overflow-x:hidden;
-
-      /* full page bg */
-      background-image:
-        linear-gradient(180deg, rgba(5,7,13,.76), rgba(7,11,21,.88)),
-        url("./Kee_monastery.jpg");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-    }
-    body::before{
-      content:"";
-      position: fixed;
-      inset: 0;
-      pointer-events:none;
-      z-index:-1;
-      background:
-        radial-gradient(1200px 700px at 12% 10%, rgba(103,232,249,.18), transparent 55%),
-        radial-gradient(1000px 700px at 82% 18%, rgba(167,139,250,.17), transparent 56%),
-        radial-gradient(1000px 700px at 52% 92%, rgba(52,211,153,.12), transparent 55%);
-      mix-blend-mode: screen;
-    }
-
-    a{color:inherit; text-decoration:none}
-
-    /* ✅ 90% screen width */
-    .wrap{
-      width:min(90vw, var(--max));
-      margin:0 auto;
-      padding:22px 16px 44px;
-    }
-
-    /* TOPBAR */
-    .topbar{
-      position:sticky; top:0; z-index:40;
-      backdrop-filter: blur(12px);
-      background: linear-gradient(180deg, rgba(5,7,13,.82), rgba(5,7,13,.40));
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
-    .topbar .inner{
-      width:min(90vw, var(--max));
-      margin:0 auto;
-      padding:14px 16px;
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-    }
-    .brand{display:flex; align-items:center; gap:10px; min-width:220px}
-  .logo{
-    width:46px; height:46px; border-radius:16px;
-    background: #fff url("./logo.png") center/contain no-repeat;
-    border:1px solid rgba(10,18,40,.12);
-    box-shadow: 0 14px 30px rgba(15,23,42,.14);
-    overflow:hidden;
-  }
-
-    .brand h1{font-size:14px; margin:0; letter-spacing:.2px; line-height:1.1}
-    .brand small{display:block; color:var(--muted); font-weight:600; margin-top:2px}
-
-    .nav{display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end}
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:10px 12px; border-radius:999px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      transition:.2s ease;
-      font-weight:800; font-size:12px;
-    }
-    .pill:hover{transform: translateY(-1px); background:rgba(255,255,255,.08)}
-    .pill .dot{
-      width:8px; height:8px; border-radius:50%;
-      background: linear-gradient(135deg, var(--a), var(--b));
-      box-shadow: 0 0 0 4px rgba(103,232,249,.12);
-    }
-    .btn{
-      appearance:none; border:0; cursor:pointer;
       color:var(--text);
-      padding:11px 14px; border-radius:14px;
-      background: linear-gradient(135deg, rgba(103,232,249,.18), rgba(167,139,250,.14));
-      border:1px solid rgba(255,255,255,.14);
-      box-shadow: 0 18px 50px rgba(0,0,0,.35);
-      font-weight:900; font-size:12px;
-      transition:.18s ease;
-      display:inline-flex; align-items:center; gap:10px;
-      white-space:nowrap;
-    }
-    .btn:hover{transform: translateY(-1px)}
-    .btn.ghost{background:rgba(255,255,255,.06); box-shadow:none}
-
-    /* HERO */
-    .hero{
-      margin-top:16px;
-      display:grid;
-      grid-template-columns: 1.3fr .7fr;
-      gap:14px;
-      align-items:stretch;
-    }
-    .heroMain{
-      position:relative;
-      overflow:hidden;
-      border-radius: var(--r2);
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow: var(--shadow);
-      min-height: 380px;
-      background-image:
-        linear-gradient(120deg, rgba(0,0,0,.60), rgba(0,0,0,.10)),
-        url("./Kee_monastery.jpg");
-      background-position:center;
-      background-size:cover;
-      background-repeat:no-repeat;
-    }
-    .heroMain::after{
-      content:"";
-      position:absolute; inset:0;
       background:
-        radial-gradient(700px 420px at 20% 35%, rgba(103,232,249,.14), transparent 62%),
-        radial-gradient(700px 420px at 78% 30%, rgba(167,139,250,.16), transparent 62%);
-      pointer-events:none;
-      mix-blend-mode: screen;
+        radial-gradient(900px 600px at 10% 10%, rgba(47,95,136,.10), transparent 60%),
+        radial-gradient(900px 600px at 90% 20%, rgba(47,122,87,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg), #fdf8ef);
     }
-    .heroInner{
-      position:relative;
-      padding:22px;
+    a{text-decoration:none; color:inherit}
+    .wrap{width:min(92vw, var(--max)); margin:0 auto; padding:0 14px 50px}
+
+    /* TOP GOV BAR */
+    .govbar{
+      background:#fbf4e8;
+      border-bottom:1px solid var(--stroke2);
+      font-size:12px;
+      color:rgba(31,35,40,.78);
+    }
+    .govbar .inner{
+      width:min(92vw, var(--max));
+      margin:0 auto;
+      padding:8px 14px;
       display:flex;
-      flex-direction:column;
-      height:100%;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .govbar .right{display:flex; gap:12px; align-items:center}
+    .govlink{opacity:.9}
+    .govlink:hover{opacity:1; text-decoration:underline}
+
+    /* NAVBAR */
+    .navbar{
+      background: rgba(255,250,242,.88);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--stroke2);
+      position:sticky; top:0; z-index:50;
+    }
+    .navbar .inner{
+      width:min(92vw, var(--max));
+      margin:0 auto;
+      padding:12px 14px;
+      display:flex;
+      align-items:center;
       justify-content:space-between;
       gap:14px;
     }
-    .heroTitle{margin:0; font-size: clamp(26px, 3vw, 44px); letter-spacing:-.4px; line-height:1.05}
-    .heroSub{margin:10px 0 0 0; color:rgba(255,255,255,.82); max-width:64ch; font-weight:650}
-
-    .finder{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns: 1fr 170px 170px 160px;
-      gap:10px;
-      align-items:end;
-    }
-    .field{display:flex; flex-direction:column; gap:6px}
-    label{font-size:11px; color:var(--muted); font-weight:900; letter-spacing:.25px}
-    .input, .select{
-      width:100%;
-      padding:12px 12px;
+    .brand{display:flex; gap:12px; align-items:center}
+    .logo{
+      width:46px; height:46px;
       border-radius:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color:var(--text);
-      outline:none;
-      font-weight:800;
+      background:#fff url("./logo.png") center/contain no-repeat;
+      border:1px solid var(--stroke2);
+      box-shadow: var(--shadow2);
     }
-    .input::placeholder{color:rgba(255,255,255,.45)}
-    .select{cursor:pointer}
-    .heroActions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .brand h1{margin:0; font-size:16px; letter-spacing:.2px}
+    .brand small{display:block; margin-top:2px; color:var(--muted); font-weight:700}
 
-    /* Right panel */
-    .panel{
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      border-radius: var(--r2);
-      box-shadow: 0 16px 60px rgba(0,0,0,.38);
-      overflow:hidden;
-    }
-    .panelHead{
-      padding:14px 14px 12px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), transparent);
-    }
-    .panelHead h3{margin:0; font-size:13px}
-    .panelHead small{color:var(--muted); font-weight:800}
-
-    .quickLinks{
-      padding:14px;
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:10px;
-    }
-    .qcard{
-      padding:12px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      transition:.2s ease;
+    .nav{display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end}
+    .nav a, .nav button{
+      font-weight:850;
+      font-size:12px;
+      border-radius:999px;
+      border:1px solid var(--stroke2);
+      background: rgba(255,255,255,.70);
+      padding:10px 12px;
+      box-shadow: var(--shadow2);
       cursor:pointer;
     }
-    .qcard:hover{transform: translateY(-1px); background: rgba(255,255,255,.07)}
-    .qcard b{display:block; font-size:12px}
-    .qcard p{margin:6px 0 0; color:var(--muted); font-weight:750; font-size:12px; line-height:1.35}
+    .nav a:hover, .nav button:hover{transform: translateY(-1px)}
+    .btnPrimary{
+      background: linear-gradient(180deg, rgba(124,107,79,.95), rgba(124,107,79,.82)) !important;
+      color:#fff !important;
+      border-color: rgba(124,107,79,.35) !important;
+    }
 
-    /* ✅ Packages at start (instead of districts) */
-    .packs{
-      padding:14px;
+    /* HERO BANNER (full width like Chandigarh site) */
+    .heroBanner{
+      margin-top:16px;
+      border-radius: 26px;
+      overflow:hidden;
+      border:1px solid var(--stroke2);
+      box-shadow: var(--shadow);
+      background: #000;
+      position:relative;
+      min-height: 420px;
+    }
+    .heroBanner::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.25) 45%, rgba(0,0,0,.10) 100%),
+        url("./Kee_monastery.jpg") center/cover no-repeat;
+      transform: scale(1.02);
+    }
+    .heroOverlay{
+      position:relative;
+      padding:28px;
       display:grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: 1.15fr .85fr;
+      gap:16px;
+      align-items:stretch;
+      min-height: 420px;
+    }
+    .heroText{
+      color:#fff;
+      max-width: 72ch;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:14px;
+    }
+    .heroText h2{
+      margin:0;
+      font-size: clamp(30px, 3.2vw, 56px);
+      line-height:1.02;
+      letter-spacing:-.6px;
+    }
+    .heroText p{
+      margin:10px 0 0;
+      color: rgba(255,255,255,.86);
+      font-weight:700;
+      line-height:1.5;
+    }
+    .heroBadges{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+    .hb{
+      padding:9px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.20);
+      font-weight:900;
+      font-size:12px;
+      backdrop-filter: blur(6px);
+    }
+
+    /* right box inside hero */
+    .heroBox{
+      background: rgba(255,250,242,.92);
+      border:1px solid rgba(255,255,255,.20);
+      border-radius: 22px;
+      box-shadow: 0 14px 40px rgba(0,0,0,.24);
+      padding:14px;
+      display:flex;
+      flex-direction:column;
       gap:10px;
     }
-    .pack{
-      padding:12px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
+    .heroBox h3{margin:0; font-size:13px}
+    .heroBox small{color:rgba(31,35,40,.70); font-weight:800}
+
+    .gridForm{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
     }
-    .pack h4{margin:0; font-size:12.5px}
-    .pack small{display:block; color:var(--muted); font-weight:750; margin-top:6px; line-height:1.35}
-    .pack .row{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap}
-    .badge{
-      font-size:11px; font-weight:950;
-      padding:6px 9px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
+    .field{display:flex; flex-direction:column; gap:6px}
+    label{font-size:11px; color:rgba(31,35,40,.72); font-weight:900; letter-spacing:.2px}
+    .input,.select{
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid var(--stroke2);
+      background: rgba(255,255,255,.92);
+      outline:none;
+      font-weight:800;
+      color:var(--text);
+    }
+    .input::placeholder{color:rgba(31,35,40,.45)}
+    .gridForm .wide{grid-column:1/-1}
+
+    .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:4px}
+    .btn{
+      border:0;
+      cursor:pointer;
+      padding:11px 12px;
+      border-radius:14px;
+      font-weight:950;
+      background: rgba(255,255,255,.92);
+      border:1px solid var(--stroke2);
+      box-shadow: var(--shadow2);
+    }
+    .btn:hover{transform: translateY(-1px)}
+    .btn.primary{
+      background: linear-gradient(180deg, rgba(47,95,136,.96), rgba(47,95,136,.84));
+      color:#fff;
+      border-color: rgba(47,95,136,.35);
     }
 
-    /* Sections */
-    .section{margin-top:18px; display:grid; grid-template-columns: 1fr; gap:14px}
-    .sectionTitle{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin:8px 0 0}
-    .sectionTitle h2{margin:0; font-size:16px}
-    .sectionTitle p{margin:0; color:var(--muted); font-weight:800; font-size:12px}
+    /* SECTION TITLES */
+    .section{margin-top:18px}
+    .sectionHead{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
+      margin:18px 0 10px;
+    }
+    .sectionHead h3{margin:0; font-size:18px}
+    .sectionHead p{margin:0; color:var(--muted); font-weight:800; font-size:12px}
 
-    /* EXPLORE (Map hidden until place click) */
-    .grid2{
+    /* MUST DO TILES like Chandigarh */
+    .tiles{
+      display:grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap:12px;
+    }
+    .tile{
+      border-radius: 18px;
+      overflow:hidden;
+      border:1px solid var(--stroke2);
+      box-shadow: var(--shadow2);
+      background:#fff;
+      cursor:pointer;
+      min-height: 110px;
+      position:relative;
+      transition:.18s ease;
+    }
+    .tile:hover{transform: translateY(-2px)}
+    .tile::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.45));
+      z-index:1;
+    }
+    .tile img{
+      position:absolute; inset:0;
+      width:100%; height:100%; object-fit:cover;
+      transform: scale(1.02);
+    }
+    .tile span{
+      position:absolute;
+      left:10px; right:10px; bottom:10px;
+      z-index:2;
+      background: rgba(255,250,242,.92);
+      border:1px solid rgba(255,255,255,.35);
+      border-radius: 999px;
+      padding:9px 10px;
+      font-weight:950;
+      font-size:12px;
+      text-align:center;
+    }
+
+    /* EXPLORE LIST */
+    .exploreGrid{
       display:grid;
       grid-template-columns: 1fr;
       gap:14px;
-      align-items:stretch;
     }
+    .panel{
+      background: rgba(255,250,242,.92);
+      border:1px solid var(--stroke2);
+      border-radius: var(--r2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .panelHead{
+      padding:14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      border-bottom:1px solid var(--stroke2);
+      background: rgba(255,255,255,.55);
+    }
+    .panelHead b{font-size:13px}
+    .panelHead small{color:var(--muted); font-weight:850}
 
-    .results{min-height:440px; display:flex; flex-direction:column}
     .list{
       padding:14px;
       display:grid;
       grid-template-columns: 1fr;
       gap:10px;
+      max-height: 560px;
       overflow:auto;
-      max-height: 580px;
     }
     .place{
-      display:grid;
-      grid-template-columns: 92px 1fr;
-      gap:12px;
+      background: rgba(255,255,255,.92);
+      border:1px solid var(--stroke2);
+      border-radius: 18px;
+      box-shadow: var(--shadow2);
       padding:12px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
+      display:grid;
+      grid-template-columns: 98px 1fr;
+      gap:12px;
       cursor:pointer;
-      transition:.18s ease;
+      transition:.16s ease;
     }
-    .place:hover{transform: translateY(-1px); background: rgba(255,255,255,.08)}
+    .place:hover{transform: translateY(-1px)}
     .thumb{
-      width:92px; height:72px;
-      border-radius:16px;
-      background: linear-gradient(135deg, rgba(103,232,249,.12), rgba(167,139,250,.10));
-      border:1px solid rgba(255,255,255,.12);
+      border-radius: 16px;
       overflow:hidden;
+      border:1px solid var(--stroke2);
+      background: #f2e9db;
+      height:76px;
     }
     .thumb img{width:100%; height:100%; object-fit:cover; display:block}
-    .pTitle{margin:0; font-size:13px}
+    .pTitle{margin:0; font-weight:950; font-size:13px}
     .pSub{margin:6px 0 0; color:var(--muted); font-weight:750; font-size:12px; line-height:1.35}
-    .pBadges{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap}
+    .badges{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap}
+    .badge{
+      background: rgba(246,240,230,.90);
+      border:1px solid var(--stroke2);
+      border-radius: 999px;
+      padding:6px 9px;
+      font-weight:950;
+      font-size:11px;
+    }
 
-    /* Map panel starts hidden */
+    /* MAP hidden until click */
     .mapPanel{display:none}
-    .mapBox{min-height:440px}
     #map{
-      width:100%; height:440px;
-      border-radius: var(--r2);
-      border:1px solid rgba(255,255,255,.12);
-      overflow:hidden;
-      box-shadow: var(--shadow);
+      width:100%;
+      height: 460px;
     }
 
     /* Drawer */
     .drawerWrap{
       position:fixed; inset:0;
-      background: rgba(0,0,0,.55);
+      background: rgba(0,0,0,.35);
       display:none;
       align-items:flex-end;
       justify-content:center;
       padding:14px;
-      z-index:60;
+      z-index:80;
+      backdrop-filter: blur(4px);
     }
     .drawer{
       width:min(980px, 100%);
-      border-radius: 26px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(10,12,20,.86);
-      backdrop-filter: blur(14px);
-      box-shadow: 0 30px 120px rgba(0,0,0,.65);
-      overflow:hidden;
       max-height: 86vh;
-      display:flex; flex-direction:column;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      border-radius: 26px;
+      background: rgba(255,250,242,.96);
+      border:1px solid var(--stroke2);
+      box-shadow: 0 30px 90px rgba(0,0,0,.25);
     }
     .drawerTop{
-      padding:14px 14px 12px;
+      padding:14px;
       display:flex; align-items:center; justify-content:space-between; gap:10px;
-      border-bottom:1px solid rgba(255,255,255,.10);
+      border-bottom:1px solid var(--stroke2);
+      background: rgba(255,255,255,.55);
     }
-    .drawerTop h3{margin:0; font-size:14px}
+    .closeX{
+      width:42px; height:42px;
+      border-radius:14px;
+      border:1px solid var(--stroke2);
+      background: rgba(255,255,255,.92);
+      cursor:pointer;
+      font-weight:950;
+    }
     .drawerBody{
       padding:14px;
       display:grid;
@@ -335,264 +392,306 @@
       gap:14px;
       overflow:auto;
     }
-    .gallery{display:grid; grid-template-columns: repeat(3, 1fr); gap:10px}
+    .gallery{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+    }
     .gImg{
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
+      border-radius: 18px;
       overflow:hidden;
+      border:1px solid var(--stroke2);
+      background:#f2e9db;
       aspect-ratio: 4/3;
     }
     .gImg img{width:100%; height:100%; object-fit:cover; display:block}
     .infoCard{
-      border-radius:22px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
+      border-radius: 22px;
+      border:1px solid var(--stroke2);
+      background: rgba(255,255,255,.86);
+      box-shadow: var(--shadow2);
       padding:12px;
-      display:flex; flex-direction:column; gap:10px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
     }
-    .infoCard p{margin:0; color:var(--muted); font-weight:700; line-height:1.45; font-size:12px}
-    .row2{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-    .row2 .btn{flex:1}
-    .closeX{
-      width:42px; height:42px; border-radius:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      cursor:pointer;
-      color:var(--text);
-      font-weight:900;
-    }
+    .infoCard p{margin:0; color:var(--muted); font-weight:750; line-height:1.45; font-size:12px}
+    .row{display:flex; gap:10px; flex-wrap:wrap}
+    .row .btn{flex:1}
 
     /* AI Modal */
     .modalWrap{
       position:fixed; inset:0;
-      background: rgba(0,0,0,.55);
+      background: rgba(0,0,0,.35);
       display:none;
       align-items:center;
       justify-content:center;
       padding:14px;
-      z-index:70;
+      z-index:90;
+      backdrop-filter: blur(4px);
     }
     .modal{
-      width:min(820px, 100%);
+      width:min(860px, 100%);
       border-radius: 26px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(10,12,20,.90);
-      backdrop-filter: blur(14px);
-      box-shadow: 0 30px 120px rgba(0,0,0,.65);
+      background: rgba(255,250,242,.96);
+      border:1px solid var(--stroke2);
+      box-shadow: 0 30px 90px rgba(0,0,0,.25);
       overflow:hidden;
     }
     .modalHead{
       padding:14px;
       display:flex; align-items:center; justify-content:space-between; gap:10px;
-      border-bottom:1px solid rgba(255,255,255,.10);
+      border-bottom:1px solid var(--stroke2);
+      background: rgba(255,255,255,.55);
     }
-    .modalHead h3{margin:0; font-size:14px}
-    .chat{padding:14px; display:flex; flex-direction:column; gap:10px; max-height: 62vh; overflow:auto}
+    .chat{
+      padding:14px;
+      display:flex; flex-direction:column; gap:10px;
+      max-height: 62vh;
+      overflow:auto;
+    }
     .msg{
       max-width: 86%;
       padding:10px 12px;
       border-radius: 16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      color:var(--text);
-      font-weight:700;
-      line-height:1.45;
+      border:1px solid var(--stroke2);
+      background: rgba(255,255,255,.90);
+      font-weight:750;
       font-size:12.5px;
+      line-height:1.45;
       white-space:pre-wrap;
     }
-    .msg.me{margin-left:auto; background: linear-gradient(135deg, rgba(103,232,249,.14), rgba(167,139,250,.12))}
-    .composer{padding:12px 14px 14px; display:flex; gap:10px; border-top:1px solid rgba(255,255,255,.10)}
+    .msg.me{
+      margin-left:auto;
+      background: linear-gradient(180deg, rgba(47,95,136,.16), rgba(47,95,136,.10));
+    }
+    .composer{
+      padding:12px 14px 14px;
+      display:flex; gap:10px;
+      border-top:1px solid var(--stroke2);
+      background: rgba(255,255,255,.45);
+    }
     .composer input{
       flex:1;
       padding:12px 12px;
       border-radius: 14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color:var(--text);
+      border:1px solid var(--stroke2);
+      background: rgba(255,255,255,.92);
       outline:none;
       font-weight:800;
     }
 
-    @media (max-width: 980px){
-      .hero{grid-template-columns: 1fr}
-      .finder{grid-template-columns: 1fr 1fr}
-      .finder .field:nth-child(1){grid-column:1 / -1}
+    @media (max-width: 1100px){
+      .heroOverlay{grid-template-columns: 1fr; min-height:auto}
+      .heroBanner{min-height:auto}
+      .tiles{grid-template-columns: repeat(3, 1fr)}
       .drawerBody{grid-template-columns: 1fr}
-      .gallery{grid-template-columns: repeat(2, 1fr)}
-      #map{height:380px}
+      .gallery{grid-template-columns: repeat(2,1fr)}
     }
-    @media (max-width: 520px){
-      .heroMain{min-height: 340px}
-      .list{max-height: 440px}
+    @media (max-width: 560px){
+      .tiles{grid-template-columns: repeat(2,1fr)}
+      .gridForm{grid-template-columns: 1fr}
       .gallery{grid-template-columns: 1fr}
     }
   </style>
 </head>
 
 <body>
-  <!-- TOPBAR -->
-  <div class="topbar">
+  <!-- Slim top bar (gov style) -->
+  <div class="govbar">
+    <div class="inner">
+      <div>Welcome to Himachal Explorer</div>
+      <div class="right">
+        <a class="govlink" href="#explore">Skip to content</a>
+        <span class="govlink">A-</span><span class="govlink">A</span><span class="govlink">A+</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <div class="navbar">
     <div class="inner">
       <div class="brand">
-        <div class="logo"></div>
+        <div class="logo" title="logo.png"></div>
         <div>
           <h1>Himachal Explorer</h1>
-          <small>Find places • build routes • get packages</small>
+          <small>Explore • route • packages • AI planner</small>
         </div>
       </div>
 
       <div class="nav">
-        <a class="pill" href="#explore"><span class="dot"></span>Explore</a>
-        <button class="btn ghost" id="openAI">AI Planner</button>
-        <button class="btn" id="openAdmin">Admin</button>
+        <a href="#mustdo">Must Do</a>
+        <a href="#explore">Explore</a>
+        <button id="openAI">AI Planner</button>
+        <button class="btnPrimary" id="openAdmin">Admin</button>
       </div>
     </div>
   </div>
 
   <div class="wrap">
-    <!-- HERO -->
-    <section class="hero" aria-label="hero">
-      <div class="heroMain">
-        <div class="heroInner">
+    <!-- HERO FULL WIDTH -->
+    <section class="heroBanner" aria-label="hero">
+      <div class="heroOverlay">
+        <div class="heroText">
           <div>
-            <h2 class="heroTitle">Make your Himachal trip feel effortless.</h2>
-            <p class="heroSub">
-              Search places by <b>district</b>, <b>type</b> and <b>days</b>. Then click any place to open map + route.
+            <h2>Discover Himachal — beautifully, simply.</h2>
+            <p>
+              Use filters to show only what visitor needs. Click any place to open details, packages and map.
+              <b>Map stays hidden until a location is clicked.</b>
             </p>
 
-            <div class="finder" style="margin-top:16px">
-              <div class="field">
-                <label>Search (place / temple / lake / trek)</label>
-                <input class="input" id="q" placeholder="Example: Triund, Manimahesh, Kufri, Chandratal..."/>
-              </div>
-
-              <div class="field">
-                <label>District</label>
-                <select class="select" id="district">
-                  <option value="all">All</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label>Type</label>
-                <select class="select" id="type">
-                  <option value="all">All</option>
-                  <option value="Destination">Destination</option>
-                  <option value="Temple">Temple</option>
-                  <option value="Lake">Lake</option>
-                  <option value="Trek">Trek</option>
-                  <option value="Hotel">Hotel</option>
-                  <option value="Activity">Activity</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label>Trip Days</label>
-                <select class="select" id="days">
-                  <option value="0">Any</option>
-                  <option value="1">1–2 days</option>
-                  <option value="3">3–4 days</option>
-                  <option value="5">5–7 days</option>
-                  <option value="8">8–12 days</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="heroActions">
-              <button class="btn" id="apply">Explore Now</button>
-              <button class="btn ghost" id="nearby">Show Nearby</button>
-              <button class="btn ghost" id="reset">Reset</button>
+            <div class="heroBadges">
+              <span class="hb">Light Tourism Theme</span>
+              <span class="hb">Smart Filters</span>
+              <span class="hb">Packages</span>
+              <span class="hb">AI Planner</span>
             </div>
           </div>
 
-          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap">
-            <small style="color:rgba(255,255,255,.75); font-weight:800">
-              Note: Map will appear only after you click a location.
-            </small>
-            <small id="status" style="color:rgba(255,255,255,.75); font-weight:900">Loading places…</small>
-          </div>
-        </div>
-      </div>
-
-      <!-- Right side: Packages at start -->
-      <div class="panel">
-        <div class="panelHead">
-          <h3>Packages (Quick start)</h3>
-          <small>3–4 options</small>
-        </div>
-        <div class="packs" id="packList">
-          <div class="pack">
-            <h4>Package A • Highlights (2D/1N)</h4>
-            <small>Easy travel • 2–3 top spots • local food • sunset point</small>
-            <div class="row">
-              <span class="badge">Comfort</span><span class="badge">Family</span><span class="badge">Short trip</span>
-            </div>
-          </div>
-          <div class="pack">
-            <h4>Package B • Nature + Photos (3D/2N)</h4>
-            <small>Scenic views • viewpoints • lake/valley • relaxed pace</small>
-            <div class="row">
-              <span class="badge">Nature</span><span class="badge">Photography</span><span class="badge">Balanced</span>
-            </div>
-          </div>
-          <div class="pack">
-            <h4>Package C • Temples + Culture (4D/3N)</h4>
-            <small>Top temples • local markets • heritage spots • easy drives</small>
-            <div class="row">
-              <span class="badge">Culture</span><span class="badge">Temple</span><span class="badge">Easy</span>
-            </div>
-          </div>
-          <div class="pack">
-            <h4>Package D • Adventure Mix (5D/4N)</h4>
-            <small>Trek/activity • waterfall/lake • sunrise point • more travel</small>
-            <div class="row">
-              <span class="badge">Adventure</span><span class="badge">Trek</span><span class="badge">Active</span>
-            </div>
+          <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap">
+            <span style="font-weight:850; color:rgba(255,255,255,.88)">Tip: Tap a category tile to filter instantly.</span>
+            <span id="status" style="font-weight:950; color:rgba(255,255,255,.88)">Loading places…</span>
           </div>
         </div>
 
-        <div class="panelHead" style="border-top:1px solid rgba(255,255,255,.10)">
-          <h3>Quick Actions</h3>
-          <small>one tap</small>
-        </div>
-        <div class="quickLinks">
-          <div class="qcard" data-quick="Trek"><b>Top Treks</b><p>Triund, Prashar, Hampta…</p></div>
-          <div class="qcard" data-quick="Lake"><b>Famous Lakes</b><p>Chandratal, Rewalsar…</p></div>
-          <div class="qcard" data-quick="Temple"><b>Temples</b><p>Jwalamukhi, Bijli Mahadev…</p></div>
-          <div class="qcard" data-quick="Destination"><b>Must Visit</b><p>Manali, Shimla, Spiti…</p></div>
+        <!-- FILTER BOX -->
+        <div class="heroBox">
+          <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:10px">
+            <div>
+              <h3 style="margin:0">Search & Build Packages</h3>
+              <small>3–4 options based on filters</small>
+            </div>
+            <small><b id="statPlaces">—</b> places</small>
+          </div>
+
+          <div class="gridForm">
+            <div class="field wide">
+              <label>Search (place / temple / lake / trek)</label>
+              <input class="input" id="q" placeholder="Example: Triund, Manimahesh, Kufri, Chandratal…"/>
+            </div>
+
+            <div class="field">
+              <label>District</label>
+              <select class="select" id="district"><option value="all">All</option></select>
+            </div>
+
+            <div class="field">
+              <label>Type</label>
+              <select class="select" id="type">
+                <option value="all">All</option>
+                <option value="Destination">Destination</option>
+                <option value="Temple">Temple</option>
+                <option value="Lake">Lake</option>
+                <option value="Trek">Trek</option>
+                <option value="Hotel">Hotel</option>
+                <option value="Activity">Activity</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Trip Days</label>
+              <select class="select" id="days">
+                <option value="0">Any</option>
+                <option value="1">1–2 days</option>
+                <option value="3">3–4 days</option>
+                <option value="5">5–7 days</option>
+                <option value="8">8–12 days</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>People</label>
+              <select class="select" id="people">
+                <option value="solo">Solo</option>
+                <option value="couple" selected>Couple</option>
+                <option value="family">Family</option>
+                <option value="group">Group</option>
+              </select>
+            </div>
+
+            <div class="actions wide">
+              <button class="btn primary" id="apply">Explore</button>
+              <button class="btn" id="makePackages">Get Packages</button>
+              <button class="btn" id="nearby">Nearby</button>
+              <button class="btn" id="reset">Reset</button>
+            </div>
+
+            <div class="field wide">
+              <label>Packages (3–4)</label>
+              <div id="packagesBox" class="input" style="height:auto; min-height:78px; font-weight:750; line-height:1.45; white-space:pre-wrap">
+                Click <b>Get Packages</b> to generate.
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- EXPLORE (Districts not shown at start, map hidden until click) -->
-    <section class="section" id="explore">
-      <div class="sectionTitle">
+    <!-- MUST DO TILES -->
+    <section class="section" id="mustdo">
+      <div class="sectionHead">
         <div>
-          <h2>Explore</h2>
-          <p>List first. Map appears after you click a location.</p>
+          <h3>Must do activities in Himachal</h3>
+          <p>Tap a tile to filter instantly</p>
         </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap">
-          <span class="pill"><span class="dot"></span><span id="activeFilters">No filters</span></span>
+        <div>
+          <span class="badge" id="activeFilters">No filters</span>
         </div>
       </div>
 
-      <div class="grid2">
-        <div class="panel results">
+      <div class="tiles">
+        <div class="tile" data-quick="Destination">
+          <img src="./201-himalaya.jpg" alt="Destinations" onerror="this.remove()">
+          <span>Destinations</span>
+        </div>
+        <div class="tile" data-quick="Temple">
+          <img src="./n1.jpg" alt="Temples" onerror="this.remove()">
+          <span>Temples</span>
+        </div>
+        <div class="tile" data-quick="Lake">
+          <img src="./Travelers.jpg" alt="Lakes" onerror="this.remove()">
+          <span>Lakes</span>
+        </div>
+        <div class="tile" data-quick="Trek">
+          <img src="./Dark.jpg" alt="Treks" onerror="this.remove()">
+          <span>Treks</span>
+        </div>
+        <div class="tile" data-quick="Hotel">
+          <img src="./Kee_monastery.jpg" alt="Hotels" onerror="this.remove()">
+          <span>Stay / Hotels</span>
+        </div>
+        <div class="tile" data-quick="Activity">
+          <img src="./201-himalaya.jpg" alt="Activities" onerror="this.remove()">
+          <span>Activities</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPLORE -->
+    <section class="section" id="explore">
+      <div class="sectionHead">
+        <div>
+          <h3>Explore places</h3>
+          <p>List first. Map only after you click a place.</p>
+        </div>
+        <div class="badge" id="count">0</div>
+      </div>
+
+      <div class="exploreGrid">
+        <div class="panel">
           <div class="panelHead">
-            <h3>Places</h3>
-            <small id="count">0</small>
+            <b>Places</b>
+            <small>click for details</small>
           </div>
           <div class="list" id="list"></div>
         </div>
 
-        <!-- hidden map panel -->
         <div class="panel mapPanel" id="mapPanel">
           <div class="panelHead">
-            <h3>Map</h3>
-            <small id="mapHint">Click a place to load map</small>
+            <b>Map</b>
+            <small id="mapHint">opens after click</small>
           </div>
-          <div class="mapBox">
+          <div style="padding:14px">
             <div id="map"></div>
           </div>
         </div>
@@ -601,11 +700,11 @@
   </div>
 
   <!-- PLACE DRAWER -->
-  <div class="drawerWrap" id="drawerWrap" role="dialog" aria-modal="true" aria-label="Place details">
+  <div class="drawerWrap" id="drawerWrap" role="dialog" aria-modal="true">
     <div class="drawer">
       <div class="drawerTop">
         <div>
-          <h3 id="dTitle">Place</h3>
+          <h3 id="dTitle" style="margin:0">Place</h3>
           <small id="dSub" style="color:var(--muted); font-weight:850">—</small>
         </div>
         <button class="closeX" id="closeDrawer">✕</button>
@@ -613,59 +712,45 @@
 
       <div class="drawerBody">
         <div class="gallery" id="gallery"></div>
-
         <div class="infoCard">
           <p id="dDesc">—</p>
-          <div class="row2" style="gap:8px">
+          <div class="row" style="gap:8px">
             <span class="badge" id="dType">Type</span>
             <span class="badge" id="dDistrict">District</span>
-            <span class="badge" id="dHow">How to reach</span>
+            <span class="badge" id="dHow">How</span>
           </div>
-          <div class="row2">
-            <button class="btn" id="routeBtn">Show Map + Route</button>
-            <button class="btn ghost" id="pkgBtn">Packages</button>
-            <button class="btn ghost" id="fullBtn">Open Full Page</button>
+          <div class="row">
+            <button class="btn primary" id="routeBtn">Show Map</button>
+            <button class="btn" id="pkgBtn">Packages</button>
+            <button class="btn" id="fullBtn">Open Full Page</button>
           </div>
-
-          <div class="panel" style="margin-top:10px">
-            <div class="panelHead">
-              <h3>Suggested mini-plan</h3>
-              <small>auto</small>
-            </div>
-            <div style="padding:12px">
-              <p id="miniPlan" style="margin:0; color:var(--muted); font-weight:750; line-height:1.45; font-size:12px">—</p>
-            </div>
+          <div class="infoCard" style="background:rgba(255,255,255,.92)">
+            <p style="margin:0; font-weight:950; color:var(--text)">Suggested mini-plan</p>
+            <p id="miniPlan" style="margin:0">—</p>
           </div>
-
-          <div class="panel" style="margin-top:10px">
-            <div class="panelHead">
-              <h3>Distance</h3>
-              <small>nearby</small>
-            </div>
-            <div style="padding:12px">
-              <p id="distInfo" style="margin:0; color:var(--muted); font-weight:750; line-height:1.45; font-size:12px">Turn on Nearby to see distance.</p>
-            </div>
+          <div class="infoCard" style="background:rgba(255,255,255,.92)">
+            <p style="margin:0; font-weight:950; color:var(--text)">Distance</p>
+            <p id="distInfo" style="margin:0">Turn on Nearby to see distance.</p>
           </div>
-
         </div>
       </div>
     </div>
   </div>
 
   <!-- AI MODAL -->
-  <div class="modalWrap" id="modalWrap" role="dialog" aria-modal="true" aria-label="AI Trip Planner">
+  <div class="modalWrap" id="modalWrap" role="dialog" aria-modal="true">
     <div class="modal">
       <div class="modalHead">
         <div>
-          <h3>AI Trip Planner</h3>
-          <small style="color:var(--muted); font-weight:850">Ask days, people, interests → get suggestions</small>
+          <h3 style="margin:0">AI Trip Planner</h3>
+          <small style="color:var(--muted); font-weight:850">Days + people + interests → suggestions</small>
         </div>
         <button class="closeX" id="closeAI">✕</button>
       </div>
       <div class="chat" id="chat"></div>
       <div class="composer">
         <input id="chatInput" placeholder="Example: 4 days, couple, nature + temples, starting Shimla"/>
-        <button class="btn" id="sendChat">Send</button>
+        <button class="btnPrimary" id="sendChat" style="border-radius:14px; padding:11px 14px; border:0; cursor:pointer">Send</button>
       </div>
     </div>
   </div>
@@ -687,17 +772,20 @@ const firebaseConfig = {
 const dbPath = "locations";
 
 /* =========================
-   HELPERS
+   STATE
    ========================= */
 const $ = (id)=>document.getElementById(id);
 let allPlaces = [];
 let shownPlaces = [];
 let map = null;
 let markerLayer = null;
+let mapReady = false;
 let currentPlace = null;
 let myPos = null;
-let mapReady = false;
 
+/* =========================
+   HELPERS
+   ========================= */
 function safeText(v){ return (v ?? "").toString().trim(); }
 function escapeHtml(str){
   return safeText(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
@@ -728,16 +816,6 @@ function placeImages(p){
   if(p.image) return [p.image];
   return [];
 }
-function typeBg(type){
-  switch(type){
-    case "Trek": return "rgba(103,232,249,.22)";
-    case "Lake": return "rgba(52,211,153,.20)";
-    case "Temple": return "rgba(255,207,90,.18)";
-    case "Hotel": return "rgba(167,139,250,.18)";
-    case "Activity": return "rgba(255,107,107,.16)";
-    default: return "rgba(255,255,255,.10)";
-  }
-}
 function haversine(lat1, lon1, lat2, lon2){
   const R = 6371;
   const toRad = (d)=> d * Math.PI/180;
@@ -753,39 +831,26 @@ function haversine(lat1, lon1, lat2, lon2){
    ========================= */
 function ensureMap(){
   if(mapReady) return;
-  // show map panel
   $("mapPanel").style.display = "block";
-
   map = L.map('map', {zoomControl:true}).setView([31.9, 77.2], 7);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 18, attribution: '&copy; OpenStreetMap'
+    maxZoom: 18,
+    attribution: '&copy; OpenStreetMap'
   }).addTo(map);
   markerLayer = L.layerGroup().addTo(map);
-
   mapReady = true;
-
-  // leaflet needs size invalidation when element becomes visible
   setTimeout(()=> map.invalidateSize(), 120);
 }
-
-function clearMarkers(){
-  if(!mapReady) return;
-  markerLayer.clearLayers();
-}
+function clearMarkers(){ if(mapReady) markerLayer.clearLayers(); }
 function addMarkers(list){
   if(!mapReady) return;
   clearMarkers();
-
   list.forEach((p)=>{
     if(!p.lat || !p.lng) return;
     const m = L.marker([p.lat, p.lng]).addTo(markerLayer);
-    m.bindPopup(`<b>${escapeHtml(p.name)}</b><br/><span style="opacity:.8">${escapeHtml(p.district)} • ${escapeHtml(p.type)}</span>`);
+    m.bindPopup(`<b>${escapeHtml(p.name)}</b><br/><span style="opacity:.75">${escapeHtml(p.district)} • ${escapeHtml(p.type)}</span>`);
     m.on('click', ()=> openDrawer(p));
   });
-
-  const pts = list.filter(p=>p.lat && p.lng).map(p=>[p.lat, p.lng]);
-  if(pts.length >= 2) map.fitBounds(pts, {padding:[30,30]});
-  else if(pts.length === 1) map.setView(pts[0], 11);
 }
 
 /* =========================
@@ -810,24 +875,38 @@ async function loadPlaces(){
       const how = safeText(o["How to Reach"] || o.how || "");
       const mapUrl = safeText(o["Map"] || o.map || "");
       const {lat, lng} = parseLatLngFromMapUrl(mapUrl);
-
       const images = Array.isArray(o.images) ? o.images : (o.image ? [o.image] : []);
       const type = normalizeType(segment);
       const brief = overview || short || keyFeatures || "Explore this place in Himachal Pradesh.";
-
       return { id, name, district, type, segment, locationType, brief, how, mapUrl, lat, lng, images };
     }).filter(p=>p.name);
-
   }catch(e){
     console.error("Firebase load failed:", e);
     allPlaces = [];
   }
 }
-
 function buildDistrictDropdown(){
   const distSel = $("district");
   const districts = [...new Set(allPlaces.map(p=>p.district).filter(Boolean))].sort();
   distSel.innerHTML = `<option value="all">All</option>` + districts.map(d=>`<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join("");
+}
+
+/* =========================
+   FILTERS + LIST
+   ========================= */
+function updateActiveFilters(){
+  const parts = [];
+  const d = $("district").value;
+  const t = $("type").value;
+  const q = safeText($("q").value);
+  const days = Number($("days").value||0);
+
+  if(d !== "all") parts.push(d);
+  if(t !== "all") parts.push(t);
+  if(days) parts.push(`${days}+ days`);
+  if(q) parts.push(`“${q}”`);
+
+  $("activeFilters").textContent = parts.length ? parts.join(" • ") : "No filters";
 }
 
 function applyFilters(scrollToList=false){
@@ -852,34 +931,16 @@ function applyFilters(scrollToList=false){
   });
 
   renderList(shownPlaces);
-
-  // ✅ DO NOT display map until click
-  // so we do NOT call addMarkers here
-
-  $("count").textContent = `${shownPlaces.length} shown`;
+  $("count").textContent = `${shownPlaces.length} results`;
   updateActiveFilters();
 
   if(scrollToList) $("list").scrollTo({top:0, behavior:"smooth"});
 }
 
-function updateActiveFilters(){
-  const parts = [];
-  const d = $("district").value;
-  const t = $("type").value;
-  const q = safeText($("q").value);
-  const days = Number($("days").value||0);
-
-  if(d !== "all") parts.push(d);
-  if(t !== "all") parts.push(t);
-  if(days) parts.push(`${days}+ days`);
-  if(q) parts.push(`“${q}”`);
-  $("activeFilters").textContent = parts.length ? parts.join(" • ") : "No filters";
-}
-
 function renderList(list){
   const box = $("list");
   if(!list.length){
-    box.innerHTML = `<div style="padding:14px; color:rgba(255,255,255,.75); font-weight:850">
+    box.innerHTML = `<div style="padding:14px; color:rgba(31,35,40,.75); font-weight:850">
       No results. Try changing filters or search.
     </div>`;
     return;
@@ -888,8 +949,6 @@ function renderList(list){
   box.innerHTML = list.map((p, idx)=>{
     const imgs = placeImages(p);
     const thumb = imgs[0] || "";
-    const badgeBg = typeBg(p.type);
-    const brief = safeText(p.brief) || "Explore this place in Himachal Pradesh.";
     const meta = `${safeText(p.district)} • ${safeText(p.type)}${p.locationType ? " • " + p.locationType : ""}`;
     const km = (myPos && p.lat && p.lng) ? haversine(myPos.lat, myPos.lng, p.lat, p.lng) : null;
 
@@ -900,11 +959,11 @@ function renderList(list){
         </div>
         <div>
           <p class="pTitle">${escapeHtml(p.name)}</p>
-          <p class="pSub">${escapeHtml(meta)} — ${escapeHtml(brief)}</p>
-          <div class="pBadges">
-            <span class="badge" style="background:${badgeBg}">${escapeHtml(p.type)}</span>
+          <p class="pSub">${escapeHtml(meta)} — ${escapeHtml(p.brief)}</p>
+          <div class="badges">
+            <span class="badge">${escapeHtml(p.type)}</span>
             <span class="badge">${escapeHtml(p.district)}</span>
-            ${km ? `<span class="badge">📍 ${km.toFixed(1)} km from you</span>` : ``}
+            ${km ? `<span class="badge">📍 ${km.toFixed(1)} km</span>` : ``}
           </div>
         </div>
       </div>
@@ -920,14 +979,41 @@ function renderList(list){
 }
 
 /* =========================
+   PACKAGES (3–4)
+   ========================= */
+function makePackageText(place=null){
+  const d = $("district").value !== "all" ? $("district").value : (place ? place.district : "Himachal");
+  const days = Number($("days").value||0);
+  const people = $("people").value;
+  const interest = $("type").value !== "all" ? $("type").value : "Mixed";
+
+  const dayLabel = days ? (days<=2? "2D/1N" : days<=4? "4D/3N" : days<=7? "6D/5N" : "10D/9N") : "3D/2N";
+  const base = place ? place.name : "Top spots";
+
+  const p1 = `Package A (${dayLabel}) • ${d} Highlights — ${base} + 2 nearby places + local food.`;
+  const p2 = `Package B (${dayLabel}) • Scenic Relax — viewpoints + cafes + easy transfers.`;
+  const p3 = `Package C (${dayLabel}) • Culture + Local — temples/monasteries + market + sunsets.`;
+  const p4 = `Package D (${dayLabel}) • Adventure Mix — trek/activity + lake/waterfall + early start plan.`;
+
+  return [
+    `People: ${people} • Interest: ${interest}`,
+    "",
+    p1, "",
+    p2, "",
+    p3, "",
+    p4
+  ].join("\n");
+}
+
+/* =========================
    DRAWER
    ========================= */
 function buildMiniPlan(p){
-  if(p.type === "Trek") return "Start early • carry water + warm layer • return before sunset • add viewpoint + café stop.";
-  if(p.type === "Lake") return "Sunrise/sunset best • buffer for roads • pair with temple/meadow • keep light snacks.";
-  if(p.type === "Temple") return "Morning darshan + local market • add 1 nature spot nearby • relaxed pace.";
-  if(p.type === "Hotel") return "Use as base • add 2 nearby spots + sunset point • evening walk + dinner.";
-  return "1 main attraction + 2 nearby spots + food stop • keep time for photos.";
+  if(p.type === "Trek") return "Start early • water + warm layer • return before sunset • add viewpoint.";
+  if(p.type === "Lake") return "Sunrise/sunset • road buffer • pair with meadow/temple • slow travel.";
+  if(p.type === "Temple") return "Morning darshan • local market • add nature spot nearby • easy day.";
+  if(p.type === "Hotel") return "Use as base • 2 nearby spots + sunset point • relaxed evening.";
+  return "1 main spot + 2 nearby places + food stop • keep photo time.";
 }
 
 function openDrawer(p){
@@ -937,70 +1023,49 @@ function openDrawer(p){
   $("dDesc").textContent = safeText(p.brief) || "No description available yet.";
   $("dType").textContent = p.type;
   $("dDistrict").textContent = p.district;
-  $("dHow").textContent = (safeText(p.how) ? `Reach: ${p.how}` : "Reach: —");
+  $("dHow").textContent = safeText(p.how) ? `Reach: ${p.how}` : "Reach: —";
   $("miniPlan").textContent = buildMiniPlan(p);
 
-  // distance
-  let distLine = "Turn on Nearby to see distance from you.";
   if(myPos && p.lat && p.lng){
     const km = haversine(myPos.lat, myPos.lng, p.lat, p.lng);
-    distLine = `Approx distance from you: ${km.toFixed(1)} km.`;
+    $("distInfo").textContent = `Approx distance: ${km.toFixed(1)} km from you.`;
+  }else{
+    $("distInfo").textContent = "Turn on Nearby to see distance.";
   }
-  $("distInfo").textContent = distLine;
 
-  // Gallery max 6
   const imgs = placeImages(p).slice(0,6);
   const g = $("gallery");
   if(imgs.length){
-    g.innerHTML = imgs.map(u=>`
-      <div class="gImg"><img src="${u}" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.remove()"/></div>
-    `).join("");
+    g.innerHTML = imgs.map(u=>`<div class="gImg"><img src="${u}" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.remove()"/></div>`).join("");
   }else{
-    g.innerHTML = `
-      <div class="gImg" style="display:flex; align-items:center; justify-content:center; padding:14px; color:rgba(255,255,255,.75); font-weight:850">
-        No images yet (add images[] in Firebase)
-      </div>`;
+    g.innerHTML = `<div class="gImg" style="display:flex; align-items:center; justify-content:center; padding:14px; color:rgba(31,35,40,.72); font-weight:850">
+      No images yet (add images[] in Firebase)
+    </div>`;
   }
 
   $("drawerWrap").style.display = "flex";
 }
-
-function closeDrawer(){
-  $("drawerWrap").style.display = "none";
-  currentPlace = null;
-}
+function closeDrawer(){ $("drawerWrap").style.display = "none"; currentPlace = null; }
 $("closeDrawer").onclick = closeDrawer;
-$("drawerWrap").addEventListener("click", (e)=>{ if(e.target === $("drawerWrap")) closeDrawer(); });
+$("drawerWrap").addEventListener("click",(e)=>{ if(e.target === $("drawerWrap")) closeDrawer(); });
 
-/* ✅ Show map ONLY after click (button) */
 $("routeBtn").onclick = ()=>{
   if(!currentPlace) return;
-
-  ensureMap();                       // init map now
-  addMarkers([currentPlace]);        // show only selected
+  ensureMap();
+  addMarkers([currentPlace]);
   if(currentPlace.lat && currentPlace.lng){
     map.setView([currentPlace.lat, currentPlace.lng], 12);
     $("mapHint").textContent = `${currentPlace.name} • ${currentPlace.district}`;
   }else{
-    $("mapHint").textContent = "No lat/lng found for this place (add map link with q=lat,lng)";
+    $("mapHint").textContent = "No lat/lng found (add Map link with q=lat,lng).";
   }
-
   closeDrawer();
   location.hash = "#explore";
 };
 
 $("pkgBtn").onclick = ()=>{
   if(!currentPlace) return;
-  const base = currentPlace.name;
-  const district = currentPlace.district;
-
-  const pack = [
-    `Package A: ${district} Highlights (2D/1N) — ${base} + 2 nearby spots + local food.`,
-    `Package B: Nature & Photos (3D/2N) — ${base} + scenic points + relaxed pace.`,
-    `Package C: Temples + Culture (4D/3N) — ${base} + top temples + market + heritage.`,
-    `Package D: Adventure Mix (5D/4N) — ${base} + trek/activity + sunrise/sunset points.`
-  ];
-  alert(pack.join("\n\n"));
+  $("packagesBox").textContent = makePackageText(currentPlace);
 };
 
 $("fullBtn").onclick = ()=>{
@@ -1012,24 +1077,20 @@ $("fullBtn").onclick = ()=>{
    NEARBY
    ========================= */
 $("nearby").onclick = ()=>{
-  if(!navigator.geolocation){
-    alert("GPS not supported.");
-    return;
-  }
+  if(!navigator.geolocation){ alert("GPS not supported."); return; }
   $("status").textContent = "Getting your location…";
   navigator.geolocation.getCurrentPosition((pos)=>{
     myPos = {lat: pos.coords.latitude, lng: pos.coords.longitude};
-    $("status").textContent = "Nearby ready. Distances shown in list.";
-    // re-render list so distances appear
+    $("status").textContent = "Nearby enabled. Distances are shown.";
     renderList(shownPlaces);
   }, ()=>{
     $("status").textContent = "GPS permission denied.";
-    alert("Allow location permission to use Nearby.");
+    alert("Allow location permission for Nearby.");
   }, {enableHighAccuracy:true, timeout:12000});
 };
 
 /* =========================
-   AI MODAL
+   AI MODAL (same logic)
    ========================= */
 function openAI(){ $("modalWrap").style.display="flex"; seedChat(); }
 function closeAI(){ $("modalWrap").style.display="none"; }
@@ -1046,7 +1107,7 @@ function pushMsg(text, who="bot"){
 }
 function seedChat(){
   $("chat").innerHTML = "";
-  pushMsg("Tell me: days + people + interests (trek/lake/temple/snow/relax) + starting place/district.", "bot");
+  pushMsg("Tell me: days + people + interests (trek/lake/temple/relax) + starting place/district.", "bot");
   pushMsg("Example: 4 days, couple, nature + temples, starting Shimla", "bot");
 }
 function aiSuggest(userText){
@@ -1064,9 +1125,7 @@ function aiSuggest(userText){
 
   let districtHint = null;
   const districts = [...new Set(allPlaces.map(p=>p.district))];
-  for(const d of districts){
-    if(t.includes(d.toLowerCase())) { districtHint = d; break; }
-  }
+  for(const d of districts){ if(t.includes(d.toLowerCase())) { districtHint = d; break; } }
 
   const scored = allPlaces.map(p=>{
     let s=0;
@@ -1086,7 +1145,7 @@ function aiSuggest(userText){
     .map((p,i)=>`${i+1}. ${p.name} (${p.district} • ${p.type})`)
     .join("\n");
 
-  return `Based on your message, here are good picks:\n${list}\n\nTip: Use filters on home, then click a place to open map.`;
+  return `Suggestions:\n${list}\n\nTip: Apply filters → click a place → open map + route.`;
 }
 $("sendChat").onclick = ()=>{
   const v = safeText($("chatInput").value);
@@ -1105,8 +1164,9 @@ $("reset").onclick = ()=>{
   $("q").value = ""; $("district").value="all"; $("type").value="all"; $("days").value="0";
   applyFilters(true);
 };
+$("makePackages").onclick = ()=>{ $("packagesBox").textContent = makePackageText(null); };
 
-document.querySelectorAll(".qcard").forEach(el=>{
+document.querySelectorAll(".tile").forEach(el=>{
   el.addEventListener("click", ()=>{
     $("type").value = el.getAttribute("data-quick");
     applyFilters(true);
@@ -1114,10 +1174,7 @@ document.querySelectorAll(".qcard").forEach(el=>{
   });
 });
 
-$("openAdmin").onclick = ()=>{
-  const go = confirm("Open admin page (admin.html)?");
-  if(go) window.location.href = "admin.html";
-};
+$("openAdmin").onclick = ()=>{ window.location.href = "admin.html"; };
 
 /* =========================
    INIT
@@ -1126,6 +1183,7 @@ $("openAdmin").onclick = ()=>{
   await loadPlaces();
   buildDistrictDropdown();
 
+  $("statPlaces").textContent = allPlaces.length.toString();
   $("status").textContent = allPlaces.length
     ? `Loaded ${allPlaces.length} places from Firebase /${dbPath}`
     : "No data loaded. Check RTDB rules + path.";
