@@ -5,10 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Himachal Explorer — Packages First</title>
 
-  <!-- Leaflet (optional; map stays hidden until you wire it) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
   <!-- Firebase (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
@@ -54,10 +50,7 @@
       backdrop-filter: blur(10px);
       border-bottom:1px solid var(--stroke);
     }
-    .brand{
-      display:flex; align-items:center; gap:10px;
-      min-width:220px;
-    }
+    .brand{display:flex; align-items:center; gap:10px; min-width:220px;}
     .logo{
       width:42px; height:42px; border-radius:14px;
       background: linear-gradient(135deg, rgba(79,70,229,.95), rgba(6,182,212,.85));
@@ -67,25 +60,6 @@
     }
     .brand h1{margin:0; font-size:14px; font-weight:950; line-height:1.1}
     .brand p{margin:2px 0 0; font-size:12px; color:var(--muted); font-weight:650}
-    .tabs{display:flex; align-items:center; gap:8px}
-    .pill{
-      border:1px solid var(--stroke);
-      background:rgba(255,255,255,.7);
-      padding:10px 12px;
-      border-radius:999px;
-      font-weight:800;
-      font-size:13px;
-      cursor:pointer;
-      display:flex; align-items:center; gap:8px;
-      box-shadow:0 10px 25px rgba(10,20,40,.06);
-      user-select:none;
-    }
-    .pill .dot{width:9px; height:9px; border-radius:999px; background:rgba(11,18,32,.25)}
-    .pill.active{
-      border-color: rgba(79,70,229,.30);
-      background: rgba(79,70,229,.10);
-    }
-    .pill.active .dot{background:var(--brand)}
     .tools{display:flex; align-items:center; gap:8px}
     .btn{
       border:1px solid var(--stroke);
@@ -336,7 +310,6 @@
       .wrap{grid-template-columns:1fr}
       .sidebar{display:none}
       .menuBtn{display:inline-flex}
-      .tabs{display:none}
       .brand p{display:none}
       .list{max-height:none}
     }
@@ -355,7 +328,7 @@
   <div id="drawer" class="drawer" aria-hidden="true">
     <div class="sidebar" style="height:auto; top:auto;">
       <div class="sideHead">
-        <div class="title">Types</div>
+        <div class="title">Filters</div>
         <button class="btn" onclick="closeDrawer()">Close</button>
       </div>
       <input id="q_m" class="search" placeholder="Search places…" oninput="onSearch(this.value)" />
@@ -364,14 +337,15 @@
         <div id="typesList_m"></div>
       </div>
       <div class="section">
-        <h3>Quick</h3>
+        <h3>Quick tools</h3>
         <div class="quickRow">
           <span class="chip" onclick="quickSelect('All')">All</span>
-          <span class="chip" onclick="quickSelect('Destination')">Destinations</span>
-          <span class="chip" onclick="quickSelect('Temple')">Temples</span>
-          <span class="chip" onclick="quickSelect('Lake')">Lakes</span>
-          <span class="chip" onclick="quickSelect('Trek')">Treks</span>
-          <span class="chip" onclick="quickSelect('Hotel')">Hotels</span>
+          <span class="chip" onclick="quickSelect('Destination')">Destination</span>
+          <span class="chip" onclick="quickSelect('Temple')">Temple</span>
+          <span class="chip" onclick="quickSelect('Activity')">Activity</span>
+          <span class="chip" onclick="quickSelect('Lake')">Lake</span>
+          <span class="chip" onclick="quickSelect('Hotel')">Hotel</span>
+          <span class="chip" onclick="quickSelect('Trek')">Trek</span>
         </div>
       </div>
     </div>
@@ -383,18 +357,12 @@
       <div class="logo">HP</div>
       <div>
         <h1>Himachal Explorer</h1>
-        <p>Type sidebar (left) • packages first (middle)</p>
+        <p>Same filters • packages first</p>
       </div>
     </div>
 
-    <div class="tabs">
-      <div class="pill active"><span class="dot"></span> Explore</div>
-      <div class="pill"><span class="dot"></span> AI Planner</div>
-      <div class="pill" onclick="goAdmin()"><span class="dot"></span> Admin</div>
-    </div>
-
     <div class="tools">
-      <button class="btn menuBtn" onclick="openDrawer()">☰ Types</button>
+      <button class="btn menuBtn" onclick="openDrawer()">☰ Filters</button>
       <button class="btn" onclick="resetAll()">Reset</button>
       <button class="btn primary" onclick="goAdmin()">Admin</button>
     </div>
@@ -404,7 +372,7 @@
     <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sideHead">
-        <div class="title">Types</div>
+        <div class="title">Filters</div>
         <span class="badge"><span class="bDot"></span><span id="statusText">Loading…</span></span>
       </div>
 
@@ -419,12 +387,12 @@
         <h3>Quick tools</h3>
         <div class="quickRow">
           <span class="chip" onclick="quickSelect('All')">All</span>
-          <span class="chip" onclick="quickSelect('Destination')">Destinations</span>
-          <span class="chip" onclick="quickSelect('Temple')">Temples</span>
-          <span class="chip" onclick="quickSelect('Activity')">Activities</span>
-          <span class="chip" onclick="quickSelect('Lake')">Lakes</span>
-          <span class="chip" onclick="quickSelect('Hotel')">Hotels</span>
-          <span class="chip" onclick="quickSelect('Trek')">Treks</span>
+          <span class="chip" onclick="quickSelect('Destination')">Destination</span>
+          <span class="chip" onclick="quickSelect('Temple')">Temple</span>
+          <span class="chip" onclick="quickSelect('Activity')">Activity</span>
+          <span class="chip" onclick="quickSelect('Lake')">Lake</span>
+          <span class="chip" onclick="quickSelect('Hotel')">Hotel</span>
+          <span class="chip" onclick="quickSelect('Trek')">Trek</span>
         </div>
       </div>
     </aside>
@@ -434,7 +402,7 @@
       <div class="mainHead">
         <div>
           <h2 id="mainTitle">Packages</h2>
-          <p id="mainHint">Do not show all locations. Click a package to view locations it covers.</p>
+          <p id="mainHint">Default: show best value packages. Click one to see covered locations.</p>
         </div>
         <div class="badge"><span class="bDot"></span><span id="countText">0</span></div>
       </div>
@@ -445,8 +413,7 @@
 
 <script>
 /* =========================================================
-   1) FIREBASE CONFIG (PASTE YOUR REAL CONFIG HERE)
-   If not set, page uses SAMPLE_PLACES so it never looks empty
+   FIREBASE CONFIG (PASTE YOUR REAL CONFIG HERE)
 ========================================================= */
 const FIREBASE_CONFIG = {
   // apiKey: "....",
@@ -457,7 +424,7 @@ const FIREBASE_CONFIG = {
 const FIREBASE_NODE = "locations";
 
 /* =========================================================
-   2) FALLBACK SAMPLE DATA
+   FALLBACK DATA (so page never blank)
 ========================================================= */
 const SAMPLE_PLACES = [
   {"Location Name":"Annandale","District":"Shimla","Type":"Destination","Brief Description":"Historic playground and open ground."},
@@ -477,37 +444,42 @@ const SAMPLE_PLACES = [
   {"Location Name":"Dalhousie","District":"Chamba","Type":"Destination","Brief Description":"Colonial charm."},
   {"Location Name":"Khajjiar","District":"Chamba","Type":"Lake","Brief Description":"Meadows and lake."},
 
-  {"Location Name":"Kaza","District":"Lahaul and Spiti","Type":"Destination","Brief Description":"Spiti base town."},
-  {"Location Name":"Key Monastery","District":"Lahaul and Spiti","Type":"Temple","Brief Description":"Iconic monastery."},
-  {"Location Name":"Kibber","District":"Lahaul and Spiti","Type":"Destination","Brief Description":"High village views."}
+  {"Location Name":"Triund Trek","District":"Kangra","Type":"Trek","Brief Description":"Popular short trek near McLeod Ganj."},
+  {"Location Name":"Jakhu Temple","District":"Shimla","Type":"Temple","Brief Description":"Hanuman temple with views."},
+  {"Location Name":"Sample Hotel Manali","District":"Kullu","Type":"Hotel","Brief Description":"Sample hotel entry for filter demo."}
 ];
 
 /* =========================================================
-   3) PACKAGES (default 4–5)
-   IMPORTANT: packages are built from FILTERED places
+   PACKAGES (4–5)
+   NOTE: built from FILTERED places so your filter logic stays
 ========================================================= */
 const VALUE_PACKAGES = [
-  { id:"pkg1", title:"Weekend Shimla Value Pack", days:2, budget:"₹₹", districts:["Shimla","Solan"], hero:"Fast • Budget • Family", must:["Shimla","Kufri","Naldehra","Mashobra"], limit:10 },
+  { id:"pkg1", title:"Weekend Shimla Value Pack", days:2, budget:"₹₹", districts:["Shimla","Solan"], hero:"Fast • Budget • Family", must:["Shimla","Kufri","Naldehra","Mashobra","Jakhu"], limit:10 },
   { id:"pkg2", title:"Kullu–Manali Classic Saver", days:3, budget:"₹₹₹", districts:["Kullu"], hero:"Adventure • Cafes • Snow-season", must:["Manali","Solang","Kasol","Naggar"], limit:12 },
-  { id:"pkg3", title:"Dharamshala–Kangra Culture Pack", days:3, budget:"₹₹", districts:["Kangra"], hero:"Culture • Calm • Best value", must:["Dharamshala","McLeod","Kangra Fort"], limit:12 },
+  { id:"pkg3", title:"Dharamshala–Kangra Culture Pack", days:3, budget:"₹₹", districts:["Kangra"], hero:"Culture • Calm • Best value", must:["Dharamshala","McLeod","Kangra Fort","Triund"], limit:12 },
   { id:"pkg4", title:"Dalhousie–Chamba Scenic Pack", days:3, budget:"₹₹", districts:["Chamba"], hero:"Scenic • Relaxed • Saver", must:["Dalhousie","Khajjiar"], limit:12 },
   { id:"pkg5", title:"Spiti Starter (Smart Budget)", days:5, budget:"₹₹₹₹", districts:["Lahaul and Spiti"], hero:"Unique • Iconic • Minimal rush", must:["Kaza","Key","Kibber"], limit:10 },
 ];
 
 /* =========================================================
-   4) STATE (filters + view)
+   YOUR PREVIOUS FILTER OPTIONS (fixed)
+========================================================= */
+const FIXED_TYPES = ["Destination","Temple","Activity","Lake","Hotel","Trek"];
+
+/* =========================================================
+   STATE
 ========================================================= */
 const state = {
   allPlaces: [],
   search: "",
-  activeTypes: new Set(), // empty means ALL
+  activeTypes: new Set(), // empty => ALL
   view: "packages",       // "packages" | "packageDetail"
   activePkg: null,
   lastFiltered: []
 };
 
 /* =========================================================
-   5) HELPERS
+   HELPERS
 ========================================================= */
 function norm(s){ return String(s||"").trim().toLowerCase(); }
 function getName(p){ return p["Location Name"] || p.Name || p.name || "Untitled"; }
@@ -522,7 +494,7 @@ function tagClass(b){
 }
 
 /* =========================================================
-   6) LOAD DATA (Firebase optional)
+   LOAD DATA
 ========================================================= */
 function setStatus(t){ document.getElementById("statusText").textContent = t; }
 
@@ -551,8 +523,7 @@ async function loadPlaces(){
 }
 
 /* =========================================================
-   7) FILTER LOGIC (types + search)
-   This is your core logic kept intact
+   FILTER LOGIC (same idea as your old version)
 ========================================================= */
 function applyFilters(){
   const q = norm(state.search);
@@ -563,13 +534,13 @@ function applyFilters(){
     const dist = norm(getDistrict(p));
     const type = getType(p);
 
-    // search
+    // Search
     if(q){
       const hay = `${name} ${dist} ${norm(type)} ${norm(getDesc(p))}`;
       if(!hay.includes(q)) return false;
     }
 
-    // type filter
+    // Type filter
     if(typesOn){
       if(!state.activeTypes.has(type)) return false;
     }
@@ -590,23 +561,20 @@ function computeTypeCounts(list){
 }
 
 /* =========================================================
-   8) RENDER SIDEBAR TYPES (keeps counts)
+   RENDER TYPES (ONLY your previous options)
 ========================================================= */
-const ORDERED_TYPES = ["Destination","Temple","Activity","Lake","Hotel","Trek","Cave","Other"];
-
 function renderTypes(){
   const countsAll = computeTypeCounts(state.allPlaces);
-  const types = ORDERED_TYPES.filter(t => countsAll[t]).concat(
-    Object.keys(countsAll).filter(t => !ORDERED_TYPES.includes(t)).sort()
-  );
 
   const build = (containerId)=>{
     const wrap = document.getElementById(containerId);
     if(!wrap) return;
     wrap.innerHTML = "";
 
-    types.forEach(t=>{
+    FIXED_TYPES.forEach(t=>{
+      const count = countsAll[t] || 0;
       const on = state.activeTypes.size ? state.activeTypes.has(t) : false;
+
       const row = document.createElement("div");
       row.className = "typeItem" + (on ? " on" : "");
       row.innerHTML = `
@@ -614,12 +582,11 @@ function renderTypes(){
           <div style="font-weight:980;">${t}</div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
-          <span class="miniCount">${countsAll[t] || 0}</span>
+          <span class="miniCount">${count}</span>
           <span class="caret">▾</span>
         </div>
       `;
       row.onclick = ()=>{
-        // toggle
         if(state.activeTypes.has(t)) state.activeTypes.delete(t);
         else state.activeTypes.add(t);
         refreshUI();
@@ -633,8 +600,7 @@ function renderTypes(){
 }
 
 /* =========================================================
-   9) PACKAGES VIEW (default)
-   Uses FILTERED PLACES (so your filters are NOT removed)
+   PACKAGES LOGIC (build from FILTERED places)
 ========================================================= */
 function pickPlacesForPackage(filteredPlaces, pkg){
   const districtWanted = (pkg.districts || []).map(norm);
@@ -642,26 +608,25 @@ function pickPlacesForPackage(filteredPlaces, pkg){
 
   let candidates = filteredPlaces.slice();
 
-  // If districtWanted has matches, prioritize them (but don't force empty)
+  // If package districts are available in current filtered set, prefer them
   const districtHits = candidates.filter(p => districtWanted.includes(norm(getDistrict(p))));
   if(districtHits.length) candidates = districtHits;
 
+  // Must-have first
   const mustHits = [];
   const rest = [];
-
   for(const p of candidates){
     const n = norm(getName(p));
     if(must.some(m => n.includes(m))) mustHits.push(p);
     else rest.push(p);
   }
 
-  // prefer variety by type
+  // Small variety: sort by type
   rest.sort((a,b)=> norm(getType(a)).localeCompare(norm(getType(b))));
 
   const merged = [...mustHits, ...rest];
   const out = [];
   const seen = new Set();
-
   for(const p of merged){
     const k = norm(getName(p));
     if(seen.has(k)) continue;
@@ -678,12 +643,11 @@ function renderPackages(filteredPlaces){
 
   document.getElementById("mainTitle").textContent = "Packages";
   document.getElementById("mainHint").textContent =
-    "Do not show all locations. Click a package to view locations it covers.";
+    "Default: show best value packages. Click one to see covered locations.";
 
   const list = document.getElementById("placesList");
   list.innerHTML = "";
 
-  // count badge: show results of filteredPlaces (so user knows filters applied)
   document.getElementById("countText").textContent = `${filteredPlaces.length} results`;
 
   VALUE_PACKAGES.forEach(pkg=>{
@@ -776,11 +740,10 @@ function renderPackageDetail(pkg, coveredPlaces, filteredPlaces){
 }
 
 /* =========================================================
-   10) UI EVENTS
+   UI EVENTS
 ========================================================= */
 function onSearch(v){
   state.search = v || "";
-  // sync both search boxes
   const a = document.getElementById("q");
   const b = document.getElementById("q_m");
   if(a && document.activeElement !== a) a.value = state.search;
@@ -795,7 +758,6 @@ function quickSelect(type){
     state.activeTypes.clear();
     state.activeTypes.add(type);
   }
-  // update quick chips UI state (optional)
   refreshUI();
 }
 
@@ -813,7 +775,7 @@ function refreshUI(){
   renderTypes();
   const filtered = applyFilters();
 
-  // packages mode stays default; if user is in detail, keep it updated with filters too
+  // keep detail view live with filters too
   if(state.view === "packageDetail" && state.activePkg){
     const covered = pickPlacesForPackage(filtered, state.activePkg);
     renderPackageDetail(state.activePkg, covered, filtered);
@@ -837,7 +799,7 @@ function closeDrawer(){
 }
 
 /* =========================================================
-   11) INIT
+   INIT
 ========================================================= */
 (async function init(){
   setStatus("Loading…");
