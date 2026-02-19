@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — Light Premium (Sidebar Segments)</title>
+  <title>Himachal Explorer — Light Premium</title>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -66,7 +66,6 @@
       box-shadow: 0 12px 26px rgba(37,99,235,.18);
       display:flex; align-items:center; justify-content:center;
       overflow:hidden;
-      flex:0 0 auto;
     }
     .logo img{width:100%; height:100%; object-fit:cover; display:block}
     .brand h1{margin:0; font-size:14px; line-height:1.1; letter-spacing:.2px}
@@ -82,7 +81,6 @@
       font-weight:850; font-size:12px;
       transition:.18s ease;
       cursor:pointer;
-      user-select:none;
     }
     .pill:hover{transform: translateY(-1px)}
     .dot{
@@ -123,9 +121,7 @@
       align-items:stretch;
       margin-top:10px;
     }
-    @media(max-width:900px){
-      .hero{ grid-template-columns:1fr; }
-    }
+    @media(max-width:900px){ .hero{ grid-template-columns:1fr; } }
 
     /* HERO CARD */
     .heroCard{
@@ -147,8 +143,6 @@
       opacity:.85;
       pointer-events:none;
     }
-
-    /* HERO INNER WITH IMAGE */
     .heroInner{
       position:relative;
       padding:26px;
@@ -162,7 +156,6 @@
         url("./Kee_monastery.jpg") center/cover no-repeat;
       border-radius: var(--r2);
     }
-
     .heroTitle{
       margin:0;
       font-size: clamp(28px,3.2vw,48px);
@@ -319,15 +312,81 @@
     .sectionTitle h2{margin:0; font-size:16px}
     .sectionTitle p{margin:0; color:var(--muted); font-weight:800; font-size:12px}
 
-    /* Explore: list + map (map hidden until click) */
-    .grid2{display:grid; grid-template-columns: 1fr; gap:14px}
+    /* Explore layout: sidebar + list + (map hidden) */
+    .exploreGrid{
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      gap:14px;
+      align-items:start;
+    }
+    @media(max-width:980px){
+      .exploreGrid{grid-template-columns:1fr}
+    }
+
+    /* Sidebar */
+    .sidebar{
+      position:sticky;
+      top:78px;
+      max-height: calc(100vh - 96px);
+      overflow:auto;
+    }
+    .sideHead{
+      padding:14px;
+      border-bottom:1px solid var(--stroke);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.75));
+    }
+    .sideHead h3{margin:0; font-size:13px}
+    .segBox{padding:12px; display:grid; gap:10px}
+    .segRow{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.86);
+      border-radius:18px;
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+    }
+    .segTop{
+      padding:12px 12px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .segTop b{font-size:12px}
+    .segTop span{font-size:12px; color:rgba(11,18,32,.62); font-weight:850}
+    .chev{font-weight:950; opacity:.7}
+    .segList{
+      display:none;
+      border-top:1px solid var(--stroke);
+      padding:10px;
+      background: rgba(245,247,255,.70);
+    }
+    .segBtn{
+      width:100%;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:10px 10px;
+      border-radius:14px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.86);
+      cursor:pointer;
+      font-weight:900;
+      margin-bottom:8px;
+      box-shadow: var(--shadow2);
+    }
+    .segBtn span{font-size:12px}
+    .segBtn small{font-size:11px; opacity:.75}
+    .segBtn:hover{transform: translateY(-1px)}
+
+    /* List */
     .results{min-height:460px; display:flex; flex-direction:column}
     .list{
       padding:14px;
       display:grid;
       gap:10px;
       overflow:auto;
-      max-height: 680px;
+      max-height: 720px;
     }
     .place{
       display:grid;
@@ -361,8 +420,8 @@
       background: rgba(255,255,255,.86);
     }
 
-    /* MAP PANEL */
-    .mapPanel{display:none}
+    /* Map panel stays hidden until click */
+    .mapPanel{display:none; margin-top:14px}
     #map{
       width:100%;
       height: 460px;
@@ -372,109 +431,38 @@
       overflow:hidden;
     }
 
-    /* ===== Sidebar Segments ===== */
-    .shell{
-      display:grid;
-      grid-template-columns: 320px 1fr;
-      gap:14px;
-      align-items:start;
-      margin-top:16px;
-    }
-    @media(max-width: 980px){
-      .shell{grid-template-columns: 1fr}
-    }
-    .sidebar{
-      position:sticky; top:84px;
-      border-radius: var(--r2);
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.80);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      max-height: calc(100vh - 110px);
-    }
-    .sbHead{
-      padding:14px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      border-bottom:1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.78));
-    }
-    .sbHead h3{margin:0; font-size:13px}
-    .sbHead small{color:var(--muted); font-weight:850}
-    .sbBody{padding:12px; overflow:auto}
-    .segRow{
-      border:1px solid var(--stroke);
-      border-radius:18px;
-      background: rgba(255,255,255,.88);
-      box-shadow: var(--shadow2);
-      overflow:hidden;
-      margin-bottom:10px;
-    }
-    .segTop{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding:10px 12px;
-      cursor:pointer;
-      user-select:none;
-    }
-    .segTop b{font-size:12px}
-    .segTop span{font-size:11px; color:rgba(11,18,32,.60); font-weight:900}
-    .chev{font-weight:1000; opacity:.7}
-    .segList{
-      display:none;
-      border-top:1px solid var(--stroke);
-      background: rgba(245,247,255,.78);
-      padding:8px;
-    }
-    .segBtn{
-      width:100%;
-      text-align:left;
-      padding:10px 10px;
-      border-radius:14px;
-      border:1px solid rgba(10,18,40,.10);
-      background: rgba(255,255,255,.88);
-      cursor:pointer;
-      font-weight:900;
-      font-size:12px;
-      margin:6px 0;
-      transition:.14s ease;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-    }
-    .segBtn:hover{transform: translateY(-1px)}
-    .segBtn small{color:rgba(11,18,32,.60); font-weight:900}
-
     /* Mobile sidebar drawer */
-    .sbFab{
-      display:none;
-      position:fixed;
-      right:14px; bottom:14px;
-      z-index:90;
-      border-radius:999px;
-      padding:12px 14px;
-      box-shadow: 0 22px 60px rgba(37,99,235,.20);
-    }
-    .sbOverlay{
+    .sideMobileWrap{
       position:fixed; inset:0;
       background: rgba(15,23,42,.35);
-      backdrop-filter: blur(6px);
       display:none;
+      align-items:stretch;
+      justify-content:flex-start;
       z-index:80;
-      padding:14px;
-      align-items:flex-end;
-      justify-content:center;
+      backdrop-filter: blur(6px);
     }
-    .sbSheet{
-      width:min(560px, 100%);
-      border-radius: 26px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.92);
+    .sideMobile{
+      width:min(420px, 92vw);
+      height:100%;
+      background: rgba(255,255,255,.95);
+      border-right: 1px solid var(--stroke);
       box-shadow: 0 30px 110px rgba(15,23,42,.20);
-      overflow:hidden;
-      max-height: 82vh;
       display:flex; flex-direction:column;
     }
-    .sbSheet .sbBody{padding:12px; overflow:auto}
-    @media(max-width: 980px){
-      .sidebar{display:none}
-      .sbFab{display:inline-flex}
+    .sideMobileTop{
+      padding:14px;
+      border-bottom:1px solid var(--stroke);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.88));
+    }
+    .closeX{
+      width:42px; height:42px; border-radius:14px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.92);
+      cursor:pointer;
+      color:var(--text);
+      font-weight:950;
+      box-shadow: var(--shadow2);
     }
 
     /* AI Modal */
@@ -542,15 +530,6 @@
       font-weight:800;
       box-shadow: var(--shadow2);
     }
-    .closeX{
-      width:42px; height:42px; border-radius:14px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.92);
-      cursor:pointer;
-      color:var(--text);
-      font-weight:950;
-      box-shadow: var(--shadow2);
-    }
 
     @media (max-width: 980px){
       .finder{grid-template-columns:1fr 1fr}
@@ -559,6 +538,8 @@
       #map{height:380px}
       .bRow{grid-template-columns:1fr}
       .pkgTiles{grid-template-columns:1fr}
+      .sidebar{display:none;}
+      .nav .pill.sideOpen{display:inline-flex;}
     }
   </style>
 </head>
@@ -572,11 +553,12 @@
         </div>
         <div>
           <h1>Himachal Explorer</h1>
-          <small>Light premium • search • packages • segments sidebar</small>
+          <small>Light premium • fast search • type sidebar</small>
         </div>
       </div>
 
       <div class="nav">
+        <span class="pill sideOpen" id="openSideMobile" style="display:none"><span class="dot"></span>Types</span>
         <a class="pill" href="#explore"><span class="dot"></span>Explore</a>
         <button class="btn ghost" id="openAI">AI Planner</button>
         <button class="btn" id="openAdmin">Admin</button>
@@ -590,16 +572,15 @@
       <div class="heroCard">
         <div class="heroInner">
           <div>
-            <h2 class="heroTitle">Plan Himachal like a pro — clean + fast.</h2>
+            <h2 class="heroTitle">Plan Himachal like a pro — without clutter.</h2>
             <p class="heroSub">
-              Search by <b>district</b>, <b>type</b>, <b>days</b>. Use sidebar segments to filter instantly.
-              Click a place → opens <b>place.html</b>.
+              Search + filters + <b>Type sidebar</b>. Map loads only when you click <b>Show Map</b>.
             </p>
 
             <div class="chips">
-              <div class="chip"><i>Smart</i>Segment sidebar</div>
-              <div class="chip"><i>Live</i>Packages + rates</div>
-              <div class="chip"><i>Lazy</i>Map only when needed</div>
+              <div class="chip"><i>Clean</i>Light premium theme</div>
+              <div class="chip"><i>Smart</i>Type-based sidebar</div>
+              <div class="chip"><i>Fast</i>Map on demand</div>
             </div>
 
             <div class="finder">
@@ -649,7 +630,7 @@
 
           <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap">
             <small style="color:rgba(11,18,32,.65); font-weight:800">
-              Tip: Sidebar → click Segment/Type to show places in middle.
+              Tip: Sidebar Type → middle list updates instantly.
             </small>
             <small id="status" style="color:rgba(11,18,32,.65); font-weight:900">Loading…</small>
           </div>
@@ -703,7 +684,6 @@
           </div>
 
           <div style="display:flex; gap:10px; flex-wrap:wrap">
-            <div class="pill" id="openSidebarMobile"><span class="dot"></span>Segments</div>
             <a class="pill" href="#explore"><span class="dot"></span><span id="activeFilters">No filters</span></a>
             <div class="pill" style="cursor:pointer" data-quick="Trek"><span class="dot"></span>Top Treks</div>
             <div class="pill" style="cursor:pointer" data-quick="Lake"><span class="dot"></span>Lakes</div>
@@ -716,33 +696,30 @@
     <section class="section" id="explore">
       <div class="sectionTitle">
         <div>
-          <h2>Explore</h2>
-          <p>Segment sidebar filters places in the middle panel.</p>
+          <h2>Explore results</h2>
+          <p>Type sidebar (left) → list (middle). Map stays hidden until “Show Map”.</p>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap">
           <span class="pill"><span class="dot"></span><span id="count">0</span></span>
         </div>
       </div>
 
-      <div class="shell">
-        <!-- SIDEBAR (desktop) -->
-        <aside class="sidebar" id="sidebarDesktop">
-          <div class="sbHead">
-            <div>
-              <h3>Segments</h3>
-              <small>open/close + filter</small>
-            </div>
-            <button class="btn ghost" id="collapseAll" style="padding:9px 10px">Collapse</button>
+      <div class="exploreGrid">
+        <!-- LEFT SIDEBAR (Desktop) -->
+        <div class="panel sidebar">
+          <div class="sideHead">
+            <h3>Types</h3>
+            <button class="btn ghost" id="collapseAll">Collapse</button>
           </div>
-          <div class="sbBody" id="segBox"></div>
-        </aside>
+          <div class="segBox" id="segBox"></div>
+        </div>
 
-        <!-- MAIN -->
-        <div class="grid2">
+        <!-- MIDDLE: LIST + MAP -->
+        <div>
           <div class="panel results">
             <div class="panelHead">
               <h3>Places</h3>
-              <small>click to open place.html</small>
+              <small>click to open (place.html)</small>
             </div>
             <div class="list" id="list"></div>
           </div>
@@ -761,20 +738,17 @@
     </section>
   </div>
 
-  <!-- Mobile sidebar FAB -->
-  <button class="btn sbFab" id="sbFab">Segments</button>
-
-  <!-- Mobile sidebar overlay -->
-  <div class="sbOverlay" id="sbOverlay" role="dialog" aria-modal="true">
-    <div class="sbSheet">
-      <div class="sbHead">
+  <!-- MOBILE SIDEBAR DRAWER -->
+  <div class="sideMobileWrap" id="sideMobileWrap" aria-modal="true" role="dialog">
+    <div class="sideMobile">
+      <div class="sideMobileTop">
         <div>
-          <h3>Segments</h3>
-          <small>tap to filter</small>
+          <b>Types</b><br/>
+          <small style="color:rgba(11,18,32,.65); font-weight:850">Tap type → list updates</small>
         </div>
-        <button class="closeX" id="sbClose">✕</button>
+        <button class="closeX" id="closeSideMobile">✕</button>
       </div>
-      <div class="sbBody" id="segBoxMobile"></div>
+      <div class="segBox" id="segBoxMobile" style="flex:1; overflow:auto;"></div>
     </div>
   </div>
 
@@ -880,7 +854,6 @@ function pickRate(p, people){
   const couple = r.couple ?? p.Rate_Couple ?? null;
   const family = r.family ?? p.Rate_Family ?? null;
   const group = r.group ?? p.Rate_Group ?? null;
-
   if(people==="solo") return solo;
   if(people==="couple") return couple;
   if(people==="family") return family;
@@ -890,38 +863,27 @@ function pickRate(p, people){
 function getImagesFromObj(o){
   const arr = [];
   if(Array.isArray(o.images)) arr.push(...o.images);
-
-  // Also support values pushed as "photo 1/2/3"
   const p1 = safeText(o["photo 1"] || o.photo1 || o["photo1"]);
   const p2 = safeText(o["photo 2"] || o.photo2 || o["photo2"]);
   const p3 = safeText(o["photo 3"] || o.photo3 || o["photo3"]);
   if(p1) arr.push(p1);
   if(p2) arr.push(p2);
   if(p3) arr.push(p3);
-
-  // de-dup
-  const seen = new Set();
-  return arr.filter(u=>{
-    u = safeText(u);
-    if(!u) return false;
-    if(seen.has(u)) return false;
-    seen.add(u);
-    return true;
-  });
+  return arr.filter(Boolean);
 }
 function bestThumb(p){
   const imgs = (p.images || []).filter(Boolean);
   return imgs[0] || "";
-}
-function currency(n){
-  if(n==null || !Number.isFinite(Number(n))) return null;
-  return "₹" + Number(n).toLocaleString("en-IN");
 }
 function rateLabel(people){
   if(people==="solo") return "Solo";
   if(people==="couple") return "Couple";
   if(people==="family") return "Family";
   return "Group";
+}
+function currency(n){
+  if(n==null || !Number.isFinite(Number(n))) return null;
+  return "₹" + Number(n).toLocaleString("en-IN");
 }
 
 /* =========================
@@ -978,35 +940,67 @@ async function loadPlaces(){
       const how = safeText(o["How to Reach"] || o.how || "");
       const mapUrl = safeText(o["Map"] || o.map || "");
       const {lat, lng} = parseLatLngFromMapUrl(mapUrl);
+
       const type = normalizeType(segment);
       const brief = overview || short || keyFeatures || "Explore this place in Himachal Pradesh.";
       const images = getImagesFromObj(o);
 
       const rates = o.rates || {
-        solo: o.Rate_Solo ?? o.rate_solo ?? null,
-        couple: o.Rate_Couple ?? o.rate_couple ?? null,
-        family: o.Rate_Family ?? o.rate_family ?? null,
-        group: o.Rate_Group ?? o.rate_group ?? null
+        solo: o.Rate_Solo ?? null,
+        couple: o.Rate_Couple ?? null,
+        family: o.Rate_Family ?? null,
+        group: o.Rate_Group ?? null
       };
+      const tdMin = o.TripDays_Min ?? null;
+      const tdMax = o.TripDays_Max ?? null;
 
-      const tdMin = o.TripDays_Min ?? o.tripdays_min ?? null;
-      const tdMax = o.TripDays_Max ?? o.tripdays_max ?? null;
-
-      return { id, name, district, type, segment, locationType, brief, how, mapUrl, lat, lng, images, rates, TripDays_Min: tdMin, TripDays_Max: tdMax, raw:o };
+      return { id, name, district, type, segment, locationType, brief, how, mapUrl, lat, lng, images, rates, TripDays_Min: tdMin, TripDays_Max: tdMax };
     }).filter(p=>p.name);
-
   }catch(e){
     console.error("Firebase load failed:", e);
     allPlaces = [];
   }
 }
+async function fetchPlaceById(id){
+  if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const snap = await db.ref(`${dbPath}/${id}`).once("value");
+  const o = snap.val();
+  if(!o) return null;
 
+  const name = safeText(o["Location Name"] || o.name || id);
+  const district = safeText(o["District"] || o.district || "Unknown");
+  const segment = safeText(o["Segment Type"] || o.segment || "Destination");
+  const locationType = safeText(o["Location Type"] || o.type || "");
+  const overview = safeText(o["Overview"] || o.overview || "");
+  const short = safeText(o["Short Description"] || o.short || "");
+  const keyFeatures = safeText(o["Key Features"] || o.features || "");
+  const how = safeText(o["How to Reach"] || o.how || "");
+  const mapUrl = safeText(o["Map"] || o.map || "");
+  const {lat, lng} = parseLatLngFromMapUrl(mapUrl);
+  const images = getImagesFromObj(o);
+  const type = normalizeType(segment);
+  const brief = overview || short || keyFeatures || "Explore this place in Himachal Pradesh.";
+  const rates = o.rates || {
+    solo: o.Rate_Solo ?? null,
+    couple: o.Rate_Couple ?? null,
+    family: o.Rate_Family ?? null,
+    group: o.Rate_Group ?? null
+  };
+  const tdMin = o.TripDays_Min ?? null;
+  const tdMax = o.TripDays_Max ?? null;
+
+  return { id, name, district, type, segment, locationType, brief, how, mapUrl, lat, lng, images, rates, TripDays_Min: tdMin, TripDays_Max: tdMax, raw:o };
+}
+
+/* =========================
+   DROPDOWNS + FILTERS
+========================= */
 function buildDistrictDropdown(){
   const distSel = $("district");
   const districts = [...new Set(allPlaces.map(p=>p.district).filter(Boolean))].sort();
   distSel.innerHTML = `<option value="all">All</option>` + districts.map(d=>`<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join("");
 }
-
 function updateActiveFilters(){
   const parts = [];
   const d = $("district").value;
@@ -1019,7 +1013,6 @@ function updateActiveFilters(){
   if(q) parts.push(`“${q}”`);
   $("activeFilters").textContent = parts.length ? parts.join(" • ") : "No filters";
 }
-
 function applyFilters(scrollToList=false){
   const q = safeText($("q").value).toLowerCase();
   const d = $("district").value;
@@ -1034,7 +1027,7 @@ function applyFilters(scrollToList=false){
       if(!hay.includes(q)) return false;
     }
     if(days){
-      if(days <= 2 && p.type === "Trek") return false; // example rule
+      if(days <= 2 && p.type === "Trek") return false;
     }
     return true;
   });
@@ -1042,13 +1035,13 @@ function applyFilters(scrollToList=false){
   renderList(shownPlaces);
   $("count").textContent = `${shownPlaces.length} results`;
   updateActiveFilters();
-
-  // update sidebar counts based on shown list
-  renderSegmentsSidebar();
-
+  renderTypeSidebar(); // important
   if(scrollToList) $("list").scrollTo({top:0, behavior:"smooth"});
 }
 
+/* =========================
+   LIST RENDER
+========================= */
 function renderList(list){
   const box = $("list");
   if(!list.length){
@@ -1083,159 +1076,151 @@ function renderList(list){
   }).join("");
 
   box.querySelectorAll(".place").forEach(el=>{
-    el.addEventListener("click", ()=>{
+    el.addEventListener("click", async ()=>{
       const i = Number(el.getAttribute("data-i"));
-      openPlacePage(list[i].id);
+      const p = list[i];
+      $("status").textContent = "Opening…";
+      const full = await fetchPlaceById(p.id);
+      openPlacePage((full && full.id) ? full.id : p.id);
     });
   });
 }
-
 function openPlacePage(id){
   window.location.href = `place.html?id=${encodeURIComponent(id)}`;
 }
 
 /* =========================
-   SIDEBAR: segment wise
-   - Group by Segment Type and Type
+   TYPE SIDEBAR (FIXED)
 ========================= */
-function groupCounts(list){
-  const bySegment = {};
-  const byType = {};
+const TYPE_ORDER = ["Destination","Temple","Lake","Trek","Hotel","Activity"];
+
+function typeCountsFrom(list){
+  const counts = {};
   list.forEach(p=>{
-    const seg = normalizeType(p.segment || p.type || "Destination"); // segment-ish
     const t = p.type || "Destination";
-    bySegment[seg] = (bySegment[seg]||0) + 1;
-    byType[t] = (byType[t]||0) + 1;
+    counts[t] = (counts[t]||0) + 1;
   });
-  return {bySegment, byType};
+  return counts;
 }
-function segBlockHtml(title, items){
-  const total = items.reduce((s,it)=>s+(it.count||0),0);
-  const key = title.toLowerCase().replace(/\s+/g,"-");
-  return `
-    <div class="segRow" data-segblock="${escapeHtml(key)}">
-      <div class="segTop" data-toggle="${escapeHtml(key)}">
-        <div>
-          <b>${escapeHtml(title)}</b>
-          <span> • ${total}</span>
+
+function renderTypeSidebar(){
+  const base = shownPlaces.length ? shownPlaces : allPlaces;
+  const counts = typeCountsFrom(base);
+  TYPE_ORDER.forEach(t=>{ if(counts[t]==null) counts[t]=0; });
+
+  const rows = TYPE_ORDER
+    .sort((a,b)=> (counts[b]||0) - (counts[a]||0))
+    .map(t=>{
+      return `
+        <div class="segRow">
+          <div class="segTop" data-toggle-type="${escapeHtml(t)}">
+            <div>
+              <b>${escapeHtml(t)}</b>
+              <span> • ${counts[t]||0}</span>
+            </div>
+            <div class="chev" data-chev-type="${escapeHtml(t)}">▾</div>
+          </div>
+
+          <div class="segList" id="typelist-${escapeHtml(t)}">
+            <button class="segBtn" data-type-pick="${escapeHtml(t)}">
+              <span>Show all ${escapeHtml(t)}</span>
+              <small>${counts[t]||0}</small>
+            </button>
+
+            ${base.filter(p=>p.type===t).slice(0,8).map(p=>`
+              <button class="segBtn" data-open-place="${escapeHtml(p.id)}">
+                <span>${escapeHtml(p.name)}</span>
+                <small>${escapeHtml(p.district)}</small>
+              </button>
+            `).join("")}
+          </div>
         </div>
-        <div class="chev" data-chev="${escapeHtml(key)}">▾</div>
-      </div>
-      <div class="segList" id="seglist-${escapeHtml(key)}">
-        ${items.map(it=>`
-          <button class="segBtn" data-filter="${escapeHtml(it.filter)}" data-value="${escapeHtml(it.value)}">
-            <span>${escapeHtml(it.label)}</span>
-            <small>${it.count}</small>
-          </button>
-        `).join("")}
-      </div>
-    </div>
-  `;
-}
-
-function renderSegmentsSidebar(){
-  const {bySegment, byType} = groupCounts(shownPlaces.length ? shownPlaces : allPlaces);
-
-  const segItems = Object.entries(bySegment)
-    .sort((a,b)=>b[1]-a[1])
-    .map(([seg,count])=>({label:seg, value:seg, count, filter:"segment"}));
-
-  const typeItems = Object.entries(byType)
-    .sort((a,b)=>b[1]-a[1])
-    .map(([t,count])=>({label:t, value:t, count, filter:"type"}));
+      `;
+    }).join("");
 
   const html =
-    segBlockHtml("By Segment", segItems) +
-    segBlockHtml("By Type", typeItems) +
-    segBlockHtml("Quick", [
-      {label:"All Places", value:"all", count:(shownPlaces.length||allPlaces.length), filter:"all"},
-      {label:"Open Map (after click)", value:"map", count:0, filter:"hint"}
-    ]);
+    rows +
+    `
+    <div class="segRow">
+      <div class="segTop" data-toggle-type="__quick__">
+        <div><b>Quick</b><span> • tools</span></div>
+        <div class="chev" data-chev-type="__quick__">▾</div>
+      </div>
+      <div class="segList" id="typelist-__quick__">
+        <button class="segBtn" data-reset-all="1">
+          <span>Show All Places</span>
+          <small>${base.length}</small>
+        </button>
+      </div>
+    </div>
+    `;
 
   $("segBox").innerHTML = html;
   $("segBoxMobile").innerHTML = html;
 
-  // bind toggles (desktop + mobile)
-  const bindBox = (root)=>{
-    root.querySelectorAll("[data-toggle]").forEach(tg=>{
-      tg.addEventListener("click", ()=>{
-        const k = tg.getAttribute("data-toggle");
-        const list = root.querySelector("#seglist-"+CSS.escape(k));
-        const chev = root.querySelector("[data-chev='"+k+"']");
-        const open = list.style.display === "block";
+  function bind(root){
+    root.querySelectorAll("[data-toggle-type]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const key = btn.getAttribute("data-toggle-type");
+        const list = root.querySelector("#typelist-"+CSS.escape(key));
+        const chev = root.querySelector(`[data-chev-type="${CSS.escape(key)}"]`);
+        const open = (list.style.display === "block");
         list.style.display = open ? "none" : "block";
         if(chev) chev.textContent = open ? "▾" : "▴";
       });
     });
 
-    root.querySelectorAll("[data-filter]").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
-        const filter = btn.getAttribute("data-filter");
-        const val = btn.getAttribute("data-value");
-
-        if(filter === "type"){
-          $("type").value = val;
-          applyFilters(true);
-          location.hash="#explore";
-          closeSidebarMobile();
-          return;
-        }
-        if(filter === "segment"){
-          // We map "segment click" to Type dropdown only if matches, else do a search by segment keyword
-          const possibleTypes = ["Destination","Temple","Lake","Trek","Hotel","Activity"];
-          if(possibleTypes.includes(val)){
-            $("type").value = val;
-            applyFilters(true);
-          }else{
-            // do keyword search
-            $("q").value = val;
-            applyFilters(true);
-          }
-          location.hash="#explore";
-          closeSidebarMobile();
-          return;
-        }
-        if(filter === "all"){
-          $("q").value = "";
-          $("type").value = "all";
-          $("district").value = "all";
-          $("days").value = "0";
-          applyFilters(true);
-          location.hash="#explore";
-          closeSidebarMobile();
-          return;
-        }
+    root.querySelectorAll("[data-type-pick]").forEach(b=>{
+      b.addEventListener("click", ()=>{
+        const t = b.getAttribute("data-type-pick");
+        $("type").value = t;
+        applyFilters(true);
+        location.hash = "#explore";
+        closeSidebarMobile();
       });
     });
-  };
 
-  bindBox($("segBox"));
-  bindBox($("segBoxMobile"));
+    root.querySelectorAll("[data-open-place]").forEach(b=>{
+      b.addEventListener("click", ()=>{
+        const id = b.getAttribute("data-open-place");
+        openPlacePage(id);
+      });
+    });
+
+    root.querySelectorAll("[data-reset-all]").forEach(b=>{
+      b.addEventListener("click", ()=>{
+        $("q").value = "";
+        $("district").value = "all";
+        $("type").value = "all";
+        $("days").value = "0";
+        applyFilters(true);
+        location.hash = "#explore";
+        closeSidebarMobile();
+      });
+    });
+  }
+
+  bind($("segBox"));
+  bind($("segBoxMobile"));
 }
 
-function collapseAllSegments(){
+function collapseAllTypes(){
   ["segBox","segBoxMobile"].forEach(id=>{
     const root = $(id);
     if(!root) return;
     root.querySelectorAll(".segList").forEach(el=> el.style.display="none");
-    root.querySelectorAll("[data-chev]").forEach(el=> el.textContent="▾");
+    root.querySelectorAll("[data-chev-type]").forEach(el=> el.textContent="▾");
   });
 }
-$("collapseAll").onclick = collapseAllSegments;
 
 /* =========================
    MOBILE SIDEBAR
 ========================= */
-function openSidebarMobile(){
-  $("sbOverlay").style.display = "flex";
-}
-function closeSidebarMobile(){
-  $("sbOverlay").style.display = "none";
-}
-$("sbFab").onclick = openSidebarMobile;
-$("openSidebarMobile").onclick = openSidebarMobile;
-$("sbClose").onclick = closeSidebarMobile;
-$("sbOverlay").addEventListener("click",(e)=>{ if(e.target === $("sbOverlay")) closeSidebarMobile(); });
+function openSidebarMobile(){ $("sideMobileWrap").style.display="flex"; }
+function closeSidebarMobile(){ $("sideMobileWrap").style.display="none"; }
+$("openSideMobile").addEventListener("click", openSidebarMobile);
+$("closeSideMobile").addEventListener("click", closeSidebarMobile);
+$("sideMobileWrap").addEventListener("click",(e)=>{ if(e.target === $("sideMobileWrap")) closeSidebarMobile(); });
 
 /* =========================
    NEARBY
@@ -1254,7 +1239,7 @@ $("nearby").onclick = ()=>{
 };
 
 /* =========================
-   PACKAGES (3–4) LIVE
+   PACKAGES (LIVE)
 ========================= */
 function shuffle(arr){
   const a = arr.slice();
@@ -1310,12 +1295,11 @@ async function buildPackages(){
 
   const hintType = interestTypeHint(interest);
 
-  const dayLabel = days ? `${days}D` : "3D";
   const pkgs = [
-    {name:`Package A (${dayLabel})`, mood: packageTitle(interest), spots: pickPackageSpots(base, 4, hintType)},
-    {name:`Package B (${dayLabel})`, mood:"Scenic + Photos", spots: pickPackageSpots(base, 4, null)},
-    {name:`Package C (${dayLabel})`, mood:"Local + Food", spots: pickPackageSpots(base, 4, "Destination")},
-    {name:`Package D (${dayLabel})`, mood:"Mix + Nearby", spots: pickPackageSpots(base, 4, null)}
+    {name:`Package A (${days?days:"3"}D)`, mood: packageTitle(interest), spots: pickPackageSpots(base, 4, hintType)},
+    {name:`Package B (${days?days:"3"}D)`, mood:"Scenic + Photos", spots: pickPackageSpots(base, 4, null)},
+    {name:`Package C (${days?days:"3"}D)`, mood:"Local + Food", spots: pickPackageSpots(base, 4, "Destination")},
+    {name:`Package D (${days?days:"3"}D)`, mood:"Mix + Nearby", spots: pickPackageSpots(base, 4, null)}
   ];
 
   const daysFactor = days ? Math.max(1, Math.min(4, Math.ceil(days/3))) : 1;
@@ -1347,7 +1331,7 @@ async function buildPackages(){
         <div class="pkgTop">
           <div>
             <p class="pkgTitle">${escapeHtml(pkg.name)} • ${escapeHtml(pkg.mood)}</p>
-            <p class="pkgMeta">People: <b>${escapeHtml(rateLabel(people))}</b> • Budget: <b>${escapeHtml(budget)}</b> • Interest: <b>${escapeHtml(interest))}</b></p>
+            <p class="pkgMeta">People: <b>${escapeHtml(rateLabel(people))}</b> • Budget: <b>${escapeHtml(budget)}</b> • Interest: <b>${escapeHtml(interest)}</b></p>
           </div>
           <div class="pricePill">${priceText}</div>
         </div>
@@ -1359,16 +1343,18 @@ async function buildPackages(){
   $("packagesBox").innerHTML = html;
 
   $("packagesBox").querySelectorAll("[data-open]").forEach(el=>{
-    el.addEventListener("click", ()=>{
+    el.addEventListener("click", async ()=>{
       const id = el.getAttribute("data-open");
-      openPlacePage(id);
+      $("status").textContent = "Opening…";
+      const full = await fetchPlaceById(id);
+      openPlacePage((full && full.id) ? full.id : id);
     });
   });
 }
 $("makePackages").onclick = buildPackages;
 
 /* =========================
-   QUICK FILTER PILLS
+   QUICK TYPE PILLS
 ========================= */
 document.querySelectorAll("[data-quick]").forEach(el=>{
   el.addEventListener("click", ()=>{
@@ -1379,7 +1365,7 @@ document.querySelectorAll("[data-quick]").forEach(el=>{
 });
 
 /* =========================
-   AI MODAL (simple)
+   AI MODAL
 ========================= */
 function openAI(){ $("modalWrap").style.display="flex"; seedChat(); }
 function closeAI(){ $("modalWrap").style.display="none"; }
@@ -1396,11 +1382,15 @@ function pushMsg(text, who="bot"){
 }
 function seedChat(){
   $("chat").innerHTML = "";
-  pushMsg("Tell me: days + people + interests (trek/lake/temple/relax) + starting place/district.", "bot");
+  pushMsg("Tell me: days + people + interests (trek/lake/temple/relax) + starting district.", "bot");
   pushMsg("Example: 4 days, couple, nature + temples, starting Shimla", "bot");
 }
 function aiSuggest(userText){
   const t = userText.toLowerCase();
+  let days = 0;
+  const m = t.match(/(\d+)\s*(day|days|d)/);
+  if(m) days = Number(m[1]);
+
   const wants = {
     trek: /trek|hike|trail|adventure/.test(t),
     lake: /lake|chandratal|prashar|rewalsar|manimahesh/.test(t),
@@ -1422,12 +1412,15 @@ function aiSuggest(userText){
     return {p, s};
   }).sort((a,b)=>b.s-a.s);
 
-  const pick = scored.filter(x=>x.s>0).slice(0, 8).map(x=>x.p);
-  const list = (pick.length ? pick : allPlaces.slice(0,6))
+  const cap = days ? Math.max(3, Math.min(8, Math.ceil(days*1.3))) : 6;
+  const pick = scored.filter(x=>x.s>0).slice(0, cap).map(x=>x.p);
+  const fallback = allPlaces.slice(0,6);
+
+  const list = (pick.length ? pick : fallback)
     .map((p,i)=>`${i+1}. ${p.name} (${p.district} • ${p.type})`)
     .join("\n");
 
-  return `Suggestions:\n${list}\n\nTip: Use sidebar segments to filter quickly.`;
+  return `Suggestions:\n${list}\n\nTip: pick Type from sidebar to refine.`;
 }
 $("sendChat").onclick = ()=>{
   const v = safeText($("chatInput").value);
@@ -1443,10 +1436,14 @@ $("chatInput").addEventListener("keydown",(e)=>{ if(e.key==="Enter") $("sendChat
 ========================= */
 $("apply").onclick = ()=>{ applyFilters(true); location.hash="#explore"; };
 $("reset").onclick = ()=>{
-  $("q").value = ""; $("district").value="all"; $("type").value="all"; $("days").value="0";
+  $("q").value = "";
+  $("district").value="all";
+  $("type").value="all";
+  $("days").value="0";
   applyFilters(true);
 };
 $("openAdmin").onclick = ()=>{ window.location.href = "admin.html"; };
+$("collapseAll").onclick = collapseAllTypes;
 
 $("district").addEventListener("change", ()=> $("builderLine").textContent = "District updated. Click Get Packages.");
 $("type").addEventListener("change", ()=> $("builderLine").textContent = "Type updated. Click Get Packages.");
@@ -1465,7 +1462,14 @@ $("days").addEventListener("change", ()=> $("builderLine").textContent = "Days u
 
   shownPlaces = allPlaces.slice();
   applyFilters(false);
-  renderSegmentsSidebar(); // initial
+
+  // show mobile button only on small screens (CSS hides sidebar, but we also toggle this)
+  const mq = window.matchMedia("(max-width: 980px)");
+  function syncMobileBtn(){
+    $("openSideMobile").style.display = mq.matches ? "inline-flex" : "none";
+  }
+  mq.addEventListener?.("change", syncMobileBtn);
+  syncMobileBtn();
 })();
 </script>
 </body>
