@@ -17,14 +17,13 @@
     :root{
       --bg0:#05070d; --bg1:#070b15;
       --card:rgba(255,255,255,.06);
-      --card2:rgba(255,255,255,.08);
       --stroke:rgba(255,255,255,.12);
       --text:rgba(255,255,255,.92);
       --muted:rgba(255,255,255,.68);
       --shadow: 0 24px 80px rgba(0,0,0,.55);
       --r:18px; --r2:26px;
-      --a:#67e8f9; --b:#a78bfa; --c:#34d399; --d:#ffcf5a; --e:#ff6b6b;
-      --max:1200px;
+      --a:#67e8f9; --b:#a78bfa; --c:#34d399; --d:#ffcf5a;
+      --max:1400px;            /* wider max */
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -33,7 +32,7 @@
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       overflow-x:hidden;
 
-      /* ✅ FULL PAGE BACKGROUND */
+      /* full page bg */
       background-image:
         linear-gradient(180deg, rgba(5,7,13,.76), rgba(7,11,21,.88)),
         url("./Kee_monastery.jpg");
@@ -54,8 +53,15 @@
         radial-gradient(1000px 700px at 52% 92%, rgba(52,211,153,.12), transparent 55%);
       mix-blend-mode: screen;
     }
+
     a{color:inherit; text-decoration:none}
-    .wrap{max-width:var(--max); margin:0 auto; padding:22px 16px 44px}
+
+    /* ✅ 90% screen width */
+    .wrap{
+      width:min(90vw, var(--max));
+      margin:0 auto;
+      padding:22px 16px 44px;
+    }
 
     /* TOPBAR */
     .topbar{
@@ -65,7 +71,7 @@
       border-bottom:1px solid rgba(255,255,255,.08);
     }
     .topbar .inner{
-      max-width:var(--max);
+      width:min(90vw, var(--max));
       margin:0 auto;
       padding:14px 16px;
       display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -81,6 +87,7 @@
     }
     .brand h1{font-size:14px; margin:0; letter-spacing:.2px; line-height:1.1}
     .brand small{display:block; color:var(--muted); font-weight:600; margin-top:2px}
+
     .nav{display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end}
     .pill{
       display:inline-flex; align-items:center; gap:8px;
@@ -115,7 +122,7 @@
     .hero{
       margin-top:16px;
       display:grid;
-      grid-template-columns: 1.22fr .78fr;
+      grid-template-columns: 1.3fr .7fr;
       gap:14px;
       align-items:stretch;
     }
@@ -125,12 +132,10 @@
       border-radius: var(--r2);
       border:1px solid rgba(255,255,255,.12);
       box-shadow: var(--shadow);
-      min-height: 370px;
-
-      /* Rotating hero backgrounds */
+      min-height: 380px;
       background-image:
         linear-gradient(120deg, rgba(0,0,0,.60), rgba(0,0,0,.10)),
-        var(--heroUrl, url("./Kee_monastery.jpg"));
+        url("./Kee_monastery.jpg");
       background-position:center;
       background-size:cover;
       background-repeat:no-repeat;
@@ -153,38 +158,10 @@
       justify-content:space-between;
       gap:14px;
     }
-    .heroTitle{
-      margin:0;
-      font-size: clamp(24px, 3vw, 42px);
-      letter-spacing:-.4px;
-      line-height:1.05;
-    }
-    .heroSub{
-      margin:10px 0 0 0;
-      color:rgba(255,255,255,.82);
-      max-width:64ch;
-      font-weight:650;
-    }
-    .heroChips{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
-    .chip{
-      padding:9px 11px;
-      border-radius:999px;
-      background: rgba(0,0,0,.28);
-      border:1px solid rgba(255,255,255,.16);
-      font-size:12px; font-weight:900;
-      color:rgba(255,255,255,.88);
-    }
-    .chip i{
-      font-style:normal;
-      padding:2px 8px;
-      border-radius:999px;
-      background: rgba(255,255,255,.10);
-      margin-right:8px;
-    }
+    .heroTitle{margin:0; font-size: clamp(26px, 3vw, 44px); letter-spacing:-.4px; line-height:1.05}
+    .heroSub{margin:10px 0 0 0; color:rgba(255,255,255,.82); max-width:64ch; font-weight:650}
 
-    /* Finder */
     .finder{
-      position:relative;
       margin-top:14px;
       display:grid;
       grid-template-columns: 1fr 170px 170px 160px;
@@ -207,42 +184,7 @@
     .select{cursor:pointer}
     .heroActions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
 
-    /* Sticky Search Bar (appears when scrolling) */
-    .stickySearch{
-      position:fixed;
-      left:50%;
-      transform:translateX(-50%);
-      top:66px;
-      width:min(var(--max), calc(100% - 32px));
-      z-index:45;
-      display:none;
-    }
-    .stickyCard{
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(10,12,20,.66);
-      backdrop-filter: blur(14px);
-      box-shadow: 0 18px 80px rgba(0,0,0,.55);
-      padding:10px;
-    }
-    .stickyRow{
-      display:grid;
-      grid-template-columns: 1fr 170px 170px 160px 150px;
-      gap:10px;
-      align-items:center;
-    }
-    .miniBtn{
-      height:42px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: linear-gradient(135deg, rgba(103,232,249,.18), rgba(167,139,250,.14));
-      color:var(--text);
-      font-weight:900;
-      cursor:pointer;
-    }
-
     /* Right panel */
-    .heroSide{display:flex; flex-direction:column; gap:14px}
     .panel{
       background: rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.12);
@@ -258,27 +200,11 @@
     }
     .panelHead h3{margin:0; font-size:13px}
     .panelHead small{color:var(--muted); font-weight:800}
-    .stats{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-      padding:14px;
-    }
-    .stat{
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      padding:12px;
-      min-height:72px;
-    }
-    .stat b{display:block; font-size:18px}
-    .stat span{color:var(--muted); font-weight:800; font-size:12px}
-    .spark{margin-top:10px; height:8px; border-radius:999px; background: rgba(255,255,255,.10); overflow:hidden}
-    .spark > i{display:block; height:100%; width:55%; background: linear-gradient(90deg, rgba(103,232,249,.95), rgba(167,139,250,.95)); border-radius:999px}
+
     .quickLinks{
       padding:14px;
       display:grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap:10px;
     }
     .qcard{
@@ -291,7 +217,31 @@
     }
     .qcard:hover{transform: translateY(-1px); background: rgba(255,255,255,.07)}
     .qcard b{display:block; font-size:12px}
-    .qcard p{margin:6px 0 0; color:var(--muted); font-weight:700; font-size:12px; line-height:1.35}
+    .qcard p{margin:6px 0 0; color:var(--muted); font-weight:750; font-size:12px; line-height:1.35}
+
+    /* ✅ Packages at start (instead of districts) */
+    .packs{
+      padding:14px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+    }
+    .pack{
+      padding:12px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+    }
+    .pack h4{margin:0; font-size:12.5px}
+    .pack small{display:block; color:var(--muted); font-weight:750; margin-top:6px; line-height:1.35}
+    .pack .row{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap}
+    .badge{
+      font-size:11px; font-weight:950;
+      padding:6px 9px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+    }
 
     /* Sections */
     .section{margin-top:18px; display:grid; grid-template-columns: 1fr; gap:14px}
@@ -299,47 +249,14 @@
     .sectionTitle h2{margin:0; font-size:16px}
     .sectionTitle p{margin:0; color:var(--muted); font-weight:800; font-size:12px}
 
-    /* District grid */
-    .districts{display:grid; grid-template-columns: repeat(6, 1fr); gap:10px}
-    .dItem{
-      position:relative;
-      border-radius:18px;
-      padding:12px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      cursor:pointer;
-      overflow:hidden;
-      transition:.18s ease;
-      min-height:92px;
-    }
-    .dItem:hover{transform: translateY(-2px); background: rgba(255,255,255,.08)}
-    .dItem::after{
-      content:"";
-      position:absolute; inset:-40px -40px auto auto;
-      width:120px; height:120px;
-      background: radial-gradient(circle at 30% 30%, rgba(103,232,249,.25), transparent 55%);
-      transform: rotate(18deg);
-      pointer-events:none;
-    }
-    .dItem b{display:block; font-size:13px}
-    .dSub2{margin-top:6px; color:rgba(255,255,255,.74); font-weight:750; font-size:12px; line-height:1.25}
-    .dMeta{margin-top:8px; display:flex; gap:8px; flex-wrap:wrap}
-    .tag{
-      font-size:11px; font-weight:900;
-      padding:6px 9px;
-      border-radius:999px;
-      background: rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.12);
-      color:rgba(255,255,255,.82);
-    }
-
-    /* Results + Map */
+    /* EXPLORE (Map hidden until place click) */
     .grid2{
       display:grid;
-      grid-template-columns: .78fr 1.22fr; /* ✅ Map bigger */
+      grid-template-columns: 1fr;
       gap:14px;
       align-items:stretch;
     }
+
     .results{min-height:440px; display:flex; flex-direction:column}
     .list{
       padding:14px;
@@ -347,7 +264,7 @@
       grid-template-columns: 1fr;
       gap:10px;
       overflow:auto;
-      max-height: 560px;
+      max-height: 580px;
     }
     .place{
       display:grid;
@@ -367,38 +284,21 @@
       background: linear-gradient(135deg, rgba(103,232,249,.12), rgba(167,139,250,.10));
       border:1px solid rgba(255,255,255,.12);
       overflow:hidden;
-      position:relative;
     }
     .thumb img{width:100%; height:100%; object-fit:cover; display:block}
     .pTitle{margin:0; font-size:13px}
     .pSub{margin:6px 0 0; color:var(--muted); font-weight:750; font-size:12px; line-height:1.35}
     .pBadges{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap}
-    .badge{
-      font-size:11px; font-weight:950;
-      padding:6px 9px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-    }
+
+    /* Map panel starts hidden */
+    .mapPanel{display:none}
     .mapBox{min-height:440px}
     #map{
-      width:100%; height:100%;
+      width:100%; height:440px;
       border-radius: var(--r2);
       border:1px solid rgba(255,255,255,.12);
       overflow:hidden;
       box-shadow: var(--shadow);
-    }
-    /* marker pulse */
-    .pulseDot{
-      width:12px; height:12px; border-radius:50%;
-      background: rgba(103,232,249,.95);
-      box-shadow: 0 0 0 0 rgba(103,232,249,.45);
-      animation: pulse 1.7s infinite;
-    }
-    @keyframes pulse{
-      0%{ box-shadow:0 0 0 0 rgba(103,232,249,.45) }
-      70%{ box-shadow:0 0 0 16px rgba(103,232,249,0) }
-      100%{ box-shadow:0 0 0 0 rgba(103,232,249,0) }
     }
 
     /* Drawer */
@@ -452,8 +352,8 @@
       display:flex; flex-direction:column; gap:10px;
     }
     .infoCard p{margin:0; color:var(--muted); font-weight:700; line-height:1.45; font-size:12px}
-    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-    .row .btn{flex:1}
+    .row2{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .row2 .btn{flex:1}
     .closeX{
       width:42px; height:42px; border-radius:14px;
       border:1px solid rgba(255,255,255,.14);
@@ -488,12 +388,7 @@
       border-bottom:1px solid rgba(255,255,255,.10);
     }
     .modalHead h3{margin:0; font-size:14px}
-    .chat{
-      padding:14px;
-      display:flex; flex-direction:column; gap:10px;
-      max-height: 62vh;
-      overflow:auto;
-    }
+    .chat{padding:14px; display:flex; flex-direction:column; gap:10px; max-height: 62vh; overflow:auto}
     .msg{
       max-width: 86%;
       padding:10px 12px;
@@ -507,11 +402,7 @@
       white-space:pre-wrap;
     }
     .msg.me{margin-left:auto; background: linear-gradient(135deg, rgba(103,232,249,.14), rgba(167,139,250,.12))}
-    .composer{
-      padding:12px 14px 14px;
-      display:flex; gap:10px;
-      border-top:1px solid rgba(255,255,255,.10);
-    }
+    .composer{padding:12px 14px 14px; display:flex; gap:10px; border-top:1px solid rgba(255,255,255,.10)}
     .composer input{
       flex:1;
       padding:12px 12px;
@@ -523,22 +414,15 @@
       font-weight:800;
     }
 
-    /* Mobile */
     @media (max-width: 980px){
       .hero{grid-template-columns: 1fr}
       .finder{grid-template-columns: 1fr 1fr}
       .finder .field:nth-child(1){grid-column:1 / -1}
-      .grid2{grid-template-columns: 1fr}
-      .districts{grid-template-columns: repeat(3, 1fr)}
       .drawerBody{grid-template-columns: 1fr}
       .gallery{grid-template-columns: repeat(2, 1fr)}
-      .brand{min-width:auto}
-      .stickyRow{grid-template-columns: 1fr 1fr; }
-      .stickyRow > *:nth-child(1){grid-column:1/-1}
-      .stickyRow > *:nth-child(5){grid-column:1/-1}
+      #map{height:380px}
     }
     @media (max-width: 520px){
-      .districts{grid-template-columns: repeat(2, 1fr)}
       .heroMain{min-height: 340px}
       .list{max-height: 440px}
       .gallery{grid-template-columns: 1fr}
@@ -559,37 +443,9 @@
       </div>
 
       <div class="nav">
-        <a class="pill" href="#districts"><span class="dot"></span>Districts</a>
         <a class="pill" href="#explore"><span class="dot"></span>Explore</a>
         <button class="btn ghost" id="openAI">AI Planner</button>
-        <button class="btn" id="openAdmin" title="Optional">Admin</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Sticky Search -->
-  <div class="stickySearch" id="stickySearch" aria-label="Sticky search">
-    <div class="stickyCard">
-      <div class="stickyRow">
-        <input class="input" id="sq" placeholder="Search: Triund, Manimahesh, Kufri, Chandratal..." />
-        <select class="select" id="sd"><option value="all">All Districts</option></select>
-        <select class="select" id="st">
-          <option value="all">All Types</option>
-          <option value="Destination">Destination</option>
-          <option value="Temple">Temple</option>
-          <option value="Lake">Lake</option>
-          <option value="Trek">Trek</option>
-          <option value="Hotel">Hotel</option>
-          <option value="Activity">Activity</option>
-        </select>
-        <select class="select" id="sdays">
-          <option value="0">Any Days</option>
-          <option value="1">1–2</option>
-          <option value="3">3–4</option>
-          <option value="5">5–7</option>
-          <option value="8">8–12</option>
-        </select>
-        <button class="miniBtn" id="sapply">Explore</button>
+        <button class="btn" id="openAdmin">Admin</button>
       </div>
     </div>
   </div>
@@ -597,21 +453,15 @@
   <div class="wrap">
     <!-- HERO -->
     <section class="hero" aria-label="hero">
-      <div class="heroMain" id="heroMain">
+      <div class="heroMain">
         <div class="heroInner">
           <div>
             <h2 class="heroTitle">Make your Himachal trip feel effortless.</h2>
             <p class="heroSub">
-              Search places by <b>district</b>, <b>type</b> and <b>days</b>. Get a clean map view + quick packages.
+              Search places by <b>district</b>, <b>type</b> and <b>days</b>. Then click any place to open map + route.
             </p>
 
-            <div class="heroChips">
-              <div class="chip"><i>Smart</i>Only show what visitor needs</div>
-              <div class="chip"><i>Fast</i>Map + cards + filters</div>
-              <div class="chip"><i>Pro</i>AI trip suggestions</div>
-            </div>
-
-            <div class="finder" id="finderAnchor" style="margin-top:16px">
+            <div class="finder" style="margin-top:16px">
               <div class="field">
                 <label>Search (place / temple / lake / trek)</label>
                 <input class="input" id="q" placeholder="Example: Triund, Manimahesh, Kufri, Chandratal..."/>
@@ -658,74 +508,69 @@
 
           <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap">
             <small style="color:rgba(255,255,255,.75); font-weight:800">
-              Tip: Click a district card → you’ll instantly get filtered places.
+              Note: Map will appear only after you click a location.
             </small>
             <small id="status" style="color:rgba(255,255,255,.75); font-weight:900">Loading places…</small>
           </div>
         </div>
       </div>
 
-      <div class="heroSide">
-        <div class="panel">
-          <div class="panelHead">
-            <h3>Today’s vibe</h3>
-            <small>clean + premium</small>
+      <!-- Right side: Packages at start -->
+      <div class="panel">
+        <div class="panelHead">
+          <h3>Packages (Quick start)</h3>
+          <small>3–4 options</small>
+        </div>
+        <div class="packs" id="packList">
+          <div class="pack">
+            <h4>Package A • Highlights (2D/1N)</h4>
+            <small>Easy travel • 2–3 top spots • local food • sunset point</small>
+            <div class="row">
+              <span class="badge">Comfort</span><span class="badge">Family</span><span class="badge">Short trip</span>
+            </div>
           </div>
-          <div class="stats">
-            <div class="stat">
-              <b id="statPlaces">—</b><span>Total places</span>
-              <div class="spark"><i style="width:72%"></i></div>
+          <div class="pack">
+            <h4>Package B • Nature + Photos (3D/2N)</h4>
+            <small>Scenic views • viewpoints • lake/valley • relaxed pace</small>
+            <div class="row">
+              <span class="badge">Nature</span><span class="badge">Photography</span><span class="badge">Balanced</span>
             </div>
-            <div class="stat">
-              <b id="statDistricts">—</b><span>Districts covered</span>
-              <div class="spark"><i style="width:56%"></i></div>
+          </div>
+          <div class="pack">
+            <h4>Package C • Temples + Culture (4D/3N)</h4>
+            <small>Top temples • local markets • heritage spots • easy drives</small>
+            <div class="row">
+              <span class="badge">Culture</span><span class="badge">Temple</span><span class="badge">Easy</span>
             </div>
-            <div class="stat">
-              <b id="statTypes">—</b><span>Types</span>
-              <div class="spark"><i style="width:62%"></i></div>
-            </div>
-            <div class="stat">
-              <b id="statShown">—</b><span>Shown now</span>
-              <div class="spark"><i style="width:44%"></i></div>
+          </div>
+          <div class="pack">
+            <h4>Package D • Adventure Mix (5D/4N)</h4>
+            <small>Trek/activity • waterfall/lake • sunrise point • more travel</small>
+            <div class="row">
+              <span class="badge">Adventure</span><span class="badge">Trek</span><span class="badge">Active</span>
             </div>
           </div>
         </div>
 
-        <div class="panel">
-          <div class="panelHead">
-            <h3>Quick Actions</h3>
-            <small>one tap</small>
-          </div>
-          <div class="quickLinks">
-            <div class="qcard" data-quick="Trek"><b>Top Treks</b><p>Triund, Prashar, Hampta…</p></div>
-            <div class="qcard" data-quick="Lake"><b>Famous Lakes</b><p>Chandratal, Rewalsar…</p></div>
-            <div class="qcard" data-quick="Temple"><b>Temples</b><p>Jwalamukhi, Bijli Mahadev…</p></div>
-            <div class="qcard" data-quick="Destination"><b>Must Visit</b><p>Manali, Shimla, Spiti…</p></div>
-          </div>
+        <div class="panelHead" style="border-top:1px solid rgba(255,255,255,.10)">
+          <h3>Quick Actions</h3>
+          <small>one tap</small>
+        </div>
+        <div class="quickLinks">
+          <div class="qcard" data-quick="Trek"><b>Top Treks</b><p>Triund, Prashar, Hampta…</p></div>
+          <div class="qcard" data-quick="Lake"><b>Famous Lakes</b><p>Chandratal, Rewalsar…</p></div>
+          <div class="qcard" data-quick="Temple"><b>Temples</b><p>Jwalamukhi, Bijli Mahadev…</p></div>
+          <div class="qcard" data-quick="Destination"><b>Must Visit</b><p>Manali, Shimla, Spiti…</p></div>
         </div>
       </div>
     </section>
 
-    <!-- DISTRICTS -->
-    <section class="section" id="districts">
-      <div class="sectionTitle">
-        <div>
-          <h2>District shortcuts</h2>
-          <p>Tap any district → filters apply instantly.</p>
-        </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap">
-          <button class="btn ghost" id="showAllDistricts">Show All</button>
-        </div>
-      </div>
-      <div class="districts" id="districtGrid"></div>
-    </section>
-
-    <!-- EXPLORE -->
+    <!-- EXPLORE (Districts not shown at start, map hidden until click) -->
     <section class="section" id="explore">
       <div class="sectionTitle">
         <div>
-          <h2>Explore places + map</h2>
-          <p>Clean list on left, premium map on right.</p>
+          <h2>Explore</h2>
+          <p>List first. Map appears after you click a location.</p>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap">
           <span class="pill"><span class="dot"></span><span id="activeFilters">No filters</span></span>
@@ -741,8 +586,15 @@
           <div class="list" id="list"></div>
         </div>
 
-        <div class="mapBox">
-          <div id="map"></div>
+        <!-- hidden map panel -->
+        <div class="panel mapPanel" id="mapPanel">
+          <div class="panelHead">
+            <h3>Map</h3>
+            <small id="mapHint">Click a place to load map</small>
+          </div>
+          <div class="mapBox">
+            <div id="map"></div>
+          </div>
         </div>
       </div>
     </section>
@@ -764,36 +616,34 @@
 
         <div class="infoCard">
           <p id="dDesc">—</p>
-          <div class="row" style="gap:8px">
+          <div class="row2" style="gap:8px">
             <span class="badge" id="dType">Type</span>
             <span class="badge" id="dDistrict">District</span>
             <span class="badge" id="dHow">How to reach</span>
           </div>
-          <div class="row">
-            <button class="btn" id="routeBtn">Route on map</button>
-            <button class="btn ghost" id="pkgBtn">3–4 Packages</button>
+          <div class="row2">
+            <button class="btn" id="routeBtn">Show Map + Route</button>
+            <button class="btn ghost" id="pkgBtn">Packages</button>
             <button class="btn ghost" id="fullBtn">Open Full Page</button>
           </div>
 
-          <div class="panel" style="margin-top:6px">
+          <div class="panel" style="margin-top:10px">
             <div class="panelHead">
               <h3>Suggested mini-plan</h3>
               <small>auto</small>
             </div>
             <div style="padding:12px">
-              <p id="miniPlan" style="margin:0; color:var(--muted); font-weight:750; line-height:1.45; font-size:12px">
-                —
-              </p>
+              <p id="miniPlan" style="margin:0; color:var(--muted); font-weight:750; line-height:1.45; font-size:12px">—</p>
             </div>
           </div>
 
           <div class="panel" style="margin-top:10px">
             <div class="panelHead">
-              <h3>Distance info</h3>
-              <small>auto</small>
+              <h3>Distance</h3>
+              <small>nearby</small>
             </div>
             <div style="padding:12px">
-              <p id="distInfo" style="margin:0; color:var(--muted); font-weight:750; line-height:1.45; font-size:12px">—</p>
+              <p id="distInfo" style="margin:0; color:var(--muted); font-weight:750; line-height:1.45; font-size:12px">Turn on Nearby to see distance.</p>
             </div>
           </div>
 
@@ -807,7 +657,7 @@
     <div class="modal">
       <div class="modalHead">
         <div>
-          <h3>AI Trip Planner (On-page)</h3>
+          <h3>AI Trip Planner</h3>
           <small style="color:var(--muted); font-weight:850">Ask days, people, interests → get suggestions</small>
         </div>
         <button class="closeX" id="closeAI">✕</button>
@@ -822,7 +672,7 @@
 
 <script>
 /* =========================
-   1) FIREBASE CONFIG
+   FIREBASE
    ========================= */
 const firebaseConfig = {
   apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
@@ -837,22 +687,20 @@ const firebaseConfig = {
 const dbPath = "locations";
 
 /* =========================
-   2) HELPERS
+   HELPERS
    ========================= */
 const $ = (id)=>document.getElementById(id);
 let allPlaces = [];
 let shownPlaces = [];
-let map, markerLayer;
+let map = null;
+let markerLayer = null;
 let currentPlace = null;
 let myPos = null;
+let mapReady = false;
 
 function safeText(v){ return (v ?? "").toString().trim(); }
 function escapeHtml(str){
-  return safeText(str)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;");
+  return safeText(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
 }
 function normalizeType(t){
   t = safeText(t);
@@ -901,50 +749,36 @@ function haversine(lat1, lon1, lat2, lon2){
 }
 
 /* =========================
-   3) HERO ROTATION (uses your repo images)
+   MAP (lazy init)
    ========================= */
-const heroImgs = [
-  "./Kee_monastery.jpg",
-  "./201-himalaya.jpg",
-  "./Travelers.jpg",
-  "./n1.jpg",
-  "./Dark.jpg"
-];
-let heroIdx = 0;
-function setHeroBg(url){
-  const el = $("heroMain");
-  el.style.setProperty("--heroUrl", `url("${url}")`);
-}
-function rotateHero(){
-  heroIdx = (heroIdx + 1) % heroImgs.length;
-  const url = heroImgs[heroIdx];
-  // pre-load, then set
-  const img = new Image();
-  img.onload = ()=> setHeroBg(url);
-  img.onerror = ()=> {}; // ignore missing files
-  img.src = url;
-}
+function ensureMap(){
+  if(mapReady) return;
+  // show map panel
+  $("mapPanel").style.display = "block";
 
-/* =========================
-   4) MAP
-   ========================= */
-function initMap(){
   map = L.map('map', {zoomControl:true}).setView([31.9, 77.2], 7);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 18, attribution: '&copy; OpenStreetMap'
   }).addTo(map);
   markerLayer = L.layerGroup().addTo(map);
+
+  mapReady = true;
+
+  // leaflet needs size invalidation when element becomes visible
+  setTimeout(()=> map.invalidateSize(), 120);
 }
-function clearMarkers(){ markerLayer.clearLayers(); }
+
+function clearMarkers(){
+  if(!mapReady) return;
+  markerLayer.clearLayers();
+}
 function addMarkers(list){
+  if(!mapReady) return;
   clearMarkers();
 
   list.forEach((p)=>{
     if(!p.lat || !p.lng) return;
-
-    // custom pulse icon for selected markers vibe
-    const icon = L.divIcon({className:"", html:`<div class="pulseDot"></div>`, iconSize:[12,12], iconAnchor:[6,6]});
-    const m = L.marker([p.lat, p.lng], {icon}).addTo(markerLayer);
+    const m = L.marker([p.lat, p.lng]).addTo(markerLayer);
     m.bindPopup(`<b>${escapeHtml(p.name)}</b><br/><span style="opacity:.8">${escapeHtml(p.district)} • ${escapeHtml(p.type)}</span>`);
     m.on('click', ()=> openDrawer(p));
   });
@@ -955,7 +789,7 @@ function addMarkers(list){
 }
 
 /* =========================
-   5) LOAD DATA
+   LOAD DATA
    ========================= */
 async function loadPlaces(){
   try{
@@ -974,15 +808,14 @@ async function loadPlaces(){
       const short = safeText(o["Short Description"] || o.short || "");
       const keyFeatures = safeText(o["Key Features"] || o.features || "");
       const how = safeText(o["How to Reach"] || o.how || "");
-      const bestTime = safeText(o["Best Time to Visit"] || o.bestTime || "");
-      const distFromHQ = safeText(o["Dist from HQ"] || o.distFromHQ || "");
       const mapUrl = safeText(o["Map"] || o.map || "");
       const {lat, lng} = parseLatLngFromMapUrl(mapUrl);
+
       const images = Array.isArray(o.images) ? o.images : (o.image ? [o.image] : []);
       const type = normalizeType(segment);
       const brief = overview || short || keyFeatures || "Explore this place in Himachal Pradesh.";
 
-      return { id, name, district, type, segment, locationType, brief, how, bestTime, distFromHQ, mapUrl, lat, lng, images };
+      return { id, name, district, type, segment, locationType, brief, how, mapUrl, lat, lng, images };
     }).filter(p=>p.name);
 
   }catch(e){
@@ -991,69 +824,10 @@ async function loadPlaces(){
   }
 }
 
-/* =========================
-   6) DISTRICTS + FILTERS
-   ========================= */
 function buildDistrictDropdown(){
   const distSel = $("district");
-  const sd = $("sd");
   const districts = [...new Set(allPlaces.map(p=>p.district).filter(Boolean))].sort();
-  const options = `<option value="all">All</option>` + districts.map(d=>`<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join("");
-  distSel.innerHTML = options;
-  sd.innerHTML = `<option value="all">All Districts</option>` + districts.map(d=>`<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join("");
-}
-
-function getDistrictStats(){
-  const by = new Map();
-  allPlaces.forEach(p=>{
-    const d = p.district || "Unknown";
-    if(!by.has(d)) by.set(d, {count:0, types:new Set(), samples:[]});
-    const obj = by.get(d);
-    obj.count++;
-    obj.types.add(p.type);
-    if(obj.samples.length < 3) obj.samples.push(p.name);
-  });
-  return by;
-}
-
-function buildDistrictGrid(){
-  const grid = $("districtGrid");
-  const by = getDistrictStats();
-  const districts = [...by.keys()].sort((a,b)=>a.localeCompare(b));
-
-  grid.innerHTML = districts.map(d=>{
-    const info = by.get(d);
-    const types = [...info.types].slice(0,3);
-    const tags = [`${info.count} places`, ...types].slice(0,3);
-    const preview = info.samples.slice(0,3).join(" • ");
-
-    return `
-      <div class="dItem" data-d="${escapeHtml(d)}">
-        <b>${escapeHtml(d)}</b>
-        <div class="dSub2">📍 ${escapeHtml(preview || "Explore highlights")}</div>
-        <div class="dMeta">
-          ${tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join("")}
-        </div>
-      </div>
-    `;
-  }).join("");
-
-  grid.querySelectorAll(".dItem").forEach(el=>{
-    el.addEventListener("click", ()=>{
-      const d = el.getAttribute("data-d");
-      $("district").value = d;
-      $("sd").value = d;
-      applyFilters(true);
-      location.hash = "#explore";
-    });
-  });
-
-  $("showAllDistricts").onclick = ()=>{
-    $("district").value = "all";
-    $("sd").value = "all";
-    applyFilters(true);
-    location.hash = "#explore";
-  };
+  distSel.innerHTML = `<option value="all">All</option>` + districts.map(d=>`<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join("");
 }
 
 function applyFilters(scrollToList=false){
@@ -1071,7 +845,6 @@ function applyFilters(scrollToList=false){
       if(!hay.includes(q)) return false;
     }
 
-    // simple day preference
     if(days){
       if(days <= 2 && p.type === "Trek") return false;
     }
@@ -1079,8 +852,11 @@ function applyFilters(scrollToList=false){
   });
 
   renderList(shownPlaces);
-  addMarkers(shownPlaces);
-  updateStats();
+
+  // ✅ DO NOT display map until click
+  // so we do NOT call addMarkers here
+
+  $("count").textContent = `${shownPlaces.length} shown`;
   updateActiveFilters();
 
   if(scrollToList) $("list").scrollTo({top:0, behavior:"smooth"});
@@ -1100,24 +876,11 @@ function updateActiveFilters(){
   $("activeFilters").textContent = parts.length ? parts.join(" • ") : "No filters";
 }
 
-function updateStats(){
-  const districts = new Set(allPlaces.map(p=>p.district).filter(Boolean));
-  const types = new Set(allPlaces.map(p=>p.type).filter(Boolean));
-  $("statPlaces").textContent = allPlaces.length.toString();
-  $("statDistricts").textContent = districts.size.toString();
-  $("statTypes").textContent = types.size.toString();
-  $("statShown").textContent = shownPlaces.length.toString();
-  $("count").textContent = `${shownPlaces.length} shown`;
-}
-
-/* =========================
-   7) LIST RENDER
-   ========================= */
 function renderList(list){
   const box = $("list");
   if(!list.length){
     box.innerHTML = `<div style="padding:14px; color:rgba(255,255,255,.75); font-weight:850">
-      No results. Try changing district/type or search.
+      No results. Try changing filters or search.
     </div>`;
     return;
   }
@@ -1128,7 +891,6 @@ function renderList(list){
     const badgeBg = typeBg(p.type);
     const brief = safeText(p.brief) || "Explore this place in Himachal Pradesh.";
     const meta = `${safeText(p.district)} • ${safeText(p.type)}${p.locationType ? " • " + p.locationType : ""}`;
-
     const km = (myPos && p.lat && p.lng) ? haversine(myPos.lat, myPos.lng, p.lat, p.lng) : null;
 
     return `
@@ -1142,9 +904,7 @@ function renderList(list){
           <div class="pBadges">
             <span class="badge" style="background:${badgeBg}">${escapeHtml(p.type)}</span>
             <span class="badge">${escapeHtml(p.district)}</span>
-            ${p.distFromHQ ? `<span class="badge">${escapeHtml(p.distFromHQ)}</span>` : ``}
             ${km ? `<span class="badge">📍 ${km.toFixed(1)} km from you</span>` : ``}
-            ${p.lat && p.lng ? `<span class="badge">(${p.lat.toFixed(3)}, ${p.lng.toFixed(3)})</span>` : ``}
           </div>
         </div>
       </div>
@@ -1160,15 +920,14 @@ function renderList(list){
 }
 
 /* =========================
-   8) DRAWER
+   DRAWER
    ========================= */
 function buildMiniPlan(p){
-  const type = p.type;
-  if(type === "Trek") return "Start early • carry water + warm layer • avoid late return • add one viewpoint + one café stop.";
-  if(type === "Lake") return "Sunrise/sunset best • buffer for road • pair with nearby temple/meadow • keep light snacks.";
-  if(type === "Temple") return "Morning darshan + local market • add 1 nature spot nearby • keep relaxed pace.";
-  if(type === "Hotel") return "Use as base • add 2 nearby places + 1 sunset point • evening walk + local dinner.";
-  return "1 main attraction + 2 nearby spots + food stop • keep time for photos + slow travel.";
+  if(p.type === "Trek") return "Start early • carry water + warm layer • return before sunset • add viewpoint + café stop.";
+  if(p.type === "Lake") return "Sunrise/sunset best • buffer for roads • pair with temple/meadow • keep light snacks.";
+  if(p.type === "Temple") return "Morning darshan + local market • add 1 nature spot nearby • relaxed pace.";
+  if(p.type === "Hotel") return "Use as base • add 2 nearby spots + sunset point • evening walk + dinner.";
+  return "1 main attraction + 2 nearby spots + food stop • keep time for photos.";
 }
 
 function openDrawer(p){
@@ -1181,7 +940,7 @@ function openDrawer(p){
   $("dHow").textContent = (safeText(p.how) ? `Reach: ${p.how}` : "Reach: —");
   $("miniPlan").textContent = buildMiniPlan(p);
 
-  // distance box
+  // distance
   let distLine = "Turn on Nearby to see distance from you.";
   if(myPos && p.lat && p.lng){
     const km = haversine(myPos.lat, myPos.lng, p.lat, p.lng);
@@ -1213,9 +972,19 @@ function closeDrawer(){
 $("closeDrawer").onclick = closeDrawer;
 $("drawerWrap").addEventListener("click", (e)=>{ if(e.target === $("drawerWrap")) closeDrawer(); });
 
+/* ✅ Show map ONLY after click (button) */
 $("routeBtn").onclick = ()=>{
-  if(!currentPlace || !currentPlace.lat || !currentPlace.lng) return;
-  map.setView([currentPlace.lat, currentPlace.lng], 12);
+  if(!currentPlace) return;
+
+  ensureMap();                       // init map now
+  addMarkers([currentPlace]);        // show only selected
+  if(currentPlace.lat && currentPlace.lng){
+    map.setView([currentPlace.lat, currentPlace.lng], 12);
+    $("mapHint").textContent = `${currentPlace.name} • ${currentPlace.district}`;
+  }else{
+    $("mapHint").textContent = "No lat/lng found for this place (add map link with q=lat,lng)";
+  }
+
   closeDrawer();
   location.hash = "#explore";
 };
@@ -1224,66 +993,46 @@ $("pkgBtn").onclick = ()=>{
   if(!currentPlace) return;
   const base = currentPlace.name;
   const district = currentPlace.district;
+
   const pack = [
     `Package A: ${district} Highlights (2D/1N) — ${base} + 2 nearby spots + local food.`,
     `Package B: Nature & Photos (3D/2N) — ${base} + scenic points + relaxed pace.`,
-    `Package C: Family Comfort (4D/3N) — easy routes + viewpoints + market + cafés.`,
-    `Package D: Adventure Mix (5D/4N) — trek/activities + lake + sunset point.`
-  ].slice(0,4);
+    `Package C: Temples + Culture (4D/3N) — ${base} + top temples + market + heritage.`,
+    `Package D: Adventure Mix (5D/4N) — ${base} + trek/activity + sunrise/sunset points.`
+  ];
   alert(pack.join("\n\n"));
 };
 
 $("fullBtn").onclick = ()=>{
   if(!currentPlace) return;
-  // expects place.html in same repo (you already have it)
   window.location.href = `place.html?id=${encodeURIComponent(currentPlace.id)}`;
 };
 
 /* =========================
-   9) NEARBY (GPS)
+   NEARBY
    ========================= */
 $("nearby").onclick = ()=>{
   if(!navigator.geolocation){
-    alert("GPS not supported on this device/browser.");
+    alert("GPS not supported.");
     return;
   }
   $("status").textContent = "Getting your location…";
   navigator.geolocation.getCurrentPosition((pos)=>{
     myPos = {lat: pos.coords.latitude, lng: pos.coords.longitude};
-
-    map.setView([myPos.lat, myPos.lng], 10);
-    L.circleMarker([myPos.lat, myPos.lng], { radius:8, weight:2, fillOpacity:.25 })
-      .addTo(markerLayer)
-      .bindPopup("You are here")
-      .openPopup();
-
-    // show closest 20
-    const withDist = allPlaces
-      .filter(p=>p.lat && p.lng)
-      .map(p=>({p, km: haversine(myPos.lat, myPos.lng, p.lat, p.lng)}))
-      .sort((a,b)=>a.km-b.km)
-      .slice(0, 20)
-      .map(x=>({...x.p, _km:x.km}));
-
-    shownPlaces = withDist;
+    $("status").textContent = "Nearby ready. Distances shown in list.";
+    // re-render list so distances appear
     renderList(shownPlaces);
-    addMarkers(shownPlaces);
-    updateStats();
-    updateActiveFilters();
-    $("status").textContent = "Showing nearby places.";
-    location.hash = "#explore";
   }, ()=>{
     $("status").textContent = "GPS permission denied.";
-    alert("Please allow location permission to use Nearby.");
+    alert("Allow location permission to use Nearby.");
   }, {enableHighAccuracy:true, timeout:12000});
 };
 
 /* =========================
-   10) AI MODAL (on-page logic)
+   AI MODAL
    ========================= */
 function openAI(){ $("modalWrap").style.display="flex"; seedChat(); }
 function closeAI(){ $("modalWrap").style.display="none"; }
-
 $("openAI").onclick = openAI;
 $("closeAI").onclick = closeAI;
 $("modalWrap").addEventListener("click",(e)=>{ if(e.target === $("modalWrap")) closeAI(); });
@@ -1302,7 +1051,6 @@ function seedChat(){
 }
 function aiSuggest(userText){
   const t = userText.toLowerCase();
-
   let days = 0;
   const m = t.match(/(\d+)\s*(day|days|d)/);
   if(m) days = Number(m[1]);
@@ -1311,7 +1059,6 @@ function aiSuggest(userText){
     trek: /trek|hike|trail|adventure/.test(t),
     lake: /lake|chandratal|prashar|rewalsar|manimahesh/.test(t),
     temple: /temple|mandir|devi|mahadev|monastery/.test(t),
-    snow: /snow|winter|ice/.test(t),
     relax: /relax|peace|family|easy/.test(t),
   };
 
@@ -1328,7 +1075,6 @@ function aiSuggest(userText){
     if(wants.lake && p.type==="Lake") s += 3;
     if(wants.temple && p.type==="Temple") s += 3;
     if(wants.relax && p.type!=="Trek") s += 1;
-    if(wants.snow && /manali|kufri|rohtang|solang/i.test(p.name)) s += 2;
     return {p, s};
   }).sort((a,b)=>b.s-a.s);
 
@@ -1340,7 +1086,7 @@ function aiSuggest(userText){
     .map((p,i)=>`${i+1}. ${p.name} (${p.district} • ${p.type})`)
     .join("\n");
 
-  return `Based on your message, here are good picks:\n${list}\n\nWant me to filter them on the page? Tell me district + type.`;
+  return `Based on your message, here are good picks:\n${list}\n\nTip: Use filters on home, then click a place to open map.`;
 }
 $("sendChat").onclick = ()=>{
   const v = safeText($("chatInput").value);
@@ -1352,94 +1098,40 @@ $("sendChat").onclick = ()=>{
 $("chatInput").addEventListener("keydown",(e)=>{ if(e.key==="Enter") $("sendChat").click(); });
 
 /* =========================
-   11) ACTIONS
+   ACTIONS
    ========================= */
 $("apply").onclick = ()=>{ applyFilters(true); location.hash="#explore"; };
 $("reset").onclick = ()=>{
   $("q").value = ""; $("district").value="all"; $("type").value="all"; $("days").value="0";
-  $("sq").value = ""; $("sd").value="all"; $("st").value="all"; $("sdays").value="0";
   applyFilters(true);
 };
+
 document.querySelectorAll(".qcard").forEach(el=>{
   el.addEventListener("click", ()=>{
-    const v = el.getAttribute("data-quick");
-    $("type").value = v;
-    $("st").value = v;
+    $("type").value = el.getAttribute("data-quick");
     applyFilters(true);
     location.hash="#explore";
   });
 });
+
 $("openAdmin").onclick = ()=>{
-  // if you already have admin.html, open it; else show message
   const go = confirm("Open admin page (admin.html)?");
   if(go) window.location.href = "admin.html";
 };
 
-/* Sticky search sync */
-function syncStickyFromMain(){
-  $("sq").value = $("q").value;
-  $("sd").value = $("district").value;
-  $("st").value = $("type").value;
-  $("sdays").value = $("days").value;
-}
-function syncMainFromSticky(){
-  $("q").value = $("sq").value;
-  $("district").value = $("sd").value;
-  $("type").value = $("st").value;
-  $("days").value = $("sdays").value;
-}
-["q","district","type","days"].forEach(id=>{
-  $(id).addEventListener("input", syncStickyFromMain);
-  $(id).addEventListener("change", syncStickyFromMain);
-});
-["sq","sd","st","sdays"].forEach(id=>{
-  $(id).addEventListener("input", syncMainFromSticky);
-  $(id).addEventListener("change", syncMainFromSticky);
-});
-$("sapply").onclick = ()=>{ syncMainFromSticky(); applyFilters(true); location.hash="#explore"; };
-
 /* =========================
-   12) STICKY SEARCH VISIBILITY
-   ========================= */
-function initStickyObserver(){
-  const anchor = $("finderAnchor");
-  const sticky = $("stickySearch");
-  const obs = new IntersectionObserver((entries)=>{
-    const e = entries[0];
-    if(!e.isIntersecting){
-      sticky.style.display = "block";
-      syncStickyFromMain();
-    }else{
-      sticky.style.display = "none";
-    }
-  }, {threshold: 0.15});
-  obs.observe(anchor);
-}
-
-/* =========================
-   13) INIT
+   INIT
    ========================= */
 (async function init(){
-  initMap();
-
-  // set initial hero
-  setHeroBg(heroImgs[0]);
-  setInterval(rotateHero, 6500);
-
   await loadPlaces();
+  buildDistrictDropdown();
 
   $("status").textContent = allPlaces.length
     ? `Loaded ${allPlaces.length} places from Firebase /${dbPath}`
     : "No data loaded. Check RTDB rules + path.";
 
-  buildDistrictDropdown();
-  buildDistrictGrid();
-
   shownPlaces = allPlaces.slice();
   applyFilters(false);
-
-  initStickyObserver();
-  seedChat();
 })();
 </script>
 </body>
