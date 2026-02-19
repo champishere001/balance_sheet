@@ -15,64 +15,125 @@
 
   <style>
     :root{
-      --bg0:#05070d; --bg1:#070b15;
-      --stroke:rgba(255,255,255,.12);
-      --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.68);
-      --shadow: 0 24px 80px rgba(0,0,0,.55);
+      /* Light premium like index */
+      --bg0:#f7f9ff;
+      --bg1:#ffffff;
+      --card:rgba(255,255,255,.86);
+      --stroke:rgba(10,18,40,.10);
+      --text:#0b1220;
+      --muted:rgba(11,18,32,.64);
+      --shadow: 0 20px 55px rgba(15,23,42,.10);
+      --shadow2: 0 14px 28px rgba(15,23,42,.08);
       --r2:26px;
       --max:1100px;
+      --a:#2563eb; /* blue */
+      --b:#7c3aed; /* violet */
+      --ok:#16a34a;
+      --warn:#f59e0b;
     }
     *{box-sizing:border-box}
     body{
       margin:0; color:var(--text);
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       background:
-        radial-gradient(1200px 700px at 12% 10%, rgba(103,232,249,.18), transparent 55%),
-        radial-gradient(1000px 700px at 82% 18%, rgba(167,139,250,.17), transparent 56%),
+        radial-gradient(900px 600px at 12% 10%, rgba(37,99,235,.16), transparent 60%),
+        radial-gradient(900px 600px at 86% 16%, rgba(124,58,237,.14), transparent 60%),
+        radial-gradient(900px 600px at 56% 92%, rgba(22,163,74,.10), transparent 60%),
         linear-gradient(180deg, var(--bg0), var(--bg1));
     }
     a{color:inherit; text-decoration:none}
     .wrap{max-width:var(--max); margin:0 auto; padding:18px 14px 40px}
+
     .top{
       display:flex; align-items:center; justify-content:space-between; gap:10px;
       position:sticky; top:0; z-index:10;
       padding:12px 0;
+      background: rgba(255,255,255,.72);
+      border-bottom:1px solid var(--stroke);
       backdrop-filter: blur(10px);
     }
+
     .btn{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.78);
       color:var(--text);
       padding:10px 12px;
       border-radius:14px;
       font-weight:900;
       cursor:pointer;
+      box-shadow: var(--shadow2);
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
     }
     .btn.primary{
-      background: linear-gradient(135deg, rgba(103,232,249,.18), rgba(167,139,250,.14));
-      box-shadow: 0 18px 50px rgba(0,0,0,.35);
+      color:#fff;
+      background: linear-gradient(135deg, rgba(37,99,235,.96), rgba(124,58,237,.92));
+      box-shadow: 0 18px 42px rgba(37,99,235,.20);
+      border:0;
     }
+
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:950;
+    }
+    .logo{
+      width:36px; height:36px;
+      border-radius:14px;
+      background: linear-gradient(135deg, rgba(37,99,235,.92), rgba(124,58,237,.92));
+      box-shadow: 0 12px 26px rgba(37,99,235,.18);
+      overflow:hidden;
+      display:flex; align-items:center; justify-content:center;
+      flex:0 0 auto;
+    }
+    .logo img{width:100%; height:100%; object-fit:cover; display:block}
+
+    .small{font-size:12px; color:rgba(11,18,32,.70); font-weight:900}
+
     .hero{
       border-radius: var(--r2);
-      border:1px solid rgba(255,255,255,.12);
+      border:1px solid var(--stroke);
       overflow:hidden;
       box-shadow: var(--shadow);
+      background: rgba(255,255,255,.78);
+      position:relative;
+    }
+    .hero::before{
+      content:"";
+      position:absolute; inset:0;
       background:
-        linear-gradient(120deg, rgba(0,0,0,.60), rgba(0,0,0,.15)),
-        url("https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1800&q=75") center/cover no-repeat;
+        linear-gradient(120deg, rgba(255,255,255,.92), rgba(255,255,255,.55)),
+        url("./Kee_monastery.jpg") center/cover no-repeat;
+      filter: saturate(1.05);
+      transform: scale(1.02);
+      opacity:.95;
+    }
+    .hero::after{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(700px 420px at 20% 30%, rgba(37,99,235,.14), transparent 62%),
+        radial-gradient(700px 420px at 78% 30%, rgba(124,58,237,.12), transparent 62%);
+      opacity:.85;
+      pointer-events:none;
+    }
+    .heroInner{
+      position:relative;
       padding:18px;
     }
-    .hero h1{margin:0; font-size:clamp(22px,3.2vw,40px); line-height:1.05}
-    .hero p{margin:10px 0 0; color:rgba(255,255,255,.82); font-weight:700}
+    .hero h1{margin:0; font-size:clamp(22px,3.2vw,40px); line-height:1.05; letter-spacing:-.4px}
+    .hero p{margin:10px 0 0; color:rgba(11,18,32,.70); font-weight:800}
+
     .meta{margin-top:12px; display:flex; gap:8px; flex-wrap:wrap}
     .pill{
       font-size:12px; font-weight:950;
       padding:8px 10px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.22);
-      color:rgba(255,255,255,.85);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.82);
+      color:rgba(11,18,32,.80);
+      box-shadow: var(--shadow2);
     }
+
     .grid{
       margin-top:14px;
       display:grid;
@@ -82,20 +143,21 @@
     }
     .card{
       border-radius: var(--r2);
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      box-shadow: 0 16px 60px rgba(0,0,0,.38);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.80);
+      box-shadow: var(--shadow);
       overflow:hidden;
     }
     .head{
       padding:14px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), transparent);
+      border-bottom:1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.70));
       display:flex; align-items:center; justify-content:space-between; gap:10px;
     }
     .head h3{margin:0; font-size:13px}
     .body{padding:14px}
-    .body p{margin:0; color:var(--muted); font-weight:700; line-height:1.55}
+    .body p{margin:0; color:rgba(11,18,32,.74); font-weight:750; line-height:1.55}
+
     .gallery{
       padding:14px;
       display:grid;
@@ -104,31 +166,56 @@
     }
     .img{
       border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
+      border:1px solid var(--stroke);
+      background: #f3f6ff;
       overflow:hidden;
       aspect-ratio: 4/3;
+      box-shadow: var(--shadow2);
     }
     .img img{width:100%; height:100%; object-fit:cover; display:block}
-    #map{width:100%; height:360px; border-top:1px solid rgba(255,255,255,.10)}
+
+    #map{width:100%; height:360px; border-top:1px solid var(--stroke)}
+
     .row{display:flex; gap:10px; flex-wrap:wrap}
     .kpi{
       flex:1; min-width:150px;
       padding:12px;
       border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
+      border:1px solid var(--stroke);
+      background: rgba(245,247,255,.75);
+      box-shadow: var(--shadow2);
     }
     .kpi b{display:block; font-size:14px}
-    .kpi span{color:var(--muted); font-weight:800; font-size:12px}
-    .small{font-size:12px; color:rgba(255,255,255,.75); font-weight:800}
+    .kpi span{color:var(--muted); font-weight:900; font-size:12px}
+
+    /* Rates block */
+    .rates{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns: repeat(4,1fr);
+      gap:10px;
+    }
+    .rate{
+      padding:12px;
+      border-radius:18px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.86);
+      box-shadow: var(--shadow2);
+    }
+    .rate .label{font-size:11px; color:var(--muted); font-weight:950; letter-spacing:.2px}
+    .rate .val{margin-top:6px; font-weight:950; font-size:14px}
+
+    .links{display:flex; gap:10px; flex-wrap:wrap}
+
     @media (max-width: 980px){
       .grid{grid-template-columns:1fr}
       .gallery{grid-template-columns: repeat(2, 1fr)}
       #map{height:320px}
+      .rates{grid-template-columns:1fr 1fr}
     }
     @media (max-width: 520px){
       .gallery{grid-template-columns: 1fr}
+      .rates{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -136,27 +223,43 @@
 <body>
 <div class="wrap">
   <div class="top">
-    <a class="btn" href="index.html">← Back</a>
-    <div class="small" id="status">Loading…</div>
+    <div style="display:flex; gap:10px; align-items:center">
+      <a class="btn" href="index.html">← Back</a>
+      <div class="brand">
+        <div class="logo" title="Himachal Explorer">
+          <!-- if you have logo.png in repo -->
+          <img src="./logo.png" alt="Logo" onerror="this.remove()">
+        </div>
+        <div class="small" id="status">Loading…</div>
+      </div>
+    </div>
+
+    <div class="links">
+      <button class="btn" id="openMapBtn">Open Map Link</button>
+      <button class="btn primary" id="backToResults">Back to Results</button>
+    </div>
   </div>
 
   <div class="hero">
-    <h1 id="title">Place</h1>
-    <p id="subtitle">—</p>
-    <div class="meta">
-      <span class="pill" id="pDistrict">District: —</span>
-      <span class="pill" id="pSeg">Segment: —</span>
-      <span class="pill" id="pType">Type: —</span>
-      <span class="pill" id="pBest">Best Time: —</span>
-      <span class="pill" id="pDist">Dist from HQ: —</span>
+    <div class="heroInner">
+      <h1 id="title">Place</h1>
+      <p id="subtitle">—</p>
+      <div class="meta">
+        <span class="pill" id="pDistrict">District: —</span>
+        <span class="pill" id="pSeg">Segment: —</span>
+        <span class="pill" id="pType">Type: —</span>
+        <span class="pill" id="pBest">Best Time: —</span>
+        <span class="pill" id="pDist">Dist from HQ: —</span>
+        <span class="pill" id="pDays">Trip Days: —</span>
+      </div>
     </div>
   </div>
 
   <div class="grid">
     <div class="card">
       <div class="head">
-        <h3>Photos (max 5)</h3>
-        <button class="btn primary" id="openMapBtn">Open Map Link</button>
+        <h3>Photos (max 3)</h3>
+        <span class="small" id="imgHint">—</span>
       </div>
       <div class="gallery" id="gallery"></div>
       <div id="map"></div>
@@ -170,14 +273,23 @@
           <div class="kpi"><b id="kTask">—</b><span>Task / Must do</span></div>
         </div>
 
-        <p><b style="color:rgba(255,255,255,.9)">Overview:</b><br><span id="overview">—</span></p>
+        <div class="rates" id="ratesBox">
+          <div class="rate"><div class="label">Solo</div><div class="val" id="rSolo">—</div></div>
+          <div class="rate"><div class="label">Couple</div><div class="val" id="rCouple">—</div></div>
+          <div class="rate"><div class="label">Family</div><div class="val" id="rFamily">—</div></div>
+          <div class="rate"><div class="label">Group</div><div class="val" id="rGroup">—</div></div>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <p><b style="color:rgba(11,18,32,.92)">Overview:</b><br><span id="overview">—</span></p>
         <div style="height:10px"></div>
-        <p><b style="color:rgba(255,255,255,.9)">Short Description:</b><br><span id="short">—</span></p>
+        <p><b style="color:rgba(11,18,32,.92)">Short Description:</b><br><span id="short">—</span></p>
         <div style="height:10px"></div>
-        <p><b style="color:rgba(255,255,255,.9)">Key Features:</b><br><span id="features">—</span></p>
+        <p><b style="color:rgba(11,18,32,.92)">Key Features:</b><br><span id="features">—</span></p>
 
         <div style="height:14px"></div>
-        <div class="head" style="border-radius:18px; border:1px solid rgba(255,255,255,.10)">
+        <div class="head" style="border-radius:18px; border:1px solid var(--stroke)">
           <h3>Weather (Open-Meteo)</h3>
           <span class="small" id="weather">—</span>
         </div>
@@ -202,6 +314,13 @@ const dbPath = "locations";
 const $ = (id)=>document.getElementById(id);
 function safeText(v){ return (v ?? "").toString().trim(); }
 
+function getId(){
+  const u = new URL(location.href);
+  return u.searchParams.get("id");
+}
+
+function setText(id, v){ $(id).textContent = safeText(v) || "—"; }
+
 function parseLatLngFromMapUrl(url){
   url = safeText(url);
   if(!url) return {lat:null,lng:null};
@@ -212,33 +331,43 @@ function parseLatLngFromMapUrl(url){
   return {lat:null,lng:null};
 }
 
-function getId(){
-  const u = new URL(location.href);
-  return u.searchParams.get("id");
+function money(v){
+  const n = Number(v);
+  if(!Number.isFinite(n) || n<=0) return "—";
+  return "₹ " + n.toLocaleString("en-IN");
 }
-
-function setText(id, v){ $(id).textContent = safeText(v) || "—"; }
 
 let map;
 function initMap(lat, lng){
-  const has = lat && lng;
+  const has = Number.isFinite(lat) && Number.isFinite(lng);
   map = L.map('map', {zoomControl:true}).setView(has ? [lat,lng] : [31.9, 77.2], has ? 12 : 7);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 18, attribution: '&copy; OpenStreetMap'}).addTo(map);
   if(has) L.marker([lat,lng]).addTo(map);
+  setTimeout(()=>map.invalidateSize(), 150);
 }
 
-function renderGallery(images){
+function renderGallery(o){
   const g = $("gallery");
-  const arr = (images || []).filter(Boolean).slice(0,5);
+  // ✅ support BOTH formats:
+  // 1) images: []
+  // 2) photo 1/2/3 columns from your sheet
+  let arr = [];
+  if(Array.isArray(o.images) && o.images.length) arr = o.images;
+  else arr = [o["photo 1"], o["photo 2"], o["photo 3"]].filter(Boolean);
+
+  arr = arr.filter(Boolean).slice(0,3);
+
   if(!arr.length){
-    g.innerHTML = `<div class="img" style="display:flex;align-items:center;justify-content:center;padding:14px;color:rgba(255,255,255,.75);font-weight:900">No images in Firebase yet</div>`;
+    g.innerHTML = `<div class="img" style="display:flex;align-items:center;justify-content:center;padding:14px;color:rgba(11,18,32,.70);font-weight:900">No images in Firebase yet</div>`;
+    $("imgHint").textContent = "Add photo 1/2/3 in sheet";
     return;
   }
+  $("imgHint").textContent = `${arr.length} image(s)`;
   g.innerHTML = arr.map(u=>`<div class="img"><img src="${u}" loading="lazy" onerror="this.remove()" /></div>`).join("");
 }
 
 async function loadWeather(lat,lng){
-  if(!lat || !lng){ $("weather").textContent = "Lat/Lng not available"; return; }
+  if(!Number.isFinite(lat) || !Number.isFinite(lng)){ $("weather").textContent = "Lat/Lng not available"; return; }
   try{
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,wind_speed_10m&timezone=auto`;
     const res = await fetch(url);
@@ -250,6 +379,32 @@ async function loadWeather(lat,lng){
   }catch(e){
     $("weather").textContent = "Weather blocked (network/CORS)";
   }
+}
+
+function pickLatLng(o, mapUrl){
+  // ✅ first prefer sheet columns Latitude/Longitude
+  const latCol = (o.Latitude !== undefined && o.Latitude !== null) ? Number(o.Latitude) : NaN;
+  const lngCol = (o.Longitude !== undefined && o.Longitude !== null) ? Number(o.Longitude) : NaN;
+  if(Number.isFinite(latCol) && Number.isFinite(lngCol)) return {lat:latCol, lng:lngCol};
+
+  // fallback: parse from map url
+  return parseLatLngFromMapUrl(mapUrl);
+}
+
+function setRates(o){
+  // ✅ supports either:
+  // - Rate_Solo columns
+  // - rates: {solo,couple,...}
+  const rates = o.rates || {};
+  const solo = rates.solo ?? o.Rate_Solo;
+  const couple = rates.couple ?? o.Rate_Couple;
+  const family = rates.family ?? o.Rate_Family;
+  const group = rates.group ?? o.Rate_Group;
+
+  $("rSolo").textContent = money(solo);
+  $("rCouple").textContent = money(couple);
+  $("rFamily").textContent = money(family);
+  $("rGroup").textContent = money(group);
 }
 
 async function loadPlace(){
@@ -277,15 +432,19 @@ async function loadPlace(){
   const task = safeText(o["Task for Location"] || o.task);
   const mapUrl = safeText(o["Map"] || o.map);
 
-  const images = Array.isArray(o.images) ? o.images : (o.image ? [o.image] : []);
+  const minD = o.TripDays_Min ?? o.tripDaysMin ?? "";
+  const maxD = o.TripDays_Max ?? o.tripDaysMax ?? "";
+  const dayText = (minD!=="" || maxD!=="") ? `${minD || "—"}–${maxD || "—"} days` : "—";
 
   $("title").textContent = name;
   $("subtitle").textContent = `${district || "Unknown"} • ${segment || "—"}`;
+
   setText("pDistrict", `District: ${district || "—"}`);
   setText("pSeg", `Segment: ${segment || "—"}`);
   setText("pType", `Type: ${locType || "—"}`);
   setText("pBest", `Best Time: ${best || "—"}`);
   setText("pDist", `Dist from HQ: ${distHQ || "—"}`);
+  setText("pDays", `Trip Days: ${dayText}`);
 
   $("overview").textContent = overview || "—";
   $("short").textContent = short || "—";
@@ -293,9 +452,14 @@ async function loadPlace(){
   $("kHow").textContent = how || "—";
   $("kTask").textContent = task || "—";
 
-  renderGallery(images);
+  // ✅ gallery from photo columns / images[]
+  renderGallery(o);
 
-  const {lat,lng} = parseLatLngFromMapUrl(mapUrl);
+  // ✅ rates
+  setRates(o);
+
+  // ✅ map & weather
+  const {lat,lng} = pickLatLng(o, mapUrl);
   initMap(lat,lng);
   loadWeather(lat,lng);
 
@@ -304,7 +468,13 @@ async function loadPlace(){
     else alert("No map link saved in Firebase for this place.");
   };
 
-  $("status").textContent = `Loaded: ${id}`;
+  // back-to-results keeps filters if you came from index
+  $("backToResults").onclick = ()=>{
+    // if index.html stores last filters in localStorage, it will restore automatically (optional)
+    window.location.href = "index.html#explore";
+  };
+
+  $("status").textContent = `Loaded: ${name}`;
 }
 
 loadPlace();
