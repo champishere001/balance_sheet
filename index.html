@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — Light Premium</title>
+  <title>Himachal Explorer — Light Premium (Tiles + Images)</title>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -301,6 +301,39 @@
     .sectionTitle h2{margin:0; font-size:16px}
     .sectionTitle p{margin:0; color:var(--muted); font-weight:800; font-size:12px}
 
+    /* ===== TYPE TILES ===== */
+    .typeTiles{
+      padding:14px;
+      display:grid;
+      grid-template-columns: repeat(6, minmax(0,1fr));
+      gap:12px;
+    }
+    @media(max-width:1100px){ .typeTiles{grid-template-columns: repeat(4, minmax(0,1fr));} }
+    @media(max-width:780px){ .typeTiles{grid-template-columns: repeat(2, minmax(0,1fr));} }
+    .typeTile{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.86);
+      border-radius: 20px;
+      overflow:hidden;
+      box-shadow: var(--shadow2);
+      cursor:pointer;
+      transition:.16s ease;
+    }
+    .typeTile:hover{transform: translateY(-1px)}
+    .typeTileImg{
+      height:110px;
+      width:100%;
+      display:block;
+      object-fit:cover;
+      background: linear-gradient(135deg, rgba(37,99,235,.10), rgba(124,58,237,.08));
+    }
+    .typeTileBody{
+      padding:10px 12px 12px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .typeTileBody b{font-size:12px}
+    .typeTileBody span{font-size:12px; color:rgba(11,18,32,.62); font-weight:900}
+
     .exploreGrid{
       display:grid;
       grid-template-columns: 320px 1fr;
@@ -529,7 +562,7 @@
         </div>
         <div>
           <h1>Himachal Explorer</h1>
-          <small>Light premium • route-aware list • rigorous packages</small>
+          <small>Light premium • tiles + images • clean results</small>
         </div>
       </div>
 
@@ -547,21 +580,21 @@
       <div class="heroCard">
         <div class="heroInner">
           <div>
-            <h2 class="heroTitle">Plan Himachal like a pro — without clutter.</h2>
+            <h2 class="heroTitle">Plan Himachal — clean tiles, one photo each.</h2>
             <p class="heroSub">
-              Search + filters + <b>Type sidebar</b>. Map loads only when you click <b>Show Map</b>.
-              <br/><span style="opacity:.85">List cards show <b>How to Reach</b> summary first (route-aware).</span>
+              Search + filters + Type tiles. Map stays hidden until <b>Show Map</b>.
+              <br/><span style="opacity:.85">Cards show a short route-aware line first.</span>
             </p>
 
             <div class="chips">
-              <div class="chip"><i>Clean</i>Light premium theme</div>
-              <div class="chip"><i>Smart</i>Route-coherent packages</div>
-              <div class="chip"><i>Strict</i>Cost breakdown visible</div>
+              <div class="chip"><i>Clean</i>Minimal words</div>
+              <div class="chip"><i>Visual</i>One image per tile</div>
+              <div class="chip"><i>Smart</i>Route + packages</div>
             </div>
 
             <div class="finder">
               <div class="field">
-                <label>Search (place / temple / lake / trek)</label>
+                <label>Search</label>
                 <input class="input" id="q" placeholder="Example: Triund, Manimahesh, Kufri, Chandratal…"/>
               </div>
 
@@ -606,9 +639,7 @@
           </div>
 
           <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap">
-            <small style="color:rgba(11,18,32,.65); font-weight:800">
-              Tip: Sidebar Type → middle list updates instantly.
-            </small>
+            <small style="color:rgba(11,18,32,.65); font-weight:800">Tip: click a Type tile to filter instantly.</small>
             <small id="status" style="color:rgba(11,18,32,.65); font-weight:900">Loading…</small>
           </div>
         </div>
@@ -617,10 +648,10 @@
       <div class="panel">
         <div class="panelHead">
           <h3>Trip Builder</h3>
-          <small>route + rigorous cost</small>
+          <small>route + cost</small>
         </div>
         <div class="builder">
-          <div class="primaryLine" id="builderLine">Pick your preferences → we’ll suggest 3–4 route-coherent packages.</div>
+          <div class="primaryLine" id="builderLine">Pick your preferences → we’ll suggest 3–4 packages.</div>
 
           <div class="bRow">
             <div class="field">
@@ -656,12 +687,12 @@
           </div>
 
           <div class="helper" id="packagesBox">
-            Click <b>Get Packages</b> — you’ll see 3–4 <b>route-coherent</b> options here with a <b>strict cost breakdown</b>.
+            Click <b>Get Packages</b> — you’ll see 3–4 options here with a cost breakdown.
           </div>
 
           <div style="display:flex; gap:10px; flex-wrap:wrap">
             <a class="pill" href="#explore"><span class="dot"></span><span id="activeFilters">No filters</span></a>
-            <div class="pill" style="cursor:pointer" data-quick="Trek"><span class="dot"></span>Top Treks</div>
+            <div class="pill" style="cursor:pointer" data-quick="Trek"><span class="dot"></span>Treks</div>
             <div class="pill" style="cursor:pointer" data-quick="Lake"><span class="dot"></span>Lakes</div>
             <div class="pill" style="cursor:pointer" data-quick="Temple"><span class="dot"></span>Temples</div>
           </div>
@@ -672,12 +703,21 @@
     <section class="section" id="explore">
       <div class="sectionTitle">
         <div>
-          <h2>Explore results</h2>
-          <p>Type sidebar (left) → list (middle). Map stays hidden until “Show Map”.</p>
+          <h2>Explore</h2>
+          <p>Tiles → list updates. Map loads only on click.</p>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap">
           <span class="pill"><span class="dot"></span><span id="count">0</span></span>
         </div>
+      </div>
+
+      <!-- ===== TYPE TILES (1 pic each) ===== -->
+      <div class="panel" style="overflow:hidden">
+        <div class="panelHead">
+          <h3>Browse by Type</h3>
+          <small>one photo per tile</small>
+        </div>
+        <div class="typeTiles" id="typeTiles"></div>
       </div>
 
       <div class="exploreGrid">
@@ -817,32 +857,30 @@ function haversine(lat1, lon1, lat2, lon2){
 function getImagesFromObj(o){
   const arr = [];
   if(Array.isArray(o.images)) arr.push(...o.images);
-  const p1 = safeText(o["photo 1"] || o.photo1 || o["photo1"]);
-  const p2 = safeText(o["photo 2"] || o.photo2 || o["photo2"]);
-  const p3 = safeText(o["photo 3"] || o.photo3 || o["photo3"]);
+  const p1 = safeText(o["photo 1"] || o.photo1 || o["photo1"] || o["Image 1"] || o.image1);
+  const p2 = safeText(o["photo 2"] || o.photo2 || o["photo2"] || o["Image 2"] || o.image2);
+  const p3 = safeText(o["photo 3"] || o.photo3 || o["photo3"] || o["Image 3"] || o.image3);
+  const single = safeText(o["Image"] || o.image || o["Cover"] || o["Cover Image"] || o["Photo"] || o.photo);
+  const list = safeText(o["Images"] || o.imagesList || o["Pics"] || "");
+  if(single) arr.push(single);
+  if(list){
+    list.split(",").map(s=>s.trim()).filter(Boolean).forEach(u=>arr.push(u));
+  }
   if(p1) arr.push(p1); if(p2) arr.push(p2); if(p3) arr.push(p3);
-  return arr.filter(Boolean);
+  // unique
+  return [...new Set(arr.filter(Boolean))];
 }
 function bestThumb(p){ return ((p.images||[]).filter(Boolean)[0]) || ""; }
 function rateLabel(people){ return people==="solo"?"Solo":people==="couple"?"Couple":people==="family"?"Family":"Group"; }
 function currency(n){ if(n==null||!Number.isFinite(Number(n))) return null; return "₹" + Number(n).toLocaleString("en-IN"); }
 
-/* ✅ ROUTE SUMMARY: uses "How to Reach" deeply */
+/* Clean route-aware snippet */
 function routeSummaryFromHow(how){
   const t = safeText(how);
   if(!t) return "";
   const s = t.replace(/\s+/g," ").trim();
-
-  const picks = [];
-  if(/airport|flight/i.test(s)) picks.push("✈ Airport");
-  if(/rail|train/i.test(s)) picks.push("🚆 Rail");
-  if(/bus|volvo/i.test(s)) picks.push("🚌 Bus");
-  if(/trek|hike|trail/i.test(s)) picks.push("🥾 Trek");
-  if(/\bkm\b/i.test(s)) picks.push("📏 KM");
-  if(/\bhour|hours|hrs\b/i.test(s)) picks.push("⏱ Time");
-
-  const head = s.length > 170 ? (s.slice(0,170) + "…") : s;
-  return head + (picks.length ? (" • " + picks.join(" • ")) : "");
+  const head = s.length > 120 ? (s.slice(0,120) + "…") : s;
+  return head;
 }
 
 /* =========================
@@ -898,25 +936,12 @@ async function loadPlaces(){
       const {lat, lng} = parseLatLngFromMapUrl(mapUrl);
 
       const type = normalizeType(segment);
-      const brief = overview || short || keyFeatures || "Explore this place in Himachal Pradesh.";
+      const brief = overview || short || keyFeatures || "";
       const images = getImagesFromObj(o);
-
-      // Optional cost fields (if you add in Firebase, estimator becomes very accurate)
-      const StayCost_Low = safeNum(o.StayCost_Low ?? o["StayCost_Low"]);
-      const StayCost_Mid = safeNum(o.StayCost_Mid ?? o["StayCost_Mid"]);
-      const StayCost_High = safeNum(o.StayCost_High ?? o["StayCost_High"]);
-      const FoodCost_PerPersonPerDay = safeNum(o.FoodCost_PerPersonPerDay ?? o["FoodCost_PerPersonPerDay"]);
-      const LocalTransport_PerDay = safeNum(o.LocalTransport_PerDay ?? o["LocalTransport_PerDay"]);
-      const EntryFees = safeNum(o.EntryFees ?? o["EntryFees"]);
-      const SeasonMultiplier = safeNum(o.SeasonMultiplier ?? o["SeasonMultiplier"]);
-      const AvgTravelSpeedKmph = safeNum(o.AvgTravelSpeedKmph ?? o["AvgTravelSpeedKmph"]);
 
       return {
         id, name, district, type, segment, locationType,
-        brief, how, mapUrl, lat, lng, images,
-        StayCost_Low, StayCost_Mid, StayCost_High,
-        FoodCost_PerPersonPerDay, LocalTransport_PerDay, EntryFees,
-        SeasonMultiplier, AvgTravelSpeedKmph
+        brief, how, mapUrl, lat, lng, images
       };
     }).filter(p=>p.name);
   }catch(e){
@@ -943,7 +968,7 @@ async function fetchPlaceById(id){
   const {lat, lng} = parseLatLngFromMapUrl(mapUrl);
   const images = getImagesFromObj(o);
   const type = normalizeType(segment);
-  const brief = overview || short || keyFeatures || "Explore this place in Himachal Pradesh.";
+  const brief = overview || short || keyFeatures || "";
 
   return { id, name, district, type, segment, locationType, brief, how, mapUrl, lat, lng, images, raw:o };
 }
@@ -989,11 +1014,12 @@ function applyFilters(scrollToList=false){
   $("count").textContent = `${shownPlaces.length} results`;
   updateActiveFilters();
   renderTypeSidebar();
+  renderTypeTiles(); // ✅ tiles
   if(scrollToList) $("list").scrollTo({top:0, behavior:"smooth"});
 }
 
 /* =========================
-   LIST RENDER (route-aware)
+   LIST RENDER (clean + minimal)
 ========================= */
 function renderList(list){
   const box = $("list");
@@ -1006,10 +1032,11 @@ function renderList(list){
 
   box.innerHTML = list.map((p, idx)=>{
     const thumb = bestThumb(p);
-    const routeLine = routeSummaryFromHow(p.how);
-    const line = routeLine || safeText(p.brief);
+    let line = routeSummaryFromHow(p.how) || safeText(p.brief);
+    line = (line || "").replace(/\s+/g," ").trim();
+    if(line.length > 120) line = line.slice(0,120) + "…";
 
-    const meta = `${safeText(p.district)} • ${safeText(p.type)}${p.locationType ? " • " + p.locationType : ""}`;
+    const meta = `${safeText(p.district)} • ${safeText(p.type)}`;
     const km = (myPos && p.lat && p.lng) ? haversine(myPos.lat, myPos.lng, p.lat, p.lng) : null;
 
     return `
@@ -1019,12 +1046,10 @@ function renderList(list){
         </div>
         <div>
           <p class="pTitle">${escapeHtml(p.name)}</p>
-          <p class="pSub">${escapeHtml(meta)} — ${escapeHtml(line)}</p>
+          <p class="pSub">${escapeHtml(meta)}${line ? " — " + escapeHtml(line) : ""}</p>
           <div class="badges">
             <span class="badge" style="background:${typeBg(p.type)}">${escapeHtml(p.type)}</span>
-            <span class="badge">${escapeHtml(p.district)}</span>
             ${km ? `<span class="badge">📍 ${km.toFixed(1)} km</span>` : ``}
-            ${routeLine ? `<span class="badge">🧭 How to reach</span>` : ``}
           </div>
         </div>
       </div>
@@ -1044,7 +1069,7 @@ function renderList(list){
 function openPlacePage(id){ window.location.href = `place.html?id=${encodeURIComponent(id)}`; }
 
 /* =========================
-   TYPE SIDEBAR
+   TYPE COUNTS
 ========================= */
 const TYPE_ORDER = ["Destination","Temple","Lake","Trek","Hotel","Activity"];
 function typeCountsFrom(list){
@@ -1052,6 +1077,10 @@ function typeCountsFrom(list){
   list.forEach(p=>{ counts[p.type||"Destination"] = (counts[p.type||"Destination"]||0)+1; });
   return counts;
 }
+
+/* =========================
+   TYPE SIDEBAR
+========================= */
 function renderTypeSidebar(){
   const base = shownPlaces.length ? shownPlaces : allPlaces;
   const counts = typeCountsFrom(base);
@@ -1066,7 +1095,7 @@ function renderTypeSidebar(){
         </div>
         <div class="segList" id="typelist-${escapeHtml(t)}">
           <button class="segBtn" data-type-pick="${escapeHtml(t)}">
-            <span>Show all ${escapeHtml(t)}</span><small>${counts[t]||0}</small>
+            <span>Show ${escapeHtml(t)}</span><small>${counts[t]||0}</small>
           </button>
           ${base.filter(p=>p.type===t).slice(0,8).map(p=>`
             <button class="segBtn" data-open-place="${escapeHtml(p.id)}">
@@ -1133,6 +1162,50 @@ function collapseAllTypes(){
 }
 
 /* =========================
+   TYPE TILES (one photo per tile)
+========================= */
+function tileImageForType(type){
+  const pool = (shownPlaces.length ? shownPlaces : allPlaces).filter(p=>p.type===type);
+  for(const p of pool){
+    const t = bestThumb(p);
+    if(t) return t;
+  }
+  return "./Kee_monastery.jpg";
+}
+function renderTypeTiles(){
+  const base = shownPlaces.length ? shownPlaces : allPlaces;
+  const counts = typeCountsFrom(base);
+  const types = TYPE_ORDER
+    .filter(t => (counts[t]||0) > 0)
+    .sort((a,b)=> (counts[b]||0) - (counts[a]||0));
+
+  const box = $("typeTiles");
+  if(!box) return;
+
+  box.innerHTML = types.map(t=>{
+    const img = tileImageForType(t);
+    return `
+      <div class="typeTile" data-picktype="${escapeHtml(t)}">
+        <img class="typeTileImg" src="${img}" alt="${escapeHtml(t)}" loading="lazy"
+             onerror="this.src='./Kee_monastery.jpg'">
+        <div class="typeTileBody">
+          <b>${escapeHtml(t)}</b>
+          <span>${counts[t]||0}</span>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  box.querySelectorAll("[data-picktype]").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      $("type").value = el.getAttribute("data-picktype");
+      applyFilters(true);
+      location.hash = "#explore";
+    });
+  });
+}
+
+/* =========================
    MOBILE SIDEBAR
 ========================= */
 function openSidebarMobile(){ $("sideMobileWrap").style.display="flex"; }
@@ -1149,16 +1222,16 @@ $("nearby").onclick = ()=>{
   $("status").textContent = "Getting your location…";
   navigator.geolocation.getCurrentPosition((pos)=>{
     myPos = {lat: pos.coords.latitude, lng: pos.coords.longitude};
-    $("status").textContent = "Nearby enabled. Distances shown.";
+    $("status").textContent = "Nearby enabled.";
     renderList(shownPlaces);
   }, ()=>{
-    $("status").textContent = "GPS permission denied.";
+    $("status").textContent = "GPS denied.";
     alert("Allow location permission for Nearby.");
   }, {enableHighAccuracy:true, timeout:12000});
 };
 
 /* =========================
-   PACKAGES (Route + Rigorous Cost)
+   PACKAGES (kept as-is but minimal)
 ========================= */
 const COST_RULES = {
   kmFactorHills: 1.28,
@@ -1173,18 +1246,6 @@ const COST_RULES = {
 };
 function peopleCount(people){ return people==="solo"?1:people==="couple"?2:people==="family"?4:8; }
 function nightsFromDays(days){ const d=Number(days||0); if(!d) return 2; return Math.max(1,d-1); }
-function getCostFields(p){
-  return {
-    stayLow: safeNum(p.StayCost_Low),
-    stayMid: safeNum(p.StayCost_Mid),
-    stayHigh: safeNum(p.StayCost_High),
-    foodPPD: safeNum(p.FoodCost_PerPersonPerDay),
-    localPerDay: safeNum(p.LocalTransport_PerDay),
-    entryFees: safeNum(p.EntryFees),
-    seasonMult: safeNum(p.SeasonMultiplier),
-    speed: safeNum(p.AvgTravelSpeedKmph)
-  };
-}
 function routeKm(orderedPlaces){
   if(!orderedPlaces || orderedPlaces.length < 2) return 0;
   let km = 0;
@@ -1238,19 +1299,11 @@ function scorePlaceForInterest(p, interest){
   if(interest==="adventure" && p.type==="Trek") s += 8;
   if(interest==="relax" && (p.type==="Destination" || p.type==="Hotel" || p.type==="Lake")) s += 6;
   if(interest==="nature" && (p.type==="Lake" || p.type==="Destination" || p.type==="Trek")) s += 6;
-
-  const how = safeText(p.how).toLowerCase();
-  if(how.includes("bus") || how.includes("volvo")) s += 2;
-  if(how.includes("rail") || how.includes("train")) s += 2;
-  if(how.includes("airport") || how.includes("flight")) s += 2;
-  if(how.includes("trek") || how.includes("km") || how.includes("hours") || how.includes("hrs")) s += 2;
-
   if(p.lat && p.lng) s += 2;
   return s;
 }
 function buildRoutePackages(base, opts){
   const {interest, days, district} = opts;
-
   let pool = base.slice();
   if(district) pool = pool.filter(p=>p.district===district);
 
@@ -1258,29 +1311,7 @@ function buildRoutePackages(base, opts){
     .sort((a,b)=> b.s - a.s || a.p.name.localeCompare(b.p.name));
 
   const spotsCount = days ? Math.max(3, Math.min(7, Math.ceil(days*1.2))) : 4;
-
-  let chosen = [];
-  if(!district){
-    const tally = {};
-    scored.slice(0, 30).forEach(x=>{
-      const k = x.p.district || "Unknown";
-      tally[k] = (tally[k]||0) + x.s;
-    });
-    const topDistrict = Object.entries(tally).sort((a,b)=>b[1]-a[1])[0]?.[0] || null;
-
-    if(topDistrict){
-      chosen = scored.filter(x=>x.p.district===topDistrict).slice(0, spotsCount).map(x=>x.p);
-      if(chosen.length < spotsCount){
-        const extra = scored.map(x=>x.p).filter(p=>!chosen.some(c=>c.id===p.id));
-        chosen = chosen.concat(extra.slice(0, spotsCount-chosen.length));
-      }
-    } else {
-      chosen = scored.slice(0, spotsCount).map(x=>x.p);
-    }
-  } else {
-    chosen = scored.slice(0, spotsCount).map(x=>x.p);
-  }
-
+  const chosen = scored.slice(0, spotsCount).map(x=>x.p);
   const route = orderByNearestNeighbor(chosen);
 
   const A = route;
@@ -1313,33 +1344,20 @@ function estimatePackageCost(pkg, opts){
   const perKm = COST_RULES.perKm[budget] ?? COST_RULES.perKm.mid;
   const travel = km * perKm;
 
-  const first = pkg.spots[0] || {};
-  const cf = getCostFields(first);
-
-  const speed = (cf.speed ?? COST_RULES.avgSpeedKmph);
-  const driveHours = km ? (km / speed) : 0;
-
-  const stayRate =
-    (budget==="low"  ? (cf.stayLow  ?? COST_RULES.stayPerNight.low)  :
-     budget==="high" ? (cf.stayHigh ?? COST_RULES.stayPerNight.high) :
-                      (cf.stayMid  ?? COST_RULES.stayPerNight.mid));
-
+  const stayRate = COST_RULES.stayPerNight[budget] ?? COST_RULES.stayPerNight.mid;
   const rooms = (people==="solo" || people==="couple") ? 1 : (people==="family" ? 2 : 3);
   const stay = nights * stayRate * rooms;
 
-  const foodPPD = cf.foodPPD ?? COST_RULES.foodPerPersonPerDay[budget] ?? COST_RULES.foodPerPersonPerDay.mid;
+  const foodPPD = COST_RULES.foodPerPersonPerDay[budget] ?? COST_RULES.foodPerPersonPerDay.mid;
   const food = foodPPD * pax * d;
 
-  const localPerDay = cf.localPerDay ?? COST_RULES.localPerDay[budget] ?? COST_RULES.localPerDay.mid;
+  const localPerDay = COST_RULES.localPerDay[budget] ?? COST_RULES.localPerDay.mid;
   const local = localPerDay * d;
 
-  const entry = pkg.spots.reduce((s,p)=> s + (safeNum(p.EntryFees) || 0), 0) || (cf.entryFees || 0);
   const allowance = (budget==="low") ? 0 : (COST_RULES.driverAllowancePerDay * d);
   const tolls = travel * COST_RULES.tollsPct;
 
-  const season = cf.seasonMult ?? 1.0;
-
-  const subtotal = (travel + stay + food + local + entry + allowance + tolls) * season;
+  const subtotal = (travel + stay + food + local + allowance + tolls);
   const buffer = subtotal * COST_RULES.bufferPct;
   const total = Math.round(subtotal + buffer);
 
@@ -1347,20 +1365,16 @@ function estimatePackageCost(pkg, opts){
     total,
     breakdown: {
       routeKm: Math.round(km),
-      driveHours: Math.round(driveHours*10)/10,
       travel: Math.round(travel),
       stay: Math.round(stay),
       food: Math.round(food),
       local: Math.round(local),
-      entry: Math.round(entry),
       allowance: Math.round(allowance),
       tolls: Math.round(tolls),
-      buffer: Math.round(buffer),
-      seasonMult: season
+      buffer: Math.round(buffer)
     }
   };
 }
-
 async function buildPackages(){
   const people = $("people").value;
   const interest = $("interest").value;
@@ -1372,7 +1386,7 @@ async function buildPackages(){
   if(district) base = base.filter(p=>p.district===district);
 
   if(!base.length){
-    $("packagesBox").innerHTML = `<b>No matches for packages.</b><br/>Try relaxing filters.`;
+    $("packagesBox").innerHTML = `<b>No matches.</b><br/>Try relaxing filters.`;
     return;
   }
 
@@ -1381,13 +1395,6 @@ async function buildPackages(){
   $("packagesBox").innerHTML = pkgs.map(pkg=>{
     const cost = estimatePackageCost(pkg, {people, budget, days});
     const b = cost.breakdown;
-    const breakdownText = `
-Route: ~${b.routeKm} km • ~${b.driveHours} h driving
-Travel: ${currency(b.travel)} • Stay: ${currency(b.stay)}
-Food: ${currency(b.food)} • Local: ${currency(b.local)}
-Fees: ${currency(b.entry)} • Allowance: ${currency(b.allowance)} • Tolls: ${currency(b.tolls)}
-Season×${b.seasonMult} • Buffer: ${currency(b.buffer)}
-`.trim();
 
     const tiles = pkg.spots.map(p=>{
       const thumb = bestThumb(p);
@@ -1407,13 +1414,13 @@ Season×${b.seasonMult} • Buffer: ${currency(b.buffer)}
         <div class="pkgTop">
           <div>
             <p class="pkgTitle">Package ${pkg.code} (${days}D) • ${escapeHtml(pkg.mood)}</p>
-            <p class="pkgMeta">People: <b>${escapeHtml(rateLabel(people))}</b> • Budget: <b>${escapeHtml(budget)}</b> • Interest: <b>${escapeHtml(interest)}</b></p>
+            <p class="pkgMeta">People: <b>${escapeHtml(rateLabel(people))}</b> • Budget: <b>${escapeHtml(budget)}</b></p>
           </div>
-          <div class="pricePill">${currency(cost.total)} / ${rateLabel(people)} (est.)</div>
+          <div class="pricePill">${currency(cost.total)} (est.)</div>
         </div>
 
-        <div class="pkgMeta" style="margin-top:8px; white-space:pre-line">
-          <b>Cost breakdown (strict):</b><br/>${escapeHtml(breakdownText)}
+        <div class="pkgMeta" style="margin-top:8px">
+          Travel ${currency(b.travel)} • Stay ${currency(b.stay)} • Food ${currency(b.food)} • Local ${currency(b.local)} • Buffer ${currency(b.buffer)}
         </div>
 
         <div class="pkgTiles">${tiles}</div>
@@ -1441,7 +1448,7 @@ document.querySelectorAll("[data-quick]").forEach(el=>{
   });
 });
 
-/* AI */
+/* AI (simple) */
 function openAI(){ $("modalWrap").style.display="flex"; seedChat(); }
 function closeAI(){ $("modalWrap").style.display="none"; }
 $("openAI").onclick = openAI;
@@ -1457,8 +1464,7 @@ function pushMsg(text, who="bot"){
 }
 function seedChat(){
   $("chat").innerHTML = "";
-  pushMsg("Tell me: days + people + interests (trek/lake/temple/relax) + starting district.", "bot");
-  pushMsg("Example: 4 days, couple, nature + temples, starting Shimla", "bot");
+  pushMsg("Tell me: days + people + interests + starting district.", "bot");
 }
 function aiSuggest(userText){
   const t = userText.toLowerCase();
@@ -1468,35 +1474,27 @@ function aiSuggest(userText){
 
   const wants = {
     trek: /trek|hike|trail|adventure/.test(t),
-    lake: /lake|chandratal|prashar|rewalsar|manimahesh/.test(t),
+    lake: /lake/.test(t),
     temple: /temple|mandir|devi|mahadev|monastery/.test(t),
     relax: /relax|peace|family|easy/.test(t),
   };
 
-  let districtHint = null;
-  const districts = [...new Set(allPlaces.map(p=>p.district))];
-  for(const d of districts){ if(t.includes(d.toLowerCase())) { districtHint = d; break; } }
-
   const scored = allPlaces.map(p=>{
     let s=0;
-    if(districtHint && p.district===districtHint) s += 3;
     if(wants.trek && p.type==="Trek") s += 3;
     if(wants.lake && p.type==="Lake") s += 3;
     if(wants.temple && p.type==="Temple") s += 3;
     if(wants.relax && p.type!=="Trek") s += 1;
-    if(p.how && p.how.length > 40) s += 1;
     return {p, s};
   }).sort((a,b)=>b.s-a.s);
 
   const cap = days ? Math.max(3, Math.min(8, Math.ceil(days*1.3))) : 6;
   const pick = scored.filter(x=>x.s>0).slice(0, cap).map(x=>x.p);
-  const fallback = allPlaces.slice(0,6);
-
-  const list = (pick.length ? pick : fallback)
+  const list = (pick.length ? pick : allPlaces.slice(0,6))
     .map((p,i)=>`${i+1}. ${p.name} (${p.district} • ${p.type})`)
     .join("\n");
 
-  return `Suggestions:\n${list}\n\nTip: pick Type from sidebar to refine.`;
+  return `Suggestions:\n${list}`;
 }
 $("sendChat").onclick = ()=>{
   const v = safeText($("chatInput").value);
@@ -1526,17 +1524,15 @@ $("showMapBtn").onclick = ()=>{
   location.hash = "#explore";
 };
 
-$("district").addEventListener("change", ()=> $("builderLine").textContent = "District updated. Click Get Packages.");
-$("type").addEventListener("change", ()=> $("builderLine").textContent = "Type updated. Click Get Packages.");
-$("days").addEventListener("change", ()=> $("builderLine").textContent = "Days updated. Click Get Packages.");
-
-/* INIT */
+/* =========================
+   INIT
+========================= */
 (async function init(){
   await loadPlaces();
   buildDistrictDropdown();
 
   $("status").textContent = allPlaces.length
-    ? `Loaded ${allPlaces.length} places from Firebase /${dbPath}`
+    ? `Loaded ${allPlaces.length} places`
     : "No data loaded. Check RTDB rules + path.";
 
   shownPlaces = allPlaces.slice();
