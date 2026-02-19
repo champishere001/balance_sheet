@@ -3,43 +3,36 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — Admin (Firebase Editor)</title>
+  <title>Himachal Explorer — Admin</title>
 
   <!-- Firebase (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
-  <!-- OPTIONAL (only if you want upload-to-storage): -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
 
   <style>
     :root{
       --bg0:#f7f9ff; --bg1:#ffffff;
-      --card:rgba(255,255,255,.86);
       --stroke:rgba(10,18,40,.10);
-      --text:#0b1220;
-      --muted:rgba(11,18,32,.64);
+      --text:#0b1220; --muted:rgba(11,18,32,.66);
       --shadow: 0 20px 55px rgba(15,23,42,.10);
       --shadow2: 0 14px 28px rgba(15,23,42,.08);
       --r:18px; --r2:26px;
-      --a:#2563eb; --b:#7c3aed; --c:#16a34a; --d:#f59e0b; --e:#ef4444;
-      --max:1400px;
+      --a:#2563eb; --b:#7c3aed; --bad:#ef4444; --ok:#16a34a;
+      --max:1200px;
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
-      margin:0; color:var(--text);
+      margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
       background:
         radial-gradient(900px 600px at 12% 10%, rgba(37,99,235,.16), transparent 60%),
         radial-gradient(900px 600px at 86% 16%, rgba(124,58,237,.14), transparent 60%),
-        radial-gradient(900px 600px at 56% 92%, rgba(22,163,74,.10), transparent 60%),
         linear-gradient(180deg, var(--bg0), var(--bg1));
-      overflow-x:hidden;
     }
-    a{color:inherit; text-decoration:none}
     .topbar{
       position:sticky; top:0; z-index:50;
-      background: rgba(255,255,255,.75);
+      background: rgba(255,255,255,.78);
       backdrop-filter: blur(14px);
       border-bottom:1px solid var(--stroke);
     }
@@ -49,27 +42,8 @@
       padding:14px 16px;
       display:flex; align-items:center; justify-content:space-between; gap:12px;
     }
-    .brand{display:flex; align-items:center; gap:10px}
-    .logo{
-      width:40px; height:40px; border-radius:14px;
-      background: linear-gradient(135deg, rgba(37,99,235,.92), rgba(124,58,237,.92));
-      box-shadow: 0 12px 26px rgba(37,99,235,.18);
-    }
-    .brand h1{margin:0; font-size:14px; line-height:1.1; letter-spacing:.2px}
-    .brand small{display:block; color:var(--muted); font-weight:650; margin-top:2px}
-
-    .nav{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:10px 12px; border-radius:999px;
-      background: rgba(255,255,255,.80);
-      border:1px solid var(--stroke);
-      box-shadow: var(--shadow2);
-      font-weight:900; font-size:12px;
-      transition:.18s ease;
-    }
-    .pill:hover{transform: translateY(-1px)}
-    .dot{width:8px;height:8px;border-radius:50%;background: linear-gradient(135deg,var(--a),var(--b)); box-shadow:0 0 0 4px rgba(37,99,235,.12)}
+    .brand h1{margin:0; font-size:14px}
+    .brand small{display:block; color:var(--muted); font-weight:800; margin-top:2px}
     .btn{
       appearance:none; border:0; cursor:pointer;
       padding:11px 14px; border-radius:14px;
@@ -84,49 +58,47 @@
     .btn:hover{transform: translateY(-1px)}
     .btn.ghost{
       color: var(--text);
-      background: rgba(255,255,255,.86);
+      background: rgba(255,255,255,.90);
       border:1px solid var(--stroke);
       box-shadow: var(--shadow2);
     }
     .btn.danger{
-      background: linear-gradient(135deg, rgba(239,68,68,.96), rgba(245,158,11,.90));
-      box-shadow: 0 18px 42px rgba(239,68,68,.16);
+      background: linear-gradient(135deg, rgba(239,68,68,.96), rgba(185,28,28,.92));
+      box-shadow: 0 18px 42px rgba(239,68,68,.18);
     }
-
     .wrap{
       width:min(92vw, var(--max));
       margin:0 auto;
-      padding:16px 16px 44px;
-    }
-
-    .grid{
+      padding:18px 16px 44px;
       display:grid;
-      grid-template-columns: 420px 1fr;
       gap:14px;
-      align-items:start;
-      margin-top:12px;
     }
-
-    .panel{
-      border-radius: var(--r2);
+    .card{
       border:1px solid var(--stroke);
-      background: rgba(255,255,255,.82);
+      background: rgba(255,255,255,.86);
+      border-radius: var(--r2);
       box-shadow: var(--shadow);
       overflow:hidden;
     }
-    .panelHead{
+    .head{
       padding:14px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
       border-bottom:1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.82));
+      background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.78));
     }
-    .panelHead h3{margin:0; font-size:13px}
-    .panelHead small{color:var(--muted); font-weight:900}
-    .panelBody{padding:14px}
+    .title{margin:0; font-size:14px; font-weight:1000}
+    .sub{margin:6px 0 0; color:var(--muted); font-weight:800; font-size:12px; line-height:1.35}
+    .grid{
+      padding:14px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+      align-items:start;
+    }
+    @media(max-width:980px){ .grid{grid-template-columns:1fr} }
 
-    .searchRow{
-      display:flex; gap:10px; align-items:center;
-    }
+    .field{display:flex; flex-direction:column; gap:6px}
+    label{font-size:11px; color:var(--muted); font-weight:900; letter-spacing:.25px}
     .input, .select, textarea{
       width:100%;
       padding:12px 12px;
@@ -138,326 +110,158 @@
       font-weight:850;
       box-shadow: var(--shadow2);
     }
-    textarea{min-height:88px; resize:vertical; font-weight:750}
-    label{font-size:11px; color:var(--muted); font-weight:950; letter-spacing:.25px}
-    .field{display:flex; flex-direction:column; gap:6px}
-    .list{
-      margin-top:12px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      max-height: calc(100vh - 260px);
-      overflow:auto;
-      padding-right:4px;
-    }
-    .item{
-      padding:12px;
-      border-radius:18px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.88);
-      box-shadow: var(--shadow2);
-      cursor:pointer;
-      transition:.14s ease;
-    }
-    .item:hover{transform: translateY(-1px)}
-    .item.active{
-      border-color: rgba(37,99,235,.28);
-      box-shadow: 0 18px 50px rgba(37,99,235,.12);
-    }
-    .item b{display:block; font-size:13px}
-    .item span{display:block; margin-top:4px; color:var(--muted); font-weight:800; font-size:12px}
-
-    .formGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
-    .formGrid .full{grid-column:1/-1}
-
-    .hint{
+    textarea{min-height:110px; resize:vertical; font-weight:750}
+    .rowBtns{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    .note{
       margin-top:10px;
       padding:12px;
-      border-radius:18px;
+      border-radius:16px;
       border:1px solid var(--stroke);
-      background: rgba(245,247,255,.80);
-      color: rgba(11,18,32,.72);
-      font-weight:800;
+      background: rgba(245,247,255,.75);
+      color:rgba(11,18,32,.78);
+      font-weight:750;
       font-size:12px;
-      line-height:1.5;
+      line-height:1.45;
     }
-    .row{
-      display:flex; gap:10px; flex-wrap:wrap;
-      align-items:center;
+    .table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
     }
-    .row .btn{flex:1}
-    .row .btn.ghost{flex:0}
-
-    .imgGrid{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:10px;
-      margin-top:10px;
+    .table th,.table td{
+      border-bottom:1px solid rgba(10,18,40,.10);
+      padding:10px 10px;
+      text-align:left;
+      vertical-align:top;
     }
-    .imgCard{
-      border-radius:18px;
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 12px; border-radius:999px;
+      background: rgba(255,255,255,.85);
       border:1px solid var(--stroke);
-      background: rgba(255,255,255,.92);
       box-shadow: var(--shadow2);
-      overflow:hidden;
-      aspect-ratio: 4/3;
-      position:relative;
+      font-weight:900; font-size:12px;
     }
-    .imgCard img{width:100%;height:100%;object-fit:cover;display:block}
-    .imgCard .x{
-      position:absolute; top:8px; right:8px;
-      width:34px; height:34px;
-      border-radius:12px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.92);
-      cursor:pointer;
-      font-weight:950;
-    }
-
-    .sep{height:1px; background:var(--stroke); margin:12px 0}
-
-    @media (max-width: 1080px){
-      .grid{grid-template-columns: 1fr}
-      .list{max-height: 360px}
-      .imgGrid{grid-template-columns: repeat(2, 1fr)}
-    }
-    @media (max-width: 520px){
-      .formGrid{grid-template-columns: 1fr}
-      .imgGrid{grid-template-columns: 1fr}
-      .row .btn{flex:1}
+    .dot{
+      width:8px; height:8px; border-radius:50%;
+      background: linear-gradient(135deg, var(--a), var(--b));
+      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
     }
   </style>
 </head>
-
 <body>
-  <div class="topbar">
-    <div class="inner">
-      <div class="brand">
-        <div class="logo"></div>
-        <div>
-          <h1>Himachal Explorer — Admin</h1>
-          <small>Edit Firebase RTDB directly • add images • auto-fill content</small>
-        </div>
-      </div>
 
-      <div class="nav">
-        <a class="pill" href="index.html"><span class="dot"></span>Back to site</a>
-        <button class="btn ghost" id="btnRefresh">Refresh</button>
-        <button class="btn" id="btnNew">New Location</button>
-      </div>
+<div class="topbar">
+  <div class="inner">
+    <div class="brand">
+      <h1>Himachal Explorer — Admin</h1>
+      <small id="status">Connecting…</small>
+    </div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap">
+      <a class="btn ghost" href="./index.html">Back</a>
+      <button class="btn ghost" id="refresh">Refresh</button>
     </div>
   </div>
+</div>
 
-  <div class="wrap">
+<div class="wrap">
+
+  <!-- SELECT / DELETE PLACE -->
+  <div class="card">
+    <div class="head">
+      <div>
+        <p class="title">Dataset controls</p>
+        <p class="sub">Delete a full record OR delete a header key permanently.</p>
+      </div>
+      <div class="pill"><span class="dot"></span><span id="count">0</span></div>
+    </div>
+
     <div class="grid">
-      <!-- LEFT: LIST -->
-      <div class="panel">
-        <div class="panelHead">
-          <h3>Locations</h3>
-          <small id="leftStatus">—</small>
+
+      <!-- LEFT: Select place -->
+      <div>
+        <div class="field">
+          <label>Select record (Location)</label>
+          <select class="select" id="placeSel"></select>
         </div>
-        <div class="panelBody">
-          <div class="searchRow">
-            <input class="input" id="search" placeholder="Search name / district / type…"/>
-            <select class="select" id="filterType" style="max-width:160px">
-              <option value="all">All</option>
-              <option value="Destination">Destination</option>
-              <option value="Temple">Temple</option>
-              <option value="Lake">Lake</option>
-              <option value="Trek">Trek</option>
-              <option value="Hotel">Hotel</option>
-              <option value="Activity">Activity</option>
-            </select>
-          </div>
 
-          <div class="list" id="list"></div>
+        <div class="rowBtns">
+          <button class="btn danger" id="deletePlace">Delete this record</button>
+          <button class="btn ghost" id="loadPlace">Load record</button>
+        </div>
 
-          <div class="hint">
-            <b>Tip:</b> Click any item → edit on right. <br/>
-            Your Firebase key comes from <b>firebase_id</b> (auto-slug if empty).
-          </div>
+        <div class="note">
+          <b>Delete this record</b> will remove the full dataset at:<br/>
+          <code>/locations/&lt;id&gt;</code>
+        </div>
+
+        <div class="note" id="placePreview">
+          Select a record to preview keys…
         </div>
       </div>
 
-      <!-- RIGHT: EDITOR -->
-      <div class="panel">
-        <div class="panelHead">
-          <h3 id="editTitle">Editor</h3>
-          <small id="saveStatus">Not saved</small>
+      <!-- RIGHT: Delete header -->
+      <div>
+        <div class="field">
+          <label>Header / Field name (exact key)</label>
+          <input class="input" id="headerKey" placeholder='Example: "How to Reach" OR "Overview" OR "photo 1"'/>
         </div>
-        <div class="panelBody">
-          <div class="row" style="margin-bottom:10px">
-            <button class="btn" id="btnSave">Save / Update</button>
-            <button class="btn ghost" id="btnAuto">Auto-Fill Missing Fields</button>
-            <button class="btn danger" id="btnDelete">Delete</button>
-            <button class="btn ghost" id="btnOpenPlace">Open place.html</button>
-          </div>
 
-          <div class="formGrid">
-            <div class="field">
-              <label>District</label>
-              <input class="input" id="District" placeholder="Shimla / Kullu / Chamba ..."/>
-            </div>
-
-            <div class="field">
-              <label>Location Name</label>
-              <input class="input" id="LocationName" placeholder="The Ridge"/>
-            </div>
-
-            <div class="field">
-              <label>Location Type (you enter)</label>
-              <input class="input" id="LocationType" placeholder="Public Square / Temple / Lake ..."/>
-            </div>
-
-            <div class="field">
-              <label>Segment Type</label>
-              <select class="select" id="SegmentType">
-                <option>Destination</option>
-                <option>Temple</option>
-                <option>Lake</option>
-                <option>Trek</option>
-                <option>Hotel</option>
-                <option>Activity</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label>firebase_id (key)</label>
-              <input class="input" id="firebase_id" placeholder="auto-generated if empty"/>
-            </div>
-
-            <div class="field">
-              <label>Best Time to Visit</label>
-              <input class="input" id="BestTime" placeholder="Year-round / Mar–Jun / Oct–Feb ..."/>
-            </div>
-
-            <div class="field">
-              <label>Dist from HQ</label>
-              <input class="input" id="DistHQ" placeholder="0 km / 22 km ..."/>
-            </div>
-
-            <div class="field">
-              <label>Map link (Google Maps URL) — optional</label>
-              <input class="input" id="Map" placeholder="Paste google maps link (q=lat,lng or @lat,lng recommended)"/>
-            </div>
-
-            <div class="field">
-              <label>Latitude</label>
-              <input class="input" id="Latitude" placeholder="31.1048"/>
-            </div>
-
-            <div class="field">
-              <label>Longitude</label>
-              <input class="input" id="Longitude" placeholder="77.1734"/>
-            </div>
-
-            <div class="field">
-              <label>Rate_Solo (₹ per person)</label>
-              <input class="input" id="Rate_Solo" placeholder="3450"/>
-            </div>
-
-            <div class="field">
-              <label>Rate_Couple (₹ per person)</label>
-              <input class="input" id="Rate_Couple" placeholder="2750"/>
-            </div>
-
-            <div class="field">
-              <label>Rate_Family (₹ per person)</label>
-              <input class="input" id="Rate_Family" placeholder="2050"/>
-            </div>
-
-            <div class="field">
-              <label>Rate_Group (₹ per person)</label>
-              <input class="input" id="Rate_Group" placeholder="1650"/>
-            </div>
-
-            <div class="field">
-              <label>TripDays_Min</label>
-              <input class="input" id="TripDays_Min" placeholder="2"/>
-            </div>
-
-            <div class="field">
-              <label>TripDays_Max</label>
-              <input class="input" id="TripDays_Max" placeholder="5"/>
-            </div>
-
-            <div class="field full">
-              <label>How to Reach</label>
-              <textarea id="HowToReach" placeholder="Auto-filled (you can edit)"></textarea>
-            </div>
-
-            <div class="field full">
-              <label>Short Description</label>
-              <textarea id="ShortDescription" placeholder="Auto-filled (you can edit)"></textarea>
-            </div>
-
-            <div class="field full">
-              <label>Key Features</label>
-              <textarea id="KeyFeatures" placeholder="Auto-filled (you can edit)"></textarea>
-            </div>
-
-            <div class="field full">
-              <label>Task for Location (Must do)</label>
-              <textarea id="TaskForLocation" placeholder="Auto-filled (you can edit)"></textarea>
-            </div>
-
-            <div class="field full">
-              <label>Overview (long)</label>
-              <textarea id="Overview" placeholder="Auto-filled (you can edit)" style="min-height:120px"></textarea>
-            </div>
-          </div>
-
-          <div class="sep"></div>
-
-          <!-- IMAGES -->
-          <div class="panel" style="box-shadow:none; background:rgba(255,255,255,.60)">
-            <div class="panelHead">
-              <h3>Images</h3>
-              <small>Use direct image URLs (https://...jpg/png/webp) OR upload to Firebase Storage</small>
-            </div>
-            <div class="panelBody">
-              <div class="row">
-                <input class="input" id="imgUrl" placeholder="Paste image URL then Add"/>
-                <button class="btn" id="btnAddImg">Add</button>
-              </div>
-
-              <!-- OPTIONAL upload -->
-              <div class="row" style="margin-top:10px">
-                <input class="input" type="file" id="imgFile" accept="image/*"/>
-                <button class="btn ghost" id="btnUpload" title="Needs Firebase Storage enabled">Upload to Storage</button>
-              </div>
-
-              <div class="imgGrid" id="imgGrid"></div>
-
-              <div class="hint">
-                <b>Why pics sometimes don’t show?</b> Your URLs must be a <b>direct image file</b>.
-                <br/>Google “share” links often are NOT direct images. Best is:
-                <br/>• Firebase Storage download URL, or
-                <br/>• Direct .jpg/.png/.webp link from a server that allows hotlink.
-              </div>
-            </div>
-          </div>
-
-          <div class="sep"></div>
-
-          <div class="hint">
-            <b>Auto-fill rule:</b> You only type <b>District</b>, <b>Location Name</b>, <b>Location Type</b>, and add images/rates.
-            Then click <b>Auto-Fill Missing Fields</b>. It will create professional text in the other fields (editable).
-          </div>
-
+        <div class="field" style="margin-top:10px">
+          <label>Delete mode</label>
+          <select class="select" id="delMode">
+            <option value="one" selected>Delete this header only in selected record</option>
+            <option value="all">Delete this header in ALL records (bulk)</option>
+          </select>
         </div>
+
+        <div class="field" style="margin-top:10px">
+          <label>Also delete common variants (optional)</label>
+          <select class="select" id="variants">
+            <option value="no" selected>No (delete exact key only)</option>
+            <option value="yes">Yes (delete key + variants like photo1/photo 1/Photo1)</option>
+          </select>
+        </div>
+
+        <div class="rowBtns">
+          <button class="btn danger" id="deleteHeader">Delete header permanently</button>
+        </div>
+
+        <div class="note">
+          This uses Firebase RTDB <b>remove</b> semantics via <code>update({key:null})</code> — irreversible.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SIMPLE EDITOR (optional: view/update raw json) -->
+  <div class="card">
+    <div class="head">
+      <div>
+        <p class="title">Record JSON (view / quick edit)</p>
+        <p class="sub">Load a record to see the keys. You can edit and save if you want.</p>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap">
+        <button class="btn ghost" id="copyJson">Copy JSON</button>
+        <button class="btn" id="saveJson">Save JSON</button>
+      </div>
+    </div>
+
+    <div style="padding:14px">
+      <textarea id="jsonBox" placeholder="Click Load record…"></textarea>
+      <div class="note">
+        Saving replaces only the selected record object at <code>/locations/&lt;id&gt;</code>.
       </div>
     </div>
   </div>
+
+</div>
 
 <script>
 /* =========================
-   FIREBASE CONFIG (your project)
-   ========================= */
+   FIREBASE CONFIG
+========================= */
 const firebaseConfig = {
   apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
   authDomain: "revnue-records.firebaseapp.com",
@@ -468,487 +272,228 @@ const firebaseConfig = {
   appId: "1:182348503564:web:480085405b09177245ac29",
   measurementId: "G-MGTDBCG896"
 };
-const DB_PATH = "locations"; // /locations/{firebase_id}
-
-if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-const storage = firebase.storage ? firebase.storage() : null;
+const dbPath = "locations";
 
 const $ = (id)=>document.getElementById(id);
-const state = {
-  all: [],
-  currentKey: null,
-  currentObj: null,
-  images: []
-};
+function safeText(v){ return (v ?? "").toString().trim(); }
 
-/* =========================
-   HELPERS
-   ========================= */
-function safe(v){ return (v===null || v===undefined) ? "" : String(v).trim(); }
-function num(v){
-  const s = safe(v);
-  if(!s) return null;
-  const n = Number(s);
-  return Number.isFinite(n) ? n : null;
-}
-function normalizeKey(s){
-  s = safe(s);
-  s = s
-    .replace(/[\u2018\u2019\u201A\u201B]/g, "'")
-    .replace(/[\u201C\u201D\u201E\u201F]/g, '"')
-    .replace(/['"]/g, "");
-  try{ s = s.normalize("NFKD").replace(/[^\x00-\x7F]/g, ""); }
-  catch(e){ s = s.replace(/[^\x00-\x7F]/g, ""); }
-  s = s.toLowerCase()
-       .replace(/[.#$[\]\/]/g, "")
-       .replace(/&/g, "and")
-       .replace(/[^a-z0-9\s-]/g, "")
-       .replace(/\s+/g, "-")
-       .replace(/-+/g, "-")
-       .replace(/^-|-$/g, "");
-  return s;
-}
-function parseLatLngFromMapUrl(url){
-  url = safe(url);
-  if(!url) return {lat:null,lng:null};
-  const q = url.match(/q=([-0-9.]+)\s*,\s*([-0-9.]+)/i);
-  if(q) return {lat:Number(q[1])||null, lng:Number(q[2])||null};
-  const at = url.match(/@([-0-9.]+)\s*,\s*([-0-9.]+)/i);
-  if(at) return {lat:Number(at[1])||null, lng:Number(at[2])||null};
-  return {lat:null,lng:null};
-}
-function nowISO(){ return new Date().toISOString(); }
+function variantKeys(key){
+  // generate common variants for "permanently deletable headers"
+  const k = safeText(key);
+  if(!k) return [];
+  const base = k;
+  const norm = k.replace(/\s+/g,"").toLowerCase(); // "photo 1" -> "photo1"
+  const variants = new Set();
 
-function setStatus(text, ok=true){
-  $("saveStatus").textContent = text;
-  $("saveStatus").style.color = ok ? "rgba(11,18,32,.70)" : "rgba(239,68,68,.92)";
-}
+  variants.add(base);
+  variants.add(norm);
+  variants.add(norm.replace(/_/g,""));
+  variants.add(base.toLowerCase());
+  variants.add(base.toUpperCase());
 
-/* =========================
-   AUTO-FILL TEXT (simple but solid)
-   ========================= */
-function autoFillIfMissing(){
-  const district = safe($("District").value);
-  const name = safe($("LocationName").value);
-  const locType = safe($("LocationType").value);
-  const segment = safe($("SegmentType").value);
+  // TitleCase-ish
+  variants.add(base.replace(/\b\w/g, c=>c.toUpperCase()));
+  variants.add(base.replace(/\b\w/g, c=>c.toLowerCase()));
 
-  if(!district || !name || !segment){
-    alert("Fill at least District + Location Name + Segment Type.");
-    return;
+  // If ends with number patterns, try with/without space
+  const m = base.match(/^(.*?)[\s_]*([0-9]+)$/);
+  if(m){
+    const stem = m[1].trim();
+    const num = m[2];
+    variants.add(`${stem} ${num}`);
+    variants.add(`${stem}${num}`);
+    variants.add(`${stem}_${num}`);
+    variants.add(`${stem.toLowerCase()} ${num}`);
+    variants.add(`${stem.toLowerCase()}${num}`);
+    variants.add(`${stem.toLowerCase()}_${num}`);
+    variants.add(`${stem.replace(/\s+/g,"")}${num}`);
   }
 
-  // Basic templates by segment
-  const seg = segment;
+  return [...variants].filter(Boolean);
+}
 
-  const defaultBest = (seg==="Trek") ? "Apr–Jun, Sep–Nov" :
-                      (seg==="Lake") ? "May–Oct" :
-                      (seg==="Temple") ? "Year-round (festivals special)" :
-                      (seg==="Hotel") ? "Year-round" :
-                      "Year-round";
+let db=null;
+let all = {}; // full dataset {id: obj}
 
-  const short = (seg==="Temple")
-    ? `${name} is a revered spiritual site in ${district}, known for peaceful surroundings and local traditions.`
-    : (seg==="Lake")
-    ? `${name} is a scenic lake in ${district}, ideal for slow travel, photography and nature views.`
-    : (seg==="Trek")
-    ? `${name} is a popular trek in ${district}, offering mountain views and a rewarding trail experience.`
-    : (seg==="Hotel")
-    ? `${name} is a stay option in ${district}, suitable as a base to explore nearby attractions comfortably.`
-    : `${name} is a well-known destination in ${district}, loved for views, vibe and easy access to nearby spots.`;
-
-  const features = (seg==="Temple")
-    ? `Main shrine • local architecture • calm atmosphere • nearby viewpoints/markets`
-    : (seg==="Lake")
-    ? `Scenic views • best sunrise/sunset • photo spots • picnic/short walks nearby`
-    : (seg==="Trek")
-    ? `Trail experience • viewpoints • nature + photos • ideal early start plan`
-    : (seg==="Hotel")
-    ? `Comfort stay • nearby sightseeing • good base location • local food options`
-    : `Viewpoints • iconic spots • local culture • cafés/markets nearby`;
-
-  const how = (seg==="Trek")
-    ? `Reach the trailhead in ${district} by taxi/bus. Start early, carry water, and follow local guidance for the route.`
-    : `Reach ${name} in ${district} by local taxi/cab. If coming by bus, get down at the main town and take a short ride/walk.`;
-
-  const task = (seg==="Temple")
-    ? `Morning darshan + explore local market; keep some quiet time for the atmosphere.`
-    : (seg==="Lake")
-    ? `Visit at sunrise/sunset; keep buffer for weather; click wide-angle photos.`
-    : (seg==="Trek")
-    ? `Start early; carry warm layer; keep return before sunset; don’t litter.`
-    : (seg==="Hotel")
-    ? `Use this as base; plan 2 nearby spots + a sunset point; keep evening walk.`
-    : `Spend golden hour here; add 2 nearby places + one local food stop.`;
-
-  const overview = `About ${name}\n\n` +
-    `${short}\n\n` +
-    `Why visit:\n- ${features.split(" • ").join("\n- ")}\n\n` +
-    `Suggested plan:\n- 1 main spot: ${name}\n- 2 nearby additions in ${district}\n- 1 local food/café stop\n\n` +
-    `Travel notes:\n- Best season: ${defaultBest}\n- Keep buffer for road/weather\n- Respect local rules and keep the place clean`;
-
-  // Fill only if empty
-  if(!safe($("BestTime").value)) $("BestTime").value = defaultBest;
-  if(!safe($("ShortDescription").value)) $("ShortDescription").value = short;
-  if(!safe($("KeyFeatures").value)) $("KeyFeatures").value = features;
-  if(!safe($("HowToReach").value)) $("HowToReach").value = how;
-  if(!safe($("TaskForLocation").value)) $("TaskForLocation").value = task;
-  if(!safe($("Overview").value)) $("Overview").value = overview;
-
-  // slug if missing
-  if(!safe($("firebase_id").value)){
-    $("firebase_id").value = normalizeKey(`${district}-${name}`);
+async function boot(){
+  try{
+    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+    $("status").textContent = "Connected ✓ loading…";
+    await refresh();
+  }catch(e){
+    console.error(e);
+    $("status").textContent = "Firebase init failed (check config/rules)";
   }
-
-  setStatus("Auto-filled (not saved yet)");
 }
 
-/* =========================
-   READ / LIST
-   ========================= */
-async function loadAll(){
-  $("leftStatus").textContent = "Loading…";
-  const snap = await db.ref(DB_PATH).once("value");
-  const val = snap.val() || {};
-  const arr = Object.entries(val).map(([key, o])=>{
-    o = o || {};
-    const name = safe(o["Location Name"] || o.name || key);
-    const district = safe(o["District"] || o.district || "Unknown");
-    const seg = safe(o["Segment Type"] || o.segment || "Destination");
-    return { key, o, name, district, seg };
-  }).sort((a,b)=> (a.district+a.name).localeCompare(b.district+b.name));
-
-  state.all = arr;
-  renderList();
-  $("leftStatus").textContent = `${arr.length} locations`;
+async function refresh(){
+  $("status").textContent = "Refreshing…";
+  const snap = await db.ref(dbPath).once("value");
+  all = snap.val() || {};
+  const ids = Object.keys(all);
+  $("count").textContent = ids.length + " records";
+  buildPlaceDropdown(ids);
+  $("status").textContent = "Loaded ✓";
+  renderPreview();
 }
 
-function renderList(){
-  const q = safe($("search").value).toLowerCase();
-  const ft = $("filterType").value;
-
-  const list = state.all.filter(x=>{
-    if(ft !== "all" && x.seg !== ft) return false;
-    if(!q) return true;
-    const hay = `${x.name} ${x.district} ${x.seg} ${x.key}`.toLowerCase();
-    return hay.includes(q);
+function buildPlaceDropdown(ids){
+  ids.sort((a,b)=>{
+    const na = safeText(all[a]?.["Location Name"] || all[a]?.name || a);
+    const nb = safeText(all[b]?.["Location Name"] || all[b]?.name || b);
+    return na.localeCompare(nb);
   });
 
-  const el = $("list");
-  if(!list.length){
-    el.innerHTML = `<div class="hint">No results.</div>`;
-    return;
-  }
-
-  el.innerHTML = list.map(x=>{
-    const active = (state.currentKey === x.key) ? "active" : "";
-    return `
-      <div class="item ${active}" data-k="${x.key}">
-        <b>${escapeHtml(x.name)}</b>
-        <span>${escapeHtml(x.district)} • ${escapeHtml(x.seg)} • <span style="opacity:.75">${escapeHtml(x.key)}</span></span>
-      </div>
-    `;
+  $("placeSel").innerHTML = ids.map(id=>{
+    const name = safeText(all[id]?.["Location Name"] || all[id]?.name || id);
+    const d = safeText(all[id]?.["District"] || all[id]?.district || "");
+    return `<option value="${id}">${name}${d?(" • "+d):""} • (${id})</option>`;
   }).join("");
-
-  el.querySelectorAll(".item").forEach(it=>{
-    it.addEventListener("click", ()=>{
-      const k = it.getAttribute("data-k");
-      openKey(k);
-    });
-  });
 }
 
-function escapeHtml(str){
-  return safe(str)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;");
-}
+function currentId(){ return $("placeSel").value; }
 
-/* =========================
-   OPEN / FILL FORM
-   ========================= */
-async function openKey(key){
-  const snap = await db.ref(`${DB_PATH}/${key}`).once("value");
-  const o = snap.val();
-  if(!o){ alert("Not found in Firebase"); return; }
-
-  state.currentKey = key;
-  state.currentObj = o;
-
-  // Images: support your Apps Script structure: o.images (array) OR photo 1/2/3
-  const images =
-    (Array.isArray(o.images) ? o.images : [])
-    .concat([safe(o["photo 1"]), safe(o["photo 2"]), safe(o["photo 3"])])
-    .filter(Boolean);
-
-  state.images = [...new Set(images)];
-
-  $("editTitle").textContent = `Editing: ${safe(o["Location Name"] || key)}`;
-  setStatus("Loaded");
-
-  $("District").value        = safe(o["District"]);
-  $("LocationName").value    = safe(o["Location Name"]);
-  $("LocationType").value    = safe(o["Location Type"]);
-  $("SegmentType").value     = safe(o["Segment Type"] || "Destination");
-  $("HowToReach").value      = safe(o["How to Reach"]);
-  $("ShortDescription").value= safe(o["Short Description"]);
-  $("KeyFeatures").value     = safe(o["Key Features"]);
-  $("TaskForLocation").value = safe(o["Task for Location"]);
-  $("BestTime").value        = safe(o["Best Time to Visit"]);
-  $("DistHQ").value          = safe(o["Dist from HQ"]);
-  $("Overview").value        = safe(o["Overview"]);
-  $("Map").value             = safe(o["Map"]);
-
-  // Lat/Lng: prefer explicit columns if present
-  const lat = (o["Latitude"] ?? null);
-  const lng = (o["Longitude"] ?? null);
-  $("Latitude").value  = (lat===null || lat===undefined) ? "" : String(lat);
-  $("Longitude").value = (lng===null || lng===undefined) ? "" : String(lng);
-
-  // Rates: support nested rates or flat columns
-  const r = o.rates || {};
-  $("Rate_Solo").value   = (o["Rate_Solo"] ?? r.solo ?? "") + "" === "null" ? "" : (o["Rate_Solo"] ?? r.solo ?? "");
-  $("Rate_Couple").value = (o["Rate_Couple"] ?? r.couple ?? "") + "" === "null" ? "" : (o["Rate_Couple"] ?? r.couple ?? "");
-  $("Rate_Family").value = (o["Rate_Family"] ?? r.family ?? "") + "" === "null" ? "" : (o["Rate_Family"] ?? r.family ?? "");
-  $("Rate_Group").value  = (o["Rate_Group"] ?? r.group ?? "") + "" === "null" ? "" : (o["Rate_Group"] ?? r.group ?? "");
-
-  $("TripDays_Min").value = (o["TripDays_Min"] ?? "") + "" === "null" ? "" : (o["TripDays_Min"] ?? "");
-  $("TripDays_Max").value = (o["TripDays_Max"] ?? "") + "" === "null" ? "" : (o["TripDays_Max"] ?? "");
-
-  $("firebase_id").value = key;
-
-  renderImages();
-  renderList();
-}
-
-function clearForm(){
-  state.currentKey = null;
-  state.currentObj = null;
-  state.images = [];
-  $("editTitle").textContent = "Editor";
-  setStatus("New (not saved)");
-
-  [
-    "District","LocationName","LocationType","firebase_id","BestTime","DistHQ","Map",
-    "Latitude","Longitude","Rate_Solo","Rate_Couple","Rate_Family","Rate_Group","TripDays_Min","TripDays_Max",
-    "HowToReach","ShortDescription","KeyFeatures","TaskForLocation","Overview"
-  ].forEach(id=>{
-    const el = $(id);
-    if(el) el.value = "";
-  });
-  $("SegmentType").value = "Destination";
-  renderImages();
-  renderList();
-}
-
-/* =========================
-   IMAGES
-   ========================= */
-function renderImages(){
-  const grid = $("imgGrid");
-  if(!state.images.length){
-    grid.innerHTML = `<div class="hint" style="grid-column:1/-1">No images added yet.</div>`;
+function renderPreview(){
+  const id = currentId();
+  const obj = all[id] || null;
+  if(!obj){
+    $("placePreview").innerHTML = "No record selected.";
     return;
   }
-  grid.innerHTML = state.images.map((u, idx)=>`
-    <div class="imgCard">
-      <img src="${escapeHtml(u)}" alt="img" loading="lazy" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend','<div style=&quot;padding:12px;font-weight:900;color:rgba(11,18,32,.70)&quot;>Image blocked / not direct URL</div>')"/>
-      <button class="x" title="Remove" data-i="${idx}">✕</button>
+  const keys = Object.keys(obj).sort();
+  $("placePreview").innerHTML = `
+    <b>Keys in this record (${keys.length}):</b><br/>
+    <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+      ${keys.slice(0,40).map(k=>`<span class="pill" style="padding:8px 10px">${k}</span>`).join("")}
+      ${keys.length>40 ? `<span class="pill" style="padding:8px 10px">+${keys.length-40} more</span>` : ``}
     </div>
-  `).join("");
+    <div style="margin-top:10px; color:rgba(11,18,32,.70); font-weight:850">
+      Tip: copy any key and paste in "Header / Field name" to delete it.
+    </div>
+  `;
+}
 
-  grid.querySelectorAll(".x").forEach(b=>{
-    b.addEventListener("click", ()=>{
-      const i = Number(b.getAttribute("data-i"));
-      state.images.splice(i,1);
-      renderImages();
-      setStatus("Images updated (not saved yet)");
+$("placeSel").addEventListener("change", ()=>{
+  renderPreview();
+});
+
+$("refresh").addEventListener("click", refresh);
+
+$("loadPlace").addEventListener("click", ()=>{
+  const id = currentId();
+  const obj = all[id] || {};
+  $("jsonBox").value = JSON.stringify(obj, null, 2);
+  $("status").textContent = "Record loaded ✓";
+});
+
+$("copyJson").addEventListener("click", async ()=>{
+  const v = safeText($("jsonBox").value);
+  if(!v) return alert("Nothing to copy");
+  await navigator.clipboard.writeText(v);
+  alert("Copied ✓");
+});
+
+$("saveJson").addEventListener("click", async ()=>{
+  const id = currentId();
+  const raw = safeText($("jsonBox").value);
+  if(!raw) return alert("JSON empty");
+  let obj=null;
+  try{ obj = JSON.parse(raw); }catch{ return alert("Invalid JSON"); }
+  if(!confirm("Save JSON to Firebase for this record? (overwrite)")) return;
+  try{
+    $("status").textContent = "Saving…";
+    await db.ref(`${dbPath}/${id}`).set(obj);
+    await refresh();
+    $("status").textContent = "Saved ✓";
+  }catch(e){
+    console.error(e);
+    $("status").textContent = "Save failed";
+    alert("Save failed. Check rules/connection.");
+  }
+});
+
+/* =========================
+   DELETE RECORD
+========================= */
+$("deletePlace").addEventListener("click", async ()=>{
+  const id = currentId();
+  const name = safeText(all[id]?.["Location Name"] || all[id]?.name || id);
+  const ok = prompt(`Type DELETE to permanently delete:\n${name}\n(id: ${id})`);
+  if(ok !== "DELETE") return alert("Cancelled.");
+  try{
+    $("status").textContent = "Deleting record…";
+    await db.ref(`${dbPath}/${id}`).remove();
+    await refresh();
+    $("jsonBox").value = "";
+    $("status").textContent = "Record deleted ✓";
+  }catch(e){
+    console.error(e);
+    $("status").textContent = "Delete failed";
+    alert("Delete failed. Check rules/connection.");
+  }
+});
+
+/* =========================
+   DELETE HEADER (FIELD) — ONE / ALL
+========================= */
+async function deleteHeaderInOne(id, keys){
+  // remove by update nulls
+  const patch = {};
+  keys.forEach(k=> patch[k] = null);
+  await db.ref(`${dbPath}/${id}`).update(patch);
+}
+
+async function deleteHeaderInAll(keys){
+  // multi-location update for speed
+  const patch = {};
+  for(const id of Object.keys(all)){
+    keys.forEach(k=>{
+      patch[`${dbPath}/${id}/${k}`] = null;
     });
-  });
+  }
+  await db.ref().update(patch);
 }
 
-$("btnAddImg").addEventListener("click", ()=>{
-  const url = safe($("imgUrl").value);
-  if(!url) return;
-  state.images.push(url);
-  state.images = [...new Set(state.images)];
-  $("imgUrl").value = "";
-  renderImages();
-  setStatus("Images updated (not saved yet)");
-});
+$("deleteHeader").addEventListener("click", async ()=>{
+  const key = safeText($("headerKey").value);
+  if(!key) return alert("Enter a header/field key name.");
 
-/* OPTIONAL: Upload to Firebase Storage (needs storage rules & enabled bucket) */
-$("btnUpload").addEventListener("click", async ()=>{
+  const mode = $("delMode").value; // one | all
+  const delVariants = $("variants").value === "yes";
+  const keys = delVariants ? variantKeys(key) : [key];
+
+  const id = currentId();
+  const name = safeText(all[id]?.["Location Name"] || all[id]?.name || id);
+
+  const preview = keys.map(k=>`• ${k}`).join("\n");
+  const ask = mode==="one"
+    ? `Permanently delete these keys from selected record:\n${name} (${id})\n\n${preview}\n\nType DELETE`
+    : `Permanently delete these keys from ALL records (${Object.keys(all).length}):\n\n${preview}\n\nType DELETE`;
+
+  const ok = prompt(ask);
+  if(ok !== "DELETE") return alert("Cancelled.");
+
   try{
-    if(!storage){ alert("Storage SDK not available."); return; }
-    const file = $("imgFile").files?.[0];
-    if(!file){ alert("Choose a file first."); return; }
+    $("status").textContent = "Deleting header(s)…";
 
-    const key = normalizeKey(safe($("firebase_id").value) || `${safe($("District").value)}-${safe($("LocationName").value)}`) || "image";
-    const path = `places/${key}/${Date.now()}_${file.name}`.replace(/\s+/g,"_");
-    setStatus("Uploading…");
+    if(mode==="one"){
+      await deleteHeaderInOne(id, keys);
+    }else{
+      await deleteHeaderInAll(keys);
+    }
 
-    const ref = storage.ref().child(path);
-    await ref.put(file);
-    const url = await ref.getDownloadURL();
-
-    state.images.push(url);
-    state.images = [...new Set(state.images)];
-    renderImages();
-    setStatus("Uploaded (not saved yet)");
+    await refresh();
+    $("status").textContent = "Header deleted ✓";
+    alert("Done ✓");
   }catch(e){
     console.error(e);
-    setStatus("Upload failed (check Storage rules)", false);
-    alert("Upload failed. Enable Firebase Storage + allow writes in Storage rules.");
+    $("status").textContent = "Header delete failed";
+    alert("Delete failed. Check RTDB rules/connection.");
   }
 });
 
-/* =========================
-   SAVE / DELETE
-   ========================= */
-function buildPayload(){
-  const district = safe($("District").value);
-  const name = safe($("LocationName").value);
-  const locType = safe($("LocationType").value);
-  const seg = safe($("SegmentType").value);
-
-  const fidInput = safe($("firebase_id").value);
-  const key = normalizeKey(fidInput) || normalizeKey(`${district}-${name}`);
-
-  if(!district || !name || !seg){
-    throw new Error("District + Location Name + Segment Type are required.");
-  }
-  if(!key){
-    throw new Error("firebase_id key could not be generated. Check inputs.");
-  }
-
-  // lat/lng: if empty but Map has q=@, parse it
-  let lat = num($("Latitude").value);
-  let lng = num($("Longitude").value);
-  const mapUrl = safe($("Map").value);
-  if((lat===null || lng===null) && mapUrl){
-    const p = parseLatLngFromMapUrl(mapUrl);
-    if(lat===null) lat = p.lat;
-    if(lng===null) lng = p.lng;
-  }
-
-  // Rates
-  const rateSolo = num($("Rate_Solo").value);
-  const rateCouple = num($("Rate_Couple").value);
-  const rateFamily = num($("Rate_Family").value);
-  const rateGroup = num($("Rate_Group").value);
-
-  const tdMin = num($("TripDays_Min").value);
-  const tdMax = num($("TripDays_Max").value);
-
-  // Save both: flat + nested rates (so your site can read either way)
-  const payload = {
-    "District": district,
-    "Location Name": name,
-    "Location Type": locType,
-    "Segment Type": seg,
-
-    "How to Reach": safe($("HowToReach").value),
-    "Short Description": safe($("ShortDescription").value),
-    "Key Features": safe($("KeyFeatures").value),
-    "Task for Location": safe($("TaskForLocation").value),
-    "Best Time to Visit": safe($("BestTime").value),
-    "Dist from HQ": safe($("DistHQ").value),
-    "Overview": safe($("Overview").value),
-    "Map": mapUrl,
-
-    "Latitude": lat,
-    "Longitude": lng,
-
-    "Rate_Solo": rateSolo,
-    "Rate_Couple": rateCouple,
-    "Rate_Family": rateFamily,
-    "Rate_Group": rateGroup,
-
-    "TripDays_Min": tdMin,
-    "TripDays_Max": tdMax,
-
-    images: state.images.slice(0, 12), // keep max 12
-    rates: { solo: rateSolo, couple: rateCouple, family: rateFamily, group: rateGroup },
-
-    updatedAt: nowISO()
-  };
-
-  return { key, payload };
-}
-
-$("btnSave").addEventListener("click", async ()=>{
-  try{
-    const {key, payload} = buildPayload();
-    setStatus("Saving…");
-    await db.ref(`${DB_PATH}/${key}`).set(payload);
-
-    state.currentKey = key;
-    $("firebase_id").value = key;
-    setStatus("Saved ✅");
-    await loadAll();
-    await openKey(key);
-  }catch(e){
-    console.error(e);
-    setStatus("Save failed", false);
-    alert(e.message || "Save failed");
-  }
-});
-
-$("btnDelete").addEventListener("click", async ()=>{
-  try{
-    const key = state.currentKey || normalizeKey(safe($("firebase_id").value));
-    if(!key){ alert("Open a record first."); return; }
-    if(!confirm(`Delete /${DB_PATH}/${key} ?`)) return;
-
-    setStatus("Deleting…");
-    await db.ref(`${DB_PATH}/${key}`).remove();
-    setStatus("Deleted ✅");
-    await loadAll();
-    clearForm();
-  }catch(e){
-    console.error(e);
-    setStatus("Delete failed", false);
-    alert(e.message || "Delete failed");
-  }
-});
-
-/* =========================
-   BUTTONS / EVENTS
-   ========================= */
-$("btnAuto").addEventListener("click", autoFillIfMissing);
-$("btnNew").addEventListener("click", clearForm);
-$("btnRefresh").addEventListener("click", loadAll);
-
-$("btnOpenPlace").addEventListener("click", ()=>{
-  const key = state.currentKey || normalizeKey(safe($("firebase_id").value));
-  if(!key){ alert("Save or open a record first."); return; }
-  window.open(`place.html?id=${encodeURIComponent(key)}`, "_blank");
-});
-
-$("search").addEventListener("input", renderList);
-$("filterType").addEventListener("change", renderList);
-
-// Small convenience: if user edits name/district, suggest slug (but don’t overwrite if already typed)
-["District","LocationName"].forEach(id=>{
-  $(id).addEventListener("input", ()=>{
-    if(safe($("firebase_id").value)) return;
-    const d = safe($("District").value);
-    const n = safe($("LocationName").value);
-    if(d && n) $("firebase_id").value = normalizeKey(`${d}-${n}`);
-  });
-});
-
-/* =========================
-   INIT
-   ========================= */
-(async function init(){
-  await loadAll();
-  clearForm();
-})();
+boot();
 </script>
 </body>
 </html>
