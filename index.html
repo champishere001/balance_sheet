@@ -111,7 +111,7 @@
       border-color: rgba(124,107,79,.35) !important;
     }
 
-    /* HERO BANNER (full width like Chandigarh site) */
+    /*  BANNER (full width like Chandigarh site) */
     .heroBanner{
       margin-top:16px;
       border-radius: 26px;
@@ -122,7 +122,23 @@
       position:relative;
       min-height: 420px;
     }
-   .heroBanner::before{
+    .heroMain{
+  position:relative;
+  overflow:hidden;
+  border-radius:32px;
+  padding:48px;
+  min-height:440px;
+
+  background:
+    linear-gradient(rgba(5,7,13,.70), rgba(5,7,13,.88)),
+    url("./kinnaur-kailash.webp") center/cover no-repeat;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.08),
+    0 30px 90px rgba(0,0,0,.65);
+}
+
+   .Banner::before{
   content:"";
   position:absolute; inset:0;
   background:
@@ -131,7 +147,7 @@
   transform: scale(1.02);
   filter: saturate(1.05) contrast(1.05);
 }
-    .heroOverlay{
+    .Overlay{
       position:relative;
       padding:28px;
       display:grid;
@@ -140,7 +156,7 @@
       align-items:stretch;
       min-height: 420px;
     }
-    .heroText{
+    .Text{
       color:#fff;
       max-width: 72ch;
       display:flex;
@@ -148,19 +164,19 @@
       justify-content:space-between;
       gap:14px;
     }
-    .heroText h2{
+    .Text h2{
       margin:0;
       font-size: clamp(30px, 3.2vw, 56px);
       line-height:1.02;
       letter-spacing:-.6px;
     }
-    .heroText p{
+    .Text p{
       margin:10px 0 0;
       color: rgba(255,255,255,.86);
       font-weight:700;
       line-height:1.5;
     }
-    .heroBadges{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+    .Badges{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
     .hb{
       padding:9px 12px;
       border-radius:999px;
@@ -171,8 +187,8 @@
       backdrop-filter: blur(6px);
     }
 
-    /* right box inside hero */
-    .heroBox{
+    /* right box inside  */
+    .Box{
       background: rgba(255,250,242,.92);
       border:1px solid rgba(255,255,255,.20);
       border-radius: 22px;
@@ -182,8 +198,8 @@
       flex-direction:column;
       gap:10px;
     }
-    .heroBox h3{margin:0; font-size:13px}
-    .heroBox small{color:rgba(31,35,40,.70); font-weight:800}
+    .Box h3{margin:0; font-size:13px}
+    .Box small{color:rgba(31,35,40,.70); font-weight:800}
 
     .gridForm{
       display:grid;
@@ -483,8 +499,8 @@
     }
 
     @media (max-width: 1100px){
-      .heroOverlay{grid-template-columns: 1fr; min-height:auto}
-      .heroBanner{min-height:auto}
+      .Overlay{grid-template-columns: 1fr; min-height:auto}
+      .Banner{min-height:auto}
       .tiles{grid-template-columns: repeat(3, 1fr)}
       .drawerBody{grid-template-columns: 1fr}
       .gallery{grid-template-columns: repeat(2,1fr)}
@@ -530,10 +546,10 @@
   </div>
 
   <div class="wrap">
-    <!-- HERO FULL WIDTH -->
-    <section class="heroBanner" aria-label="hero">
-      <div class="heroOverlay">
-        <div class="heroText">
+    <!--  FULL WIDTH -->
+    <section class="Banner" aria-label="">
+      <div class="Overlay">
+        <div class="Text">
           <div>
             <h2>Discover Himachal — beautifully, simply.</h2>
             <p>
@@ -541,7 +557,7 @@
               <b>Map stays hidden until a location is clicked.</b>
             </p>
 
-            <div class="heroBadges">
+            <div class="Badges">
               <span class="hb">Light Tourism Theme</span>
               <span class="hb">Smart Filters</span>
               <span class="hb">Packages</span>
@@ -556,7 +572,7 @@
         </div>
 
         <!-- FILTER BOX -->
-        <div class="heroBox">
+        <div class="Box">
           <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:10px">
             <div>
               <h3 style="margin:0">Search & Build Packages</h3>
