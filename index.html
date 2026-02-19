@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — Light Premium</title>
+  <title>Himachal Explorer — Light Premium (Sidebar Segments)</title>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -66,6 +66,7 @@
       box-shadow: 0 12px 26px rgba(37,99,235,.18);
       display:flex; align-items:center; justify-content:center;
       overflow:hidden;
+      flex:0 0 auto;
     }
     .logo img{width:100%; height:100%; object-fit:cover; display:block}
     .brand h1{margin:0; font-size:14px; line-height:1.1; letter-spacing:.2px}
@@ -80,6 +81,8 @@
       box-shadow: var(--shadow2);
       font-weight:850; font-size:12px;
       transition:.18s ease;
+      cursor:pointer;
+      user-select:none;
     }
     .pill:hover{transform: translateY(-1px)}
     .dot{
@@ -112,77 +115,66 @@
       padding:18px 16px 44px;
     }
 
-  /* HERO LAYOUT */
-.hero{
-  display:grid;
-  grid-template-columns: 1.2fr .8fr;
-  gap:14px;
-  align-items:stretch;
-  margin-top:10px;
-}
+    /* HERO LAYOUT */
+    .hero{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+      align-items:stretch;
+      margin-top:10px;
+    }
+    @media(max-width:900px){
+      .hero{ grid-template-columns:1fr; }
+    }
 
-@media(max-width:900px){
-  .hero{ grid-template-columns:1fr; }
-}
+    /* HERO CARD */
+    .heroCard{
+      border-radius: var(--r2);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.85);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+      min-height:360px;
+    }
+    .heroCard::after{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(700px 420px at 20% 30%, rgba(37,99,235,.12), transparent 62%),
+        radial-gradient(700px 420px at 78% 30%, rgba(124,58,237,.10), transparent 62%);
+      mix-blend-mode:multiply;
+      opacity:.85;
+      pointer-events:none;
+    }
 
-/* HERO CARD */
-.heroCard{
-  border-radius: var(--r2);
-  border:1px solid var(--stroke);
-  background: rgba(255,255,255,.85);
-  box-shadow: var(--shadow);
-  overflow:hidden;
-  position:relative;
-  min-height:360px;
-}
+    /* HERO INNER WITH IMAGE */
+    .heroInner{
+      position:relative;
+      padding:26px;
+      display:flex;
+      flex-direction:column;
+      height:100%;
+      justify-content:space-between;
+      gap:16px;
+      background:
+        linear-gradient(120deg, rgba(255,255,255,.92), rgba(255,255,255,.60)),
+        url("./Kee_monastery.jpg") center/cover no-repeat;
+      border-radius: var(--r2);
+    }
 
-/* remove old pseudo bg */
-.heroCard::before{ content:none; }
-
-/* soft glow overlay */
-.heroCard::after{
-  content:"";
-  position:absolute; inset:0;
-  background:
-    radial-gradient(700px 420px at 20% 30%, rgba(37,99,235,.12), transparent 62%),
-    radial-gradient(700px 420px at 78% 30%, rgba(124,58,237,.10), transparent 62%);
-  mix-blend-mode:multiply;
-  opacity:.85;
-  pointer-events:none;
-}
-
-/* HERO INNER WITH IMAGE */
-.heroInner{
-  position:relative;
-  padding:26px;
-  display:flex;
-  flex-direction:column;
-  height:100%;
-  justify-content:space-between;
-  gap:16px;
-
-  background:
-    linear-gradient(120deg, rgba(255,255,255,.92), rgba(255,255,255,.60)),
-    url("./Kee_monastery.jpg") center/cover no-repeat;
-
-  border-radius: var(--r2);
-}
-
-/* TEXT */
-.heroTitle{
-  margin:0;
-  font-size: clamp(28px,3.2vw,48px);
-  letter-spacing:-.6px;
-  line-height:1.05;
-}
-
-.heroSub{
-  margin:10px 0 0;
-  color: rgba(11,18,32,.70);
-  font-weight:700;
-  max-width:70ch;
-}
-
+    .heroTitle{
+      margin:0;
+      font-size: clamp(28px,3.2vw,48px);
+      letter-spacing:-.6px;
+      line-height:1.05;
+    }
+    .heroSub{
+      margin:10px 0 0;
+      color: rgba(11,18,32,.70);
+      font-weight:700;
+      max-width:70ch;
+    }
 
     .chips{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
     .chip{
@@ -335,7 +327,7 @@
       display:grid;
       gap:10px;
       overflow:auto;
-      max-height: 600px;
+      max-height: 680px;
     }
     .place{
       display:grid;
@@ -368,6 +360,8 @@
       border:1px solid var(--stroke);
       background: rgba(255,255,255,.86);
     }
+
+    /* MAP PANEL */
     .mapPanel{display:none}
     #map{
       width:100%;
@@ -378,7 +372,112 @@
       overflow:hidden;
     }
 
-    /* AI Modal (kept) */
+    /* ===== Sidebar Segments ===== */
+    .shell{
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      gap:14px;
+      align-items:start;
+      margin-top:16px;
+    }
+    @media(max-width: 980px){
+      .shell{grid-template-columns: 1fr}
+    }
+    .sidebar{
+      position:sticky; top:84px;
+      border-radius: var(--r2);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.80);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      max-height: calc(100vh - 110px);
+    }
+    .sbHead{
+      padding:14px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      border-bottom:1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.78));
+    }
+    .sbHead h3{margin:0; font-size:13px}
+    .sbHead small{color:var(--muted); font-weight:850}
+    .sbBody{padding:12px; overflow:auto}
+    .segRow{
+      border:1px solid var(--stroke);
+      border-radius:18px;
+      background: rgba(255,255,255,.88);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      margin-bottom:10px;
+    }
+    .segTop{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:10px 12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .segTop b{font-size:12px}
+    .segTop span{font-size:11px; color:rgba(11,18,32,.60); font-weight:900}
+    .chev{font-weight:1000; opacity:.7}
+    .segList{
+      display:none;
+      border-top:1px solid var(--stroke);
+      background: rgba(245,247,255,.78);
+      padding:8px;
+    }
+    .segBtn{
+      width:100%;
+      text-align:left;
+      padding:10px 10px;
+      border-radius:14px;
+      border:1px solid rgba(10,18,40,.10);
+      background: rgba(255,255,255,.88);
+      cursor:pointer;
+      font-weight:900;
+      font-size:12px;
+      margin:6px 0;
+      transition:.14s ease;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .segBtn:hover{transform: translateY(-1px)}
+    .segBtn small{color:rgba(11,18,32,.60); font-weight:900}
+
+    /* Mobile sidebar drawer */
+    .sbFab{
+      display:none;
+      position:fixed;
+      right:14px; bottom:14px;
+      z-index:90;
+      border-radius:999px;
+      padding:12px 14px;
+      box-shadow: 0 22px 60px rgba(37,99,235,.20);
+    }
+    .sbOverlay{
+      position:fixed; inset:0;
+      background: rgba(15,23,42,.35);
+      backdrop-filter: blur(6px);
+      display:none;
+      z-index:80;
+      padding:14px;
+      align-items:flex-end;
+      justify-content:center;
+    }
+    .sbSheet{
+      width:min(560px, 100%);
+      border-radius: 26px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 30px 110px rgba(15,23,42,.20);
+      overflow:hidden;
+      max-height: 82vh;
+      display:flex; flex-direction:column;
+    }
+    .sbSheet .sbBody{padding:12px; overflow:auto}
+    @media(max-width: 980px){
+      .sidebar{display:none}
+      .sbFab{display:inline-flex}
+    }
+
+    /* AI Modal */
     .modalWrap{
       position:fixed; inset:0;
       background: rgba(15,23,42,.35);
@@ -454,7 +553,6 @@
     }
 
     @media (max-width: 980px){
-      .hero{grid-template-columns:1fr}
       .finder{grid-template-columns:1fr 1fr}
       .finder .field:nth-child(1){grid-column:1/-1}
       .finder .field:nth-child(4){grid-column:1/-1}
@@ -470,12 +568,11 @@
     <div class="inner">
       <div class="brand">
         <div class="logo">
-          <!-- If you have logo.png in repo, it will show -->
           <img src="./logo.png" alt="Himachal Explorer" onerror="this.remove()">
         </div>
         <div>
           <h1>Himachal Explorer</h1>
-          <small>Light premium • fast search • clean results</small>
+          <small>Light premium • search • packages • segments sidebar</small>
         </div>
       </div>
 
@@ -493,16 +590,16 @@
       <div class="heroCard">
         <div class="heroInner">
           <div>
-            <h2 class="heroTitle">Plan Himachal like a pro — without clutter.</h2>
+            <h2 class="heroTitle">Plan Himachal like a pro — clean + fast.</h2>
             <p class="heroSub">
-              Select <b>district</b>, <b>type</b>, <b>days</b>. Get best matches.
-              Map loads only when you click a location.
+              Search by <b>district</b>, <b>type</b>, <b>days</b>. Use sidebar segments to filter instantly.
+              Click a place → opens <b>place.html</b>.
             </p>
 
             <div class="chips">
-              <div class="chip"><i>Clean</i>Light premium theme</div>
-              <div class="chip"><i>Smart</i>Only relevant results</div>
-              <div class="chip"><i>Fast</i>Map on demand</div>
+              <div class="chip"><i>Smart</i>Segment sidebar</div>
+              <div class="chip"><i>Live</i>Packages + rates</div>
+              <div class="chip"><i>Lazy</i>Map only when needed</div>
             </div>
 
             <div class="finder">
@@ -552,7 +649,7 @@
 
           <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap">
             <small style="color:rgba(11,18,32,.65); font-weight:800">
-              Tip: Click any result → open full page (place.html).
+              Tip: Sidebar → click Segment/Type to show places in middle.
             </small>
             <small id="status" style="color:rgba(11,18,32,.65); font-weight:900">Loading…</small>
           </div>
@@ -606,6 +703,7 @@
           </div>
 
           <div style="display:flex; gap:10px; flex-wrap:wrap">
+            <div class="pill" id="openSidebarMobile"><span class="dot"></span>Segments</div>
             <a class="pill" href="#explore"><span class="dot"></span><span id="activeFilters">No filters</span></a>
             <div class="pill" style="cursor:pointer" data-quick="Trek"><span class="dot"></span>Top Treks</div>
             <div class="pill" style="cursor:pointer" data-quick="Lake"><span class="dot"></span>Lakes</div>
@@ -618,34 +716,66 @@
     <section class="section" id="explore">
       <div class="sectionTitle">
         <div>
-          <h2>Explore results</h2>
-          <p>Click a place to open full details page.</p>
+          <h2>Explore</h2>
+          <p>Segment sidebar filters places in the middle panel.</p>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap">
           <span class="pill"><span class="dot"></span><span id="count">0</span></span>
         </div>
       </div>
 
-      <div class="grid2">
-        <div class="panel results">
-          <div class="panelHead">
-            <h3>Places</h3>
-            <small>click to open</small>
+      <div class="shell">
+        <!-- SIDEBAR (desktop) -->
+        <aside class="sidebar" id="sidebarDesktop">
+          <div class="sbHead">
+            <div>
+              <h3>Segments</h3>
+              <small>open/close + filter</small>
+            </div>
+            <button class="btn ghost" id="collapseAll" style="padding:9px 10px">Collapse</button>
           </div>
-          <div class="list" id="list"></div>
-        </div>
+          <div class="sbBody" id="segBox"></div>
+        </aside>
 
-        <div class="panel mapPanel" id="mapPanel">
-          <div class="panelHead">
-            <h3>Map</h3>
-            <small id="mapHint">Loads after click</small>
+        <!-- MAIN -->
+        <div class="grid2">
+          <div class="panel results">
+            <div class="panelHead">
+              <h3>Places</h3>
+              <small>click to open place.html</small>
+            </div>
+            <div class="list" id="list"></div>
           </div>
-          <div style="padding:14px">
-            <div id="map"></div>
+
+          <div class="panel mapPanel" id="mapPanel">
+            <div class="panelHead">
+              <h3>Map</h3>
+              <small id="mapHint">Loads after click</small>
+            </div>
+            <div style="padding:14px">
+              <div id="map"></div>
+            </div>
           </div>
         </div>
       </div>
     </section>
+  </div>
+
+  <!-- Mobile sidebar FAB -->
+  <button class="btn sbFab" id="sbFab">Segments</button>
+
+  <!-- Mobile sidebar overlay -->
+  <div class="sbOverlay" id="sbOverlay" role="dialog" aria-modal="true">
+    <div class="sbSheet">
+      <div class="sbHead">
+        <div>
+          <h3>Segments</h3>
+          <small>tap to filter</small>
+        </div>
+        <button class="closeX" id="sbClose">✕</button>
+      </div>
+      <div class="sbBody" id="segBoxMobile"></div>
+    </div>
   </div>
 
   <!-- AI MODAL -->
@@ -669,7 +799,7 @@
 <script>
 /* =========================
    FIREBASE
-   ========================= */
+========================= */
 const firebaseConfig = {
   apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
   authDomain: "revnue-records.firebaseapp.com",
@@ -684,7 +814,7 @@ const dbPath = "locations";
 
 /* =========================
    STATE
-   ========================= */
+========================= */
 const $ = (id)=>document.getElementById(id);
 let allPlaces = [];
 let shownPlaces = [];
@@ -695,10 +825,14 @@ let myPos = null;
 
 /* =========================
    HELPERS
-   ========================= */
+========================= */
 function safeText(v){ return (v ?? "").toString().trim(); }
 function escapeHtml(str){
-  return safeText(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
+  return safeText(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;");
 }
 function normalizeType(t){
   t = safeText(t);
@@ -741,7 +875,6 @@ function haversine(lat1, lon1, lat2, lon2){
   return 2*R*Math.asin(Math.sqrt(a));
 }
 function pickRate(p, people){
-  // reads either rates:{solo,...} OR Rate_Solo etc.
   const r = p.rates || {};
   const solo = r.solo ?? p.Rate_Solo ?? null;
   const couple = r.couple ?? p.Rate_Couple ?? null;
@@ -757,23 +890,43 @@ function pickRate(p, people){
 function getImagesFromObj(o){
   const arr = [];
   if(Array.isArray(o.images)) arr.push(...o.images);
-  // also support sheet columns pushed as "photo 1/2/3"
+
+  // Also support values pushed as "photo 1/2/3"
   const p1 = safeText(o["photo 1"] || o.photo1 || o["photo1"]);
   const p2 = safeText(o["photo 2"] || o.photo2 || o["photo2"]);
   const p3 = safeText(o["photo 3"] || o.photo3 || o["photo3"]);
   if(p1) arr.push(p1);
   if(p2) arr.push(p2);
   if(p3) arr.push(p3);
-  return arr.filter(Boolean);
+
+  // de-dup
+  const seen = new Set();
+  return arr.filter(u=>{
+    u = safeText(u);
+    if(!u) return false;
+    if(seen.has(u)) return false;
+    seen.add(u);
+    return true;
+  });
 }
 function bestThumb(p){
   const imgs = (p.images || []).filter(Boolean);
   return imgs[0] || "";
 }
+function currency(n){
+  if(n==null || !Number.isFinite(Number(n))) return null;
+  return "₹" + Number(n).toLocaleString("en-IN");
+}
+function rateLabel(people){
+  if(people==="solo") return "Solo";
+  if(people==="couple") return "Couple";
+  if(people==="family") return "Family";
+  return "Group";
+}
 
 /* =========================
    MAP (lazy init)
-   ========================= */
+========================= */
 function ensureMap(){
   if(mapReady) return;
   $("mapPanel").style.display = "block";
@@ -805,7 +958,7 @@ function addMarkers(list){
 
 /* =========================
    FIREBASE LOAD
-   ========================= */
+========================= */
 async function loadPlaces(){
   try{
     if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
@@ -825,69 +978,35 @@ async function loadPlaces(){
       const how = safeText(o["How to Reach"] || o.how || "");
       const mapUrl = safeText(o["Map"] || o.map || "");
       const {lat, lng} = parseLatLngFromMapUrl(mapUrl);
-
       const type = normalizeType(segment);
       const brief = overview || short || keyFeatures || "Explore this place in Himachal Pradesh.";
-
       const images = getImagesFromObj(o);
 
-      // rates + trip days
       const rates = o.rates || {
-        solo: o.Rate_Solo ?? null,
-        couple: o.Rate_Couple ?? null,
-        family: o.Rate_Family ?? null,
-        group: o.Rate_Group ?? null
+        solo: o.Rate_Solo ?? o.rate_solo ?? null,
+        couple: o.Rate_Couple ?? o.rate_couple ?? null,
+        family: o.Rate_Family ?? o.rate_family ?? null,
+        group: o.Rate_Group ?? o.rate_group ?? null
       };
 
-      const tdMin = o.TripDays_Min ?? null;
-      const tdMax = o.TripDays_Max ?? null;
+      const tdMin = o.TripDays_Min ?? o.tripdays_min ?? null;
+      const tdMax = o.TripDays_Max ?? o.tripdays_max ?? null;
 
-      return { id, name, district, type, segment, locationType, brief, how, mapUrl, lat, lng, images, rates, TripDays_Min: tdMin, TripDays_Max: tdMax };
+      return { id, name, district, type, segment, locationType, brief, how, mapUrl, lat, lng, images, rates, TripDays_Min: tdMin, TripDays_Max: tdMax, raw:o };
     }).filter(p=>p.name);
+
   }catch(e){
     console.error("Firebase load failed:", e);
     allPlaces = [];
   }
 }
-async function fetchPlaceById(id){
-  if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-  const snap = await db.ref(`${dbPath}/${id}`).once("value");
-  const o = snap.val();
-  if(!o) return null;
-  // normalize to same structure
-  const name = safeText(o["Location Name"] || o.name || id);
-  const district = safeText(o["District"] || o.district || "Unknown");
-  const segment = safeText(o["Segment Type"] || o.segment || "Destination");
-  const locationType = safeText(o["Location Type"] || o.type || "");
-  const overview = safeText(o["Overview"] || o.overview || "");
-  const short = safeText(o["Short Description"] || o.short || "");
-  const keyFeatures = safeText(o["Key Features"] || o.features || "");
-  const how = safeText(o["How to Reach"] || o.how || "");
-  const mapUrl = safeText(o["Map"] || o.map || "");
-  const {lat, lng} = parseLatLngFromMapUrl(mapUrl);
-  const images = getImagesFromObj(o);
-  const type = normalizeType(segment);
-  const brief = overview || short || keyFeatures || "Explore this place in Himachal Pradesh.";
-  const rates = o.rates || {
-    solo: o.Rate_Solo ?? null,
-    couple: o.Rate_Couple ?? null,
-    family: o.Rate_Family ?? null,
-    group: o.Rate_Group ?? null
-  };
-  const tdMin = o.TripDays_Min ?? null;
-  const tdMax = o.TripDays_Max ?? null;
-  return { id, name, district, type, segment, locationType, brief, how, mapUrl, lat, lng, images, rates, TripDays_Min: tdMin, TripDays_Max: tdMax, raw:o };
-}
 
-/* =========================
-   UI BUILD
-   ========================= */
 function buildDistrictDropdown(){
   const distSel = $("district");
   const districts = [...new Set(allPlaces.map(p=>p.district).filter(Boolean))].sort();
   distSel.innerHTML = `<option value="all">All</option>` + districts.map(d=>`<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join("");
 }
+
 function updateActiveFilters(){
   const parts = [];
   const d = $("district").value;
@@ -900,6 +1019,7 @@ function updateActiveFilters(){
   if(q) parts.push(`“${q}”`);
   $("activeFilters").textContent = parts.length ? parts.join(" • ") : "No filters";
 }
+
 function applyFilters(scrollToList=false){
   const q = safeText($("q").value).toLowerCase();
   const d = $("district").value;
@@ -914,8 +1034,7 @@ function applyFilters(scrollToList=false){
       if(!hay.includes(q)) return false;
     }
     if(days){
-      // basic example filter: short trips avoid treks
-      if(days <= 2 && p.type === "Trek") return false;
+      if(days <= 2 && p.type === "Trek") return false; // example rule
     }
     return true;
   });
@@ -923,8 +1042,13 @@ function applyFilters(scrollToList=false){
   renderList(shownPlaces);
   $("count").textContent = `${shownPlaces.length} results`;
   updateActiveFilters();
+
+  // update sidebar counts based on shown list
+  renderSegmentsSidebar();
+
   if(scrollToList) $("list").scrollTo({top:0, behavior:"smooth"});
 }
+
 function renderList(list){
   const box = $("list");
   if(!list.length){
@@ -959,13 +1083,9 @@ function renderList(list){
   }).join("");
 
   box.querySelectorAll(".place").forEach(el=>{
-    el.addEventListener("click", async ()=>{
+    el.addEventListener("click", ()=>{
       const i = Number(el.getAttribute("data-i"));
-      const p = list[i];
-      // fetch full data once more (fresh) then open place page
-      $("status").textContent = "Opening…";
-      const full = await fetchPlaceById(p.id);
-      openPlacePage((full && full.id) ? full.id : p.id);
+      openPlacePage(list[i].id);
     });
   });
 }
@@ -975,8 +1095,151 @@ function openPlacePage(id){
 }
 
 /* =========================
+   SIDEBAR: segment wise
+   - Group by Segment Type and Type
+========================= */
+function groupCounts(list){
+  const bySegment = {};
+  const byType = {};
+  list.forEach(p=>{
+    const seg = normalizeType(p.segment || p.type || "Destination"); // segment-ish
+    const t = p.type || "Destination";
+    bySegment[seg] = (bySegment[seg]||0) + 1;
+    byType[t] = (byType[t]||0) + 1;
+  });
+  return {bySegment, byType};
+}
+function segBlockHtml(title, items){
+  const total = items.reduce((s,it)=>s+(it.count||0),0);
+  const key = title.toLowerCase().replace(/\s+/g,"-");
+  return `
+    <div class="segRow" data-segblock="${escapeHtml(key)}">
+      <div class="segTop" data-toggle="${escapeHtml(key)}">
+        <div>
+          <b>${escapeHtml(title)}</b>
+          <span> • ${total}</span>
+        </div>
+        <div class="chev" data-chev="${escapeHtml(key)}">▾</div>
+      </div>
+      <div class="segList" id="seglist-${escapeHtml(key)}">
+        ${items.map(it=>`
+          <button class="segBtn" data-filter="${escapeHtml(it.filter)}" data-value="${escapeHtml(it.value)}">
+            <span>${escapeHtml(it.label)}</span>
+            <small>${it.count}</small>
+          </button>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderSegmentsSidebar(){
+  const {bySegment, byType} = groupCounts(shownPlaces.length ? shownPlaces : allPlaces);
+
+  const segItems = Object.entries(bySegment)
+    .sort((a,b)=>b[1]-a[1])
+    .map(([seg,count])=>({label:seg, value:seg, count, filter:"segment"}));
+
+  const typeItems = Object.entries(byType)
+    .sort((a,b)=>b[1]-a[1])
+    .map(([t,count])=>({label:t, value:t, count, filter:"type"}));
+
+  const html =
+    segBlockHtml("By Segment", segItems) +
+    segBlockHtml("By Type", typeItems) +
+    segBlockHtml("Quick", [
+      {label:"All Places", value:"all", count:(shownPlaces.length||allPlaces.length), filter:"all"},
+      {label:"Open Map (after click)", value:"map", count:0, filter:"hint"}
+    ]);
+
+  $("segBox").innerHTML = html;
+  $("segBoxMobile").innerHTML = html;
+
+  // bind toggles (desktop + mobile)
+  const bindBox = (root)=>{
+    root.querySelectorAll("[data-toggle]").forEach(tg=>{
+      tg.addEventListener("click", ()=>{
+        const k = tg.getAttribute("data-toggle");
+        const list = root.querySelector("#seglist-"+CSS.escape(k));
+        const chev = root.querySelector("[data-chev='"+k+"']");
+        const open = list.style.display === "block";
+        list.style.display = open ? "none" : "block";
+        if(chev) chev.textContent = open ? "▾" : "▴";
+      });
+    });
+
+    root.querySelectorAll("[data-filter]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const filter = btn.getAttribute("data-filter");
+        const val = btn.getAttribute("data-value");
+
+        if(filter === "type"){
+          $("type").value = val;
+          applyFilters(true);
+          location.hash="#explore";
+          closeSidebarMobile();
+          return;
+        }
+        if(filter === "segment"){
+          // We map "segment click" to Type dropdown only if matches, else do a search by segment keyword
+          const possibleTypes = ["Destination","Temple","Lake","Trek","Hotel","Activity"];
+          if(possibleTypes.includes(val)){
+            $("type").value = val;
+            applyFilters(true);
+          }else{
+            // do keyword search
+            $("q").value = val;
+            applyFilters(true);
+          }
+          location.hash="#explore";
+          closeSidebarMobile();
+          return;
+        }
+        if(filter === "all"){
+          $("q").value = "";
+          $("type").value = "all";
+          $("district").value = "all";
+          $("days").value = "0";
+          applyFilters(true);
+          location.hash="#explore";
+          closeSidebarMobile();
+          return;
+        }
+      });
+    });
+  };
+
+  bindBox($("segBox"));
+  bindBox($("segBoxMobile"));
+}
+
+function collapseAllSegments(){
+  ["segBox","segBoxMobile"].forEach(id=>{
+    const root = $(id);
+    if(!root) return;
+    root.querySelectorAll(".segList").forEach(el=> el.style.display="none");
+    root.querySelectorAll("[data-chev]").forEach(el=> el.textContent="▾");
+  });
+}
+$("collapseAll").onclick = collapseAllSegments;
+
+/* =========================
+   MOBILE SIDEBAR
+========================= */
+function openSidebarMobile(){
+  $("sbOverlay").style.display = "flex";
+}
+function closeSidebarMobile(){
+  $("sbOverlay").style.display = "none";
+}
+$("sbFab").onclick = openSidebarMobile;
+$("openSidebarMobile").onclick = openSidebarMobile;
+$("sbClose").onclick = closeSidebarMobile;
+$("sbOverlay").addEventListener("click",(e)=>{ if(e.target === $("sbOverlay")) closeSidebarMobile(); });
+
+/* =========================
    NEARBY
-   ========================= */
+========================= */
 $("nearby").onclick = ()=>{
   if(!navigator.geolocation){ alert("GPS not supported."); return; }
   $("status").textContent = "Getting your location…";
@@ -991,11 +1254,8 @@ $("nearby").onclick = ()=>{
 };
 
 /* =========================
-   LIVE PACKAGES (3–4)
-   - uses filtered results
-   - shows per-person rate based on People dropdown
-   - adds tiles; tile click opens place.html
-   ========================= */
+   PACKAGES (3–4) LIVE
+========================= */
 function shuffle(arr){
   const a = arr.slice();
   for(let i=a.length-1;i>0;i--){
@@ -1020,17 +1280,7 @@ function interestTypeHint(interest){
   if(interest==="temples") return "Temple";
   if(interest==="adventure") return "Trek";
   if(interest==="relax") return "Destination";
-  return null; // nature can be anything
-}
-function rateLabel(people){
-  if(people==="solo") return "Solo";
-  if(people==="couple") return "Couple";
-  if(people==="family") return "Family";
-  return "Group";
-}
-function currency(n){
-  if(n==null || !Number.isFinite(Number(n))) return null;
-  return "₹" + Number(n).toLocaleString("en-IN");
+  return null;
 }
 
 async function buildPackages(){
@@ -1038,10 +1288,8 @@ async function buildPackages(){
   const interest = $("interest").value;
   const budget = $("budget").value;
   const days = Number($("days").value||0);
-
   const district = $("district").value !== "all" ? $("district").value : null;
 
-  // base list from current shownPlaces
   let base = shownPlaces.slice();
   if(district) base = base.filter(p=>p.district===district);
 
@@ -1050,11 +1298,9 @@ async function buildPackages(){
     return;
   }
 
-  // optional budget: bias cheaper/higher by available rate
-  const key = people;
   base.sort((a,b)=>{
-    const ra = pickRate(a, key);
-    const rb = pickRate(b, key);
+    const ra = pickRate(a, people);
+    const rb = pickRate(b, people);
     const A = ra==null ? 1e18 : ra;
     const B = rb==null ? 1e18 : rb;
     if(budget==="low") return A-B;
@@ -1064,19 +1310,18 @@ async function buildPackages(){
 
   const hintType = interestTypeHint(interest);
 
+  const dayLabel = days ? `${days}D` : "3D";
   const pkgs = [
-    {name:`Package A (${days?days:"3"}D)`, mood: packageTitle(interest), spots: pickPackageSpots(base, 4, hintType)},
-    {name:`Package B (${days?days:"3"}D)`, mood:"Scenic + Photos", spots: pickPackageSpots(base, 4, null)},
-    {name:`Package C (${days?days:"3"}D)`, mood:"Local + Food", spots: pickPackageSpots(base, 4, "Destination")},
-    {name:`Package D (${days?days:"3"}D)`, mood:"Mix + Nearby", spots: pickPackageSpots(base, 4, null)}
+    {name:`Package A (${dayLabel})`, mood: packageTitle(interest), spots: pickPackageSpots(base, 4, hintType)},
+    {name:`Package B (${dayLabel})`, mood:"Scenic + Photos", spots: pickPackageSpots(base, 4, null)},
+    {name:`Package C (${dayLabel})`, mood:"Local + Food", spots: pickPackageSpots(base, 4, "Destination")},
+    {name:`Package D (${dayLabel})`, mood:"Mix + Nearby", spots: pickPackageSpots(base, 4, null)}
   ];
 
-  // compute price as average of spot rates (per person) * days factor
   const daysFactor = days ? Math.max(1, Math.min(4, Math.ceil(days/3))) : 1;
-  const personKey = people;
 
   const html = pkgs.map(pkg=>{
-    const rates = pkg.spots.map(p=>pickRate(p, personKey)).filter(n=>n!=null);
+    const rates = pkg.spots.map(p=>pickRate(p, people)).filter(n=>n!=null);
     const avg = rates.length ? Math.round(rates.reduce((s,x)=>s+Number(x),0)/rates.length) : null;
     const total = avg!=null ? avg*daysFactor : null;
 
@@ -1102,7 +1347,7 @@ async function buildPackages(){
         <div class="pkgTop">
           <div>
             <p class="pkgTitle">${escapeHtml(pkg.name)} • ${escapeHtml(pkg.mood)}</p>
-            <p class="pkgMeta">People: <b>${escapeHtml(rateLabel(people))}</b> • Budget: <b>${escapeHtml(budget)}</b> • Interest: <b>${escapeHtml(interest)}</b></p>
+            <p class="pkgMeta">People: <b>${escapeHtml(rateLabel(people))}</b> • Budget: <b>${escapeHtml(budget)}</b> • Interest: <b>${escapeHtml(interest))}</b></p>
           </div>
           <div class="pricePill">${priceText}</div>
         </div>
@@ -1113,23 +1358,18 @@ async function buildPackages(){
 
   $("packagesBox").innerHTML = html;
 
-  // bind tile clicks
   $("packagesBox").querySelectorAll("[data-open]").forEach(el=>{
-    el.addEventListener("click", async ()=>{
+    el.addEventListener("click", ()=>{
       const id = el.getAttribute("data-open");
-      // fetch full fresh then open
-      $("status").textContent = "Opening…";
-      const full = await fetchPlaceById(id);
-      openPlacePage((full && full.id) ? full.id : id);
+      openPlacePage(id);
     });
   });
 }
-
 $("makePackages").onclick = buildPackages;
 
 /* =========================
    QUICK FILTER PILLS
-   ========================= */
+========================= */
 document.querySelectorAll("[data-quick]").forEach(el=>{
   el.addEventListener("click", ()=>{
     $("type").value = el.getAttribute("data-quick");
@@ -1139,8 +1379,8 @@ document.querySelectorAll("[data-quick]").forEach(el=>{
 });
 
 /* =========================
-   AI MODAL (same simple logic)
-   ========================= */
+   AI MODAL (simple)
+========================= */
 function openAI(){ $("modalWrap").style.display="flex"; seedChat(); }
 function closeAI(){ $("modalWrap").style.display="none"; }
 $("openAI").onclick = openAI;
@@ -1161,10 +1401,6 @@ function seedChat(){
 }
 function aiSuggest(userText){
   const t = userText.toLowerCase();
-  let days = 0;
-  const m = t.match(/(\d+)\s*(day|days|d)/);
-  if(m) days = Number(m[1]);
-
   const wants = {
     trek: /trek|hike|trail|adventure/.test(t),
     lake: /lake|chandratal|prashar|rewalsar|manimahesh/.test(t),
@@ -1186,15 +1422,12 @@ function aiSuggest(userText){
     return {p, s};
   }).sort((a,b)=>b.s-a.s);
 
-  const cap = days ? Math.max(3, Math.min(8, Math.ceil(days*1.3))) : 6;
-  const pick = scored.filter(x=>x.s>0).slice(0, cap).map(x=>x.p);
-  const fallback = allPlaces.slice(0,6);
-
-  const list = (pick.length ? pick : fallback)
+  const pick = scored.filter(x=>x.s>0).slice(0, 8).map(x=>x.p);
+  const list = (pick.length ? pick : allPlaces.slice(0,6))
     .map((p,i)=>`${i+1}. ${p.name} (${p.district} • ${p.type})`)
     .join("\n");
 
-  return `Suggestions:\n${list}\n\nTip: set filters → click place to open full page.`;
+  return `Suggestions:\n${list}\n\nTip: Use sidebar segments to filter quickly.`;
 }
 $("sendChat").onclick = ()=>{
   const v = safeText($("chatInput").value);
@@ -1207,7 +1440,7 @@ $("chatInput").addEventListener("keydown",(e)=>{ if(e.key==="Enter") $("sendChat
 
 /* =========================
    ACTIONS
-   ========================= */
+========================= */
 $("apply").onclick = ()=>{ applyFilters(true); location.hash="#explore"; };
 $("reset").onclick = ()=>{
   $("q").value = ""; $("district").value="all"; $("type").value="all"; $("days").value="0";
@@ -1221,7 +1454,7 @@ $("days").addEventListener("change", ()=> $("builderLine").textContent = "Days u
 
 /* =========================
    INIT
-   ========================= */
+========================= */
 (async function init(){
   await loadPlaces();
   buildDistrictDropdown();
@@ -1232,6 +1465,7 @@ $("days").addEventListener("change", ()=> $("builderLine").textContent = "Days u
 
   shownPlaces = allPlaces.slice();
   applyFilters(false);
+  renderSegmentsSidebar(); // initial
 })();
 </script>
 </body>
