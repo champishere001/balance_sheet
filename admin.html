@@ -1,142 +1,879 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin — HP Tourism</title>
-  <link rel="stylesheet" href="assets/style.css" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Himachal Explorer — Admin Console</title>
+
+  <!-- Firebase compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+
+  <style>
+    :root{
+      --bg0:#f7f9ff; --bg1:#ffffff;
+      --card:rgba(255,255,255,.92);
+      --stroke:rgba(10,18,40,.12);
+      --text:#0b1220;
+      --muted:rgba(11,18,32,.62);
+      --shadow: 0 18px 55px rgba(15,23,42,.10);
+      --r:18px; --r2:26px;
+      --a:#2563eb; --b:#7c3aed;
+      --good:#16a34a; --bad:#dc2626;
+      --max:1400px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(900px 600px at 12% 10%, rgba(37,99,235,.14), transparent 60%),
+        radial-gradient(900px 600px at 86% 16%, rgba(124,58,237,.12), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+    }
+    a{color:inherit; text-decoration:none}
+    .topbar{
+      position:sticky; top:0; z-index:20;
+      background: rgba(255,255,255,.75);
+      backdrop-filter: blur(12px);
+      border-bottom:1px solid var(--stroke);
+    }
+    .inner{
+      width:min(92vw,var(--max));
+      margin:0 auto;
+      padding:14px 16px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+    }
+    .brand{display:flex; align-items:center; gap:10px}
+    .logo{
+      width:38px; height:38px; border-radius:14px;
+      background: linear-gradient(135deg, rgba(37,99,235,.95), rgba(124,58,237,.92));
+      box-shadow: 0 12px 26px rgba(37,99,235,.18);
+    }
+    .brand h1{margin:0; font-size:14px; line-height:1.1}
+    .brand small{display:block; margin-top:2px; color:var(--muted); font-weight:750}
+    .nav{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .pill{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.9);
+      box-shadow: var(--shadow);
+      font-weight:900; font-size:12px;
+      display:inline-flex; align-items:center; gap:8px;
+    }
+    .dot{
+      width:8px; height:8px; border-radius:50%;
+      background: linear-gradient(135deg, var(--a), var(--b));
+      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+    }
+    .btn{
+      appearance:none; border:0; cursor:pointer;
+      padding:11px 14px;
+      border-radius:14px;
+      background: linear-gradient(135deg, rgba(37,99,235,.96), rgba(124,58,237,.92));
+      color:#fff;
+      font-weight:950; font-size:12px;
+      box-shadow: 0 18px 42px rgba(37,99,235,.18);
+      transition:.15s ease;
+      display:inline-flex; align-items:center; gap:10px;
+      white-space:nowrap;
+    }
+    .btn:hover{transform: translateY(-1px)}
+    .btn.ghost{
+      background: rgba(255,255,255,.92);
+      color: var(--text);
+      border:1px solid var(--stroke);
+      box-shadow: var(--shadow);
+    }
+    .btn.danger{
+      background: linear-gradient(135deg, rgba(220,38,38,.95), rgba(153,27,27,.92));
+      box-shadow: 0 18px 42px rgba(220,38,38,.16);
+    }
+    .wrap{
+      width:min(92vw,var(--max));
+      margin:0 auto;
+      padding:18px 16px 44px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      gap:14px;
+      align-items:start;
+    }
+    .card{
+      border:1px solid var(--stroke);
+      background: var(--card);
+      border-radius: var(--r2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .head{
+      padding:14px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      border-bottom:1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.78));
+    }
+    .head h3{margin:0; font-size:13px}
+    .body{padding:14px}
+
+    .searchRow{display:flex; gap:10px}
+    .input, .select, .ta{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.95);
+      color:var(--text);
+      outline:none;
+      font-weight:800;
+    }
+    .ta{min-height:92px; resize:vertical; font-weight:750; line-height:1.35}
+    label{display:block; font-size:11px; color:var(--muted); font-weight:950; letter-spacing:.25px; margin:10px 0 6px}
+    .list{
+      margin-top:12px;
+      display:grid;
+      gap:10px;
+      max-height: 68vh;
+      overflow:auto;
+      padding-right:2px;
+    }
+    .item{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.92);
+      border-radius: 18px;
+      padding:12px;
+      cursor:pointer;
+      transition:.12s ease;
+    }
+    .item:hover{transform: translateY(-1px)}
+    .item b{display:block; font-size:13px}
+    .item small{color:var(--muted); font-weight:800}
+    .item .tag{
+      display:inline-flex;
+      margin-top:8px;
+      padding:6px 9px;
+      border-radius:999px;
+      border:1px solid var(--stroke);
+      background: rgba(37,99,235,.08);
+      font-weight:950; font-size:11px;
+    }
+
+    .formGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    .full{grid-column: 1/-1;}
+    .rowBtns{
+      display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;
+    }
+    .muted{color:var(--muted); font-weight:800; font-size:12px}
+
+    .imgGrid{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:10px;
+      margin-top:10px;
+    }
+    .imgCard{
+      border:1px solid var(--stroke);
+      background: rgba(245,247,255,.8);
+      border-radius: 18px;
+      overflow:hidden;
+      position:relative;
+      aspect-ratio: 4/3;
+    }
+    .imgCard img{width:100%; height:100%; object-fit:cover; display:block}
+    .imgCard button{
+      position:absolute; top:8px; right:8px;
+      width:34px; height:34px;
+      border-radius: 12px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.92);
+      cursor:pointer;
+      font-weight:950;
+    }
+
+    .statusLine{
+      margin-top:10px;
+      padding:10px 12px;
+      border:1px solid var(--stroke);
+      border-radius: 14px;
+      background: rgba(255,255,255,.9);
+      font-weight:850;
+    }
+    .ok{color:var(--good)}
+    .err{color:var(--bad)}
+
+    @media(max-width:1100px){
+      .grid{grid-template-columns:1fr}
+      .list{max-height: 320px}
+      .imgGrid{grid-template-columns: repeat(3, 1fr)}
+    }
+    @media(max-width:560px){
+      .formGrid{grid-template-columns:1fr}
+      .imgGrid{grid-template-columns: repeat(2, 1fr)}
+    }
+
+    /* auth box */
+    .authBox{
+      display:none;
+      padding:14px;
+      border:1px solid var(--stroke);
+      border-radius: var(--r2);
+      background: rgba(255,255,255,.9);
+      box-shadow: var(--shadow);
+      margin-bottom:14px;
+    }
+    .authBox .row{display:flex; gap:10px; flex-wrap:wrap}
+    .authBox .row > *{flex:1; min-width: 220px}
+  </style>
 </head>
+
 <body>
   <div class="topbar">
     <div class="inner">
-      <a class="brand" href="index.html"><div class="logo"></div><div>HP Tourism Portal</div></a>
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Himachal Explorer — Admin</h1>
+          <small>Edit places + upload images to Firebase</small>
+        </div>
+      </div>
+
       <div class="nav">
-        <a href="index.html">Home</a>
-        <a href="districts.html">Districts</a>
-        <a href="packages.html">Packages</a>
-        <a href="hotels.html">Hotels</a>
-        <a href="temples.html">Temples</a>
-        <a href="treks.html">Treks</a>
-        <a href="routes.html">Routes</a>
-        <a href="admin.html">Admin</a>
+        <a class="pill" href="index.html"><span class="dot"></span>Back to Site</a>
+        <button class="btn ghost" id="refreshBtn">Refresh</button>
+        <button class="btn ghost" id="logoutBtn" style="display:none">Logout</button>
       </div>
     </div>
   </div>
 
-  <div class="container">
-    <div class="sectionHead">
-      <div>
-        <h2>Admin Panel (Starter)</h2>
-        <div class="meta">Add/edit content from phone later (Firebase)</div>
+  <div class="wrap">
+
+    <!-- OPTIONAL AUTH (recommended) -->
+    <div class="authBox" id="authBox">
+      <div class="muted" style="margin-bottom:10px">
+        Login required (recommended for Storage uploads). Enable Email/Password in Firebase Auth.
       </div>
+      <div class="row">
+        <input class="input" id="email" placeholder="Admin email" />
+        <input class="input" id="pass" type="password" placeholder="Password" />
+        <button class="btn" id="loginBtn">Login</button>
+      </div>
+      <div class="statusLine" id="authStatus">—</div>
     </div>
 
-    <div class="row">
-      <main class="content">
-        <div class="panel">
-          <h3>What you can do next</h3>
-          <div class="note">
-            ✅ Add Firebase config  
-            ✅ Add “Add Place / Hotel / Temple / Trek” forms  
-            ✅ Save data into Firebase Realtime DB / Firestore  
-            ✅ Load live data into index cards
-          </div>
+    <div class="grid">
+
+      <!-- LEFT: list -->
+      <div class="card">
+        <div class="head">
+          <h3>Locations (RTDB /locations)</h3>
+          <small class="muted" id="leftCount">—</small>
         </div>
+        <div class="body">
+          <div class="searchRow">
+            <input class="input" id="search" placeholder="Search by name / district / type..." />
+            <button class="btn ghost" id="newBtn">New</button>
+          </div>
+          <div class="list" id="list"></div>
+        </div>
+      </div>
 
-        <div class="panel" style="margin-top:14px;">
-          <h3>Quick form (local demo)</h3>
-          <div class="note">This just shows layout. Real saving will be added when you provide Firebase config.</div>
-          <div class="divider"></div>
+      <!-- RIGHT: editor -->
+      <div class="card">
+        <div class="head">
+          <h3>Editor</h3>
+          <small class="muted" id="activeKey">Key: —</small>
+        </div>
+        <div class="body">
 
-          <div class="formRow">
-            <div class="input">
-              <div style="width:100%">
-                <label>Type</label>
-                <select id="type">
-                  <option value="place">Place</option>
-                  <option value="hotel">Hotel</option>
-                  <option value="temple">Temple</option>
-                  <option value="trek">Trek</option>
-                </select>
+          <div class="formGrid">
+
+            <div>
+              <label>firebase_id (key)</label>
+              <input class="input" id="firebase_id" placeholder="e.g. the-ridge" />
+              <div class="muted" style="margin-top:6px">This is saved as the RTDB key under <b>/locations/{firebase_id}</b>.</div>
+            </div>
+
+            <div>
+              <label>District</label>
+              <input class="input" id="District" placeholder="e.g. Shimla" />
+            </div>
+
+            <div class="full">
+              <label>Location Name</label>
+              <input class="input" id="LocationName" placeholder="e.g. The Ridge" />
+            </div>
+
+            <div>
+              <label>Location Type</label>
+              <input class="input" id="LocationType" placeholder="e.g. Public Square / Temple / Lake..." />
+            </div>
+
+            <div>
+              <label>Segment Type</label>
+              <select class="select" id="SegmentType">
+                <option>Destination</option>
+                <option>Temple</option>
+                <option>Lake</option>
+                <option>Trek</option>
+                <option>Hotel</option>
+                <option>Activity</option>
+              </select>
+            </div>
+
+            <div class="full">
+              <label>Overview</label>
+              <textarea class="ta" id="Overview" placeholder="Main overview..."></textarea>
+            </div>
+
+            <div class="full">
+              <label>Short Description</label>
+              <textarea class="ta" id="ShortDescription" placeholder="Short description..."></textarea>
+            </div>
+
+            <div class="full">
+              <label>Key Features</label>
+              <textarea class="ta" id="KeyFeatures" placeholder="Bullet-like features..."></textarea>
+            </div>
+
+            <div class="full">
+              <label>How to Reach</label>
+              <textarea class="ta" id="HowToReach" placeholder="Routes/transport details..."></textarea>
+            </div>
+
+            <div>
+              <label>Task for Location</label>
+              <input class="input" id="TaskForLocation" placeholder="e.g. Watch sunset" />
+            </div>
+
+            <div>
+              <label>Best Time to Visit</label>
+              <input class="input" id="BestTime" placeholder="e.g. Year-round" />
+            </div>
+
+            <div>
+              <label>Dist from HQ</label>
+              <input class="input" id="DistFromHQ" placeholder="e.g. 2 km" />
+            </div>
+
+            <div>
+              <label>Latitude</label>
+              <input class="input" id="Latitude" placeholder="31.1048" />
+            </div>
+
+            <div>
+              <label>Longitude</label>
+              <input class="input" id="Longitude" placeholder="77.1734" />
+            </div>
+
+            <div>
+              <label>Rate_Solo (₹/person)</label>
+              <input class="input" id="Rate_Solo" placeholder="3450" />
+            </div>
+            <div>
+              <label>Rate_Couple (₹/person)</label>
+              <input class="input" id="Rate_Couple" placeholder="2750" />
+            </div>
+
+            <div>
+              <label>Rate_Family (₹/person)</label>
+              <input class="input" id="Rate_Family" placeholder="2050" />
+            </div>
+            <div>
+              <label>Rate_Group (₹/person)</label>
+              <input class="input" id="Rate_Group" placeholder="1650" />
+            </div>
+
+            <div>
+              <label>TripDays_Min</label>
+              <input class="input" id="TripDays_Min" placeholder="1" />
+            </div>
+            <div>
+              <label>TripDays_Max</label>
+              <input class="input" id="TripDays_Max" placeholder="5" />
+            </div>
+
+            <div class="full">
+              <label>Map URL (Google Maps link) — optional</label>
+              <input class="input" id="Map" placeholder="https://maps.google.com/?q=31.1,77.17" />
+              <div class="muted" style="margin-top:6px">
+                Tip: If you put q=lat,lng then your site auto picks lat/lng too.
               </div>
             </div>
-            <div class="input">
-              <div style="width:100%">
-                <label>District</label>
-                <select id="district" data-fill="districts"></select>
+
+            <div class="full">
+              <label>Images (Firebase Storage upload OR paste URLs)</label>
+              <div class="rowBtns">
+                <input class="input" id="imgUrl" placeholder="Paste image URL then click Add URL..." style="flex:1; min-width:260px"/>
+                <button class="btn ghost" id="addUrlBtn">Add URL</button>
+                <label class="btn ghost" style="cursor:pointer">
+                  Upload Images
+                  <input type="file" id="imgFiles" accept="image/*" multiple style="display:none"/>
+                </label>
+              </div>
+
+              <div class="imgGrid" id="imgGrid"></div>
+              <div class="muted" style="margin-top:8px">
+                Stored in Firebase as <b>images: [ ... ]</b> so your index/place pages show them automatically.
               </div>
             </div>
+
           </div>
 
-          <div class="input" style="margin-top:10px;">
-            <div style="width:100%">
-              <label>Name</label>
-              <input id="name" placeholder="e.g., Narkanda" />
-            </div>
+          <div class="rowBtns">
+            <button class="btn" id="saveBtn">Save / Update</button>
+            <button class="btn ghost" id="duplicateBtn">Duplicate (new key)</button>
+            <button class="btn danger" id="deleteBtn">Delete</button>
           </div>
 
-          <div class="input" style="margin-top:10px;">
-            <div style="width:100%">
-              <label>Image URL</label>
-              <input id="img" placeholder="paste image link..." />
-            </div>
-          </div>
-
-          <div style="display:flex; gap:10px; margin-top:10px;">
-            <button class="btn" id="saveBtn">Save (Demo)</button>
-            <button class="btn ghost" id="clearBtn">Clear</button>
-          </div>
-
-          <div class="divider"></div>
-          <div id="out" class="note">Saved demo items will show here (local only).</div>
+          <div class="statusLine" id="status">Ready.</div>
         </div>
-      </main>
+      </div>
 
-      <aside class="sidebar">
-        <div class="side-title">Help <span class="small">Admin</span></div>
-        <div class="divider"></div>
-        <div class="panel">
-          <h3>Firebase config needed</h3>
-          <div class="note">
-            If you share your Firebase project config (or DB URL), I’ll connect this admin to live save + load.
-          </div>
-        </div>
-      </aside>
     </div>
-
-    <div class="footer">Admin is starter layout only — ready for Firebase integration.</div>
   </div>
 
-  <script src="assets/data.js"></script>
-  <script src="assets/ui.js"></script>
-  <script>
-    UI.setActiveNav();
+<script>
+/* =========================
+   CONFIG (YOUR PROJECT)
+========================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
+  authDomain: "revnue-records.firebaseapp.com",
+  databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "revnue-records",
+  storageBucket: "revnue-records.firebasestorage.app",
+  messagingSenderId: "182348503564",
+  appId: "1:182348503564:web:480085405b09177245ac29",
+  measurementId: "G-MGTDBCG896"
+};
+const DB_PATH = "locations"; // /locations/{key}
 
-    document.querySelectorAll("[data-fill='districts']").forEach(sel=>{
-      sel.innerHTML = HP_DATA.districts.map(d=>`<option value="${d.id}">${d.name}</option>`).join("");
+const $ = (id)=>document.getElementById(id);
+const setStatus = (msg, ok=true)=>{
+  $("status").innerHTML = ok ? `<span class="ok">✔</span> ${msg}` : `<span class="err">✖</span> ${msg}`;
+};
+
+/* =========================
+   INIT FIREBASE
+========================= */
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const storage = firebase.storage();
+const auth = firebase.auth();
+
+/* =========================
+   OPTIONAL AUTH (recommended)
+========================= */
+function showAuth(show){
+  $("authBox").style.display = show ? "block" : "none";
+  $("logoutBtn").style.display = show ? "none" : "inline-flex";
+}
+$("loginBtn").onclick = async ()=>{
+  const email = $("email").value.trim();
+  const pass = $("pass").value.trim();
+  try{
+    await auth.signInWithEmailAndPassword(email, pass);
+    $("authStatus").textContent = "Logged in.";
+  }catch(e){
+    $("authStatus").textContent = e?.message || "Login failed";
+  }
+};
+$("logoutBtn").onclick = async ()=>{
+  await auth.signOut();
+  location.reload();
+};
+
+auth.onAuthStateChanged((user)=>{
+  // If your rules require auth, keep this ON.
+  // If your DB/Storage is open (not recommended), you can hide it.
+  showAuth(!user);
+});
+
+/* =========================
+   KEY SANITIZER
+========================= */
+function safe(v){ return (v===null||v===undefined) ? "" : String(v).trim(); }
+function toNum(v){
+  const s = safe(v);
+  if(!s) return null;
+  const n = Number(s);
+  return Number.isFinite(n) ? n : null;
+}
+function normalizeKey(s){
+  s = safe(s)
+    .replace(/[\u2018\u2019\u201A\u201B]/g, "'")
+    .replace(/[\u201C\u201D\u201E\u201F]/g, '"')
+    .replace(/['"]/g, "");
+  try{ s = s.normalize("NFKD").replace(/[^\x00-\x7F]/g, ""); }catch(e){ s = s.replace(/[^\x00-\x7F]/g, ""); }
+  s = s.toLowerCase()
+    .replace(/[.#$[\]\/]/g, "")
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+  return s;
+}
+
+/* =========================
+   STATE
+========================= */
+let all = [];          // {key, data}
+let activeKey = null;
+let activeData = null;
+let images = [];       // array of urls
+
+/* =========================
+   LIST + SEARCH
+========================= */
+async function loadAll(){
+  setStatus("Loading locations…");
+  const snap = await db.ref(DB_PATH).once("value");
+  const val = snap.val() || {};
+  all = Object.entries(val).map(([key,data])=>({key, data: data||{}}));
+
+  renderList();
+  $("leftCount").textContent = `${all.length} items`;
+  setStatus("Loaded locations.");
+}
+
+function matches(item, q){
+  q = q.toLowerCase();
+  const d = item.data || {};
+  const name = safe(d["Location Name"] || d.name || item.key);
+  const district = safe(d["District"] || d.district);
+  const seg = safe(d["Segment Type"] || d.segment);
+  const hay = `${item.key} ${name} ${district} ${seg}`.toLowerCase();
+  return hay.includes(q);
+}
+
+function renderList(){
+  const q = safe($("search").value);
+  const list = $("list");
+  const filtered = q ? all.filter(x=>matches(x, q)) : all.slice();
+
+  filtered.sort((a,b)=>{
+    const an = safe(a.data["Location Name"] || a.key).toLowerCase();
+    const bn = safe(b.data["Location Name"] || b.key).toLowerCase();
+    return an.localeCompare(bn);
+  });
+
+  list.innerHTML = filtered.map(x=>{
+    const d = x.data || {};
+    const name = safe(d["Location Name"] || d.name || x.key);
+    const district = safe(d["District"] || d.district || "—");
+    const seg = safe(d["Segment Type"] || d.segment || "—");
+    return `
+      <div class="item" data-key="${x.key}">
+        <b>${escapeHtml(name)}</b>
+        <small>${escapeHtml(district)} • ${escapeHtml(seg)}</small>
+        <div class="tag">${escapeHtml(x.key)}</div>
+      </div>
+    `;
+  }).join("");
+
+  list.querySelectorAll(".item").forEach(el=>{
+    el.addEventListener("click", async ()=>{
+      const key = el.getAttribute("data-key");
+      await openKey(key);
     });
+  });
+}
 
-    const out = document.getElementById("out");
-    const saved = [];
+$("search").addEventListener("input", renderList);
+$("refreshBtn").onclick = loadAll;
 
-    document.getElementById("saveBtn").addEventListener("click", ()=>{
-      const item = {
-        type: document.getElementById("type").value,
-        district: document.getElementById("district").value,
-        name: document.getElementById("name").value.trim(),
-        img: document.getElementById("img").value.trim()
-      };
-      if(!item.name) return alert("Enter name");
-      saved.push(item);
-      out.innerHTML = `<b>Saved (demo local):</b><br>` + saved.map(s=>`• ${s.type.toUpperCase()} — ${s.name} (${s.district})`).join("<br>");
-    });
+/* =========================
+   EDITOR (OPEN / NEW)
+========================= */
+function escapeHtml(str){
+  return safe(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
+}
+function clearForm(){
+  activeKey = null;
+  activeData = null;
+  images = [];
 
-    document.getElementById("clearBtn").addEventListener("click", ()=>{
-      saved.length = 0;
-      out.textContent = "Cleared.";
-      document.getElementById("name").value = "";
-      document.getElementById("img").value = "";
-    });
-  </script>
+  $("activeKey").textContent = "Key: —";
+  $("firebase_id").value = "";
+  $("District").value = "";
+  $("LocationName").value = "";
+  $("LocationType").value = "";
+  $("SegmentType").value = "Destination";
+  $("Overview").value = "";
+  $("ShortDescription").value = "";
+  $("KeyFeatures").value = "";
+  $("HowToReach").value = "";
+  $("TaskForLocation").value = "";
+  $("BestTime").value = "";
+  $("DistFromHQ").value = "";
+  $("Latitude").value = "";
+  $("Longitude").value = "";
+  $("Rate_Solo").value = "";
+  $("Rate_Couple").value = "";
+  $("Rate_Family").value = "";
+  $("Rate_Group").value = "";
+  $("TripDays_Min").value = "";
+  $("TripDays_Max").value = "";
+  $("Map").value = "";
+  $("imgUrl").value = "";
+  renderImages();
+}
+
+$("newBtn").onclick = ()=>{
+  clearForm();
+  setStatus("New item. Fill form then Save.");
+};
+
+async function openKey(key){
+  setStatus("Opening " + key + "…");
+  const snap = await db.ref(`${DB_PATH}/${key}`).once("value");
+  const o = snap.val();
+  if(!o){ setStatus("Not found: " + key, false); return; }
+
+  activeKey = key;
+  activeData = o || {};
+  $("activeKey").textContent = "Key: " + key;
+
+  // Fill fields
+  $("firebase_id").value = key;
+  $("District").value = safe(o["District"] || o.district);
+  $("LocationName").value = safe(o["Location Name"] || o.name);
+  $("LocationType").value = safe(o["Location Type"] || o.type);
+  $("SegmentType").value = safe(o["Segment Type"] || o.segment || "Destination");
+
+  $("Overview").value = safe(o["Overview"] || o.overview);
+  $("ShortDescription").value = safe(o["Short Description"] || o.short);
+  $("KeyFeatures").value = safe(o["Key Features"] || o.features);
+  $("HowToReach").value = safe(o["How to Reach"] || o.how);
+
+  $("TaskForLocation").value = safe(o["Task for Location"] || o.task);
+  $("BestTime").value = safe(o["Best Time to Visit"] || o.bestTime);
+  $("DistFromHQ").value = safe(o["Dist from HQ"] || o.distFromHQ);
+
+  $("Latitude").value = (o["Latitude"] ?? o.latitude ?? "");
+  $("Longitude").value = (o["Longitude"] ?? o.longitude ?? "");
+
+  // Rates stored either as top-level Rate_* or nested rates
+  const rates = o.rates || {};
+  $("Rate_Solo").value   = (o["Rate_Solo"]   ?? rates.solo   ?? "");
+  $("Rate_Couple").value = (o["Rate_Couple"] ?? rates.couple ?? "");
+  $("Rate_Family").value = (o["Rate_Family"] ?? rates.family ?? "");
+  $("Rate_Group").value  = (o["Rate_Group"]  ?? rates.group  ?? "");
+
+  $("TripDays_Min").value = (o["TripDays_Min"] ?? "");
+  $("TripDays_Max").value = (o["TripDays_Max"] ?? "");
+
+  $("Map").value = safe(o["Map"] || o.map || "");
+
+  // Images: prefer images[], else make from photo fields if you have them
+  if(Array.isArray(o.images)) images = o.images.filter(Boolean);
+  else images = [];
+  renderImages();
+
+  setStatus("Loaded " + key);
+}
+
+function getFormData(){
+  const key = normalizeKey($("firebase_id").value);
+  if(!key) throw new Error("firebase_id is required (key).");
+  const name = safe($("LocationName").value);
+  if(!name) throw new Error("Location Name is required.");
+
+  const obj = {
+    "District": safe($("District").value),
+    "Location Name": name,
+    "Location Type": safe($("LocationType").value),
+    "Segment Type": safe($("SegmentType").value),
+
+    "How to Reach": safe($("HowToReach").value),
+    "Short Description": safe($("ShortDescription").value),
+    "Key Features": safe($("KeyFeatures").value),
+    "Task for Location": safe($("TaskForLocation").value),
+    "Best Time to Visit": safe($("BestTime").value),
+    "Dist from HQ": safe($("DistFromHQ").value),
+    "Overview": safe($("Overview").value),
+
+    "Latitude": toNum($("Latitude").value),
+    "Longitude": toNum($("Longitude").value),
+
+    "Map": safe($("Map").value),
+
+    // ✅ images array used by your site
+    images: images.slice(0, 12),
+
+    // ✅ nested rates (clean for your UI)
+    rates: {
+      solo: toNum($("Rate_Solo").value),
+      couple: toNum($("Rate_Couple").value),
+      family: toNum($("Rate_Family").value),
+      group: toNum($("Rate_Group").value),
+    },
+
+    "TripDays_Min": toNum($("TripDays_Min").value),
+    "TripDays_Max": toNum($("TripDays_Max").value),
+
+    updatedAt: new Date().toISOString()
+  };
+
+  // Remove nulls (Firebase cleaner)
+  function stripNulls(x){
+    if(Array.isArray(x)) return x.filter(v=>v!==null && v!==undefined && v!=="");
+    if(x && typeof x === "object"){
+      const out = {};
+      Object.keys(x).forEach(k=>{
+        const v = stripNulls(x[k]);
+        if(v!==null && v!==undefined && v!=="" && !(typeof v==="object" && !Array.isArray(v) && Object.keys(v).length===0)){
+          out[k] = v;
+        }
+      });
+      return out;
+    }
+    return x;
+  }
+
+  return { key, obj: stripNulls(obj) };
+}
+
+/* =========================
+   SAVE / UPDATE / DELETE
+========================= */
+$("saveBtn").onclick = async ()=>{
+  try{
+    const {key, obj} = getFormData();
+
+    // If key changed, move record
+    if(activeKey && key !== activeKey){
+      // copy new, then delete old
+      await db.ref(`${DB_PATH}/${key}`).set(obj);
+      await db.ref(`${DB_PATH}/${activeKey}`).remove();
+      activeKey = key;
+    }else{
+      await db.ref(`${DB_PATH}/${key}`).update(obj);
+      activeKey = key;
+    }
+
+    $("activeKey").textContent = "Key: " + activeKey;
+    setStatus("Saved to /locations/" + activeKey);
+
+    await loadAll();
+    await openKey(activeKey);
+
+  }catch(e){
+    setStatus(e?.message || "Save failed", false);
+  }
+};
+
+$("duplicateBtn").onclick = async ()=>{
+  try{
+    const {key, obj} = getFormData();
+    const newKey = key + "-copy-" + Math.floor(Math.random()*1000);
+    $("firebase_id").value = newKey;
+    activeKey = null;
+    setStatus("Duplicated draft. Change key if needed, then Save.");
+  }catch(e){
+    setStatus(e?.message || "Duplicate failed", false);
+  }
+};
+
+$("deleteBtn").onclick = async ()=>{
+  try{
+    const key = normalizeKey($("firebase_id").value);
+    if(!key) throw new Error("No key to delete.");
+
+    if(!confirm("Delete this location from Firebase?\n\n" + key)) return;
+
+    await db.ref(`${DB_PATH}/${key}`).remove();
+    setStatus("Deleted " + key);
+    clearForm();
+    await loadAll();
+  }catch(e){
+    setStatus(e?.message || "Delete failed", false);
+  }
+};
+
+/* =========================
+   IMAGES UI + STORAGE UPLOAD
+========================= */
+function renderImages(){
+  const grid = $("imgGrid");
+  if(!images.length){
+    grid.innerHTML = `<div class="muted" style="grid-column:1/-1">No images yet. Upload or add URL.</div>`;
+    return;
+  }
+  grid.innerHTML = images.map((u, idx)=>`
+    <div class="imgCard">
+      <img src="${u}" alt="img${idx}" onerror="this.src=''; this.alt='broken';"/>
+      <button title="Remove" data-i="${idx}">✕</button>
+    </div>
+  `).join("");
+
+  grid.querySelectorAll("button[data-i]").forEach(btn=>{
+    btn.onclick = ()=>{
+      const i = Number(btn.getAttribute("data-i"));
+      images.splice(i,1);
+      renderImages();
+    };
+  });
+}
+
+$("addUrlBtn").onclick = ()=>{
+  const u = safe($("imgUrl").value);
+  if(!u) return;
+  images.push(u);
+  $("imgUrl").value = "";
+  renderImages();
+  setStatus("Image URL added (remember to Save).");
+};
+
+$("imgFiles").addEventListener("change", async (e)=>{
+  const files = Array.from(e.target.files || []);
+  if(!files.length) return;
+
+  try{
+    // require key for organized folder
+    const key = normalizeKey($("firebase_id").value) || "unkeyed";
+    setStatus("Uploading " + files.length + " image(s)…");
+
+    for(const f of files){
+      // basic filename safe
+      const ext = (f.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g,"");
+      const name = Date.now() + "-" + Math.random().toString(16).slice(2) + "." + ext;
+
+      // storage path: himachal_explorer/locations/{key}/...
+      const ref = storage.ref().child(`himachal_explorer/locations/${key}/${name}`);
+      const snap = await ref.put(f, { contentType: f.type || "image/jpeg" });
+      const url = await snap.ref.getDownloadURL();
+      images.push(url);
+    }
+
+    renderImages();
+    setStatus("Uploaded. Click Save to store URLs in Firebase.");
+
+  }catch(err){
+    setStatus(err?.message || "Upload failed (check Storage rules/auth).", false);
+  }finally{
+    e.target.value = "";
+  }
+});
+
+/* =========================
+   INIT
+========================= */
+(async function init(){
+  clearForm();
+  await loadAll();
+})();
+</script>
 </body>
 </html>
