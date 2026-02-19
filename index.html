@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — Packages (Value Planner)</title>
+  <title>Himachal Explorer — Packages First</title>
 
-  <!-- Leaflet (optional; map can be enabled later) -->
+  <!-- Leaflet (optional; map stays hidden until you wire it) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -15,21 +15,22 @@
 
   <style>
     :root{
-      --bg:#f6f7fb;
-      --card:#ffffff;
+      --bg:#f4f6fb;
+      --panel:rgba(255,255,255,.80);
+      --card:rgba(255,255,255,.90);
       --text:#0b1220;
-      --muted:rgba(11,18,32,.64);
+      --muted:rgba(11,18,32,.62);
       --stroke:rgba(11,18,32,.10);
-      --shadow:0 14px 40px rgba(10,20,40,.10);
+      --shadow:0 18px 55px rgba(10,20,40,.10);
       --r:18px;
+      --r2:24px;
       --brand:#4f46e5;
       --brand2:#06b6d4;
       --ok:#10b981;
       --warn:#f59e0b;
       --bad:#ef4444;
-
-      --sidebarW:300px;
       --topH:66px;
+      --sideW:320px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -37,96 +38,87 @@
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--text);
-      background: radial-gradient(1200px 800px at 20% -10%, rgba(79,70,229,.10), transparent 55%),
-                  radial-gradient(900px 700px at 85% 10%, rgba(6,182,212,.10), transparent 52%),
-                  var(--bg);
+      background:
+        radial-gradient(1200px 800px at 20% -10%, rgba(79,70,229,.12), transparent 55%),
+        radial-gradient(900px 700px at 85% 10%, rgba(6,182,212,.10), transparent 52%),
+        var(--bg);
     }
 
-    /* Top bar */
+    /* Topbar */
     .topbar{
       height:var(--topH);
       position:sticky; top:0; z-index:50;
       display:flex; align-items:center; justify-content:space-between;
       padding:12px 14px;
-      background:rgba(246,247,251,.78);
+      background:rgba(244,246,251,.78);
       backdrop-filter: blur(10px);
       border-bottom:1px solid var(--stroke);
     }
     .brand{
       display:flex; align-items:center; gap:10px;
-      min-width:200px;
+      min-width:220px;
     }
     .logo{
       width:42px; height:42px; border-radius:14px;
       background: linear-gradient(135deg, rgba(79,70,229,.95), rgba(6,182,212,.85));
-      box-shadow:0 12px 26px rgba(79,70,229,.20);
+      box-shadow:0 12px 26px rgba(79,70,229,.18);
       display:grid; place-items:center;
-      color:#fff; font-weight:900;
+      color:#fff; font-weight:900; letter-spacing:.5px;
     }
-    .brand h1{
-      font-size:14px; margin:0; line-height:1.1;
-      font-weight:900;
-    }
-    .brand p{margin:2px 0 0; font-size:12px; color:var(--muted)}
-    .tabs{
-      display:flex; align-items:center; gap:8px;
-    }
+    .brand h1{margin:0; font-size:14px; font-weight:950; line-height:1.1}
+    .brand p{margin:2px 0 0; font-size:12px; color:var(--muted); font-weight:650}
+    .tabs{display:flex; align-items:center; gap:8px}
     .pill{
       border:1px solid var(--stroke);
       background:rgba(255,255,255,.7);
       padding:10px 12px;
       border-radius:999px;
-      font-weight:700;
+      font-weight:800;
       font-size:13px;
       cursor:pointer;
       display:flex; align-items:center; gap:8px;
       box-shadow:0 10px 25px rgba(10,20,40,.06);
+      user-select:none;
     }
+    .pill .dot{width:9px; height:9px; border-radius:999px; background:rgba(11,18,32,.25)}
     .pill.active{
-      border-color: rgba(79,70,229,.35);
+      border-color: rgba(79,70,229,.30);
       background: rgba(79,70,229,.10);
-      color: #1a1a3d;
     }
-    .pillDot{
-      width:9px; height:9px; border-radius:99px;
-      background: rgba(11,18,32,.25);
-    }
-    .pill.active .pillDot{ background: var(--brand); }
-
-    .rightTools{
-      display:flex; align-items:center; gap:8px;
-    }
+    .pill.active .dot{background:var(--brand)}
+    .tools{display:flex; align-items:center; gap:8px}
     .btn{
       border:1px solid var(--stroke);
       background:#fff;
       border-radius:14px;
       padding:10px 12px;
       cursor:pointer;
-      font-weight:800;
+      font-weight:900;
       font-size:13px;
       box-shadow:0 10px 25px rgba(10,20,40,.06);
     }
     .btn.primary{
       background: linear-gradient(135deg, rgba(79,70,229,.95), rgba(6,182,212,.85));
-      border: none;
+      border:none;
       color:#fff;
     }
+    .menuBtn{display:none}
 
     /* Layout */
     .wrap{
-      display:grid;
-      grid-template-columns: var(--sidebarW) 1fr;
-      gap:14px;
-      padding:14px;
-      max-width:1300px;
+      max-width:1320px;
       margin:0 auto;
+      padding:14px;
+      display:grid;
+      grid-template-columns: var(--sideW) 1fr;
+      gap:14px;
     }
 
     /* Sidebar */
     .sidebar{
-      background:rgba(255,255,255,.75);
+      background:var(--panel);
       border:1px solid var(--stroke);
-      border-radius:22px;
+      border-radius:var(--r2);
       box-shadow:var(--shadow);
       padding:12px;
       position:sticky;
@@ -135,168 +127,173 @@
       overflow:auto;
     }
     .sideHead{
-      display:flex; justify-content:space-between; align-items:center;
-      gap:10px; padding:8px 6px 12px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:6px 6px 10px;
     }
-    .sideHead .title{
+    .sideHead .title{font-size:13px; font-weight:950}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--stroke);
+      background:rgba(255,255,255,.78);
+      font-size:12px;
       font-weight:900;
-      font-size:14px;
+      white-space:nowrap;
+    }
+    .badge .bDot{
+      width:9px; height:9px; border-radius:999px;
+      background:var(--brand2);
+      box-shadow:0 0 0 4px rgba(6,182,212,.14);
     }
     .search{
       width:100%;
-      border:1px solid var(--stroke);
+      padding:11px 12px;
       border-radius:14px;
-      padding:10px 12px;
+      border:1px solid var(--stroke);
       outline:none;
-      background:rgba(255,255,255,.85);
-      font-weight:650;
+      background:rgba(255,255,255,.86);
+      font-weight:750;
     }
-    .section{
-      margin-top:10px;
-      border-top:1px solid var(--stroke);
-      padding-top:10px;
-    }
+    .section{margin-top:12px; padding-top:12px; border-top:1px solid var(--stroke)}
     .section h3{
-      margin:0 0 8px;
+      margin:0 0 10px;
       font-size:12px;
-      letter-spacing:.3px;
       color:var(--muted);
       text-transform:uppercase;
+      letter-spacing:.35px;
     }
-    .filterRow{
-      display:flex; flex-wrap:wrap; gap:8px;
-    }
-    .chip{
+    .typeItem{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+      padding:11px 12px;
+      border-radius:16px;
       border:1px solid var(--stroke);
-      background:rgba(255,255,255,.8);
+      background:rgba(255,255,255,.82);
+      cursor:pointer;
+      user-select:none;
+      margin-bottom:10px;
+      font-weight:900;
+    }
+    .typeItem .left{display:flex; align-items:center; gap:10px}
+    .caret{
+      width:22px; height:22px; border-radius:10px;
+      border:1px solid var(--stroke);
+      display:grid; place-items:center;
+      background:rgba(255,255,255,.7);
+      font-size:12px;
+      color:rgba(11,18,32,.65);
+    }
+    .typeItem.on{
+      border-color: rgba(79,70,229,.28);
+      background: rgba(79,70,229,.10);
+    }
+    .miniCount{
+      font-size:12px;
+      font-weight:950;
+      color:rgba(11,18,32,.70);
+      background:rgba(11,18,32,.04);
+      border:1px solid var(--stroke);
+      padding:6px 10px;
+      border-radius:999px;
+      white-space:nowrap;
+    }
+
+    .quickRow{display:flex; flex-wrap:wrap; gap:8px}
+    .chip{
       padding:8px 10px;
       border-radius:999px;
+      border:1px solid var(--stroke);
+      background:rgba(255,255,255,.82);
+      font-weight:900;
       font-size:12px;
-      font-weight:750;
       cursor:pointer;
       user-select:none;
     }
-    .chip.on{
-      border-color: rgba(79,70,229,.35);
-      background: rgba(79,70,229,.10);
-    }
+    .chip.on{border-color: rgba(79,70,229,.28); background: rgba(79,70,229,.10);}
 
-    /* Main panel */
+    /* Main */
     .main{
-      background:rgba(255,255,255,.75);
+      background:var(--panel);
       border:1px solid var(--stroke);
-      border-radius:22px;
+      border-radius:var(--r2);
       box-shadow:var(--shadow);
-      overflow:hidden;
       min-height: calc(100vh - var(--topH) - 28px);
+      overflow:hidden;
     }
     .mainHead{
       padding:14px 14px 10px;
-      display:flex; align-items:flex-start; justify-content:space-between;
-      gap:12px;
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
       border-bottom:1px solid var(--stroke);
-      background:rgba(255,255,255,.65);
+      background:rgba(255,255,255,.62);
       backdrop-filter: blur(10px);
     }
-    .mainHeadLeft{
-      display:flex; flex-direction:column; gap:4px;
-    }
-    .mainTitle{
-      font-weight:950;
-      font-size:16px;
-      margin:0;
-    }
-    .mainHint{
-      font-size:12px;
-      color:var(--muted);
-      margin:0;
-    }
-    .badge{
-      display:flex; align-items:center; gap:8px;
-      border:1px solid var(--stroke);
-      padding:8px 10px;
-      border-radius:999px;
-      background:rgba(255,255,255,.8);
-      font-weight:850;
-      font-size:12px;
-      white-space:nowrap;
-    }
-    .badgeDot{
-      width:9px; height:9px; border-radius:999px;
-      background:var(--brand2);
-      box-shadow:0 0 0 4px rgba(6,182,212,.15);
-    }
-
+    .mainHead h2{margin:0; font-size:16px; font-weight:980}
+    .mainHead p{margin:4px 0 0; font-size:12px; color:var(--muted); font-weight:650}
     .list{
       padding:12px;
       display:flex;
       flex-direction:column;
       gap:12px;
+      max-height: calc(100vh - var(--topH) - 28px - 60px);
+      overflow:auto;
     }
 
-    /* Cards (packages + places) */
-    .card{
+    /* Cards */
+    .placeCard{
       display:grid;
       grid-template-columns: 74px 1fr;
       gap:12px;
       padding:12px;
       border:1px solid var(--stroke);
-      background:rgba(255,255,255,.86);
       border-radius:18px;
+      background:var(--card);
       cursor:pointer;
       transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
     }
-    .card:hover{
+    .placeCard:hover{
       transform: translateY(-1px);
       box-shadow:0 18px 44px rgba(10,20,40,.10);
       border-color: rgba(79,70,229,.22);
     }
-    .media{
+    .pcMedia{
       width:74px; height:74px;
       border-radius:18px;
-      background: linear-gradient(135deg, rgba(79,70,229,.22), rgba(6,182,212,.18));
+      background: linear-gradient(135deg, rgba(79,70,229,.22), rgba(6,182,212,.16));
       border:1px solid rgba(79,70,229,.12);
     }
-    .body{
-      display:flex; flex-direction:column; gap:6px;
-      min-width:0;
-    }
-    .titleRow{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
-    }
-    .title{
-      font-weight:950;
-      font-size:15px;
-      line-height:1.2;
+    .pcBody{display:flex; flex-direction:column; gap:6px; min-width:0}
+    .pcTitleRow{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
+    .pcTitle{
       margin:0;
+      font-size:15px;
+      font-weight:980;
+      line-height:1.2;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
     }
-    .meta{
+    .pcMeta{
       font-size:12px;
       color:var(--muted);
-      font-weight:750;
+      font-weight:850;
       white-space:nowrap;
     }
-    .desc{
-      font-size:13px;
-      color: rgba(11,18,32,.78);
-      font-weight:650;
-      line-height:1.35;
+    .pcDesc{
       margin:0;
+      font-size:13px;
+      font-weight:650;
+      color: rgba(11,18,32,.78);
+      line-height:1.35;
       display:-webkit-box;
       -webkit-line-clamp:2;
       -webkit-box-orient:vertical;
       overflow:hidden;
     }
-    .chips{
-      display:flex; flex-wrap:wrap; gap:8px;
-      margin-top:2px;
-    }
+    .pcChips{display:flex; flex-wrap:wrap; gap:8px; margin-top:2px}
     .tag{
       font-size:12px;
-      font-weight:850;
+      font-weight:950;
       padding:7px 10px;
       border-radius:999px;
       background: rgba(11,18,32,.04);
@@ -306,315 +303,229 @@
     .tag.mid{ background: rgba(245,158,11,.10); border-color: rgba(245,158,11,.25); }
     .tag.high{ background: rgba(239,68,68,.10); border-color: rgba(239,68,68,.25); }
 
-    /* Package header in detail view */
-    .detailTop{
+    .packageTop{
       border:1px solid var(--stroke);
-      background: rgba(255,255,255,.86);
       border-radius:18px;
+      background:rgba(255,255,255,.88);
       padding:12px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .detailRow{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
-    }
-    .detailRow .left{
-      display:flex; flex-direction:column; gap:3px;
-      min-width:0;
-    }
-    .detailTitle{
-      font-size:16px;
-      font-weight:950;
-      margin:0;
-    }
-    .detailSub{
-      font-size:12px;
-      color:var(--muted);
-      font-weight:750;
-      margin:0;
     }
 
-    /* Mobile: sidebar becomes drawer */
-    .menuBtn{ display:none; }
-    .drawerOverlay{
+    /* Mobile drawer */
+    .overlay{
       position:fixed; inset:0; z-index:90;
       background:rgba(0,0,0,.35);
       display:none;
     }
     .drawer{
-      position:fixed;
-      top:0; left:0;
+      position:fixed; top:0; left:0; z-index:95;
       height:100%;
       width:min(92vw, 360px);
-      z-index:95;
       transform: translateX(-110%);
       transition: transform .18s ease;
-      background:rgba(255,255,255,.92);
+      background:rgba(255,255,255,.93);
       border-right:1px solid var(--stroke);
       box-shadow:0 18px 70px rgba(0,0,0,.25);
       padding:12px;
       overflow:auto;
     }
-    .drawer.open{ transform: translateX(0); }
-    .drawerOverlay.show{ display:block; }
+    .overlay.show{display:block}
+    .drawer.open{transform: translateX(0)}
+    .drawer .sidebar{position:static; height:auto; box-shadow:none; border-radius:18px}
 
     @media (max-width: 980px){
-      .wrap{ grid-template-columns: 1fr; }
-      .sidebar{ display:none; }
-      .menuBtn{ display:inline-flex; }
-      .brand p{ display:none; }
-      .tabs{ display:none; } /* keep clean on mobile */
+      .wrap{grid-template-columns:1fr}
+      .sidebar{display:none}
+      .menuBtn{display:inline-flex}
+      .tabs{display:none}
+      .brand p{display:none}
+      .list{max-height:none}
     }
     @media (max-width: 520px){
-      .card{ grid-template-columns: 64px 1fr; }
-      .media{ width:64px; height:64px; border-radius:16px; }
-      .title{ font-size:14px; }
+      .placeCard{grid-template-columns:64px 1fr}
+      .pcMedia{width:64px; height:64px; border-radius:16px}
+      .pcTitle{font-size:14px}
     }
   </style>
 </head>
 
 <body>
-  <!-- Mobile drawer -->
-  <div id="overlay" class="drawerOverlay" onclick="closeDrawer()"></div>
-  <aside id="drawer" class="drawer" aria-hidden="true">
-    <div class="sideHead">
-      <div class="title">Filters</div>
-      <button class="btn" onclick="closeDrawer()">Close</button>
-    </div>
-    <input id="q_m" class="search" placeholder="Search (package/place)…" oninput="onSearch(this.value)" />
-    <div class="section">
-      <h3>District focus</h3>
-      <div id="districtChips_m" class="filterRow"></div>
-    </div>
-    <div class="section">
-      <h3>Trip length</h3>
-      <div id="daysChips_m" class="filterRow"></div>
-    </div>
-    <div class="section">
-      <h3>Budget</h3>
-      <div id="budgetChips_m" class="filterRow"></div>
-    </div>
-  </aside>
 
-  <!-- Top bar -->
+  <!-- Mobile drawer -->
+  <div id="overlay" class="overlay" onclick="closeDrawer()"></div>
+  <div id="drawer" class="drawer" aria-hidden="true">
+    <div class="sidebar" style="height:auto; top:auto;">
+      <div class="sideHead">
+        <div class="title">Types</div>
+        <button class="btn" onclick="closeDrawer()">Close</button>
+      </div>
+      <input id="q_m" class="search" placeholder="Search places…" oninput="onSearch(this.value)" />
+      <div class="section">
+        <h3>Types</h3>
+        <div id="typesList_m"></div>
+      </div>
+      <div class="section">
+        <h3>Quick</h3>
+        <div class="quickRow">
+          <span class="chip" onclick="quickSelect('All')">All</span>
+          <span class="chip" onclick="quickSelect('Destination')">Destinations</span>
+          <span class="chip" onclick="quickSelect('Temple')">Temples</span>
+          <span class="chip" onclick="quickSelect('Lake')">Lakes</span>
+          <span class="chip" onclick="quickSelect('Trek')">Treks</span>
+          <span class="chip" onclick="quickSelect('Hotel')">Hotels</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Topbar -->
   <header class="topbar">
     <div class="brand">
       <div class="logo">HP</div>
       <div>
         <h1>Himachal Explorer</h1>
-        <p>Value packages • fast search • mobile friendly</p>
+        <p>Type sidebar (left) • packages first (middle)</p>
       </div>
     </div>
 
     <div class="tabs">
-      <div class="pill active"><span class="pillDot"></span> Explore</div>
-      <div class="pill"><span class="pillDot"></span> AI Planner</div>
-      <div class="pill"><span class="pillDot"></span> Admin</div>
+      <div class="pill active"><span class="dot"></span> Explore</div>
+      <div class="pill"><span class="dot"></span> AI Planner</div>
+      <div class="pill" onclick="goAdmin()"><span class="dot"></span> Admin</div>
     </div>
 
-    <div class="rightTools">
-      <button class="btn menuBtn" onclick="openDrawer()">☰ Filters</button>
+    <div class="tools">
+      <button class="btn menuBtn" onclick="openDrawer()">☰ Types</button>
       <button class="btn" onclick="resetAll()">Reset</button>
       <button class="btn primary" onclick="goAdmin()">Admin</button>
     </div>
   </header>
 
-  <!-- Main grid -->
   <main class="wrap">
-    <!-- Desktop sidebar -->
+    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sideHead">
-        <div class="title">Filters</div>
-        <span class="badge"><span class="badgeDot"></span><span id="statusText">Loading…</span></span>
+        <div class="title">Types</div>
+        <span class="badge"><span class="bDot"></span><span id="statusText">Loading…</span></span>
       </div>
 
-      <input id="q" class="search" placeholder="Search (package/place)…" oninput="onSearch(this.value)" />
+      <input id="q" class="search" placeholder="Search places…" oninput="onSearch(this.value)" />
 
       <div class="section">
-        <h3>District focus</h3>
-        <div id="districtChips" class="filterRow"></div>
-      </div>
-
-      <div class="section">
-        <h3>Trip length</h3>
-        <div id="daysChips" class="filterRow"></div>
+        <h3>Types</h3>
+        <div id="typesList"></div>
       </div>
 
       <div class="section">
-        <h3>Budget</h3>
-        <div id="budgetChips" class="filterRow"></div>
-      </div>
-
-      <div class="section">
-        <h3>Quick</h3>
-        <div class="filterRow">
-          <span class="chip" onclick="setPreset('weekend')">Weekend</span>
-          <span class="chip" onclick="setPreset('family')">Family</span>
-          <span class="chip" onclick="setPreset('adventure')">Adventure</span>
-          <span class="chip" onclick="setPreset('culture')">Culture</span>
+        <h3>Quick tools</h3>
+        <div class="quickRow">
+          <span class="chip" onclick="quickSelect('All')">All</span>
+          <span class="chip" onclick="quickSelect('Destination')">Destinations</span>
+          <span class="chip" onclick="quickSelect('Temple')">Temples</span>
+          <span class="chip" onclick="quickSelect('Activity')">Activities</span>
+          <span class="chip" onclick="quickSelect('Lake')">Lakes</span>
+          <span class="chip" onclick="quickSelect('Hotel')">Hotels</span>
+          <span class="chip" onclick="quickSelect('Trek')">Treks</span>
         </div>
       </div>
     </aside>
 
-    <!-- Main panel -->
+    <!-- Main -->
     <section class="main">
       <div class="mainHead">
-        <div class="mainHeadLeft">
-          <h2 id="mainTitle" class="mainTitle">Packages</h2>
-          <p id="mainHint" class="mainHint">Click a package to view covered locations (then click a location to open place.html)</p>
+        <div>
+          <h2 id="mainTitle">Packages</h2>
+          <p id="mainHint">Do not show all locations. Click a package to view locations it covers.</p>
         </div>
-        <div class="badge">
-          <span class="badgeDot"></span>
-          <span id="countText">0</span>
-        </div>
+        <div class="badge"><span class="bDot"></span><span id="countText">0</span></div>
       </div>
 
-      <div id="list" class="list"></div>
+      <div id="placesList" class="list"></div>
     </section>
   </main>
 
 <script>
-/* ==========================
-   CONFIG (EDIT THESE)
-========================== */
-
-// If you already use Firebase config in your project, paste it here.
-// Otherwise leave empty {} and it will use sample data.
+/* =========================================================
+   1) FIREBASE CONFIG (PASTE YOUR REAL CONFIG HERE)
+   If not set, page uses SAMPLE_PLACES so it never looks empty
+========================================================= */
 const FIREBASE_CONFIG = {
-  // apiKey: "...",
-  // authDomain: "...",
-  // databaseURL: "https://YOUR_PROJECT-default-rtdb.asia-southeast1.firebasedatabase.app",
-  // projectId: "...",
+  // apiKey: "....",
+  // authDomain: "....",
+  // databaseURL: "https://xxxx-default-rtdb.asia-southeast1.firebasedatabase.app",
+  // projectId: "....",
 };
-
-// If your databaseURL is set in FIREBASE_CONFIG, choose your node here:
 const FIREBASE_NODE = "locations";
 
-/* ==========================
-   SAMPLE DATA (fallback)
-========================== */
+/* =========================================================
+   2) FALLBACK SAMPLE DATA
+========================================================= */
 const SAMPLE_PLACES = [
-  { "Location Name":"Annandale", District:"Shimla", Type:"Destination", "Brief Description":"Historic playground and open ground." },
-  { "Location Name":"Kufri", District:"Shimla", Type:"Activity", "Brief Description":"Snow views, horse rides, family fun." },
-  { "Location Name":"Naldehra", District:"Shimla", Type:"Destination", "Brief Description":"Golf course, forest walks." },
-  { "Location Name":"Mashobra", District:"Shimla", Type:"Destination", "Brief Description":"Quiet hills near Shimla." },
+  {"Location Name":"Annandale","District":"Shimla","Type":"Destination","Brief Description":"Historic playground and open ground."},
+  {"Location Name":"Kufri","District":"Shimla","Type":"Activity","Brief Description":"Snow views and family fun."},
+  {"Location Name":"Naldehra","District":"Shimla","Type":"Destination","Brief Description":"Golf course, forest walks."},
+  {"Location Name":"Mashobra","District":"Shimla","Type":"Destination","Brief Description":"Quiet hills near Shimla."},
 
-  { "Location Name":"Manali", District:"Kullu", Type:"Destination", "Brief Description":"Classic mountain town, cafes, views." },
-  { "Location Name":"Solang Valley", District:"Kullu", Type:"Activity", "Brief Description":"Adventure sports and snow activities." },
-  { "Location Name":"Kasol", District:"Kullu", Type:"Destination", "Brief Description":"Riverside cafes, base for treks." },
-  { "Location Name":"Naggar Castle", District:"Kullu", Type:"Destination", "Brief Description":"Heritage + views + culture." },
+  {"Location Name":"Manali","District":"Kullu","Type":"Destination","Brief Description":"Classic mountain town."},
+  {"Location Name":"Solang Valley","District":"Kullu","Type":"Activity","Brief Description":"Adventure sports and snow activities."},
+  {"Location Name":"Kasol","District":"Kullu","Type":"Destination","Brief Description":"Riverside cafes."},
+  {"Location Name":"Naggar Castle","District":"Kullu","Type":"Destination","Brief Description":"Heritage + views."},
 
-  { "Location Name":"McLeod Ganj", District:"Kangra", Type:"Destination", "Brief Description":"Tibetan culture, cafes, views." },
-  { "Location Name":"Dharamshala", District:"Kangra", Type:"Destination", "Brief Description":"Cricket, monasteries, calm vibe." },
-  { "Location Name":"Kangra Fort", District:"Kangra", Type:"Destination", "Brief Description":"Historic fort with panoramic views." },
+  {"Location Name":"Dharamshala","District":"Kangra","Type":"Destination","Brief Description":"Monasteries, calm vibe."},
+  {"Location Name":"McLeod Ganj","District":"Kangra","Type":"Destination","Brief Description":"Tibetan culture and cafes."},
+  {"Location Name":"Kangra Fort","District":"Kangra","Type":"Destination","Brief Description":"Historic fort."},
 
-  { "Location Name":"Dalhousie", District:"Chamba", Type:"Destination", "Brief Description":"Colonial charm + scenic walks." },
-  { "Location Name":"Khajjiar", District:"Chamba", Type:"Lake", "Brief Description":"Mini Switzerland meadows + lake." },
+  {"Location Name":"Dalhousie","District":"Chamba","Type":"Destination","Brief Description":"Colonial charm."},
+  {"Location Name":"Khajjiar","District":"Chamba","Type":"Lake","Brief Description":"Meadows and lake."},
 
-  { "Location Name":"Kaza", District:"Lahaul and Spiti", Type:"Destination", "Brief Description":"Spiti base town for monasteries." },
-  { "Location Name":"Key Monastery", District:"Lahaul and Spiti", Type:"Temple", "Brief Description":"Iconic monastery with valley views." },
-  { "Location Name":"Kibber", District:"Lahaul and Spiti", Type:"Destination", "Brief Description":"High village, wildlife, views." },
+  {"Location Name":"Kaza","District":"Lahaul and Spiti","Type":"Destination","Brief Description":"Spiti base town."},
+  {"Location Name":"Key Monastery","District":"Lahaul and Spiti","Type":"Temple","Brief Description":"Iconic monastery."},
+  {"Location Name":"Kibber","District":"Lahaul and Spiti","Type":"Destination","Brief Description":"High village views."}
 ];
 
-/* ==========================
-   PACKAGES (4–5 default)
-========================== */
-const DEFAULT_PACKAGES = [
-  {
-    id: "pkg_weekend_shimla",
-    title: "Weekend Shimla Value Pack",
-    subtitle: "2 Days • ₹₹ • Best for quick escape",
-    days: 2,
-    budget: "₹₹",
-    districts: ["Shimla", "Solan"],
-    includeTypes: ["Destination", "Temple", "Activity", "Lake"],
-    mustHave: ["Shimla", "Kufri", "Naldehra", "Mashobra"],
-    limit: 10,
-    hero: "Fast • Budget-friendly • Family friendly"
-  },
-  {
-    id: "pkg_kullu_manali",
-    title: "Kullu–Manali Classic Saver",
-    subtitle: "3 Days • ₹₹₹ • Mountains + activities",
-    days: 3,
-    budget: "₹₹₹",
-    districts: ["Kullu"],
-    includeTypes: ["Destination", "Activity", "Temple", "Trek"],
-    mustHave: ["Manali", "Solang", "Naggar", "Kasol"],
-    limit: 12,
-    hero: "Adventure • Cafes • Great value route"
-  },
-  {
-    id: "pkg_kangra_dharamshala",
-    title: "Dharamshala–Kangra Culture Pack",
-    subtitle: "3 Days • ₹₹ • Monasteries + heritage",
-    days: 3,
-    budget: "₹₹",
-    districts: ["Kangra"],
-    includeTypes: ["Temple", "Destination", "Activity", "Lake"],
-    mustHave: ["Dharamshala", "McLeod", "Kangra Fort"],
-    limit: 12,
-    hero: "Culture • Calm • Best budget experience"
-  },
-  {
-    id: "pkg_chamba_dalhousie",
-    title: "Dalhousie–Chamba Scenic Pack",
-    subtitle: "3 Days • ₹₹ • Nature + viewpoints",
-    days: 3,
-    budget: "₹₹",
-    districts: ["Chamba"],
-    includeTypes: ["Destination", "Lake", "Temple", "Activity"],
-    mustHave: ["Dalhousie", "Khajjiar"],
-    limit: 12,
-    hero: "Scenic • Relaxed pace • Value stay"
-  },
-  {
-    id: "pkg_spiti_starter",
-    title: "Spiti Starter (Smart Budget)",
-    subtitle: "5 Days • ₹₹₹₹ • High altitude highlights",
-    days: 5,
-    budget: "₹₹₹₹",
-    districts: ["Lahaul and Spiti"],
-    includeTypes: ["Destination", "Temple", "Trek", "Lake"],
-    mustHave: ["Kaza", "Key", "Kibber"],
-    limit: 10,
-    hero: "Unique landscapes • Minimal rush • Iconic spots"
-  }
+/* =========================================================
+   3) PACKAGES (default 4–5)
+   IMPORTANT: packages are built from FILTERED places
+========================================================= */
+const VALUE_PACKAGES = [
+  { id:"pkg1", title:"Weekend Shimla Value Pack", days:2, budget:"₹₹", districts:["Shimla","Solan"], hero:"Fast • Budget • Family", must:["Shimla","Kufri","Naldehra","Mashobra"], limit:10 },
+  { id:"pkg2", title:"Kullu–Manali Classic Saver", days:3, budget:"₹₹₹", districts:["Kullu"], hero:"Adventure • Cafes • Snow-season", must:["Manali","Solang","Kasol","Naggar"], limit:12 },
+  { id:"pkg3", title:"Dharamshala–Kangra Culture Pack", days:3, budget:"₹₹", districts:["Kangra"], hero:"Culture • Calm • Best value", must:["Dharamshala","McLeod","Kangra Fort"], limit:12 },
+  { id:"pkg4", title:"Dalhousie–Chamba Scenic Pack", days:3, budget:"₹₹", districts:["Chamba"], hero:"Scenic • Relaxed • Saver", must:["Dalhousie","Khajjiar"], limit:12 },
+  { id:"pkg5", title:"Spiti Starter (Smart Budget)", days:5, budget:"₹₹₹₹", districts:["Lahaul and Spiti"], hero:"Unique • Iconic • Minimal rush", must:["Kaza","Key","Kibber"], limit:10 },
 ];
 
-/* ==========================
-   STATE
-========================== */
+/* =========================================================
+   4) STATE (filters + view)
+========================================================= */
 const state = {
   allPlaces: [],
   search: "",
-  selDistrict: "",   // one district at a time for simplicity
-  selDays: "",       // "2", "3", "5"
-  selBudget: "",     // "₹₹", "₹₹₹", "₹₹₹₹"
-  view: "packages",  // "packages" | "packageDetail"
+  activeTypes: new Set(), // empty means ALL
+  view: "packages",       // "packages" | "packageDetail"
   activePkg: null,
-  activeCovered: [],
+  lastFiltered: []
 };
 
-/* ==========================
-   UTILS
-========================== */
+/* =========================================================
+   5) HELPERS
+========================================================= */
 function norm(s){ return String(s||"").trim().toLowerCase(); }
-function getName(p){ return p["Location Name"] || p.Name || p.name || p.title || "Untitled"; }
+function getName(p){ return p["Location Name"] || p.Name || p.name || "Untitled"; }
 function getDistrict(p){ return p.District || p.district || ""; }
 function getType(p){ return p.Type || p.type || p.Category || p.category || ""; }
 function getDesc(p){ return p["Brief Description"] || p.Description || p.description || ""; }
 
-function budgetClass(b){
+function tagClass(b){
   if(b==="₹₹") return "good";
   if(b==="₹₹₹") return "mid";
   return "high";
 }
 
-/* ==========================
-   FIREBASE LOAD (optional)
-========================== */
+/* =========================================================
+   6) LOAD DATA (Firebase optional)
+========================================================= */
+function setStatus(t){ document.getElementById("statusText").textContent = t; }
+
 async function loadPlaces(){
   try{
     if(!FIREBASE_CONFIG || !FIREBASE_CONFIG.databaseURL){
@@ -622,18 +533,14 @@ async function loadPlaces(){
       return SAMPLE_PLACES.slice();
     }
     firebase.initializeApp(FIREBASE_CONFIG);
-    const db = firebase.database();
-    const snap = await db.ref(FIREBASE_NODE).once("value");
+    const snap = await firebase.database().ref(FIREBASE_NODE).once("value");
     const val = snap.val();
     if(!val){
       setStatus("Firebase empty → sample data");
       return SAMPLE_PLACES.slice();
     }
-
-    // If your data is keyed object {key:{...}, key2:{...}}
     const arr = Array.isArray(val) ? val : Object.values(val);
     const clean = arr.filter(Boolean);
-
     setStatus("Loaded from Firebase");
     return clean.length ? clean : SAMPLE_PLACES.slice();
   }catch(e){
@@ -643,22 +550,102 @@ async function loadPlaces(){
   }
 }
 
-/* ==========================
-   PACKAGE PICKER
-========================== */
-function pickPlacesForPackage(allPlaces, pkg){
-  const districtsWanted = (pkg.districts||[]).map(norm);
-  const typesWanted = (pkg.includeTypes||[]).map(norm);
+/* =========================================================
+   7) FILTER LOGIC (types + search)
+   This is your core logic kept intact
+========================================================= */
+function applyFilters(){
+  const q = norm(state.search);
+  const typesOn = state.activeTypes.size > 0;
 
-  let candidates = allPlaces.filter(p=>{
-    const d = norm(getDistrict(p));
-    const t = norm(getType(p));
-    const okDistrict = !districtsWanted.length || districtsWanted.includes(d);
-    const okType = !typesWanted.length || typesWanted.includes(t);
-    return okDistrict && okType;
+  const out = state.allPlaces.filter(p=>{
+    const name = norm(getName(p));
+    const dist = norm(getDistrict(p));
+    const type = getType(p);
+
+    // search
+    if(q){
+      const hay = `${name} ${dist} ${norm(type)} ${norm(getDesc(p))}`;
+      if(!hay.includes(q)) return false;
+    }
+
+    // type filter
+    if(typesOn){
+      if(!state.activeTypes.has(type)) return false;
+    }
+    return true;
   });
 
-  const must = (pkg.mustHave||[]).map(norm);
+  state.lastFiltered = out;
+  return out;
+}
+
+function computeTypeCounts(list){
+  const counts = {};
+  for(const p of list){
+    const t = getType(p) || "Other";
+    counts[t] = (counts[t] || 0) + 1;
+  }
+  return counts;
+}
+
+/* =========================================================
+   8) RENDER SIDEBAR TYPES (keeps counts)
+========================================================= */
+const ORDERED_TYPES = ["Destination","Temple","Activity","Lake","Hotel","Trek","Cave","Other"];
+
+function renderTypes(){
+  const countsAll = computeTypeCounts(state.allPlaces);
+  const types = ORDERED_TYPES.filter(t => countsAll[t]).concat(
+    Object.keys(countsAll).filter(t => !ORDERED_TYPES.includes(t)).sort()
+  );
+
+  const build = (containerId)=>{
+    const wrap = document.getElementById(containerId);
+    if(!wrap) return;
+    wrap.innerHTML = "";
+
+    types.forEach(t=>{
+      const on = state.activeTypes.size ? state.activeTypes.has(t) : false;
+      const row = document.createElement("div");
+      row.className = "typeItem" + (on ? " on" : "");
+      row.innerHTML = `
+        <div class="left">
+          <div style="font-weight:980;">${t}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="miniCount">${countsAll[t] || 0}</span>
+          <span class="caret">▾</span>
+        </div>
+      `;
+      row.onclick = ()=>{
+        // toggle
+        if(state.activeTypes.has(t)) state.activeTypes.delete(t);
+        else state.activeTypes.add(t);
+        refreshUI();
+      };
+      wrap.appendChild(row);
+    });
+  };
+
+  build("typesList");
+  build("typesList_m");
+}
+
+/* =========================================================
+   9) PACKAGES VIEW (default)
+   Uses FILTERED PLACES (so your filters are NOT removed)
+========================================================= */
+function pickPlacesForPackage(filteredPlaces, pkg){
+  const districtWanted = (pkg.districts || []).map(norm);
+  const must = (pkg.must || []).map(norm);
+
+  let candidates = filteredPlaces.slice();
+
+  // If districtWanted has matches, prioritize them (but don't force empty)
+  const districtHits = candidates.filter(p => districtWanted.includes(norm(getDistrict(p))));
+  if(districtHits.length) candidates = districtHits;
+
   const mustHits = [];
   const rest = [];
 
@@ -668,331 +655,178 @@ function pickPlacesForPackage(allPlaces, pkg){
     else rest.push(p);
   }
 
-  // variety-ish: group by type, then interleave
-  const buckets = {};
-  for(const p of rest){
-    const t = norm(getType(p) || "other");
-    (buckets[t] ||= []).push(p);
-  }
-  const types = Object.keys(buckets).sort();
-  const interleaved = [];
-  let added = true;
-  while(added){
-    added = false;
-    for(const t of types){
-      if(buckets[t].length){
-        interleaved.push(buckets[t].shift());
-        added = true;
-      }
-    }
-  }
+  // prefer variety by type
+  rest.sort((a,b)=> norm(getType(a)).localeCompare(norm(getType(b))));
 
-  const merged = [...mustHits, ...interleaved];
-
-  const unique = [];
+  const merged = [...mustHits, ...rest];
+  const out = [];
   const seen = new Set();
+
   for(const p of merged){
-    const key = norm(getName(p));
-    if(seen.has(key)) continue;
-    seen.add(key);
-    unique.push(p);
-    if(unique.length >= (pkg.limit||10)) break;
+    const k = norm(getName(p));
+    if(seen.has(k)) continue;
+    seen.add(k);
+    out.push(p);
+    if(out.length >= (pkg.limit || 10)) break;
   }
-  return unique;
+  return out;
 }
 
-/* ==========================
-   FILTER CHIPS
-========================== */
-function uniqueDistricts(places){
-  const s = new Set();
-  places.forEach(p=>{ const d=getDistrict(p); if(d) s.add(d); });
-  return Array.from(s).sort((a,b)=>a.localeCompare(b));
-}
-function renderChips(){
-  const dList = uniqueDistricts(state.allPlaces).slice(0, 18); // keep tidy
-
-  const districtsTargets = [
-    {id:"districtChips", list:dList},
-    {id:"districtChips_m", list:dList},
-  ];
-  districtsTargets.forEach(({id,list})=>{
-    const el = document.getElementById(id);
-    el.innerHTML = "";
-    const any = document.createElement("span");
-    any.className = "chip " + (state.selDistrict==="" ? "on": "");
-    any.textContent = "Any";
-    any.onclick = ()=>{ state.selDistrict=""; rerender(); };
-    el.appendChild(any);
-
-    list.forEach(d=>{
-      const c = document.createElement("span");
-      c.className = "chip " + (state.selDistrict===d ? "on" : "");
-      c.textContent = d;
-      c.onclick = ()=>{ state.selDistrict = (state.selDistrict===d ? "" : d); rerender(); };
-      el.appendChild(c);
-    });
-  });
-
-  const days = ["2","3","5"];
-  const daysTargets = [
-    {id:"daysChips", list:days},
-    {id:"daysChips_m", list:days},
-  ];
-  daysTargets.forEach(({id,list})=>{
-    const el = document.getElementById(id);
-    el.innerHTML = "";
-    ["Any", ...list].forEach(v=>{
-      const key = (v==="Any") ? "" : v;
-      const c = document.createElement("span");
-      c.className = "chip " + (state.selDays===key ? "on" : "");
-      c.textContent = (v==="Any") ? "Any" : (v+" Days");
-      c.onclick = ()=>{ state.selDays = (state.selDays===key ? "" : key); rerender(); };
-      el.appendChild(c);
-    });
-  });
-
-  const budgets = ["₹₹","₹₹₹","₹₹₹₹"];
-  const budgetTargets = [
-    {id:"budgetChips", list:budgets},
-    {id:"budgetChips_m", list:budgets},
-  ];
-  budgetTargets.forEach(({id,list})=>{
-    const el = document.getElementById(id);
-    el.innerHTML = "";
-    ["Any", ...list].forEach(v=>{
-      const key = (v==="Any") ? "" : v;
-      const c = document.createElement("span");
-      c.className = "chip " + (state.selBudget===key ? "on" : "");
-      c.textContent = (v==="Any") ? "Any" : v;
-      c.onclick = ()=>{ state.selBudget = (state.selBudget===key ? "" : key); rerender(); };
-      el.appendChild(c);
-    });
-  });
-}
-
-/* ==========================
-   RENDER PACKAGES
-========================== */
-function filteredPackages(){
-  let pkgs = DEFAULT_PACKAGES.slice();
-
-  if(state.selDays){
-    pkgs = pkgs.filter(p => String(p.days) === String(state.selDays));
-  }
-  if(state.selBudget){
-    pkgs = pkgs.filter(p => p.budget === state.selBudget);
-  }
-  if(state.selDistrict){
-    pkgs = pkgs.filter(p => (p.districts||[]).some(d=>norm(d)===norm(state.selDistrict)));
-  }
-  if(state.search){
-    const q = norm(state.search);
-    pkgs = pkgs.filter(p =>
-      norm(p.title).includes(q) ||
-      norm(p.subtitle).includes(q) ||
-      norm((p.districts||[]).join(" ")).includes(q)
-    );
-  }
-  return pkgs;
-}
-
-function renderPackagesView(){
+function renderPackages(filteredPlaces){
   state.view = "packages";
   state.activePkg = null;
-  state.activeCovered = [];
 
   document.getElementById("mainTitle").textContent = "Packages";
-  document.getElementById("mainHint").textContent = "Click a package to view covered locations (then click a location to open place.html)";
+  document.getElementById("mainHint").textContent =
+    "Do not show all locations. Click a package to view locations it covers.";
 
-  const list = document.getElementById("list");
+  const list = document.getElementById("placesList");
   list.innerHTML = "";
 
-  const pkgs = filteredPackages();
+  // count badge: show results of filteredPlaces (so user knows filters applied)
+  document.getElementById("countText").textContent = `${filteredPlaces.length} results`;
 
-  document.getElementById("countText").textContent = pkgs.length + " packages";
-
-  if(!pkgs.length){
-    list.innerHTML = `<div class="detailTop">
-      <div style="font-weight:900;">No packages match your filters.</div>
-      <div style="color:var(--muted);font-weight:700;">Try Reset or select “Any”.</div>
-    </div>`;
-    return;
-  }
-
-  pkgs.forEach(pkg=>{
-    const covered = pickPlacesForPackage(state.allPlaces, pkg);
+  VALUE_PACKAGES.forEach(pkg=>{
+    const covered = pickPlacesForPackage(filteredPlaces, pkg);
 
     const card = document.createElement("div");
-    card.className = "card";
+    card.className = "placeCard";
     card.innerHTML = `
-      <div class="media"></div>
-      <div class="body">
-        <div class="titleRow">
-          <div class="title">${pkg.title}</div>
-          <div class="meta">${pkg.days}D</div>
+      <div class="pcMedia"></div>
+      <div class="pcBody">
+        <div class="pcTitleRow">
+          <div class="pcTitle">${pkg.title}</div>
+          <div class="pcMeta">${pkg.days} Days</div>
         </div>
-        <p class="desc">${pkg.hero}</p>
-        <div class="chips">
-          <span class="tag ${budgetClass(pkg.budget)}">${pkg.budget}</span>
+        <p class="pcDesc">${pkg.hero}</p>
+        <div class="pcChips">
+          <span class="tag ${tagClass(pkg.budget)}">${pkg.budget}</span>
           <span class="tag">${(pkg.districts||[]).join(", ")}</span>
           <span class="tag">Covers ${covered.length} places</span>
         </div>
       </div>
     `;
-    card.onclick = ()=> openPackageDetail(pkg, covered);
+    card.onclick = ()=>{
+      state.view = "packageDetail";
+      state.activePkg = pkg;
+      renderPackageDetail(pkg, covered, filteredPlaces);
+    };
     list.appendChild(card);
   });
 }
 
-/* ==========================
-   PACKAGE DETAIL VIEW
-========================== */
-function openPackageDetail(pkg, covered){
-  state.view = "packageDetail";
-  state.activePkg = pkg;
-  state.activeCovered = covered;
+function renderPackageDetail(pkg, coveredPlaces, filteredPlaces){
+  document.getElementById("mainTitle").textContent = pkg.title;
+  document.getElementById("mainHint").textContent =
+    "Covered locations (click a location to open place.html).";
 
-  document.getElementById("mainTitle").textContent = "Package Plan";
-  document.getElementById("mainHint").textContent = "Covered locations (click any location to open place.html)";
-
-  const list = document.getElementById("list");
+  const list = document.getElementById("placesList");
   list.innerHTML = "";
 
   const top = document.createElement("div");
-  top.className = "detailTop";
+  top.className = "packageTop";
   top.innerHTML = `
-    <div class="detailRow">
-      <div class="left">
-        <h3 class="detailTitle">${pkg.title}</h3>
-        <p class="detailSub">${pkg.subtitle} • Districts: ${(pkg.districts||[]).join(", ")}</p>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+      <div style="min-width:0">
+        <div style="font-weight:980;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${pkg.title}</div>
+        <div style="opacity:.7;font-size:12px;font-weight:750;margin-top:3px;">${pkg.days} Days • ${pkg.budget} • ${(pkg.districts||[]).join(", ")}</div>
+        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px">
+          <span class="tag ${tagClass(pkg.budget)}">${pkg.budget}</span>
+          <span class="tag">${coveredPlaces.length} places</span>
+        </div>
       </div>
-      <button class="btn" onclick="renderPackagesView()">← Back</button>
-    </div>
-    <div class="chips">
-      <span class="tag ${budgetClass(pkg.budget)}">${pkg.budget}</span>
-      <span class="tag">${pkg.days} Days</span>
-      <span class="tag">Places: ${covered.length}</span>
+      <button class="btn" id="backBtn">← Back</button>
     </div>
   `;
   list.appendChild(top);
 
-  document.getElementById("countText").textContent = covered.length + " places";
+  document.getElementById("countText").textContent = `${coveredPlaces.length} places`;
 
-  // Apply search filter on covered list (optional)
-  let shown = covered;
-  if(state.search){
-    const q = norm(state.search);
-    shown = covered.filter(p =>
-      norm(getName(p)).includes(q) ||
-      norm(getDistrict(p)).includes(q) ||
-      norm(getType(p)).includes(q)
-    );
-  }
+  top.querySelector("#backBtn").onclick = ()=>{
+    renderPackages(filteredPlaces);
+  };
 
-  if(!shown.length){
-    const empty = document.createElement("div");
-    empty.className = "detailTop";
-    empty.innerHTML = `<div style="font-weight:900;">No covered places match search.</div>`;
-    list.appendChild(empty);
-    return;
-  }
-
-  shown.forEach(p=>{
+  coveredPlaces.forEach(p=>{
     const name = getName(p);
-    const district = getDistrict(p);
+    const dist = getDistrict(p);
     const type = getType(p);
     const desc = getDesc(p);
 
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-      <div class="media"></div>
-      <div class="body">
-        <div class="titleRow">
-          <div class="title">${name}</div>
-          <div class="meta">${district || ""}</div>
+    const row = document.createElement("div");
+    row.className = "placeCard";
+    row.innerHTML = `
+      <div class="pcMedia"></div>
+      <div class="pcBody">
+        <div class="pcTitleRow">
+          <div class="pcTitle">${name}</div>
+          <div class="pcMeta">${dist} • ${type}</div>
         </div>
-        <p class="desc">${desc || "Click to open details page."}</p>
-        <div class="chips">
+        <p class="pcDesc">${desc || "Click to open details page."}</p>
+        <div class="pcChips">
           <span class="tag">${type || "Place"}</span>
-          ${district ? `<span class="tag">${district}</span>` : ``}
+          ${dist ? `<span class="tag">${dist}</span>` : ``}
         </div>
       </div>
     `;
-    card.onclick = ()=>{
-      const q = encodeURIComponent(name);
-      window.location.href = `place.html?name=${q}`;
+    row.onclick = ()=>{
+      window.location.href = `place.html?name=${encodeURIComponent(name)}`;
     };
-    document.getElementById("list").appendChild(card);
+    list.appendChild(row);
   });
 }
 
-/* ==========================
-   EVENTS / ACTIONS
-========================== */
-function setStatus(text){
-  const el = document.getElementById("statusText");
-  if(el) el.textContent = text;
-}
+/* =========================================================
+   10) UI EVENTS
+========================================================= */
 function onSearch(v){
   state.search = v || "";
-  // keep desktop + mobile in sync
-  const q = document.getElementById("q");
-  const qm = document.getElementById("q_m");
-  if(document.activeElement !== q && q) q.value = state.search;
-  if(document.activeElement !== qm && qm) qm.value = state.search;
-  rerender();
+  // sync both search boxes
+  const a = document.getElementById("q");
+  const b = document.getElementById("q_m");
+  if(a && document.activeElement !== a) a.value = state.search;
+  if(b && document.activeElement !== b) b.value = state.search;
+  refreshUI();
 }
 
-function rerender(){
-  renderChips();
-  if(state.view === "packageDetail" && state.activePkg){
-    // rebuild covered using latest places (safe)
-    const covered = pickPlacesForPackage(state.allPlaces, state.activePkg);
-    openPackageDetail(state.activePkg, covered);
+function quickSelect(type){
+  if(type === "All"){
+    state.activeTypes.clear();
   }else{
-    renderPackagesView();
+    state.activeTypes.clear();
+    state.activeTypes.add(type);
   }
+  // update quick chips UI state (optional)
+  refreshUI();
 }
 
 function resetAll(){
   state.search = "";
-  state.selDistrict = "";
-  state.selDays = "";
-  state.selBudget = "";
-  const q = document.getElementById("q");
-  const qm = document.getElementById("q_m");
-  if(q) q.value = "";
-  if(qm) qm.value = "";
-  renderPackagesView();
-  renderChips();
+  state.activeTypes.clear();
+  const a = document.getElementById("q");
+  const b = document.getElementById("q_m");
+  if(a) a.value = "";
+  if(b) b.value = "";
+  refreshUI();
 }
 
-function setPreset(preset){
-  // quick presets: adjust filters
-  if(preset==="weekend"){
-    state.selDays = "2";
-    state.selBudget = "₹₹";
+function refreshUI(){
+  renderTypes();
+  const filtered = applyFilters();
+
+  // packages mode stays default; if user is in detail, keep it updated with filters too
+  if(state.view === "packageDetail" && state.activePkg){
+    const covered = pickPlacesForPackage(filtered, state.activePkg);
+    renderPackageDetail(state.activePkg, covered, filtered);
+  }else{
+    renderPackages(filtered);
   }
-  if(preset==="family"){
-    state.selBudget = "₹₹";
-  }
-  if(preset==="adventure"){
-    state.selBudget = "₹₹₹";
-  }
-  if(preset==="culture"){
-    state.selDistrict = "Kangra";
-  }
-  rerender();
 }
 
 function goAdmin(){
-  // change if your admin page is different
   window.location.href = "admin.html";
 }
 
-/* Drawer (mobile) */
+/* Mobile drawer */
 function openDrawer(){
   document.getElementById("overlay").classList.add("show");
   document.getElementById("drawer").classList.add("open");
@@ -1002,17 +836,15 @@ function closeDrawer(){
   document.getElementById("drawer").classList.remove("open");
 }
 
-/* ==========================
-   INIT
-========================== */
+/* =========================================================
+   11) INIT
+========================================================= */
 (async function init(){
   setStatus("Loading…");
-  const places = await loadPlaces();
-  state.allPlaces = (places || []).filter(Boolean);
-
-  setStatus(`Ready • ${state.allPlaces.length} places`);
-  renderChips();
-  renderPackagesView();
+  state.allPlaces = (await loadPlaces()).filter(Boolean);
+  setStatus(`Ready • ${state.allPlaces.length} total`);
+  renderTypes();
+  refreshUI();
 })();
 </script>
 
