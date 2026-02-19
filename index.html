@@ -828,7 +828,7 @@ function haversine(lat1, lon1, lat2, lon2){
 }
 
 /* =========================
-   MAP (lazy init)
+   MAP (lazy )
    ========================= */
 function ensureMap(){
   if(mapReady) return;
@@ -970,13 +970,12 @@ function renderList(list){
       </div>
     `;
   }).join("");
-
-  box.querySelectorAll(".place").forEach(el=>{
-    el.addEventListener("click", ()=>{
-      const i = Number(el.getAttribute("data-i"));
-      openDrawer(list[i]);
-    });
+box.querySelectorAll(".place").forEach(el=>{
+  el.addEventListener("click", ()=>{
+    const i = Number(el.getAttribute("data-i"));
+    openDrawerFresh(list[i].id); // ✅ fetch latest from Firebase
   });
+});
 }
 
 /* =========================
@@ -1192,6 +1191,92 @@ $("openAdmin").onclick = ()=>{ window.location.href = "admin.html"; };
   shownPlaces = allPlaces.slice();
   applyFilters(false);
 })();
+  // ✅ Get latest place object from Firebase by id/key
+async function fetchPlaceById(id){
+  if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const snap = await db.ref(`${dbPath}/${id}`).once("value");
+  if(!snap.exists()) return null;
+
+  const o = snap.val() || {};
+
+  // Build the same structure your UI expects
+  const name = safeText(o["Location Name"] || o.name || o.title || id);
+  const district = safeText(o["District"] || o.district || "Unknown");
+  const segment = safeText(o["Segment Type"] || o.segment || "Destination");
+  const locationType = safeText(o["Location Type"] || o.type || "");
+  const overview = safeText(o["Overview"] || o.overview || "");
+  const short = safeText(o["Short Description"] || o.short || "");
+  const keyFeatures = safeText(o["Key Features"] || o.features || "");
+  const how = safeText(o["How to Reach"] || o.how || "");
+  const mapUrl = safeText(o["Map"] || o.map || "");
+
+  // lat/lng in your latest sheet are stored as Latitude/Longitude (numbers)
+  const lat = (o.Latitude !== undefined && o.Latitude !== null) ? Number(o.Latitude) : null;
+  const lng = (o.Longitude !== undefined && o.Longitude !== null) ? Number(o.Longitude) : null;
+
+  // fallback if you stored mapUrl earlier
+  const parsed = parseLatLngFromMapUrl(mapUrl);
+  const finalLat = Number.isFinite(lat) ? lat : parsed.lat;
+  const finalLng = Number.isFinite(lng) ? lng : parsed.lng;
+
+  // Images can be in images[] or photo 1/2/3
+  const images =
+    (Array.isArray(o.images) && o.images.length) ? o.images :
+    [o["photo 1"], o["photo 2"], o["photo 3"]].filter(Boolean);
+
+  const type = normalizeType(segment);
+  const brief = overview || short || keyFeatures || "Explore this place in Himachal Pradesh.";
+
+  // ✅ rates (your app-script stores rates.solo etc OR separate columns)
+  const rates = o.rates || {
+    solo: o.Rate_Solo ?? null,
+    couple: o.Rate_Couple ?? null,
+    family: o.Rate_Family ?? null,
+    group: o.Rate_Group ?? null
+  };
+
+  return {
+    id,
+    name,
+    district,
+    type,
+    segment,
+    locationType,
+    brief,
+    how,
+    mapUrl,
+    lat: finalLat,
+    lng: finalLng,
+    images,
+    rates,
+    TripDays_Min: o.TripDays_Min ?? null,
+    TripDays_Max: o.TripDays_Max ?? null,
+    BestTime: o["Best Time to Visit"] ?? "",
+    DistFromHQ: o["Dist from HQ"] ?? ""
+  };
+}
+
+// ✅ open drawer using FRESH firebase data (not cached list)
+async function openDrawerFresh(placeId){
+  try{
+    $("status").textContent = "Loading details…";
+    const fresh = await fetchPlaceById(placeId);
+    $("status").textContent = "Ready";
+
+    if(!fresh){
+      alert("This place was not found in Firebase.");
+      return;
+    }
+    openDrawer(fresh); // reuse your existing drawer renderer
+  }catch(e){
+    console.error(e);
+    $("status").textContent = "Error loading details";
+    alert("Failed to load details from Firebase. Check console.");
+  }
+}
+
 </script>
 </body>
 </html>
