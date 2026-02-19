@@ -130,15 +130,24 @@
         linear-gradient(120deg, rgba(0,0,0,.55), rgba(0,0,0,.10)),
         url("Kee_monastery.jpg") center/cover no-repeat;
     }
-    .heroMain::after{
-      content:"";
-      position:absolute; inset:0;
-      background:
-        radial-gradient(700px 420px at 20% 35%, rgba(103,232,249,.14), transparent 62%),
-        radial-gradient(700px 420px at 78% 30%, rgba(167,139,250,.16), transparent 62%);
-      pointer-events:none;
-      mix-blend-mode: screen;
-    }
+    .heroMain{
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r2, 26px);
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: var(--shadow, 0 24px 80px rgba(0,0,0,.55));
+  min-height: 360px;
+
+  /* ✅ easier to debug + GitHub-pages friendly */
+  background-image:
+    linear-gradient(120deg, rgba(0,0,0,.55), rgba(0,0,0,.10)),
+    url("./images/Kee_monastery.jpg");   /* change path as per your folder */
+
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
     .heroInner{
       position:relative;
       padding:22px;
