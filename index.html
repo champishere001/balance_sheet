@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — Types First + Place Details + Smart Planner</title>
+  <title>Himachal Explorer — Segments First + AI Master Planner + Smart Packages</title>
 
   <!-- Leaflet (no API key needed) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -43,7 +43,7 @@
         linear-gradient(180deg, var(--bg0), var(--bg1));
       overflow-x:hidden;
     }
-    .wrap{max-width: 1260px;margin: 0 auto;padding: 18px 14px 34px;}
+    .wrap{max-width: 1280px;margin: 0 auto;padding: 18px 14px 34px;}
     a{color:inherit}
 
     /* ===== TOPBAR ===== */
@@ -94,6 +94,7 @@
       font-size:12px;
       cursor:pointer;
       transition: transform .12s ease, background .12s ease;
+      white-space:nowrap;
     }
     .tabBtn:hover{transform: translateY(-1px)}
     .tabBtn.active{
@@ -127,15 +128,23 @@
       position:relative;
       min-height: 520px;
     }
-    .hero::before{
-      content:"";
-      position:absolute; inset:-2px;
+    .heroBg{
+      position:absolute; inset:0;
       background:
         radial-gradient(700px 500px at 15% 15%, rgba(109,124,255,.28), transparent 60%),
         radial-gradient(650px 480px at 75% 20%, rgba(45,226,196,.18), transparent 60%),
         radial-gradient(700px 520px at 60% 85%, rgba(255,207,90,.10), transparent 65%);
-      opacity: .95;
+      opacity:.95;
       pointer-events:none;
+    }
+    .heroBgImg{
+      position:absolute; inset:0;
+      background-size: cover;
+      background-position:center;
+      filter: saturate(1.05) contrast(1.05);
+      opacity:.16;
+      transform: scale(1.02);
+      mix-blend-mode: screen;
     }
     .heroInner{position:relative;padding: 18px 18px 18px;display:grid;grid-template-rows: auto auto 1fr;gap:12px;}
     .heroTag{
@@ -163,6 +172,7 @@
       overflow:hidden;
       position:relative;
       min-height: 120px;
+      backdrop-filter: blur(10px);
     }
     .quoteCard::after{
       content:"";
@@ -211,6 +221,7 @@
       outline:none;
       font: inherit;
     }
+    textarea{min-height: 96px; resize: vertical;}
     input::placeholder{color: rgba(255,255,255,.45)}
     select option{color:#111}
     .btnRow{display:flex; gap:10px; flex-wrap:wrap;margin-top:10px;}
@@ -238,6 +249,9 @@
     .kpi{border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.06);border-radius: 18px;padding:10px 12px;}
     .kpi .t{font-size:12px;color:var(--muted)}
     .kpi .v{font-size:14px;font-weight:900;margin-top:4px}
+    .mutedSmall{font-size:12px;color:var(--muted);line-height:1.4}
+    .hr{height:1px;background:rgba(255,255,255,.10); margin:10px 0}
+    .hidden{display:none !important;}
 
     /* Results */
     .results{border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.05);border-radius: var(--r2);overflow:hidden;}
@@ -253,11 +267,8 @@
     .chip{font-size:12px;padding:6px 8px;border-radius: 999px;background: rgba(109,124,255,.16);border: 1px solid rgba(109,124,255,.22);color: rgba(255,255,255,.88);}
     .chip2{background: rgba(45,226,196,.14);border: 1px solid rgba(45,226,196,.20);}
     .chip3{background: rgba(255,207,90,.12);border: 1px solid rgba(255,207,90,.18);}
-    .mutedSmall{font-size:12px;color:var(--muted);line-height:1.4}
-    .hr{height:1px;background:rgba(255,255,255,.10); margin:10px 0}
-    .hidden{display:none !important;}
 
-    /* ===== EXPLORE (Types first) ===== */
+    /* ===== EXPLORE ===== */
     .below{margin-top: 14px;border:1px solid rgba(255,255,255,.12);background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));border-radius: var(--r2);box-shadow: var(--shadow);overflow:hidden;}
     .belowHead{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.10);display:flex; align-items:center; justify-content:space-between; gap:10px;flex-wrap: wrap;}
     .belowHead .title{display:flex; flex-direction:column; gap:4px;}
@@ -276,7 +287,32 @@
     @media (max-width: 980px){.grid{grid-template-columns: repeat(2, 1fr)}}
     @media (max-width: 560px){.grid{grid-template-columns: 1fr}}
 
-    /* Cards */
+    /* Segment cards (main screen) */
+    .segCard{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      border-radius: 18px;
+      padding: 12px 12px;
+      cursor:pointer;
+      transition: transform .12s ease;
+      position:relative;
+      overflow:hidden;
+      min-height: 120px;
+    }
+    .segCard:hover{transform: translateY(-2px)}
+    .segCard::after{
+      content:"";
+      position:absolute; inset:auto -50px -50px auto;
+      width:160px;height:160px;border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, rgba(45,226,196,.20), transparent 60%);
+      opacity:.7;
+    }
+    .segCard b{position:relative; display:block; font-size:13px;}
+    .segCard .sub{position:relative; margin-top:6px; font-size:12px; color:var(--muted); line-height:1.35}
+    .segCard .count{position:relative; margin-top:10px; font-size:12px; font-weight:900; display:inline-flex; gap:8px; align-items:center;}
+    .pillTiny{width:auto; padding:6px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.14); background: rgba(0,0,0,.18);}
+
+    /* Place cards */
     .card{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.06);
@@ -287,15 +323,16 @@
       display:grid;
       grid-template-rows: 128px auto;
       min-height: 230px;
+      position:relative;
     }
     .card:hover{transform: translateY(-2px)}
     .thumb{
+      position:relative;
+      overflow:hidden;
       background:
         radial-gradient(160px 120px at 20% 20%, rgba(109,124,255,.30), transparent 60%),
         radial-gradient(140px 120px at 80% 25%, rgba(45,226,196,.18), transparent 60%),
         linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      position:relative;
-      overflow:hidden;
     }
     .thumb img{width:100%;height:100%;object-fit:cover;display:block;opacity:.92;filter:saturate(1.05) contrast(1.05);}
     .thumb .tag{
@@ -310,31 +347,6 @@
     .cardBody .sub{margin-top:6px;font-size:12px;color:var(--muted);line-height:1.35}
     .row{margin-top:8px;display:flex; gap:6px; flex-wrap:wrap;}
     .mini{font-size:12px;padding:5px 7px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.05);color: rgba(255,255,255,.84);}
-
-    /* Type cards (main screen) */
-    .typeCard{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      border-radius: 18px;
-      padding: 12px 12px;
-      cursor:pointer;
-      transition: transform .12s ease;
-      position:relative;
-      overflow:hidden;
-      min-height: 110px;
-    }
-    .typeCard:hover{transform: translateY(-2px)}
-    .typeCard::after{
-      content:"";
-      position:absolute; inset:auto -50px -50px auto;
-      width:160px;height:160px;border-radius:999px;
-      background: radial-gradient(circle at 30% 30%, rgba(45,226,196,.20), transparent 60%);
-      opacity:.7;
-    }
-    .typeCard b{position:relative; display:block; font-size:13px;}
-    .typeCard .sub{position:relative; margin-top:6px; font-size:12px; color:var(--muted); line-height:1.35}
-    .typeCard .count{position:relative; margin-top:10px; font-size:12px; font-weight:900; display:inline-flex; gap:8px; align-items:center;}
-    .pillTiny{width:auto; padding:6px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.14); background: rgba(0,0,0,.18);}
 
     /* Map */
     #map{width:100%;height: 360px;border-radius: 20px;border:1px solid rgba(255,255,255,.12);overflow:hidden;}
@@ -368,12 +380,44 @@
     }
     .modalBody{padding: 12px 14px;display:grid;grid-template-columns: 1fr 1fr;gap:12px;}
     @media (max-width: 900px){.modalBody{grid-template-columns: 1fr}}
-    .modalImg{border-radius: 20px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.05);height: 260px;}
+    .modalImg{
+      border-radius: 20px;overflow:hidden;border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      height: 260px; position:relative;
+    }
     .modalImg img{width:100%;height:100%;object-fit:cover;display:block;opacity:.95}
+    .modalImg .overlay{
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,.35));
+      pointer-events:none;
+    }
     .modalBlock{border:1px solid rgba(255,255,255,.10);background: rgba(255,255,255,.05);border-radius: 20px;padding: 10px 12px;}
     .modalBlock .h{font-size:12px;color:var(--muted)}
     .modalBlock .v{margin-top:6px;font-size:13px;line-height:1.45}
     .modalActions{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;}
+
+    /* AI Master Planner */
+    .aiBox{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      border-radius: 20px;
+      overflow:hidden;
+    }
+    .aiHead{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.10);display:flex;justify-content:space-between;gap:10px;align-items:center;}
+    .aiHead b{font-size:13px}
+    .aiBody{padding:10px 12px;display:grid;gap:10px;}
+    .aiMsg{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      border-radius: 16px;
+      padding: 10px 10px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .aiMsg small{display:block;color:rgba(255,255,255,.55);margin-top:6px}
+    .aiRow{display:grid;grid-template-columns: 1fr auto; gap:10px; align-items:stretch;}
+    @media (max-width: 980px){.aiRow{grid-template-columns:1fr}}
+    .aiBtn{width:auto; padding:10px 14px; border-radius:14px; font-weight:900;}
     .toast{
       position: fixed; right: 16px; bottom: 16px; z-index: 2000;
       display:none; min-width: 260px; max-width: 360px;
@@ -399,13 +443,14 @@
         <div class="logo"></div>
         <div>
           <h1>Himachal Explorer</h1>
-          <p>✅ Main screen shows only <b>Location Types</b> • Click a type → see places • New field: <b>Details</b></p>
+          <p>Main screen shows only <b>Segments</b> (NOT others) • Click a segment → places • Planner + AI master plan</p>
         </div>
       </div>
 
       <div class="tabs">
         <button class="tabBtn active" data-tab="tabExplore">Explore</button>
         <button class="tabBtn" data-tab="tabPackages">Packages</button>
+        <button class="tabBtn" data-tab="tabAI">AI Master Planner</button>
       </div>
 
       <div class="pills">
@@ -417,15 +462,22 @@
     <!-- ===== PACKAGES TAB ===== -->
     <div class="layout hidden" id="tabPackages">
       <section class="hero">
+        <div class="heroBg"></div>
+        <div class="heroBgImg" id="heroBgImg"></div>
+
         <div class="heroInner">
           <div class="heroTag">
             <span style="width:8px;height:8px;border-radius:999px;background:var(--brand2)"></span>
             <span>Route-friendly travel planning</span>
           </div>
+
           <h2 class="heroTitle">Build a <span>Smart Package</span> — realistic distance, real cost</h2>
+
           <p class="heroDesc">
             Select Start → End. We pick places near your travel corridor so you don’t get far-away locations in one package.
+            Images from your Firebase places are also used as subtle background.
           </p>
+
           <div class="quoteGrid" id="quoteGrid"></div>
         </div>
       </section>
@@ -524,6 +576,7 @@
             <div class="hr"></div>
             <div class="btnRow">
               <button class="ghost" id="btnUseBest" type="button">Use Best Package → Explore Map</button>
+              <button class="ghost" id="btnAskAIFromBest" type="button">Ask AI to refine Best Package</button>
             </div>
           </div>
         </div>
@@ -540,64 +593,137 @@
       </aside>
     </div>
 
-    <!-- ===== EXPLORE TAB (TYPES FIRST) ===== -->
+    <!-- ===== AI TAB ===== -->
+    <div class="layout hidden" id="tabAI">
+      <section class="hero">
+        <div class="heroBg"></div>
+        <div class="heroBgImg" id="aiBgImg"></div>
+
+        <div class="heroInner">
+          <div class="heroTag">
+            <span style="width:8px;height:8px;border-radius:999px;background:var(--brand)"></span>
+            <span>AI Master Planner (on-device logic)</span>
+          </div>
+          <h2 class="heroTitle">Ask the <span>AI Trip Expert</span> — it recommends packages + explains why</h2>
+          <p class="heroDesc">
+            This AI module works without any external API. It reads your Firebase data, understands your inputs,
+            and generates a master plan with 3 package options + day-wise schedule.
+          </p>
+
+          <div class="aiBox">
+            <div class="aiHead">
+              <b>AI Chat</b>
+              <span class="mutedSmall" id="aiStatus">Ready</span>
+            </div>
+            <div class="aiBody">
+              <div class="aiMsg" id="aiOut">
+                Hi 👋 Tell me: Start, End, Days, People, interest (temples/treks/lakes/relax) and budget range.
+                <small>Example: “Start Shimla, end Manali, 4 days, 2 people, relax + nature, budget 25k.”</small>
+              </div>
+              <div class="aiRow">
+                <textarea id="aiIn" placeholder="Type your request..."></textarea>
+                <button class="aiBtn" id="aiSend" type="button">Generate Plan</button>
+              </div>
+              <div class="btnRow">
+                <button class="ghost" id="aiUsePlanner" type="button">Apply to Planner (Start/End/Days/Pax)</button>
+                <button class="secondary" id="aiClear" type="button">Clear</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <aside class="plannerCol">
+        <div class="planner">
+          <div class="plannerHead">
+            <div>
+              <h2>AI Summary</h2>
+              <div class="sub">Key decisions + constraints (distance, season, tempo feasibility)</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+              <div style="font-size:12px;color:var(--muted)">Confidence</div>
+              <div style="font-size:12px;font-weight:900" id="aiConf">—</div>
+            </div>
+          </div>
+          <div class="plannerBody">
+            <div class="mutedSmall" id="aiSummary">No plan yet.</div>
+            <div class="hr"></div>
+            <div class="mutedSmall" id="aiPackages">—</div>
+          </div>
+        </div>
+
+        <div class="results">
+          <div class="resultsHead"><b>AI Suggested Places</b><span class="mutedSmall" id="aiPlaceCount">0</span></div>
+          <div class="resultsBody" id="aiPlaceList">
+            <div class="mutedSmall">Generate a plan to see suggested places here.</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- ===== EXPLORE TAB (SEGMENTS FIRST) ===== -->
     <section class="below" id="tabExplore">
       <div class="belowHead">
         <div class="title">
-          <b>Explore (Types first)</b>
-          <span>Main screen shows ONLY <b>Location Types</b>. Click a type to view places under it.</span>
+          <b>Explore (Segments first)</b>
+          <span>Main screen shows ONLY <b>Segment Types</b>. Click a segment to view places under it.</span>
         </div>
-        <div class="mutedSmall" id="exploreBreadcrumb">Showing: <b>All Types</b></div>
+        <div class="mutedSmall" id="exploreBreadcrumb">Showing: <b>All Segments</b></div>
       </div>
 
       <div class="belowBody">
         <div class="split">
-          <!-- Left: types OR places -->
+          <!-- Left: segments OR places -->
           <div class="panel">
             <div class="panelHead">
-              <b id="leftTitle">Location Types</b>
+              <b id="leftTitle">Segment Types</b>
               <span class="mutedSmall">Showing <b id="showCount">0</b></span>
             </div>
+
             <div class="panelBody">
-              <!-- TYPES MODE -->
-              <div id="typesMode">
+              <!-- SEGMENTS MODE -->
+              <div id="segmentsMode">
                 <div class="filters">
                   <div class="full">
-                    <label>Search Type</label>
-                    <input id="qType" placeholder="e.g., Temple, Trek, Lake, Waterfall…"/>
+                    <label>Search Segment</label>
+                    <input id="qSeg" placeholder="e.g., Destination, Temple, Trek, Lake…"/>
                   </div>
                   <div class="full btnRow">
-                    <button class="ghost" id="btnClearTypeSearch" type="button">Clear</button>
+                    <button class="ghost" id="btnClearSegSearch" type="button">Clear</button>
                   </div>
                 </div>
                 <div class="hr"></div>
-                <div class="grid" id="typeGrid"></div>
+                <div class="grid" id="segGrid"></div>
               </div>
 
-              <!-- PLACES MODE (shown after clicking a type) -->
+              <!-- PLACES MODE -->
               <div id="placesMode" class="hidden">
                 <div class="filters">
                   <div class="full">
-                    <label>Search inside this type</label>
-                    <input id="qPlace" placeholder="Search name, district, segment, details…"/>
+                    <label>Search inside this segment</label>
+                    <input id="qPlace" placeholder="Search name, district, type, details…"/>
                   </div>
                   <div>
                     <label>District</label>
                     <select id="fDistrict"><option value="">All</option></select>
                   </div>
                   <div>
-                    <label>Segment</label>
-                    <select id="fSegment"><option value="">All</option></select>
+                    <label>Location Type</label>
+                    <select id="fType"><option value="">All</option></select>
                   </div>
                   <div class="full btnRow">
-                    <button class="ghost" id="btnBackToTypes" type="button">← Back to Types</button>
+                    <button class="ghost" id="btnBackToSeg" type="button">← Back to Segments</button>
                     <button class="ghost" id="btnFitAll" type="button">Fit Map to Results</button>
+                    <button class="ghost" id="btnSendToPlanner" type="button">Use Selected as Start/End</button>
                   </div>
                 </div>
                 <div class="hr"></div>
                 <div class="grid" id="placeGrid"></div>
+                <div class="mutedSmall" style="margin-top:10px">
+                  Tip: Open a place → Set as Start / End (for package planner).
+                </div>
               </div>
-
             </div>
           </div>
 
@@ -610,7 +736,7 @@
             <div class="panelBody">
               <div id="map"></div>
               <div class="mapHint">
-                Click a marker to open details. Your new <b>Details</b> field is shown in the place modal.
+                ✅ Images are also used in backgrounds (Hero). Click a marker / card for full details.
               </div>
             </div>
           </div>
@@ -620,7 +746,7 @@
 
   </div>
 
-  <!-- ===== MODAL (Place Details) ===== -->
+  <!-- ===== MODAL ===== -->
   <div class="modal" id="modal">
     <div class="modalCard" role="dialog" aria-modal="true" aria-label="Place details">
       <div class="modalTop">
@@ -636,7 +762,6 @@
             <div class="v" id="mAbout">—</div>
           </div>
 
-          <!-- ✅ NEW COLUMN DISPLAY -->
           <div class="modalBlock">
             <div class="h">Details (new column)</div>
             <div class="v" id="mDetails">—</div>
@@ -646,6 +771,7 @@
             <div class="h">How to Reach</div>
             <div class="v" id="mReach">—</div>
           </div>
+
           <div class="modalBlock">
             <div class="h">Best Time / Key Features</div>
             <div class="v" id="mExtra">—</div>
@@ -655,6 +781,7 @@
             <button id="mSetStart" type="button">Set as Start</button>
             <button class="ghost" id="mSetEnd" type="button">Set as End</button>
           </div>
+
           <div class="mutedSmall" id="mMeta">—</div>
         </div>
       </div>
@@ -665,16 +792,18 @@
 
   <script>
     /* ===========================
-       FIREBASE CONFIG (FILL THIS)
+       ✅ YOUR FIREBASE CONFIG
+       (converted to compat object)
     =========================== */
     const firebaseConfig = {
-      apiKey: "PASTE_YOUR_API_KEY",
-      authDomain: "PASTE_YOUR_PROJECT.firebaseapp.com",
+      apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
+      authDomain: "revnue-records.firebaseapp.com",
       databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "revnue-records",
-      storageBucket: "PASTE.appspot.com",
-      messagingSenderId: "PASTE",
-      appId: "PASTE"
+      storageBucket: "revnue-records.firebasestorage.app",
+      messagingSenderId: "182348503564",
+      appId: "1:182348503564:web:480085405b09177245ac29",
+      measurementId: "G-MGTDBCG896"
     };
 
     /* ===========================
@@ -685,12 +814,13 @@
       { q: "Take fewer places, take them deeper — that’s the real plan.", by: "Himachal Explorer" },
       { q: "The best itinerary is the one that leaves you time to breathe.", by: "Himachal Explorer" },
       { q: "Temples on ridges, lakes in silence — calm without words.", by: "Himachal Explorer" },
-      { q: "Adventure here isn’t just speed — it’s altitude and wonder.", by: "Himachal Explorer" }
+      { q: "Adventure here isn’t just speed — it’s altitude and wonder.", by: "Himachal Explorer" },
+      { q: "Your best trip is the one that stays realistic on the ground.", by: "Himachal Explorer" }
     ];
     let quoteIndex = 0;
 
     /* ===========================
-       DATA + HELPERS
+       HELPERS
     =========================== */
     const $ = (id)=>document.getElementById(id);
     const dbDot = $("dbDot"), dbText = $("dbText"), loadedCount = $("loadedCount");
@@ -699,23 +829,26 @@
     let ALL = [];
     let MAP = null;
     let MARKERS_LAYER = null;
-    let POLY_LAYER = null;
 
     // Explore state
-    let CURRENT_TYPE = ""; // when empty => show types
-    let TYPE_LIST = [];    // {type, count, samplePhoto}
-    let TYPE_PLACES = [];  // places within selected type
-    let VIEW_PLACES = [];  // filtered places in selected type
+    let CURRENT_SEG = "";
+    let SEG_LIST = [];       // {seg, count}
+    let SEG_PLACES = [];
+    let VIEW_PLACES = [];
+    let SELECTED_KEYS = [];  // allow picking 2 places quickly
 
     // Packages state
     let LAST_PACKAGES = [];
     let LAST_BEST = null;
 
+    // AI state
+    let AI_LAST = null;
+
     function showToast(msg){
       toast.textContent = msg;
       toast.classList.add("show");
       clearTimeout(window.__toastT);
-      window.__toastT = setTimeout(()=>toast.classList.remove("show"), 2000);
+      window.__toastT = setTimeout(()=>toast.classList.remove("show"), 2200);
     }
     function setDbStatus(ok, msg){
       dbDot.classList.remove("ok","bad");
@@ -736,23 +869,31 @@
       return p["photo 1"] || p["Photo 1"] || p["photo1"] || p["Image"] || p["image"] || "";
     }
 
-    /* ✅ NEW FIELD: details */
+    /* ===========================
+       ✅ Normalize + NO "Other bucket"
+       If segment missing => make it "Destination" (better than Other)
+    =========================== */
     function normalizeRecord(key, raw){
       const p = raw || {};
+      const seg =
+        safeStr(p["Segment Type"] || p["segment type"] || p["segment"] || "").trim() ||
+        "Destination";
+      const type =
+        safeStr(p["Location Type"] || p["location type"] || p["type"] || "").trim() ||
+        "Point of Interest";
+
       return {
         key,
         name: safeStr(p["Location Name"] || p["name"] || p["Name"] || key),
         district: safeStr(p["District"] || p["district"] || ""),
-        segment: safeStr(p["Segment Type"] || p["segment type"] || p["segment"] || "Other"),
-        type: safeStr(p["Location Type"] || p["location type"] || p["type"] || "Other"),
+        segment: seg,
+        type: type,
         short: safeStr(p["Short Description"] || p["short description"] || ""),
         overview: safeStr(p["Overview"] || p["overview"] || ""),
         reach: safeStr(p["How to Reach"] || p["how to reach"] || ""),
         bestTime: safeStr(p["Best Time to Visit"] || p["best time to visit"] || ""),
         keyFeatures: safeStr(p["Key Features"] || p["key features"] || ""),
-        details: safeStr(
-          p["Details"] || p["details"] || p["Place Details"] || p["place_details"] || p["Description (Detailed)"] || ""
-        ),
+        details: safeStr(p["Details"] || p["details"] || p["Place Details"] || p["place_details"] || ""),
         lat: toNum(p["Latitude"] ?? p["latitude"]),
         lng: toNum(p["Longitude"] ?? p["longitude"]),
         photo: safeStr(pickPhoto(p))
@@ -760,13 +901,14 @@
     }
 
     function uniq(arr){ return Array.from(new Set(arr.filter(Boolean))); }
+    function byAZ(a,b){ return (a||"").localeCompare(b||""); }
     function getPlaceByKey(key){ return ALL.find(p=>p.key===key) || null; }
 
     /* ===========================
        Tabs
     =========================== */
     function activateTab(tabId){
-      ["tabExplore","tabPackages"].forEach(id=>{
+      ["tabExplore","tabPackages","tabAI"].forEach(id=>{
         const el = $(id);
         if(!el) return;
         el.classList.toggle("hidden", id !== tabId);
@@ -775,12 +917,12 @@
         b.classList.toggle("active", b.getAttribute("data-tab") === tabId);
       });
       if(tabId === "tabExplore" && MAP){
-        setTimeout(()=>MAP.invalidateSize(), 60);
+        setTimeout(()=>MAP.invalidateSize(), 80);
       }
     }
 
     /* ===========================
-       Quotes render
+       Quotes
     =========================== */
     function renderQuotes(){
       const grid = $("quoteGrid");
@@ -811,8 +953,6 @@
       }).addTo(MAP);
 
       MARKERS_LAYER = L.layerGroup().addTo(MAP);
-      POLY_LAYER = L.layerGroup().addTo(MAP);
-
       MAP.setView([31.6, 77.2], 8);
     }
 
@@ -827,67 +967,80 @@
         m.bindPopup(`<b>${escapeHtml(p.name)}</b><br/><span style="color:#333">${escapeHtml(p.district||"")}</span>`);
         m.on("click", ()=>openPlaceModal(p.key));
       });
-    }
-
-    function fitMapTo(list){
-      const pts = list.filter(p=>p.lat!=null && p.lng!=null).map(p=>[p.lat,p.lng]);
-      if(!pts.length) return;
-      MAP.fitBounds(pts, {padding:[22,22]});
+      if(pts.length){
+        const b = L.latLngBounds(pts);
+        MAP.fitBounds(b, {padding:[22,22]});
+      }
     }
 
     /* ===========================
-       EXPLORE: TYPES FIRST
-       - Main screen: show only unique Location Types
-       - Click type: show places of that type
+       Background images (hero)
+       - pick random photos from ALL
     =========================== */
-    function buildTypeList(){
+    function refreshHeroBackground(){
+      const photos = ALL.filter(p=>p.photo).map(p=>p.photo);
+      if(!photos.length) return;
+
+      const pick = ()=>photos[Math.floor(Math.random()*photos.length)];
+      const p1 = pick();
+      $("heroBgImg").style.backgroundImage = `url("${p1}")`;
+
+      const p2 = pick();
+      $("aiBgImg").style.backgroundImage = `url("${p2}")`;
+    }
+    setInterval(()=>{ if(ALL.length) refreshHeroBackground(); }, 8000);
+
+    /* ===========================
+       EXPLORE: SEGMENTS FIRST
+       (Main screen shows ONLY Segment Types)
+    =========================== */
+    function buildSegmentList(){
       const groups = new Map();
       for(const p of ALL){
-        const t = (p.type || "Other").trim() || "Other";
-        if(!groups.has(t)) groups.set(t, {type:t, count:0, samplePhoto:""});
-        const g = groups.get(t);
-        g.count++;
-        if(!g.samplePhoto && p.photo) g.samplePhoto = p.photo;
+        const s = (p.segment || "Destination").trim() || "Destination";
+        if(!groups.has(s)) groups.set(s, {seg:s, count:0});
+        groups.get(s).count++;
       }
-      TYPE_LIST = Array.from(groups.values()).sort((a,b)=>b.count - a.count);
+      SEG_LIST = Array.from(groups.values()).sort((a,b)=>b.count - a.count);
     }
 
-    function showTypesScreen(){
-      CURRENT_TYPE = "";
-      $("exploreBreadcrumb").innerHTML = `Showing: <b>All Types</b>`;
-      $("leftTitle").textContent = "Location Types";
-      $("typesMode").classList.remove("hidden");
+    function showSegmentsScreen(){
+      CURRENT_SEG = "";
+      SELECTED_KEYS = [];
+      $("exploreBreadcrumb").innerHTML = `Showing: <b>All Segments</b>`;
+      $("leftTitle").textContent = "Segment Types";
+      $("segmentsMode").classList.remove("hidden");
       $("placesMode").classList.add("hidden");
 
-      const q = ($("qType").value||"").trim().toLowerCase();
-      const list = q ? TYPE_LIST.filter(x=>x.type.toLowerCase().includes(q)) : TYPE_LIST;
+      const q = ($("qSeg").value||"").trim().toLowerCase();
+      const list = q ? SEG_LIST.filter(x=>x.seg.toLowerCase().includes(q)) : SEG_LIST;
 
       $("showCount").textContent = String(list.length);
-
-      const grid = $("typeGrid");
+      const grid = $("segGrid");
       grid.innerHTML = "";
+
       if(!list.length){
-        grid.innerHTML = `<div class="mutedSmall">No types found.</div>`;
-        renderMarkers([]); // no markers
+        grid.innerHTML = `<div class="mutedSmall">No segments found.</div>`;
+        renderMarkers([]);
         return;
       }
 
       list.forEach(item=>{
         const div = document.createElement("div");
-        div.className = "typeCard";
+        div.className = "segCard";
         div.innerHTML = `
-          <b>${escapeHtml(item.type)}</b>
-          <div class="sub">Explore all places under this type.</div>
+          <b>${escapeHtml(item.seg)}</b>
+          <div class="sub">Click to explore places under this segment.</div>
           <div class="count">
             <span class="pillTiny">${item.count} places</span>
             <span class="pillTiny">Click →</span>
           </div>
         `;
-        div.addEventListener("click", ()=>openType(item.type));
+        div.addEventListener("click", ()=>openSegment(item.seg));
         grid.appendChild(div);
       });
 
-      // On type screen we do NOT show all markers (as per your request)
+      // IMPORTANT: do not show all markers together
       renderMarkers([]);
     }
 
@@ -903,38 +1056,37 @@
       if(prev && [...sel.options].some(o=>o.value===prev)) sel.value = prev;
     }
 
-    function openType(typeName){
-      CURRENT_TYPE = typeName;
-      $("exploreBreadcrumb").innerHTML = `Showing: <b>${escapeHtml(typeName)}</b>`;
-      $("leftTitle").textContent = `Places — ${typeName}`;
-      $("typesMode").classList.add("hidden");
+    function openSegment(segName){
+      CURRENT_SEG = segName;
+      SELECTED_KEYS = [];
+      $("exploreBreadcrumb").innerHTML = `Showing: <b>${escapeHtml(segName)}</b>`;
+      $("leftTitle").textContent = `Places — ${segName}`;
+      $("segmentsMode").classList.add("hidden");
       $("placesMode").classList.remove("hidden");
 
-      // base list for this type
-      TYPE_PLACES = ALL.filter(p => (p.type || "Other") === typeName);
+      SEG_PLACES = ALL.filter(p => (p.segment || "Destination") === segName);
 
-      // update district/segment dropdown based on this type only
-      fillFilterSelect($("fDistrict"), uniq(TYPE_PLACES.map(x=>x.district)).sort((a,b)=>a.localeCompare(b)));
-      fillFilterSelect($("fSegment"), uniq(TYPE_PLACES.map(x=>x.segment)).sort((a,b)=>a.localeCompare(b)));
+      fillFilterSelect($("fDistrict"), uniq(SEG_PLACES.map(x=>x.district)).sort(byAZ));
+      fillFilterSelect($("fType"), uniq(SEG_PLACES.map(x=>x.type)).sort(byAZ));
 
       $("qPlace").value = "";
       $("fDistrict").value = "";
-      $("fSegment").value = "";
+      $("fType").value = "";
 
       applyPlaceFilters();
-      showToast(`Type opened: ${typeName}`);
+      showToast(`Segment opened: ${segName}`);
     }
 
     function applyPlaceFilters(){
       const q = ($("qPlace").value||"").trim().toLowerCase();
       const d = $("fDistrict").value;
-      const s = $("fSegment").value;
+      const t = $("fType").value;
 
-      VIEW_PLACES = TYPE_PLACES.filter(p=>{
+      VIEW_PLACES = SEG_PLACES.filter(p=>{
         if(d && p.district !== d) return false;
-        if(s && p.segment !== s) return false;
+        if(t && p.type !== t) return false;
         if(q){
-          const hay = `${p.name} ${p.district} ${p.segment} ${p.short} ${p.overview} ${p.details} ${p.keyFeatures}`.toLowerCase();
+          const hay = `${p.name} ${p.district} ${p.segment} ${p.type} ${p.short} ${p.overview} ${p.details} ${p.keyFeatures}`.toLowerCase();
           if(!hay.includes(q)) return false;
         }
         return true;
@@ -943,27 +1095,26 @@
       $("showCount").textContent = String(VIEW_PLACES.length);
       renderPlaceCards(VIEW_PLACES);
       renderMarkers(VIEW_PLACES);
-      if(VIEW_PLACES.some(p=>p.lat!=null && p.lng!=null)){
-        fitMapTo(VIEW_PLACES);
-      }
     }
 
     function renderPlaceCards(list){
       const grid = $("placeGrid");
       grid.innerHTML = "";
-
       if(!list.length){
-        grid.innerHTML = `<div class="mutedSmall">No places found under this type. Try clearing filters.</div>`;
+        grid.innerHTML = `<div class="mutedSmall">No places found. Clear filters.</div>`;
         return;
       }
 
-      // show max 60 to keep fast
       list.slice(0,60).forEach(p=>{
         const c = document.createElement("div");
         c.className = "card";
-        const tag = escapeHtml(p.segment || "Other");
+        const tag = escapeHtml(p.type || "Point of Interest");
         const img = p.photo ? `<img src="${escapeHtml(p.photo)}" alt="${escapeHtml(p.name)}" onerror="this.remove();"/>` : "";
-        const preview = (p.details || p.short || p.overview || "").slice(0, 90);
+        const preview = (p.details || p.short || p.overview || "").slice(0, 92);
+
+        const isSel = SELECTED_KEYS.includes(p.key);
+        c.style.outline = isSel ? "2px solid rgba(45,226,196,.55)" : "none";
+
         c.innerHTML = `
           <div class="thumb">
             ${img}
@@ -971,16 +1122,27 @@
           </div>
           <div class="cardBody">
             <b>${escapeHtml(p.name)}</b>
-            <div class="sub">${escapeHtml(p.district || "—")} • ${escapeHtml(p.type || "—")}</div>
-            <div class="sub" style="margin-top:8px;color:rgba(255,255,255,.78)">${escapeHtml(preview)}${preview.length>=90?"…":""}</div>
+            <div class="sub">${escapeHtml(p.district || "—")} • ${escapeHtml(p.segment || "Destination")}</div>
+            <div class="sub" style="margin-top:8px;color:rgba(255,255,255,.78)">${escapeHtml(preview)}${preview.length>=92?"…":""}</div>
             <div class="row">
               <span class="mini">${escapeHtml(p.bestTime || "Year-round")}</span>
               <span class="mini">${p.lat!=null && p.lng!=null ? "Map ✓" : "No coords"}</span>
-              <span class="mini">Open</span>
+              <span class="mini">${isSel ? "Selected ✓" : "Tap to select"}</span>
             </div>
           </div>
         `;
-        c.addEventListener("click", ()=>openPlaceModal(p.key));
+
+        // Tap card => select up to 2 (start/end quick)
+        c.addEventListener("click", (e)=>{
+          // If long press / want modal: double click opens modal
+          if(e.detail === 2){
+            openPlaceModal(p.key);
+            return;
+          }
+          toggleSelect(p.key);
+        });
+
+        // Right click / longpress not reliable on mobile; add context: hold to open modal via marker or double tap
         grid.appendChild(c);
       });
 
@@ -990,6 +1152,18 @@
         more.textContent = `Showing 60 of ${list.length}. Use filters to narrow.`;
         grid.appendChild(more);
       }
+    }
+
+    function toggleSelect(key){
+      const idx = SELECTED_KEYS.indexOf(key);
+      if(idx >= 0){
+        SELECTED_KEYS.splice(idx,1);
+      } else {
+        if(SELECTED_KEYS.length >= 2) SELECTED_KEYS.shift();
+        SELECTED_KEYS.push(key);
+      }
+      renderPlaceCards(VIEW_PLACES);
+      showToast(SELECTED_KEYS.length === 1 ? "Selected 1 place" : "Selected 2 places");
     }
 
     /* ===========================
@@ -1003,10 +1177,7 @@
 
       $("mTitle").textContent = p.name || "Place";
       $("mAbout").textContent = p.overview || p.short || "—";
-
-      // ✅ NEW DETAILS FIELD
       $("mDetails").textContent = p.details || "—";
-
       $("mReach").textContent = p.reach || "—";
       $("mExtra").innerHTML = `
         <b>Best time:</b> ${escapeHtml(p.bestTime || "—")}<br/>
@@ -1014,7 +1185,7 @@
       `;
 
       const img = p.photo
-        ? `<img src="${escapeHtml(p.photo)}" alt="${escapeHtml(p.name)}" onerror="this.parentNode.innerHTML='<div style=&quot;padding:10px;color:rgba(255,255,255,.7);font-size:12px&quot;>Image not available</div>'"/>`
+        ? `<img src="${escapeHtml(p.photo)}" alt="${escapeHtml(p.name)}" onerror="this.parentNode.innerHTML='<div style=&quot;padding:10px;color:rgba(255,255,255,.7);font-size:12px&quot;>Image not available</div>'"/><div class="overlay"></div>`
         : `<div style="padding:10px;color:rgba(255,255,255,.7);font-size:12px">No photo provided</div>`;
       $("mImgWrap").innerHTML = img;
 
@@ -1031,7 +1202,7 @@
     function closeModal(){ $("modal").classList.remove("show"); MODAL_PLACE_KEY=null; }
 
     /* ===========================
-       Planner / Package logic (same as before, kept)
+       PLANNER + PACKAGES
     =========================== */
     function haversineKm(a,b){
       const R=6371;
@@ -1117,7 +1288,6 @@
         if(relax)  s += 5;
       }
 
-      // ✅ details also improves relevance
       if(p.details) s += 2;
       if(p.photo) s += 2;
       if(p.short) s += 2;
@@ -1166,6 +1336,7 @@
         const picked = [];
         const used = new Set();
         const usedSeg = new Set();
+        const usedType = new Set();
 
         for(const item of scored){
           if(picked.length >= maxN) break;
@@ -1176,13 +1347,16 @@
             if(item.dLine > (corridorKm * 0.75)) continue;
           }
           if(mode === "scenic"){
-            const seg = (p.segment || "Other");
+            const seg = (p.segment || "Destination");
             if(usedSeg.size < 4 && usedSeg.has(seg)) continue;
+            const t = (p.type || "Point of Interest");
+            if(usedType.size < 4 && usedType.has(t)) continue;
           }
 
           picked.push(p);
           used.add(p.key);
-          usedSeg.add(p.segment || "Other");
+          usedSeg.add(p.segment || "Destination");
+          usedType.add(p.type || "Point of Interest");
         }
 
         if(picked.length < Math.min(4, maxN)){
@@ -1265,6 +1439,9 @@
               <span class="chip ${i%3===1?'chip2':(i%3===2?'chip3':'')}">${escapeHtml(p.name)}</span>
             `).join("")}
           </div>
+          <div class="mutedSmall" style="margin-top:8px">
+            Segments: ${escapeHtml(uniq(pkg.places.map(x=>x.segment)).slice(0,4).join(", "))}
+          </div>
           <div class="btnRow" style="margin-top:10px">
             <button class="ghost" type="button" data-use-pkg="${idx}">Use this package → Explore</button>
           </div>
@@ -1277,11 +1454,8 @@
           const i = parseInt(btn.getAttribute("data-use-pkg"),10);
           const pkg = LAST_PACKAGES[i];
           if(!pkg) return;
-          // show on Explore map + cards (places view)
-          // switch to the package's dominant type? keep types screen but fit markers to pkg
           activateTab("tabExplore");
           renderMarkers(pkg.places);
-          fitMapTo(pkg.places);
           showToast("Package shown on map");
         });
       });
@@ -1401,7 +1575,215 @@
     }
 
     /* ===========================
-       Boot / Firebase
+       AI MASTER PLANNER (no API)
+       - Parses user text
+       - Creates 3 package options using same corridor logic
+       - Outputs day-wise rough schedule
+    =========================== */
+    function parseAI(text){
+      const t = (text||"").toLowerCase();
+      const pref =
+        t.includes("temple") ? "temples" :
+        (t.includes("trek") || t.includes("adventure")) ? "treks" :
+        t.includes("lake") ? "lakes" :
+        (t.includes("relax") || t.includes("scenic")) ? "relax" :
+        "balanced";
+
+      const daysMatch = t.match(/(\d+)\s*day/);
+      const paxMatch = t.match(/(\d+)\s*(people|pax|persons|person)/);
+      const budgetMatch = t.match(/(\d+)\s*(k|000)/);
+
+      let days = daysMatch ? Math.max(1, Math.min(10, parseInt(daysMatch[1],10))) : 3;
+      let pax  = paxMatch ? Math.max(1, Math.min(30, parseInt(paxMatch[1],10))) : 2;
+
+      let budget = null;
+      if(budgetMatch){
+        const n = parseInt(budgetMatch[1],10);
+        budget = budgetMatch[2] === "k" ? n*1000 : n;
+      }
+
+      // Try to detect start/end by matching place names
+      // (simple fuzzy: checks if name appears in text)
+      const names = ALL.map(p=>p.name).filter(Boolean);
+      let startKey = null, endKey = null;
+
+      // prefer exact contains
+      for(const p of ALL){
+        const nm = (p.name||"").toLowerCase();
+        if(!nm || nm.length < 4) continue;
+        if(t.includes("start "+nm) || t.includes("from "+nm)) startKey = p.key;
+        if(t.includes("end "+nm) || t.includes("to "+nm)) endKey = p.key;
+      }
+      // fallback: first two name hits
+      if(!startKey || !endKey){
+        const hits = [];
+        for(const p of ALL){
+          const nm = (p.name||"").toLowerCase();
+          if(!nm || nm.length < 4) continue;
+          if(t.includes(nm)) hits.push(p.key);
+          if(hits.length >= 3) break;
+        }
+        if(!startKey && hits[0]) startKey = hits[0];
+        if(!endKey && hits[1]) endKey = hits[1];
+      }
+
+      return {pref, days, pax, budget, startKey, endKey};
+    }
+
+    function aiGenerate(text){
+      const parsed = parseAI(text);
+      const {pref, days, pax, budget} = parsed;
+
+      // choose start/end:
+      // if user selected 2 places in Explore, use them
+      let startKey = parsed.startKey;
+      let endKey = parsed.endKey;
+
+      if(SELECTED_KEYS.length === 2){
+        startKey = SELECTED_KEYS[0];
+        endKey   = SELECTED_KEYS[1];
+      }
+
+      // fallback: use first two usable places
+      const usable = ALL.filter(p=>p.lat!=null && p.lng!=null);
+      if(!startKey) startKey = usable[0]?.key || null;
+      if(!endKey)   endKey   = usable[1]?.key || null;
+
+      const s = getPlaceByKey(startKey);
+      const e = getPlaceByKey(endKey);
+      if(!s || !e || s.lat==null || s.lng==null || e.lat==null || e.lng==null){
+        return { ok:false, msg:"AI needs Start/End with Latitude & Longitude. Select 2 places in Explore, then try again." };
+      }
+
+      const vehicle = suggestVehicle(pax, "auto");
+      const pkgs = buildPackages({
+        start:{lat:s.lat,lng:s.lng},
+        end:{lat:e.lat,lng:e.lng},
+        days, pax, vehicle, pref,
+        keyword: "" // AI master doesn't force keyword unless user typed it; keep open
+      });
+
+      if(!pkgs.length){
+        return { ok:false, msg:"I couldn't find enough corridor places. Try increasing days or change start/end." };
+      }
+
+      // pick best package
+      const best = pkgs[0];
+      const cost = best.cost;
+
+      // day-wise schedule (simple distribute)
+      const perDay = Math.max(1, Math.ceil(best.places.length / days));
+      const planDays = [];
+      let idx = 0;
+      for(let d=1; d<=days; d++){
+        const picks = best.places.slice(idx, idx+perDay);
+        idx += perDay;
+        if(!picks.length) continue;
+        planDays.push({day:d, places:picks});
+      }
+
+      // confidence heuristic
+      const conf = best.places.length >= (2+days) ? "High" : "Medium";
+
+      // budget note
+      let budgetNote = "";
+      if(budget){
+        const mid = Math.round((cost.low + cost.high)/2);
+        budgetNote = mid <= budget ? `✅ Budget looks ok (mid ~${formatINR(mid)}).`
+                                   : `⚠️ Budget may be short (mid ~${formatINR(mid)}). Try fewer days/places.`;
+      }
+
+      return {
+        ok:true,
+        parsed:{pref, days, pax, vehicle, startKey, endKey, budget},
+        pkgs,
+        best,
+        planDays,
+        conf,
+        budgetNote
+      };
+    }
+
+    function renderAI(result){
+      if(!result.ok){
+        $("aiOut").innerHTML = `${escapeHtml(result.msg)}<small>Tip: In Explore tab, select 2 places (tap cards) to set Start/End quickly.</small>`;
+        $("aiConf").textContent = "—";
+        $("aiSummary").textContent = "No plan generated.";
+        $("aiPackages").textContent = "—";
+        $("aiPlaceCount").textContent = "0";
+        $("aiPlaceList").innerHTML = `<div class="mutedSmall">—</div>`;
+        AI_LAST = null;
+        return;
+      }
+
+      AI_LAST = result;
+
+      const s = getPlaceByKey(result.parsed.startKey);
+      const e = getPlaceByKey(result.parsed.endKey);
+
+      $("aiConf").textContent = result.conf;
+
+      const intro = `
+        <b>Master Plan:</b> ${escapeHtml(s?.name||"Start")} → ${escapeHtml(e?.name||"End")} •
+        <b>${result.parsed.days} days</b> • <b>${result.parsed.pax} people</b> •
+        Preference: <b>${escapeHtml(result.parsed.pref)}</b> • Vehicle: <b>${escapeHtml(vehicleLabel(result.parsed.vehicle))}</b><br/>
+        Estimated range: <b>${formatINR(result.best.cost.low)} – ${formatINR(result.best.cost.high)}</b><br/>
+        ${result.budgetNote ? `<span>${escapeHtml(result.budgetNote)}</span><br/>` : ""}
+      `;
+
+      const dayWise = result.planDays.map(d=>{
+        return `Day ${d.day}: ${d.places.map(p=>p.name).join(" • ")}`;
+      }).join("<br/>");
+
+      $("aiOut").innerHTML = `${intro}<small>${dayWise}</small>`;
+
+      $("aiSummary").innerHTML = `
+        • Corridor logic used (near Start→End).<br/>
+        • Preference boosts matching segments/types.<br/>
+        • Avoids far-off places in one package.<br/>
+        • Uses your new <b>Details</b> field for better relevance.
+      `;
+
+      $("aiPackages").innerHTML = result.pkgs.map(p=>{
+        return `• <b>${escapeHtml(p.title)}</b> — ${escapeHtml(p.hint)} — <b>${formatINR(p.cost.low)}–${formatINR(p.cost.high)}</b>`;
+      }).join("<br/>");
+
+      $("aiPlaceCount").textContent = String(result.best.places.length);
+
+      // render AI places list (chips + click to open modal)
+      const box = $("aiPlaceList");
+      box.innerHTML = "";
+      result.best.places.forEach((p,i)=>{
+        const div = document.createElement("div");
+        div.className = "pkg";
+        div.innerHTML = `
+          <div class="pkgTop">
+            <div>
+              <h3>${escapeHtml(p.name)}</h3>
+              <div class="meta">${escapeHtml(p.district||"")} • ${escapeHtml(p.segment||"")}</div>
+            </div>
+            <div class="price">${escapeHtml(p.type||"")}</div>
+          </div>
+          <div class="mutedSmall" style="margin-top:8px">${escapeHtml((p.details||p.short||p.overview||"").slice(0,160))}${(p.details||"").length>160?"…":""}</div>
+          <div class="btnRow" style="margin-top:10px">
+            <button class="ghost" type="button" data-open="${escapeHtml(p.key)}">Open</button>
+            <button class="ghost" type="button" data-map="${escapeHtml(p.key)}">Map</button>
+          </div>
+        `;
+        div.querySelector("[data-open]").addEventListener("click", ()=>openPlaceModal(p.key));
+        div.querySelector("[data-map]").addEventListener("click", ()=>{
+          activateTab("tabExplore");
+          renderMarkers([p]);
+          showToast("Showing on map");
+        });
+        box.appendChild(div);
+      });
+
+      showToast("AI master plan generated");
+    }
+
+    /* ===========================
+       Events / Boot
     =========================== */
     function boot(){
       // tabs
@@ -1422,48 +1804,46 @@
         $("startPlace").value = MODAL_PLACE_KEY;
         closeModal();
         showToast("Set as Start");
-        maybeAutoRun();
       });
       $("mSetEnd").addEventListener("click", ()=>{
         if(!MODAL_PLACE_KEY) return;
         $("endPlace").value = MODAL_PLACE_KEY;
         closeModal();
         showToast("Set as End");
-        maybeAutoRun();
       });
 
       // explore events
-      $("btnClearTypeSearch").addEventListener("click", ()=>{
-        $("qType").value = "";
-        showTypesScreen();
+      $("btnClearSegSearch").addEventListener("click", ()=>{
+        $("qSeg").value = "";
+        showSegmentsScreen();
       });
-      $("qType").addEventListener("input", ()=>{
-        clearTimeout(window.__typeT);
-        window.__typeT = setTimeout(showTypesScreen, 140);
+      $("qSeg").addEventListener("input", ()=>{
+        clearTimeout(window.__segT);
+        window.__segT = setTimeout(showSegmentsScreen, 140);
       });
 
-      $("btnBackToTypes").addEventListener("click", ()=>{
-        showTypesScreen();
-      });
+      $("btnBackToSeg").addEventListener("click", showSegmentsScreen);
 
       $("qPlace").addEventListener("input", ()=>{
         clearTimeout(window.__placeT);
         window.__placeT = setTimeout(applyPlaceFilters, 160);
       });
       $("fDistrict").addEventListener("change", applyPlaceFilters);
-      $("fSegment").addEventListener("change", applyPlaceFilters);
-      $("btnFitAll").addEventListener("click", ()=>fitMapTo(VIEW_PLACES));
+      $("fType").addEventListener("change", applyPlaceFilters);
+      $("btnFitAll").addEventListener("click", ()=>renderMarkers(VIEW_PLACES));
 
-      // packages button
-      $("btnUseBest").addEventListener("click", ()=>{
-        if(!LAST_BEST){ showToast("Generate packages first"); return; }
-        activateTab("tabExplore");
-        renderMarkers(LAST_BEST.places);
-        fitMapTo(LAST_BEST.places);
-        showToast("Best package shown on map");
+      $("btnSendToPlanner").addEventListener("click", ()=>{
+        if(SELECTED_KEYS.length !== 2){
+          showToast("Select 2 places (Start then End)");
+          return;
+        }
+        $("startPlace").value = SELECTED_KEYS[0];
+        $("endPlace").value = SELECTED_KEYS[1];
+        activateTab("tabPackages");
+        showToast("Start/End applied to Planner");
       });
 
-      // planner buttons
+      // planner events
       $("btnGenerate").addEventListener("click", runPlanner);
       $("btnReset").addEventListener("click", resetPlanner);
       ["change","input"].forEach(evt=>{
@@ -1473,11 +1853,61 @@
           if($("autoGen").value==="yes") maybeAutoRun();
         });
       });
-
       setModeText();
       resetPlanner();
 
-      // Firebase
+      $("btnUseBest").addEventListener("click", ()=>{
+        if(!LAST_BEST){ showToast("Generate packages first"); return; }
+        activateTab("tabExplore");
+        renderMarkers(LAST_BEST.places);
+        showToast("Best package shown on map");
+      });
+
+      $("btnAskAIFromBest").addEventListener("click", ()=>{
+        if(!LAST_BEST){
+          showToast("Generate packages first");
+          return;
+        }
+        const sKey = $("startPlace").value, eKey = $("endPlace").value;
+        const days = $("days").value, pax = $("pax").value;
+        const pref = $("preference").value;
+        const msg = `Start ${getPlaceByKey(sKey)?.name||""}, end ${getPlaceByKey(eKey)?.name||""}, ${days} days, ${pax} people, ${pref}. Refine best package.`;
+        $("aiIn").value = msg;
+        activateTab("tabAI");
+        const res = aiGenerate(msg);
+        renderAI(res);
+      });
+
+      // AI events
+      $("aiSend").addEventListener("click", ()=>{
+        const txt = $("aiIn").value;
+        const res = aiGenerate(txt);
+        renderAI(res);
+      });
+      $("aiClear").addEventListener("click", ()=>{
+        $("aiIn").value = "";
+        $("aiOut").innerHTML = `Hi 👋 Tell me: Start, End, Days, People, interest and budget. <small>Example: “Start Shimla, end Manali, 4 days, 2 people, relax + nature, budget 25k.”</small>`;
+        $("aiSummary").textContent = "No plan yet.";
+        $("aiPackages").textContent = "—";
+        $("aiPlaceList").innerHTML = `<div class="mutedSmall">Generate a plan to see suggested places here.</div>`;
+        $("aiPlaceCount").textContent = "0";
+        $("aiConf").textContent = "—";
+        AI_LAST = null;
+      });
+      $("aiUsePlanner").addEventListener("click", ()=>{
+        if(!AI_LAST || !AI_LAST.ok){
+          showToast("Generate AI plan first");
+          return;
+        }
+        $("startPlace").value = AI_LAST.parsed.startKey;
+        $("endPlace").value = AI_LAST.parsed.endKey;
+        $("days").value = String(AI_LAST.parsed.days);
+        $("pax").value = String(AI_LAST.parsed.pax);
+        activateTab("tabPackages");
+        showToast("Applied AI plan to Planner");
+      });
+
+      // Firebase init
       try{
         firebase.initializeApp(firebaseConfig);
         setDbStatus(true, "Connected");
@@ -1502,14 +1932,17 @@
         loadedCount.textContent = String(ALL.length);
         setDbStatus(true, "Live");
 
-        // planner start/end: only lat/lng
+        // Fill start/end selects
         const usable = ALL.filter(p=>p.lat!=null && p.lng!=null);
         fillPlaceSelect($("startPlace"), usable);
         fillPlaceSelect($("endPlace"), usable);
 
-        // build type list and show types screen (NO all locations together)
-        buildTypeList();
-        showTypesScreen();
+        // Build segments list and show segments screen
+        buildSegmentList();
+        showSegmentsScreen();
+
+        // Background refresh from photos
+        refreshHeroBackground();
 
         attachAutoHandlers();
       }, err=>{
