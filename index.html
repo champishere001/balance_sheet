@@ -863,7 +863,9 @@ const firebaseConfig = {
   appId: "1:182348503564:web:480085405b09177245ac29",
   measurementId: "G-MGTDBCG896"
 };
-const dbPath = "locations";
+
+/* ✅ EDIT: Your data is at ROOT (not inside /locations) */
+const dbPath = ""; // root
 
 /* =========================
    STATE
@@ -1113,14 +1115,25 @@ function addMarkers(list){
 }
 
 /* =========================
-   FIREBASE LOAD
+   FIREBASE LOAD (✅ FIXED PATH + UI ERROR)
 ========================= */
 async function loadPlaces(){
   try{
+    $("status").textContent = "Connecting to Firebase…";
     if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+
     const db = firebase.database();
-    const snap = await db.ref(dbPath).once("value");
+    const ref = dbPath ? db.ref(dbPath) : db.ref();  // ✅ root read if dbPath empty
+    $("status").textContent = `Reading: ${dbPath ? "/"+dbPath : "/"} …`;
+
+    const snap = await ref.once("value");
     const val = snap.val() || {};
+
+    if(!snap.exists() || !Object.keys(val).length){
+      $("status").textContent = `Connected ✅ but ${dbPath ? "/"+dbPath : "/"} is empty (check path).`;
+      allPlaces = [];
+      return;
+    }
 
     allPlaces = Object.entries(val).map(([id, o])=>{
       o = o || {};
@@ -1134,8 +1147,12 @@ async function loadPlaces(){
       const images = getImagesFromObj(o);
       return { id, name, district, type, how, mapUrl, lat, lng, images };
     }).filter(p=>p.name);
+
+    $("status").textContent = `Loaded ✅ ${allPlaces.length} places`;
   }catch(e){
     console.error("Firebase load failed:", e);
+    const msg = (e && (e.message || e.code)) ? `${e.code || ""} ${e.message || ""}` : String(e);
+    $("status").textContent = `Firebase error ❌ ${msg}`;
     allPlaces = [];
   }
 }
@@ -1283,7 +1300,7 @@ function renderPlacesGridByType(){
 }
 
 /* Apply filters + enforce visibility rule */
-function applyFilters(skipHash){
+function applyFilters(){
   const q = safeText($("q").value).toLowerCase();
   const d = $("district").value;
   const t = $("type").value;
@@ -1549,7 +1566,7 @@ function aiSuggest(userText){
 
   pick.forEach(p=> selectedPlaceIds.add(p.id));
   renderSelectedChips();
-  applyFilters(true);
+  applyFilters();
 
   return "Added selections. Open Explore → tiles, grids & map now show selected/package places.";
 }
@@ -1557,13 +1574,13 @@ function aiSuggest(userText){
 /* =========================
    UI EVENTS
 ========================= */
-$("apply").onclick = ()=>{ applyFilters(true); location.hash="#explore"; };
+$("apply").onclick = ()=>{ applyFilters(); location.hash="#explore"; };
 $("reset").onclick = ()=>{
   $("q").value = "";
   $("district").value="all";
   $("type").value="all";
   $("days").value="0";
-  applyFilters(true);
+  applyFilters();
 };
 $("showMapBtn").onclick = ()=>{
   ensureMap();
@@ -1619,7 +1636,7 @@ $("chatInput").addEventListener("keydown",(e)=>{ if(e.key==="Enter") $("sendChat
       text.textContent = v === "all" ? "All" : v;
       img.src = im;
       close();
-      applyFilters(true);
+      applyFilters();
     });
   });
 
@@ -1633,16 +1650,21 @@ $("chatInput").addEventListener("keydown",(e)=>{ if(e.key==="Enter") $("sendChat
   await loadPlaces();
   buildDistrictDropdown();
 
-  $("status").textContent = allPlaces.length
-    ? `Loaded ${allPlaces.length} places • generate packages or select places`
-    : "No data loaded. Check RTDB rules + path.";
+  if(allPlaces.length){
+    $("status").textContent = `Loaded ✅ ${allPlaces.length} places • generate packages or select places`;
+  }else{
+    // If empty, show hint for path/rules quickly
+    $("status").textContent = $("status").textContent.includes("Firebase error")
+      ? $("status").textContent
+      : "No data loaded. Check RTDB rules (.read true) and data path (root).";
+  }
 
   selectedPlaceIds = new Set();
   activePackageId = null;
   packagePlaceIds = new Set();
 
   renderSelectedChips();
-  applyFilters(true);
+  applyFilters();
 })();
 </script>
 </body>
