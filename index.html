@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — Info Hub + Travel Agency + Smart Planner</title>
+  <title>Himachal Explorer — Types First + Place Details + Smart Planner</title>
 
   <!-- Leaflet (no API key needed) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -43,11 +43,10 @@
         linear-gradient(180deg, var(--bg0), var(--bg1));
       overflow-x:hidden;
     }
+    .wrap{max-width: 1260px;margin: 0 auto;padding: 18px 14px 34px;}
     a{color:inherit}
 
-    .wrap{max-width: 1260px;margin: 0 auto;padding: 18px 14px 34px;}
-
-    /* ====== TOP BAR ====== */
+    /* ===== TOPBAR ===== */
     .topbar{
       display:flex;align-items:center;justify-content:space-between;gap:12px;
       padding:14px 14px;
@@ -57,6 +56,7 @@
       box-shadow: var(--shadow);
       backdrop-filter: blur(12px);
       position: sticky; top: 10px; z-index: 60;
+      flex-wrap: wrap;
     }
     .brand{display:flex;align-items:center;gap:12px;min-width: 280px;}
     .logo{
@@ -84,10 +84,7 @@
     .dot{width:8px;height:8px;border-radius:999px;background:var(--warn)}
     .dot.ok{background:var(--ok)}
     .dot.bad{background:var(--bad)}
-    .tabs{
-      display:flex; gap:8px; flex-wrap:wrap; justify-content:center;
-      margin-left: 10px;
-    }
+    .tabs{display:flex; gap:8px; flex-wrap:wrap; justify-content:center}
     .tabBtn{
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
@@ -103,10 +100,10 @@
       background: linear-gradient(135deg, rgba(109,124,255,.92), rgba(45,226,196,.65));
       border: 1px solid rgba(255,255,255,.18);
       color: rgba(255,255,255,.95);
-      font-weight: 800;
+      font-weight: 900;
     }
 
-    /* ====== MAIN LAYOUT ====== */
+    /* ===== LAYOUT ===== */
     .layout{
       margin-top:14px;
       display:grid;
@@ -120,7 +117,7 @@
       .tabs{justify-content:flex-start}
     }
 
-    /* ====== HERO LEFT ====== */
+    /* ===== HERO ===== */
     .hero{
       border:1px solid var(--stroke);
       border-radius: var(--r2);
@@ -140,46 +137,24 @@
       opacity: .95;
       pointer-events:none;
     }
-    .heroInner{
-      position:relative;
-      padding: 18px 18px 18px;
-      display:grid;
-      grid-template-rows: auto auto 1fr;
-      gap:12px;
-    }
+    .heroInner{position:relative;padding: 18px 18px 18px;display:grid;grid-template-rows: auto auto 1fr;gap:12px;}
     .heroTag{
       display:inline-flex;align-items:center;gap:10px;
-      padding:8px 12px;
-      border-radius:999px;
+      padding:8px 12px;border-radius:999px;
       border:1px solid rgba(255,255,255,.16);
       background: rgba(255,255,255,.06);
-      color: var(--muted);
-      font-size:12px;
-      width: fit-content;
+      color: var(--muted);font-size:12px;width: fit-content;
     }
-    .heroTitle{
-      font-size: 34px;line-height: 1.08;margin: 0;letter-spacing: -0.02em;
-    }
+    .heroTitle{font-size: 34px;line-height: 1.08;margin: 0;letter-spacing: -0.02em;}
     .heroTitle span{
       background: linear-gradient(135deg, rgba(109,124,255,1), rgba(45,226,196,1));
       -webkit-background-clip: text;background-clip:text;color: transparent;
     }
-    .heroDesc{
-      margin:0;color: var(--muted);
-      font-size: 14px;line-height: 1.55;max-width: 78ch;
-    }
+    .heroDesc{margin:0;color: var(--muted);font-size: 14px;line-height: 1.55;max-width: 78ch;}
 
     /* Quotes */
-    .quoteGrid{
-      margin-top: 8px;
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-    @media (max-width: 820px){
-      .quoteGrid{grid-template-columns: 1fr}
-      .hero{min-height:auto}
-    }
+    .quoteGrid{margin-top: 8px;display:grid;grid-template-columns: repeat(3, 1fr);gap: 10px;}
+    @media (max-width: 820px){.quoteGrid{grid-template-columns: 1fr}.hero{min-height:auto}}
     .quoteCard{
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
@@ -201,7 +176,7 @@
     .fade{animation: fadeIn .35s ease;}
     @keyframes fadeIn{from{opacity:.0; transform: translateY(4px)}to{opacity:1; transform: translateY(0)}}
 
-    /* ====== PLANNER RIGHT ====== */
+    /* ===== PLANNER ===== */
     .plannerCol{display:grid;gap:14px;}
     .planner{
       border:1px solid var(--stroke);
@@ -213,23 +188,16 @@
       top: 86px;
       backdrop-filter: blur(12px);
     }
-    @media (max-width: 980px){
-      .planner{position:relative; top:auto}
-    }
+    @media (max-width: 980px){.planner{position:relative; top:auto}}
     .plannerHead{
-      padding:12px 14px;
-      border-bottom:1px solid rgba(255,255,255,.12);
+      padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.12);
       display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
     }
     .plannerHead h2{margin:0;font-size:14px}
     .plannerHead .sub{margin-top:4px;color:var(--muted);font-size:12px;line-height:1.35}
     .plannerBody{padding:12px 14px}
 
-    .form{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
+    .form{display:grid;grid-template-columns: 1fr 1fr;gap:10px;}
     .form .full{grid-column: 1 / -1;}
     @media (max-width: 980px){.form{grid-template-columns: 1fr}}
     label{display:block;font-size:12px;color: var(--muted);margin:0 0 6px;}
@@ -243,7 +211,6 @@
       outline:none;
       font: inherit;
     }
-    textarea{min-height: 92px; resize: vertical;}
     input::placeholder{color: rgba(255,255,255,.45)}
     select option{color:#111}
     .btnRow{display:flex; gap:10px; flex-wrap:wrap;margin-top:10px;}
@@ -252,148 +219,64 @@
       border:none;
       background: linear-gradient(135deg, rgba(109,124,255,.98), rgba(45,226,196,.75));
       box-shadow: 0 16px 40px rgba(109,124,255,.18);
-      font-weight: 800;
+      font-weight: 900;
     }
     button.secondary{
       background: rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.14);
       box-shadow:none;
-      font-weight: 700;
+      font-weight: 800;
     }
     button.ghost{
       background: transparent;
       border:1px solid rgba(255,255,255,.14);
       box-shadow:none;
-      font-weight: 700;
+      font-weight: 800;
     }
 
-    .kpis{
-      margin-top:12px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
-    .kpi{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      border-radius: 18px;
-      padding:10px 12px;
-    }
+    .kpis{margin-top:12px;display:grid;grid-template-columns: 1fr 1fr;gap:10px;}
+    .kpi{border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.06);border-radius: 18px;padding:10px 12px;}
     .kpi .t{font-size:12px;color:var(--muted)}
     .kpi .v{font-size:14px;font-weight:900;margin-top:4px}
 
-    /* Results + Itinerary */
-    .results{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      border-radius: var(--r2);
-      overflow:hidden;
-    }
-    .resultsHead{
-      padding:10px 12px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-    }
+    /* Results */
+    .results{border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.05);border-radius: var(--r2);overflow:hidden;}
+    .resultsHead{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.10);display:flex; align-items:center; justify-content:space-between; gap:10px;}
     .resultsHead b{font-size:13px}
     .resultsBody{padding:10px 12px; display:grid; gap:10px}
-    .pkg{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      border-radius: 18px;
-      padding:10px 10px;
-    }
+    .pkg{border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.06);border-radius: 18px;padding:10px 10px;}
     .pkgTop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
     .pkg h3{margin:0;font-size:13px}
     .pkg .meta{margin-top:6px;font-size:12px;color:var(--muted)}
-    .price{
-      white-space:nowrap;
-      font-weight: 900;
-      font-size: 13px;
-      background: rgba(0,0,0,.20);
-      border: 1px solid rgba(255,255,255,.10);
-      padding:6px 8px;
-      border-radius: 999px;
-    }
+    .price{white-space:nowrap;font-weight: 900;font-size: 13px;background: rgba(0,0,0,.20);border: 1px solid rgba(255,255,255,.10);padding:6px 8px;border-radius: 999px;}
     .chips{margin-top:8px;display:flex; gap:6px; flex-wrap:wrap;}
-    .chip{
-      font-size:12px;
-      padding:6px 8px;
-      border-radius: 999px;
-      background: rgba(109,124,255,.16);
-      border: 1px solid rgba(109,124,255,.22);
-      color: rgba(255,255,255,.88);
-    }
+    .chip{font-size:12px;padding:6px 8px;border-radius: 999px;background: rgba(109,124,255,.16);border: 1px solid rgba(109,124,255,.22);color: rgba(255,255,255,.88);}
     .chip2{background: rgba(45,226,196,.14);border: 1px solid rgba(45,226,196,.20);}
     .chip3{background: rgba(255,207,90,.12);border: 1px solid rgba(255,207,90,.18);}
     .mutedSmall{font-size:12px;color:var(--muted);line-height:1.4}
     .hr{height:1px;background:rgba(255,255,255,.10); margin:10px 0}
+    .hidden{display:none !important;}
 
-    /* ====== BELOW HERO: INFO HUB ====== */
-    .below{
-      margin-top: 14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
-      border-radius: var(--r2);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .belowHead{
-      padding:12px 14px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      flex-wrap: wrap;
-    }
-    .belowHead .title{
-      display:flex; flex-direction:column; gap:4px;
-    }
+    /* ===== EXPLORE (Types first) ===== */
+    .below{margin-top: 14px;border:1px solid rgba(255,255,255,.12);background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));border-radius: var(--r2);box-shadow: var(--shadow);overflow:hidden;}
+    .belowHead{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.10);display:flex; align-items:center; justify-content:space-between; gap:10px;flex-wrap: wrap;}
+    .belowHead .title{display:flex; flex-direction:column; gap:4px;}
     .belowHead .title b{font-size:14px}
     .belowHead .title span{font-size:12px;color:var(--muted)}
     .belowBody{padding:12px 14px;}
-    .split{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:12px;
-      align-items:start;
-    }
+    .split{display:grid;grid-template-columns: 1.2fr .8fr;gap:12px;align-items:start;}
     @media (max-width: 980px){.split{grid-template-columns: 1fr}}
-    .panel{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      border-radius: 20px;
-      overflow:hidden;
-    }
-    .panelHead{
-      padding:10px 12px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-    }
+    .panel{border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.05);border-radius: 20px;overflow:hidden;}
+    .panelHead{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.10);display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
     .panelHead b{font-size:13px}
     .panelBody{padding:10px 12px}
-
-    .filters{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
+    .filters{display:grid;grid-template-columns: 1fr 1fr;gap:10px;}
     .filters .full{grid-column: 1 / -1;}
-    .hintRow{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
-    .badge{
-      font-size:12px;
-      padding:6px 8px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.18);
-      color: rgba(255,255,255,.86);
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:10px;
-    }
+    .grid{display:grid;grid-template-columns: repeat(3, 1fr);gap:10px;}
     @media (max-width: 980px){.grid{grid-template-columns: repeat(2, 1fr)}}
     @media (max-width: 560px){.grid{grid-template-columns: 1fr}}
 
+    /* Cards */
     .card{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.06);
@@ -414,16 +297,10 @@
       position:relative;
       overflow:hidden;
     }
-    .thumb img{
-      width:100%;height:100%;object-fit:cover;display:block;
-      filter:saturate(1.05) contrast(1.05);
-      opacity:.92;
-    }
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block;opacity:.92;filter:saturate(1.05) contrast(1.05);}
     .thumb .tag{
       position:absolute; left:10px; top:10px;
-      font-size:12px;
-      padding:6px 8px;
-      border-radius:999px;
+      font-size:12px;padding:6px 8px;border-radius:999px;
       background: rgba(0,0,0,.35);
       border:1px solid rgba(255,255,255,.14);
       backdrop-filter: blur(8px);
@@ -431,35 +308,42 @@
     .cardBody{padding:10px 10px;}
     .cardBody b{display:block;font-size:13px;line-height:1.25}
     .cardBody .sub{margin-top:6px;font-size:12px;color:var(--muted);line-height:1.35}
-    .cardBody .row{
-      margin-top:8px;
-      display:flex; gap:6px; flex-wrap:wrap;
-    }
-    .mini{
-      font-size:12px;
-      padding:5px 7px;
-      border-radius:999px;
+    .row{margin-top:8px;display:flex; gap:6px; flex-wrap:wrap;}
+    .mini{font-size:12px;padding:5px 7px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.05);color: rgba(255,255,255,.84);}
+
+    /* Type cards (main screen) */
+    .typeCard{
       border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      color: rgba(255,255,255,.84);
+      background: rgba(255,255,255,.06);
+      border-radius: 18px;
+      padding: 12px 12px;
+      cursor:pointer;
+      transition: transform .12s ease;
+      position:relative;
+      overflow:hidden;
+      min-height: 110px;
     }
+    .typeCard:hover{transform: translateY(-2px)}
+    .typeCard::after{
+      content:"";
+      position:absolute; inset:auto -50px -50px auto;
+      width:160px;height:160px;border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, rgba(45,226,196,.20), transparent 60%);
+      opacity:.7;
+    }
+    .typeCard b{position:relative; display:block; font-size:13px;}
+    .typeCard .sub{position:relative; margin-top:6px; font-size:12px; color:var(--muted); line-height:1.35}
+    .typeCard .count{position:relative; margin-top:10px; font-size:12px; font-weight:900; display:inline-flex; gap:8px; align-items:center;}
+    .pillTiny{width:auto; padding:6px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.14); background: rgba(0,0,0,.18);}
 
     /* Map */
-    #map{
-      width:100%;
-      height: 360px;
-      border-radius: 20px;
-      border:1px solid rgba(255,255,255,.12);
-      overflow:hidden;
-    }
+    #map{width:100%;height: 360px;border-radius: 20px;border:1px solid rgba(255,255,255,.12);overflow:hidden;}
     .mapHint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.4}
 
     /* Modal */
     .modal{
-      position:fixed; inset:0;
-      display:none;
-      align-items:center;
-      justify-content:center;
+      position:fixed; inset:0; display:none;
+      align-items:center; justify-content:center;
       padding: 16px;
       background: rgba(0,0,0,.55);
       z-index: 1000;
@@ -474,70 +358,25 @@
       overflow:hidden;
       backdrop-filter: blur(14px);
     }
-    .modalTop{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding: 12px 14px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-    }
+    .modalTop{display:flex; align-items:center; justify-content:space-between; gap:10px;padding: 12px 14px;border-bottom:1px solid rgba(255,255,255,.10);}
     .modalTop b{font-size:14px}
     .closeBtn{
-      width:auto;
-      padding:8px 10px;
-      border-radius: 999px;
+      width:auto;padding:8px 10px;border-radius: 999px;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
-      cursor:pointer;
-      font-weight: 800;
+      cursor:pointer;font-weight: 900;
     }
-    .modalBody{
-      padding: 12px 14px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
+    .modalBody{padding: 12px 14px;display:grid;grid-template-columns: 1fr 1fr;gap:12px;}
     @media (max-width: 900px){.modalBody{grid-template-columns: 1fr}}
-    .modalImg{
-      border-radius: 20px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      height: 260px;
-    }
+    .modalImg{border-radius: 20px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background: rgba(255,255,255,.05);height: 260px;}
     .modalImg img{width:100%;height:100%;object-fit:cover;display:block;opacity:.95}
-    .modalBlock{
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      border-radius: 20px;
-      padding: 10px 12px;
-    }
+    .modalBlock{border:1px solid rgba(255,255,255,.10);background: rgba(255,255,255,.05);border-radius: 20px;padding: 10px 12px;}
     .modalBlock .h{font-size:12px;color:var(--muted)}
     .modalBlock .v{margin-top:6px;font-size:13px;line-height:1.45}
     .modalActions{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;}
-
-    /* Agency section */
-    .agencyGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
-    @media (max-width: 980px){.agencyGrid{grid-template-columns: 1fr}}
-    .callout{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      border-radius: 20px;
-      padding: 12px;
-    }
-    .callout b{display:block;font-size:13px}
-    .callout p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.45}
-
     .toast{
-      position: fixed;
-      right: 16px;
-      bottom: 16px;
-      z-index: 2000;
-      display:none;
-      min-width: 260px;
-      max-width: 360px;
+      position: fixed; right: 16px; bottom: 16px; z-index: 2000;
+      display:none; min-width: 260px; max-width: 360px;
       border:1px solid rgba(255,255,255,.18);
       background: rgba(15,18,40,.86);
       backdrop-filter: blur(10px);
@@ -550,9 +389,6 @@
     }
     .toast.show{display:block; animation: toastIn .2s ease}
     @keyframes toastIn{from{opacity:0; transform: translateY(6px)}to{opacity:1; transform: translateY(0)}}
-
-    /* Small helper */
-    .hidden{display:none !important;}
   </style>
 </head>
 
@@ -563,14 +399,13 @@
         <div class="logo"></div>
         <div>
           <h1>Himachal Explorer</h1>
-          <p>Information hub • Smart packages • Agency leads • Firebase RTDB</p>
+          <p>✅ Main screen shows only <b>Location Types</b> • Click a type → see places • New field: <b>Details</b></p>
         </div>
       </div>
 
-      <div class="tabs" aria-label="Sections">
+      <div class="tabs">
         <button class="tabBtn active" data-tab="tabExplore">Explore</button>
         <button class="tabBtn" data-tab="tabPackages">Packages</button>
-        <button class="tabBtn" data-tab="tabAgency">Travel Agency</button>
       </div>
 
       <div class="pills">
@@ -579,36 +414,28 @@
       </div>
     </div>
 
-    <!-- ======= TOP: HERO + PLANNER ======= -->
-    <div class="layout" id="tabPackages">
-      <!-- LEFT 65% HERO -->
+    <!-- ===== PACKAGES TAB ===== -->
+    <div class="layout hidden" id="tabPackages">
       <section class="hero">
         <div class="heroInner">
           <div class="heroTag">
             <span style="width:8px;height:8px;border-radius:999px;background:var(--brand2)"></span>
-            <span>Where mountains feel like home</span>
+            <span>Route-friendly travel planning</span>
           </div>
-
-          <h2 class="heroTitle">
-            Discover <span>Himachal Pradesh</span> — nature, temples, treks, lakes & timeless valleys
-          </h2>
-
+          <h2 class="heroTitle">Build a <span>Smart Package</span> — realistic distance, real cost</h2>
           <p class="heroDesc">
-            Build route-friendly packages: nearby places together, realistic travel time, and a cost that includes
-            transport, stay, food, and driver expenses. Then send your plan to us as a booking inquiry in one click.
+            Select Start → End. We pick places near your travel corridor so you don’t get far-away locations in one package.
           </p>
-
           <div class="quoteGrid" id="quoteGrid"></div>
         </div>
       </section>
 
-      <!-- RIGHT 35% PLANNER -->
       <aside class="plannerCol">
         <div class="planner">
           <div class="plannerHead">
             <div>
               <h2>Smart Package Planner</h2>
-              <div class="sub">Start → End, days, people, preference. Auto-picks places close to the route corridor.</div>
+              <div class="sub">Start → End, days, people, preference. Uses /locations lat/lng.</div>
             </div>
             <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
               <div style="font-size:12px;color:var(--muted)">Mode</div>
@@ -622,7 +449,6 @@
                 <label>Start (Where to begin)</label>
                 <select id="startPlace"><option value="">Loading…</option></select>
               </div>
-
               <div class="full">
                 <label>End (Where to finish)</label>
                 <select id="endPlace"><option value="">Loading…</option></select>
@@ -664,7 +490,7 @@
               </div>
 
               <div class="full">
-                <label>Preference (optional)</label>
+                <label>Preference</label>
                 <select id="preference">
                   <option value="balanced" selected>Balanced</option>
                   <option value="temples">Temples / Culture</option>
@@ -693,15 +519,11 @@
             </div>
 
             <div class="hr"></div>
-            <div class="mutedSmall" id="breakdown">Cost breakdown will appear here (transport + stay + food + driver).</div>
+            <div class="mutedSmall" id="breakdown">Cost breakdown will appear here.</div>
 
             <div class="hr"></div>
             <div class="btnRow">
-              <button class="ghost" id="btnUseBest" type="button">Use Best Package → Map</button>
-              <button class="ghost" id="btnSendLead" type="button">Send Booking Inquiry</button>
-            </div>
-            <div class="mutedSmall" style="margin-top:6px">
-              “Send Booking Inquiry” will save your plan in Firebase under <b>/leads</b> (you can view later).
+              <button class="ghost" id="btnUseBest" type="button">Use Best Package → Explore Map</button>
             </div>
           </div>
         </div>
@@ -712,177 +534,83 @@
             <span style="font-size:12px;color:var(--muted)" id="pkgCount">0</span>
           </div>
           <div class="resultsBody" id="pkgList">
-            <div class="mutedSmall">Generate to see packages that fit between your start → end route.</div>
+            <div class="mutedSmall">Generate to see route-friendly packages.</div>
           </div>
         </div>
       </aside>
     </div>
 
-    <!-- ======= INFO HUB (Explore) ======= -->
-    <section class="below" id="tabExplore" style="margin-top:14px;">
+    <!-- ===== EXPLORE TAB (TYPES FIRST) ===== -->
+    <section class="below" id="tabExplore">
       <div class="belowHead">
         <div class="title">
-          <b>Explore Himachal — Info Hub</b>
-          <span>Search by district/segment/type • Click a card for full details • Add to itinerary • View on map</span>
+          <b>Explore (Types first)</b>
+          <span>Main screen shows ONLY <b>Location Types</b>. Click a type to view places under it.</span>
         </div>
-        <div class="hintRow">
-          <span class="badge">Tip: Keep lat/lng in Firebase for accurate map & routing</span>
-          <span class="badge">Data node: <b>/locations</b></span>
-        </div>
+        <div class="mutedSmall" id="exploreBreadcrumb">Showing: <b>All Types</b></div>
       </div>
 
       <div class="belowBody">
         <div class="split">
-          <!-- Left: cards -->
+          <!-- Left: types OR places -->
           <div class="panel">
             <div class="panelHead">
-              <b>Filters</b>
+              <b id="leftTitle">Location Types</b>
               <span class="mutedSmall">Showing <b id="showCount">0</b></span>
             </div>
             <div class="panelBody">
-              <div class="filters">
-                <div class="full">
-                  <label>Search</label>
-                  <input id="qSearch" placeholder="Search name, district, segment, type, description…"/>
+              <!-- TYPES MODE -->
+              <div id="typesMode">
+                <div class="filters">
+                  <div class="full">
+                    <label>Search Type</label>
+                    <input id="qType" placeholder="e.g., Temple, Trek, Lake, Waterfall…"/>
+                  </div>
+                  <div class="full btnRow">
+                    <button class="ghost" id="btnClearTypeSearch" type="button">Clear</button>
+                  </div>
                 </div>
-
-                <div>
-                  <label>District</label>
-                  <select id="fDistrict"><option value="">All</option></select>
-                </div>
-                <div>
-                  <label>Segment</label>
-                  <select id="fSegment"><option value="">All</option></select>
-                </div>
-                <div>
-                  <label>Type</label>
-                  <select id="fType"><option value="">All</option></select>
-                </div>
-                <div>
-                  <label>Sort</label>
-                  <select id="fSort">
-                    <option value="best" selected>Best match</option>
-                    <option value="name">Name A→Z</option>
-                    <option value="district">District A→Z</option>
-                  </select>
-                </div>
-
-                <div class="full btnRow">
-                  <button class="ghost" id="btnClearFilters" type="button">Clear Filters</button>
-                  <button class="ghost" id="btnFitAll" type="button">Fit Map to Results</button>
-                </div>
+                <div class="hr"></div>
+                <div class="grid" id="typeGrid"></div>
               </div>
 
-              <div class="hr"></div>
-              <div class="grid" id="cardGrid"></div>
+              <!-- PLACES MODE (shown after clicking a type) -->
+              <div id="placesMode" class="hidden">
+                <div class="filters">
+                  <div class="full">
+                    <label>Search inside this type</label>
+                    <input id="qPlace" placeholder="Search name, district, segment, details…"/>
+                  </div>
+                  <div>
+                    <label>District</label>
+                    <select id="fDistrict"><option value="">All</option></select>
+                  </div>
+                  <div>
+                    <label>Segment</label>
+                    <select id="fSegment"><option value="">All</option></select>
+                  </div>
+                  <div class="full btnRow">
+                    <button class="ghost" id="btnBackToTypes" type="button">← Back to Types</button>
+                    <button class="ghost" id="btnFitAll" type="button">Fit Map to Results</button>
+                  </div>
+                </div>
+                <div class="hr"></div>
+                <div class="grid" id="placeGrid"></div>
+              </div>
+
             </div>
           </div>
 
-          <!-- Right: map + itinerary -->
+          <!-- Right: map -->
           <div class="panel">
             <div class="panelHead">
-              <b>Map + Itinerary</b>
-              <span class="mutedSmall">Selected: <b id="itinCount">0</b></span>
+              <b>Map</b>
+              <span class="mutedSmall">Markers update for current view</span>
             </div>
             <div class="panelBody">
               <div id="map"></div>
               <div class="mapHint">
-                Click markers to open details. Use “Add to itinerary” to build a day-wise plan you can send as inquiry.
-              </div>
-
-              <div class="hr"></div>
-              <div class="modalBlock">
-                <div class="h">Itinerary (quick plan)</div>
-                <div class="v" id="itinList" style="color:rgba(255,255,255,.88); font-size:12px; line-height:1.5;">
-                  No places added yet.
-                </div>
-                <div class="modalActions">
-                  <button class="ghost" id="btnClearItin" type="button">Clear Itinerary</button>
-                  <button class="ghost" id="btnCopyItin" type="button">Copy Itinerary Text</button>
-                  <button class="ghost" id="btnWhatsApp" type="button">Send on WhatsApp</button>
-                </div>
-                <div class="mutedSmall" style="margin-top:8px">
-                  WhatsApp uses a share link (no API). Add your agency number in code: <b>AGENCY_WHATSAPP_NUMBER</b>.
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ======= TRAVEL AGENCY ======= -->
-    <section class="below hidden" id="tabAgency" style="margin-top:14px;">
-      <div class="belowHead">
-        <div class="title">
-          <b>Travel Agency Dashboard</b>
-          <span>Capture leads • Auto-attach current plan • Save into Firebase: <b>/leads</b></span>
-        </div>
-        <div class="hintRow">
-          <span class="badge">No login required (public leads)</span>
-          <span class="badge">You can later secure with Firebase Rules</span>
-        </div>
-      </div>
-
-      <div class="belowBody">
-        <div class="agencyGrid">
-          <div class="panel">
-            <div class="panelHead"><b>Quick Inquiry Form</b><span class="mutedSmall">Stored in <b>/leads</b></span></div>
-            <div class="panelBody">
-              <div class="form">
-                <div class="full">
-                  <label>Name</label>
-                  <input id="leadName" placeholder="Your name"/>
-                </div>
-                <div>
-                  <label>Phone</label>
-                  <input id="leadPhone" placeholder="+91…"/>
-                </div>
-                <div>
-                  <label>Email (optional)</label>
-                  <input id="leadEmail" placeholder="name@email.com"/>
-                </div>
-                <div class="full">
-                  <label>Travel month (optional)</label>
-                  <input id="leadMonth" placeholder="e.g., March 2026"/>
-                </div>
-                <div class="full">
-                  <label>Message</label>
-                  <textarea id="leadMsg" placeholder="Tell us your budget, interests, hotel style, pickup city…"></textarea>
-                </div>
-              </div>
-
-              <div class="btnRow">
-                <button id="btnSubmitLead" type="button">Submit Inquiry</button>
-                <button class="secondary" id="btnAttachPlan" type="button">Attach Current Plan</button>
-              </div>
-
-              <div class="mutedSmall" style="margin-top:8px" id="leadStatus">
-                Tip: First generate a package or build itinerary in Explore, then attach it here.
-              </div>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="panelHead"><b>Agency Offers</b><span class="mutedSmall">Editable in code</span></div>
-            <div class="panelBody">
-              <div class="callout">
-                <b>Best for Families (Tempo Traveller)</b>
-                <p>Comfort-first routing, realistic distances, driver stay + allowances included in estimate.</p>
-              </div>
-              <div class="callout" style="margin-top:10px">
-                <b>Adventure & Treks</b>
-                <p>We cluster treks close to your corridor so you’re not wasting the whole day on road.</p>
-              </div>
-              <div class="callout" style="margin-top:10px">
-                <b>Temple & Culture Circuits</b>
-                <p>Shorter hops, early darshan, and balanced time for local markets & heritage spots.</p>
-              </div>
-
-              <div class="hr"></div>
-              <div class="mutedSmall">
-                To secure leads, tighten Firebase rules and write leads from an authenticated admin app.
+                Click a marker to open details. Your new <b>Details</b> field is shown in the place modal.
               </div>
             </div>
           </div>
@@ -904,9 +632,16 @@
 
         <div style="display:grid; gap:10px;">
           <div class="modalBlock">
-            <div class="h">About</div>
+            <div class="h">Overview</div>
             <div class="v" id="mAbout">—</div>
           </div>
+
+          <!-- ✅ NEW COLUMN DISPLAY -->
+          <div class="modalBlock">
+            <div class="h">Details (new column)</div>
+            <div class="v" id="mDetails">—</div>
+          </div>
+
           <div class="modalBlock">
             <div class="h">How to Reach</div>
             <div class="v" id="mReach">—</div>
@@ -917,8 +652,7 @@
           </div>
 
           <div class="modalActions">
-            <button id="mAddItin" type="button">Add to Itinerary</button>
-            <button class="ghost" id="mSetStart" type="button">Set as Start</button>
+            <button id="mSetStart" type="button">Set as Start</button>
             <button class="ghost" id="mSetEnd" type="button">Set as End</button>
           </div>
           <div class="mutedSmall" id="mMeta">—</div>
@@ -944,23 +678,14 @@
     };
 
     /* ===========================
-       AGENCY WHATSAPP NUMBER (E.164 without +)
-       Example: 919876543210
-    =========================== */
-    const AGENCY_WHATSAPP_NUMBER = "91XXXXXXXXXX";
-
-    /* ===========================
-       QUOTES (rotate every 5s, show 3)
+       QUOTES
     =========================== */
     const QUOTES = [
       { q: "In Himachal, every road is a story — written in pine, snow, and sunlight.", by: "Himachal Explorer" },
-      { q: "Let the mountains slow your mind and sharpen your senses.", by: "Himachal Explorer" },
-      { q: "A day in the hills is a reset button you can actually feel.", by: "Himachal Explorer" },
-      { q: "Temples on ridges, lakes in silence — Himachal teaches calm without words.", by: "Himachal Explorer" },
-      { q: "Take fewer places, take them deeper — that’s the real Himachal plan.", by: "Himachal Explorer" },
+      { q: "Take fewer places, take them deeper — that’s the real plan.", by: "Himachal Explorer" },
       { q: "The best itinerary is the one that leaves you time to breathe.", by: "Himachal Explorer" },
-      { q: "Chai tastes better when the valley is below and clouds are above.", by: "Himachal Explorer" },
-      { q: "Adventure here isn’t just speed — it’s altitude, patience, and wonder.", by: "Himachal Explorer" }
+      { q: "Temples on ridges, lakes in silence — calm without words.", by: "Himachal Explorer" },
+      { q: "Adventure here isn’t just speed — it’s altitude and wonder.", by: "Himachal Explorer" }
     ];
     let quoteIndex = 0;
 
@@ -971,22 +696,27 @@
     const dbDot = $("dbDot"), dbText = $("dbText"), loadedCount = $("loadedCount");
     const toast = $("toast");
 
-    let ALL = [];         // normalized places from /locations
-    let VIEW = [];        // filtered view for Explore
-    let ITIN = [];        // itinerary keys
-    let LAST_PACKAGES = [];
-    let LAST_BEST = null; // best package object
+    let ALL = [];
     let MAP = null;
     let MARKERS_LAYER = null;
     let POLY_LAYER = null;
+
+    // Explore state
+    let CURRENT_TYPE = ""; // when empty => show types
+    let TYPE_LIST = [];    // {type, count, samplePhoto}
+    let TYPE_PLACES = [];  // places within selected type
+    let VIEW_PLACES = [];  // filtered places in selected type
+
+    // Packages state
+    let LAST_PACKAGES = [];
+    let LAST_BEST = null;
 
     function showToast(msg){
       toast.textContent = msg;
       toast.classList.add("show");
       clearTimeout(window.__toastT);
-      window.__toastT = setTimeout(()=>toast.classList.remove("show"), 2200);
+      window.__toastT = setTimeout(()=>toast.classList.remove("show"), 2000);
     }
-
     function setDbStatus(ok, msg){
       dbDot.classList.remove("ok","bad");
       dbDot.classList.add(ok ? "ok" : "bad");
@@ -1005,6 +735,8 @@
     function pickPhoto(p){
       return p["photo 1"] || p["Photo 1"] || p["photo1"] || p["Image"] || p["image"] || "";
     }
+
+    /* ✅ NEW FIELD: details */
     function normalizeRecord(key, raw){
       const p = raw || {};
       return {
@@ -1012,22 +744,294 @@
         name: safeStr(p["Location Name"] || p["name"] || p["Name"] || key),
         district: safeStr(p["District"] || p["district"] || ""),
         segment: safeStr(p["Segment Type"] || p["segment type"] || p["segment"] || "Other"),
-        type: safeStr(p["Location Type"] || p["location type"] || p["type"] || ""),
+        type: safeStr(p["Location Type"] || p["location type"] || p["type"] || "Other"),
         short: safeStr(p["Short Description"] || p["short description"] || ""),
         overview: safeStr(p["Overview"] || p["overview"] || ""),
         reach: safeStr(p["How to Reach"] || p["how to reach"] || ""),
         bestTime: safeStr(p["Best Time to Visit"] || p["best time to visit"] || ""),
-        distHQ: safeStr(p["Dist from HQ"] || p["dist from hq"] || ""),
         keyFeatures: safeStr(p["Key Features"] || p["key features"] || ""),
+        details: safeStr(
+          p["Details"] || p["details"] || p["Place Details"] || p["place_details"] || p["Description (Detailed)"] || ""
+        ),
         lat: toNum(p["Latitude"] ?? p["latitude"]),
         lng: toNum(p["Longitude"] ?? p["longitude"]),
         photo: safeStr(pickPhoto(p))
       };
     }
+
     function uniq(arr){ return Array.from(new Set(arr.filter(Boolean))); }
+    function getPlaceByKey(key){ return ALL.find(p=>p.key===key) || null; }
 
     /* ===========================
-       ROUTE-CORRIDOR SELECTION (no API)
+       Tabs
+    =========================== */
+    function activateTab(tabId){
+      ["tabExplore","tabPackages"].forEach(id=>{
+        const el = $(id);
+        if(!el) return;
+        el.classList.toggle("hidden", id !== tabId);
+      });
+      document.querySelectorAll(".tabBtn").forEach(b=>{
+        b.classList.toggle("active", b.getAttribute("data-tab") === tabId);
+      });
+      if(tabId === "tabExplore" && MAP){
+        setTimeout(()=>MAP.invalidateSize(), 60);
+      }
+    }
+
+    /* ===========================
+       Quotes render
+    =========================== */
+    function renderQuotes(){
+      const grid = $("quoteGrid");
+      if(!grid) return;
+      grid.innerHTML = "";
+      for(let i=0;i<3;i++){
+        const idx = (quoteIndex + i) % QUOTES.length;
+        const qc = document.createElement("div");
+        qc.className = "quoteCard fade";
+        qc.innerHTML = `
+          <p class="quoteTxt">“${escapeHtml(QUOTES[idx].q)}”</p>
+          <div class="quoteBy">— ${escapeHtml(QUOTES[idx].by)}</div>
+        `;
+        grid.appendChild(qc);
+      }
+      quoteIndex = (quoteIndex + 1) % QUOTES.length;
+    }
+    setInterval(renderQuotes, 5000);
+
+    /* ===========================
+       Map
+    =========================== */
+    function initMap(){
+      MAP = L.map("map", { zoomControl: true });
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 18,
+        attribution: "&copy; OpenStreetMap contributors"
+      }).addTo(MAP);
+
+      MARKERS_LAYER = L.layerGroup().addTo(MAP);
+      POLY_LAYER = L.layerGroup().addTo(MAP);
+
+      MAP.setView([31.6, 77.2], 8);
+    }
+
+    function renderMarkers(list){
+      if(!MAP || !MARKERS_LAYER) return;
+      MARKERS_LAYER.clearLayers();
+      const pts = [];
+      list.forEach(p=>{
+        if(p.lat==null || p.lng==null) return;
+        pts.push([p.lat, p.lng]);
+        const m = L.marker([p.lat, p.lng]).addTo(MARKERS_LAYER);
+        m.bindPopup(`<b>${escapeHtml(p.name)}</b><br/><span style="color:#333">${escapeHtml(p.district||"")}</span>`);
+        m.on("click", ()=>openPlaceModal(p.key));
+      });
+    }
+
+    function fitMapTo(list){
+      const pts = list.filter(p=>p.lat!=null && p.lng!=null).map(p=>[p.lat,p.lng]);
+      if(!pts.length) return;
+      MAP.fitBounds(pts, {padding:[22,22]});
+    }
+
+    /* ===========================
+       EXPLORE: TYPES FIRST
+       - Main screen: show only unique Location Types
+       - Click type: show places of that type
+    =========================== */
+    function buildTypeList(){
+      const groups = new Map();
+      for(const p of ALL){
+        const t = (p.type || "Other").trim() || "Other";
+        if(!groups.has(t)) groups.set(t, {type:t, count:0, samplePhoto:""});
+        const g = groups.get(t);
+        g.count++;
+        if(!g.samplePhoto && p.photo) g.samplePhoto = p.photo;
+      }
+      TYPE_LIST = Array.from(groups.values()).sort((a,b)=>b.count - a.count);
+    }
+
+    function showTypesScreen(){
+      CURRENT_TYPE = "";
+      $("exploreBreadcrumb").innerHTML = `Showing: <b>All Types</b>`;
+      $("leftTitle").textContent = "Location Types";
+      $("typesMode").classList.remove("hidden");
+      $("placesMode").classList.add("hidden");
+
+      const q = ($("qType").value||"").trim().toLowerCase();
+      const list = q ? TYPE_LIST.filter(x=>x.type.toLowerCase().includes(q)) : TYPE_LIST;
+
+      $("showCount").textContent = String(list.length);
+
+      const grid = $("typeGrid");
+      grid.innerHTML = "";
+      if(!list.length){
+        grid.innerHTML = `<div class="mutedSmall">No types found.</div>`;
+        renderMarkers([]); // no markers
+        return;
+      }
+
+      list.forEach(item=>{
+        const div = document.createElement("div");
+        div.className = "typeCard";
+        div.innerHTML = `
+          <b>${escapeHtml(item.type)}</b>
+          <div class="sub">Explore all places under this type.</div>
+          <div class="count">
+            <span class="pillTiny">${item.count} places</span>
+            <span class="pillTiny">Click →</span>
+          </div>
+        `;
+        div.addEventListener("click", ()=>openType(item.type));
+        grid.appendChild(div);
+      });
+
+      // On type screen we do NOT show all markers (as per your request)
+      renderMarkers([]);
+    }
+
+    function fillFilterSelect(sel, values){
+      const prev = sel.value;
+      sel.innerHTML = `<option value="">All</option>`;
+      values.forEach(v=>{
+        const o = document.createElement("option");
+        o.value = v;
+        o.textContent = v;
+        sel.appendChild(o);
+      });
+      if(prev && [...sel.options].some(o=>o.value===prev)) sel.value = prev;
+    }
+
+    function openType(typeName){
+      CURRENT_TYPE = typeName;
+      $("exploreBreadcrumb").innerHTML = `Showing: <b>${escapeHtml(typeName)}</b>`;
+      $("leftTitle").textContent = `Places — ${typeName}`;
+      $("typesMode").classList.add("hidden");
+      $("placesMode").classList.remove("hidden");
+
+      // base list for this type
+      TYPE_PLACES = ALL.filter(p => (p.type || "Other") === typeName);
+
+      // update district/segment dropdown based on this type only
+      fillFilterSelect($("fDistrict"), uniq(TYPE_PLACES.map(x=>x.district)).sort((a,b)=>a.localeCompare(b)));
+      fillFilterSelect($("fSegment"), uniq(TYPE_PLACES.map(x=>x.segment)).sort((a,b)=>a.localeCompare(b)));
+
+      $("qPlace").value = "";
+      $("fDistrict").value = "";
+      $("fSegment").value = "";
+
+      applyPlaceFilters();
+      showToast(`Type opened: ${typeName}`);
+    }
+
+    function applyPlaceFilters(){
+      const q = ($("qPlace").value||"").trim().toLowerCase();
+      const d = $("fDistrict").value;
+      const s = $("fSegment").value;
+
+      VIEW_PLACES = TYPE_PLACES.filter(p=>{
+        if(d && p.district !== d) return false;
+        if(s && p.segment !== s) return false;
+        if(q){
+          const hay = `${p.name} ${p.district} ${p.segment} ${p.short} ${p.overview} ${p.details} ${p.keyFeatures}`.toLowerCase();
+          if(!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      $("showCount").textContent = String(VIEW_PLACES.length);
+      renderPlaceCards(VIEW_PLACES);
+      renderMarkers(VIEW_PLACES);
+      if(VIEW_PLACES.some(p=>p.lat!=null && p.lng!=null)){
+        fitMapTo(VIEW_PLACES);
+      }
+    }
+
+    function renderPlaceCards(list){
+      const grid = $("placeGrid");
+      grid.innerHTML = "";
+
+      if(!list.length){
+        grid.innerHTML = `<div class="mutedSmall">No places found under this type. Try clearing filters.</div>`;
+        return;
+      }
+
+      // show max 60 to keep fast
+      list.slice(0,60).forEach(p=>{
+        const c = document.createElement("div");
+        c.className = "card";
+        const tag = escapeHtml(p.segment || "Other");
+        const img = p.photo ? `<img src="${escapeHtml(p.photo)}" alt="${escapeHtml(p.name)}" onerror="this.remove();"/>` : "";
+        const preview = (p.details || p.short || p.overview || "").slice(0, 90);
+        c.innerHTML = `
+          <div class="thumb">
+            ${img}
+            <div class="tag">${tag}</div>
+          </div>
+          <div class="cardBody">
+            <b>${escapeHtml(p.name)}</b>
+            <div class="sub">${escapeHtml(p.district || "—")} • ${escapeHtml(p.type || "—")}</div>
+            <div class="sub" style="margin-top:8px;color:rgba(255,255,255,.78)">${escapeHtml(preview)}${preview.length>=90?"…":""}</div>
+            <div class="row">
+              <span class="mini">${escapeHtml(p.bestTime || "Year-round")}</span>
+              <span class="mini">${p.lat!=null && p.lng!=null ? "Map ✓" : "No coords"}</span>
+              <span class="mini">Open</span>
+            </div>
+          </div>
+        `;
+        c.addEventListener("click", ()=>openPlaceModal(p.key));
+        grid.appendChild(c);
+      });
+
+      if(list.length > 60){
+        const more = document.createElement("div");
+        more.className = "mutedSmall";
+        more.textContent = `Showing 60 of ${list.length}. Use filters to narrow.`;
+        grid.appendChild(more);
+      }
+    }
+
+    /* ===========================
+       Modal
+    =========================== */
+    let MODAL_PLACE_KEY = null;
+    function openPlaceModal(key){
+      const p = getPlaceByKey(key);
+      if(!p) return;
+      MODAL_PLACE_KEY = key;
+
+      $("mTitle").textContent = p.name || "Place";
+      $("mAbout").textContent = p.overview || p.short || "—";
+
+      // ✅ NEW DETAILS FIELD
+      $("mDetails").textContent = p.details || "—";
+
+      $("mReach").textContent = p.reach || "—";
+      $("mExtra").innerHTML = `
+        <b>Best time:</b> ${escapeHtml(p.bestTime || "—")}<br/>
+        <b>Key features:</b> ${escapeHtml(p.keyFeatures || "—")}
+      `;
+
+      const img = p.photo
+        ? `<img src="${escapeHtml(p.photo)}" alt="${escapeHtml(p.name)}" onerror="this.parentNode.innerHTML='<div style=&quot;padding:10px;color:rgba(255,255,255,.7);font-size:12px&quot;>Image not available</div>'"/>`
+        : `<div style="padding:10px;color:rgba(255,255,255,.7);font-size:12px">No photo provided</div>`;
+      $("mImgWrap").innerHTML = img;
+
+      const meta = [
+        p.district ? `District: <b>${escapeHtml(p.district)}</b>` : "",
+        p.segment ? `Segment: <b>${escapeHtml(p.segment)}</b>` : "",
+        p.type ? `Type: <b>${escapeHtml(p.type)}</b>` : "",
+        (p.lat!=null && p.lng!=null) ? `Coords: <b>${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</b>` : "Coords: <b>missing</b>"
+      ].filter(Boolean).join(" • ");
+      $("mMeta").innerHTML = meta || "—";
+
+      $("modal").classList.add("show");
+    }
+    function closeModal(){ $("modal").classList.remove("show"); MODAL_PLACE_KEY=null; }
+
+    /* ===========================
+       Planner / Package logic (same as before, kept)
     =========================== */
     function haversineKm(a,b){
       const R=6371;
@@ -1056,7 +1060,6 @@
       const dx = px - cx, dy = py - cy;
       return Math.sqrt(dx*dx + dy*dy);
     }
-
     function suggestVehicle(pax, chosen){
       if(chosen && chosen !== "auto") return chosen;
       if(pax <= 2) return "bike";
@@ -1070,14 +1073,8 @@
     function formatINR(n){
       try{
         return new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR",maximumFractionDigits:0}).format(n);
-      }catch(e){
-        return "₹" + Math.round(n);
-      }
+      }catch(e){ return "₹" + Math.round(n); }
     }
-
-    /* ===========================
-       COST MODEL (transport + stay + food + driver)
-    =========================== */
     function estimateCost({days, pax, vehicle, driveKm}){
       const vehicleBasePerDay = { bike:1200, car:3200, suv:4500, tempo:7500 };
       const fuelPerKm         = { bike:3.0,  car:6.5,  suv:8.5,  tempo:12.0 };
@@ -1096,22 +1093,13 @@
       const driver = (driverPerDay[vehicle] ?? 900) * days + (driverNightAllowance[vehicle] ?? 350) * nights;
 
       const subtotal = transport + stay + food + driver;
-
-      return {
-        transport, stay, food, driver,
-        low: Math.round(subtotal * 0.88),
-        high: Math.round(subtotal * 1.12)
-      };
+      return { transport, stay, food, driver, low: Math.round(subtotal*0.88), high: Math.round(subtotal*1.12) };
     }
 
-    /* ===========================
-       PACKAGE BUILDING
-    =========================== */
     function scorePlace(p, pref){
       const seg = (p.segment||"").toLowerCase();
       const type = (p.type||"").toLowerCase();
       let s = 0;
-
       const temple = seg.includes("temple") || type.includes("temple");
       const trek   = seg.includes("trek")   || type.includes("trek") || seg.includes("adventure");
       const lake   = seg.includes("lake")   || type.includes("lake");
@@ -1129,11 +1117,12 @@
         if(relax)  s += 5;
       }
 
+      // ✅ details also improves relevance
+      if(p.details) s += 2;
       if(p.photo) s += 2;
       if(p.short) s += 2;
       if(p.overview) s += 1;
       if(p.reach) s += 1;
-
       return s;
     }
 
@@ -1144,7 +1133,7 @@
       const kw = (keyword||"").trim().toLowerCase();
       const inKw = (p)=>{
         if(!kw) return true;
-        const hay = `${p.name} ${p.district} ${p.segment} ${p.type} ${p.short} ${p.overview} ${p.keyFeatures}`.toLowerCase();
+        const hay = `${p.name} ${p.district} ${p.segment} ${p.type} ${p.short} ${p.overview} ${p.details} ${p.keyFeatures}`.toLowerCase();
         return hay.includes(kw);
       };
 
@@ -1171,7 +1160,7 @@
         return {p, score, dLine};
       }).sort((a,b)=>b.score - a.score);
 
-      const maxN = Math.min(10, Math.max(4, 3 + days)); // feasible place count
+      const maxN = Math.min(10, Math.max(4, 3 + days));
 
       function pickSet(mode){
         const picked = [];
@@ -1214,7 +1203,6 @@
       function estimateDriveKm(places){
         const pts = places.filter(x=>x.lat!=null && x.lng!=null).map(x=>({lat:x.lat,lng:x.lng}));
         if(!pts.length) return haversineKm(start, end) * 1.25;
-
         let max = 0;
         for(const pt of pts){
           max = Math.max(max, haversineKm(start, pt), haversineKm(end, pt));
@@ -1228,38 +1216,13 @@
         return { title, places, driveKm, cost, hint: `${places.length} places • ~${Math.round(driveKm)} km driving` };
       }
 
-      const pkgs = [
+      return [
         makePkg("Best Value (recommended)", bestValue),
         makePkg("Scenic & Variety", scenic),
         makePkg("Compact & Efficient", compact)
       ].filter(x=>x.places.length >= 3);
-
-      return pkgs;
     }
 
-    /* ===========================
-       QUOTES RENDER
-    =========================== */
-    function renderQuotes(){
-      const grid = $("quoteGrid");
-      grid.innerHTML = "";
-      for(let i=0;i<3;i++){
-        const idx = (quoteIndex + i) % QUOTES.length;
-        const qc = document.createElement("div");
-        qc.className = "quoteCard fade";
-        qc.innerHTML = `
-          <p class="quoteTxt">“${escapeHtml(QUOTES[idx].q)}”</p>
-          <div class="quoteBy">— ${escapeHtml(QUOTES[idx].by)}</div>
-        `;
-        grid.appendChild(qc);
-      }
-      quoteIndex = (quoteIndex + 1) % QUOTES.length;
-    }
-    setInterval(renderQuotes, 5000);
-
-    /* ===========================
-       UI: Packages
-    =========================== */
     function renderPackageList(pkgs){
       const list = $("pkgList");
       list.innerHTML = "";
@@ -1268,21 +1231,20 @@
       LAST_BEST = pkgs[0] || null;
 
       if(!pkgs.length){
-        list.innerHTML = `<div class="mutedSmall">Not enough places found on that route corridor. Try different start/end or increase days.</div>`;
+        list.innerHTML = `<div class="mutedSmall">Not enough places found on that corridor. Try different start/end or increase days.</div>`;
         return;
       }
 
       const best = pkgs[0];
       $("kPlaces").textContent = best.places.length;
       $("kCost").textContent = `${formatINR(best.cost.low)} – ${formatINR(best.cost.high)}`;
-
       $("breakdown").innerHTML = `
         <div class="mutedSmall">
           <b>Cost breakdown (Best Value):</b><br/>
-          • Transport (vehicle + fuel): <b>${formatINR(best.cost.transport)}</b><br/>
+          • Transport: <b>${formatINR(best.cost.transport)}</b><br/>
           • Stay: <b>${formatINR(best.cost.stay)}</b><br/>
           • Food: <b>${formatINR(best.cost.food)}</b><br/>
-          • Driver expenses: <b>${formatINR(best.cost.driver)}</b><br/>
+          • Driver: <b>${formatINR(best.cost.driver)}</b><br/>
           <span style="color:rgba(255,255,255,.55)">Range includes ±12% (season/traffic/tolls).</span>
         </div>
       `;
@@ -1303,32 +1265,24 @@
               <span class="chip ${i%3===1?'chip2':(i%3===2?'chip3':'')}">${escapeHtml(p.name)}</span>
             `).join("")}
           </div>
-          <div class="meta" style="margin-top:8px">
-            Districts: ${escapeHtml(uniq(pkg.places.map(x=>x.district)).slice(0,4).join(", ") || "—")}
-          </div>
           <div class="btnRow" style="margin-top:10px">
-            <button class="ghost" type="button" data-use-pkg="${idx}">Use this package</button>
-            <button class="ghost" type="button" data-view-pkg="${idx}">View places</button>
+            <button class="ghost" type="button" data-use-pkg="${idx}">Use this package → Explore</button>
           </div>
         `;
         list.appendChild(div);
       });
 
-      // attach actions
       list.querySelectorAll("[data-use-pkg]").forEach(btn=>{
         btn.addEventListener("click", ()=>{
           const i = parseInt(btn.getAttribute("data-use-pkg"),10);
-          usePackageOnMap(LAST_PACKAGES[i]);
-          showToast("Package loaded on map + itinerary");
-        });
-      });
-      list.querySelectorAll("[data-view-pkg]").forEach(btn=>{
-        btn.addEventListener("click", ()=>{
-          const i = parseInt(btn.getAttribute("data-view-pkg"),10);
           const pkg = LAST_PACKAGES[i];
           if(!pkg) return;
-          // open first place details (nice preview)
-          openPlaceModal(pkg.places[0]?.key);
+          // show on Explore map + cards (places view)
+          // switch to the package's dominant type? keep types screen but fit markers to pkg
+          activateTab("tabExplore");
+          renderMarkers(pkg.places);
+          fitMapTo(pkg.places);
+          showToast("Package shown on map");
         });
       });
     }
@@ -1349,10 +1303,6 @@
       });
 
       if(prev && [...sel.options].some(o=>o.value===prev)) sel.value = prev;
-    }
-
-    function getPlaceByKey(key){
-      return ALL.find(p=>p.key===key) || null;
     }
 
     function runPlanner(){
@@ -1404,9 +1354,9 @@
       $("kCost").textContent = "—";
       $("kPlaces").textContent = "—";
       $("kCorridor").textContent = "—";
-      $("breakdown").textContent = "Cost breakdown will appear here (transport + stay + food + driver).";
+      $("breakdown").textContent = "Cost breakdown will appear here.";
       $("pkgCount").textContent = "0";
-      $("pkgList").innerHTML = `<div class="mutedSmall">Generate to see packages that fit between your start → end route.</div>`;
+      $("pkgList").innerHTML = `<div class="mutedSmall">Generate to see route-friendly packages.</div>`;
       LAST_PACKAGES = [];
       LAST_BEST = null;
     }
@@ -1417,8 +1367,7 @@
     }
 
     function maybeAutoRun(){
-      const auto = $("autoGen").value === "yes";
-      if(!auto) return;
+      if($("autoGen").value !== "yes") return;
       if($("startPlace").value && $("endPlace").value) runPlanner();
     }
 
@@ -1435,8 +1384,7 @@
 
       $("autoGen").onchange = ()=>{ setModeText(); attachAutoHandlers(); if($("autoGen").value==="yes") maybeAutoRun(); };
 
-      const auto = $("autoGen").value === "yes";
-      if(auto){
+      if($("autoGen").value === "yes"){
         ["change","input"].forEach(evt=>{
           $("startPlace").addEventListener(evt, maybeAutoRun);
           $("endPlace").addEventListener(evt, maybeAutoRun);
@@ -1453,430 +1401,83 @@
     }
 
     /* ===========================
-       UI: Explore (filters + cards)
-    =========================== */
-    function fillFilterSelect(sel, values){
-      const prev = sel.value;
-      sel.innerHTML = `<option value="">All</option>`;
-      values.forEach(v=>{
-        const o = document.createElement("option");
-        o.value = v;
-        o.textContent = v;
-        sel.appendChild(o);
-      });
-      if(prev && [...sel.options].some(o=>o.value===prev)) sel.value = prev;
-    }
-
-    function applyExploreFilters(){
-      const q = ($("qSearch").value || "").trim().toLowerCase();
-      const d = $("fDistrict").value;
-      const s = $("fSegment").value;
-      const t = $("fType").value;
-      const sort = $("fSort").value;
-
-      const scored = ALL.map(p=>{
-        let score = 0;
-        if(q){
-          const hay = `${p.name} ${p.district} ${p.segment} ${p.type} ${p.short} ${p.overview} ${p.keyFeatures}`.toLowerCase();
-          if(!hay.includes(q)) return null;
-          // simple relevance
-          if(p.name.toLowerCase().includes(q)) score += 6;
-          if(p.district.toLowerCase().includes(q)) score += 3;
-          if(p.segment.toLowerCase().includes(q)) score += 3;
-          if(p.type.toLowerCase().includes(q)) score += 2;
-          if(p.short.toLowerCase().includes(q)) score += 2;
-        }
-        if(d && p.district !== d) return null;
-        if(s && p.segment !== s) return null;
-        if(t && p.type !== t) return null;
-        if(p.photo) score += 1;
-        if(p.lat!=null && p.lng!=null) score += 1;
-        return {p, score};
-      }).filter(Boolean);
-
-      if(sort === "name") scored.sort((a,b)=>a.p.name.localeCompare(b.p.name));
-      else if(sort === "district") scored.sort((a,b)=>(a.p.district+a.p.name).localeCompare(b.p.district+b.p.name));
-      else scored.sort((a,b)=>b.score - a.score);
-
-      VIEW = scored.map(x=>x.p);
-      $("showCount").textContent = String(VIEW.length);
-
-      renderExploreCards(VIEW);
-      renderMarkers(VIEW);
-    }
-
-    function renderExploreCards(list){
-      const grid = $("cardGrid");
-      grid.innerHTML = "";
-      if(!list.length){
-        grid.innerHTML = `<div class="mutedSmall">No results. Try clearing filters or searching a different keyword.</div>`;
-        return;
-      }
-
-      list.slice(0, 60).forEach(p=>{
-        const c = document.createElement("div");
-        c.className = "card";
-        const tag = escapeHtml(p.segment || "Other");
-        const img = p.photo ? `<img src="${escapeHtml(p.photo)}" alt="${escapeHtml(p.name)}" onerror="this.remove();"/>` : "";
-        c.innerHTML = `
-          <div class="thumb">
-            ${img}
-            <div class="tag">${tag}</div>
-          </div>
-          <div class="cardBody">
-            <b>${escapeHtml(p.name)}</b>
-            <div class="sub">${escapeHtml(p.district || "—")} • ${escapeHtml(p.type || "—")}</div>
-            <div class="row">
-              <span class="mini">${escapeHtml(p.bestTime || "Year-round")}</span>
-              <span class="mini">${p.lat!=null && p.lng!=null ? "Map ✓" : "No coords"}</span>
-              <span class="mini">${ITIN.includes(p.key) ? "In itinerary" : "Add +"} </span>
-            </div>
-          </div>
-        `;
-        c.addEventListener("click", ()=>openPlaceModal(p.key));
-        grid.appendChild(c);
-      });
-
-      if(list.length > 60){
-        const more = document.createElement("div");
-        more.className = "mutedSmall";
-        more.textContent = `Showing 60 of ${list.length}. Narrow filters to see more.`;
-        grid.appendChild(more);
-      }
-    }
-
-    /* ===========================
-       Map
-    =========================== */
-    function initMap(){
-      MAP = L.map("map", { zoomControl: true });
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 18,
-        attribution: "&copy; OpenStreetMap contributors"
-      }).addTo(MAP);
-
-      MARKERS_LAYER = L.layerGroup().addTo(MAP);
-      POLY_LAYER = L.layerGroup().addTo(MAP);
-
-      // default view Himachal-ish
-      MAP.setView([31.6, 77.2], 8);
-    }
-
-    function renderMarkers(list){
-      if(!MAP || !MARKERS_LAYER) return;
-      MARKERS_LAYER.clearLayers();
-
-      const pts = [];
-      list.forEach(p=>{
-        if(p.lat==null || p.lng==null) return;
-        pts.push([p.lat, p.lng]);
-        const m = L.marker([p.lat, p.lng]).addTo(MARKERS_LAYER);
-        m.bindPopup(`<b>${escapeHtml(p.name)}</b><br/><span style="color:#333">${escapeHtml(p.district || "")}</span>`);
-        m.on("click", ()=>openPlaceModal(p.key));
-      });
-
-      // do not always fit to avoid annoying zoom; user has Fit button
-    }
-
-    function fitMapTo(list){
-      const pts = list.filter(p=>p.lat!=null && p.lng!=null).map(p=>[p.lat,p.lng]);
-      if(!pts.length) return;
-      MAP.fitBounds(pts, {padding:[22,22]});
-    }
-
-    function usePackageOnMap(pkg){
-      if(!pkg) return;
-      // Update itinerary to package places
-      ITIN = pkg.places.map(p=>p.key);
-      renderItinerary();
-
-      // Draw polyline (rough sequence: start->place1..placeN->end if start/end exists)
-      POLY_LAYER.clearLayers();
-      const seq = pkg.places.filter(p=>p.lat!=null && p.lng!=null).map(p=>[p.lat,p.lng]);
-      if(seq.length >= 2){
-        L.polyline(seq, { weight: 4, opacity: 0.8 }).addTo(POLY_LAYER);
-      }
-
-      // Fit map
-      fitMapTo(pkg.places);
-
-      // switch to Explore tab to see map
-      activateTab("tabExplore");
-    }
-
-    /* ===========================
-       Modal (place details)
-    =========================== */
-    let MODAL_PLACE_KEY = null;
-    function openPlaceModal(key){
-      const p = getPlaceByKey(key);
-      if(!p) return;
-      MODAL_PLACE_KEY = key;
-
-      $("mTitle").textContent = p.name || "Place";
-      $("mAbout").textContent = p.overview || p.short || "—";
-      $("mReach").textContent = p.reach || "—";
-      $("mExtra").innerHTML = `
-        <b>Best time:</b> ${escapeHtml(p.bestTime || "—")}<br/>
-        <b>Key features:</b> ${escapeHtml(p.keyFeatures || "—")}
-      `;
-
-      const img = p.photo ? `<img src="${escapeHtml(p.photo)}" alt="${escapeHtml(p.name)}" onerror="this.parentNode.innerHTML='<div style=&quot;padding:10px;color:rgba(255,255,255,.7);font-size:12px&quot;>Image not available</div>'"/>`
-                          : `<div style="padding:10px;color:rgba(255,255,255,.7);font-size:12px">No photo provided</div>`;
-      $("mImgWrap").innerHTML = img;
-
-      const meta = [
-        p.district ? `District: <b>${escapeHtml(p.district)}</b>` : "",
-        p.segment ? `Segment: <b>${escapeHtml(p.segment)}</b>` : "",
-        p.type ? `Type: <b>${escapeHtml(p.type)}</b>` : "",
-        (p.lat!=null && p.lng!=null) ? `Coords: <b>${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</b>` : "Coords: <b>missing</b>"
-      ].filter(Boolean).join(" • ");
-      $("mMeta").innerHTML = meta || "—";
-
-      $("modal").classList.add("show");
-    }
-    function closeModal(){ $("modal").classList.remove("show"); MODAL_PLACE_KEY=null; }
-
-    /* ===========================
-       Itinerary
-    =========================== */
-    function addToItinerary(key){
-      if(!key) return;
-      if(!ITIN.includes(key)) ITIN.push(key);
-      renderItinerary();
-      showToast("Added to itinerary");
-    }
-    function clearItinerary(){ ITIN = []; renderItinerary(); showToast("Itinerary cleared"); }
-
-    function itineraryText(){
-      const places = ITIN.map(k=>getPlaceByKey(k)).filter(Boolean);
-      if(!places.length) return "No itinerary selected.";
-      const lines = [];
-      lines.push("Himachal Explorer — Itinerary");
-      lines.push("--------------------------------");
-      places.forEach((p,i)=>{
-        const line = `${i+1}. ${p.name}${p.district ? " ("+p.district+")" : ""}${p.segment ? " — "+p.segment : ""}`;
-        lines.push(line);
-      });
-      lines.push("--------------------------------");
-      lines.push("Generated via Himachal Explorer");
-      return lines.join("\n");
-    }
-
-    function renderItinerary(){
-      $("itinCount").textContent = String(ITIN.length);
-      const places = ITIN.map(k=>getPlaceByKey(k)).filter(Boolean);
-
-      if(!places.length){
-        $("itinList").textContent = "No places added yet.";
-        applyExploreFilters(); // update cards badges
-        return;
-      }
-
-      const html = places.map((p,i)=>`<div style="margin:6px 0;">
-        <b>${i+1}. ${escapeHtml(p.name)}</b>
-        <span style="color:rgba(255,255,255,.65)"> — ${escapeHtml(p.district || "")}</span>
-        <button class="ghost" type="button" data-rm="${escapeHtml(p.key)}" style="width:auto; padding:6px 8px; margin-left:8px; border-radius:999px;">Remove</button>
-      </div>`).join("");
-
-      $("itinList").innerHTML = html;
-
-      $("itinList").querySelectorAll("[data-rm]").forEach(btn=>{
-        btn.addEventListener("click", (e)=>{
-          e.stopPropagation();
-          const k = btn.getAttribute("data-rm");
-          ITIN = ITIN.filter(x=>x!==k);
-          renderItinerary();
-          showToast("Removed");
-        });
-      });
-
-      applyExploreFilters(); // refresh card labels
-
-      // Show polyline for itinerary if coords exist
-      POLY_LAYER.clearLayers();
-      const pts = places.filter(p=>p.lat!=null && p.lng!=null).map(p=>[p.lat,p.lng]);
-      if(pts.length >= 2){
-        L.polyline(pts, { weight: 4, opacity: 0.8 }).addTo(POLY_LAYER);
-        fitMapTo(places);
-      }else{
-        if(pts.length === 1) MAP.setView(pts[0], 12);
-      }
-    }
-
-    async function copyText(txt){
-      try{
-        await navigator.clipboard.writeText(txt);
-        showToast("Copied");
-      }catch(e){
-        // fallback
-        const ta = document.createElement("textarea");
-        ta.value = txt;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        ta.remove();
-        showToast("Copied");
-      }
-    }
-
-    function openWhatsApp(text){
-      const url = `https://wa.me/${encodeURIComponent(AGENCY_WHATSAPP_NUMBER)}?text=${encodeURIComponent(text)}`;
-      window.open(url, "_blank");
-    }
-
-    /* ===========================
-       Agency leads (/leads)
-    =========================== */
-    function currentPlanObject(){
-      // include best package if available + itinerary
-      const sKey = $("startPlace")?.value || "";
-      const eKey = $("endPlace")?.value || "";
-      const days = parseInt($("days")?.value || "0",10) || 0;
-      const pax  = parseInt($("pax")?.value || "0",10) || 0;
-      const vehicle = $("vehicle")?.value || "auto";
-      const pref = $("preference")?.value || "balanced";
-      const keyword = $("kw")?.value || "";
-
-      const start = getPlaceByKey(sKey);
-      const end = getPlaceByKey(eKey);
-
-      const itineraryPlaces = ITIN.map(k=>getPlaceByKey(k)).filter(Boolean).map(p=>({
-        key:p.key, name:p.name, district:p.district, segment:p.segment, type:p.type, lat:p.lat, lng:p.lng
-      }));
-
-      const bestPkg = LAST_BEST ? {
-        title: LAST_BEST.title,
-        driveKm: LAST_BEST.driveKm,
-        cost: LAST_BEST.cost,
-        places: LAST_BEST.places.map(p=>({key:p.key, name:p.name, district:p.district, segment:p.segment, type:p.type, lat:p.lat, lng:p.lng}))
-      } : null;
-
-      return {
-        createdAt: Date.now(),
-        planner: { startKey:sKey, endKey:eKey, days, pax, vehicle, pref, keyword,
-                  startName: start?.name || "", endName: end?.name || "" },
-        bestPackage: bestPkg,
-        itinerary: itineraryPlaces
-      };
-    }
-
-    function attachPlanToAgency(){
-      const plan = currentPlanObject();
-      const planText = [];
-
-      if(plan.planner.startName || plan.planner.endName){
-        planText.push(`Start: ${plan.planner.startName || "(not set)"} | End: ${plan.planner.endName || "(not set)"}`);
-      }
-      if(plan.planner.days) planText.push(`Days: ${plan.planner.days}, People: ${plan.planner.pax}, Pref: ${plan.planner.pref}`);
-      if(plan.bestPackage){
-        planText.push(`Best Package: ${plan.bestPackage.title} (${Math.round(plan.bestPackage.driveKm)} km)`);
-        planText.push(`Estimate: ${formatINR(plan.bestPackage.cost.low)} – ${formatINR(plan.bestPackage.cost.high)}`);
-      }
-      if(plan.itinerary?.length){
-        planText.push("Itinerary:");
-        plan.itinerary.slice(0,20).forEach((x,i)=> planText.push(`${i+1}. ${x.name} (${x.district||""})`));
-      }
-
-      const msg = planText.join("\n");
-      $("leadMsg").value = ($("leadMsg").value || "").trim()
-        ? ($("leadMsg").value.trim() + "\n\n---\n" + msg)
-        : msg;
-
-      showToast("Plan attached");
-      $("leadStatus").textContent = "Plan attached into message. Submit inquiry to save.";
-    }
-
-    async function submitLead(){
-      const name = ($("leadName").value || "").trim();
-      const phone = ($("leadPhone").value || "").trim();
-      const email = ($("leadEmail").value || "").trim();
-      const month = ($("leadMonth").value || "").trim();
-      const msg = ($("leadMsg").value || "").trim();
-
-      if(!name || !phone){
-        $("leadStatus").textContent = "Please fill Name + Phone.";
-        showToast("Name + Phone required");
-        return;
-      }
-
-      const lead = {
-        createdAt: Date.now(),
-        name, phone, email, travelMonth: month,
-        message: msg,
-        plan: currentPlanObject()
-      };
-
-      try{
-        const ref = firebase.database().ref("leads").push();
-        await ref.set(lead);
-        $("leadStatus").textContent = "✅ Inquiry submitted! We’ll contact you soon.";
-        showToast("Inquiry submitted");
-      }catch(e){
-        console.error(e);
-        $("leadStatus").textContent = "❌ Failed to submit (rules/network). Check Firebase rules for /leads.";
-        showToast("Submit failed");
-      }
-    }
-
-    async function sendLeadQuick(){
-      // lightweight: push lead with plan only (no form)
-      const lead = {
-        createdAt: Date.now(),
-        name: "(quick lead)",
-        phone: "",
-        email: "",
-        travelMonth: "",
-        message: "Quick lead from planner button. Please contact user via preferred channel.",
-        plan: currentPlanObject()
-      };
-      try{
-        const ref = firebase.database().ref("leads").push();
-        await ref.set(lead);
-        showToast("Lead saved in /leads");
-      }catch(e){
-        console.error(e);
-        showToast("Lead save failed (rules?)");
-      }
-    }
-
-    /* ===========================
-       Tabs
-    =========================== */
-    function activateTab(tabId){
-      // tabs are sections with ids: tabExplore, tabPackages, tabAgency
-      ["tabExplore","tabPackages","tabAgency"].forEach(id=>{
-        const el = $(id);
-        if(!el) return;
-        if(id === tabId) el.classList.remove("hidden");
-        else el.classList.add("hidden");
-      });
-
-      document.querySelectorAll(".tabBtn").forEach(b=>{
-        b.classList.toggle("active", b.getAttribute("data-tab") === tabId);
-      });
-
-      // map needs invalidation when shown
-      if(tabId === "tabExplore" && MAP){
-        setTimeout(()=>{ MAP.invalidateSize(); }, 60);
-      }
-    }
-
-    /* ===========================
-       FIREBASE LOAD (/locations)
+       Boot / Firebase
     =========================== */
     function boot(){
-      renderQuotes();
-
-      // Tabs click
+      // tabs
       document.querySelectorAll(".tabBtn").forEach(btn=>{
-        btn.addEventListener("click", ()=>{
-          activateTab(btn.getAttribute("data-tab"));
-        });
+        btn.addEventListener("click", ()=>activateTab(btn.getAttribute("data-tab")));
       });
 
       initMap();
+      renderQuotes();
 
+      // modal events
+      $("mClose").addEventListener("click", closeModal);
+      $("modal").addEventListener("click", (e)=>{ if(e.target === $("modal")) closeModal(); });
+      document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeModal(); });
+
+      $("mSetStart").addEventListener("click", ()=>{
+        if(!MODAL_PLACE_KEY) return;
+        $("startPlace").value = MODAL_PLACE_KEY;
+        closeModal();
+        showToast("Set as Start");
+        maybeAutoRun();
+      });
+      $("mSetEnd").addEventListener("click", ()=>{
+        if(!MODAL_PLACE_KEY) return;
+        $("endPlace").value = MODAL_PLACE_KEY;
+        closeModal();
+        showToast("Set as End");
+        maybeAutoRun();
+      });
+
+      // explore events
+      $("btnClearTypeSearch").addEventListener("click", ()=>{
+        $("qType").value = "";
+        showTypesScreen();
+      });
+      $("qType").addEventListener("input", ()=>{
+        clearTimeout(window.__typeT);
+        window.__typeT = setTimeout(showTypesScreen, 140);
+      });
+
+      $("btnBackToTypes").addEventListener("click", ()=>{
+        showTypesScreen();
+      });
+
+      $("qPlace").addEventListener("input", ()=>{
+        clearTimeout(window.__placeT);
+        window.__placeT = setTimeout(applyPlaceFilters, 160);
+      });
+      $("fDistrict").addEventListener("change", applyPlaceFilters);
+      $("fSegment").addEventListener("change", applyPlaceFilters);
+      $("btnFitAll").addEventListener("click", ()=>fitMapTo(VIEW_PLACES));
+
+      // packages button
+      $("btnUseBest").addEventListener("click", ()=>{
+        if(!LAST_BEST){ showToast("Generate packages first"); return; }
+        activateTab("tabExplore");
+        renderMarkers(LAST_BEST.places);
+        fitMapTo(LAST_BEST.places);
+        showToast("Best package shown on map");
+      });
+
+      // planner buttons
+      $("btnGenerate").addEventListener("click", runPlanner);
+      $("btnReset").addEventListener("click", resetPlanner);
+      ["change","input"].forEach(evt=>{
+        $("autoGen").addEventListener(evt, ()=>{
+          setModeText();
+          attachAutoHandlers();
+          if($("autoGen").value==="yes") maybeAutoRun();
+        });
+      });
+
+      setModeText();
+      resetPlanner();
+
+      // Firebase
       try{
         firebase.initializeApp(firebaseConfig);
         setDbStatus(true, "Connected");
@@ -1893,7 +1494,7 @@
           ALL = [];
           loadedCount.textContent = "0";
           setDbStatus(false, "No data at /locations");
-          showToast("No data found at /locations");
+          showToast("No data at /locations");
           return;
         }
 
@@ -1901,113 +1502,23 @@
         loadedCount.textContent = String(ALL.length);
         setDbStatus(true, "Live");
 
-        // start/end usable
+        // planner start/end: only lat/lng
         const usable = ALL.filter(p=>p.lat!=null && p.lng!=null);
         fillPlaceSelect($("startPlace"), usable);
         fillPlaceSelect($("endPlace"), usable);
 
-        // Explore filters
-        fillFilterSelect($("fDistrict"), uniq(ALL.map(x=>x.district)).sort((a,b)=>a.localeCompare(b)));
-        fillFilterSelect($("fSegment"), uniq(ALL.map(x=>x.segment)).sort((a,b)=>a.localeCompare(b)));
-        fillFilterSelect($("fType"), uniq(ALL.map(x=>x.type)).sort((a,b)=>a.localeCompare(b)));
-
-        // initial view
-        applyExploreFilters();
+        // build type list and show types screen (NO all locations together)
+        buildTypeList();
+        showTypesScreen();
 
         attachAutoHandlers();
       }, err=>{
         console.error(err);
         setDbStatus(false, "Rules / Network");
-        showToast("Firebase rules/network issue");
+        showToast("Rules/Network issue");
       });
 
-      // Planner buttons
-      $("btnGenerate").addEventListener("click", runPlanner);
-      $("btnReset").addEventListener("click", resetPlanner);
-
-      $("btnUseBest").addEventListener("click", ()=>{
-        if(!LAST_BEST){ showToast("Generate packages first"); return; }
-        usePackageOnMap(LAST_BEST);
-      });
-
-      $("btnSendLead").addEventListener("click", ()=>{
-        if(!LAST_BEST && ITIN.length===0){
-          showToast("Generate a package or add itinerary first");
-          return;
-        }
-        // save a quick lead (you can also use Agency tab full form)
-        sendLeadQuick();
-      });
-
-      // mode changes
-      ["change","input"].forEach(evt=>{
-        $("autoGen").addEventListener(evt, ()=>{
-          setModeText();
-          attachAutoHandlers();
-          if($("autoGen").value==="yes") maybeAutoRun();
-        });
-      });
-
-      // Explore filter listeners
-      const debounce = (fn, ms)=>{
-        let t; return ()=>{ clearTimeout(t); t=setTimeout(fn, ms); };
-      };
-      $("qSearch").addEventListener("input", debounce(applyExploreFilters, 160));
-      ["fDistrict","fSegment","fType","fSort"].forEach(id=>{
-        $(id).addEventListener("change", applyExploreFilters);
-      });
-      $("btnClearFilters").addEventListener("click", ()=>{
-        $("qSearch").value = "";
-        $("fDistrict").value = "";
-        $("fSegment").value = "";
-        $("fType").value = "";
-        $("fSort").value = "best";
-        applyExploreFilters();
-        showToast("Filters cleared");
-      });
-      $("btnFitAll").addEventListener("click", ()=>fitMapTo(VIEW));
-
-      // Itinerary buttons
-      $("btnClearItin").addEventListener("click", clearItinerary);
-      $("btnCopyItin").addEventListener("click", ()=>copyText(itineraryText()));
-      $("btnWhatsApp").addEventListener("click", ()=>{
-        const text = itineraryText();
-        if(AGENCY_WHATSAPP_NUMBER.includes("X")){ showToast("Set AGENCY_WHATSAPP_NUMBER in code"); return; }
-        openWhatsApp(text);
-      });
-
-      // Modal buttons
-      $("mClose").addEventListener("click", closeModal);
-      $("modal").addEventListener("click", (e)=>{ if(e.target === $("modal")) closeModal(); });
-      document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeModal(); });
-
-      $("mAddItin").addEventListener("click", ()=>{
-        if(!MODAL_PLACE_KEY) return;
-        addToItinerary(MODAL_PLACE_KEY);
-      });
-      $("mSetStart").addEventListener("click", ()=>{
-        if(!MODAL_PLACE_KEY) return;
-        $("startPlace").value = MODAL_PLACE_KEY;
-        closeModal();
-        showToast("Set as Start");
-        maybeAutoRun();
-      });
-      $("mSetEnd").addEventListener("click", ()=>{
-        if(!MODAL_PLACE_KEY) return;
-        $("endPlace").value = MODAL_PLACE_KEY;
-        closeModal();
-        showToast("Set as End");
-        maybeAutoRun();
-      });
-
-      // Agency
-      $("btnSubmitLead").addEventListener("click", submitLead);
-      $("btnAttachPlan").addEventListener("click", attachPlanToAgency);
-
-      setModeText();
-      resetPlanner();
-
-      // Start on Explore tab by default (info-heavy feeling)
+      // default tab
       activateTab("tabExplore");
     }
 
