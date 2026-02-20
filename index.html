@@ -1918,38 +1918,69 @@
         return;
       }
 
-      firebase.database().ref("locations").on("value", snap=>{
-        const data = snap.val();
-        if(!data){
-          ALL = [];
-          loadedCount.textContent = "0";
-          setDbStatus(false, "No data at /locations");
-          showToast("No data at /locations");
-          return;
-        }
+     async function loadAllData(){
 
-        ALL = Object.entries(data).map(([key, raw])=>normalizeRecord(key, raw));
-        loadedCount.textContent = String(ALL.length);
-        setDbStatus(true, "Live");
+  const db = firebase.database();
 
-        // Fill start/end selects
-        const usable = ALL.filter(p=>p.lat!=null && p.lng!=null);
-        fillPlaceSelect($("startPlace"), usable);
-        fillPlaceSelect($("endPlace"), usable);
+  try{
 
-        // Build segments list and show segments screen
-        buildSegmentList();
-        showSegmentsScreen();
+    const [locSnap, routeSnap, hotelSnap, vehSnap, staySnap] =
+      await Promise.all([
+        db.ref("locations").once("value"),
+        db.ref("routes").once("value"),
+        db.ref("hotels").once("value"),
+        db.ref("pricing_transport").once("value"),
+        db.ref("stay_rate_rules").once("value")
+      ]);
 
-        // Background refresh from photos
-        refreshHeroBackground();
+    const locations = locSnap.val() || {};
+    const routes = routeSnap.val() || {};
+    const hotels = hotelSnap.val() || {};
+    const vehicles = vehSnap.val() || {};
+    const stayRules = staySnap.val() || {};
 
-        attachAutoHandlers();
-      }, err=>{
-        console.error(err);
-        setDbStatus(false, "Rules / Network");
-        showToast("Rules/Network issue");
-      });
+    // ---- NORMALIZE PLACES (supports old & new keys)
+    ALL = Object.entries(locations).map(([key,p={}] )=>({
+        key,
+        place_id: p.place_id || key,
+        name: p.name || p["Location Name"] || "",
+        segment: p.segment || p["Segment Type"] || "Other",
+        category: p.category || p["Location Type"] || "",
+        short_desc: p.short_desc || p["Short Description"] || "",
+        details: p.details_about_place || p.details || "",
+        lat: parseFloat(p.lat ?? p["Latitude"]),
+        lng: parseFloat(p.lng ?? p["Longitude"]),
+        photo: p.photo_1 || p["photo 1"] || ""
+    }));
+
+    // ---- SAVE OTHER DATA FOR PLANNER / COST / AI
+    window.ROUTES = Object.values(routes);
+    window.HOTELS = Object.values(hotels);
+    window.VEHICLES = Object.values(vehicles);
+    window.STAY_RULES = Object.values(stayRules);
+
+    // ---- UI UPDATE (same as your original)
+    loadedCount.textContent = String(ALL.length);
+    setDbStatus(true,"Live");
+
+    const usable = ALL.filter(p=>p.lat!=null && p.lng!=null);
+    fillPlaceSelect($("startPlace"), usable);
+    fillPlaceSelect($("endPlace"), usable);
+
+    buildSegmentList();
+    showSegmentsScreen();
+    refreshHeroBackground();
+    attachAutoHandlers();
+
+  }catch(err){
+    console.error(err);
+    setDbStatus(false,"Rules / Network");
+    showToast("Firebase load failed");
+  }
+}
+
+// run loader
+loadAllData();
 
       // default tab
       activateTab("tabExplore");
