@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — Light Premium (Geo Packages + Cost + Type Grids)</title>
+  <title>Himachal Explorer — Segment Type Grids</title>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -15,1657 +15,604 @@
 
   <style>
     :root{
-      --bg0:#f7f9ff; --bg1:#ffffff;
+      --bg:#f7f9ff; --card:#ffffff;
+      --text:#0b1220; --muted:rgba(11,18,32,.64);
       --stroke:rgba(10,18,40,.10);
-      --text:#0b1220;
-      --muted:rgba(11,18,32,.64);
-      --shadow: 0 20px 55px rgba(15,23,42,.10);
-      --shadow2: 0 14px 28px rgba(15,23,42,.08);
+      --shadow: 0 18px 55px rgba(10,18,40,.10);
       --r:18px; --r2:26px;
-      --a:#2563eb; --b:#7c3aed;
-      --max:1400px;
-
-      /* Scenic backgrounds */
-      --bg-body: url("./201-himalaya.jpg");
-      --bg-hero: url("./Kee_monastery.jpg");
-      --bg-builder: url("./Travelers.jpg");
-      --bg-tiles: url("./kinnaur-kailash.webp");
-      --bg-map: url("./Dark.jpg");
-      --bg-modal: url("./n1.jpg");
+      --brand:#4158ff;
+      --chip:#eef2ff;
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
-      margin:0; color:var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      background:
-        radial-gradient(900px 600px at 12% 10%, rgba(37,99,235,.16), transparent 60%),
-        radial-gradient(900px 600px at 86% 16%, rgba(124,58,237,.14), transparent 60%),
-        radial-gradient(900px 600px at 56% 92%, rgba(22,163,74,.10), transparent 60%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
-      overflow-x:hidden;
-      position:relative;
-    }
-    body::before{
-      content:"";
-      position:fixed; inset:0; z-index:-2;
-      background: var(--bg-body) center/cover no-repeat fixed;
-      filter:saturate(1.05);
-      opacity:.22;
-    }
-    body::after{
-      content:"";
-      position:fixed; inset:0; z-index:-1;
-      backdrop-filter: blur(6px);
-      background: rgba(255,255,255,.18);
-      pointer-events:none;
-    }
-    a{color:inherit; text-decoration:none}
-
-    .topbar{
-      position:sticky; top:0; z-index:50;
-      background: rgba(255,255,255,.70);
-      backdrop-filter: blur(14px);
-      border-bottom:1px solid var(--stroke);
-    }
-    .inner{
-      width:min(92vw, var(--max));
-      margin:0 auto;
-      padding:14px 16px;
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-    }
-    .brand{display:flex; align-items:center; gap:10px}
-    .logo{
-      width:40px; height:40px; border-radius:14px;
-      background: linear-gradient(135deg, rgba(37,99,235,.92), rgba(124,58,237,.92));
-      box-shadow: 0 12px 26px rgba(37,99,235,.18);
-      display:flex; align-items:center; justify-content:center;
-      overflow:hidden;
-    }
-    .logo img{width:100%; height:100%; object-fit:cover; display:block}
-    .brand h1{margin:0; font-size:14px; line-height:1.1; letter-spacing:.2px}
-    .brand small{display:block; color:var(--muted); font-weight:650; margin-top:2px}
-
-    .nav{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:10px 12px; border-radius:999px;
-      background: rgba(255,255,255,.75);
-      border:1px solid var(--stroke);
-      box-shadow: var(--shadow2);
-      font-weight:850; font-size:12px;
-      transition:.18s ease;
-      cursor:pointer;
-    }
-    .pill:hover{transform: translateY(-1px)}
-    .dot{
-      width:8px; height:8px; border-radius:50%;
-      background: linear-gradient(135deg, var(--a), var(--b));
-      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
-    }
-    .btn{
-      appearance:none; border:0; cursor:pointer;
-      padding:11px 14px; border-radius:14px;
-      color:#fff;
-      background: linear-gradient(135deg, rgba(37,99,235,.96), rgba(124,58,237,.92));
-      box-shadow: 0 18px 42px rgba(37,99,235,.20);
-      font-weight:900; font-size:12px;
-      transition:.18s ease;
-      display:inline-flex; align-items:center; gap:10px;
-      white-space:nowrap;
-    }
-    .btn:hover{transform: translateY(-1px)}
-    .btn.ghost{
-      color: var(--text);
-      background: rgba(255,255,255,.78);
-      border:1px solid var(--stroke);
-      box-shadow: var(--shadow2);
-    }
-    .btn.bad{
-      background: linear-gradient(135deg, rgba(239,68,68,.95), rgba(244,63,94,.88));
-      box-shadow: 0 18px 42px rgba(239,68,68,.20);
-    }
-
-    /* ===== Image Type Dropdown ===== */
-    .typePick{position:relative}
-    .typePickBtn{
-      width:100%;
-      display:flex; align-items:center; gap:10px;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.86);
-      box-shadow: var(--shadow2);
-      cursor:pointer;
-      font-weight:900;
-    }
-    .typePickBtn img{
-      width:34px; height:26px;
-      border-radius:10px;
-      object-fit:cover;
-      border:1px solid var(--stroke);
-      background: rgba(245,247,255,.9);
-    }
-    .typePickChev{margin-left:auto; opacity:.7; font-weight:950}
-
-    .typePickMenu{
-      position:absolute; left:0; right:0; top:calc(100% + 8px);
-      background: rgba(255,255,255,.97);
-      border:1px solid var(--stroke);
-      border-radius:16px;
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      display:none;
-      z-index:99;
-    }
-    .typePickMenu.open{display:block}
-    .typePickItem{
-      width:100%;
-      display:flex; align-items:center; gap:10px;
-      padding:10px 12px;
-      background:transparent;
-      border:0;
-      cursor:pointer;
-      font-weight:900;
-      text-align:left;
-    }
-    .typePickItem:hover{background: rgba(37,99,235,.08)}
-    .typePickItem img{
-      width:34px; height:26px;
-      border-radius:10px;
-      object-fit:cover;
-      border:1px solid var(--stroke);
-    }
-
-    .wrap{
-      width:min(92vw, var(--max));
-      margin:0 auto;
-      padding:18px 16px 44px;
-    }
-
-    .hero{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:14px;
-      align-items:stretch;
-      margin-top:10px;
-    }
-    @media(max-width:900px){ .hero{ grid-template-columns:1fr; } }
-
-    .heroCard{
-      border-radius: var(--r2);
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.85);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      position:relative;
-      min-height:360px;
-    }
-    .heroCard::before{
-      content:"";
-      position:absolute; inset:0;
-      background: var(--bg-hero) center/cover no-repeat;
-      opacity:.18;
-      transform: scale(1.02);
-    }
-    .heroCard::after{
-      content:"";
-      position:absolute; inset:0;
-      background:
-        radial-gradient(700px 420px at 20% 30%, rgba(37,99,235,.12), transparent 62%),
-        radial-gradient(700px 420px at 78% 30%, rgba(124,58,237,.10), transparent 62%);
-      mix-blend-mode:multiply;
-      opacity:.85;
-      pointer-events:none;
-    }
-    .heroInner{
-      position:relative;
-      padding:26px;
-      display:flex;
-      flex-direction:column;
-      height:100%;
-      justify-content:space-between;
-      gap:16px;
-      background:
-        linear-gradient(120deg, rgba(255,255,255,.92), rgba(255,255,255,.60)),
-        var(--bg-hero) center/cover no-repeat;
-      border-radius: var(--r2);
-    }
-    .heroTitle{
       margin:0;
-      font-size: clamp(28px,3.2vw,48px);
-      letter-spacing:-.6px;
-      line-height:1.05;
-    }
-    .heroSub{
-      margin:10px 0 0;
-      color: rgba(11,18,32,.70);
-      font-weight:700;
-      max-width:70ch;
-    }
-
-    .chips{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
-    .chip{
-      padding:8px 11px;
-      border-radius:999px;
-      background: rgba(255,255,255,.80);
-      border:1px solid var(--stroke);
-      font-weight:850;
-      font-size:12px;
-      box-shadow: var(--shadow2);
-    }
-    .chip i{
-      font-style:normal;
-      padding:2px 8px;
-      border-radius:999px;
-      background: rgba(37,99,235,.10);
-      margin-right:8px;
-    }
-
-    .finder{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns: 1fr 170px 170px 160px;
-      gap:10px;
-      align-items:end;
-    }
-    .field{display:flex; flex-direction:column; gap:6px}
-    label{font-size:11px; color:var(--muted); font-weight:900; letter-spacing:.25px}
-    .input, .select{
-      width:100%;
-      padding:12px 12px;
-      border-radius:14px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.86);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--text);
-      outline:none;
-      font-weight:800;
-      box-shadow: var(--shadow2);
+      background:
+        radial-gradient(1100px 700px at 20% 10%, rgba(65,88,255,.16), transparent 55%),
+        radial-gradient(900px 600px at 80% 0%, rgba(24,156,255,.12), transparent 55%),
+        linear-gradient(180deg, var(--bg), #fff);
     }
-    .input::placeholder{color:rgba(11,18,32,.45)}
-    .heroActions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .wrap{max-width:1200px;margin:0 auto;padding:14px 14px 32px}
+    .topbar{
+      display:flex;gap:12px;align-items:center;justify-content:space-between;
+      padding:14px;border:1px solid var(--stroke);border-radius:var(--r2);
+      background:rgba(255,255,255,.86);
+      box-shadow:var(--shadow);
+      position:sticky; top:10px; z-index:20;
+      backdrop-filter: blur(10px);
+    }
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{
+      width:42px;height:42px;border-radius:14px;
+      background:
+        radial-gradient(16px 16px at 30% 30%, rgba(255,255,255,.9), transparent 55%),
+        linear-gradient(135deg, rgba(65,88,255,.98), rgba(24,156,255,.78));
+      box-shadow: 0 14px 30px rgba(65,88,255,.25);
+      border:1px solid rgba(255,255,255,.65);
+      flex:0 0 auto;
+    }
+    .brand h1{margin:0;font-size:16px;line-height:1.15}
+    .brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
+    .rightPills{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .pill{
+      padding:8px 10px;border:1px solid var(--stroke);border-radius:999px;
+      background:rgba(255,255,255,.86);
+      color:var(--muted); font-size:12px;
+      display:flex; gap:8px; align-items:center;
+    }
+    .dot{width:8px;height:8px;border-radius:999s;
+      background:#f5a524}
+    .dot.ok{background:#17b890}
+    .dot.bad{background:#ef4444}
 
     .panel{
-      border-radius: var(--r2);
+      margin-top:12px;
       border:1px solid var(--stroke);
-      background: rgba(255,255,255,.80);
-      box-shadow: var(--shadow);
+      border-radius:var(--r2);
+      background:rgba(255,255,255,.86);
+      box-shadow:var(--shadow);
       overflow:hidden;
-      position:relative;
-    }
-    .panel.tripBuilder::before{
-      content:"";
-      position:absolute; inset:0;
-      background: var(--bg-builder) center/cover no-repeat;
-      opacity:.16;
-      transform: scale(1.03);
-      pointer-events:none;
     }
     .panelHead{
-      position:relative;
-      padding:14px;
+      padding:12px 14px;
       display:flex; align-items:center; justify-content:space-between; gap:10px;
       border-bottom:1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.70));
+      background: rgba(238,242,255,.55);
     }
-    .panelHead h3{margin:0; font-size:13px}
-    .panelHead small{color:var(--muted); font-weight:800}
+    .panelHead h2{margin:0;font-size:14px}
+    .panelHead .sub{color:var(--muted);font-size:12px}
+    .panelBody{padding:12px 14px}
 
-    .builder{
-      position:relative;
-      padding:14px;
+    .controls{
       display:grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: 1.2fr .8fr .8fr;
       gap:10px;
     }
-    .bRow{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
+    @media (max-width: 780px){
+      .controls{grid-template-columns:1fr}
+      .topbar{position:relative; top:auto}
     }
-    .helper{
-      padding:12px;
-      border-radius:18px;
-      border:1px solid var(--stroke);
-      background: rgba(245,247,255,.75);
-      color: rgba(11,18,32,.78);
-      font-weight:750;
-      font-size:12px;
-      line-height:1.45;
-    }
-    .primaryLine{
-      padding:12px;
-      border-radius:18px;
-      border:1px solid var(--stroke);
-      background: linear-gradient(135deg, rgba(37,99,235,.10), rgba(124,58,237,.08));
-      font-weight:900;
-      font-size:12px;
-    }
-
-    /* Selected panel */
-    .selectedPanel{
-      padding:10px;
-      border-radius:18px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.80);
-      box-shadow: var(--shadow2);
-    }
-    .selTop{
-      display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
-      margin-bottom:8px;
-    }
-    .selChips{
-      display:flex; gap:8px; flex-wrap:wrap;
-      max-height:110px; overflow:auto;
-      padding:4px;
-    }
-    .selChip{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:7px 10px;
-      border-radius:999px;
-      border:1px solid var(--stroke);
-      background: rgba(245,247,255,.92);
-      font-weight:900;
-      font-size:12px;
-      cursor:pointer;
-      user-select:none;
-      transition:.14s ease;
-    }
-    .selChip:hover{transform: translateY(-1px)}
-    .x{
-      width:18px;height:18px;border-radius:999px;
-      display:inline-flex;align-items:center;justify-content:center;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.85);
-      font-weight:950;
-      font-size:12px;
-      opacity:.8;
-    }
-
-    .section{margin-top:18px; display:grid; grid-template-columns:1fr; gap:14px}
-    .sectionTitle{
-      display:flex; align-items:flex-end; justify-content:space-between; gap:12px;
-      margin:8px 0 0;
-    }
-    .sectionTitle h2{margin:0; font-size:16px}
-    .sectionTitle p{margin:0; color:var(--muted); font-weight:800; font-size:12px}
-
-    .section.exploreBg{
-      position:relative;
-      border-radius: var(--r2);
-      padding:2px;
-    }
-    .section.exploreBg::before{
-      content:"";
-      position:absolute; inset:0;
-      background: var(--bg-tiles) center/cover no-repeat;
-      opacity:.14;
-      border-radius: var(--r2);
-      pointer-events:none;
-      transform: scale(1.01);
-    }
-    .section.exploreBg > *{ position:relative; }
-
-    /* ===== TYPE TILES ===== */
-    .typeTiles{
-      padding:14px;
-      display:grid;
-      grid-template-columns: repeat(6, minmax(0,1fr));
-      gap:12px;
-    }
-    @media(max-width:1100px){ .typeTiles{grid-template-columns: repeat(4, minmax(0,1fr));} }
-    @media(max-width:780px){ .typeTiles{grid-template-columns: repeat(2, minmax(0,1fr));} }
-    .typeTile{
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.86);
-      border-radius: 20px;
-      overflow:hidden;
-      box-shadow: var(--shadow2);
-      cursor:pointer;
-      transition:.16s ease;
-      position:relative;
-    }
-    .typeTile:hover{transform: translateY(-1px)}
-    .typeTileImg{
-      height:110px;
+    label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
+    input,select{
       width:100%;
-      display:block;
-      object-fit:cover;
-      background: linear-gradient(135deg, rgba(37,99,235,.10), rgba(124,58,237,.08));
-    }
-    .typeTileBody{
-      padding:10px 12px 12px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-    }
-    .typeTileBody b{font-size:12px}
-    .typeTileBody span{font-size:12px; color:rgba(11,18,32,.62); font-weight:900}
-    .typeTileHint{
-      position:absolute; top:10px; left:10px;
-      padding:6px 9px;
-      border-radius:999px;
+      padding:10px 11px;
+      border-radius:14px;
       border:1px solid var(--stroke);
-      background: rgba(255,255,255,.88);
-      font-weight:950;
-      font-size:11px;
-      box-shadow: var(--shadow2);
+      background:rgba(255,255,255,.92);
+      font:inherit;
+      outline:none;
     }
 
-    /* ===== PLACES GRID (by Type) ===== */
-    .placesPanel{margin-top:14px}
-    .placeGroups{padding:14px; display:grid; gap:14px}
-    .typeGroup{
-      border:1px solid var(--stroke);
-      border-radius:20px;
-      background: rgba(255,255,255,.78);
-      box-shadow: var(--shadow2);
-      overflow:hidden;
-    }
-    .typeGroupHead{
-      padding:12px 12px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      border-bottom:1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.70));
-    }
-    .typeGroupHead b{font-size:13px}
-    .typeGroupHead span{font-size:12px; font-weight:900; color:rgba(11,18,32,.62)}
-    .placeGrid{
-      padding:12px;
-      display:grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap:12px;
-    }
-    @media(max-width:1100px){ .placeGrid{grid-template-columns: repeat(3, minmax(0,1fr));} }
-    @media(max-width:780px){ .placeGrid{grid-template-columns: repeat(2, minmax(0,1fr));} }
-
-    .placeCard{
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.86);
-      border-radius:18px;
-      overflow:hidden;
-      box-shadow: var(--shadow2);
-      cursor:pointer;
-      transition:.14s ease;
-      display:flex; flex-direction:column;
-      min-height:170px;
-    }
-    .placeCard:hover{transform: translateY(-1px)}
-    .placeCard.active{
-      outline: 2px solid rgba(37,99,235,.35);
-      box-shadow: 0 18px 50px rgba(37,99,235,.14);
-    }
-    .placeThumb{
-      height:92px; width:100%;
-      object-fit:cover; display:block;
-      background: linear-gradient(135deg, rgba(37,99,235,.10), rgba(124,58,237,.08));
-    }
-    .placeBody{padding:10px 10px 12px; display:flex; flex-direction:column; gap:6px}
-    .placeBody b{font-size:12px; line-height:1.2}
-    .placeMeta{font-size:11px; font-weight:900; color:rgba(11,18,32,.62)}
-    .placeTag{
-      margin-top:auto;
-      font-size:11px; font-weight:950;
-      display:inline-flex; align-self:flex-start;
-      padding:6px 9px; border-radius:999px;
-      border:1px solid var(--stroke);
-      background: rgba(245,247,255,.90);
-    }
-
-    /* Map */
-    .mapPanel{display:none; margin-top:14px; position:relative}
-    .mapPanel::before{
-      content:"";
-      position:absolute; inset:0;
-      background: var(--bg-map) center/cover no-repeat;
-      opacity:.12;
-      pointer-events:none;
-      transform: scale(1.02);
-    }
     #map{
-      position:relative;
-      width:100%;
-      height: 460px;
-      border-radius: var(--r2);
+      height:340px;
+      border-radius:var(--r2);
       border:1px solid var(--stroke);
-      box-shadow: var(--shadow);
       overflow:hidden;
+      margin-top:12px;
+    }
+
+    /* Segment Blocks */
+    .segWrap{margin-top:14px;display:grid;gap:12px}
+    .segBlock{
+      border:1px solid var(--stroke);
+      border-radius:var(--r2);
+      background:rgba(255,255,255,.86);
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+    .segHead{
+      padding:10px 12px;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      border-bottom:1px solid var(--stroke);
+      background: rgba(238,242,255,.65);
+    }
+    .segHead b{font-size:14px}
+    .chips{display:flex;gap:6px;flex-wrap:wrap}
+    .chip{
+      padding:6px 8px;border-radius:999px;
+      background:var(--chip);
+      border:1px solid rgba(65,88,255,.18);
+      font-size:12px;color:rgba(20,35,80,.85);
+    }
+    .cards{
+      padding:10px;
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:10px;
+    }
+    @media (max-width:980px){ .cards{grid-template-columns: repeat(2,1fr)} }
+    @media (max-width:520px){ .cards{grid-template-columns: 1fr} }
+
+    .card{
+      border:1px solid var(--stroke);
+      border-radius:var(--r);
+      background:rgba(255,255,255,.92);
+      overflow:hidden;
+      cursor:pointer;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .card:hover{transform: translateY(-2px); box-shadow: 0 18px 40px rgba(10,18,40,.14)}
+    .thumb{height:120px;background:linear-gradient(135deg, rgba(65,88,255,.20), rgba(24,156,255,.12));}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .cardBody{padding:10px 10px 12px}
+    .cardBody h4{margin:0 0 4px;font-size:14px}
+    .cardBody p{margin:0;color:var(--muted);font-size:12px;line-height:1.35}
+    .miniRow{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+    .mini{
+      padding:5px 7px;border-radius:999px;
+      background:rgba(11,18,32,.04);
+      border:1px solid rgba(10,18,40,.08);
+      font-size:11px;color:rgba(11,18,32,.72);
     }
 
     /* Modal */
-    .modalWrap{
-      display:none; position:fixed; inset:0;
-      background:rgba(15,23,42,.35);
-      backdrop-filter:blur(6px);
+    .modalBack{
+      position:fixed; inset:0;
+      background: rgba(10,18,40,.45);
+      display:none;
+      align-items:center; justify-content:center;
+      padding:16px;
+      z-index:50;
+    }
+    .modal{
+      width:min(920px, 100%);
+      border-radius: 26px;
+      border:1px solid rgba(255,255,255,.25);
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 30px 80px rgba(0,0,0,.25);
+      overflow:hidden;
+    }
+    .modalHead{
+      padding:12px 14px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      border-bottom:1px solid var(--stroke);
+    }
+    .modalHead h3{margin:0;font-size:14px}
+    .btnClose{
+      width:auto;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid var(--stroke);
+      background:#fff;
+      cursor:pointer;
+    }
+    .modalBody{
       padding:14px;
-      z-index:70;
-      align-items:center;
-      justify-content:center;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
     }
-    .modalWrap::before{
-      content:"";
-      position:absolute; inset:0;
-      background: var(--bg-modal) center/cover no-repeat;
-      opacity:.10;
-      pointer-events:none;
+    @media (max-width: 820px){ .modalBody{grid-template-columns:1fr} }
+    .heroPic{
+      border:1px solid var(--stroke);
+      border-radius: 22px;
+      overflow:hidden;
+      background: rgba(11,18,32,.04);
+      min-height:220px;
     }
-    .modalWrap > *{position:relative}
-
-    @media (max-width: 980px){
-      .finder{grid-template-columns:1fr 1fr}
-      .finder .field:nth-child(1){grid-column:1/-1}
-      .finder .field:nth-child(4){grid-column:1/-1}
-      #map{height:380px}
-      .bRow{grid-template-columns:1fr}
+    .heroPic img{width:100%;height:100%;object-fit:cover;display:block}
+    .kv{
+      display:grid; grid-template-columns: 1fr 1fr;
+      gap:10px;
     }
+    @media (max-width: 520px){ .kv{grid-template-columns:1fr} }
+    .kv .item{
+      border:1px solid var(--stroke);
+      border-radius: 18px;
+      background: rgba(255,255,255,.92);
+      padding:10px 12px;
+    }
+    .kv .k{font-size:12px;color:var(--muted)}
+    .kv .v{font-size:13px;margin-top:4px;line-height:1.35}
+    .long{
+      margin-top:10px;
+      border:1px solid var(--stroke);
+      border-radius: 18px;
+      background: rgba(255,255,255,.92);
+      padding:10px 12px;
+    }
+    .long h5{margin:0 0 6px;font-size:13px}
+    .long p{margin:0;color:rgba(11,18,32,.80);font-size:13px;line-height:1.45}
   </style>
 </head>
 
 <body>
-  <div class="topbar">
-    <div class="inner">
+  <div class="wrap">
+
+    <div class="topbar">
       <div class="brand">
-        <div class="logo">
-          <img src="./logo.png" alt="Himachal Explorer" onerror="this.remove()">
-        </div>
+        <div class="logo"></div>
         <div>
           <h1>Himachal Explorer</h1>
-          <small>geo-feasible packages • cost estimate • type grids</small>
+          <p>Tiles grouped by <b>Segment Type</b> (Firebase: /locations)</p>
         </div>
       </div>
-
-      <div class="nav">
-        <a class="pill" href="#explore"><span class="dot"></span>Explore</a>
-        <button class="btn ghost" id="openAI">AI Planner</button>
-        <button class="btn" id="openAdmin">Admin</button>
+      <div class="rightPills">
+        <div class="pill"><span id="dbDot" class="dot"></span><span id="dbText">Connecting…</span></div>
+        <div class="pill">Total: <b id="totalCount" style="margin-left:6px">0</b></div>
+        <div class="pill">Filtered: <b id="filteredCount" style="margin-left:6px">0</b></div>
       </div>
     </div>
-  </div>
 
-  <div class="wrap">
-    <section class="hero">
-      <div class="heroCard">
-        <div class="heroInner">
-          <div>
-            <h2 class="heroTitle">Build feasible Himachal packages.</h2>
-            <p class="heroSub">
-              Packages are generated as <b>nearby clusters</b> (tempo-feasible) and show
-              <b>estimated cost</b> based on vehicle, persons, days, season, hotel class, meals & activities.
-            </p>
-
-            <div class="chips">
-              <div class="chip"><i>Geo</i>No far-away mixing</div>
-              <div class="chip"><i>Cost</i>₹ min–max + breakdown</div>
-              <div class="chip"><i>Grid</i>Places by type</div>
-            </div>
-
-            <div class="finder">
-              <div class="field">
-                <label>Search</label>
-                <input class="input" id="q" placeholder="Example: Triund, Manimahesh, Kufri, Chandratal…"/>
-              </div>
-
-              <div class="field">
-                <label>District</label>
-                <select class="select" id="district">
-                  <option value="all">All</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label>Type</label>
-                <input type="hidden" id="type" value="all"/>
-
-                <div class="typePick" id="typePick">
-                  <button class="typePickBtn" id="typePickBtn" type="button">
-                    <img id="typePickImg" src="./n1.jpg" alt="" />
-                    <span id="typePickText">All</span>
-                    <span class="typePickChev">▾</span>
-                  </button>
-
-                  <div class="typePickMenu" id="typePickMenu">
-                    <button type="button" class="typePickItem" data-value="all" data-img="./n1.jpg">
-                      <img src="./n1.jpg" alt="All"><span>All</span>
-                    </button>
-                    <button type="button" class="typePickItem" data-value="Destination" data-img="./Kee_monastery.jpg">
-                      <img src="./Kee_monastery.jpg" alt="Destination"><span>Destination</span>
-                    </button>
-                    <button type="button" class="typePickItem" data-value="Temple" data-img="./temple.jpg">
-                      <img src="./temple.jpg" alt="Temple"><span>Temple</span>
-                    </button>
-                    <button type="button" class="typePickItem" data-value="Lake" data-img="./201-himalaya.jpg">
-                      <img src="./201-himalaya.jpg" alt="Lake"><span>Lake</span>
-                    </button>
-                    <button type="button" class="typePickItem" data-value="Trek" data-img="./trek.jpeg">
-                      <img src="./trek.jpeg" alt="Trek"><span>Trek</span>
-                    </button>
-                    <button type="button" class="typePickItem" data-value="Hotel" data-img="./Travelers.jpg">
-                      <img src="./Travelers.jpg" alt="Hotel"><span>Hotel</span>
-                    </button>
-                    <button type="button" class="typePickItem" data-value="Activity" data-img="./activity.jpg">
-                      <img src="./activity.jpg" alt="Activity"><span>Activity</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <label>Trip Days</label>
-                <select class="select" id="days">
-                  <option value="0">Any</option>
-                  <option value="1">1–2 days</option>
-                  <option value="3">3–4 days</option>
-                  <option value="5">5–7 days</option>
-                  <option value="8">8–12 days</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="heroActions">
-              <button class="btn" id="apply">Apply Filters</button>
-              <button class="btn ghost" id="reset">Reset</button>
-              <button class="btn ghost" id="showMapBtn">Show Map</button>
-            </div>
-          </div>
-
-          <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap">
-            <small style="color:rgba(11,18,32,.65); font-weight:800">
-              Tip: Use district filter for ultra-feasible packages. Click place cards to select.
-            </small>
-            <small id="status" style="color:rgba(11,18,32,.65); font-weight:900">Loading…</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel tripBuilder">
-        <div class="panelHead">
-          <h3>Trip Builder</h3>
-          <small>packages + cost</small>
-        </div>
-
-        <div class="builder">
-          <div class="primaryLine" id="builderLine">
-            Set vehicle + people + season + hotel → Get Packages → Activate.
-          </div>
-
-          <div class="bRow">
-            <div class="field">
-              <label>People</label>
-              <select class="select" id="people">
-                <option value="solo">Solo (1)</option>
-                <option value="couple">Couple (2)</option>
-                <option value="family">Family (4)</option>
-                <option value="group">Group (8)</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Budget (affects hotel)</label>
-              <select class="select" id="budget">
-                <option value="low">Low</option>
-                <option value="mid" selected>Mid</option>
-                <option value="high">High</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="bRow">
-            <div class="field">
-              <label>Interest</label>
-              <select class="select" id="interest">
-                <option value="nature" selected>Nature + Views</option>
-                <option value="temples">Temples + Culture</option>
-                <option value="adventure">Adventure + Treks</option>
-                <option value="relax">Relax + Stays</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Transport</label>
-              <select class="select" id="vehicle">
-                <option value="bike">Bike (per person)</option>
-                <option value="cab">Cab (Sedan/SUV)</option>
-                <option value="tempo" selected>Tempo Traveller</option>
-                <option value="bus">Mini Bus</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="bRow">
-            <div class="field">
-              <label>Season</label>
-              <select class="select" id="season">
-                <option value="off">Off-season</option>
-                <option value="normal" selected>Normal</option>
-                <option value="peak">Peak</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Hotel Class</label>
-              <select class="select" id="hotelClass">
-                <option value="budget">Budget</option>
-                <option value="mid" selected>Mid</option>
-                <option value="premium">Premium</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="bRow">
-            <div class="field">
-              <label>Meals</label>
-              <select class="select" id="meals">
-                <option value="no" selected>No</option>
-                <option value="yes">Yes (per day)</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Include Activities</label>
-              <select class="select" id="activities">
-                <option value="no" selected>No</option>
-                <option value="yes">Yes (avg)</option>
-              </select>
-            </div>
-          </div>
-
-          <button class="btn" id="makePackages">Get Packages</button>
-
-          <div class="helper" id="packagesBox">
-            Click <b>Get Packages</b> — feasible geo packages + cost will appear here.
-          </div>
-
-          <div class="selectedPanel">
-            <div class="selTop">
-              <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
-                <span class="pill"><span class="dot"></span><span id="activeFilters">No filters</span></span>
-                <span class="pill"><span class="dot"></span><span id="count">0 results</span></span>
-                <span class="pill"><span class="dot"></span><span id="selCount">0 selected</span></span>
-              </div>
-              <div style="display:flex; gap:10px; flex-wrap:wrap">
-                <button class="btn ghost" id="btnClearPkg" type="button">Clear Package</button>
-                <button class="btn bad" id="btnClearSel" type="button">Clear Selected</button>
-              </div>
-            </div>
-            <div class="selChips" id="selectedChips">
-              <span style="color:rgba(11,18,32,.70); font-weight:850; font-size:12px">
-                No selections yet. Select via package list or by clicking place cards in the grid.
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section exploreBg" id="explore">
-      <div class="sectionTitle">
-        <div>
-          <h2>Explore</h2>
-          <p>Type tiles + Places grid by type + Map (optional).</p>
-        </div>
-      </div>
-
-      <!-- Type tiles -->
-      <div class="panel" style="overflow:hidden">
-        <div class="panelHead">
-          <h3>Type Tiles</h3>
-          <small>click tile to filter</small>
-        </div>
-        <div class="typeTiles" id="typeTiles"></div>
-      </div>
-
-      <!-- Places grid by type (kept as requested) -->
-      <div class="panel placesPanel" id="placesPanel">
-        <div class="panelHead">
-          <h3>Places (Grid by Type)</h3>
-          <small>click a card to select/unselect</small>
-        </div>
-        <div class="placeGroups" id="placeGroups"></div>
-      </div>
-
-      <!-- Map -->
-      <div class="panel mapPanel" id="mapPanel">
-        <div class="panelHead">
-          <h3>Map</h3>
-          <small id="mapHint">Loads after click</small>
-        </div>
-        <div style="padding:14px; position:relative">
-          <div id="map"></div>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <!-- AI Modal -->
-  <div class="modalWrap" id="modalWrap" role="dialog" aria-modal="true">
-    <div class="panel" style="width:min(840px,100%); background:rgba(255,255,255,.92)">
+    <div class="panel">
       <div class="panelHead">
         <div>
-          <h3>AI Trip Planner</h3>
-          <small>days + interest → adds selections</small>
+          <h2>Filters</h2>
+          <div class="sub">Search + District + Segment Type → updates map + segment grids</div>
         </div>
-        <button class="btn ghost" id="closeAI">✕</button>
+        <div class="chips">
+          <span class="chip" id="chipDistrict">All districts</span>
+          <span class="chip" id="chipSegment">All segments</span>
+        </div>
       </div>
-      <div id="chat" style="padding:14px; display:flex; flex-direction:column; gap:10px; max-height:62vh; overflow:auto;"></div>
-      <div style="padding:12px 14px 14px; display:flex; gap:10px; border-top:1px solid var(--stroke);">
-        <input id="chatInput" style="flex:1; padding:12px; border-radius:14px; border:1px solid var(--stroke); background:rgba(255,255,255,.9); font-weight:800"
-               placeholder="Example: 4 days, couple, temples + lakes, starting Shimla"/>
-        <button class="btn" id="sendChat">Send</button>
+
+      <div class="panelBody">
+        <div class="controls">
+          <div>
+            <label>Search</label>
+            <input id="q" placeholder="Search by name / district / type / segment…">
+          </div>
+          <div>
+            <label>District</label>
+            <select id="district"></select>
+          </div>
+          <div>
+            <label>Segment Type</label>
+            <select id="segment"></select>
+          </div>
+        </div>
+
+        <div id="map"></div>
+      </div>
+    </div>
+
+    <div class="segWrap" id="segmentsContainer"></div>
+
+  </div>
+
+  <!-- DETAILS MODAL -->
+  <div id="modalBack" class="modalBack">
+    <div class="modal">
+      <div class="modalHead">
+        <h3 id="mTitle">Location</h3>
+        <button class="btnClose" id="mClose">Close</button>
+      </div>
+      <div class="modalBody">
+        <div class="heroPic" id="mImgWrap"></div>
+        <div>
+          <div class="kv">
+            <div class="item"><div class="k">District</div><div class="v" id="mDistrict">—</div></div>
+            <div class="item"><div class="k">Segment Type</div><div class="v" id="mSegment">—</div></div>
+            <div class="item"><div class="k">Location Type</div><div class="v" id="mType">—</div></div>
+            <div class="item"><div class="k">Best Time</div><div class="v" id="mBestTime">—</div></div>
+            <div class="item"><div class="k">How to Reach</div><div class="v" id="mReach">—</div></div>
+            <div class="item"><div class="k">Distance (HQ)</div><div class="v" id="mDist">—</div></div>
+          </div>
+          <div class="long">
+            <h5>Short Description</h5>
+            <p id="mShort">—</p>
+          </div>
+          <div class="long">
+            <h5>Key Features</h5>
+            <p id="mKey">—</p>
+          </div>
+          <div class="long">
+            <h5>Overview</h5>
+            <p id="mOverview">—</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
 <script>
-/* =========================
-   FIREBASE
-========================= */
+/* ===========================
+   FIREBASE CONFIG (FILL THIS)
+=========================== */
 const firebaseConfig = {
-  apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
-  authDomain: "revnue-records.firebaseapp.com",
+  apiKey: "PASTE_YOUR_API_KEY",
+  authDomain: "PASTE_YOUR_PROJECT.firebaseapp.com",
   databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "revnue-records",
-  storageBucket: "revnue-records.firebasestorage.app",
-  messagingSenderId: "182348503564",
-  appId: "1:182348503564:web:480085405b09177245ac29",
-  measurementId: "G-MGTDBCG896"
+  storageBucket: "PASTE.appspot.com",
+  messagingSenderId: "PASTE",
+  appId: "PASTE"
 };
 
-/* ✅ EDIT: Your data is at ROOT (not inside /locations) */
-const dbPath = ""; // root
-
-/* =========================
-   STATE
-========================= */
-const $ = (id)=>document.getElementById(id);
+/* ===========================
+   GLOBALS
+=========================== */
+let map, markersLayer;
 let allPlaces = [];
-let shownPlaces = [];
-let map = null;
-let markerLayer = null;
-let mapReady = false;
+let filteredPlaces = [];
 
-/* Selection + package state */
-let selectedPlaceIds = new Set();
-let activePackageId = null;
-let packagePlaceIds = new Set();
+const $ = (id)=>document.getElementById(id);
+const dbDot = $("dbDot"), dbText = $("dbText");
+const totalCount = $("totalCount"), filteredCount = $("filteredCount");
+const q = $("q"), districtSel = $("district"), segmentSel = $("segment");
+const chipDistrict = $("chipDistrict"), chipSegment = $("chipSegment");
+const segmentsContainer = $("segmentsContainer");
 
-/* Mode: true shows package + manual selections. false => strict package only */
-const allowManualAlongWithPackage = true;
-
-/* =========================
+/* ===========================
    HELPERS
-========================= */
-function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
-function safeText(v){ return (v ?? "").toString().trim(); }
-function escapeHtml(str){
-  return safeText(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
+=========================== */
+function safeStr(v){ return (v===undefined || v===null) ? "" : String(v); }
+function toNum(v){
+  const n = parseFloat(String(v||"").replace(/[^\d.\-]/g,""));
+  return Number.isFinite(n) ? n : null;
 }
-function moneyINR(n){
-  try{ return "₹" + Math.round(n).toLocaleString("en-IN"); }
-  catch{ return "₹" + Math.round(n); }
+function uniq(arr){
+  return Array.from(new Set(arr.filter(Boolean))).sort((a,b)=>a.localeCompare(b));
 }
-function normalizeType(t){
-  t = safeText(t);
-  if(!t) return "Destination";
-  const low = t.toLowerCase();
-  if(low.includes("cave") || low.includes("gufa")) return "Destination";
-  if(low.includes("temple") || low.includes("mandir")) return "Temple";
-  if(low.includes("lake")) return "Lake";
-  if(low.includes("trek") || low.includes("trail")) return "Trek";
-  if(low.includes("hotel") || low.includes("stay")) return "Hotel";
-  if(low.includes("activity") || low.includes("adventure")) return "Activity";
-  if(low.includes("dest") || low.includes("place")) return "Destination";
-  return t[0].toUpperCase() + t.slice(1);
+function escapeHtml(s){
+  return safeStr(s).replace(/[&<>"']/g, (c)=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  })[c]);
 }
-function parseLatLngFromMapUrl(url){
-  url = safeText(url);
-  if(!url) return {lat:null,lng:null};
-  const q = url.match(/q=([-0-9.]+)\s*,\s*([-0-9.]+)/i);
-  if(q) return {lat:Number(q[1])||null, lng:Number(q[2])||null};
-  const at = url.match(/@([-0-9.]+)\s*,\s*([-0-9.]+)/i);
-  if(at) return {lat:Number(at[1])||null, lng:Number(at[2])||null};
-  return {lat:null,lng:null};
+function pickPhoto(p){
+  return p["photo 1"] || p["Photo 1"] || p["photo1"] || p["Image"] || p["image"] || "";
 }
-function getImagesFromObj(o){
-  const arr = [];
-  if(Array.isArray(o.images)) arr.push(...o.images);
-  const single = safeText(o["Image"] || o.image || o["Cover"] || o["Cover Image"] || o["Photo"] || o.photo);
-  const list = safeText(o["Images"] || o.imagesList || o["Pics"] || "");
-  const p1 = safeText(o["photo 1"] || o.photo1 || o["Image 1"] || o.image1);
-  const p2 = safeText(o["photo 2"] || o.photo2 || o["Image 2"] || o.image2);
-  const p3 = safeText(o["photo 3"] || o.photo3 || o["Image 3"] || o.image3);
-
-  if(single) arr.push(single);
-  if(list) list.split(",").map(s=>s.trim()).filter(Boolean).forEach(u=>arr.push(u));
-  if(p1) arr.push(p1); if(p2) arr.push(p2); if(p3) arr.push(p3);
-
-  return [...new Set(arr.filter(Boolean))];
-}
-function bestThumb(p){ return ((p.images||[]).filter(Boolean)[0]) || ""; }
-
-/* Haversine distance (km) */
-function haversineKm(lat1,lng1,lat2,lng2){
-  const R = 6371;
-  const toRad = (x)=> x*Math.PI/180;
-  const dLat = toRad(lat2-lat1);
-  const dLng = toRad(lng2-lng1);
-  const a =
-    Math.sin(dLat/2)**2 +
-    Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLng/2)**2;
-  return 2*R*Math.asin(Math.sqrt(a));
+function setDbStatus(ok, msg){
+  dbDot.classList.remove("ok","bad");
+  dbDot.classList.add(ok ? "ok" : "bad");
+  dbText.textContent = msg;
 }
 
-/* =========================
-   COST ENGINE (estimate)
-========================= */
-function seasonMul(season){
-  return season==="peak" ? 1.25 : season==="off" ? 0.88 : 1.0;
-}
-function hotelRatePerPerson(hotelClass){
-  if(hotelClass==="budget") return 900;
-  if(hotelClass==="premium") return 2400;
-  return 1500;
-}
-function mealsRatePerPerson(hasMeals){ return hasMeals ? 450 : 0; }
-function activitiesRatePerPerson(include){ return include ? 900 : 0; }
-
-function vehiclePricing(vehicle, persons){
-  if(vehicle==="bike"){
-    return { kmRate: 3.0 * persons, dayHire: 350 * persons, driverAllowance: 0, capacity: persons, note:"Bike: per person basis" };
-  }
-  if(vehicle==="cab"){
-    const suv = persons > 4;
-    return {
-      kmRate: suv ? 19 : 15,
-      dayHire: suv ? 2500 : 1900,
-      driverAllowance: 450,
-      capacity: suv ? 6 : 4,
-      note: suv ? "Cab: SUV assumed" : "Cab: Sedan assumed"
-    };
-  }
-  if(vehicle==="tempo"){
-    return { kmRate: 24, dayHire: 3600, driverAllowance: 550, capacity: 12, note:"Tempo Traveller assumed (10–12 seater)" };
-  }
-  return { kmRate: 32, dayHire: 5200, driverAllowance: 650, capacity: 22, note:"Mini bus assumed" };
-}
-function estimateTripKm(points){
-  const pts = points.filter(p=>p.lat && p.lng);
-  if(pts.length < 2) return 40;
-
-  const cx = pts.reduce((s,p)=>s+p.lat,0)/pts.length;
-  const cy = pts.reduce((s,p)=>s+p.lng,0)/pts.length;
-  let r = 0;
-  for(const p of pts){
-    const d = haversineKm(cx, cy, p.lat, p.lng);
-    if(d > r) r = d;
-  }
-  const hops = (pts.length-1) * 12;
-  const circuit = r * 2.6 * 2;
-  return Math.max(50, circuit + hops);
-}
-function tollParkingEstimate(days, locationsCount){
-  return 250*days + 60*locationsCount;
-}
-function nightHaltEstimate(days){
-  return days >= 2 ? (days-1)*350 : 0;
-}
-function estimatePackageCost({vehicle, persons, days, points, hotelClass, meals, season, activities}){
-  persons = clamp(Number(persons)||1, 1, 40);
-  days = clamp(Number(days)||3, 1, 20);
-
-  const km = estimateTripKm(points);
-  const v = vehiclePricing(vehicle, persons);
-
-  let capNote = "";
-  if(vehicle!=="bike" && persons > v.capacity){
-    capNote = `⚠ People (${persons}) > capacity (${v.capacity}). Consider bigger vehicle or two vehicles.`;
-  }
-
-  const transportBase = (v.dayHire * days) + (v.kmRate * km) + (v.driverAllowance * days) + nightHaltEstimate(days);
-  const toll = tollParkingEstimate(days, points.length);
-  const transport = (transportBase + toll);
-
-  const nights = Math.max(0, days-1);
-  const hotel = hotelRatePerPerson(hotelClass) * persons * nights;
-  const food = mealsRatePerPerson(meals==="yes") * persons * days;
-  const act = activitiesRatePerPerson(activities==="yes") * persons;
-
-  const contingency = 0.08 * (transport + hotel + food + act);
-
-  const mul = seasonMul(season);
-  const total = (transport*mul) + (hotel*mul) + food + act + contingency;
-
-  const min = total * 0.88;
-  const max = total * 1.12;
-
-  return {
-    km: Math.round(km),
-    breakdown: {
-      transport: Math.round(transport*mul),
-      hotel: Math.round(hotel*mul),
-      food: Math.round(food),
-      activities: Math.round(act),
-      contingency: Math.round(contingency),
-    },
-    vehicleNote: v.note,
-    capNote,
-    totalMin: Math.round(min),
-    totalMax: Math.round(max),
-    totalText: `${moneyINR(min)} – ${moneyINR(max)}`
-  };
-}
-
-/* =========================
-   VISIBILITY (Selected + Package)
-========================= */
-function getVisiblePlaces(baseList){
-  if(activePackageId){
-    return baseList.filter(p => {
-      const inPkg = packagePlaceIds.has(p.id);
-      const manual = selectedPlaceIds.has(p.id);
-      return allowManualAlongWithPackage ? (inPkg || manual) : inPkg;
-    });
-  }
-  return baseList.filter(p => selectedPlaceIds.has(p.id));
-}
-function toggleSelectPlace(placeId){
-  if(selectedPlaceIds.has(placeId)) selectedPlaceIds.delete(placeId);
-  else selectedPlaceIds.add(placeId);
-  renderSelectedChips();
-  applyFilters(true);
-}
-function clearSelections(){
-  selectedPlaceIds.clear();
-  renderSelectedChips();
-  applyFilters(true);
-}
-function activatePackage(pkgId){
-  activePackageId = pkgId || null;
-  const ids = (window.__PKGS__ && window.__PKGS__[pkgId]) ? window.__PKGS__[pkgId] : [];
-  packagePlaceIds = new Set(ids);
-  $("builderLine").textContent = `Active Package: ${pkgId} • showing geo-feasible package places`;
-  applyFilters(true);
-}
-function deactivatePackage(){
-  activePackageId = null;
-  packagePlaceIds = new Set();
-  $("builderLine").textContent = "Set vehicle + people + season + hotel → Get Packages → Activate.";
-  applyFilters(true);
-}
-
-/* =========================
-   MAP (lazy init)
-========================= */
-function ensureMap(){
-  if(mapReady) return;
-  $("mapPanel").style.display = "block";
-
-  map = L.map('map', {zoomControl:true}).setView([31.9, 77.2], 7);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+/* ===========================
+   MAP
+=========================== */
+function initMap(){
+  map = L.map("map", {zoomControl:true}).setView([31.1048, 77.1734], 7);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 18,
-    attribution: '&copy; OpenStreetMap'
+    attribution: "&copy; OpenStreetMap"
   }).addTo(map);
 
-  markerLayer = L.layerGroup().addTo(map);
-  mapReady = true;
-  setTimeout(()=> map.invalidateSize(), 120);
+  markersLayer = L.layerGroup().addTo(map);
 }
-function clearMarkers(){ if(mapReady) markerLayer.clearLayers(); }
-function addMarkers(list){
-  if(!mapReady) return;
-  clearMarkers();
-  list.forEach((p)=>{
-    if(!p.lat || !p.lng) return;
-    const m = L.marker([p.lat, p.lng]).addTo(markerLayer);
-    m.bindPopup(`<b>${escapeHtml(p.name)}</b><br/><span style="opacity:.75">${escapeHtml(p.district)} • ${escapeHtml(p.type)}</span>`);
+function drawMarkers(list){
+  markersLayer.clearLayers();
+  const bounds = [];
+  list.forEach(p=>{
+    if(p.lat==null || p.lng==null) return;
+    const m = L.marker([p.lat,p.lng]).addTo(markersLayer);
+    m.bindPopup(`<b>${escapeHtml(p.name)}</b><br>${escapeHtml(p.district)} • ${escapeHtml(p.segment)}`);
+    m.on("click", ()=>openModal(p));
+    bounds.push([p.lat,p.lng]);
+  });
+  if(bounds.length){
+    map.fitBounds(bounds, {padding:[28,28]});
+  }
+}
+
+/* ===========================
+   MODAL
+=========================== */
+const modalBack = $("modalBack");
+$("mClose").onclick = closeModal;
+modalBack.addEventListener("click", (e)=>{ if(e.target===modalBack) closeModal(); });
+
+function openModal(p){
+  $("mTitle").textContent = p.name || "Location";
+  $("mImgWrap").innerHTML = p.photo ? `<img src="${escapeHtml(p.photo)}" alt="">`
+                                    : `<div style="padding:18px;color:rgba(11,18,32,.6)">No photo available</div>`;
+
+  $("mDistrict").textContent = p.district || "—";
+  $("mSegment").textContent  = p.segment || "—";
+  $("mType").textContent     = p.type || "—";
+  $("mBestTime").textContent = p.bestTime || "—";
+  $("mReach").textContent    = p.reach || "—";
+  $("mDist").textContent     = p.distHQ || "—";
+
+  $("mShort").textContent    = p.short || "—";
+  $("mKey").textContent      = p.keyFeatures || "—";
+  $("mOverview").textContent = p.overview || "—";
+
+  modalBack.style.display = "flex";
+
+  if(p.lat!=null && p.lng!=null){
+    setTimeout(()=>map.setView([p.lat,p.lng], 12, {animate:true}), 120);
+  }
+}
+function closeModal(){ modalBack.style.display = "none"; }
+
+/* ===========================
+   NORMALIZE FIREBASE RECORD
+=========================== */
+function normalize(key, raw){
+  const p = raw || {};
+  const name = p["Location Name"] || p["location name"] || p["Name"] || p["name"] || key;
+  const district = p["District"] || p["district"] || "";
+  const segment = p["Segment Type"] || p["segment type"] || p["Segment"] || p["segment"] || "Other";
+  const type = p["Location Type"] || p["location type"] || p["Type"] || p["type"] || "";
+  const short = p["Short Description"] || p["short description"] || "";
+  const keyFeatures = p["Key Features"] || p["key features"] || "";
+  const reach = p["How to Reach"] || p["how to reach"] || "";
+  const bestTime = p["Best Time to Visit"] || p["best time to visit"] || "";
+  const distHQ = p["Dist from HQ"] || p["Dist from HQ:"] || p["dist from hq"] || "";
+  const overview = p["Overview"] || p["overview"] || "";
+
+  const lat = toNum(p["Latitude"] ?? p["latitude"]);
+  const lng = toNum(p["Longitude"] ?? p["longitude"]);
+  const photo = pickPhoto(p);
+
+  return { key, name:safeStr(name), district:safeStr(district), segment:safeStr(segment),
+           type:safeStr(type), short:safeStr(short), keyFeatures:safeStr(keyFeatures),
+           reach:safeStr(reach), bestTime:safeStr(bestTime), distHQ:safeStr(distHQ),
+           overview:safeStr(overview), lat, lng, photo };
+}
+
+/* ===========================
+   RENDER: SEGMENT BLOCKS
+=========================== */
+function makeCard(p){
+  const el = document.createElement("div");
+  el.className = "card";
+  el.innerHTML = `
+    <div class="thumb">
+      ${p.photo ? `<img src="${escapeHtml(p.photo)}" alt="">` : ``}
+    </div>
+    <div class="cardBody">
+      <h4>${escapeHtml(p.name)}</h4>
+      <p>${escapeHtml(p.short || p.overview || "—")}</p>
+      <div class="miniRow">
+        <span class="mini">${escapeHtml(p.district || "—")}</span>
+        <span class="mini">${escapeHtml(p.type || "—")}</span>
+      </div>
+    </div>
+  `;
+  el.onclick = ()=>openModal(p);
+  return el;
+}
+
+function renderSegments(list){
+  // group by Segment Type
+  const groups = new Map();
+  list.forEach(p=>{
+    const seg = p.segment || "Other";
+    if(!groups.has(seg)) groups.set(seg, []);
+    groups.get(seg).push(p);
+  });
+
+  // sort by count desc
+  const sorted = Array.from(groups.entries()).sort((a,b)=>b[1].length - a[1].length);
+
+  segmentsContainer.innerHTML = "";
+  sorted.forEach(([seg, items])=>{
+    const block = document.createElement("div");
+    block.className = "segBlock";
+
+    const distChips = uniq(items.map(x=>x.district)).slice(0,4).map(d=>`<span class="chip">${escapeHtml(d)}</span>`).join("");
+    block.innerHTML = `
+      <div class="segHead">
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <b>${escapeHtml(seg)}</b>
+          <span style="color:rgba(11,18,32,.62);font-size:12px">${items.length} place(s)</span>
+        </div>
+        <div class="chips">${distChips}</div>
+      </div>
+      <div class="cards"></div>
+    `;
+
+    const cards = block.querySelector(".cards");
+    // show all (or limit if huge)
+    items.forEach(p=>cards.appendChild(makeCard(p)));
+    segmentsContainer.appendChild(block);
   });
 }
 
-/* =========================
-   FIREBASE LOAD (✅ FIXED PATH + UI ERROR)
-========================= */
-async function loadPlaces(){
-  try{
-    $("status").textContent = "Connecting to Firebase…";
-    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+/* ===========================
+   FILTERS
+=========================== */
+function fillSelect(sel, items, allLabel){
+  sel.innerHTML = "";
+  const all = document.createElement("option");
+  all.value = "ALL";
+  all.textContent = allLabel;
+  sel.appendChild(all);
 
-    const db = firebase.database();
-    const ref = dbPath ? db.ref(dbPath) : db.ref();  // ✅ root read if dbPath empty
-    $("status").textContent = `Reading: ${dbPath ? "/"+dbPath : "/"} …`;
-
-    const snap = await ref.once("value");
-    const val = snap.val() || {};
-
-    if(!snap.exists() || !Object.keys(val).length){
-      $("status").textContent = `Connected ✅ but ${dbPath ? "/"+dbPath : "/"} is empty (check path).`;
-      allPlaces = [];
-      return;
-    }
-
-    allPlaces = Object.entries(val).map(([id, o])=>{
-      o = o || {};
-      const name = safeText(o["Location Name"] || o.name || o.title || id);
-      const district = safeText(o["District"] || o.district || "Unknown");
-      const segment = safeText(o["Segment Type"] || o.segment || "Destination");
-      const how = safeText(o["How to Reach"] || o.how || "");
-      const mapUrl = safeText(o["Map"] || o.map || "");
-      const {lat, lng} = parseLatLngFromMapUrl(mapUrl);
-      const type = normalizeType(segment);
-      const images = getImagesFromObj(o);
-      return { id, name, district, type, how, mapUrl, lat, lng, images };
-    }).filter(p=>p.name);
-
-    $("status").textContent = `Loaded ✅ ${allPlaces.length} places`;
-  }catch(e){
-    console.error("Firebase load failed:", e);
-    const msg = (e && (e.message || e.code)) ? `${e.code || ""} ${e.message || ""}` : String(e);
-    $("status").textContent = `Firebase error ❌ ${msg}`;
-    allPlaces = [];
-  }
-}
-
-/* =========================
-   FILTERS + RENDER
-========================= */
-const TYPE_ORDER = ["Destination","Temple","Lake","Trek","Hotel","Activity"];
-
-function typeCountsFrom(list){
-  const counts = {};
-  list.forEach(p=>{ counts[p.type||"Destination"] = (counts[p.type||"Destination"]||0)+1; });
-  return counts;
-}
-function buildDistrictDropdown(){
-  const distSel = $("district");
-  const districts = [...new Set(allPlaces.map(p=>p.district).filter(Boolean))].sort();
-  distSel.innerHTML = `<option value="all">All</option>` + districts.map(d=>`<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join("");
-}
-function updateActiveFilters(){
-  const parts = [];
-  const d = $("district").value, t = $("type").value, q = safeText($("q").value);
-  const days = Number($("days").value||0);
-  if(d !== "all") parts.push(d);
-  if(t !== "all") parts.push(t);
-  if(days) parts.push(`${days}+ days`);
-  if(q) parts.push(`“${q}”`);
-  if(activePackageId) parts.push(`Package:${activePackageId}`);
-  $("activeFilters").textContent = parts.length ? parts.join(" • ") : "No filters";
-}
-
-function tileImageForType(type){
-  const pool = shownPlaces.filter(p=>p.type===type);
-  for(const p of pool){
-    const t = bestThumb(p);
-    if(t) return t;
-  }
-  if(type==="Temple") return "./temple.jpg";
-  if(type==="Trek") return "./trek.jpeg";
-  if(type==="Activity") return "./activity.jpg";
-  if(type==="Hotel") return "./Travelers.jpg";
-  if(type==="Lake") return "./201-himalaya.jpg";
-  return "./Kee_monastery.jpg";
-}
-
-function renderTypeTiles(){
-  const base = shownPlaces;
-  const counts = typeCountsFrom(base);
-  const types = TYPE_ORDER
-    .filter(t => (counts[t]||0) > 0)
-    .sort((a,b)=> (counts[b]||0) - (counts[a]||0));
-
-  const box = $("typeTiles");
-  if(!box) return;
-
-  if(!base.length){
-    box.innerHTML = `
-      <div style="grid-column:1/-1; padding:14px;">
-        <div class="helper">
-          <b>No places showing.</b><br/>
-          Generate packages or select places from the grid.
-        </div>
-      </div>
-    `;
-    return;
-  }
-
-  box.innerHTML = types.map(t=>{
-    const img = tileImageForType(t);
-    return `
-      <div class="typeTile" data-picktype="${escapeHtml(t)}">
-        <span class="typeTileHint">Tap → filter</span>
-        <img class="typeTileImg" src="${img}" alt="${escapeHtml(t)}" loading="lazy"
-             onerror="this.src='./Kee_monastery.jpg'">
-        <div class="typeTileBody">
-          <b>${escapeHtml(t)}</b>
-          <span>${counts[t]||0}</span>
-        </div>
-      </div>
-    `;
-  }).join("");
-
-  box.querySelectorAll("[data-picktype]").forEach(el=>{
-    el.addEventListener("click", ()=>{
-      $("type").value = el.getAttribute("data-picktype");
-      applyFilters(true);
-      location.hash = "#explore";
-    });
+  items.forEach(v=>{
+    const o = document.createElement("option");
+    o.value = v;
+    o.textContent = v;
+    sel.appendChild(o);
   });
 }
 
-/* Places grid by type (kept) */
-function renderPlacesGridByType(){
-  const wrap = $("placeGroups");
-  if(!wrap) return;
-
-  const base = shownPlaces;
-  if(!base.length){
-    wrap.innerHTML = `
-      <div class="helper">
-        <b>No places to show.</b><br/>
-        Click <b>Get Packages</b> then Activate OR select places by clicking cards.
-      </div>`;
-    return;
-  }
-
-  const groups = {};
-  base.forEach(p=>{
-    const k = p.type || "Destination";
-    (groups[k] ||= []).push(p);
-  });
-
-  const order = TYPE_ORDER;
-  const types = order.filter(t => (groups[t]||[]).length).concat(
-    Object.keys(groups).filter(t => !order.includes(t))
-  );
-
-  wrap.innerHTML = types.map(type=>{
-    const list = (groups[type]||[]).slice().sort((a,b)=>a.name.localeCompare(b.name));
-    return `
-      <div class="typeGroup">
-        <div class="typeGroupHead">
-          <b>${escapeHtml(type)}</b>
-          <span>${list.length}</span>
-        </div>
-        <div class="placeGrid">
-          ${list.map(p=>{
-            const active = selectedPlaceIds.has(p.id);
-            const img = bestThumb(p) || tileImageForType(p.type);
-            return `
-              <div class="placeCard ${active ? "active":""}" onclick="toggleSelectPlace('${p.id}')">
-                <img class="placeThumb" src="${img}" alt="${escapeHtml(p.name)}" onerror="this.src='./Kee_monastery.jpg'">
-                <div class="placeBody">
-                  <b>${escapeHtml(p.name)}</b>
-                  <div class="placeMeta">${escapeHtml(p.district)} • ${escapeHtml(p.type)}</div>
-                  <div class="placeTag">${active ? "Selected" : "Tap to select"}</div>
-                </div>
-              </div>
-            `;
-          }).join("")}
-        </div>
-      </div>
-    `;
-  }).join("");
-}
-
-/* Apply filters + enforce visibility rule */
 function applyFilters(){
-  const q = safeText($("q").value).toLowerCase();
-  const d = $("district").value;
-  const t = $("type").value;
+  const query = safeStr(q.value).trim().toLowerCase();
+  const d = districtSel.value;
+  const s = segmentSel.value;
 
-  const base = allPlaces.filter(p=>{
-    if(d !== "all" && p.district !== d) return false;
-    if(t !== "all" && p.type !== t) return false;
-    if(q){
-      const hay = `${p.name} ${p.district} ${p.type} ${p.how}`.toLowerCase();
-      if(!hay.includes(q)) return false;
+  filteredPlaces = allPlaces.filter(p=>{
+    if(d !== "ALL" && p.district !== d) return false;
+    if(s !== "ALL" && p.segment !== s) return false;
+
+    if(query){
+      const hay = `${p.name} ${p.district} ${p.segment} ${p.type} ${p.short} ${p.overview}`.toLowerCase();
+      if(!hay.includes(query)) return false;
     }
     return true;
   });
 
-  shownPlaces = getVisiblePlaces(base);
+  chipDistrict.textContent = (d==="ALL") ? "All districts" : d;
+  chipSegment.textContent = (s==="ALL") ? "All segments" : s;
 
-  $("count").textContent = `${shownPlaces.length} results`;
-  updateActiveFilters();
-  renderTypeTiles();
-  renderPlacesGridByType();
+  filteredCount.textContent = String(filteredPlaces.length);
 
-  if(mapReady){
-    addMarkers(shownPlaces);
-    $("mapHint").textContent = "Markers loaded";
-  }
+  // update map + segment grids
+  drawMarkers(filteredPlaces);
+  renderSegments(filteredPlaces);
 }
 
-/* =========================
-   SELECTED CHIPS UI
-========================= */
-function renderSelectedChips(){
-  const out = $("selectedChips");
-  const ids = [...selectedPlaceIds];
-
-  $("selCount").textContent = `${ids.length} selected`;
-
-  if(!ids.length){
-    out.innerHTML = `<span style="color:rgba(11,18,32,.70); font-weight:850; font-size:12px">
-      No selections yet. Select via packages or click place cards.
-    </span>`;
+/* ===========================
+   LOAD FIREBASE: /locations (YOUR PATH)
+=========================== */
+function boot(){
+  try{
+    firebase.initializeApp(firebaseConfig);
+    setDbStatus(true, "Connected");
+  }catch(e){
+    console.error(e);
+    setDbStatus(false, "Config error");
     return;
   }
 
-  const mapById = new Map(allPlaces.map(p=>[p.id,p]));
-  out.innerHTML = ids.map(id=>{
-    const p = mapById.get(id);
-    const label = p ? `${p.name}` : id;
-    return `
-      <span class="selChip" onclick="toggleSelectPlace('${escapeHtml(id)}')" title="Remove">
-        ${escapeHtml(label)} <span class="x">×</span>
-      </span>
-    `;
-  }).join("");
-}
+  initMap();
 
-/* =========================
-   GEO-FEASIBLE PACKAGES
-========================= */
-function radiusForVehicle(vehicle, days){
-  if(vehicle==="bike") return clamp(18 + days*4, 18, 55);
-  if(vehicle==="cab") return clamp(30 + days*7, 30, 110);
-  if(vehicle==="tempo") return clamp(25 + days*6, 25, 85);
-  return clamp(28 + days*7, 28, 95); // bus
-}
-
-function makeGeoPackage(pool, size, maxRadiusKm){
-  const pts = pool.filter(p=>p.lat && p.lng);
-  if(!pts.length) return [];
-
-  const selectedDistrict = $("district")?.value || "all";
-  let candidates = pts;
-
-  if(selectedDistrict !== "all"){
-    const inDist = pts.filter(p=>p.district === selectedDistrict);
-    if(inDist.length >= Math.max(3, Math.floor(size/2))) candidates = inDist;
-  } else {
-    const byD = {};
-    pts.forEach(p => (byD[p.district] ||= []).push(p));
-    const bestDistrict = Object.keys(byD).sort((a,b)=>byD[b].length-byD[a].length)[0];
-    if(bestDistrict) candidates = byD[bestDistrict];
-  }
-
-  const seed = candidates[0];
-  const chosen = [seed];
-
-  const rest = candidates.slice(1).map(p=>{
-    const d = haversineKm(seed.lat, seed.lng, p.lat, p.lng);
-    return {p, d};
-  }).filter(x=>x.d <= maxRadiusKm)
-    .sort((a,b)=>a.d-b.d)
-    .map(x=>x.p);
-
-  for(const p of rest){
-    if(chosen.length >= size) break;
-    const ok = chosen.every(c => haversineKm(c.lat,c.lng,p.lat,p.lng) <= maxRadiusKm);
-    if(ok) chosen.push(p);
-  }
-  return chosen;
-}
-
-function peopleCountFromUI(){
-  const v = $("people").value;
-  if(v==="solo") return 1;
-  if(v==="couple") return 2;
-  if(v==="family") return 4;
-  return 8;
-}
-
-function buildPackages(){
-  const interest = $("interest").value;
-  const daysUI = Number($("days").value||0);
-  const days = daysUI || 3;
-
-  const vehicle = $("vehicle").value;
-  const season = $("season").value;
-  const hotelClass = $("hotelClass").value;
-  const meals = $("meals").value;
-  const activities = $("activities").value;
-
-  const persons = peopleCountFromUI();
-
-  const base = allPlaces.slice();
-  if(!base.length){
-    $("packagesBox").innerHTML = `<b>No data.</b>`;
-    return;
-  }
-
-  const wantType =
-    interest==="temples" ? "Temple" :
-    interest==="adventure" ? "Trek" :
-    interest==="relax" ? "Hotel" : "Destination";
-
-  const pool = base.filter(p => (wantType==="Destination" ? true : p.type===wantType));
-
-  const rad = radiusForVehicle(vehicle, days);
-  const sizeA = clamp(Math.ceil(days*1.0), 3, 6);
-  const sizeB = clamp(Math.ceil(days*1.4), 4, 8);
-  const sizeC = clamp(Math.ceil(days*1.8), 5, 10);
-
-  const pkgAItems = makeGeoPackage(pool, sizeA, rad * 0.9);
-  const pkgBItems = makeGeoPackage(pool, sizeB, rad * 1.15);
-  const pkgCItems = makeGeoPackage(pool, sizeC, rad * 1.4);
-
-  const packages = [
-    { id:"pkgA", title:`Compact • ${wantType} • ~${Math.round(rad*0.9)}km radius`, items: pkgAItems },
-    { id:"pkgB", title:`Balanced • ${wantType} • ~${Math.round(rad*1.15)}km radius`, items: pkgBItems },
-    { id:"pkgC", title:`Full • ${wantType} • ~${Math.round(rad*1.4)}km radius`, items: pkgCItems },
-  ].filter(p => p.items.length);
-
-  if(!packages.length){
-    $("packagesBox").innerHTML = `<b>No feasible package found.</b><br/>Try selecting a district or different interest.`;
-    return;
-  }
-
-  window.__PKGS__ = {};
-  packages.forEach(pkg=>{
-    window.__PKGS__[pkg.id] = pkg.items.map(x=>x.id);
-  });
-
-  $("packagesBox").innerHTML =
-    `<div style="display:flex; gap:10px; flex-wrap:wrap">
-      ${packages.map(pkg=>`
-        <button class="btn ghost" style="border-radius:16px" onclick="activatePackage('${pkg.id}')">
-          Activate: ${escapeHtml(pkg.title)}
-        </button>
-      `).join("")}
-      <button class="btn ghost" style="border-radius:16px" onclick="deactivatePackage()">Clear Package</button>
-    </div>
-    <div style="margin-top:10px; line-height:1.55">
-      ${packages.map(pkg=>{
-        const cost = estimatePackageCost({
-          vehicle, persons, days,
-          points: pkg.items,
-          hotelClass, meals, season, activities
-        });
-
-        return `
-        <div style="margin-top:10px; padding:12px; border:1px solid var(--stroke); border-radius:18px; background:rgba(255,255,255,.72)">
-          <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap">
-            <b>${escapeHtml(pkg.title)}</b>
-            <span style="font-weight:950">${cost.totalText}</span>
-          </div>
-          <div style="margin-top:6px; color:rgba(11,18,32,.72); font-weight:850; font-size:12px">
-            ${escapeHtml(cost.vehicleNote)} • ~${cost.km} km • Persons: ${persons} • Days: ${days}
-          </div>
-          ${cost.capNote ? `<div style="margin-top:6px; color:rgba(239,68,68,.90); font-weight:950; font-size:12px">${escapeHtml(cost.capNote)}</div>` : ""}
-
-          <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
-            <span class="pill"><span class="dot"></span>Transport ${moneyINR(cost.breakdown.transport)}</span>
-            <span class="pill"><span class="dot"></span>Stay ${moneyINR(cost.breakdown.hotel)}</span>
-            <span class="pill"><span class="dot"></span>Food ${moneyINR(cost.breakdown.food)}</span>
-            <span class="pill"><span class="dot"></span>Activities ${moneyINR(cost.breakdown.activities)}</span>
-          </div>
-
-          <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap">
-            ${pkg.items.map((p,i)=>`
-              <span style="display:inline-flex; align-items:center; gap:8px; padding:7px 10px; border:1px solid var(--stroke);
-                border-radius:999px; background:rgba(245,247,255,.92); font-weight:900; font-size:12px; cursor:pointer"
-                onclick="toggleSelectPlace('${p.id}')"
-                title="Click to add/remove selection">
-                ${i+1}. ${escapeHtml(p.name)}
-              </span>
-            `).join("")}
-          </div>
-
-          <div style="margin-top:10px; color:rgba(11,18,32,.70); font-weight:850; font-size:12px">
-            Rule: package locations are clustered (no far-away mixing) for tempo feasibility.
-          </div>
-        </div>
-      `}).join("")}
-    </div>`;
-}
-
-/* =========================
-   AI (mini): auto add selections
-========================= */
-function pushMsg(text, who="bot"){
-  const div = document.createElement("div");
-  div.style.maxWidth = "86%";
-  div.style.padding = "10px 12px";
-  div.style.borderRadius = "16px";
-  div.style.border = "1px solid var(--stroke)";
-  div.style.background = (who==="me")
-    ? "linear-gradient(135deg, rgba(37,99,235,.12), rgba(124,58,237,.10))"
-    : "rgba(245,247,255,.80)";
-  div.style.fontWeight = "750";
-  div.style.fontSize = "12.5px";
-  div.style.whiteSpace = "pre-wrap";
-  if(who==="me") div.style.marginLeft = "auto";
-  div.textContent = text;
-  $("chat").appendChild(div);
-  $("chat").scrollTop = $("chat").scrollHeight;
-}
-function seedChat(){
-  $("chat").innerHTML = "";
-  pushMsg("Tell me: days + interest + district (optional). I’ll add selections automatically.", "bot");
-}
-function aiSuggest(userText){
-  const t = userText.toLowerCase();
-  let days = 0;
-  const m = t.match(/(\d+)\s*(day|days|d)/);
-  if(m) days = Number(m[1]);
-
-  const wants = {
-    temple: /temple|mandir/.test(t),
-    trek: /trek|hike/.test(t),
-    lake: /lake/.test(t),
-    hotel: /hotel|stay|relax/.test(t),
-  };
-
-  const scored = allPlaces.map(p=>{
-    let s=0;
-    if(wants.temple && p.type==="Temple") s+=3;
-    if(wants.trek && p.type==="Trek") s+=3;
-    if(wants.lake && p.type==="Lake") s+=3;
-    if(wants.hotel && p.type==="Hotel") s+=3;
-    if(!Object.values(wants).some(Boolean) && p.type==="Destination") s+=2;
-    return {p,s};
-  }).sort((a,b)=>b.s-a.s);
-
-  const cap = days ? clamp(Math.ceil(days*1.6), 4, 10) : 6;
-  const pick = scored.filter(x=>x.s>0).slice(0,cap).map(x=>x.p);
-
-  pick.forEach(p=> selectedPlaceIds.add(p.id));
-  renderSelectedChips();
-  applyFilters();
-
-  return "Added selections. Open Explore → tiles, grids & map now show selected/package places.";
-}
-
-/* =========================
-   UI EVENTS
-========================= */
-$("apply").onclick = ()=>{ applyFilters(); location.hash="#explore"; };
-$("reset").onclick = ()=>{
-  $("q").value = "";
-  $("district").value="all";
-  $("type").value="all";
-  $("days").value="0";
-  applyFilters();
-};
-$("showMapBtn").onclick = ()=>{
-  ensureMap();
-  addMarkers(shownPlaces);
-  $("mapHint").textContent = "Markers loaded";
-  location.hash = "#explore";
-};
-$("makePackages").onclick = buildPackages;
-
-$("openAdmin").onclick = ()=>{ window.location.href = "admin.html"; };
-
-$("btnClearPkg").onclick = deactivatePackage;
-$("btnClearSel").onclick = clearSelections;
-
-$("openAI").onclick = ()=>{
-  $("modalWrap").style.display = "flex";
-  seedChat();
-};
-$("closeAI").onclick = ()=>{ $("modalWrap").style.display = "none"; };
-$("modalWrap").addEventListener("click",(e)=>{ if(e.target === $("modalWrap")) $("modalWrap").style.display="none"; });
-$("sendChat").onclick = ()=>{
-  const v = safeText($("chatInput").value);
-  if(!v) return;
-  pushMsg(v, "me");
-  $("chatInput").value = "";
-  pushMsg(aiSuggest(v), "bot");
-};
-$("chatInput").addEventListener("keydown",(e)=>{ if(e.key==="Enter") $("sendChat").click(); });
-
-/* Type image dropdown logic */
-(function initTypeImageDropdown(){
-  const pick = document.getElementById("typePick");
-  if(!pick) return;
-
-  const btn = document.getElementById("typePickBtn");
-  const menu = document.getElementById("typePickMenu");
-  const img = document.getElementById("typePickImg");
-  const text = document.getElementById("typePickText");
-  const hidden = document.getElementById("type");
-
-  function close(){ menu.classList.remove("open"); }
-
-  btn.addEventListener("click", (e)=>{
-    e.stopPropagation();
-    menu.classList.toggle("open");
-  });
-
-  menu.querySelectorAll(".typePickItem").forEach(item=>{
-    item.addEventListener("click", ()=>{
-      const v = item.getAttribute("data-value");
-      const im = item.getAttribute("data-img");
-      hidden.value = v;
-      text.textContent = v === "all" ? "All" : v;
-      img.src = im;
-      close();
+  // ✅ Correct path: /locations
+  firebase.database().ref("locations").on("value", (snap)=>{
+    const data = snap.val();
+    if(!data){
+      allPlaces = [];
+      totalCount.textContent = "0";
+      setDbStatus(false, "No data at /locations");
       applyFilters();
-    });
+      return;
+    }
+
+    allPlaces = Object.entries(data).map(([key, raw])=>normalize(key, raw));
+    totalCount.textContent = String(allPlaces.length);
+    setDbStatus(true, "Live");
+
+    // dropdowns
+    fillSelect(districtSel, uniq(allPlaces.map(p=>p.district)), "All districts");
+    fillSelect(segmentSel, uniq(allPlaces.map(p=>p.segment)), "All segment types");
+
+    applyFilters();
+  }, (err)=>{
+    console.error(err);
+    setDbStatus(false, "Rules / Network");
   });
 
-  document.addEventListener("click", close);
-})();
+  // events
+  q.addEventListener("input", applyFilters);
+  districtSel.addEventListener("change", applyFilters);
+  segmentSel.addEventListener("change", applyFilters);
+}
 
-/* =========================
-   INIT
-========================= */
-(async function init(){
-  await loadPlaces();
-  buildDistrictDropdown();
-
-  if(allPlaces.length){
-    $("status").textContent = `Loaded ✅ ${allPlaces.length} places • generate packages or select places`;
-  }else{
-    // If empty, show hint for path/rules quickly
-    $("status").textContent = $("status").textContent.includes("Firebase error")
-      ? $("status").textContent
-      : "No data loaded. Check RTDB rules (.read true) and data path (root).";
-  }
-
-  selectedPlaceIds = new Set();
-  activePackageId = null;
-  packagePlaceIds = new Set();
-
-  renderSelectedChips();
-  applyFilters();
-})();
+boot();
 </script>
 </body>
-</html> 
+</html>
