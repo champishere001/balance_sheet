@@ -3,11 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — Restored Logic (Segments Bar + Packages + Search)</title>
-
-  <!-- Leaflet -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <title>Himachal Explorer — Hero + Smart Package Planner</title>
 
   <!-- Firebase (Compat RTDB) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
@@ -15,15 +11,20 @@
 
   <style>
     :root{
-      --bg0:#f7f9ff; --bg1:#ffffff;
-      --card:rgba(255,255,255,.92);
-      --stroke:rgba(10,18,40,.10);
-      --text:#0b1220; --muted:rgba(11,18,32,.64);
-      --shadow: 0 18px 55px rgba(10,18,40,.12);
+      --bg0:#050815; --bg1:#0b1022;
+      --card: rgba(255,255,255,.08);
+      --card2: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.14);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --muted2: rgba(255,255,255,.55);
+      --brand:#6d7cff;
+      --brand2:#2de2c4;
+      --warn:#ffcf5a;
+      --bad:#ff6b6b;
+      --ok:#49f2c2;
       --r:18px; --r2:26px;
-      --brand:#4158ff;
-      --ok:#17b890; --warn:#f5a524; --bad:#ef4444;
-      --chip:#eef2ff;
+      --shadow: 0 22px 70px rgba(0,0,0,.55);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -32,1182 +33,1093 @@
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--text);
       background:
-        radial-gradient(1100px 700px at 20% 10%, rgba(65,88,255,.16), transparent 55%),
-        radial-gradient(900px 600px at 80% 0%, rgba(24,156,255,.12), transparent 55%),
+        radial-gradient(1200px 900px at 10% 15%, rgba(109,124,255,.30), transparent 55%),
+        radial-gradient(900px 700px at 80% 10%, rgba(45,226,196,.18), transparent 55%),
+        radial-gradient(850px 650px at 65% 85%, rgba(255,207,90,.10), transparent 60%),
         linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
     }
-    .wrap{max-width:1200px;margin:0 auto;padding:16px 14px 34px}
 
+    .wrap{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 14px 30px;
+    }
+
+    /* ====== TOP BAR ====== */
     .topbar{
-      display:flex; gap:12px; align-items:center; justify-content:space-between;
-      padding:14px; border:1px solid var(--stroke); border-radius:var(--r2);
-      background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.72));
-      box-shadow:var(--shadow);
-      position:sticky; top:10px; z-index:30;
-      backdrop-filter: blur(10px);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 14px;
+      border:1px solid var(--stroke);
+      border-radius: var(--r2);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 10px;
+      z-index: 40;
     }
     .brand{
-      display:flex; gap:12px; align-items:center;
-      min-width:240px;
+      display:flex; align-items:center; gap:12px;
+      min-width: 260px;
     }
     .logo{
-      width:42px;height:42px;border-radius:14px;
+      width:44px;height:44px;border-radius:16px;
       background:
-        radial-gradient(16px 16px at 30% 30%, rgba(255,255,255,.9), transparent 55%),
-        linear-gradient(135deg, rgba(65,88,255,.98), rgba(24,156,255,.78));
-      box-shadow: 0 14px 30px rgba(65,88,255,.25);
-      border:1px solid rgba(255,255,255,.65);
+        radial-gradient(18px 18px at 30% 30%, rgba(255,255,255,.92), transparent 60%),
+        linear-gradient(135deg, rgba(109,124,255,.98), rgba(45,226,196,.72));
+      box-shadow: 0 18px 40px rgba(109,124,255,.25);
+      border:1px solid rgba(255,255,255,.20);
       flex:0 0 auto;
     }
-    .brand h1{margin:0;font-size:16px;line-height:1.15}
-    .brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
-
-    .pillRow{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .brand h1{margin:0;font-size:16px;line-height:1.1}
+    .brand p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+    .pills{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
     .pill{
-      padding:8px 10px;border:1px solid var(--stroke);border-radius:999px;
-      background:rgba(255,255,255,.86);
-      color:var(--muted); font-size:12px;
-      display:flex; gap:8px; align-items:center;
+      display:flex; align-items:center; gap:8px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      color: var(--muted);
     }
     .dot{width:8px;height:8px;border-radius:999px;background:var(--warn)}
     .dot.ok{background:var(--ok)}
     .dot.bad{background:var(--bad)}
 
-    .grid2{
+    /* ====== MAIN LAYOUT (LEFT 65%) ====== */
+    .layout{
       margin-top:14px;
       display:grid;
-      grid-template-columns: 1.25fr .75fr;
+      grid-template-columns: 65% 35%;
       gap:14px;
+      align-items:start;
     }
     @media (max-width: 980px){
       .topbar{position:relative; top:auto}
-      .brand{min-width:auto}
-      .grid2{grid-template-columns:1fr}
+      .layout{grid-template-columns: 1fr; }
     }
-    .panel{
+
+    /* ====== HERO LEFT ====== */
+    .hero{
       border:1px solid var(--stroke);
-      border-radius:var(--r2);
-      background:rgba(255,255,255,.86);
-      box-shadow:var(--shadow);
+      border-radius: var(--r2);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+      box-shadow: var(--shadow);
       overflow:hidden;
+      position:relative;
+      min-height: 520px;
     }
-    .panelHead{
-      padding:12px 14px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      border-bottom:1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(255,255,255,.86), rgba(255,255,255,.72));
+    .hero::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(700px 500px at 15% 15%, rgba(109,124,255,.28), transparent 60%),
+        radial-gradient(650px 480px at 75% 20%, rgba(45,226,196,.18), transparent 60%),
+        radial-gradient(700px 520px at 60% 85%, rgba(255,207,90,.10), transparent 65%);
+      filter: blur(0px);
+      opacity: .95;
+      pointer-events:none;
     }
-    .panelHead h2{margin:0;font-size:14px}
-    .panelHead .sub{color:var(--muted);font-size:12px}
-
-    .panelBody{padding:12px 14px}
-
-    .controls{
+    .heroInner{
+      position:relative;
+      padding: 18px 18px 18px;
       display:grid;
-      grid-template-columns: 1.2fr .8fr .8fr .8fr;
+      grid-template-rows: auto auto 1fr;
+      gap:12px;
+    }
+    .heroTag{
+      display:inline-flex;
+      align-items:center;
       gap:10px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: var(--muted);
+      font-size:12px;
+      width: fit-content;
+    }
+    .heroTitle{
+      font-size: 34px;
+      line-height: 1.08;
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+    .heroTitle span{
+      background: linear-gradient(135deg, rgba(109,124,255,1), rgba(45,226,196,1));
+      -webkit-background-clip: text;
+      background-clip:text;
+      color: transparent;
+    }
+    .heroDesc{
+      margin:0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+      max-width: 72ch;
+    }
+
+    /* Quotes: multiple shown + rotate every 5s */
+    .quoteGrid{
+      margin-top: 8px;
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 820px){
+      .quoteGrid{grid-template-columns: 1fr}
+      .hero{min-height:auto}
+    }
+    .quoteCard{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      border-radius: 18px;
+      padding: 12px 12px;
+      overflow:hidden;
+      position:relative;
+      min-height: 120px;
+    }
+    .quoteCard::after{
+      content:"";
+      position:absolute; inset:auto -40px -40px auto;
+      width:120px;height:120px;border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, rgba(109,124,255,.30), transparent 60%);
+      opacity:.6;
+      filter: blur(0px);
+    }
+    .quoteTxt{
+      position:relative;
+      margin:0;
+      color: rgba(255,255,255,.90);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .quoteBy{
+      position:relative;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted2);
+    }
+    .fade{
+      animation: fadeIn .35s ease;
+    }
+    @keyframes fadeIn{
+      from{opacity:.0; transform: translateY(4px)}
+      to{opacity:1; transform: translateY(0)}
+    }
+
+    /* ====== PLANNER RIGHT (CENTER BOX FEEL) ====== */
+    .plannerCol{
+      display:grid;
+      gap:14px;
+    }
+    .planner{
+      border:1px solid var(--stroke);
+      border-radius: var(--r2);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position: sticky;
+      top: 86px;
+      backdrop-filter: blur(12px);
     }
     @media (max-width: 980px){
-      .controls{grid-template-columns:1fr 1fr}
+      .planner{position:relative; top:auto}
     }
-    @media (max-width: 520px){
-      .controls{grid-template-columns:1fr}
+    .plannerHead{
+      padding:12px 14px;
+      border-bottom:1px solid rgba(255,255,255,.12);
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
     }
-    .field label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
+    .plannerHead h2{margin:0;font-size:14px}
+    .plannerHead .sub{margin-top:4px;color:var(--muted);font-size:12px;line-height:1.35}
+    .plannerBody{padding:12px 14px}
+
+    .form{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .form .full{grid-column: 1 / -1;}
+    @media (max-width: 980px){
+      .form{grid-template-columns: 1fr}
+    }
+    label{
+      display:block;
+      font-size:12px;
+      color: var(--muted);
+      margin:0 0 6px;
+    }
     input,select,button{
       width:100%;
       padding:10px 11px;
-      border-radius:14px;
-      border:1px solid var(--stroke);
-      background:rgba(255,255,255,.92);
-      font:inherit;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
       outline:none;
+      font: inherit;
+    }
+    input::placeholder{color: rgba(255,255,255,.45)}
+    select option{color:#111}
+    .row2{
+      display:grid; grid-template-columns: 1fr 1fr; gap:10px;
+    }
+    .btnRow{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top:10px;
     }
     button{
       cursor:pointer;
-      background: linear-gradient(135deg, rgba(65,88,255,.98), rgba(24,156,255,.78));
-      color:#fff;
       border:none;
-      box-shadow: 0 14px 30px rgba(65,88,255,.18);
+      background: linear-gradient(135deg, rgba(109,124,255,.98), rgba(45,226,196,.75));
+      box-shadow: 0 16px 40px rgba(109,124,255,.18);
+      font-weight: 700;
     }
     button.secondary{
-      background: rgba(255,255,255,.92);
-      color:var(--text);
-      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.14);
       box-shadow:none;
+      font-weight: 600;
     }
-    .btnRow{display:flex; gap:10px; margin-top:10px; flex-wrap:wrap}
-    .btnRow button{flex:1}
 
-    #map{
-      height: 420px;
-      border-radius: var(--r2);
-      border:1px solid var(--stroke);
-      overflow:hidden;
+    .kpis{
       margin-top:12px;
-    }
-
-    .kpiRow{
       display:grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap:10px;
-      margin-top:12px;
     }
-    @media (max-width:980px){ .kpiRow{grid-template-columns: repeat(2,1fr)} }
     .kpi{
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.92);
-      border-radius: var(--r);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      border-radius: 18px;
       padding:10px 12px;
     }
     .kpi .t{font-size:12px;color:var(--muted)}
-    .kpi .v{font-size:16px;font-weight:700;margin-top:4px}
+    .kpi .v{font-size:14px;font-weight:800;margin-top:4px}
 
-    /* Places-to-Visit segment bar */
-    .segBarWrap{
-      margin-top:12px;
-      border:1px solid var(--stroke);
-      border-radius:var(--r2);
-      background:rgba(255,255,255,.86);
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-    .segBarHead{
-      padding:10px 12px;
-      border-bottom:1px solid var(--stroke);
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-      background: rgba(238,242,255,.55);
-    }
-    .segBarHead b{font-size:14px}
-    .segChips{
-      padding:10px 12px;
-      display:flex; gap:8px; flex-wrap:wrap;
-    }
-    .chipBtn{
-      appearance:none;
-      border:1px solid rgba(65,88,255,.18);
-      background: var(--chip);
-      color: rgba(20,35,80,.88);
-      padding:8px 10px;
-      border-radius:999px;
-      font-size:12px;
-      cursor:pointer;
-      transition: transform .10s ease, box-shadow .10s ease, background .10s ease;
-    }
-    .chipBtn:hover{transform: translateY(-1px); box-shadow: 0 10px 18px rgba(65,88,255,.10)}
-    .chipBtn.active{
-      background: linear-gradient(135deg, rgba(65,88,255,.98), rgba(24,156,255,.78));
-      color:#fff;
-      border-color: transparent;
-    }
-
-    /* Right side packages */
-    .packages{display:grid; grid-template-columns:1fr; gap:10px}
-    .pkg{
-      border:1px solid var(--stroke);
+    /* Package results */
+    .results{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
       border-radius: var(--r2);
-      background: rgba(255,255,255,.92);
-      padding:10px 12px;
-      cursor:pointer;
-    }
-    .pkgTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-    .pkg h4{margin:0;font-size:14px}
-    .pkg .meta{margin-top:6px;color:var(--muted);font-size:12px}
-    .pkg .price{font-weight:800;font-size:14px;white-space:nowrap}
-    .pkg .places{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
-    .pkg .places span{
-      padding:6px 8px;border-radius:999px;
-      background: rgba(65,88,255,.10);
-      border:1px solid rgba(65,88,255,.18);
-      font-size:12px;
-    }
-
-    /* Results (ONLY when search/segment/package selected) */
-    .resultsPanel{
-      margin-top:14px;
-      border:1px solid var(--stroke);
-      border-radius:var(--r2);
-      background:rgba(255,255,255,.86);
-      box-shadow:var(--shadow);
       overflow:hidden;
-      display:none; /* IMPORTANT: hidden by default */
     }
     .resultsHead{
-      padding:12px 14px;
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-      border-bottom:1px solid var(--stroke);
-      background: rgba(238,242,255,.55);
-    }
-    .resultsHead h3{margin:0;font-size:14px}
-    .resultsHead .hint{font-size:12px;color:var(--muted)}
-    .cards{
-      padding:12px;
-      display:grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap:10px;
-    }
-    @media (max-width:980px){ .cards{grid-template-columns: repeat(2,1fr)} }
-    @media (max-width:520px){ .cards{grid-template-columns: 1fr} }
-    .card{
-      border:1px solid var(--stroke);
-      border-radius: var(--r);
-      background: rgba(255,255,255,.92);
-      overflow:hidden;
-      cursor:pointer;
-      transition: transform .12s ease, box-shadow .12s ease;
-    }
-    .card:hover{transform: translateY(-2px); box-shadow: 0 18px 40px rgba(10,18,40,.14)}
-    .thumb{
-      height:120px;
-      background: linear-gradient(135deg, rgba(65,88,255,.20), rgba(24,156,255,.12));
-      display:flex;align-items:center;justify-content:center;
-      position:relative;
-    }
-    .thumb img{
-      width:100%; height:100%; object-fit:cover; display:block;
-    }
-    .badge{
-      position:absolute; left:10px; top:10px;
-      padding:6px 8px;border-radius:999px;
-      font-size:11px;
-      background: rgba(255,255,255,.90);
-      border:1px solid var(--stroke);
-      color: rgba(20,35,80,.85);
-      max-width: calc(100% - 20px);
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
-    .cardBody{padding:10px 10px 12px}
-    .cardBody h4{margin:0 0 4px;font-size:14px}
-    .cardBody p{margin:0;color:var(--muted);font-size:12px;line-height:1.35}
-    .rowMini{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px}
-    .mini{
-      padding:5px 7px; border-radius:999px;
-      background: rgba(11,18,32,.04);
-      border:1px solid rgba(10,18,40,.08);
-      font-size:11px; color: rgba(11,18,32,.72);
-    }
-
-    /* Modal */
-    .modalBack{
-      position:fixed; inset:0;
-      background: rgba(10,18,40,.45);
-      display:none;
-      align-items:center; justify-content:center;
-      padding:16px;
-      z-index:50;
-    }
-    .modal{
-      width:min(920px, 100%);
-      border-radius: 26px;
-      border:1px solid rgba(255,255,255,.25);
-      background: rgba(255,255,255,.96);
-      box-shadow: 0 30px 80px rgba(0,0,0,.25);
-      overflow:hidden;
-    }
-    .modalHead{
-      padding:12px 14px;
+      padding:10px 12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
       display:flex; align-items:center; justify-content:space-between; gap:10px;
-      border-bottom:1px solid var(--stroke);
     }
-    .modalHead h3{margin:0;font-size:14px}
-    .modalHead button{
-      width:auto; padding:8px 10px; border-radius:12px;
-    }
-    .modalBody{
-      padding:14px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
-    @media (max-width: 820px){ .modalBody{grid-template-columns:1fr} }
-    .heroPic{
-      border:1px solid var(--stroke);
-      border-radius: 22px;
-      overflow:hidden;
-      background: rgba(11,18,32,.04);
-      min-height:220px;
-    }
-    .heroPic img{width:100%;height:100%;object-fit:cover;display:block}
-    .kv{
-      display:grid; grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
-    @media (max-width: 520px){ .kv{grid-template-columns:1fr} }
-    .kv .item{
-      border:1px solid var(--stroke);
+    .resultsHead b{font-size:13px}
+    .resultsBody{padding:10px 12px; display:grid; gap:10px}
+    .pkg{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
       border-radius: 18px;
-      background: rgba(255,255,255,.92);
-      padding:10px 12px;
+      padding:10px 10px;
     }
-    .kv .k{font-size:12px;color:var(--muted)}
-    .kv .v{font-size:13px;margin-top:4px;line-height:1.35}
-    .long{
-      margin-top:10px;
-      border:1px solid var(--stroke);
-      border-radius: 18px;
-      background: rgba(255,255,255,.92);
-      padding:10px 12px;
+    .pkgTop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
+    .pkg h3{margin:0;font-size:13px}
+    .pkg .meta{margin-top:6px;font-size:12px;color:var(--muted)}
+    .price{
+      white-space:nowrap;
+      font-weight: 900;
+      font-size: 13px;
+      background: rgba(0,0,0,.20);
+      border: 1px solid rgba(255,255,255,.10);
+      padding:6px 8px;
+      border-radius: 999px;
     }
-    .long h5{margin:0 0 6px;font-size:13px}
-    .long p{margin:0;color:rgba(11,18,32,.80);font-size:13px;line-height:1.45}
+    .chips{
+      margin-top:8px;
+      display:flex; gap:6px; flex-wrap:wrap;
+    }
+    .chip{
+      font-size:12px;
+      padding:6px 8px;
+      border-radius: 999px;
+      background: rgba(109,124,255,.16);
+      border: 1px solid rgba(109,124,255,.22);
+      color: rgba(255,255,255,.88);
+    }
+    .chip2{
+      background: rgba(45,226,196,.14);
+      border: 1px solid rgba(45,226,196,.20);
+    }
+    .chip3{
+      background: rgba(255,207,90,.12);
+      border: 1px solid rgba(255,207,90,.18);
+    }
+    .mutedSmall{font-size:12px;color:var(--muted);line-height:1.4}
+    .hr{height:1px;background:rgba(255,255,255,.10); margin:10px 0}
   </style>
 </head>
 
 <body>
   <div class="wrap">
-
     <div class="topbar">
       <div class="brand">
         <div class="logo"></div>
         <div>
           <h1>Himachal Explorer</h1>
-          <p>Restored buttons • Segment bar • Search shows only matches • Firebase: /locations</p>
+          <p>Hero + quotes • Smart package planner • Firebase: /locations</p>
         </div>
       </div>
-
-      <div class="pillRow">
+      <div class="pills">
         <div class="pill"><span id="dbDot" class="dot"></span><span id="dbText">Connecting…</span></div>
-        <div class="pill">Loaded: <b id="countText" style="margin-left:6px">0</b></div>
-        <div class="pill">Showing: <b id="showingText" style="margin-left:6px">0</b></div>
+        <div class="pill">Loaded <b id="loadedCount" style="margin-left:6px">0</b></div>
       </div>
     </div>
 
-    <!-- Places to visit bar (Segments) -->
-    <div class="segBarWrap">
-      <div class="segBarHead">
-        <b>Places to Visit</b>
-        <span style="font-size:12px;color:var(--muted)">Select a segment to show tiles (default: hidden)</span>
-      </div>
-      <div class="segChips" id="segChips"></div>
-    </div>
-
-    <div class="grid2">
-      <!-- LEFT: MAP + CONTROLS -->
-      <div class="panel">
-        <div class="panelHead">
-          <div>
-            <h2>Explorer Controls</h2>
-            <div class="sub">Same controls: Days • Passengers • Vehicle • View • Generate packages • Reset</div>
+    <div class="layout">
+      <!-- LEFT 65% HERO -->
+      <section class="hero">
+        <div class="heroInner">
+          <div class="heroTag">
+            <span style="width:8px;height:8px;border-radius:999px;background:var(--brand2)"></span>
+            <span>Where mountains feel like home</span>
           </div>
-          <div class="chips">
-            <span class="chipBtn" style="cursor:default;border-style:dashed;background:#fff;color:rgba(11,18,32,.6)" id="activeModeChip">Mode: None</span>
+
+          <h2 class="heroTitle">
+            Discover <span>Himachal Pradesh</span> — nature, temples, treks, lakes & timeless valleys
+          </h2>
+
+          <p class="heroDesc">
+            Himachal is a tapestry of cedar forests, snow-fed rivers, high-altitude passes, ancient temples,
+            and small hillside towns where every turn reveals a new horizon. Plan a trip that stays realistic
+            on the ground — nearby locations together, travel time that makes sense, and a cost that includes
+            transport, stay, and driver expenses.
+          </p>
+
+          <div class="quoteGrid" id="quoteGrid">
+            <!-- JS will render 3 quote cards here, and rotate every 5 seconds -->
           </div>
         </div>
+      </section>
 
-        <div class="panelBody">
-          <div class="controls">
-            <div class="field">
-              <label>Search (shows ONLY matching places)</label>
-              <input id="q" placeholder="Type to search… (name, district, type, segment)"/>
+      <!-- RIGHT 35% PLANNER (CENTER BOX FEEL) -->
+      <aside class="plannerCol">
+        <div class="planner">
+          <div class="plannerHead">
+            <div>
+              <h2>Package Planner</h2>
+              <div class="sub">Choose start & end, days, people. Auto-generate the best route-friendly package.</div>
             </div>
-
-            <div class="field">
-              <label>District</label>
-              <select id="district"></select>
-            </div>
-
-            <div class="field">
-              <label>Days</label>
-              <select id="days">
-                <option value="1">1</option><option value="2" selected>2</option><option value="3">3</option>
-                <option value="4">4</option><option value="5">5</option><option value="6">6</option>
-                <option value="7">7</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label>Passengers</label>
-              <select id="pax">
-                <option value="1">1</option><option value="2" selected>2</option><option value="3">3</option>
-                <option value="4">4</option><option value="5">5</option><option value="6">6</option>
-                <option value="7">7</option><option value="8">8</option><option value="9">9</option>
-                <option value="10">10</option><option value="11">11</option><option value="12">12</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label>Vehicle (auto suggestion)</label>
-              <select id="vehicle">
-                <option value="auto" selected>Auto</option>
-                <option value="bike">Bike</option>
-                <option value="car">Car</option>
-                <option value="suv">SUV</option>
-                <option value="tempo">Tempo Traveller</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label>View</label>
-              <select id="viewMode">
-                <option value="both" selected>Map + Tiles</option>
-                <option value="map">Map only</option>
-                <option value="tiles">Tiles only</option>
-              </select>
+            <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+              <div style="font-size:12px;color:var(--muted)">Mode</div>
+              <div style="font-size:12px;font-weight:800" id="modeText">Auto package</div>
             </div>
           </div>
 
-          <div class="btnRow">
-            <button id="btnPackages">Generate Best Value Packages</button>
-            <button id="btnReset" class="secondary">Reset (Hide Tiles)</button>
-          </div>
+          <div class="plannerBody">
+            <div class="form">
+              <div class="full">
+                <label>Start (Where to begin)</label>
+                <select id="startPlace">
+                  <option value="">Loading…</option>
+                </select>
+              </div>
 
-          <div class="kpiRow">
-            <div class="kpi"><div class="t">Filtered places</div><div class="v" id="kpiFiltered">0</div></div>
-            <div class="kpi"><div class="t">Avg. distance spread</div><div class="v" id="kpiSpread">—</div></div>
-            <div class="kpi"><div class="t">Suggested vehicle</div><div class="v" id="kpiVehicle">—</div></div>
-            <div class="kpi"><div class="t">Est. cost range</div><div class="v" id="kpiCost">—</div></div>
-          </div>
+              <div class="full">
+                <label>End (Where to finish)</label>
+                <select id="endPlace">
+                  <option value="">Loading…</option>
+                </select>
+              </div>
 
-          <div id="map"></div>
+              <div>
+                <label>Days</label>
+                <select id="days">
+                  <option>1</option><option selected>2</option><option>3</option><option>4</option>
+                  <option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+                </select>
+              </div>
+
+              <div>
+                <label>People</label>
+                <select id="pax">
+                  <option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option>
+                  <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+                </select>
+              </div>
+
+              <div>
+                <label>Vehicle (Auto/Manual)</label>
+                <select id="vehicle">
+                  <option value="auto" selected>Auto</option>
+                  <option value="bike">Bike</option>
+                  <option value="car">Car</option>
+                  <option value="suv">SUV</option>
+                  <option value="tempo">Tempo Traveller</option>
+                </select>
+              </div>
+
+              <div>
+                <label>Auto-generate best package?</label>
+                <select id="autoGen">
+                  <option value="yes" selected>Yes</option>
+                  <option value="no">No (I will click Generate)</option>
+                </select>
+              </div>
+
+              <div class="full">
+                <label>Preference (optional)</label>
+                <select id="preference">
+                  <option value="balanced" selected>Balanced</option>
+                  <option value="temples">Temples / Culture</option>
+                  <option value="treks">Treks / Adventure</option>
+                  <option value="lakes">Lakes / Nature</option>
+                  <option value="relax">Relax / Scenic</option>
+                </select>
+              </div>
+
+              <div class="full">
+                <label>Search keyword (optional)</label>
+                <input id="kw" placeholder="e.g., Shimla, temple, trek, lake…"/>
+              </div>
+            </div>
+
+            <div class="btnRow">
+              <button id="btnGenerate">Generate Package</button>
+              <button class="secondary" id="btnReset" type="button">Reset</button>
+            </div>
+
+            <div class="kpis">
+              <div class="kpi">
+                <div class="t">Suggested vehicle</div>
+                <div class="v" id="kVeh">—</div>
+              </div>
+              <div class="kpi">
+                <div class="t">Estimated range</div>
+                <div class="v" id="kCost">—</div>
+              </div>
+              <div class="kpi">
+                <div class="t">Places in plan</div>
+                <div class="v" id="kPlaces">—</div>
+              </div>
+              <div class="kpi">
+                <div class="t">Route corridor</div>
+                <div class="v" id="kCorridor">—</div>
+              </div>
+            </div>
+
+            <div class="hr"></div>
+            <div class="mutedSmall" id="breakdown">
+              Cost breakdown will appear here (transport + stay + driver).
+            </div>
+          </div>
         </div>
-      </div>
 
-      <!-- RIGHT: PACKAGES -->
-      <div class="panel">
-        <div class="panelHead">
-          <div>
-            <h2>Best Value Packages</h2>
-            <div class="sub">Default view — no tiles until you search / choose segment / choose package</div>
+        <div class="results">
+          <div class="resultsHead">
+            <b>Recommended Packages</b>
+            <span style="font-size:12px;color:var(--muted)" id="pkgCount">0</span>
           </div>
-          <div class="chips">
-            <span class="chipBtn" style="cursor:default;border-style:dashed;background:#fff;color:rgba(11,18,32,.6)" id="pkgHint">Click “Generate”</span>
+          <div class="resultsBody" id="pkgList">
+            <div class="mutedSmall">Generate to see packages that fit between your start → end route.</div>
           </div>
         </div>
-        <div class="panelBody">
-          <div id="packages" class="packages"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Results tiles (hidden by default) -->
-    <div class="resultsPanel" id="resultsPanel">
-      <div class="resultsHead">
-        <div>
-          <h3 id="resultsTitle">Results</h3>
-          <div class="hint" id="resultsHint">—</div>
-        </div>
-        <button class="secondary" id="btnHideTiles" style="width:auto">Hide Tiles</button>
-      </div>
-      <div class="cards" id="resultsGrid"></div>
-    </div>
-
-  </div>
-
-  <!-- DETAILS MODAL -->
-  <div id="modalBack" class="modalBack" role="dialog" aria-modal="true">
-    <div class="modal">
-      <div class="modalHead">
-        <h3 id="mTitle">Location</h3>
-        <button class="secondary" id="mClose">Close</button>
-      </div>
-      <div class="modalBody">
-        <div class="heroPic" id="mImgWrap"></div>
-        <div>
-          <div class="kv">
-            <div class="item"><div class="k">District</div><div class="v" id="mDistrict">—</div></div>
-            <div class="item"><div class="k">Segment Type</div><div class="v" id="mSegment">—</div></div>
-            <div class="item"><div class="k">Location Type</div><div class="v" id="mType">—</div></div>
-            <div class="item"><div class="k">Best Time</div><div class="v" id="mBestTime">—</div></div>
-            <div class="item"><div class="k">How to Reach</div><div class="v" id="mReach">—</div></div>
-            <div class="item"><div class="k">Distance (HQ)</div><div class="v" id="mDist">—</div></div>
-          </div>
-          <div class="long">
-            <h5>Short Description</h5>
-            <p id="mShort">—</p>
-          </div>
-          <div class="long">
-            <h5>Key Features</h5>
-            <p id="mKey">—</p>
-          </div>
-          <div class="long">
-            <h5>Overview</h5>
-            <p id="mOverview">—</p>
-          </div>
-        </div>
-      </div>
+      </aside>
     </div>
   </div>
 
-<script>
-/* ===========================
-   1) FIREBASE CONFIG (FILL)
-=========================== */
-const firebaseConfig = {
-  apiKey: "PASTE_YOUR_API_KEY",
-  authDomain: "PASTE_YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "revnue-records",
-  storageBucket: "PASTE.appspot.com",
-  messagingSenderId: "PASTE",
-  appId: "PASTE"
-};
-
-/* ===========================
-   2) GLOBALS
-=========================== */
-let db, allPlaces = [];
-let markersLayer, map;
-let currentFiltered = [];
-let activePkg = null;
-
-let activeMode = "none";     // none | segment | search | package
-let activeSegment = "ALL";   // current segment chip
-let lastSearch = "";
-
-/* UI */
-const $ = (id)=>document.getElementById(id);
-const dbDot = $("dbDot"), dbText = $("dbText"), countText = $("countText"), showingText = $("showingText");
-const q = $("q"), districtSel = $("district"), daysSel = $("days"), paxSel = $("pax"), vehicleSel = $("vehicle"), viewModeSel = $("viewMode");
-const kpiFiltered = $("kpiFiltered"), kpiSpread = $("kpiSpread"), kpiVehicle = $("kpiVehicle"), kpiCost = $("kpiCost");
-const packagesEl = $("packages"), segChipsEl = $("segChips");
-const resultsPanel = $("resultsPanel"), resultsGrid = $("resultsGrid"), resultsTitle = $("resultsTitle"), resultsHint = $("resultsHint");
-const activeModeChip = $("activeModeChip"), pkgHint = $("pkgHint");
-
-/* ===========================
-   3) HELPERS
-=========================== */
-function safeStr(v){ return (v===undefined || v===null) ? "" : String(v); }
-function toNum(v){
-  const n = parseFloat(String(v||"").replace(/[^\d.\-]/g,""));
-  return Number.isFinite(n) ? n : null;
-}
-function uniq(arr){ return Array.from(new Set(arr.filter(Boolean))).sort((a,b)=>a.localeCompare(b)); }
-function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
-
-function escapeHtml(s){
-  return safeStr(s).replace(/[&<>"']/g, (c)=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-  })[c]);
-}
-function pickPhoto(p){
-  return p["photo 1"] || p["Photo 1"] || p["photo1"] || p["Image"] || p["image"] || "";
-}
-function setDbStatus(ok, msg){
-  dbDot.classList.remove("ok","bad");
-  dbDot.classList.add(ok ? "ok" : "bad");
-  dbText.textContent = msg;
-}
-function suggestVehicle(pax, chosen){
-  if(chosen && chosen !== "auto") return chosen;
-  if(pax <= 2) return "bike";
-  if(pax <= 4) return "car";
-  if(pax <= 6) return "suv";
-  return "tempo";
-}
-function vehicleLabel(v){
-  return ({auto:"Auto", bike:"Bike", car:"Car", suv:"SUV", tempo:"Tempo Traveller"})[v] || v;
-}
-function haversineKm(a,b){
-  const R=6371;
-  const toRad = (x)=>x*Math.PI/180;
-  const dLat = toRad(b.lat-a.lat);
-  const dLng = toRad(b.lng-a.lng);
-  const s1 = Math.sin(dLat/2), s2 = Math.sin(dLng/2);
-  const q = s1*s1 + Math.cos(toRad(a.lat))*Math.cos(toRad(b.lat))*s2*s2;
-  return 2*R*Math.asin(Math.min(1, Math.sqrt(q)));
-}
-function centroid(points){
-  if(!points.length) return null;
-  let lat=0,lng=0,c=0;
-  for(const p of points){
-    if(p.lat==null || p.lng==null) continue;
-    lat += p.lat; lng += p.lng; c++;
-  }
-  return c? {lat:lat/c, lng:lng/c}: null;
-}
-function estimateSpreadKm(list){
-  const pts = list.filter(p=>p.lat!=null && p.lng!=null).map(p=>({lat:p.lat,lng:p.lng}));
-  if(pts.length < 2) return null;
-  const c = centroid(pts);
-  let max = 0;
-  for(const pt of pts){
-    max = Math.max(max, haversineKm(c, pt));
-  }
-  return max * 2;
-}
-
-/* ===========================
-   4) COST MODEL (same idea)
-=========================== */
-function estimateCostRange({days, pax, vehicle, spreadKm}){
-  const basePerDay = { bike:1200, car:3200, suv:4500, tempo:7500 };
-  const fuelPerKm  = { bike:3.0, car:6.5, suv:8.5, tempo:12.0 };
-
-  const stayPerPersonPerDay = 900;
-  const foodPerPersonPerDay = 550;
-
-  const v = basePerDay[vehicle] || 3500;
-  const f = fuelPerKm[vehicle] || 7.0;
-
-  const driveKm = Math.max(25, (spreadKm||20) * 2.2);
-  const fuel = driveKm * f;
-
-  const stay = pax * stayPerPersonPerDay * days;
-  const food = pax * foodPerPersonPerDay * days;
-  const vehicleCost = v * days;
-
-  const subtotal = vehicleCost + fuel + stay + food;
-  const low = Math.round(subtotal * 0.88);
-  const high = Math.round(subtotal * 1.12);
-  return {low, high};
-}
-function formatINR(n){
-  try{
-    return new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR",maximumFractionDigits:0}).format(n);
-  }catch(e){
-    return "₹" + Math.round(n);
-  }
-}
-
-/* ===========================
-   5) MAP
-=========================== */
-function initMap(){
-  map = L.map("map", {zoomControl:true}).setView([31.1048, 77.1734], 7);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 18, attribution: "&copy; OpenStreetMap"
-  }).addTo(map);
-
-  markersLayer = L.layerGroup().addTo(map);
-}
-function drawMarkers(list){
-  markersLayer.clearLayers();
-  const bounds = [];
-  list.forEach(p=>{
-    if(p.lat==null || p.lng==null) return;
-    const m = L.marker([p.lat,p.lng]).addTo(markersLayer);
-    m.bindPopup(`<b>${escapeHtml(p.name)}</b><br>${escapeHtml(p.district)} • ${escapeHtml(p.segment)}`);
-    m.on("click", ()=>openModal(p));
-    bounds.push([p.lat,p.lng]);
-  });
-  if(bounds.length) map.fitBounds(bounds, {padding:[28,28]});
-}
-
-/* ===========================
-   6) MODAL
-=========================== */
-const modalBack = $("modalBack");
-$("mClose").onclick = closeModal;
-modalBack.addEventListener("click", (e)=>{ if(e.target===modalBack) closeModal(); });
-
-function openModal(p){
-  $("mTitle").textContent = p.name || "Location";
-  const img = p.photo ? `<img src="${escapeHtml(p.photo)}" alt="">` : "";
-  $("mImgWrap").innerHTML = img || `<div style="padding:18px;color:var(--muted)">No photo available</div>`;
-
-  $("mDistrict").textContent = p.district || "—";
-  $("mSegment").textContent  = p.segment || "—";
-  $("mType").textContent     = p.type || "—";
-  $("mBestTime").textContent = p.bestTime || "—";
-  $("mReach").textContent    = p.reach || "—";
-  $("mDist").textContent     = p.distHQ || "—";
-
-  $("mShort").textContent    = p.short || "—";
-  $("mKey").textContent      = p.keyFeatures || "—";
-  $("mOverview").textContent = p.overview || "—";
-
-  modalBack.style.display = "flex";
-
-  if(p.lat!=null && p.lng!=null){
-    setTimeout(()=>map.setView([p.lat,p.lng], 12, {animate:true}), 120);
-  }
-}
-function closeModal(){ modalBack.style.display = "none"; }
-
-/* ===========================
-   7) CARDS (tiles)
-=========================== */
-function makeCard(p){
-  const el = document.createElement("div");
-  el.className = "card";
-  const photo = p.photo;
-
-  el.innerHTML = `
-    <div class="thumb">
-      ${photo ? `<img src="${escapeHtml(photo)}" alt="">` : `<span style="color:rgba(11,18,32,.55);font-size:12px">No photo</span>`}
-      <div class="badge">${escapeHtml(p.type || "Place")}</div>
-    </div>
-    <div class="cardBody">
-      <h4>${escapeHtml(p.name)}</h4>
-      <p>${escapeHtml(p.short || p.overview || "—")}</p>
-      <div class="rowMini">
-        <span class="mini">${escapeHtml(p.district || "—")}</span>
-        <span class="mini">${escapeHtml(p.segment || "—")}</span>
-      </div>
-    </div>
-  `;
-  el.onclick = ()=>openModal(p);
-  return el;
-}
-
-/* ===========================
-   8) RESULTS PANEL CONTROL
-   - Default hidden
-   - Show only when search/segment/package selection is active
-=========================== */
-function setMode(mode){
-  activeMode = mode;
-  activeModeChip.textContent =
-    mode === "none" ? "Mode: None" :
-    mode === "segment" ? "Mode: Segment" :
-    mode === "search" ? "Mode: Search" :
-    mode === "package" ? "Mode: Package" : "Mode: —";
-}
-function showTiles(title, hint, list){
-  resultsTitle.textContent = title;
-  resultsHint.textContent = hint;
-  resultsGrid.innerHTML = "";
-  list.forEach(p=>resultsGrid.appendChild(makeCard(p)));
-  resultsPanel.style.display = "block";
-  showingText.textContent = String(list.length);
-
-  // view mode
-  applyViewMode();
-}
-function hideTiles(){
-  resultsPanel.style.display = "none";
-  resultsGrid.innerHTML = "";
-  showingText.textContent = "0";
-  setMode("none");
-  activePkg = null;
-  // keep map markers based on currentFiltered (district filter only when none)
-  drawMarkers(currentFiltered);
-  applyViewMode();
-}
-
-/* ===========================
-   9) VIEW MODE
-=========================== */
-function applyViewMode(){
-  const mode = viewModeSel.value;
-  const mapEl = $("map");
-  if(mode === "map"){
-    mapEl.style.display = "block";
-    resultsPanel.style.display = "none";
-  }else if(mode === "tiles"){
-    mapEl.style.display = "none";
-    // tiles can be shown only if something selected; else keep hidden
-    // (do nothing)
-  }else{
-    mapEl.style.display = "block";
-  }
-  setTimeout(()=>{ if(mapEl.style.display !== "none") map.invalidateSize(); }, 120);
-}
-
-/* ===========================
-   10) FILTERS (District always works)
-   - DO NOT show all places grid
-   - District filter updates currentFiltered + map
-=========================== */
-function fillSelect(sel, items, allLabel){
-  sel.innerHTML = "";
-  const all = document.createElement("option");
-  all.value = "ALL";
-  all.textContent = allLabel;
-  sel.appendChild(all);
-  items.forEach(v=>{
-    const o = document.createElement("option");
-    o.value = v; o.textContent = v;
-    sel.appendChild(o);
-  });
-}
-function recomputeFilteredBase(){
-  const d = districtSel.value;
-  currentFiltered = allPlaces.filter(p=>{
-    if(d !== "ALL" && p.district !== d) return false;
-    return true;
-  });
-
-  // KPIs for base set (even when tiles hidden)
-  kpiFiltered.textContent = currentFiltered.length;
-  const spread = estimateSpreadKm(currentFiltered);
-  kpiSpread.textContent = spread ? `${spread.toFixed(0)} km` : "—";
-
-  const pax = parseInt(paxSel.value,10);
-  const chosen = vehicleSel.value;
-  const veh = suggestVehicle(pax, chosen);
-  kpiVehicle.textContent = vehicleLabel(veh);
-
-  if(spread){
-    const days = parseInt(daysSel.value,10);
-    const {low, high} = estimateCostRange({days, pax, vehicle:veh, spreadKm:spread});
-    kpiCost.textContent = `${formatINR(low)} – ${formatINR(high)}`;
-  }else{
-    kpiCost.textContent = "—";
-  }
-
-  // map always shows base filtered (unless tiles currently showing a selection)
-  if(activeMode === "none"){
-    drawMarkers(currentFiltered);
-  }
-}
-
-/* ===========================
-   11) SEGMENT BAR
-=========================== */
-function renderSegmentBar(){
-  const segments = uniq(allPlaces.map(p=>p.segment || "Other"));
-  segChipsEl.innerHTML = "";
-
-  // All button (acts like hide tiles)
-  const allBtn = document.createElement("button");
-  allBtn.className = "chipBtn active";
-  allBtn.textContent = "All Segments";
-  allBtn.onclick = ()=>{
-    activeSegment = "ALL";
-    lastSearch = "";
-    q.value = "";
-    setActiveChip("ALL");
-    hideTiles();
-  };
-  segChipsEl.appendChild(allBtn);
-
-  segments.forEach(seg=>{
-    const b = document.createElement("button");
-    b.className = "chipBtn";
-    b.textContent = seg;
-    b.onclick = ()=>{
-      activeSegment = seg;
-      lastSearch = "";
-      q.value = "";
-      setActiveChip(seg);
-
-      const list = currentFiltered.filter(p=> (p.segment || "Other") === seg);
-      setMode("segment");
-      showTiles(`Segment: ${seg}`, `${list.length} place(s) • district filter applied`, list);
-      drawMarkers(list);
+  <script>
+    /* ===========================
+       FIREBASE CONFIG (FILL THIS)
+    =========================== */
+    const firebaseConfig = {
+      apiKey: "PASTE_YOUR_API_KEY",
+      authDomain: "PASTE_YOUR_PROJECT.firebaseapp.com",
+      databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "revnue-records",
+      storageBucket: "PASTE.appspot.com",
+      messagingSenderId: "PASTE",
+      appId: "PASTE"
     };
-    segChipsEl.appendChild(b);
-  });
 
-  function setActiveChip(seg){
-    [...segChipsEl.querySelectorAll(".chipBtn")].forEach(btn=>btn.classList.remove("active"));
-    // first is All Segments
-    if(seg === "ALL") segChipsEl.querySelector(".chipBtn")?.classList.add("active");
-    else {
-      [...segChipsEl.querySelectorAll(".chipBtn")].forEach(btn=>{
-        if(btn.textContent === seg) btn.classList.add("active");
+    /* ===========================
+       QUOTES (rotate every 5s, show 3)
+    =========================== */
+    const QUOTES = [
+      { q: "In Himachal, every road is a story — written in pine, snow, and sunlight.", by: "Himachal Explorer" },
+      { q: "Let the mountains slow your mind and sharpen your senses.", by: "Himachal Explorer" },
+      { q: "A day in the hills is a reset button you can actually feel.", by: "Himachal Explorer" },
+      { q: "Temples on ridges, lakes in silence — Himachal teaches calm without words.", by: "Himachal Explorer" },
+      { q: "Take fewer places, take them deeper — that’s the real Himachal plan.", by: "Himachal Explorer" },
+      { q: "The best itinerary is the one that leaves you time to breathe.", by: "Himachal Explorer" },
+      { q: "Chai tastes better when the valley is below and clouds are above.", by: "Himachal Explorer" },
+      { q: "Adventure here isn’t just speed — it’s altitude, patience, and wonder.", by: "Himachal Explorer" }
+    ];
+    let quoteIndex = 0;
+    function renderQuotes(){
+      const grid = document.getElementById("quoteGrid");
+      grid.innerHTML = "";
+      // show 3 quotes at a time
+      for(let i=0;i<3;i++){
+        const idx = (quoteIndex + i) % QUOTES.length;
+        const qc = document.createElement("div");
+        qc.className = "quoteCard fade";
+        qc.innerHTML = `
+          <p class="quoteTxt">“${escapeHtml(QUOTES[idx].q)}”</p>
+          <div class="quoteBy">— ${escapeHtml(QUOTES[idx].by)}</div>
+        `;
+        grid.appendChild(qc);
+      }
+      quoteIndex = (quoteIndex + 1) % QUOTES.length;
+    }
+    setInterval(renderQuotes, 5000);
+    renderQuotes();
+
+    /* ===========================
+       DATA + HELPERS
+    =========================== */
+    const $ = (id)=>document.getElementById(id);
+    const dbDot = $("dbDot"), dbText = $("dbText"), loadedCount = $("loadedCount");
+
+    let ALL = []; // normalized places from /locations
+
+    function setDbStatus(ok, msg){
+      dbDot.classList.remove("ok","bad");
+      dbDot.classList.add(ok ? "ok" : "bad");
+      dbText.textContent = msg;
+    }
+    function safeStr(v){ return (v===undefined||v===null) ? "" : String(v); }
+    function escapeHtml(s){
+      return safeStr(s).replace(/[&<>"']/g, (c)=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      })[c]);
+    }
+    function toNum(v){
+      const n = parseFloat(String(v||"").replace(/[^\d.\-]/g,""));
+      return Number.isFinite(n) ? n : null;
+    }
+    function pickPhoto(p){
+      return p["photo 1"] || p["Photo 1"] || p["photo1"] || p["Image"] || p["image"] || "";
+    }
+    function normalizeRecord(key, raw){
+      const p = raw || {};
+      return {
+        key,
+        name: safeStr(p["Location Name"] || p["name"] || p["Name"] || key),
+        district: safeStr(p["District"] || p["district"] || ""),
+        segment: safeStr(p["Segment Type"] || p["segment type"] || p["segment"] || "Other"),
+        type: safeStr(p["Location Type"] || p["location type"] || p["type"] || ""),
+        short: safeStr(p["Short Description"] || p["short description"] || ""),
+        overview: safeStr(p["Overview"] || p["overview"] || ""),
+        reach: safeStr(p["How to Reach"] || p["how to reach"] || ""),
+        bestTime: safeStr(p["Best Time to Visit"] || p["best time to visit"] || ""),
+        distHQ: safeStr(p["Dist from HQ"] || p["dist from hq"] || ""),
+        keyFeatures: safeStr(p["Key Features"] || p["key features"] || ""),
+        lat: toNum(p["Latitude"] ?? p["latitude"]),
+        lng: toNum(p["Longitude"] ?? p["longitude"]),
+        photo: safeStr(pickPhoto(p))
+      };
+    }
+    function uniq(arr){
+      return Array.from(new Set(arr.filter(Boolean)));
+    }
+
+    /* ===========================
+       ROUTE-CORRIDOR SELECTION (no API)
+       - choose places near the line Start -> End
+       - width increases with days
+    =========================== */
+    function haversineKm(a,b){
+      const R=6371;
+      const toRad = (x)=>x*Math.PI/180;
+      const dLat = toRad(b.lat-a.lat);
+      const dLng = toRad(b.lng-a.lng);
+      const s1 = Math.sin(dLat/2), s2 = Math.sin(dLng/2);
+      const q = s1*s1 + Math.cos(toRad(a.lat))*Math.cos(toRad(b.lat))*s2*s2;
+      return 2*R*Math.asin(Math.min(1, Math.sqrt(q)));
+    }
+    // distance from point P to segment AB (approx using equirectangular projection)
+    function distPointToSegmentKm(P,A,B){
+      // convert to a flat plane around mean latitude
+      const meanLat = ((A.lat + B.lat)/2) * Math.PI/180;
+      const kx = 111.320 * Math.cos(meanLat);
+      const ky = 110.574;
+
+      const ax = A.lng*kx, ay = A.lat*ky;
+      const bx = B.lng*kx, by = B.lat*ky;
+      const px = P.lng*kx, py = P.lat*ky;
+
+      const ABx = bx-ax, ABy = by-ay;
+      const APx = px-ax, APy = py-ay;
+      const ab2 = ABx*ABx + ABy*ABy || 1e-9;
+      let t = (APx*ABx + APy*ABy)/ab2;
+      t = Math.max(0, Math.min(1, t));
+      const cx = ax + t*ABx, cy = ay + t*ABy;
+      const dx = px - cx, dy = py - cy;
+      return Math.sqrt(dx*dx + dy*dy);
+    }
+
+    function suggestVehicle(pax, chosen){
+      if(chosen && chosen !== "auto") return chosen;
+      if(pax <= 2) return "bike";
+      if(pax <= 4) return "car";
+      if(pax <= 6) return "suv";
+      return "tempo";
+    }
+    function vehicleLabel(v){
+      return ({auto:"Auto", bike:"Bike", car:"Car", suv:"SUV", tempo:"Tempo Traveller"})[v] || v;
+    }
+    function formatINR(n){
+      try{
+        return new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR",maximumFractionDigits:0}).format(n);
+      }catch(e){
+        return "₹" + Math.round(n);
+      }
+    }
+
+    /* ===========================
+       COST MODEL (transport + stay + driver)
+       - You can edit these numbers anytime
+    =========================== */
+    function estimateCost({days, pax, vehicle, driveKm}){
+      const vehicleBasePerDay = { bike:1200, car:3200, suv:4500, tempo:7500 };
+      const fuelPerKm         = { bike:3.0,  car:6.5,  suv:8.5,  tempo:12.0 };
+
+      const driverPerDay = { bike:0, car:900, suv:950, tempo:1100 }; // driver expense/day
+      const driverNightAllowance = { bike:0, car:350, suv:400, tempo:450 }; // per night
+
+      const stayPerPersonPerNight = 950;   // stay
+      const foodPerPersonPerDay   = 550;   // food
+
+      const nights = Math.max(0, days-1);
+
+      const vDay = vehicleBasePerDay[vehicle] ?? 3500;
+      const fuel = (fuelPerKm[vehicle] ?? 7.0) * Math.max(20, driveKm);
+
+      const transport = vDay * days + fuel;
+
+      const stay = pax * stayPerPersonPerNight * nights;
+      const food = pax * foodPerPersonPerDay * days;
+
+      const driver = (driverPerDay[vehicle] ?? 900) * days + (driverNightAllowance[vehicle] ?? 350) * nights;
+
+      const subtotal = transport + stay + food + driver;
+
+      // range +/- 12%
+      return {
+        transport, stay, food, driver,
+        low: Math.round(subtotal * 0.88),
+        high: Math.round(subtotal * 1.12)
+      };
+    }
+
+    /* ===========================
+       PACKAGE BUILDING
+       - Picks 3 packages:
+         1) Best Value
+         2) More Scenic
+         3) Compact (closest)
+       - Packages contain places near the chosen route corridor
+    =========================== */
+    function scorePlace(p, pref){
+      const seg = (p.segment||"").toLowerCase();
+      const type = (p.type||"").toLowerCase();
+      let s = 0;
+
+      // base preference by segment/type keywords
+      const temple = seg.includes("temple") || type.includes("temple");
+      const trek   = seg.includes("trek")   || type.includes("trek") || seg.includes("adventure");
+      const lake   = seg.includes("lake")   || type.includes("lake");
+      const relax  = seg.includes("destination") || seg.includes("scenic") || type.includes("view");
+
+      if(pref === "temples") s += temple ? 20 : 0;
+      if(pref === "treks")   s += trek ? 20 : 0;
+      if(pref === "lakes")   s += lake ? 20 : 0;
+      if(pref === "relax")   s += relax ? 18 : 0;
+
+      // balanced gets a smaller bump for variety-friendly places
+      if(pref === "balanced"){
+        if(temple) s += 6;
+        if(trek)   s += 6;
+        if(lake)   s += 6;
+        if(relax)  s += 5;
+      }
+
+      // small quality bump if it has description/photos
+      if(p.photo) s += 2;
+      if(p.short) s += 2;
+      if(p.overview) s += 1;
+
+      return s;
+    }
+
+    function buildPackages({start, end, days, pax, vehicle, pref, keyword}){
+      // corridor width in km: more days => wider
+      const corridorKm = Math.min(85, Math.max(18, 18 + (days-1)*12));
+      $("kCorridor").textContent = `±${Math.round(corridorKm)} km`;
+
+      // candidates: route corridor + mapped coords
+      const kw = (keyword||"").trim().toLowerCase();
+      const candidates = ALL.filter(p=>{
+        if(p.lat==null || p.lng==null) return false;
+        // keyword filter (optional)
+        if(kw){
+          const hay = `${p.name} ${p.district} ${p.segment} ${p.type} ${p.short} ${p.overview}`.toLowerCase();
+          if(!hay.includes(kw)) return false;
+        }
+        const d = distPointToSegmentKm({lat:p.lat,lng:p.lng}, start, end);
+        return d <= corridorKm;
       });
+
+      // if corridor yields too few, fallback wider
+      let pool = candidates;
+      if(pool.length < 6){
+        const wider = corridorKm + 25;
+        pool = ALL.filter(p=>{
+          if(p.lat==null || p.lng==null) return false;
+          if(kw){
+            const hay = `${p.name} ${p.district} ${p.segment} ${p.type} ${p.short} ${p.overview}`.toLowerCase();
+            if(!hay.includes(kw)) return false;
+          }
+          const d = distPointToSegmentKm({lat:p.lat,lng:p.lng}, start, end);
+          return d <= wider;
+        });
+      }
+
+      // sort by preference score and closeness to corridor
+      const scored = pool.map(p=>{
+        const dLine = distPointToSegmentKm({lat:p.lat,lng:p.lng}, start, end);
+        const score = scorePlace(p, pref) - (dLine * 0.35);
+        return {p, score, dLine};
+      }).sort((a,b)=>b.score - a.score);
+
+      // choose places count based on days (feasible)
+      const maxN = Math.min(10, Math.max(4, 3 + days)); // 2 days => 5, 5 days => 8, etc.
+
+      // helper: pick with variety
+      function pickSet(mode){
+        const picked = [];
+        const used = new Set();
+        const usedSeg = new Set();
+
+        for(const item of scored){
+          if(picked.length >= maxN) break;
+          const p = item.p;
+
+          // avoid duplicates
+          if(used.has(p.key)) continue;
+
+          // mode-specific
+          if(mode === "compact"){
+            // prefer closest to corridor line (low dLine)
+            if(item.dLine > (corridorKm * 0.75)) continue;
+          }
+          if(mode === "scenic"){
+            // prefer variety segments
+            const seg = (p.segment || "Other");
+            if(usedSeg.size < 4 && usedSeg.has(seg)) continue;
+          }
+
+          picked.push(p);
+          used.add(p.key);
+          usedSeg.add(p.segment || "Other");
+        }
+
+        // if still short, fill
+        if(picked.length < Math.min(4, maxN)){
+          for(const item of scored){
+            if(picked.length >= maxN) break;
+            if(used.has(item.p.key)) continue;
+            picked.push(item.p);
+            used.add(item.p.key);
+          }
+        }
+
+        return picked;
+      }
+
+      const bestValue = pickSet("best");
+      const scenic    = pickSet("scenic");
+      const compact   = pickSet("compact");
+
+      // estimate driving km (simple): start->end + movements across selected places
+      function estimateDriveKm(places){
+        const pts = places.filter(x=>x.lat!=null && x.lng!=null).map(x=>({lat:x.lat,lng:x.lng}));
+        if(!pts.length) return haversineKm(start, end) * 1.25;
+
+        // rough: start->end plus average spread among places
+        let max = 0;
+        for(const pt of pts){
+          max = Math.max(max, haversineKm(start, pt), haversineKm(end, pt));
+        }
+        // corridor travel increases driving
+        return (haversineKm(start, end) * 1.35) + (max * 0.9);
+      }
+
+      function makePkg(title, places){
+        const driveKm = Math.max(35, estimateDriveKm(places));
+        const cost = estimateCost({days, pax, vehicle, driveKm});
+        return {
+          title,
+          places,
+          driveKm,
+          cost,
+          hint: `${places.length} places • ~${Math.round(driveKm)} km driving`
+        };
+      }
+
+      const pkgs = [
+        makePkg("Best Value (recommended)", bestValue),
+        makePkg("Scenic & Variety", scenic),
+        makePkg("Compact & Efficient", compact)
+      ];
+
+      // remove empty/very small sets
+      return pkgs.filter(x=>x.places.length >= 3);
     }
-  }
-}
 
-/* ===========================
-   12) SEARCH (ONLY show matches)
-=========================== */
-function runSearch(){
-  const query = safeStr(q.value).trim().toLowerCase();
-  lastSearch = query;
+    /* ===========================
+       UI RENDER
+    =========================== */
+    function renderPackageList(pkgs){
+      const list = $("pkgList");
+      list.innerHTML = "";
+      $("pkgCount").textContent = String(pkgs.length);
 
-  if(!query){
-    // if search cleared, go back to none (tiles hidden) unless segment selected
-    if(activeMode === "search"){
-      hideTiles();
-    }
-    return;
-  }
+      if(!pkgs.length){
+        list.innerHTML = `<div class="mutedSmall">Not enough places found on that route corridor. Try different start/end or increase days.</div>`;
+        return;
+      }
 
-  // ignore segment selection while typing search (as you asked)
-  activeSegment = "ALL";
-  // set segment chip active to All Segments
-  const firstChip = segChipsEl.querySelector(".chipBtn");
-  if(firstChip){
-    [...segChipsEl.querySelectorAll(".chipBtn")].forEach(btn=>btn.classList.remove("active"));
-    firstChip.classList.add("active");
-  }
+      // KPI from first package
+      const best = pkgs[0];
+      $("kPlaces").textContent = best.places.length;
+      $("kCost").textContent = `${formatINR(best.cost.low)} – ${formatINR(best.cost.high)}`;
 
-  const list = currentFiltered.filter(p=>{
-    const hay = `${p.name} ${p.district} ${p.segment} ${p.type} ${p.short} ${p.overview}`.toLowerCase();
-    return hay.includes(query);
-  });
-
-  setMode("search");
-  showTiles(`Search: "${query}"`, `${list.length} match(es) • district filter applied`, list);
-  drawMarkers(list);
-}
-
-/* ===========================
-   13) PACKAGES (nearby-only, restored)
-=========================== */
-function generatePackages(){
-  const list = currentFiltered.filter(p=>p.lat!=null && p.lng!=null);
-  packagesEl.innerHTML = "";
-  activePkg = null;
-
-  if(list.length < 3){
-    pkgHint.textContent = "Need ≥ 3 mapped places";
-    return;
-  }
-
-  const days = parseInt(daysSel.value,10);
-  const pax = parseInt(paxSel.value,10);
-  const chosen = vehicleSel.value;
-  const veh = suggestVehicle(pax, chosen);
-
-  const baseRadius = clamp(18 + (days-1)*14, 18, 75);
-  const radius = (veh==="bike") ? baseRadius*0.9 : (veh==="tempo") ? baseRadius*1.05 : baseRadius;
-
-  const remaining = [...list];
-  const pkgs = [];
-
-  const scoreDensity = (p, arr)=>{
-    let count = 0;
-    for(const q of arr){
-      if(p===q) continue;
-      if(haversineKm({lat:p.lat,lng:p.lng},{lat:q.lat,lng:q.lng}) <= radius) count++;
-    }
-    return count;
-  };
-
-  for(let k=0; k<5 && remaining.length>=3; k++){
-    remaining.sort((a,b)=>scoreDensity(b,remaining)-scoreDensity(a,remaining));
-    const seed = remaining[0];
-
-    const cluster = [];
-    for(const p of remaining){
-      const d = haversineKm({lat:seed.lat,lng:seed.lng},{lat:p.lat,lng:p.lng});
-      if(d <= radius) cluster.push(p);
-    }
-
-    const maxN = clamp(3 + days, 4, 7);
-    cluster.sort((a,b)=>{
-      const da = haversineKm({lat:seed.lat,lng:seed.lng},{lat:a.lat,lng:a.lng});
-      const db = haversineKm({lat:seed.lat,lng:seed.lng},{lat:b.lat,lng:b.lng});
-      return da-db;
-    });
-
-    const picked = [];
-    const usedTypes = new Set();
-    for(const p of cluster){
-      if(picked.length >= maxN) break;
-      const typeKey = (p.type||"").toLowerCase();
-      if(usedTypes.size < 3 && usedTypes.has(typeKey)) continue;
-      picked.push(p);
-      usedTypes.add(typeKey);
-    }
-    for(const p of cluster){
-      if(picked.length >= maxN) break;
-      if(!picked.includes(p)) picked.push(p);
-    }
-
-    if(picked.length < 4) break;
-
-    const pickedKeys = new Set(picked.map(x=>x.key));
-    for(let i=remaining.length-1;i>=0;i--){
-      if(pickedKeys.has(remaining[i].key)) remaining.splice(i,1);
-    }
-
-    const spread = estimateSpreadKm(picked) || 20;
-    const cost = estimateCostRange({days, pax, vehicle:veh, spreadKm:spread});
-
-    pkgs.push({
-      id: "pkg-" + k + "-" + Date.now(),
-      title: `${seed.district || "Area"} • ${days} day(s)`,
-      vehicle: veh,
-      radius,
-      spread,
-      cost,
-      places: picked
-    });
-  }
-
-  pkgs.sort((a,b)=>{
-    const va = (a.places.length*10) - a.spread - (a.cost.low/9000);
-    const vb = (b.places.length*10) - b.spread - (b.cost.low/9000);
-    return vb - va;
-  });
-
-  const final = pkgs.slice(0,5);
-  pkgHint.textContent = `${final.length} package(s) • radius ${Math.round(radius)} km`;
-
-  final.forEach((pkg)=>{
-    const el = document.createElement("div");
-    el.className = "pkg";
-    el.innerHTML = `
-      <div class="pkgTop">
-        <div>
-          <h4>${escapeHtml(pkg.title)}</h4>
-          <div class="meta">
-            ${pkg.places.length} places • Spread ~${Math.round(pkg.spread)} km • ${escapeHtml(vehicleLabel(pkg.vehicle))}
-          </div>
+      // breakdown box (best package)
+      $("breakdown").innerHTML = `
+        <div class="mutedSmall">
+          <b>Cost breakdown (Best Value):</b><br/>
+          • Transport (vehicle + fuel): <b>${formatINR(best.cost.transport)}</b><br/>
+          • Stay: <b>${formatINR(best.cost.stay)}</b><br/>
+          • Food: <b>${formatINR(best.cost.food)}</b><br/>
+          • Driver expenses: <b>${formatINR(best.cost.driver)}</b><br/>
+          <span style="color:rgba(255,255,255,.55)">Range shown includes ±12% for season/traffic/tolls.</span>
         </div>
-        <div class="price">${formatINR(pkg.cost.low)} – ${formatINR(pkg.cost.high)}</div>
-      </div>
-      <div class="places">
-        ${pkg.places.map(p=>`<span>${escapeHtml(p.name)}</span>`).join("")}
-      </div>
-    `;
-    el.onclick = ()=>{
-      activePkg = pkg;
-      setMode("package");
-      showTiles(`Package: ${pkg.title}`, `${pkg.places.length} place(s) • nearby-only cluster`, pkg.places);
-      drawMarkers(pkg.places);
-      pkgHint.textContent = `Selected: ${pkg.places.length} places`;
-    };
-    packagesEl.appendChild(el);
-  });
-}
+      `;
 
-/* ===========================
-   14) LOAD FROM FIREBASE (FIXED PATH)
-=========================== */
-function normalizeRecord(key, raw){
-  const p = raw || {};
-  const name = p["Location Name"] || p["location name"] || p["Name"] || p["name"] || key;
-  const district = p["District"] || p["district"] || "";
-  const segment = p["Segment Type"] || p["segment type"] || p["Segment"] || p["segment"] || "Other";
-  const type = p["Location Type"] || p["location type"] || p["Type"] || p["type"] || "";
-  const short = p["Short Description"] || p["short description"] || "";
-  const keyFeatures = p["Key Features"] || p["key features"] || "";
-  const reach = p["How to Reach"] || p["how to reach"] || "";
-  const bestTime = p["Best Time to Visit"] || p["best time to visit"] || "";
-  const distHQ = p["Dist from HQ"] || p["Dist from HQ:"] || p["dist from hq"] || "";
-  const overview = p["Overview"] || p["overview"] || "";
-
-  const lat = toNum(p["Latitude"] ?? p["latitude"]);
-  const lng = toNum(p["Longitude"] ?? p["longitude"]);
-  const photo = pickPhoto(p);
-
-  return {
-    key,
-    name: safeStr(name),
-    district: safeStr(district),
-    segment: safeStr(segment),
-    type: safeStr(type),
-    short: safeStr(short),
-    keyFeatures: safeStr(keyFeatures),
-    reach: safeStr(reach),
-    bestTime: safeStr(bestTime),
-    distHQ: safeStr(distHQ),
-    overview: safeStr(overview),
-    lat, lng,
-    photo
-  };
-}
-
-/* ===========================
-   15) BOOT
-=========================== */
-function boot(){
-  try{
-    firebase.initializeApp(firebaseConfig);
-    db = firebase.database();
-    setDbStatus(true, "Connected");
-  }catch(e){
-    setDbStatus(false, "Config error");
-    console.error(e);
-    return;
-  }
-
-  initMap();
-
-  // Load districts dropdown with "All"
-  fillSelect(districtSel, [], "All districts");
-
-  // IMPORTANT: correct path
-  db.ref("locations").on("value", snap=>{
-    const data = snap.val();
-    if(!data){
-      allPlaces = [];
-      countText.textContent = "0";
-      setDbStatus(false, "No data at /locations");
-      return;
+      for(const pkg of pkgs){
+        const div = document.createElement("div");
+        div.className = "pkg";
+        div.innerHTML = `
+          <div class="pkgTop">
+            <div>
+              <h3>${escapeHtml(pkg.title)}</h3>
+              <div class="meta">${escapeHtml(pkg.hint)}</div>
+            </div>
+            <div class="price">${formatINR(pkg.cost.low)} – ${formatINR(pkg.cost.high)}</div>
+          </div>
+          <div class="chips">
+            ${pkg.places.slice(0,10).map((p,i)=>`
+              <span class="chip ${i%3===1?'chip2':(i%3===2?'chip3':'')}">${escapeHtml(p.name)}</span>
+            `).join("")}
+          </div>
+          <div class="meta" style="margin-top:8px">
+            Districts: ${escapeHtml(uniq(pkg.places.map(x=>x.district)).slice(0,4).join(", ") || "—")}
+          </div>
+        `;
+        list.appendChild(div);
+      }
     }
 
-    allPlaces = Object.entries(data).map(([key, raw])=>normalizeRecord(key, raw));
-    countText.textContent = String(allPlaces.length);
-    setDbStatus(true, "Live");
+    /* ===========================
+       FORM LOGIC
+    =========================== */
+    function fillPlaceSelect(sel, places){
+      const prev = sel.value;
+      sel.innerHTML = "";
+      const opt0 = document.createElement("option");
+      opt0.value = "";
+      opt0.textContent = "Select a place…";
+      sel.appendChild(opt0);
 
-    // District dropdown
-    fillSelect(districtSel, uniq(allPlaces.map(p=>p.district)), "All districts");
+      // sort by district then name
+      places
+        .slice()
+        .sort((a,b)=>(a.district+a.name).localeCompare(b.district+b.name))
+        .forEach(p=>{
+          const o = document.createElement("option");
+          o.value = p.key;
+          o.textContent = `${p.name}${p.district ? " — "+p.district : ""}`;
+          sel.appendChild(o);
+        });
 
-    // Segment bar
-    renderSegmentBar();
-
-    // Base filter + map
-    recomputeFilteredBase();
-    showingText.textContent = "0";
-
-  }, err=>{
-    console.error(err);
-    setDbStatus(false, "Rules / Network");
-  });
-
-  // Events (restore your buttons / logic)
-  q.addEventListener("input", ()=>{
-    recomputeFilteredBase();
-    runSearch();
-  });
-
-  [districtSel, daysSel, paxSel, vehicleSel].forEach(el=>{
-    el.addEventListener("change", ()=>{
-      recomputeFilteredBase();
-      // if user is in search, rerun search
-      if(activeMode === "search") runSearch();
-      // if user is in segment, refresh segment list
-      if(activeMode === "segment" && activeSegment !== "ALL"){
-        const list = currentFiltered.filter(p=> (p.segment || "Other") === activeSegment);
-        showTiles(`Segment: ${activeSegment}`, `${list.length} place(s) • district filter applied`, list);
-        drawMarkers(list);
-      }
-      // if user is in package and they change district, just hide tiles
-      if(activeMode === "package") {
-        // keep simple: hide tiles, user can regen packages
-        hideTiles();
-        pkgHint.textContent = "Click “Generate”";
-      }
-    });
-  });
-
-  viewModeSel.addEventListener("change", applyViewMode);
-
-  $("btnPackages").addEventListener("click", ()=>{
-    recomputeFilteredBase();
-    generatePackages();
-  });
-
-  $("btnReset").addEventListener("click", ()=>{
-    q.value = "";
-    districtSel.value = "ALL";
-    daysSel.value = "2";
-    paxSel.value = "2";
-    vehicleSel.value = "auto";
-    viewModeSel.value = "both";
-    pkgHint.textContent = "Click “Generate”";
-    packagesEl.innerHTML = "";
-    // reset segment chip to All
-    const firstChip = segChipsEl.querySelector(".chipBtn");
-    if(firstChip){
-      [...segChipsEl.querySelectorAll(".chipBtn")].forEach(btn=>btn.classList.remove("active"));
-      firstChip.classList.add("active");
+      // restore if possible
+      if(prev && [...sel.options].some(o=>o.value===prev)) sel.value = prev;
     }
-    activeSegment = "ALL";
-    lastSearch = "";
-    hideTiles();
-    recomputeFilteredBase();
-  });
 
-  $("btnHideTiles").addEventListener("click", ()=>{
-    hideTiles();
-    pkgHint.textContent = "Click “Generate”";
-  });
-}
+    function getPlaceByKey(key){
+      return ALL.find(p=>p.key===key) || null;
+    }
 
-function fillSelect(sel, items, allLabel){
-  sel.innerHTML = "";
-  const all = document.createElement("option");
-  all.value = "ALL";
-  all.textContent = allLabel;
-  sel.appendChild(all);
-  items.forEach(v=>{
-    const o = document.createElement("option");
-    o.value = v; o.textContent = v;
-    sel.appendChild(o);
-  });
-}
+    function runPlanner(){
+      const sKey = $("startPlace").value;
+      const eKey = $("endPlace").value;
+      const days = parseInt($("days").value,10);
+      const pax  = parseInt($("pax").value,10);
+      const chosenVehicle = $("vehicle").value;
+      const pref = $("preference").value;
+      const keyword = $("kw").value;
 
-boot();
-</script>
+      if(!sKey || !eKey){
+        $("pkgList").innerHTML = `<div class="mutedSmall">Please select both <b>Start</b> and <b>End</b>.</div>`;
+        $("pkgCount").textContent = "0";
+        return;
+      }
 
+      const s = getPlaceByKey(sKey);
+      const e = getPlaceByKey(eKey);
+      if(!s || !e || s.lat==null || s.lng==null || e.lat==null || e.lng==null){
+        $("pkgList").innerHTML = `<div class="mutedSmall">Start/End must have Latitude & Longitude in Firebase.</div>`;
+        $("pkgCount").textContent = "0";
+        return;
+      }
+
+      const vehicle = suggestVehicle(pax, chosenVehicle);
+      $("kVeh").textContent = vehicleLabel(vehicle);
+
+      const pkgs = buildPackages({
+        start:{lat:s.lat,lng:s.lng},
+        end:{lat:e.lat,lng:e.lng},
+        days, pax, vehicle, pref, keyword
+      });
+
+      renderPackageList(pkgs);
+    }
+
+    function resetPlanner(){
+      $("startPlace").value = "";
+      $("endPlace").value = "";
+      $("days").value = "2";
+      $("pax").value = "2";
+      $("vehicle").value = "auto";
+      $("autoGen").value = "yes";
+      $("preference").value = "balanced";
+      $("kw").value = "";
+      $("modeText").textContent = "Auto package";
+      $("kVeh").textContent = "—";
+      $("kCost").textContent = "—";
+      $("kPlaces").textContent = "—";
+      $("kCorridor").textContent = "—";
+      $("breakdown").textContent = "Cost breakdown will appear here (transport + stay + driver).";
+      $("pkgCount").textContent = "0";
+      $("pkgList").innerHTML = `<div class="mutedSmall">Generate to see packages that fit between your start → end route.</div>`;
+    }
+
+    function setModeText(){
+      const auto = $("autoGen").value === "yes";
+      $("modeText").textContent = auto ? "Auto package" : "Manual generate";
+    }
+
+    /* ===========================
+       FIREBASE LOAD (/locations)
+    =========================== */
+    function boot(){
+      try{
+        firebase.initializeApp(firebaseConfig);
+        setDbStatus(true, "Connected");
+      }catch(e){
+        console.error(e);
+        setDbStatus(false, "Config error");
+        return;
+      }
+
+      firebase.database().ref("locations").on("value", snap=>{
+        const data = snap.val();
+        if(!data){
+          ALL = [];
+          loadedCount.textContent = "0";
+          setDbStatus(false, "No data at /locations");
+          return;
+        }
+        ALL = Object.entries(data).map(([key, raw])=>normalizeRecord(key, raw));
+        loadedCount.textContent = String(ALL.length);
+        setDbStatus(true, "Live");
+
+        // Only places with lat/lng are usable for route start/end
+        const usable = ALL.filter(p=>p.lat!=null && p.lng!=null);
+
+        fillPlaceSelect($("startPlace"), usable);
+        fillPlaceSelect($("endPlace"), usable);
+
+        // if auto gen, run when form changes and start/end are selected
+        attachAutoHandlers();
+      }, err=>{
+        console.error(err);
+        setDbStatus(false, "Rules / Network");
+      });
+
+      // buttons
+      $("btnGenerate").addEventListener("click", runPlanner);
+      $("btnReset").addEventListener("click", resetPlanner);
+
+      // mode text
+      ["change","input"].forEach(evt=>{
+        $("autoGen").addEventListener(evt, ()=>{
+          setModeText();
+          attachAutoHandlers();
+          // if switching to auto, run once
+          if($("autoGen").value==="yes") maybeAutoRun();
+        });
+      });
+
+      setModeText();
+      resetPlanner();
+    }
+
+    function maybeAutoRun(){
+      const auto = $("autoGen").value === "yes";
+      if(!auto) return;
+      // Run only when start & end selected
+      if($("startPlace").value && $("endPlace").value) runPlanner();
+    }
+
+    function attachAutoHandlers(){
+      // Remove existing handlers by cloning nodes (simple reliable approach)
+      const ids = ["startPlace","endPlace","days","pax","vehicle","preference","kw"];
+      for(const id of ids){
+        const el = $(id);
+        const clone = el.cloneNode(true);
+        el.parentNode.replaceChild(clone, el);
+      }
+
+      // Rebind buttons (they got replaced if inside form). Rebind after clone.
+      $("btnGenerate").onclick = runPlanner;
+      $("btnReset").onclick = resetPlanner;
+
+      // Mode text handler
+      $("autoGen").onchange = ()=>{ setModeText(); attachAutoHandlers(); if($("autoGen").value==="yes") maybeAutoRun(); };
+
+      // Auto handlers
+      const auto = $("autoGen").value === "yes";
+      if(auto){
+        ["change","input"].forEach(evt=>{
+          $("startPlace").addEventListener(evt, maybeAutoRun);
+          $("endPlace").addEventListener(evt, maybeAutoRun);
+          $("days").addEventListener(evt, maybeAutoRun);
+          $("pax").addEventListener(evt, maybeAutoRun);
+          $("vehicle").addEventListener(evt, maybeAutoRun);
+          $("preference").addEventListener(evt, maybeAutoRun);
+          $("kw").addEventListener(evt, ()=>{
+            // debounce keyword a bit
+            clearTimeout(window.__kwT);
+            window.__kwT = setTimeout(maybeAutoRun, 350);
+          });
+        });
+      }
+    }
+
+    boot();
+  </script>
 </body>
 </html>
