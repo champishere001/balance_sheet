@@ -98,6 +98,57 @@
       border:1px solid var(--stroke);
       box-shadow: var(--shadow2);
     }
+      /* ===== Image Type Dropdown ===== */
+.typePick{position:relative}
+.typePickBtn{
+  width:100%;
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid var(--stroke);
+  background: rgba(255,255,255,.86);
+  box-shadow: var(--shadow2);
+  cursor:pointer;
+  font-weight:900;
+}
+.typePickBtn img{
+  width:34px; height:26px;
+  border-radius:10px;
+  object-fit:cover;
+  border:1px solid var(--stroke);
+  background: rgba(245,247,255,.9);
+}
+.typePickChev{margin-left:auto; opacity:.7; font-weight:950}
+
+.typePickMenu{
+  position:absolute; left:0; right:0; top:calc(100% + 8px);
+  background: rgba(255,255,255,.97);
+  border:1px solid var(--stroke);
+  border-radius:16px;
+  box-shadow: var(--shadow);
+  overflow:hidden;
+  display:none;
+  z-index:99;
+}
+.typePickMenu.open{display:block}
+
+.typePickItem{
+  width:100%;
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px;
+  background:transparent;
+  border:0;
+  cursor:pointer;
+  font-weight:900;
+  text-align:left;
+}
+.typePickItem:hover{background: rgba(37,99,235,.08)}
+.typePickItem img{
+  width:34px; height:26px;
+  border-radius:10px;
+  object-fit:cover;
+  border:1px solid var(--stroke);
+}
 
     .wrap{
       width:min(92vw, var(--max));
@@ -360,19 +411,46 @@
                 </select>
               </div>
 
-              <div class="field">
-                <label>Type</label>
-                <select class="select" id="type">
-                  <option value="all">All</option>
-                  <option value="Destination">Destination</option>
-                  <option value="Temple">Temple</option>
-                  <option value="Lake">Lake</option>
-                  <option value="Trek">Trek</option>
-                  <option value="Hotel">Hotel</option>
-                  <option value="Activity">Activity</option>
-                </select>
-              </div>
+             <div class="field">
 
+  <label>Type</label>
+
+  <!-- Hidden real value (used by JS exactly like before) -->
+  <input type="hidden" id="type" value="all"/>
+
+  <!-- Custom image dropdown -->
+  <div class="typePick" id="typePick">
+    <button class="typePickBtn" id="typePickBtn" type="button">
+      <img id="typePickImg" src="./type/destination.jpg" alt="" />
+      <span id="typePickText">All</span>
+      <span class="typePickChev">▾</span>
+    </button>
+
+    <div class="typePickMenu" id="typePickMenu">
+      <button type="button" class="typePickItem" data-value="all" data-img="./type/all.jpg">
+        <img src="./type/all.jpg" alt="All"><span>All</span>
+      </button>
+      <button type="button" class="typePickItem" data-value="Destination" data-img="./type/destination.jpg">
+        <img src="./type/destination.jpg" alt="Destination"><span>Destination</span>
+      </button>
+      <button type="button" class="typePickItem" data-value="Temple" data-img="./type/temple.jpg">
+        <img src="./type/temple.jpg" alt="Temple"><span>Temple</span>
+      </button>
+      <button type="button" class="typePickItem" data-value="Lake" data-img="./type/lake.jpg">
+        <img src="./type/lake.jpg" alt="Lake"><span>Lake</span>
+      </button>
+      <button type="button" class="typePickItem" data-value="Trek" data-img="./type/trek.jpg">
+        <img src="./type/trek.jpg" alt="Trek"><span>Trek</span>
+      </button>
+      <button type="button" class="typePickItem" data-value="Hotel" data-img="./type/hotel.jpg">
+        <img src="./type/hotel.jpg" alt="Hotel"><span>Hotel</span>
+      </button>
+      <button type="button" class="typePickItem" data-value="Activity" data-img="./type/activity.jpg">
+        <img src="./type/activity.jpg" alt="Activity"><span>Activity</span>
+      </button>
+    </div>
+  </div>
+</div>
               <div class="field">
                 <label>Trip Days</label>
                 <select class="select" id="days">
@@ -834,6 +912,39 @@ $("sendChat").onclick = ()=>{
   pushMsg(aiSuggest(v), "bot");
 };
 $("chatInput").addEventListener("keydown",(e)=>{ if(e.key==="Enter") $("sendChat").click(); });
+/* ===== Type image dropdown logic (replaces <select>) ===== */
+(function initTypeImageDropdown(){
+  const pick = document.getElementById("typePick");
+  if(!pick) return;
+
+  const btn = document.getElementById("typePickBtn");
+  const menu = document.getElementById("typePickMenu");
+  const img = document.getElementById("typePickImg");
+  const text = document.getElementById("typePickText");
+  const hidden = document.getElementById("type"); // hidden input
+
+  function close(){ menu.classList.remove("open"); }
+  function open(){ menu.classList.add("open"); }
+
+  btn.addEventListener("click", (e)=>{
+    e.stopPropagation();
+    menu.classList.toggle("open");
+  });
+
+  menu.querySelectorAll(".typePickItem").forEach(item=>{
+    item.addEventListener("click", ()=>{
+      const v = item.getAttribute("data-value");
+      const im = item.getAttribute("data-img");
+      hidden.value = v;               // ✅ same id="type" used in your filters
+      text.textContent = v === "all" ? "All" : v;
+      img.src = im;
+      close();
+      applyFilters();                 // ✅ refresh immediately
+    });
+  });
+
+  document.addEventListener("click", close);
+})();
 
 /* =========================
    INIT
