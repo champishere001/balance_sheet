@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — Light Premium (Tiles + Selected/Package Only)</title>
+  <title>Himachal Explorer — Light Premium (Geo Packages + Cost + Type Grids)</title>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -25,7 +25,7 @@
       --a:#2563eb; --b:#7c3aed;
       --max:1400px;
 
-      /* Section background images */
+      /* Scenic backgrounds */
       --bg-body: url("./201-himalaya.jpg");
       --bg-hero: url("./Kee_monastery.jpg");
       --bg-builder: url("./Travelers.jpg");
@@ -46,8 +46,6 @@
       overflow-x:hidden;
       position:relative;
     }
-
-    /* Full-page scenic background */
     body::before{
       content:"";
       position:fixed; inset:0; z-index:-2;
@@ -62,7 +60,6 @@
       background: rgba(255,255,255,.18);
       pointer-events:none;
     }
-
     a{color:inherit; text-decoration:none}
 
     .topbar{
@@ -129,7 +126,7 @@
       box-shadow: 0 18px 42px rgba(239,68,68,.20);
     }
 
-    /* Image Type Dropdown */
+    /* ===== Image Type Dropdown ===== */
     .typePick{position:relative}
     .typePickBtn{
       width:100%;
@@ -162,7 +159,6 @@
       z-index:99;
     }
     .typePickMenu.open{display:block}
-
     .typePickItem{
       width:100%;
       display:flex; align-items:center; gap:10px;
@@ -410,7 +406,7 @@
     }
     .section.exploreBg > *{ position:relative; }
 
-    /* TYPE TILES */
+    /* ===== TYPE TILES ===== */
     .typeTiles{
       padding:14px;
       display:grid;
@@ -452,6 +448,66 @@
       font-weight:950;
       font-size:11px;
       box-shadow: var(--shadow2);
+    }
+
+    /* ===== PLACES GRID (by Type) ===== */
+    .placesPanel{margin-top:14px}
+    .placeGroups{padding:14px; display:grid; gap:14px}
+    .typeGroup{
+      border:1px solid var(--stroke);
+      border-radius:20px;
+      background: rgba(255,255,255,.78);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+    }
+    .typeGroupHead{
+      padding:12px 12px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      border-bottom:1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.70));
+    }
+    .typeGroupHead b{font-size:13px}
+    .typeGroupHead span{font-size:12px; font-weight:900; color:rgba(11,18,32,.62)}
+    .placeGrid{
+      padding:12px;
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap:12px;
+    }
+    @media(max-width:1100px){ .placeGrid{grid-template-columns: repeat(3, minmax(0,1fr));} }
+    @media(max-width:780px){ .placeGrid{grid-template-columns: repeat(2, minmax(0,1fr));} }
+
+    .placeCard{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.86);
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow: var(--shadow2);
+      cursor:pointer;
+      transition:.14s ease;
+      display:flex; flex-direction:column;
+      min-height:170px;
+    }
+    .placeCard:hover{transform: translateY(-1px)}
+    .placeCard.active{
+      outline: 2px solid rgba(37,99,235,.35);
+      box-shadow: 0 18px 50px rgba(37,99,235,.14);
+    }
+    .placeThumb{
+      height:92px; width:100%;
+      object-fit:cover; display:block;
+      background: linear-gradient(135deg, rgba(37,99,235,.10), rgba(124,58,237,.08));
+    }
+    .placeBody{padding:10px 10px 12px; display:flex; flex-direction:column; gap:6px}
+    .placeBody b{font-size:12px; line-height:1.2}
+    .placeMeta{font-size:11px; font-weight:900; color:rgba(11,18,32,.62)}
+    .placeTag{
+      margin-top:auto;
+      font-size:11px; font-weight:950;
+      display:inline-flex; align-self:flex-start;
+      padding:6px 9px; border-radius:999px;
+      border:1px solid var(--stroke);
+      background: rgba(245,247,255,.90);
     }
 
     /* Map */
@@ -512,7 +568,7 @@
         </div>
         <div>
           <h1>Himachal Explorer</h1>
-          <small>selected/package only • tiles + map</small>
+          <small>geo-feasible packages • cost estimate • type grids</small>
         </div>
       </div>
 
@@ -529,16 +585,16 @@
       <div class="heroCard">
         <div class="heroInner">
           <div>
-            <h2 class="heroTitle">Explore Himachal — Selected / Package only.</h2>
+            <h2 class="heroTitle">Build feasible Himachal packages.</h2>
             <p class="heroSub">
-              Nothing appears unless you <b>select places</b> or choose a <b>package</b>.
-              Type tiles & map will show only those places.
+              Packages are generated as <b>nearby clusters</b> (tempo-feasible) and show
+              <b>estimated cost</b> based on vehicle, persons, days, season, hotel class, meals & activities.
             </p>
 
             <div class="chips">
-              <div class="chip"><i>Control</i>Only selected/package</div>
-              <div class="chip"><i>Fast</i>Firebase realtime</div>
-              <div class="chip"><i>Clean</i>No long lists</div>
+              <div class="chip"><i>Geo</i>No far-away mixing</div>
+              <div class="chip"><i>Cost</i>₹ min–max + breakdown</div>
+              <div class="chip"><i>Grid</i>Places by type</div>
             </div>
 
             <div class="finder">
@@ -611,7 +667,9 @@
           </div>
 
           <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap">
-            <small style="color:rgba(11,18,32,.65); font-weight:800">Tip: click a Type tile to filter. Click chip to remove selection.</small>
+            <small style="color:rgba(11,18,32,.65); font-weight:800">
+              Tip: Use district filter for ultra-feasible packages. Click place cards to select.
+            </small>
             <small id="status" style="color:rgba(11,18,32,.65); font-weight:900">Loading…</small>
           </div>
         </div>
@@ -620,23 +678,26 @@
       <div class="panel tripBuilder">
         <div class="panelHead">
           <h3>Trip Builder</h3>
-          <small>packages + selections</small>
+          <small>packages + cost</small>
         </div>
+
         <div class="builder">
-          <div class="primaryLine" id="builderLine">Pick preferences → Get Packages → Activate one → only those places show.</div>
+          <div class="primaryLine" id="builderLine">
+            Set vehicle + people + season + hotel → Get Packages → Activate.
+          </div>
 
           <div class="bRow">
             <div class="field">
               <label>People</label>
               <select class="select" id="people">
-                <option value="solo">Solo</option>
-                <option value="couple">Couple</option>
-                <option value="family">Family</option>
-                <option value="group">Group</option>
+                <option value="solo">Solo (1)</option>
+                <option value="couple">Couple (2)</option>
+                <option value="family">Family (4)</option>
+                <option value="group">Group (8)</option>
               </select>
             </div>
             <div class="field">
-              <label>Budget</label>
+              <label>Budget (affects hotel)</label>
               <select class="select" id="budget">
                 <option value="low">Low</option>
                 <option value="mid" selected>Mid</option>
@@ -655,11 +716,57 @@
                 <option value="relax">Relax + Stays</option>
               </select>
             </div>
-            <button class="btn" id="makePackages">Get Packages</button>
+            <div class="field">
+              <label>Transport</label>
+              <select class="select" id="vehicle">
+                <option value="bike">Bike (per person)</option>
+                <option value="cab">Cab (Sedan/SUV)</option>
+                <option value="tempo" selected>Tempo Traveller</option>
+                <option value="bus">Mini Bus</option>
+              </select>
+            </div>
           </div>
 
+          <div class="bRow">
+            <div class="field">
+              <label>Season</label>
+              <select class="select" id="season">
+                <option value="off">Off-season</option>
+                <option value="normal" selected>Normal</option>
+                <option value="peak">Peak</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Hotel Class</label>
+              <select class="select" id="hotelClass">
+                <option value="budget">Budget</option>
+                <option value="mid" selected>Mid</option>
+                <option value="premium">Premium</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="bRow">
+            <div class="field">
+              <label>Meals</label>
+              <select class="select" id="meals">
+                <option value="no" selected>No</option>
+                <option value="yes">Yes (per day)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Include Activities</label>
+              <select class="select" id="activities">
+                <option value="no" selected>No</option>
+                <option value="yes">Yes (avg)</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="btn" id="makePackages">Get Packages</button>
+
           <div class="helper" id="packagesBox">
-            Click <b>Get Packages</b> — packages will appear here (click Activate).
+            Click <b>Get Packages</b> — feasible geo packages + cost will appear here.
           </div>
 
           <div class="selectedPanel">
@@ -676,7 +783,7 @@
             </div>
             <div class="selChips" id="selectedChips">
               <span style="color:rgba(11,18,32,.70); font-weight:850; font-size:12px">
-                No selections yet. Select from package list (below) or via AI suggestions.
+                No selections yet. Select via package list or by clicking place cards in the grid.
               </span>
             </div>
           </div>
@@ -687,11 +794,12 @@
     <section class="section exploreBg" id="explore">
       <div class="sectionTitle">
         <div>
-          <h2>Browse by Type</h2>
-          <p>Tiles reflect only visible places (selected/package).</p>
+          <h2>Explore</h2>
+          <p>Type tiles + Places grid by type + Map (optional).</p>
         </div>
       </div>
 
+      <!-- Type tiles -->
       <div class="panel" style="overflow:hidden">
         <div class="panelHead">
           <h3>Type Tiles</h3>
@@ -700,6 +808,16 @@
         <div class="typeTiles" id="typeTiles"></div>
       </div>
 
+      <!-- Places grid by type (kept as requested) -->
+      <div class="panel placesPanel" id="placesPanel">
+        <div class="panelHead">
+          <h3>Places (Grid by Type)</h3>
+          <small>click a card to select/unselect</small>
+        </div>
+        <div class="placeGroups" id="placeGroups"></div>
+      </div>
+
+      <!-- Map -->
       <div class="panel mapPanel" id="mapPanel">
         <div class="panelHead">
           <h3>Map</h3>
@@ -718,7 +836,7 @@
       <div class="panelHead">
         <div>
           <h3>AI Trip Planner</h3>
-          <small>days + interest → suggestions</small>
+          <small>days + interest → adds selections</small>
         </div>
         <button class="btn ghost" id="closeAI">✕</button>
       </div>
@@ -757,18 +875,25 @@ let map = null;
 let markerLayer = null;
 let mapReady = false;
 
-/* ✅ NEW: selection + package state */
-let selectedPlaceIds = new Set();       // user-selected places
-let activePackageId = null;             // which package is active
-let packagePlaceIds = new Set();        // places included in active package
-const allowManualAlongWithPackage = true; // ✅ false => strict package-only
+/* Selection + package state */
+let selectedPlaceIds = new Set();
+let activePackageId = null;
+let packagePlaceIds = new Set();
+
+/* Mode: true shows package + manual selections. false => strict package only */
+const allowManualAlongWithPackage = true;
 
 /* =========================
    HELPERS
 ========================= */
+function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
 function safeText(v){ return (v ?? "").toString().trim(); }
 function escapeHtml(str){
   return safeText(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
+}
+function moneyINR(n){
+  try{ return "₹" + Math.round(n).toLocaleString("en-IN"); }
+  catch{ return "₹" + Math.round(n); }
 }
 function normalizeType(t){
   t = safeText(t);
@@ -809,11 +934,122 @@ function getImagesFromObj(o){
 }
 function bestThumb(p){ return ((p.images||[]).filter(Boolean)[0]) || ""; }
 
+/* Haversine distance (km) */
+function haversineKm(lat1,lng1,lat2,lng2){
+  const R = 6371;
+  const toRad = (x)=> x*Math.PI/180;
+  const dLat = toRad(lat2-lat1);
+  const dLng = toRad(lng2-lng1);
+  const a =
+    Math.sin(dLat/2)**2 +
+    Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLng/2)**2;
+  return 2*R*Math.asin(Math.sqrt(a));
+}
+
+/* =========================
+   COST ENGINE (estimate)
+========================= */
+function seasonMul(season){
+  return season==="peak" ? 1.25 : season==="off" ? 0.88 : 1.0;
+}
+function hotelRatePerPerson(hotelClass){
+  if(hotelClass==="budget") return 900;
+  if(hotelClass==="premium") return 2400;
+  return 1500;
+}
+function mealsRatePerPerson(hasMeals){ return hasMeals ? 450 : 0; }
+function activitiesRatePerPerson(include){ return include ? 900 : 0; }
+
+function vehiclePricing(vehicle, persons){
+  if(vehicle==="bike"){
+    return { kmRate: 3.0 * persons, dayHire: 350 * persons, driverAllowance: 0, capacity: persons, note:"Bike: per person basis" };
+  }
+  if(vehicle==="cab"){
+    const suv = persons > 4;
+    return {
+      kmRate: suv ? 19 : 15,
+      dayHire: suv ? 2500 : 1900,
+      driverAllowance: 450,
+      capacity: suv ? 6 : 4,
+      note: suv ? "Cab: SUV assumed" : "Cab: Sedan assumed"
+    };
+  }
+  if(vehicle==="tempo"){
+    return { kmRate: 24, dayHire: 3600, driverAllowance: 550, capacity: 12, note:"Tempo Traveller assumed (10–12 seater)" };
+  }
+  return { kmRate: 32, dayHire: 5200, driverAllowance: 650, capacity: 22, note:"Mini bus assumed" };
+}
+function estimateTripKm(points){
+  const pts = points.filter(p=>p.lat && p.lng);
+  if(pts.length < 2) return 40;
+
+  const cx = pts.reduce((s,p)=>s+p.lat,0)/pts.length;
+  const cy = pts.reduce((s,p)=>s+p.lng,0)/pts.length;
+  let r = 0;
+  for(const p of pts){
+    const d = haversineKm(cx, cy, p.lat, p.lng);
+    if(d > r) r = d;
+  }
+  const hops = (pts.length-1) * 12;
+  const circuit = r * 2.6 * 2;
+  return Math.max(50, circuit + hops);
+}
+function tollParkingEstimate(days, locationsCount){
+  return 250*days + 60*locationsCount;
+}
+function nightHaltEstimate(days){
+  return days >= 2 ? (days-1)*350 : 0;
+}
+function estimatePackageCost({vehicle, persons, days, points, hotelClass, meals, season, activities}){
+  persons = clamp(Number(persons)||1, 1, 40);
+  days = clamp(Number(days)||3, 1, 20);
+
+  const km = estimateTripKm(points);
+  const v = vehiclePricing(vehicle, persons);
+
+  let capNote = "";
+  if(vehicle!=="bike" && persons > v.capacity){
+    capNote = `⚠ People (${persons}) > capacity (${v.capacity}). Consider bigger vehicle or two vehicles.`;
+  }
+
+  const transportBase = (v.dayHire * days) + (v.kmRate * km) + (v.driverAllowance * days) + nightHaltEstimate(days);
+  const toll = tollParkingEstimate(days, points.length);
+  const transport = (transportBase + toll);
+
+  const nights = Math.max(0, days-1);
+  const hotel = hotelRatePerPerson(hotelClass) * persons * nights;
+  const food = mealsRatePerPerson(meals==="yes") * persons * days;
+  const act = activitiesRatePerPerson(activities==="yes") * persons;
+
+  const contingency = 0.08 * (transport + hotel + food + act);
+
+  const mul = seasonMul(season);
+  const total = (transport*mul) + (hotel*mul) + food + act + contingency;
+
+  const min = total * 0.88;
+  const max = total * 1.12;
+
+  return {
+    km: Math.round(km),
+    breakdown: {
+      transport: Math.round(transport*mul),
+      hotel: Math.round(hotel*mul),
+      food: Math.round(food),
+      activities: Math.round(act),
+      contingency: Math.round(contingency),
+    },
+    vehicleNote: v.note,
+    capNote,
+    totalMin: Math.round(min),
+    totalMax: Math.round(max),
+    totalText: `${moneyINR(min)} – ${moneyINR(max)}`
+  };
+}
+
 /* =========================
    VISIBILITY (Selected + Package)
 ========================= */
 function getVisiblePlaces(baseList){
-  // If package selected: show package places (+ optional manual selections)
   if(activePackageId){
     return baseList.filter(p => {
       const inPkg = packagePlaceIds.has(p.id);
@@ -821,10 +1057,8 @@ function getVisiblePlaces(baseList){
       return allowManualAlongWithPackage ? (inPkg || manual) : inPkg;
     });
   }
-  // No package: show only selected places
   return baseList.filter(p => selectedPlaceIds.has(p.id));
 }
-
 function toggleSelectPlace(placeId){
   if(selectedPlaceIds.has(placeId)) selectedPlaceIds.delete(placeId);
   else selectedPlaceIds.add(placeId);
@@ -836,18 +1070,17 @@ function clearSelections(){
   renderSelectedChips();
   applyFilters(true);
 }
-
 function activatePackage(pkgId){
   activePackageId = pkgId || null;
   const ids = (window.__PKGS__ && window.__PKGS__[pkgId]) ? window.__PKGS__[pkgId] : [];
   packagePlaceIds = new Set(ids);
-  $("builderLine").textContent = `Active Package: ${pkgId} • showing package places`;
+  $("builderLine").textContent = `Active Package: ${pkgId} • showing geo-feasible package places`;
   applyFilters(true);
 }
 function deactivatePackage(){
   activePackageId = null;
   packagePlaceIds = new Set();
-  $("builderLine").textContent = "Pick preferences → Get Packages → Activate one → only those places show.";
+  $("builderLine").textContent = "Set vehicle + people + season + hotel → Get Packages → Activate.";
   applyFilters(true);
 }
 
@@ -899,7 +1132,6 @@ async function loadPlaces(){
       const {lat, lng} = parseLatLngFromMapUrl(mapUrl);
       const type = normalizeType(segment);
       const images = getImagesFromObj(o);
-
       return { id, name, district, type, how, mapUrl, lat, lng, images };
     }).filter(p=>p.name);
   }catch(e){
@@ -909,9 +1141,10 @@ async function loadPlaces(){
 }
 
 /* =========================
-   FILTERS
+   FILTERS + RENDER
 ========================= */
 const TYPE_ORDER = ["Destination","Temple","Lake","Trek","Hotel","Activity"];
+
 function typeCountsFrom(list){
   const counts = {};
   list.forEach(p=>{ counts[p.type||"Destination"] = (counts[p.type||"Destination"]||0)+1; });
@@ -930,50 +1163,16 @@ function updateActiveFilters(){
   if(t !== "all") parts.push(t);
   if(days) parts.push(`${days}+ days`);
   if(q) parts.push(`“${q}”`);
-  const pkg = activePackageId ? `Package:${activePackageId}` : null;
-  if(pkg) parts.push(pkg);
+  if(activePackageId) parts.push(`Package:${activePackageId}`);
   $("activeFilters").textContent = parts.length ? parts.join(" • ") : "No filters";
 }
 
-function applyFilters(skipHash){
-  const q = safeText($("q").value).toLowerCase();
-  const d = $("district").value;
-  const t = $("type").value;
-
-  // Base list by normal filters
-  const base = allPlaces.filter(p=>{
-    if(d !== "all" && p.district !== d) return false;
-    if(t !== "all" && p.type !== t) return false;
-    if(q){
-      const hay = `${p.name} ${p.district} ${p.type} ${p.how}`.toLowerCase();
-      if(!hay.includes(q)) return false;
-    }
-    return true;
-  });
-
-  // ✅ Enforce: selected/package only
-  shownPlaces = getVisiblePlaces(base);
-
-  $("count").textContent = `${shownPlaces.length} results`;
-  updateActiveFilters();
-  renderTypeTiles();
-
-  if(mapReady){
-    addMarkers(shownPlaces);
-    $("mapHint").textContent = "Markers loaded";
-  }
-}
-
-/* =========================
-   TYPE TILES
-========================= */
 function tileImageForType(type){
   const pool = shownPlaces.filter(p=>p.type===type);
   for(const p of pool){
     const t = bestThumb(p);
     if(t) return t;
   }
-  // fallback by type using your local images
   if(type==="Temple") return "./temple.jpg";
   if(type==="Trek") return "./trek.jpeg";
   if(type==="Activity") return "./activity.jpg";
@@ -981,8 +1180,9 @@ function tileImageForType(type){
   if(type==="Lake") return "./201-himalaya.jpg";
   return "./Kee_monastery.jpg";
 }
+
 function renderTypeTiles(){
-  const base = shownPlaces; // ✅ only visible places
+  const base = shownPlaces;
   const counts = typeCountsFrom(base);
   const types = TYPE_ORDER
     .filter(t => (counts[t]||0) > 0)
@@ -996,7 +1196,7 @@ function renderTypeTiles(){
       <div style="grid-column:1/-1; padding:14px;">
         <div class="helper">
           <b>No places showing.</b><br/>
-          Select places (from packages or AI suggestions), or activate a package.
+          Generate packages or select places from the grid.
         </div>
       </div>
     `;
@@ -1027,6 +1227,90 @@ function renderTypeTiles(){
   });
 }
 
+/* Places grid by type (kept) */
+function renderPlacesGridByType(){
+  const wrap = $("placeGroups");
+  if(!wrap) return;
+
+  const base = shownPlaces;
+  if(!base.length){
+    wrap.innerHTML = `
+      <div class="helper">
+        <b>No places to show.</b><br/>
+        Click <b>Get Packages</b> then Activate OR select places by clicking cards.
+      </div>`;
+    return;
+  }
+
+  const groups = {};
+  base.forEach(p=>{
+    const k = p.type || "Destination";
+    (groups[k] ||= []).push(p);
+  });
+
+  const order = TYPE_ORDER;
+  const types = order.filter(t => (groups[t]||[]).length).concat(
+    Object.keys(groups).filter(t => !order.includes(t))
+  );
+
+  wrap.innerHTML = types.map(type=>{
+    const list = (groups[type]||[]).slice().sort((a,b)=>a.name.localeCompare(b.name));
+    return `
+      <div class="typeGroup">
+        <div class="typeGroupHead">
+          <b>${escapeHtml(type)}</b>
+          <span>${list.length}</span>
+        </div>
+        <div class="placeGrid">
+          ${list.map(p=>{
+            const active = selectedPlaceIds.has(p.id);
+            const img = bestThumb(p) || tileImageForType(p.type);
+            return `
+              <div class="placeCard ${active ? "active":""}" onclick="toggleSelectPlace('${p.id}')">
+                <img class="placeThumb" src="${img}" alt="${escapeHtml(p.name)}" onerror="this.src='./Kee_monastery.jpg'">
+                <div class="placeBody">
+                  <b>${escapeHtml(p.name)}</b>
+                  <div class="placeMeta">${escapeHtml(p.district)} • ${escapeHtml(p.type)}</div>
+                  <div class="placeTag">${active ? "Selected" : "Tap to select"}</div>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+/* Apply filters + enforce visibility rule */
+function applyFilters(skipHash){
+  const q = safeText($("q").value).toLowerCase();
+  const d = $("district").value;
+  const t = $("type").value;
+
+  const base = allPlaces.filter(p=>{
+    if(d !== "all" && p.district !== d) return false;
+    if(t !== "all" && p.type !== t) return false;
+    if(q){
+      const hay = `${p.name} ${p.district} ${p.type} ${p.how}`.toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  shownPlaces = getVisiblePlaces(base);
+
+  $("count").textContent = `${shownPlaces.length} results`;
+  updateActiveFilters();
+  renderTypeTiles();
+  renderPlacesGridByType();
+
+  if(mapReady){
+    addMarkers(shownPlaces);
+    $("mapHint").textContent = "Markers loaded";
+  }
+}
+
 /* =========================
    SELECTED CHIPS UI
 ========================= */
@@ -1038,7 +1322,7 @@ function renderSelectedChips(){
 
   if(!ids.length){
     out.innerHTML = `<span style="color:rgba(11,18,32,.70); font-weight:850; font-size:12px">
-      No selections yet. Select from package list (below) or via AI suggestions.
+      No selections yet. Select via packages or click place cards.
     </span>`;
     return;
   }
@@ -1056,11 +1340,70 @@ function renderSelectedChips(){
 }
 
 /* =========================
-   PACKAGES (Clickable + Activate)
+   GEO-FEASIBLE PACKAGES
 ========================= */
+function radiusForVehicle(vehicle, days){
+  if(vehicle==="bike") return clamp(18 + days*4, 18, 55);
+  if(vehicle==="cab") return clamp(30 + days*7, 30, 110);
+  if(vehicle==="tempo") return clamp(25 + days*6, 25, 85);
+  return clamp(28 + days*7, 28, 95); // bus
+}
+
+function makeGeoPackage(pool, size, maxRadiusKm){
+  const pts = pool.filter(p=>p.lat && p.lng);
+  if(!pts.length) return [];
+
+  const selectedDistrict = $("district")?.value || "all";
+  let candidates = pts;
+
+  if(selectedDistrict !== "all"){
+    const inDist = pts.filter(p=>p.district === selectedDistrict);
+    if(inDist.length >= Math.max(3, Math.floor(size/2))) candidates = inDist;
+  } else {
+    const byD = {};
+    pts.forEach(p => (byD[p.district] ||= []).push(p));
+    const bestDistrict = Object.keys(byD).sort((a,b)=>byD[b].length-byD[a].length)[0];
+    if(bestDistrict) candidates = byD[bestDistrict];
+  }
+
+  const seed = candidates[0];
+  const chosen = [seed];
+
+  const rest = candidates.slice(1).map(p=>{
+    const d = haversineKm(seed.lat, seed.lng, p.lat, p.lng);
+    return {p, d};
+  }).filter(x=>x.d <= maxRadiusKm)
+    .sort((a,b)=>a.d-b.d)
+    .map(x=>x.p);
+
+  for(const p of rest){
+    if(chosen.length >= size) break;
+    const ok = chosen.every(c => haversineKm(c.lat,c.lng,p.lat,p.lng) <= maxRadiusKm);
+    if(ok) chosen.push(p);
+  }
+  return chosen;
+}
+
+function peopleCountFromUI(){
+  const v = $("people").value;
+  if(v==="solo") return 1;
+  if(v==="couple") return 2;
+  if(v==="family") return 4;
+  return 8;
+}
+
 function buildPackages(){
   const interest = $("interest").value;
-  const days = Number($("days").value||0) || 3;
+  const daysUI = Number($("days").value||0);
+  const days = daysUI || 3;
+
+  const vehicle = $("vehicle").value;
+  const season = $("season").value;
+  const hotelClass = $("hotelClass").value;
+  const meals = $("meals").value;
+  const activities = $("activities").value;
+
+  const persons = peopleCountFromUI();
 
   const base = allPlaces.slice();
   if(!base.length){
@@ -1073,21 +1416,27 @@ function buildPackages(){
     interest==="adventure" ? "Trek" :
     interest==="relax" ? "Hotel" : "Destination";
 
-  const pool = base.filter(p => wantType==="Destination" ? true : p.type===wantType);
+  const pool = base.filter(p => (wantType==="Destination" ? true : p.type===wantType));
 
-  const sizeA = Math.min(4, pool.length);
-  const sizeB = Math.min(6, pool.length);
-  const sizeC = Math.min(Math.max(7, Math.ceil(days*1.5)), pool.length);
+  const rad = radiusForVehicle(vehicle, days);
+  const sizeA = clamp(Math.ceil(days*1.0), 3, 6);
+  const sizeB = clamp(Math.ceil(days*1.4), 4, 8);
+  const sizeC = clamp(Math.ceil(days*1.8), 5, 10);
 
-  const pkg1 = pool.slice(0, sizeA);
-  const pkg2 = pool.slice(0, sizeB);
-  const pkg3 = pool.slice(0, sizeC);
+  const pkgAItems = makeGeoPackage(pool, sizeA, rad * 0.9);
+  const pkgBItems = makeGeoPackage(pool, sizeB, rad * 1.15);
+  const pkgCItems = makeGeoPackage(pool, sizeC, rad * 1.4);
 
   const packages = [
-    { id: "pkgA", title: `Quick ${days}D • ${wantType}`, items: pkg1 },
-    { id: "pkgB", title: `Balanced ${days}D • ${wantType}`, items: pkg2 },
-    { id: "pkgC", title: `Full ${days}D • ${wantType}`, items: pkg3 },
+    { id:"pkgA", title:`Compact • ${wantType} • ~${Math.round(rad*0.9)}km radius`, items: pkgAItems },
+    { id:"pkgB", title:`Balanced • ${wantType} • ~${Math.round(rad*1.15)}km radius`, items: pkgBItems },
+    { id:"pkgC", title:`Full • ${wantType} • ~${Math.round(rad*1.4)}km radius`, items: pkgCItems },
   ].filter(p => p.items.length);
+
+  if(!packages.length){
+    $("packagesBox").innerHTML = `<b>No feasible package found.</b><br/>Try selecting a district or different interest.`;
+    return;
+  }
 
   window.__PKGS__ = {};
   packages.forEach(pkg=>{
@@ -1103,30 +1452,53 @@ function buildPackages(){
       `).join("")}
       <button class="btn ghost" style="border-radius:16px" onclick="deactivatePackage()">Clear Package</button>
     </div>
-    <div style="margin-top:10px; line-height:1.6">
-      ${packages.map(pkg=>`
-        <div style="margin-top:10px; padding:10px; border:1px solid var(--stroke); border-radius:16px; background:rgba(255,255,255,.7)">
-          <b>${escapeHtml(pkg.title)}</b>
+    <div style="margin-top:10px; line-height:1.55">
+      ${packages.map(pkg=>{
+        const cost = estimatePackageCost({
+          vehicle, persons, days,
+          points: pkg.items,
+          hotelClass, meals, season, activities
+        });
+
+        return `
+        <div style="margin-top:10px; padding:12px; border:1px solid var(--stroke); border-radius:18px; background:rgba(255,255,255,.72)">
+          <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap">
+            <b>${escapeHtml(pkg.title)}</b>
+            <span style="font-weight:950">${cost.totalText}</span>
+          </div>
+          <div style="margin-top:6px; color:rgba(11,18,32,.72); font-weight:850; font-size:12px">
+            ${escapeHtml(cost.vehicleNote)} • ~${cost.km} km • Persons: ${persons} • Days: ${days}
+          </div>
+          ${cost.capNote ? `<div style="margin-top:6px; color:rgba(239,68,68,.90); font-weight:950; font-size:12px">${escapeHtml(cost.capNote)}</div>` : ""}
+
           <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+            <span class="pill"><span class="dot"></span>Transport ${moneyINR(cost.breakdown.transport)}</span>
+            <span class="pill"><span class="dot"></span>Stay ${moneyINR(cost.breakdown.hotel)}</span>
+            <span class="pill"><span class="dot"></span>Food ${moneyINR(cost.breakdown.food)}</span>
+            <span class="pill"><span class="dot"></span>Activities ${moneyINR(cost.breakdown.activities)}</span>
+          </div>
+
+          <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap">
             ${pkg.items.map((p,i)=>`
               <span style="display:inline-flex; align-items:center; gap:8px; padding:7px 10px; border:1px solid var(--stroke);
-                border-radius:999px; background:rgba(245,247,255,.90); font-weight:900; font-size:12px; cursor:pointer"
+                border-radius:999px; background:rgba(245,247,255,.92); font-weight:900; font-size:12px; cursor:pointer"
                 onclick="toggleSelectPlace('${p.id}')"
                 title="Click to add/remove selection">
                 ${i+1}. ${escapeHtml(p.name)}
               </span>
             `).join("")}
           </div>
+
           <div style="margin-top:10px; color:rgba(11,18,32,.70); font-weight:850; font-size:12px">
-            Tip: Click place chips to select. Activate package to show only its places.
+            Rule: package locations are clustered (no far-away mixing) for tempo feasibility.
           </div>
         </div>
-      `).join("")}
+      `}).join("")}
     </div>`;
 }
 
 /* =========================
-   AI (mini) + Select
+   AI (mini): auto add selections
 ========================= */
 function pushMsg(text, who="bot"){
   const div = document.createElement("div");
@@ -1145,12 +1517,10 @@ function pushMsg(text, who="bot"){
   $("chat").appendChild(div);
   $("chat").scrollTop = $("chat").scrollHeight;
 }
-
 function seedChat(){
   $("chat").innerHTML = "";
-  pushMsg("Tell me: days + interest + district (optional). I’ll suggest places. Then you can select from packages.", "bot");
+  pushMsg("Tell me: days + interest + district (optional). I’ll add selections automatically.", "bot");
 }
-
 function aiSuggest(userText){
   const t = userText.toLowerCase();
   let days = 0;
@@ -1174,15 +1544,14 @@ function aiSuggest(userText){
     return {p,s};
   }).sort((a,b)=>b.s-a.s);
 
-  const cap = days ? Math.max(4, Math.min(10, Math.ceil(days*1.6))) : 6;
+  const cap = days ? clamp(Math.ceil(days*1.6), 4, 10) : 6;
   const pick = scored.filter(x=>x.s>0).slice(0,cap).map(x=>x.p);
 
-  // Auto-select AI picks (so user immediately sees tiles/map)
   pick.forEach(p=> selectedPlaceIds.add(p.id));
   renderSelectedChips();
   applyFilters(true);
 
-  return "Selected suggestions added.\nNow open Explore → tiles/map will show only selected/package places.";
+  return "Added selections. Open Explore → tiles, grids & map now show selected/package places.";
 }
 
 /* =========================
@@ -1265,10 +1634,9 @@ $("chatInput").addEventListener("keydown",(e)=>{ if(e.key==="Enter") $("sendChat
   buildDistrictDropdown();
 
   $("status").textContent = allPlaces.length
-    ? `Loaded ${allPlaces.length} places • select places or choose a package`
+    ? `Loaded ${allPlaces.length} places • generate packages or select places`
     : "No data loaded. Check RTDB rules + path.";
 
-  // Start with nothing visible (per requirement)
   selectedPlaceIds = new Set();
   activePackageId = null;
   packagePlaceIds = new Set();
