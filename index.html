@@ -31,31 +31,56 @@
     body{ margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--text); overflow-x:hidden; background:var(--bg0); }
 
     /* ✅ Visible live background */
-    .bg{ position:fixed; inset:0; z-index:-5;
+    .bg{ position:fixed; inset:0; z-index:-8;
       background:
         radial-gradient(1200px 560px at 18% 12%, rgba(37,99,235,.22), transparent 60%),
         radial-gradient(1100px 580px at 82% 18%, rgba(16,185,129,.20), transparent 60%),
         radial-gradient(900px 520px at 50% 86%, rgba(167,139,250,.16), transparent 65%),
         linear-gradient(180deg, #eef4ff, #ffffff);
     }
-    .noise{ position:fixed; inset:0; z-index:-4; pointer-events:none; opacity:.10; mix-blend-mode:overlay;
+    .noise{ position:fixed; inset:0; z-index:-7; pointer-events:none; opacity:.10; mix-blend-mode:overlay;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
     }
-    .blob{ position:fixed; width:460px; height:460px; border-radius:50%; filter: blur(60px); opacity:.22; z-index:-3; pointer-events:none; animation: float 10s ease-in-out infinite; }
+    .blob{ position:fixed; width:460px; height:460px; border-radius:50%; filter: blur(60px); opacity:.22; z-index:-6; pointer-events:none; animation: float 10s ease-in-out infinite; }
     .b1{ left:-140px; top:60px;  background: rgba(37,99,235,.95); }
     .b2{ right:-180px; top:140px; background: rgba(16,185,129,.92); animation-duration: 12s; }
     .b3{ left:36%; bottom:-240px; background: rgba(167,139,250,.92); animation-duration: 14s; }
     @keyframes float{ 0%,100%{ transform: translate(0,0) scale(1); } 50%{ transform: translate(28px,-20px) scale(1.08); } }
-    #fx{ position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.95; }
+    #fx{ position:fixed; inset:0; z-index:-5; pointer-events:none; opacity:.95; }
 
     .wrap{ max-width: 1400px; margin: 0 auto; padding: 16px; }
     .card{ background: var(--card); border: 1px solid var(--stroke); box-shadow: var(--shadow); border-radius: var(--radius); overflow:hidden; backdrop-filter: blur(14px); }
-    .hero{ padding: 18px 16px; border-bottom: 1px solid var(--stroke);
-      background:
-        linear-gradient(135deg, rgba(37,99,235,.10), rgba(16,185,129,.08)),
-        radial-gradient(900px 350px at 20% -20%, rgba(37,99,235,.20), transparent 60%),
-        radial-gradient(700px 300px at 95% 0%, rgba(16,185,129,.18), transparent 60%);
+
+    /* ✅ SECTION BACKGROUND ENGINE */
+    .section-bg{ position:relative; overflow:hidden; }
+    .section-bg::before{
+      content:"";
+      position:absolute; inset:0;
+      background-image: var(--secBg, none);
+      background-size: cover;
+      background-position: center;
+      filter: saturate(1.05) contrast(1.05);
+      transform: scale(1.02);
+      opacity: .26;
+      z-index:0;
     }
+    .section-bg::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(135deg, rgba(255,255,255,.78), rgba(255,255,255,.55));
+      z-index:0;
+    }
+    .section-bg > *{ position:relative; z-index:1; }
+
+    /* hero */
+    .hero{ padding: 18px 16px; border-bottom: 1px solid var(--stroke); }
+    .hero.section-bg::after{
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.70), rgba(255,255,255,.50)),
+        radial-gradient(900px 350px at 20% -20%, rgba(37,99,235,.18), transparent 60%),
+        radial-gradient(700px 300px at 95% 0%, rgba(16,185,129,.16), transparent 60%);
+    }
+
     .hero-top{ display:flex; align-items:center; gap:16px; margin-bottom:14px; }
     .site-logo{ height:72px; width:auto; background:white; padding:8px; border-radius:18px; box-shadow:0 12px 35px rgba(0,0,0,.16); }
     .hero-text h1{ margin:0; font-size: 22px; text-transform: uppercase; }
@@ -213,6 +238,7 @@
     @media (max-width: 980px){ .layout{ grid-template-columns: 1fr; } }
     .mapCard .pad{ padding: 10px; }
     .pad{ padding:14px; }
+
     #map{ width:100%; height: calc(100vh - 140px); min-height: 520px; border-radius: 14px; border: 1px solid var(--stroke); overflow:hidden; background: rgba(255,255,255,.40); }
     @media (max-width: 980px){ #map{ height: 420px; min-height: 420px; } }
 
@@ -245,7 +271,8 @@
 
   <div class="wrap">
     <div class="card">
-      <div class="hero">
+      <!-- ✅ HERO BACKGROUND -->
+      <div class="hero section-bg" id="heroBg" style="--secBg:url('201-himalaya.jpg');">
         <div class="hero-top">
           <img src="logo.png" class="site-logo" alt="Himachal Explorer Logo">
           <div class="hero-text">
@@ -264,7 +291,6 @@
         </div>
 
         <div class="controls">
-          <!-- ✅ START as text input (you "give the starting point") -->
           <div class="field" style="grid-column: span 5;">
             <label>START (TYPE OR PICK)</label>
             <input id="startInp" list="startList" placeholder="E.G. AMRITSAR / DELHI / CHANDIGARH"/>
@@ -301,7 +327,8 @@
           </div>
         </div>
 
-        <div class="pad" style="padding-left:0; padding-right:0;">
+        <!-- ✅ PACKAGES BACKGROUND -->
+        <div class="pad section-bg" id="packagesBlock" style="--secBg:url('Travelers.jpg'); padding-left:0; padding-right:0;">
           <div class="title">PACKAGES</div>
           <div class="sub">ONE END DISTRICT = ONE BEST PACKAGE (BEST = MAX LOCATIONS).</div>
           <div id="summaryPills"></div>
@@ -311,7 +338,8 @@
           </div>
         </div>
 
-        <div class="placesWrap">
+        <!-- ✅ PLACES BACKGROUND -->
+        <div class="placesWrap section-bg" id="placesBlock" style="--secBg:url('activity.jpg');">
           <div class="placesHdr">
             <div style="display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;">
               <div class="title">PACKAGE PLACES</div>
@@ -346,7 +374,8 @@
     </div>
 
     <div class="layout">
-      <div class="card pad">
+      <!-- ✅ RULE BACKGROUND -->
+      <div class="card pad section-bg" id="ruleCard" style="--secBg:url('temple.jpg');">
         <div class="title">RULE</div>
         <div class="sub" style="text-transform:none;">
           ✅ You provide START (type it).<br/>
@@ -356,7 +385,8 @@
         </div>
       </div>
 
-      <div class="card mapCard">
+      <!-- ✅ MAP BACKGROUND -->
+      <div class="card mapCard section-bg" id="mapCard" style="--secBg:url('trek.jpeg');">
         <div class="pad">
           <div class="title">MAP</div>
           <div class="sub">ACTUAL ROAD ROUTE LINE</div>
@@ -439,8 +469,34 @@ const firebaseConfig = {
   appId: "1:000000000000:web:0000000000000000000000",
   measurementId: "G-0000000000"
 };
-firebase.initializeApp(firebaseConfig);
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+
+/***********************
+ * ✅ AUTO-ROTATE BACKGROUNDS (uses all your images)
+ ***********************/
+const BG = {
+  hero: ["201-himalaya.jpg","kinnaur-kailash.webp","Kee_monastery.jpg","n1.jpg"],
+  packages: ["Travelers.jpg","activity.jpg","trek.jpeg"],
+  places: ["activity.jpg","Travelers.jpg","Kee_monastery.jpg"],
+  rule: ["temple.jpg","201-himalaya.jpg","kinnaur-kailash.webp"],
+  map: ["trek.jpeg","Dark.jpg","n1.jpg","Kee_monastery.jpg"]
+};
+function rotateSectionBg(el, files, ms=6500){
+  if(!el || !files || !files.length) return;
+  let i = 0;
+  const set = () => {
+    el.style.setProperty("--secBg", `url('${files[i]}')`);
+    i = (i + 1) % files.length;
+  };
+  set();
+  setInterval(set, ms);
+}
+rotateSectionBg(document.getElementById("heroBg"), BG.hero, 7000);
+rotateSectionBg(document.getElementById("packagesBlock"), BG.packages, 6500);
+rotateSectionBg(document.getElementById("placesBlock"), BG.places, 7500);
+rotateSectionBg(document.getElementById("ruleCard"), BG.rule, 9000);
+rotateSectionBg(document.getElementById("mapCard"), BG.map, 8000);
 
 /***********************
  * ✅ MAP
@@ -496,8 +552,8 @@ function normDistrict(d){
 let LOCS = {};
 let TEMPLATES = {};
 let ACTIVE_TEMPLATES = [];
-let NAME_TO_ID = new Map();     // ✅ for matching "Mathura" by name
-let STARTS = [];               // start points list
+let NAME_TO_ID = new Map();
+let STARTS = [];
 
 /***********************
  * ✅ LOAD
@@ -577,14 +633,8 @@ function stopsFromTemplate(tpl){
 }
 function stopsCount(tpl){ return stopsFromTemplate(tpl).length; }
 
-
 /***********************
  * ✅ END DISTRICT (CORRECTED)
- * RULE:
- * 1) If end_point is a place-name and exists in /locations, use its District
- * 2) Else use last stop District
- * 3) BUT if last stop District == start District (return-to-start loop),
- *    then use SECOND-LAST stop District as END
  ***********************/
 function getEndDistrictKey(tpl){
   const startPointName = String(tpl.start_point || "").trim();
@@ -593,7 +643,6 @@ function getEndDistrictKey(tpl){
     ? normDistrict((LOCS[startPid] || {})["District"] || (LOCS[startPid] || {}).district || "")
     : "";
 
-  // 1) Try end_point -> district (if end_point matches a location name)
   const endPointName = String(tpl.end_point || "").trim();
   if(endPointName){
     const endPid = NAME_TO_ID.get(endPointName.toLowerCase());
@@ -604,34 +653,28 @@ function getEndDistrictKey(tpl){
     }
   }
 
-  // 2) Derive from stops (last, or second-last if return-to-start loop)
   const stops = stopsFromTemplate(tpl).filter(Boolean);
-
   if(stops.length >= 1){
     const lastId = stops[stops.length - 1];
     const lp = LOCS[lastId] || {};
     const lastD = normDistrict(lp["District"] || lp.district || "");
 
-    // ✅ Return-to-start loop fix: if lastD == startDistrict, use second-last
     if(startDistrict && lastD && lastD === startDistrict && stops.length >= 2){
       const secondLastId = stops[stops.length - 2];
       const sp = LOCS[secondLastId] || {};
       const secondLastD = normDistrict(sp["District"] || sp.district || "");
       if(secondLastD) return secondLastD;
     }
-
     if(lastD) return lastD;
   }
 
-  // 3) Final fallback: show end_point text (or UNKNOWN)
   if(endPointName) return endPointName.toUpperCase();
   return "UNKNOWN";
 }
 
-
 /*********************
  * ✅ PLACE THUMB
- ***********************/
+ *********************/
 function getPlaceThumbUrl(p){
   p = p || {};
   const p1 = p["photo 1"] || p.photo1 || p.photo_1 || p.photo || "";
@@ -843,10 +886,9 @@ function selectPlace(placeId, order){
 
 /***********************
  * ✅ ONE END DISTRICT = ONE BEST PACKAGE
- * BEST = MAX LOCATIONS, then priority, then KM
  ***********************/
 function packageScore(tpl){
-  const locs = stopsCount(tpl);
+  const locs = stopsFromTemplate(tpl).length;
   const pri  = Number(tpl.priority ?? 999);
   const km   = Number(tpl.total_km_est ?? tpl.estimated_drive_km ?? 1e9);
   return { locs, pri, km };
@@ -858,21 +900,19 @@ function isBetter(a,b){
 }
 
 /***********************
- * ✅ FIND PACKAGES (Start typed by user)
+ * ✅ FIND PACKAGES
  ***********************/
 function normalizeStartInput(){
   const typed = String($("startInp").value || "").trim().toUpperCase();
   if(!typed) return "";
 
-  // exact match ignoring case
   const match = STARTS.find(s => String(s).trim().toUpperCase() === typed);
   if(match) return match;
 
-  // partial begins-with match
   const match2 = STARTS.find(s => String(s).trim().toUpperCase().startsWith(typed));
   if(match2) return match2;
 
-  return ""; // not found
+  return "";
 }
 
 function applyFilters(){
@@ -895,7 +935,6 @@ function applyFilters(){
   let list = ACTIVE_TEMPLATES.filter(t => String(t.start_point||"").trim().toUpperCase() === String(start).trim().toUpperCase());
   if(daysF) list = list.filter(t => Number(t.days||0) === Number(daysF));
 
-  // one end district = one best package
   const bestByDistrict = new Map();
   const scByDistrict = new Map();
 
@@ -944,7 +983,6 @@ function renderPackagesGrid(list, start){
     const endDistrict = getEndDistrictKey(t);
     const days = Number(t.days || 0) || 0;
     const tempoOk = (t.tempo_ok === true || safeLower(t.tempo_ok)==="true");
-    const estKm = Number(t.total_km_est ?? t.estimated_drive_km ?? 0);
 
     const card = document.createElement("div");
     card.className = "pkg";
@@ -957,7 +995,7 @@ function renderPackagesGrid(list, start){
       </div>
       <div class="pkgMeta">
         <b>END DISTRICT:</b> ${escapeHtml(String(endDistrict).toUpperCase())}<br/>
-        <b>LOCATIONS:</b> ${stopsCount(t)} &nbsp;•&nbsp; <b>DAYS:</b> ${days || "—"}<br/>
+        <b>LOCATIONS:</b> ${stopsFromTemplate(t).length} &nbsp;•&nbsp; <b>DAYS:</b> ${days || "—"}<br/>
         <b>ROUTE ID:</b> ${escapeHtml(String(t.route_id||"—").toUpperCase())}
       </div>
     `;
@@ -1001,8 +1039,6 @@ async function openTemplate(key){
  ***********************/
 $("runBtn").addEventListener("click", applyFilters);
 $("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
-$("daysSel").addEventListener("change", ()=>{/* optional auto */});
-$("paxSel").addEventListener("change", ()=>{/* optional auto */});
 
 $("resetBtn").addEventListener("click", ()=>{
   $("startInp").value = "";
@@ -1022,7 +1058,6 @@ $("resetBtn").addEventListener("click", ()=>{
   clearMap();
   toast("RESET DONE");
 });
-
 $("fitBtn").addEventListener("click", fitMap);
 $("clearBtn").addEventListener("click", ()=>{
   clearMap();
