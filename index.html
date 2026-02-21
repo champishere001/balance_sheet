@@ -15,17 +15,15 @@
 
   <style>
     :root{
-      --bg0:#070a12;
-      --card: rgba(255,255,255,.08);
-      --stroke: rgba(255,255,255,.16);
       --text: rgba(255,255,255,.92);
       --muted: rgba(255,255,255,.72);
+      --stroke: rgba(255,255,255,.16);
+      --card: rgba(255,255,255,.08);
       --shadow: 0 20px 70px rgba(0,0,0,.55);
-      --r: 18px; --r2: 26px;
+      --r2: 26px;
       --accent:#7aa7ff;
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
@@ -41,19 +39,14 @@
       display:flex; align-items:center; justify-content:space-between; gap:12px;
       padding:10px 0 6px;
     }
-    .brand{
-      display:flex; align-items:center; gap:10px;
-    }
+    .brand{display:flex; align-items:center; gap:10px}
     .logo{
       width:40px; height:40px; border-radius:14px;
       background: rgba(255,255,255,.10) url("logo.png") center/cover no-repeat;
       border:1px solid var(--stroke);
       box-shadow: var(--shadow);
     }
-    .title{
-      display:flex; flex-direction:column;
-      line-height:1.1;
-    }
+    .title{display:flex; flex-direction:column; line-height:1.1}
     .title b{font-size:16px}
     .title span{font-size:12px; color:var(--muted)}
 
@@ -65,11 +58,12 @@
       background: rgba(0,0,0,.22);
       font-size:12px;
       color:var(--muted);
+      user-select:none;
     }
 
     .grid{
       display:grid;
-      grid-template-columns: 420px 1fr;
+      grid-template-columns: 430px 1fr;
       gap:12px;
       margin-top:10px;
     }
@@ -80,7 +74,6 @@
       background: rgba(255,255,255,.07);
       box-shadow: var(--shadow);
       overflow:hidden;
-      position:relative;
     }
     .cardHead{
       padding:12px 14px;
@@ -110,17 +103,14 @@
       border:1px solid rgba(255,255,255,.18);
       background: linear-gradient(180deg, rgba(122,167,255,.35), rgba(122,167,255,.16));
       color: var(--text);
-      font-weight:800;
+      font-weight:900;
       cursor:pointer;
     }
     .btn:active{transform: translateY(1px)}
     .note{font-size:12px; color:var(--muted); margin-top:8px}
 
-    /* Map smaller */
-    #map{height:260px; width:100%}
-
     /* Packages list */
-    .pkgList{display:grid; grid-template-columns: 1fr; gap:10px}
+    .pkgList{display:grid; grid-template-columns: 1fr; gap:10px; margin-top:12px}
     .pkg{
       border-radius: 18px;
       border:1px solid rgba(255,255,255,.14);
@@ -157,10 +147,30 @@
       box-shadow: 0 0 0 3px rgba(122,167,255,.18), 0 14px 50px rgba(0,0,0,.35);
     }
 
-    /* Route details (day-wise) */
-    .days{
-      display:grid; grid-template-columns: 1fr; gap:10px;
+    /* Right column */
+    .rightCol{display:grid; gap:12px}
+
+    /* Map smaller */
+    #map{height:250px; width:100%}
+
+    /* Route summary */
+    .summaryGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
     }
+    .kv{
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      padding:10px 12px;
+      min-height: 52px;
+    }
+    .kv .k{font-size:12px; color:var(--muted)}
+    .kv .v{margin-top:4px; font-size:13px}
+
+    /* Day-wise route details */
+    .days{display:grid; grid-template-columns: 1fr; gap:10px}
     .day{
       border-radius: 18px;
       border:1px solid rgba(255,255,255,.14);
@@ -186,10 +196,8 @@
     }
     .tag:hover{border-color: rgba(122,167,255,.45)}
 
-    /* Taglines section */
-    .taglines{
-      display:grid; grid-template-columns: 1fr; gap:10px;
-    }
+    /* Taglines */
+    .taglines{display:grid; grid-template-columns: 1fr; gap:10px}
     .tl{
       border-radius: 18px;
       border:1px solid rgba(255,255,255,.14);
@@ -221,6 +229,7 @@
 
     @media (max-width: 980px){
       .grid{grid-template-columns:1fr}
+      .summaryGrid{grid-template-columns:1fr}
       #map{height:240px}
     }
   </style>
@@ -233,7 +242,7 @@
         <div class="logo" aria-hidden="true"></div>
         <div class="title">
           <b>Himachal Explorer</b>
-          <span>Packages • Route-wise plan • Taglines • Map</span>
+          <span>Templates-driven planner • Route-wise details • Taglines • Map</span>
         </div>
       </div>
       <div class="pill" id="statusPill">Loading Firebase…</div>
@@ -243,17 +252,17 @@
       <!-- LEFT: Planner + Packages -->
       <section class="card">
         <div class="cardHead">
-          <h3>Package Planner</h3>
+          <h3>Package Planner (from TEMPLATES)</h3>
           <span class="pill" id="selPkgPill">No package selected</span>
         </div>
         <div class="cardBody">
           <div class="row">
             <div>
-              <label>Start (district)</label>
+              <label>Start</label>
               <select id="startSelect"></select>
             </div>
             <div>
-              <label>End (district)</label>
+              <label>End (depends on Start)</label>
               <select id="endSelect"></select>
             </div>
             <div>
@@ -265,21 +274,18 @@
               <input id="paxInput" type="number" min="1" max="24" value="4"/>
             </div>
           </div>
-          <button class="btn" id="btnFindPkgs">Find Packages</button>
-          <div class="note" id="plannerNote">Packages will appear below. Nothing else will show until you select one.</div>
 
-          <div style="height:12px"></div>
-          <div class="cardHead" style="border-radius:18px; border:1px solid rgba(255,255,255,.10); background:rgba(0,0,0,.18)">
-            <h3 style="margin:0">Packages</h3>
-            <span class="pill" id="pkgCount">0</span>
+          <button class="btn" id="btnFindPkgs">Find Packages</button>
+          <div class="note" id="plannerNote">
+            Packages list is based on your Template sheet. Select a package to load map + route plan + taglines.
           </div>
-          <div style="height:10px"></div>
+
           <div class="pkgList" id="pkgList"></div>
         </div>
       </section>
 
       <!-- RIGHT: Map + Route details + Taglines -->
-      <section style="display:grid; gap:12px">
+      <section class="rightCol">
         <div class="card">
           <div class="cardHead">
             <h3>Map (smaller)</h3>
@@ -290,12 +296,18 @@
 
         <div class="card">
           <div class="cardHead">
-            <h3>Route-wise details</h3>
-            <span class="pill" id="routePill">Day-wise places</span>
+            <h3>Route details (from template)</h3>
+            <span class="pill" id="routePill">No package</span>
           </div>
           <div class="cardBody">
+            <div class="summaryGrid" id="summaryGrid">
+              <div class="note">Select a package to view route_name, route_path, km, risks, season, etc.</div>
+            </div>
+
+            <div style="height:12px"></div>
+
             <div class="days" id="daysBox">
-              <div class="note">Select a package to show day-wise route details here.</div>
+              <div class="note">Day-wise route plan will appear here after selecting a package.</div>
             </div>
           </div>
         </div>
@@ -307,7 +319,7 @@
           </div>
           <div class="cardBody">
             <div class="taglines" id="taglinesBox">
-              <div class="note">After selecting a package, you will see place taglines here.</div>
+              <div class="note">No places are shown until a package is selected.</div>
             </div>
           </div>
         </div>
@@ -316,7 +328,7 @@
   </div>
 
   <script>
-    /************ Firebase Config (YOUR VALUES) ************/
+    /************ Firebase Config ************/
     const firebaseConfig = {
       apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
       authDomain: "revnue-records.firebaseapp.com",
@@ -326,11 +338,10 @@
       messagingSenderId: "182348503564",
       appId: "1:182348503564:web:480085405b09177245ac29"
     };
-
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    /************ Utils ************/
+    /************ Helpers ************/
     const $ = (id)=>document.getElementById(id);
     const safe = (v)=> (v===undefined || v===null) ? "" : String(v);
 
@@ -338,10 +349,27 @@
       if(!val) return [];
       return String(val).split(/[;,|]/).map(v=>v.trim()).filter(Boolean);
     }
+    function uniq(arr){ return [...new Set(arr.filter(Boolean))]; }
 
-    function uniq(arr){
-      return [...new Set(arr.filter(Boolean))];
-    }
+    /************ DOM ************/
+    const statusPill = $("statusPill");
+    const selPkgPill = $("selPkgPill");
+    const mapPill = $("mapPill");
+    const routePill = $("routePill");
+
+    const startSelect = $("startSelect");
+    const endSelect = $("endSelect");
+    const daysInput = $("daysInput");
+    const paxInput = $("paxInput");
+    const btnFindPkgs = $("btnFindPkgs");
+    const plannerNote = $("plannerNote");
+
+    const pkgList = $("pkgList");
+    const summaryGrid = $("summaryGrid");
+    const daysBox = $("daysBox");
+
+    const taglinePill = $("taglinePill");
+    const taglinesBox = $("taglinesBox");
 
     /************ Map ************/
     const map = L.map("map", { zoomControl:true }).setView([31.7, 77.2], 7);
@@ -350,10 +378,7 @@
     }).addTo(map);
     const markersLayer = L.layerGroup().addTo(map);
 
-    function clearMap(){
-      markersLayer.clearLayers();
-    }
-
+    function clearMap(){ markersLayer.clearLayers(); }
     function plotPlacesOnMap(places){
       clearMap();
       const bounds = [];
@@ -369,37 +394,46 @@
       }
     }
 
-    /************ State ************/
-    let PLACES_BY_ID = {};   // { place_id: placeObj }
+    /************ Data State ************/
+    let PLACES_BY_ID = {};   // place_id -> place
     let TEMPLATES = [];      // templates array
-    let SELECTED_PACKAGE_ID = "";
+    let START_TO_ENDS = {};  // start -> Set(ends)
 
-    /************ DOM ************/
-    const statusPill = $("statusPill");
-    const startSelect = $("startSelect");
-    const endSelect = $("endSelect");
-    const daysInput = $("daysInput");
-    const paxInput = $("paxInput");
-    const btnFindPkgs = $("btnFindPkgs");
-    const pkgList = $("pkgList");
-    const pkgCount = $("pkgCount");
-
-    const selPkgPill = $("selPkgPill");
-    const mapPill = $("mapPill");
-    const routePill = $("routePill");
-    const daysBox = $("daysBox");
-
-    const taglinePill = $("taglinePill");
-    const taglinesBox = $("taglinesBox");
-    const plannerNote = $("plannerNote");
-
-    /************ UI Helpers ************/
-    function setSelectOptions(select, values){
-      select.innerHTML = values.map(v=>`<option value="${v}">${v}</option>`).join("");
+    /************ Template-driven dropdowns ************/
+    function buildStartEndIndex(){
+      START_TO_ENDS = {};
+      TEMPLATES.forEach(t=>{
+        const s = safe(t.start_point).trim();
+        const e = safe(t.end_point).trim();
+        if(!s || !e) return;
+        if(!START_TO_ENDS[s]) START_TO_ENDS[s] = new Set();
+        START_TO_ENDS[s].add(e);
+      });
     }
 
+    function fillStartOptions(){
+      const starts = Object.keys(START_TO_ENDS).sort();
+      startSelect.innerHTML = `<option value="">All Starts</option>` + starts.map(s=>`<option value="${s}">${s}</option>`).join("");
+      if(starts.length) startSelect.value = starts[0];
+    }
+
+    function fillEndOptionsForStart(startVal){
+      const endsSet = startVal && START_TO_ENDS[startVal] ? START_TO_ENDS[startVal] : null;
+      let ends = [];
+      if(endsSet){
+        ends = [...endsSet].sort();
+      }else{
+        // If "All Starts", show all ends
+        const all = new Set();
+        Object.values(START_TO_ENDS).forEach(set=>set.forEach(v=>all.add(v)));
+        ends = [...all].sort();
+      }
+      endSelect.innerHTML = `<option value="">All Ends</option>` + ends.map(e=>`<option value="${e}">${e}</option>`).join("");
+      if(ends.length) endSelect.value = ends[0];
+    }
+
+    /************ Package scoring ************/
     function templateScore(t){
-      // simple "value" scoring: active + moderate days + shorter km
       const days = Number(t.days||0);
       const km = Number(t.total_km_est||0);
       const active = safe(t.status).toLowerCase() !== "inactive";
@@ -410,13 +444,13 @@
       return s;
     }
 
+    /************ Render packages ************/
     function renderPackageList(list){
-      pkgCount.textContent = String(list.length);
       if(!list.length){
-        pkgList.innerHTML = `<div class="note">No packages found for selected filters.</div>`;
+        pkgList.innerHTML = `<div class="note">No packages match your filters.</div>`;
         return;
       }
-      // sorted best first
+
       const top = [...list].sort((a,b)=>templateScore(b)-templateScore(a)).slice(0,12);
 
       pkgList.innerHTML = top.map(t=>{
@@ -426,6 +460,7 @@
             <div class="pkgBody">
               <div class="pkgTitle">${safe(t.route_name || t.package_id)}</div>
               <div class="pkgMeta">${safe(t.days)} days • ${safe(t.total_km_est || "")} km • ${safe(t.best_season || "")}</div>
+              <div class="pkgLine"><b>Start:</b> ${safe(t.start_point)} &nbsp; <b>End:</b> ${safe(t.end_point)}</div>
               <div class="pkgLine"><b>Major:</b> ${safe(majors || "—")}</div>
               <div class="pkgBtn">Select package →</div>
             </div>
@@ -437,80 +472,30 @@
         el.addEventListener("click", ()=>{
           [...pkgList.querySelectorAll(".pkg")].forEach(x=>x.classList.remove("active"));
           el.classList.add("active");
-          const id = el.getAttribute("data-id");
-          selectPackage(id);
+          selectPackage(el.getAttribute("data-id"));
         });
       });
     }
 
-    function renderRouteDetails(t, placesList){
-      const days = Number(t.days || 0);
-      const dayCols = ["day1_place_ids","day2_place_ids","day3_place_ids","day4_place_ids","day5_place_ids","day6_place_ids","day7_place_ids","day8_place_ids","day9_place_ids"];
+    /************ Filter packages by template fields ************/
+    function filterPackagesByPlanner(){
+      const start = safe(startSelect.value).trim();
+      const end   = safe(endSelect.value).trim();
+      const days  = Number(daysInput.value || 0);
 
-      const html = [];
-      for(let i=0; i<Math.min(9, Math.max(days, 1)); i++){
-        const key = dayCols[i];
-        const ids = parsePlaceIds(t[key]);
-        if(!ids.length) continue;
+      let list = [...TEMPLATES];
 
-        const tags = ids.map(pid=>{
-          const p = PLACES_BY_ID[pid];
-          const label = p ? safe(p.name) : pid;
-          return `<div class="tag" data-pid="${pid}" title="${pid}">${label}</div>`;
-        }).join("");
+      if(days) list = list.filter(t => Number(t.days || 0) === days);
+      if(start) list = list.filter(t => safe(t.start_point).trim() === start);
+      if(end)   list = list.filter(t => safe(t.end_point).trim() === end);
 
-        html.push(`
-          <div class="day">
-            <div class="dayTop">
-              <b>Day ${i+1}</b>
-              <span>${ids.length} stops</span>
-            </div>
-            <div class="dayPlaces">${tags}</div>
-          </div>
-        `);
-      }
+      renderPackageList(list);
 
-      if(!html.length){
-        daysBox.innerHTML = `<div class="note">No day-wise places found in this template. Check day1_place_ids… columns in Firebase.</div>`;
-      }else{
-        daysBox.innerHTML = html.join("");
-        // click a place tag -> focus on map
-        [...daysBox.querySelectorAll(".tag")].forEach(tag=>{
-          tag.addEventListener("click", ()=>{
-            const pid = tag.getAttribute("data-pid");
-            const p = PLACES_BY_ID[pid];
-            if(!p) return;
-            const lat = Number(p.latitude), lng = Number(p.longitude);
-            if(isFinite(lat) && isFinite(lng)){
-              map.setView([lat,lng], 12);
-            }
-          });
-        });
-      }
-
-      routePill.textContent = `${safe(t.route_name || t.package_id)} • ${safe(t.days)} days`;
+      plannerNote.textContent =
+        `Showing ${list.length} template packages for Start="${start||"Any"}" End="${end||"Any"}" Days="${days||"Any"}". Select one to load details.`;
     }
 
-    function renderTaglines(placesList){
-      const cards = placesList.slice(0, 18).map(p=>{
-        const meta = [p.district, p.segment, p.category].filter(Boolean).join(" • ");
-        const tl = safe(p.history_tagline || p.what_you_find || "");
-        return `
-          <div class="tl">
-            <div class="tlBody">
-              <div class="tlTitle">${safe(p.name)}</div>
-              <div class="tlMeta">${safe(meta)}</div>
-              <div class="tlText">${safe(tl || "—")}</div>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      taglinePill.textContent = String(placesList.length);
-      taglinesBox.innerHTML = cards || `<div class="note">No taglines found for this package places.</div>`;
-    }
-
-    /************ Package selection ************/
+    /************ Package -> Place IDs ************/
     function collectPackagePlaceIds(t){
       const ids = [];
       ids.push(...parsePlaceIds(t.major_place_ids));
@@ -526,74 +511,144 @@
       return uniq(ids);
     }
 
-    async function selectPackage(packageId){
-      SELECTED_PACKAGE_ID = packageId;
-      const t = TEMPLATES.find(x => safe(x.package_id) === safe(packageId));
-      if(!t) return;
-
-      selPkgPill.textContent = safe(t.route_name || t.package_id);
-      mapPill.textContent = `Showing: ${safe(t.route_name || t.package_id)}`;
-
-      // Load only package places (no all places anywhere)
-      const ids = collectPackagePlaceIds(t);
-
-      const placesList = [];
+    async function resolvePlacesByIds(ids){
+      const list = [];
       const missing = [];
 
       ids.forEach(id=>{
         const p = PLACES_BY_ID[id];
-        if(p) placesList.push(p);
+        if(p) list.push(p);
         else missing.push(id);
       });
 
-      // Fallback: if some ids missing, try to fetch directly
       if(missing.length){
-        const snaps = await Promise.all(missing.slice(0,50).map(id => db.ref("places/"+id).get().catch(()=>null)));
+        const snaps = await Promise.all(missing.slice(0,60).map(id => db.ref("places/"+id).get().catch(()=>null)));
         snaps.forEach((s,i)=>{
           if(s && s.exists()){
             const p = s.val() || {};
             p.place_id = missing[i];
             PLACES_BY_ID[p.place_id] = p;
-            placesList.push(p);
+            list.push(p);
           }
         });
       }
 
-      renderRouteDetails(t, placesList);
-      renderTaglines(placesList);
-      plotPlacesOnMap(placesList);
-
-      plannerNote.textContent = `Loaded package places only: ${placesList.length} places.`;
+      return list;
     }
 
-    /************ Planner filtering ************/
-    function filterPackagesByPlanner(){
-      const start = startSelect.value;
-      const end = endSelect.value;
-      const days = Number(daysInput.value || 0);
+    /************ Route details + day plan + taglines ************/
+    function renderSummary(t){
+      const rows = [
+        ["Route", safe(t.route_name || t.package_id)],
+        ["Route Path", safe(t.route_path || "—")],
+        ["Start → End", `${safe(t.start_point)} → ${safe(t.end_point)}`],
+        ["Days", safe(t.days || "—")],
+        ["Total KM", safe(t.total_km_est || "—")],
+        ["Drive Level", safe(t.drive_level || "—")],
+        ["Road Type", safe(t.road_type || "—")],
+        ["Snow Risk", safe(t.snow_risk || "—")],
+        ["Tempo OK", safe(t.tempo_ok || "—")],
+        ["Best Season", safe(t.best_season || "—")],
+        ["Ideal For", safe(t.ideal_for || "—")],
+        ["Region Style", safe(t.region_style || "—")],
+        ["Night Plan", safe(t.night_plan || "—")],
+        ["Notes", safe(t.notes || "—")]
+      ];
 
-      let list = [...TEMPLATES];
+      summaryGrid.innerHTML = rows.map(([k,v])=>`
+        <div class="kv">
+          <div class="k">${k}</div>
+          <div class="v">${v || "—"}</div>
+        </div>
+      `).join("");
+    }
 
-      if(days){
-        list = list.filter(t => Number(t.days||0) === days);
+    function renderDayPlan(t){
+      const days = Number(t.days || 0);
+      const cols = ["day1_place_ids","day2_place_ids","day3_place_ids","day4_place_ids","day5_place_ids","day6_place_ids","day7_place_ids","day8_place_ids","day9_place_ids"];
+
+      const html = [];
+      for(let i=0; i<Math.min(9, Math.max(days, 1)); i++){
+        const ids = parsePlaceIds(t[cols[i]]);
+        if(!ids.length) continue;
+
+        html.push(`
+          <div class="day">
+            <div class="dayTop">
+              <b>Day ${i+1}</b>
+              <span>${ids.length} stops</span>
+            </div>
+            <div class="dayPlaces">
+              ${ids.map(pid=>{
+                const p = PLACES_BY_ID[pid];
+                const label = p ? safe(p.name) : pid;
+                return `<div class="tag" data-pid="${pid}" title="${pid}">${label}</div>`;
+              }).join("")}
+            </div>
+          </div>
+        `);
       }
 
-      // optional: match start/end in text fields
-      list = list.filter(t=>{
-        const txt = (safe(t.start_point) + " " + safe(t.end_point) + " " + safe(t.route_path)).toLowerCase();
-        const okStart = !start || txt.includes(start.toLowerCase());
-        const okEnd = !end || txt.includes(end.toLowerCase());
-        return okStart && okEnd;
-      });
+      if(!html.length){
+        daysBox.innerHTML = `<div class="note">No day-wise places found. Check day1_place_ids…day9_place_ids in template.</div>`;
+      }else{
+        daysBox.innerHTML = html.join("");
+        [...daysBox.querySelectorAll(".tag")].forEach(tag=>{
+          tag.addEventListener("click", ()=>{
+            const pid = tag.getAttribute("data-pid");
+            const p = PLACES_BY_ID[pid];
+            if(!p) return;
+            const lat = Number(p.latitude), lng = Number(p.longitude);
+            if(isFinite(lat) && isFinite(lng)) map.setView([lat,lng], 12);
+          });
+        });
+      }
+    }
 
-      renderPackageList(list);
+    function renderTaglines(placesList){
+      taglinePill.textContent = String(placesList.length);
+      taglinesBox.innerHTML = placesList.slice(0, 18).map(p=>{
+        const meta = [p.district, p.segment, p.category].filter(Boolean).join(" • ");
+        const tl = safe(p.history_tagline || p.what_you_find || "—");
+        return `
+          <div class="tl">
+            <div class="tlBody">
+              <div class="tlTitle">${safe(p.name)}</div>
+              <div class="tlMeta">${safe(meta)}</div>
+              <div class="tlText">${tl}</div>
+            </div>
+          </div>
+        `;
+      }).join("") || `<div class="note">No places/taglines loaded for this package.</div>`;
+    }
+
+    /************ Select package ************/
+    async function selectPackage(packageId){
+      const t = TEMPLATES.find(x => safe(x.package_id) === safe(packageId));
+      if(!t) return;
+
+      selPkgPill.textContent = safe(t.route_name || t.package_id);
+      mapPill.textContent = `Showing: ${safe(t.route_name || t.package_id)}`;
+      routePill.textContent = `${safe(t.start_point)} → ${safe(t.end_point)}`;
+
+      renderSummary(t);
+
+      // collect ids + load only those places
+      const ids = collectPackagePlaceIds(t);
+      const placesList = await resolvePlacesByIds(ids);
+
+      // update day plan labels now that cache is improved
+      renderDayPlan(t);
+
+      // taglines + map
+      renderTaglines(placesList);
+      plotPlacesOnMap(placesList);
     }
 
     /************ Load Firebase ************/
     async function loadAll(){
       statusPill.textContent = "Connecting…";
 
-      // places
       const placesSnap = await db.ref("places").get();
       if(!placesSnap.exists()){
         statusPill.textContent = "No /places found";
@@ -605,35 +660,40 @@
         PLACES_BY_ID[k] = { place_id:k, ...placesObj[k] };
       });
 
-      // templates
       const tmplSnap = await db.ref("templates").get();
       const tmplObj = tmplSnap.exists() ? tmplSnap.val() : {};
       TEMPLATES = Object.keys(tmplObj).map(k => ({ package_id:k, ...tmplObj[k] }));
 
-      // fill planner districts (from places)
-      const districts = [...new Set(Object.values(PLACES_BY_ID).map(p=>safe(p.district)).filter(Boolean))].sort();
-      if(!districts.length) districts.push("Shimla");
-      setSelectOptions(startSelect, districts);
-      setSelectOptions(endSelect, districts);
-      startSelect.value = districts[0] || "";
-      endSelect.value = districts[Math.min(2, districts.length-1)] || districts[0] || "";
+      buildStartEndIndex();
+      fillStartOptions();
+      fillEndOptionsForStart(startSelect.value);
 
-      // start with packages list only (no places)
-      renderPackageList(TEMPLATES);
-      statusPill.textContent = "Firebase Loaded ✅";
+      // initial list based on dropdown defaults
+      filterPackagesByPlanner();
 
-      // Reset sections (no package selected)
+      // Reset right side (no auto-select)
       selPkgPill.textContent = "No package selected";
       mapPill.textContent = "Select a package";
-      daysBox.innerHTML = `<div class="note">Select a package to show day-wise route details here.</div>`;
-      taglinesBox.innerHTML = `<div class="note">After selecting a package, you will see place taglines here.</div>`;
+      routePill.textContent = "No package";
+      summaryGrid.innerHTML = `<div class="note">Select a package to view route details.</div>`;
+      daysBox.innerHTML = `<div class="note">Select a package to view day-wise route plan.</div>`;
+      taglinesBox.innerHTML = `<div class="note">No places are shown until a package is selected.</div>`;
       taglinePill.textContent = "0";
       clearMap();
+
+      statusPill.textContent = "Firebase Loaded ✅";
     }
 
+    /************ Events ************/
     btnFindPkgs.addEventListener("click", filterPackagesByPlanner);
-    startSelect.addEventListener("change", filterPackagesByPlanner);
+
+    startSelect.addEventListener("change", ()=>{
+      // dependent end dropdown
+      fillEndOptionsForStart(startSelect.value);
+      filterPackagesByPlanner();
+    });
     endSelect.addEventListener("change", filterPackagesByPlanner);
+    daysInput.addEventListener("change", filterPackagesByPlanner);
 
     loadAll().catch(err=>{
       console.error(err);
