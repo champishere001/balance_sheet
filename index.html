@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — Start → End District Packages</title>
+  <title>Himachal Explorer — Live Package Generator (Start → End from Column G)</title>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -19,7 +19,7 @@
       --stroke: rgba(12,18,40,.12);
       --muted: rgba(12,18,40,.66);
       --text: #0b1220;
-      --card: rgba(255,255,255,.78);
+      --card: rgba(255,255,255,.80);
       --shadow: 0 18px 55px rgba(12,18,40,.12);
       --radius: 18px;
       --accent: #2563eb;
@@ -30,15 +30,17 @@
     html,body{ height:100%; }
     body{ margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--text); overflow-x:hidden; background:var(--bg0); }
 
-    /* ✅ Visible live background */
-    .bg{ position:fixed; inset:0; z-index:-5;
+    /* ✅ ONE LIVE BACKGROUND FOR WHOLE PAGE (visible) */
+    .bg{
+      position:fixed; inset:0; z-index:-5;
       background:
-        radial-gradient(1200px 560px at 18% 12%, rgba(37,99,235,.22), transparent 60%),
-        radial-gradient(1100px 580px at 82% 18%, rgba(16,185,129,.20), transparent 60%),
-        radial-gradient(900px 520px at 50% 86%, rgba(167,139,250,.16), transparent 65%),
+        radial-gradient(1200px 560px at 18% 12%, rgba(37,99,235,.24), transparent 60%),
+        radial-gradient(1100px 580px at 82% 18%, rgba(16,185,129,.22), transparent 60%),
+        radial-gradient(900px 520px at 50% 86%, rgba(167,139,250,.18), transparent 65%),
         linear-gradient(180deg, #eef4ff, #ffffff);
     }
-    .noise{ position:fixed; inset:0; z-index:-4; pointer-events:none; opacity:.10; mix-blend-mode:overlay;
+    .noise{
+      position:fixed; inset:0; z-index:-4; pointer-events:none; opacity:.10; mix-blend-mode:overlay;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
     }
     .blob{ position:fixed; width:460px; height:460px; border-radius:50%; filter: blur(60px); opacity:.22; z-index:-3; pointer-events:none; animation: float 10s ease-in-out infinite; }
@@ -46,11 +48,12 @@
     .b2{ right:-180px; top:140px; background: rgba(16,185,129,.92); animation-duration: 12s; }
     .b3{ left:36%; bottom:-240px; background: rgba(167,139,250,.92); animation-duration: 14s; }
     @keyframes float{ 0%,100%{ transform: translate(0,0) scale(1); } 50%{ transform: translate(28px,-20px) scale(1.08); } }
-    #fx{ position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.95; }
+    #fx{ position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.90; }
 
     .wrap{ max-width: 1400px; margin: 0 auto; padding: 16px; }
     .card{ background: var(--card); border: 1px solid var(--stroke); box-shadow: var(--shadow); border-radius: var(--radius); overflow:hidden; backdrop-filter: blur(14px); }
-    .hero{ padding: 18px 16px; border-bottom: 1px solid var(--stroke);
+    .hero{
+      padding: 18px 16px; border-bottom: 1px solid var(--stroke);
       background:
         linear-gradient(135deg, rgba(37,99,235,.10), rgba(16,185,129,.08)),
         radial-gradient(900px 350px at 20% -20%, rgba(37,99,235,.20), transparent 60%),
@@ -104,6 +107,7 @@
     @media (max-width: 1100px){ .pkgGrid{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 780px){ .pkgGrid{ grid-template-columns: 1fr; } }
 
+    /* ✅ Package card with image */
     .pkg{
       border: 1px solid var(--stroke);
       border-radius: 16px;
@@ -111,9 +115,23 @@
       padding: 12px;
       cursor:pointer;
       transition: transform .12s ease, border-color .12s ease;
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
     }
     .pkg:hover{ transform: translateY(-1px); border-color: rgba(37,99,235,.28); }
     .pkg.active{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 3px rgba(37,99,235,.10); }
+
+    .pkgPic{
+      width:74px; height:74px; border-radius:16px; overflow:hidden; flex:0 0 auto;
+      border:1px solid var(--stroke);
+      background: linear-gradient(135deg, rgba(37,99,235,.18), rgba(16,185,129,.14));
+      display:grid; place-items:center;
+      font-weight:950; color: rgba(12,18,40,.55);
+    }
+    .pkgPic img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+    .pkgBody{ min-width:0; flex:1; }
     .pkgTop{ display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
     .pkgName{ font-weight: 950; font-size: 13.5px; line-height:1.25; text-transform: uppercase; }
     .badge{
@@ -124,7 +142,6 @@
       white-space: nowrap; text-transform: uppercase; font-weight: 900;
     }
     .badge.warn{ background: rgba(245,158,11,.12); color: rgba(245,158,11,1); }
-
     .pkgMeta{ margin-top: 8px; font-size: 12px; color: var(--muted); line-height: 1.35; text-transform: uppercase; }
     .pkgMeta b{ color: var(--text); }
 
@@ -249,12 +266,12 @@
         <div class="hero-top">
           <img src="logo.png" class="site-logo" alt="Himachal Explorer Logo">
           <div class="hero-text">
-            <h1>Start → End District Packages</h1>
+            <h1>Live Package Generator</h1>
             <p>
-              You type the <b>STARTING POINT</b>. System returns packages where the title is:
-              <b>START → END DISTRICT</b>.
-              Example: <b>AMRITSAR → KULLU</b> (even if the last place is KASOL).
-              If end is <b>MATHURA</b>, it will show <b>MATHURA</b> (district derived from end place).
+              Type <b>START</b> (must exist in your Templates DB). Optional <b>DAYS</b> and <b>PAX</b>.
+              Result: <b>ONE BEST PACKAGE PER END</b> (best = maximum locations).<br/>
+              ✅ Package name uses <b>START</b> and <b>END derived from Column G (route_path)</b>.
+              If last point repeats START, system uses <b>second-last point</b> as END.
             </p>
           </div>
         </div>
@@ -264,7 +281,6 @@
         </div>
 
         <div class="controls">
-          <!-- ✅ START as text input (you "give the starting point") -->
           <div class="field" style="grid-column: span 5;">
             <label>START (TYPE OR PICK)</label>
             <input id="startInp" list="startList" placeholder="E.G. AMRITSAR / DELHI / CHANDIGARH"/>
@@ -278,6 +294,7 @@
               <option value="1">1</option><option value="2">2</option><option value="3">3</option>
               <option value="4">4</option><option value="5">5</option><option value="6">6</option>
               <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+              <option value="10">10</option><option value="11">11</option><option value="12">12</option>
             </select>
           </div>
 
@@ -297,17 +314,17 @@
           </div>
 
           <div class="field" style="grid-column: span 12;">
-            <button class="btn" id="runBtn">FIND PACKAGES</button>
+            <button class="btn" id="runBtn">GENERATE PACKAGES</button>
           </div>
         </div>
 
         <div class="pad" style="padding-left:0; padding-right:0;">
           <div class="title">PACKAGES</div>
-          <div class="sub">ONE END DISTRICT = ONE BEST PACKAGE (BEST = MAX LOCATIONS).</div>
+          <div class="sub">ONE END (FROM COLUMN G) = ONE BEST PACKAGE (MAX LOCATIONS).</div>
           <div id="summaryPills"></div>
 
           <div class="pkgGrid" id="pkgGrid">
-            <div class="sub">TYPE START AND CLICK FIND…</div>
+            <div class="sub">TYPE START AND CLICK GENERATE…</div>
           </div>
         </div>
 
@@ -349,10 +366,10 @@
       <div class="card pad">
         <div class="title">RULE</div>
         <div class="sub" style="text-transform:none;">
-          ✅ You provide START (type it).<br/>
-          ✅ Package title shows END as <b>DISTRICT</b> (not place).<br/>
-          ✅ Example: AMRITSAR → KULLU (even if last place is KASOL).<br/>
-          ✅ If end is MATHURA, title will be AMRITSAR → MATHURA.
+          ✅ End location is derived from <b>Column G = route_path</b> (last token).<br/>
+          ✅ If last token equals START, end becomes <b>second-last token</b>.<br/>
+          ✅ Card shows image (first stop photo) if available.<br/>
+          ✅ Click a package to draw road route + show photos in place list.
         </div>
       </div>
 
@@ -486,8 +503,17 @@ function initials(name){
 function rupees(n){
   return "₹" + Math.round(Number(n)||0).toLocaleString("en-IN");
 }
-function normDistrict(d){
-  return String(d||"").trim().toUpperCase().replace(/\s+/g," ");
+
+/* convert "The Ridge" -> "the-ridge" for fallback lookup */
+function slugifyName(name){
+  return String(name||"")
+    .trim()
+    .toLowerCase()
+    .replace(/&/g," and ")
+    .replace(/['"]/g,"")
+    .replace(/[^a-z0-9]+/g,"-")
+    .replace(/-+/g,"-")
+    .replace(/^-|-$/g,"");
 }
 
 /***********************
@@ -496,7 +522,7 @@ function normDistrict(d){
 let LOCS = {};
 let TEMPLATES = {};
 let ACTIVE_TEMPLATES = [];
-let NAME_TO_ID = new Map();     // ✅ for matching "Mathura" by name
+let NAME_TO_ID = new Map();     // name -> placeId
 let STARTS = [];               // start points list
 
 /***********************
@@ -532,7 +558,6 @@ function buildNameIndex(){
     NAME_TO_ID.set(nm.toLowerCase(), pid);
   }
 }
-
 function buildStartList(templates){
   const set = new Set();
   templates.forEach(t=>{
@@ -540,7 +565,6 @@ function buildStartList(templates){
     if(s) set.add(s);
   });
   STARTS = Array.from(set).sort((a,b)=>a.localeCompare(b));
-
   const dl = $("startList");
   dl.innerHTML = "";
   STARTS.forEach(s=>{
@@ -578,51 +602,62 @@ function stopsFromTemplate(tpl){
 function stopsCount(tpl){ return stopsFromTemplate(tpl).length; }
 
 /***********************
- * ✅ END DISTRICT (your requirement)
- * - If end_point is a place like "Mathura", find its location in LOCS by name → get District
- * - Else use last stop's District
- * - If Kasol is last stop and District is Kullu → show KULLU
+ * ✅ END LOCATION FROM COLUMN G (route_path)
+ * - Column G in your sheet = route_path
+ * - take last token from route_path split by ">" (also supports "->")
+ * - if last token == start, use second-last token
  ***********************/
- function getEndDistrictKey(tpl){
-  const startPointName = String(tpl.start_point || "").trim();
-  const startPid = NAME_TO_ID.get(startPointName.toLowerCase());
-  const startDistrict = startPid ? normDistrict((LOCS[startPid]||{})["District"] || (LOCS[startPid]||{}).district || "") : "";
+function getEndNameFromColumnG(tpl){
+  const start = String(tpl.start_point || "").trim().toLowerCase();
+  const rpRaw = String(tpl.route_path || "").trim();
+  if(!rpRaw) return String(tpl.end_point || "").trim() || "UNKNOWN";
 
-  // 1) If end_point is a place-name and exists in LOCS, try its district first
-  const endPointName = String(tpl.end_point || "").trim();
-  if(endPointName){
-    const pid = NAME_TO_ID.get(endPointName.toLowerCase());
-    if(pid){
-      const p = LOCS[pid] || {};
-      const d = normDistrict(p["District"] || p.district || "");
-      if(d) return d;
-    }
+  const tokens = rpRaw
+    .replace(/->/g,">")
+    .split(">")
+    .map(x=>String(x||"").trim())
+    .filter(Boolean);
+
+  if(!tokens.length) return String(tpl.end_point || "").trim() || "UNKNOWN";
+
+  let end = tokens[tokens.length - 1];
+  if(end && start && end.trim().toLowerCase() === start && tokens.length >= 2){
+    end = tokens[tokens.length - 2]; // ✅ one place before ending is end
   }
-
-  // 2) Use last stop district, but if it equals start district, use second-last stop
-  const stops = stopsFromTemplate(tpl);
-  if(stops.length){
-    const lastId = stops[stops.length - 1];
-    const lastP  = LOCS[lastId] || {};
-    const lastD  = normDistrict(lastP["District"] || lastP.district || "");
-
-    // ✅ NEW: if lastD == startDistrict, use second-last stop to decide END DISTRICT
-    if(startDistrict && lastD && lastD === startDistrict && stops.length >= 2){
-      const secondLastId = stops[stops.length - 2];
-      const p2 = LOCS[secondLastId] || {};
-      const d2 = normDistrict(p2["District"] || p2.district || "");
-      if(d2) return d2;
-    }
-
-    if(lastD) return lastD;
-  }
-
-  // 3) final fallback
-  if(endPointName) return endPointName.toUpperCase();
-  return "UNKNOWN";
+  return end || "UNKNOWN";
 }
-  
- *********************
+
+/***********************
+ * ✅ GET PACKAGE END KEY USED FOR "ONE END = ONE BEST PACKAGE"
+ * We convert end name -> district if possible, otherwise keep end name.
+ * If end is a place (Mathura etc.) and exists in LOCS by name, we can use its District.
+ ***********************/
+function normCaps(x){ return String(x||"").trim().toUpperCase().replace(/\s+/g," "); }
+
+function endKeyFromColumnG(tpl){
+  const endName = getEndNameFromColumnG(tpl);
+  const pidByName = NAME_TO_ID.get(String(endName).toLowerCase());
+
+  // 1) direct name match
+  if(pidByName){
+    const p = LOCS[pidByName] || {};
+    const d = normCaps(p["District"] || p.district || "");
+    return d || normCaps(endName);
+  }
+
+  // 2) slug match fallback
+  const slug = slugifyName(endName);
+  if(LOCS[slug]){
+    const p = LOCS[slug] || {};
+    const d = normCaps(p["District"] || p.district || "");
+    return d || normCaps(endName);
+  }
+
+  // 3) fallback to endName itself (caps)
+  return normCaps(endName);
+}
+
+/***********************
  * ✅ PLACE THUMB
  ***********************/
 function getPlaceThumbUrl(p){
@@ -767,7 +802,7 @@ async function drawRoadRouteFromPlaces(placeIds){
   }
 }
 function fitMap(){
-  if(routeLine){ map.fitBounds(routeLine.getBounds(), { padding:[18,18] }); return; }
+  if(routeLine){ map.fitBounds(routeLine.getBounds(), { padding:[18,18] }); }
 }
 
 /***********************
@@ -794,6 +829,7 @@ function renderPlaceButtons(placeIds){
     btn.innerHTML = `
       <div class="thumb">
         ${url ? `<img src="${escapeHtml(url)}" alt="${escapeHtml(name)}" loading="lazy"
+                 referrerpolicy="no-referrer"
                  onerror="this.remove(); this.parentNode.textContent='${escapeHtml(initials(name))}';">`
               : `${escapeHtml(initials(name))}`}
       </div>
@@ -835,7 +871,7 @@ function selectPlace(placeId, order){
 }
 
 /***********************
- * ✅ ONE END DISTRICT = ONE BEST PACKAGE
+ * ✅ ONE END KEY = ONE BEST PACKAGE
  * BEST = MAX LOCATIONS, then priority, then KM
  ***********************/
 function packageScore(tpl){
@@ -851,30 +887,44 @@ function isBetter(a,b){
 }
 
 /***********************
- * ✅ FIND PACKAGES (Start typed by user)
+ * ✅ START INPUT NORMALIZATION
  ***********************/
 function normalizeStartInput(){
   const typed = String($("startInp").value || "").trim().toUpperCase();
   if(!typed) return "";
 
-  // exact match ignoring case
-  const match = STARTS.find(s => String(s).trim().toUpperCase() === typed);
-  if(match) return match;
+  const exact = STARTS.find(s => String(s).trim().toUpperCase() === typed);
+  if(exact) return exact;
 
-  // partial begins-with match
-  const match2 = STARTS.find(s => String(s).trim().toUpperCase().startsWith(typed));
-  if(match2) return match2;
+  const partial = STARTS.find(s => String(s).trim().toUpperCase().startsWith(typed));
+  if(partial) return partial;
 
-  return ""; // not found
+  return "";
 }
 
+/***********************
+ * ✅ PACKAGE THUMB: first stop photo (or initials)
+ ***********************/
+function getPackageThumbFromTemplate(tpl){
+  const stops = stopsFromTemplate(tpl);
+  const first = stops[0];
+  if(!first) return { url:"", ini:"HP" };
+  const p = LOCS[first] || {};
+  const nm = (p["Location Name"] || first).toUpperCase();
+  const url = getPlaceThumbUrl(p);
+  return { url, ini: initials(nm) };
+}
+
+/***********************
+ * ✅ APPLY FILTERS + GENERATE (LIVE PACKAGE GENERATOR)
+ ***********************/
 function applyFilters(){
   const start = normalizeStartInput();
   const daysF = $("daysSel").value.trim();
   const pax   = Number($("paxSel").value || 2);
 
   $("summaryPills").innerHTML = "";
-  $("pkgGrid").innerHTML = `<div class="sub">TYPE START AND CLICK FIND…</div>`;
+  $("pkgGrid").innerHTML = `<div class="sub">TYPE START AND CLICK GENERATE…</div>`;
   $("placesButtons").innerHTML = `<span class="sub">CLICK A PACKAGE TO SHOW PLACES…</span>`;
   $("placesCount").textContent = "—";
   renderCostBox({status:"idle"});
@@ -888,27 +938,27 @@ function applyFilters(){
   let list = ACTIVE_TEMPLATES.filter(t => String(t.start_point||"").trim().toUpperCase() === String(start).trim().toUpperCase());
   if(daysF) list = list.filter(t => Number(t.days||0) === Number(daysF));
 
-  // one end district = one best package
-  const bestByDistrict = new Map();
-  const scByDistrict = new Map();
+  // one endKey(from column G) = one best package
+  const bestByEnd = new Map();
+  const scByEnd = new Map();
 
   for(const t of list){
-    const endDistrict = getEndDistrictKey(t);
+    const endKey = endKeyFromColumnG(t); // ✅ from Column G
     const sc = packageScore(t);
 
-    if(!bestByDistrict.has(endDistrict)){
-      bestByDistrict.set(endDistrict, t);
-      scByDistrict.set(endDistrict, sc);
+    if(!bestByEnd.has(endKey)){
+      bestByEnd.set(endKey, t);
+      scByEnd.set(endKey, sc);
     }else{
-      const prev = scByDistrict.get(endDistrict);
+      const prev = scByEnd.get(endKey);
       if(isBetter(sc, prev)){
-        bestByDistrict.set(endDistrict, t);
-        scByDistrict.set(endDistrict, sc);
+        bestByEnd.set(endKey, t);
+        scByEnd.set(endKey, sc);
       }
     }
   }
 
-  const finalList = Array.from(bestByDistrict.values()).sort((a,b)=>{
+  const finalList = Array.from(bestByEnd.values()).sort((a,b)=>{
     const A = packageScore(a), B = packageScore(b);
     if(A.locs !== B.locs) return B.locs - A.locs;
     if(A.pri !== B.pri) return A.pri - B.pri;
@@ -934,24 +984,37 @@ function renderPackagesGrid(list, start){
 
   list.forEach(t=>{
     const key = t.key;
-    const endDistrict = getEndDistrictKey(t);
+    const endKey = endKeyFromColumnG(t);  // ✅ end derived from Column G
     const days = Number(t.days || 0) || 0;
     const tempoOk = (t.tempo_ok === true || safeLower(t.tempo_ok)==="true");
-    const estKm = Number(t.total_km_est ?? t.estimated_drive_km ?? 0);
+
+    const thumb = getPackageThumbFromTemplate(t);
 
     const card = document.createElement("div");
     card.className = "pkg";
     card.dataset.key = key;
 
     card.innerHTML = `
-      <div class="pkgTop">
-        <div class="pkgName">${escapeHtml(String(start).toUpperCase())} → ${escapeHtml(String(endDistrict).toUpperCase())}</div>
-        <div class="badge ${tempoOk ? "" : "warn"}">${tempoOk ? "TEMPO OK" : "TEMPO RISK"}</div>
+      <div class="pkgPic">
+        ${thumb.url
+          ? `<img src="${escapeHtml(thumb.url)}" alt="PACKAGE" loading="lazy"
+                 referrerpolicy="no-referrer"
+                 onerror="this.remove(); this.parentNode.textContent='${escapeHtml(thumb.ini)}';">`
+          : `${escapeHtml(thumb.ini)}`
+        }
       </div>
-      <div class="pkgMeta">
-        <b>END DISTRICT:</b> ${escapeHtml(String(endDistrict).toUpperCase())}<br/>
-        <b>LOCATIONS:</b> ${stopsCount(t)} &nbsp;•&nbsp; <b>DAYS:</b> ${days || "—"}<br/>
-        <b>ROUTE ID:</b> ${escapeHtml(String(t.route_id||"—").toUpperCase())}
+
+      <div class="pkgBody">
+        <div class="pkgTop">
+          <div class="pkgName">${escapeHtml(String(start).toUpperCase())} → ${escapeHtml(String(endKey).toUpperCase())}</div>
+          <div class="badge ${tempoOk ? "" : "warn"}">${tempoOk ? "TEMPO OK" : "TEMPO RISK"}</div>
+        </div>
+
+        <div class="pkgMeta">
+          <b>END (FROM G):</b> ${escapeHtml(String(endKey).toUpperCase())}<br/>
+          <b>LOCATIONS:</b> ${stopsCount(t)} &nbsp;•&nbsp; <b>DAYS:</b> ${days || "—"}<br/>
+          <b>ROUTE ID:</b> ${escapeHtml(String(t.route_id||"—").toUpperCase())}
+        </div>
       </div>
     `;
 
@@ -994,8 +1057,6 @@ async function openTemplate(key){
  ***********************/
 $("runBtn").addEventListener("click", applyFilters);
 $("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
-$("daysSel").addEventListener("change", ()=>{/* optional auto */});
-$("paxSel").addEventListener("change", ()=>{/* optional auto */});
 
 $("resetBtn").addEventListener("click", ()=>{
   $("startInp").value = "";
@@ -1003,7 +1064,7 @@ $("resetBtn").addEventListener("click", ()=>{
   $("paxSel").value = "2";
 
   $("summaryPills").innerHTML = "";
-  $("pkgGrid").innerHTML = `<div class="sub">TYPE START AND CLICK FIND…</div>`;
+  $("pkgGrid").innerHTML = `<div class="sub">TYPE START AND CLICK GENERATE…</div>`;
   $("placesButtons").innerHTML = `<span class="sub">CLICK A PACKAGE TO SHOW PLACES…</span>`;
   $("placesCount").textContent = "—";
   renderCostBox({status:"idle"});
