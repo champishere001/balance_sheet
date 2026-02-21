@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — Start → End District Packages</title>
+  <title>Himachal Explorer — Index (Start → Best Packages)</title>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -15,153 +15,270 @@
 
   <style>
     :root{
-      --bg0:#f2f6ff;
+      --bg:#f4f7ff;
+      --panel: rgba(255,255,255,.70);
+      --panel2: rgba(255,255,255,.82);
       --stroke: rgba(12,18,40,.12);
-      --muted: rgba(12,18,40,.66);
-      --text: #0b1220;
-      --card: rgba(255,255,255,.78);
-      --shadow: 0 18px 55px rgba(12,18,40,.12);
-      --radius: 18px;
-      --accent: #2563eb;
+      --text:#0b1220;
+      --muted: rgba(12,18,40,.65);
+      --accent:#2563eb;
       --ok:#10b981;
       --warn:#f59e0b;
+
+      --shadow: 0 18px 55px rgba(12,18,40,.14);
+      --shadow2: 0 12px 35px rgba(12,18,40,.12);
+      --radius: 18px;
     }
+
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
-    body{ margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--text); overflow-x:hidden; background:var(--bg0); }
+    body{
+      margin:0;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background: var(--bg);
+      overflow-x:hidden;
+    }
 
-    /* ✅ Visible live background */
-    .bg{ position:fixed; inset:0; z-index:-8;
+    /* ✅ Visible Live Background (lighter like your NSO hub, but visible) */
+    .bg{ position:fixed; inset:0; z-index:-6;
       background:
-        radial-gradient(1200px 560px at 18% 12%, rgba(37,99,235,.22), transparent 80%),
-        radial-gradient(1100px 580px at 82% 18%, rgba(16,185,129,.20), transparent 80%),
-        radial-gradient(900px 520px at 50% 86%, rgba(167,139,250,.16), transparent 88%),
+        radial-gradient(1200px 560px at 18% 12%, rgba(37,99,235,.24), transparent 60%),
+        radial-gradient(1100px 580px at 82% 18%, rgba(16,185,129,.20), transparent 60%),
+        radial-gradient(900px 520px at 50% 86%, rgba(167,139,250,.16), transparent 65%),
         linear-gradient(180deg, #eef4ff, #ffffff);
     }
-    .noise{ position:fixed; inset:0; z-index:-7; pointer-events:none; opacity:.10; mix-blend-mode:overlay;
+    .noise{ position:fixed; inset:0; z-index:-5; pointer-events:none; opacity:.10; mix-blend-mode:overlay;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
     }
-    .blob{ position:fixed; width:460px; height:460px; border-radius:50%; filter: blur(60px); opacity:.22; z-index:-6; pointer-events:none; animation: float 10s ease-in-out infinite; }
+    .blob{ position:fixed; width:460px; height:460px; border-radius:50%; filter: blur(60px); opacity:.22; z-index:-4; pointer-events:none; animation: float 10s ease-in-out infinite; }
     .b1{ left:-140px; top:60px;  background: rgba(37,99,235,.95); }
     .b2{ right:-180px; top:140px; background: rgba(16,185,129,.92); animation-duration: 12s; }
     .b3{ left:36%; bottom:-240px; background: rgba(167,139,250,.92); animation-duration: 14s; }
     @keyframes float{ 0%,100%{ transform: translate(0,0) scale(1); } 50%{ transform: translate(28px,-20px) scale(1.08); } }
-    #fx{ position:fixed; inset:0; z-index:-5; pointer-events:none; opacity:.95; }
+    #fx{ position:fixed; inset:0; z-index:-3; pointer-events:none; opacity:.95; }
 
-    .wrap{ max-width: 1400px; margin: 0 auto; padding: 16px; }
-    .card{ background: var(--card); border: 1px solid var(--stroke); box-shadow: var(--shadow); border-radius: var(--radius); overflow:hidden; backdrop-filter: blur(14px); }
-
-    /* ✅ SECTION BACKGROUND ENGINE */
-    .section-bg{ position:relative; overflow:hidden; }
-    .section-bg::before{
-      content:"";
-      position:absolute; inset:0;
-      background-image: var(--secBg, none);
-      background-size: cover;
-      background-position: center;
-      filter: saturate(1.05) contrast(1.05);
-      transform: scale(1.02);
-      opacity: .26;
-      z-index:0;
-    }
-    .section-bg::after{
-      content:"";
-      position:absolute; inset:0;
-      background: linear-gradient(135deg, rgba(255,255,255,.78), rgba(255,255,255,.55));
-      z-index:0;
-    }
-    .section-bg > *{ position:relative; z-index:1; }
-
-    /* hero */
-    .hero{ padding: 18px 16px; border-bottom: 1px solid var(--stroke); }
-    .hero.section-bg::after{
-      background:
-        linear-gradient(135deg, rgba(255,255,255,.70), rgba(255,255,255,.50)),
-        radial-gradient(900px 350px at 20% -20%, rgba(37,99,235,.18), transparent 60%),
-        radial-gradient(700px 300px at 95% 0%, rgba(16,185,129,.16), transparent 60%);
-    }
-
-    .hero-top{ display:flex; align-items:center; gap:16px; margin-bottom:14px; }
-    .site-logo{ height:72px; width:auto; background:white; padding:8px; border-radius:18px; box-shadow:0 12px 35px rgba(0,0,0,.16); }
-    .hero-text h1{ margin:0; font-size: 22px; text-transform: uppercase; }
-    .hero-text p{ margin:6px 0 0; color:var(--muted); font-size: 13px; max-width: 1050px; text-transform:none; }
-    @media(max-width:780px){ .hero-top{ flex-direction:column; text-align:center; } .site-logo{ height:56px; } }
-
-    .title{ font-size: 18px; font-weight: 900; letter-spacing: .2px; text-transform: uppercase; }
-    .sub{ color: var(--muted); font-size: 12.5px; line-height:1.35; text-transform: uppercase; }
-    .hrow{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
-
-    .controls{ display:grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap:10px; margin-top: 12px; }
-    @media (max-width: 980px){ .controls{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-
-    .field label{ display:block; font-size:11px; color:var(--muted); margin:0 0 6px 2px; text-transform: uppercase; }
-    select, input{
-      width:100%; padding: 10px 10px; border-radius: 12px;
+    /* Layout */
+    .wrap{ max-width: 1480px; margin: 0 auto; padding: 14px; }
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding: 12px 12px;
+      border-radius: 18px;
       border: 1px solid var(--stroke);
-      background: rgba(255,255,255,.92);
-      outline:none; color: var(--text);
+      background: rgba(255,255,255,.62);
+      box-shadow: var(--shadow2);
+      backdrop-filter: blur(14px);
+    }
+    .brand{ display:flex; align-items:center; gap:12px; min-width:0; }
+    .logo{
+      height:46px; width:auto;
+      padding:6px;
+      background:#fff;
+      border:1px solid var(--stroke);
+      border-radius:14px;
+      box-shadow: 0 10px 26px rgba(0,0,0,.10);
+    }
+    .brand h1{
+      margin:0;
+      font-size: 16px;
+      font-weight: 950;
+      letter-spacing:.2px;
+      text-transform: uppercase;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .brand p{
+      margin:2px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      text-transform:none;
+    }
+    .status{
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--muted);
+      text-transform: uppercase;
+      white-space:nowrap;
+    }
+
+    .grid{
+      margin-top: 12px;
+      display:grid;
+      grid-template-columns: 480px 1fr;
+      gap: 12px;
+      align-items:start;
+    }
+    @media (max-width: 1100px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      border-radius: var(--radius);
+      border: 1px solid var(--stroke);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      overflow:hidden;
+    }
+    .cardHead{
+      padding: 12px 12px;
+      border-bottom: 1px solid var(--stroke);
+      background: rgba(255,255,255,.62);
+    }
+    .title{
+      font-weight: 950;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing:.25px;
+      margin:0;
+    }
+    .sub{
+      margin:6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      line-height:1.35;
       text-transform: uppercase;
     }
-    select:focus, input:focus{ border-color: rgba(37,99,235,.38); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
 
+    .pad{ padding: 12px; }
+
+    /* Controls */
+    .controls{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .field label{
+      display:block;
+      font-size: 11px;
+      font-weight: 900;
+      color: var(--muted);
+      margin: 0 0 6px 2px;
+      text-transform: uppercase;
+    }
+    input, select{
+      width:100%;
+      padding: 10px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.88);
+      outline:none;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--text);
+    }
+    input:focus, select:focus{
+      border-color: rgba(37,99,235,.40);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
     .btn{
-      appearance:none; border:0; border-radius: 12px; padding: 10px 12px;
-      cursor:pointer; font-weight:900; background: var(--accent); color:white;
-      box-shadow: 0 12px 30px rgba(37,99,235,.20);
-      transition: transform .12s ease, filter .12s ease; width:100%;
+      appearance:none; border:0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      cursor:pointer;
+      font-weight: 950;
       text-transform: uppercase;
+      background: var(--accent);
+      color:#fff;
+      box-shadow: 0 12px 30px rgba(37,99,235,.18);
+      transition: transform .12s ease, filter .12s ease;
     }
-    .btn.secondary{ background: rgba(255,255,255,.92); color: var(--text); border: 1px solid var(--stroke); box-shadow:none; }
     .btn:hover{ transform: translateY(-1px); filter: brightness(1.02); }
-
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 8px 10px; border-radius: 999px;
+    .btn.secondary{
+      background: rgba(255,255,255,.88);
+      color: var(--text);
       border: 1px solid var(--stroke);
-      background: rgba(255,255,255,.92);
-      font-size: 12px; color: var(--muted);
-      margin: 6px 6px 0 0; white-space: nowrap;
+      box-shadow:none;
+    }
+
+    .pillRow{ padding: 10px 12px 0; }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.82);
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0 6px 8px 0;
+      white-space: nowrap;
       text-transform: uppercase;
+      font-weight: 900;
     }
     .pill b{ color: var(--text); }
 
-    .pkgGrid{ display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
-    @media (max-width: 1100px){ .pkgGrid{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 780px){ .pkgGrid{ grid-template-columns: 1fr; } }
-
+    /* Packages */
+    .pkgList{ padding: 10px 12px 12px; display:grid; gap:10px; }
     .pkg{
       border: 1px solid var(--stroke);
       border-radius: 16px;
-      background: rgba(255,255,255,.92);
+      background: rgba(255,255,255,.86);
       padding: 12px;
       cursor:pointer;
       transition: transform .12s ease, border-color .12s ease;
     }
-    .pkg:hover{ transform: translateY(-1px); border-color: rgba(37,99,235,.28); }
-    .pkg.active{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 3px rgba(37,99,235,.10); }
-    .pkgTop{ display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
-    .pkgName{ font-weight: 950; font-size: 13.5px; line-height:1.25; text-transform: uppercase; }
+    .pkg:hover{ transform: translateY(-1px); border-color: rgba(37,99,235,.30); }
+    .pkg.active{ border-color: rgba(37,99,235,.60); box-shadow: 0 0 0 3px rgba(37,99,235,.10); }
+    .pkgTop{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+    .pkgName{ font-weight: 950; text-transform: uppercase; font-size: 13px; line-height:1.2; }
     .badge{
-      font-size: 11px; padding: 5px 8px; border-radius: 999px;
+      font-size: 11px;
+      font-weight: 950;
+      text-transform: uppercase;
+      padding: 5px 8px;
+      border-radius: 999px;
       border: 1px solid var(--stroke);
       background: rgba(16,185,129,.10);
       color: rgba(16,185,129,1);
-      white-space: nowrap; text-transform: uppercase; font-weight: 900;
+      white-space:nowrap;
     }
     .badge.warn{ background: rgba(245,158,11,.12); color: rgba(245,158,11,1); }
-
-    .pkgMeta{ margin-top: 8px; font-size: 12px; color: var(--muted); line-height: 1.35; text-transform: uppercase; }
+    .pkgMeta{
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      line-height:1.35;
+    }
     .pkgMeta b{ color: var(--text); }
 
-    .placesWrap{ margin-top: 12px; border-top: 1px solid var(--stroke); padding-top: 12px; }
-    .placesHdr{ display:flex; gap:10px; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom: 10px; }
-    .count{ font-size:12px; color: var(--muted); text-transform: uppercase; }
-    .btnRow{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    /* Right column: Map + details */
+    .rightGrid{
+      display:grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 12px;
+      min-height: 720px;
+    }
+    #map{
+      width:100%;
+      height: 520px;
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.30);
+    }
+    @media(max-width:1100px){
+      #map{ height: 420px; }
+      .rightGrid{ min-height: 0; }
+    }
 
-    .placeBtns{ display:flex; gap:8px; flex-wrap:wrap; max-height: 280px; overflow:auto; padding: 2px; }
+    .twoCol{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media(max-width:780px){
+      .twoCol{ grid-template-columns: 1fr; }
+    }
+
+    .placeBtns{ display:flex; flex-wrap:wrap; gap:8px; max-height: 260px; overflow:auto; padding:2px; }
     .place-btn{
       border:1px solid var(--stroke);
-      background: rgba(255,255,255,.92);
+      background: rgba(255,255,255,.86);
       border-radius: 14px;
       padding: 8px 10px;
       cursor:pointer;
@@ -173,7 +290,7 @@
       text-transform: uppercase;
     }
     .place-btn:hover{ transform: translateY(-1px); border-color: rgba(37,99,235,.28); }
-    .place-btn.active{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 3px rgba(37,99,235,.10); }
+    .place-btn.active{ border-color: rgba(37,99,235,.60); box-shadow: 0 0 0 3px rgba(37,99,235,.10); }
 
     .thumb{
       width:46px; height:46px;
@@ -190,37 +307,40 @@
     .pinfo{ display:flex; flex-direction:column; gap:2px; min-width: 0; }
     .pname{ font-weight:950; font-size: 12.8px; white-space:nowrap; overflow:hidden; text-overflow: ellipsis; }
     .pmeta{ font-size:11px; color: var(--muted); white-space:nowrap; overflow:hidden; text-overflow: ellipsis; }
-    .ord{ width:22px; height:22px; display:inline-grid; place-items:center; border-radius: 50%; font-weight: 950;
-      background: rgba(37,99,235,.10); color: rgba(37,99,235,1); margin-left:auto; }
-
-    .detail{
-      border: 1px solid var(--stroke);
-      border-radius: 14px;
-      background: rgba(255,255,255,.88);
-      padding: 12px;
-      min-height: 120px;
+    .ord{
+      width:22px; height:22px;
+      display:inline-grid; place-items:center;
+      border-radius: 50%;
+      font-weight: 950;
+      background: rgba(37,99,235,.10);
+      color: rgba(37,99,235,1);
+      margin-left:auto;
     }
-    .detail h3{ margin:0 0 4px; font-size: 15.5px; text-transform: uppercase; }
-    .detail .meta{ font-size:12px; color:var(--muted); margin-bottom: 8px; text-transform: uppercase; }
-    .detail .desc{ font-size:13px; color:var(--text); line-height: 1.35; text-transform:none; }
 
-    .costBox{
+    .box{
       border: 1px solid var(--stroke);
-      border-radius: 14px;
-      background: rgba(255,255,255,.88);
+      border-radius: 16px;
+      background: var(--panel2);
+      box-shadow: var(--shadow2);
       padding: 12px;
     }
-    .costRow{ display:flex; justify-content:space-between; gap:10px; padding:6px 0; font-size:13px; text-transform: uppercase; }
-    .costRow span{ color: var(--muted); }
+    .box h3{ margin:0 0 6px; font-size: 13px; font-weight: 950; text-transform: uppercase; }
+    .box .meta{ font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase; }
+    .box .desc{ margin-top: 8px; font-size: 13px; line-height:1.35; color: var(--text); text-transform:none; }
+
+    .costRow{ display:flex; justify-content:space-between; gap:10px; padding:6px 0; font-size:13px; text-transform: uppercase; font-weight: 900; }
+    .costRow span{ color: var(--muted); font-weight: 900; }
     .costRow b{ color: var(--text); }
     .costTotal{
       margin-top:8px;
       border-top:1px solid var(--stroke);
       padding-top:10px;
-      display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
-      text-transform: uppercase;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
     }
-    .costTotal .big{ font-size:18px; font-weight:950; }
+    .big{ font-size:18px; font-weight: 950; text-transform: uppercase; }
     .saveTag{
       display:inline-flex; align-items:center; gap:8px;
       padding: 6px 10px;
@@ -232,15 +352,8 @@
       font-weight: 950;
       white-space: nowrap;
       text-transform: uppercase;
+      height: fit-content;
     }
-
-    .layout{ display:grid; grid-template-columns: 72% 28%; gap: 14px; align-items:start; margin-top:14px; }
-    @media (max-width: 980px){ .layout{ grid-template-columns: 1fr; } }
-    .mapCard .pad{ padding: 10px; }
-    .pad{ padding:14px; }
-
-    #map{ width:100%; height: calc(100vh - 140px); min-height: 520px; border-radius: 14px; border: 1px solid var(--stroke); overflow:hidden; background: rgba(255,255,255,.40); }
-    @media (max-width: 980px){ #map{ height: 420px; min-height: 420px; } }
 
     .toast{
       position: fixed; left: 16px; bottom: 16px;
@@ -255,7 +368,7 @@
       max-width: 560px;
       z-index: 9999;
       text-transform: uppercase;
-      font-weight: 800;
+      font-weight: 900;
     }
     .toast.show{ display:block; }
   </style>
@@ -270,137 +383,138 @@
   <div class="blob b3"></div>
 
   <div class="wrap">
-    <div class="card">
-      <!-- ✅ HERO BACKGROUND -->
-      <div class="hero section-bg" id="heroBg" style="--secBg:url('201-himalaya.jpg');">
-        <div class="hero-top">
-          <img src="logo.png" class="site-logo" alt="Himachal Explorer Logo">
-          <div class="hero-text">
-            <h1>Start → End District Packages</h1>
-            <p>
-              You type the <b>STARTING POINT</b>. System returns packages where the title is:
-              <b>START → END DISTRICT</b>.
-              Example: <b>AMRITSAR → KULLU</b> (even if the last place is KASOL).
-              If end is <b>MATHURA</b>, it will show <b>MATHURA</b> (district derived from end place).
-            </p>
-          </div>
-        </div>
 
-        <div class="hrow">
-          <div class="sub" id="dataStatus">LOADING TEMPLATES…</div>
-        </div>
-
-        <div class="controls">
-          <div class="field" style="grid-column: span 5;">
-            <label>START (TYPE OR PICK)</label>
-            <input id="startInp" list="startList" placeholder="E.G. AMRITSAR / DELHI / CHANDIGARH"/>
-            <datalist id="startList"></datalist>
-          </div>
-
-          <div class="field" style="grid-column: span 3;">
-            <label>DAYS (OPTIONAL)</label>
-            <select id="daysSel">
-              <option value="">ANY</option>
-              <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-              <option value="4">4</option><option value="5">5</option><option value="6">6</option>
-              <option value="7">7</option><option value="8">8</option><option value="9">9</option>
-            </select>
-          </div>
-
-          <div class="field" style="grid-column: span 3;">
-            <label>PEOPLE (PAX)</label>
-            <select id="paxSel">
-              <option value="2">2</option><option value="3">3</option><option value="4">4</option>
-              <option value="5">5</option><option value="6">6</option><option value="7">7</option>
-              <option value="8">8</option><option value="9">9</option><option value="10">10</option>
-              <option value="11">11</option><option value="12">12</option>
-            </select>
-          </div>
-
-          <div class="field" style="grid-column: span 1;">
-            <label>&nbsp;</label>
-            <button class="btn secondary" id="resetBtn">RESET</button>
-          </div>
-
-          <div class="field" style="grid-column: span 12;">
-            <button class="btn" id="runBtn">FIND PACKAGES</button>
-          </div>
-        </div>
-
-        <!-- ✅ PACKAGES BACKGROUND -->
-        <div class="pad section-bg" id="packagesBlock" style="--secBg:url('Travelers.jpg'); padding-left:0; padding-right:0;">
-          <div class="title">PACKAGES</div>
-          <div class="sub">ONE END DISTRICT = ONE BEST PACKAGE (BEST = MAX LOCATIONS).</div>
-          <div id="summaryPills"></div>
-
-          <div class="pkgGrid" id="pkgGrid">
-            <div class="sub">TYPE START AND CLICK FIND…</div>
-          </div>
-        </div>
-
-        <!-- ✅ PLACES BACKGROUND -->
-        <div class="placesWrap section-bg" id="placesBlock" style="--secBg:url('activity.jpg');">
-          <div class="placesHdr">
-            <div style="display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;">
-              <div class="title">PACKAGE PLACES</div>
-              <div class="count" id="placesCount">—</div>
-            </div>
-            <div class="btnRow">
-              <button class="btn secondary" id="fitBtn" style="width:auto;">FIT MAP</button>
-              <button class="btn secondary" id="clearBtn" style="width:auto;">CLEAR ROUTE</button>
-            </div>
-          </div>
-
-          <div class="placeBtns" id="placesButtons">
-            <span class="sub">CLICK A PACKAGE TO SHOW PLACES…</span>
-          </div>
-
-          <div class="layout" style="grid-template-columns: 1fr 1fr; gap: 10px; margin-top:10px;">
-            <div class="detail" id="placeDetail">
-              <h3>PLACE DETAILS</h3>
-              <div class="meta">CLICK ANY PLACE TO SEE DETAILS.</div>
-              <div class="desc" id="placeDesc">—</div>
-            </div>
-
-            <div class="costBox">
-              <div class="title">PRICING</div>
-              <div class="sub">OSRM ROAD KM + 6–10% DISCOUNT. PER PERSON PRICE.</div>
-              <div id="costRows"></div>
-            </div>
-          </div>
-
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="brand">
+        <img class="logo" src="logo.png" alt="Logo">
+        <div style="min-width:0;">
+          <h1>Himachal Explorer — Index</h1>
+          <p>Type START → choose Days/Pax → get ONE BEST package per END DISTRICT (max locations)</p>
         </div>
       </div>
+      <div class="status" id="dataStatus">LOADING…</div>
     </div>
 
-    <div class="layout">
-      <!-- ✅ RULE BACKGROUND -->
-      <div class="card pad section-bg" id="ruleCard" style="--secBg:url('temple.jpg');">
-        <div class="title">RULE</div>
-        <div class="sub" style="text-transform:none;">
-          ✅ You provide START (type it).<br/>
-          ✅ Package title shows END as <b>DISTRICT</b> (not place).<br/>
-          ✅ Example: AMRITSAR → KULLU (even if last place is KASOL).<br/>
-          ✅ If end is MATHURA, title will be AMRITSAR → MATHURA.
+    <div class="grid">
+      <!-- LEFT: Controls + Packages -->
+      <div class="card">
+        <div class="cardHead">
+          <p class="title">Search Requirements</p>
+          <p class="sub">START IS REQUIRED • DAYS/PAX OPTIONAL</p>
         </div>
-      </div>
 
-      <!-- ✅ MAP BACKGROUND -->
-      <div class="card mapCard section-bg" id="mapCard" style="--secBg:url('trek.jpeg');">
         <div class="pad">
-          <div class="title">MAP</div>
-          <div class="sub">ACTUAL ROAD ROUTE LINE</div>
-          <div id="map"></div>
+          <div class="controls">
+            <div class="field" style="grid-column: 1 / -1;">
+              <label>START (TYPE OR PICK)</label>
+              <input id="startInp" list="startList" placeholder="E.G. CHANDIGARH / AMRITSAR / DELHI">
+              <datalist id="startList"></datalist>
+            </div>
+
+            <div class="field">
+              <label>DAYS (OPTIONAL)</label>
+              <select id="daysSel">
+                <option value="">ANY</option>
+                <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+                <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>PEOPLE (PAX)</label>
+              <select id="paxSel">
+                <option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                <option value="5">5</option><option value="6">6</option><option value="7">7</option>
+                <option value="8">8</option><option value="9">9</option><option value="10">10</option>
+                <option value="11">11</option><option value="12">12</option>
+              </select>
+            </div>
+
+            <button class="btn" id="runBtn" style="grid-column: 1 / -1;">Find Packages</button>
+            <button class="btn secondary" id="resetBtn" style="grid-column: 1 / -1;">Reset</button>
+          </div>
+        </div>
+
+        <div class="pillRow" id="summaryPills"></div>
+
+        <div class="cardHead" style="border-top:1px solid var(--stroke);">
+          <p class="title">Packages</p>
+          <p class="sub">PACKAGE TITLE = START → END DISTRICT (LOOP FIX: IF END RETURNS TO START, USE SECOND-LAST)</p>
+        </div>
+
+        <div class="pkgList" id="pkgGrid">
+          <div class="sub">TYPE START AND CLICK FIND…</div>
         </div>
       </div>
+
+      <!-- RIGHT: Map + Places + Details -->
+      <div class="rightGrid">
+
+        <div class="card">
+          <div class="cardHead">
+            <p class="title">Map</p>
+            <p class="sub">Actual Road Route (OSRM)</p>
+          </div>
+          <div class="pad">
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+              <button class="btn secondary" id="fitBtn" style="width:auto;">Fit Map</button>
+              <button class="btn secondary" id="clearBtn" style="width:auto;">Clear Route</button>
+            </div>
+            <div id="map"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="cardHead">
+            <p class="title">Package Places</p>
+            <p class="sub"><span id="placesCount">—</span></p>
+          </div>
+          <div class="pad">
+            <div class="placeBtns" id="placesButtons">
+              <span class="sub">CLICK A PACKAGE TO SHOW PLACES…</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="twoCol">
+          <div class="box" id="placeDetail">
+            <h3>Place Details</h3>
+            <div class="meta">CLICK ANY PLACE TO SEE DETAILS.</div>
+            <div class="desc" id="placeDesc">—</div>
+          </div>
+
+          <div class="box">
+            <h3>Pricing</h3>
+            <div class="meta">OSRM ROAD KM + 6–10% DISCOUNT • PER PERSON</div>
+            <div id="costRows" style="margin-top:8px;"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="cardHead">
+            <p class="title">Recommended Nearby (Max 3)</p>
+            <p class="sub">If nearby places are not in the package (near end area), we recommend up to 3</p>
+          </div>
+          <div class="pad">
+            <div class="placeBtns" id="recoButtons">
+              <span class="sub">OPEN A PACKAGE TO SEE RECOMMENDATIONS…</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
+
   </div>
 
   <div class="toast" id="toast"></div>
 
 <script>
 /***********************
- * ✅ LIVE PARTICLES (VISIBLE)
+ * ✅ LIVE PARTICLES
  ***********************/
 (function(){
   const c = document.getElementById('fx');
@@ -469,34 +583,8 @@ const firebaseConfig = {
   appId: "1:000000000000:web:0000000000000000000000",
   measurementId: "G-0000000000"
 };
-if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-
-/***********************
- * ✅ AUTO-ROTATE BACKGROUNDS (uses all your images)
- ***********************/
-const BG = {
-  hero: ["201-himalaya.jpg","kinnaur-kailash.webp","Kee_monastery.jpg","n1.jpg"],
-  packages: ["Travelers.jpg","activity.jpg","trek.jpeg"],
-  places: ["activity.jpg","Travelers.jpg","Kee_monastery.jpg"],
-  rule: ["temple.jpg","201-himalaya.jpg","kinnaur-kailash.webp"],
-  map: ["trek.jpeg","Dark.jpg","n1.jpg","Kee_monastery.jpg"]
-};
-function rotateSectionBg(el, files, ms=6500){
-  if(!el || !files || !files.length) return;
-  let i = 0;
-  const set = () => {
-    el.style.setProperty("--secBg", `url('${files[i]}')`);
-    i = (i + 1) % files.length;
-  };
-  set();
-  setInterval(set, ms);
-}
-rotateSectionBg(document.getElementById("heroBg"), BG.hero, 7000);
-rotateSectionBg(document.getElementById("packagesBlock"), BG.packages, 6500);
-rotateSectionBg(document.getElementById("placesBlock"), BG.places, 7500);
-rotateSectionBg(document.getElementById("ruleCard"), BG.rule, 9000);
-rotateSectionBg(document.getElementById("mapCard"), BG.map, 8000);
 
 /***********************
  * ✅ MAP
@@ -528,22 +616,28 @@ function escapeHtml(str){
     .replaceAll('"',"&quot;").replaceAll("'","&#039;");
 }
 function safeLower(x){ return String(x ?? "").trim().toLowerCase(); }
+function normDistrict(d){ return String(d||"").trim().toUpperCase().replace(/\s+/g," "); }
+function initials(name){
+  const parts = String(name||"").trim().split(/\s+/).slice(0,2);
+  const ini = parts.map(x=>x[0]).join("").toUpperCase();
+  return ini || "HP";
+}
+function rupees(n){ return "₹" + Math.round(Number(n)||0).toLocaleString("en-IN"); }
 function pill(label, value){
   const div = document.createElement("div");
   div.className = "pill";
   div.innerHTML = `${escapeHtml(label)}: <b>${escapeHtml(value)}</b>`;
   return div;
 }
-function initials(name){
-  const parts = String(name||"").trim().split(/\s+/).slice(0,2);
-  const ini = parts.map(x=>x[0]).join("").toUpperCase();
-  return ini || "HP";
-}
-function rupees(n){
-  return "₹" + Math.round(Number(n)||0).toLocaleString("en-IN");
-}
-function normDistrict(d){
-  return String(d||"").trim().toUpperCase().replace(/\s+/g," ");
+function haversineKm(lat1, lon1, lat2, lon2){
+  const toRad = (x)=>x*Math.PI/180;
+  const R = 6371;
+  const dLat = toRad(lat2-lat1);
+  const dLon = toRad(lon2-lon1);
+  const a =
+    Math.sin(dLat/2)**2 +
+    Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*(Math.sin(dLon/2)**2);
+  return 2*R*Math.asin(Math.sqrt(a));
 }
 
 /***********************
@@ -555,6 +649,9 @@ let ACTIVE_TEMPLATES = [];
 let NAME_TO_ID = new Map();
 let STARTS = [];
 
+let CURRENT_STOPS = [];
+let CURRENT_ANCHOR_PID = null;
+
 /***********************
  * ✅ LOAD
  ***********************/
@@ -564,6 +661,7 @@ async function loadAll(){
     db.ref("templates").once("value"),
     db.ref("locations").once("value"),
   ]);
+
   TEMPLATES = tplSnap.val() || {};
   LOCS = locSnap.val() || {};
 
@@ -576,7 +674,6 @@ async function loadAll(){
 
   buildNameIndex();
   buildStartList(ACTIVE_TEMPLATES);
-
   setStatus(`LOADED ${ACTIVE_TEMPLATES.length} TEMPLATES • ${Object.keys(LOCS).length} LOCATIONS`);
 }
 
@@ -588,7 +685,6 @@ function buildNameIndex(){
     NAME_TO_ID.set(nm.toLowerCase(), pid);
   }
 }
-
 function buildStartList(templates){
   const set = new Set();
   templates.forEach(t=>{
@@ -607,7 +703,7 @@ function buildStartList(templates){
 }
 
 /***********************
- * ✅ STOPS IN ROUTE ORDER (DAY-WISE)
+ * ✅ STOPS ORDER (DAY-WISE)
  ***********************/
 function stopsFromTemplate(tpl){
   const days = Number(tpl.days || 1);
@@ -634,7 +730,8 @@ function stopsFromTemplate(tpl){
 function stopsCount(tpl){ return stopsFromTemplate(tpl).length; }
 
 /***********************
- * ✅ END DISTRICT (CORRECTED)
+ * ✅ END DISTRICT (CORRECTED LOOP FIX)
+ * - If end returns to start district, use SECOND-LAST stop
  ***********************/
 function getEndDistrictKey(tpl){
   const startPointName = String(tpl.start_point || "").trim();
@@ -643,6 +740,7 @@ function getEndDistrictKey(tpl){
     ? normDistrict((LOCS[startPid] || {})["District"] || (LOCS[startPid] || {}).district || "")
     : "";
 
+  // 1) Try end_point -> district (if end_point matches a location name)
   const endPointName = String(tpl.end_point || "").trim();
   if(endPointName){
     const endPid = NAME_TO_ID.get(endPointName.toLowerCase());
@@ -653,7 +751,9 @@ function getEndDistrictKey(tpl){
     }
   }
 
+  // 2) Derive from stops (last, or second-last if return-to-start loop)
   const stops = stopsFromTemplate(tpl).filter(Boolean);
+
   if(stops.length >= 1){
     const lastId = stops[stops.length - 1];
     const lp = LOCS[lastId] || {};
@@ -665,6 +765,7 @@ function getEndDistrictKey(tpl){
       const secondLastD = normDistrict(sp["District"] || sp.district || "");
       if(secondLastD) return secondLastD;
     }
+
     if(lastD) return lastD;
   }
 
@@ -672,9 +773,34 @@ function getEndDistrictKey(tpl){
   return "UNKNOWN";
 }
 
-/*********************
- * ✅ PLACE THUMB
- *********************/
+/***********************
+ * ✅ ANCHOR (END AREA PLACE ID) FOR RECOMMENDATIONS
+ * - If loop back to start district, anchor = second-last stop
+ * - Else anchor = last stop
+ ***********************/
+function getAnchorPlaceIdForTemplate(tpl){
+  const stops = stopsFromTemplate(tpl).filter(Boolean);
+  if(!stops.length) return null;
+
+  const startPointName = String(tpl.start_point || "").trim();
+  const startPid = NAME_TO_ID.get(startPointName.toLowerCase());
+  const startDistrict = startPid
+    ? normDistrict((LOCS[startPid] || {})["District"] || (LOCS[startPid] || {}).district || "")
+    : "";
+
+  const lastId = stops[stops.length - 1];
+  const lastP = LOCS[lastId] || {};
+  const lastD = normDistrict(lastP["District"] || lastP.district || "");
+
+  if(startDistrict && lastD && lastD === startDistrict && stops.length >= 2){
+    return stops[stops.length - 2];
+  }
+  return lastId;
+}
+
+/***********************
+ * ✅ THUMB URL
+ ***********************/
 function getPlaceThumbUrl(p){
   p = p || {};
   const p1 = p["photo 1"] || p.photo1 || p.photo_1 || p.photo || "";
@@ -687,7 +813,7 @@ function getPlaceThumbUrl(p){
 }
 
 /***********************
- * ✅ VEHICLE & PRICING
+ * ✅ PRICING
  ***********************/
 function pickVehicleByPax(pax){
   if(pax <= 4) return "sedan";
@@ -702,31 +828,26 @@ function discountedCost(marketCost){
 function estimateMarketCost({ km=0, days=3, pax=2, vehicle="sedan" }){
   const ratePerKm = { sedan:16, suv:20, tempo:28 }[vehicle] || 16;
   const driverPerDay = (vehicle==="tempo") ? 1300 : 1000;
-
   const minKm = Math.max(60, km || 0);
   const transport = Math.round(minKm * ratePerKm);
   const driver = Math.round(days * driverPerDay);
-
   const rooms = Math.ceil(pax / 2);
   const stayPerRoomNight = 1800;
   const stay = Math.round(rooms * stayPerRoomNight * Math.max(1, (days - 1)));
-
   const service = Math.round((transport + driver + stay) * 0.08);
   const marketTotal = transport + driver + stay + service;
-
   return { transport, driver, stay, service, marketTotal };
 }
 function renderCostBox({status="idle", km=0, days=3, pax=2}){
   const box = $("costRows");
   if(status === "idle"){
-    box.innerHTML = `<div class="sub" style="margin-top:8px;">SELECT A PACKAGE TO CALCULATE COST.</div>`;
+    box.innerHTML = `<div class="sub" style="margin-top:6px;">SELECT A PACKAGE TO CALCULATE COST.</div>`;
     return;
   }
   if(status === "error"){
-    box.innerHTML = `<div class="sub" style="margin-top:8px;">COST NOT AVAILABLE (ROAD KM NOT READY).</div>`;
+    box.innerHTML = `<div class="sub" style="margin-top:6px;">COST NOT AVAILABLE (ROAD KM NOT READY).</div>`;
     return;
   }
-
   const vehicle = pickVehicleByPax(pax);
   const mk = estimateMarketCost({ km, days, pax, vehicle });
   const disc = discountedCost(mk.marketTotal);
@@ -737,12 +858,10 @@ function renderCostBox({status="idle", km=0, days=3, pax=2}){
     <div class="costRow"><span>DAYS</span><b>${days}</b></div>
     <div class="costRow"><span>PEOPLE</span><b>${pax}</b></div>
     <div class="costRow"><span>VEHICLE</span><b>${vehicle.toUpperCase()}</b></div>
-
-    <div class="costRow"><span>TRANSPORT (MARKET)</span><b>${rupees(mk.transport)}</b></div>
+    <div class="costRow"><span>TRANSPORT</span><b>${rupees(mk.transport)}</b></div>
     <div class="costRow"><span>DRIVER</span><b>${rupees(mk.driver)}</b></div>
     <div class="costRow"><span>STAY</span><b>${rupees(mk.stay)}</b></div>
-    <div class="costRow"><span>SERVICE / MARGIN</span><b>${rupees(mk.service)}</b></div>
-
+    <div class="costRow"><span>SERVICE</span><b>${rupees(mk.service)}</b></div>
     <div class="costTotal">
       <div>
         <div class="sub">OUR TOTAL PRICE</div>
@@ -764,6 +883,7 @@ async function drawRoadRouteFromPlaces(placeIds){
 
   const coords = [];
   const valid = [];
+
   placeIds.forEach(pid=>{
     const p = LOCS[pid] || {};
     const lat = Number(p.Latitude ?? p.lat);
@@ -773,6 +893,7 @@ async function drawRoadRouteFromPlaces(placeIds){
       valid.push(pid);
     }
   });
+
   if(coords.length < 2){
     toast("NOT ENOUGH COORDINATES FOR ROAD ROUTE");
     return { ok:false, km:0 };
@@ -785,6 +906,7 @@ async function drawRoadRouteFromPlaces(placeIds){
       const step = Math.ceil(coords.length / maxPts);
       used = coords.filter((_,i)=> i % step === 0 || i === coords.length-1);
     }
+
     const url =
       "https://router.project-osrm.org/route/v1/driving/" +
       used.map(c=>c.join(",")).join(";") +
@@ -792,6 +914,7 @@ async function drawRoadRouteFromPlaces(placeIds){
 
     const res = await fetch(url);
     const data = await res.json();
+
     if(!data.routes?.length){
       toast("ROAD ROUTE NOT AVAILABLE");
       return { ok:false, km:0 };
@@ -800,7 +923,7 @@ async function drawRoadRouteFromPlaces(placeIds){
     const route = data.routes[0];
     const latlngs = route.geometry.coordinates.map(c=>[c[1],c[0]]);
     routeLine = L.polyline(latlngs, { weight: 5, opacity: .95 }).addTo(map);
-    map.fitBounds(routeLine.getBounds(), { padding:[20,20] });
+    map.fitBounds(routeLine.getBounds(), { padding:[18,18] });
 
     coords.forEach((c,i)=>{
       const pid = valid[i] || placeIds[i];
@@ -817,7 +940,7 @@ async function drawRoadRouteFromPlaces(placeIds){
   }
 }
 function fitMap(){
-  if(routeLine){ map.fitBounds(routeLine.getBounds(), { padding:[18,18] }); return; }
+  if(routeLine){ map.fitBounds(routeLine.getBounds(), { padding:[18,18] }); }
 }
 
 /***********************
@@ -826,11 +949,13 @@ function fitMap(){
 function renderPlaceButtons(placeIds){
   const box = $("placesButtons");
   box.innerHTML = "";
+
   if(!placeIds.length){
     box.innerHTML = `<span class="sub">NO PLACES FOUND IN THIS PACKAGE.</span>`;
     $("placesCount").textContent = "0 PLACES";
     return;
   }
+
   $("placesCount").textContent = `${placeIds.length} PLACES`;
 
   placeIds.forEach((pid, idx)=>{
@@ -857,6 +982,7 @@ function renderPlaceButtons(placeIds){
     box.appendChild(btn);
   });
 }
+
 function selectPlace(placeId, order){
   const btns = $("placesButtons").querySelectorAll(".place-btn");
   btns.forEach(b=>b.classList.remove("active"));
@@ -885,10 +1011,94 @@ function selectPlace(placeId, order){
 }
 
 /***********************
- * ✅ ONE END DISTRICT = ONE BEST PACKAGE
+ * ✅ RECOMMEND UP TO 3 NEARBY (NOT IN PACKAGE)
+ * Anchor = end-area place (last stop, or second-last if return-to-start loop)
+ ***********************/
+function renderRecommendations(anchorPid, excludeSet){
+  const box = $("recoButtons");
+  box.innerHTML = "";
+
+  if(!anchorPid || !LOCS[anchorPid]){
+    box.innerHTML = `<span class="sub">OPEN A PACKAGE TO SEE RECOMMENDATIONS…</span>`;
+    return;
+  }
+
+  const a = LOCS[anchorPid];
+  const alat = Number(a.Latitude ?? a.lat);
+  const alng = Number(a.Longitude ?? a.lng);
+  const aDist = normDistrict(a["District"] || a.district || "");
+
+  if(!isFinite(alat) || !isFinite(alng)){
+    box.innerHTML = `<span class="sub">RECOMMENDATIONS NOT AVAILABLE (ANCHOR HAS NO COORDINATES).</span>`;
+    return;
+  }
+
+  // candidates: same district preferred, not in package, has lat/lng
+  const candidates = [];
+  for(const [pid, p] of Object.entries(LOCS)){
+    if(excludeSet.has(pid)) continue;
+    const d = normDistrict(p["District"] || p.district || "");
+    const lat = Number(p.Latitude ?? p.lat);
+    const lng = Number(p.Longitude ?? p.lng);
+    if(!isFinite(lat) || !isFinite(lng)) continue;
+
+    const sameDistrict = (aDist && d && d === aDist);
+    const distKm = haversineKm(alat, alng, lat, lng);
+
+    candidates.push({ pid, sameDistrict, distKm });
+  }
+
+  candidates.sort((x,y)=>{
+    // same district first, then nearest
+    if(x.sameDistrict !== y.sameDistrict) return (y.sameDistrict?1:0) - (x.sameDistrict?1:0);
+    return x.distKm - y.distKm;
+  });
+
+  const top3 = candidates.slice(0,3);
+  if(!top3.length){
+    box.innerHTML = `<span class="sub">NO RECOMMENDATIONS FOUND.</span>`;
+    return;
+  }
+
+  top3.forEach((c, idx)=>{
+    const p = LOCS[c.pid] || {};
+    const name = (p["Location Name"] || c.pid).toUpperCase();
+    const seg  = String(p["Segment Type"] || p.segment || "—").toUpperCase();
+    const url = getPlaceThumbUrl(p);
+
+    const btn = document.createElement("button");
+    btn.className = "place-btn";
+    btn.innerHTML = `
+      <div class="thumb">
+        ${url ? `<img src="${escapeHtml(url)}" alt="${escapeHtml(name)}" loading="lazy"
+                 onerror="this.remove(); this.parentNode.textContent='${escapeHtml(initials(name))}';">`
+              : `${escapeHtml(initials(name))}`}
+      </div>
+      <div class="pinfo">
+        <div class="pname">${escapeHtml(name)}</div>
+        <div class="pmeta">${escapeHtml(seg)} • ${escapeHtml(c.distKm.toFixed(1))} KM</div>
+      </div>
+      <span class="ord">${idx+1}</span>
+    `;
+    btn.onclick = ()=>{
+      // open details + focus map
+      $("placeDetail").querySelector("h3").textContent = name;
+      $("placeDetail").querySelector(".meta").textContent = `${seg} • RECOMMENDED`;
+      $("placeDesc").textContent = String(p["Short Description"] || p["Overview"] || "—");
+
+      const lat = Number(p.Latitude ?? p.lat);
+      const lng = Number(p.Longitude ?? p.lng);
+      if(isFinite(lat) && isFinite(lng)) map.setView([lat,lng], 12);
+    };
+    box.appendChild(btn);
+  });
+}
+
+/***********************
+ * ✅ ONE END DISTRICT = ONE BEST PACKAGE (MAX LOCATIONS)
  ***********************/
 function packageScore(tpl){
-  const locs = stopsFromTemplate(tpl).length;
+  const locs = stopsCount(tpl);
   const pri  = Number(tpl.priority ?? 999);
   const km   = Number(tpl.total_km_est ?? tpl.estimated_drive_km ?? 1e9);
   return { locs, pri, km };
@@ -899,18 +1109,15 @@ function isBetter(a,b){
   return a.km < b.km;
 }
 
-/***********************
- * ✅ FIND PACKAGES
- ***********************/
 function normalizeStartInput(){
   const typed = String($("startInp").value || "").trim().toUpperCase();
   if(!typed) return "";
 
-  const match = STARTS.find(s => String(s).trim().toUpperCase() === typed);
-  if(match) return match;
+  const exact = STARTS.find(s => String(s).trim().toUpperCase() === typed);
+  if(exact) return exact;
 
-  const match2 = STARTS.find(s => String(s).trim().toUpperCase().startsWith(typed));
-  if(match2) return match2;
+  const prefix = STARTS.find(s => String(s).trim().toUpperCase().startsWith(typed));
+  if(prefix) return prefix;
 
   return "";
 }
@@ -923,9 +1130,14 @@ function applyFilters(){
   $("summaryPills").innerHTML = "";
   $("pkgGrid").innerHTML = `<div class="sub">TYPE START AND CLICK FIND…</div>`;
   $("placesButtons").innerHTML = `<span class="sub">CLICK A PACKAGE TO SHOW PLACES…</span>`;
+  $("recoButtons").innerHTML = `<span class="sub">OPEN A PACKAGE TO SEE RECOMMENDATIONS…</span>`;
   $("placesCount").textContent = "—";
   renderCostBox({status:"idle"});
   clearMap();
+
+  $("placeDetail").querySelector("h3").textContent = "Place Details";
+  $("placeDetail").querySelector(".meta").textContent = "CLICK ANY PLACE TO SEE DETAILS.";
+  $("placeDesc").textContent = "—";
 
   if(!start){
     toast("START NOT FOUND IN DATABASE");
@@ -961,15 +1173,16 @@ function applyFilters(){
     return A.km - B.km;
   });
 
-  $("summaryPills").appendChild(pill("START", String(start).toUpperCase()));
-  $("summaryPills").appendChild(pill("PACKAGES", String(finalList.length)));
-  $("summaryPills").appendChild(pill("PAX", String(pax)));
-  if(daysF) $("summaryPills").appendChild(pill("DAYS", String(daysF)));
+  const pills = $("summaryPills");
+  pills.appendChild(pill("START", String(start).toUpperCase()));
+  pills.appendChild(pill("PACKAGES", String(finalList.length)));
+  pills.appendChild(pill("PAX", String(pax)));
+  if(daysF) pills.appendChild(pill("DAYS", String(daysF)));
 
-  renderPackagesGrid(finalList, start);
+  renderPackagesList(finalList, start);
 }
 
-function renderPackagesGrid(list, start){
+function renderPackagesList(list, start){
   const grid = $("pkgGrid");
   grid.innerHTML = "";
 
@@ -979,14 +1192,13 @@ function renderPackagesGrid(list, start){
   }
 
   list.forEach(t=>{
-    const key = t.key;
     const endDistrict = getEndDistrictKey(t);
     const days = Number(t.days || 0) || 0;
     const tempoOk = (t.tempo_ok === true || safeLower(t.tempo_ok)==="true");
 
     const card = document.createElement("div");
     card.className = "pkg";
-    card.dataset.key = key;
+    card.dataset.key = t.key;
 
     card.innerHTML = `
       <div class="pkgTop">
@@ -995,7 +1207,7 @@ function renderPackagesGrid(list, start){
       </div>
       <div class="pkgMeta">
         <b>END DISTRICT:</b> ${escapeHtml(String(endDistrict).toUpperCase())}<br/>
-        <b>LOCATIONS:</b> ${stopsFromTemplate(t).length} &nbsp;•&nbsp; <b>DAYS:</b> ${days || "—"}<br/>
+        <b>LOCATIONS:</b> ${stopsCount(t)} &nbsp;•&nbsp; <b>DAYS:</b> ${days || "—"}<br/>
         <b>ROUTE ID:</b> ${escapeHtml(String(t.route_id||"—").toUpperCase())}
       </div>
     `;
@@ -1003,8 +1215,9 @@ function renderPackagesGrid(list, start){
     card.onclick = async ()=>{
       document.querySelectorAll(".pkg").forEach(x=>x.classList.remove("active"));
       card.classList.add("active");
-      await openTemplate(key);
+      await openTemplate(t.key);
     };
+
     grid.appendChild(card);
   });
 }
@@ -1017,8 +1230,15 @@ async function openTemplate(key){
   if(!tpl){ toast("PACKAGE NOT FOUND"); return; }
 
   const stops = stopsFromTemplate(tpl);
+  CURRENT_STOPS = stops;
+
   renderPlaceButtons(stops);
   if(stops.length) selectPlace(stops[0], 1);
+
+  // anchor for recommendations
+  CURRENT_ANCHOR_PID = getAnchorPlaceIdForTemplate(tpl);
+  const exclude = new Set(stops);
+  renderRecommendations(CURRENT_ANCHOR_PID, exclude);
 
   renderCostBox({status:"idle"});
   const rr = await drawRoadRouteFromPlaces(stops);
@@ -1040,6 +1260,12 @@ async function openTemplate(key){
 $("runBtn").addEventListener("click", applyFilters);
 $("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
 
+$("fitBtn").addEventListener("click", fitMap);
+$("clearBtn").addEventListener("click", ()=>{
+  clearMap();
+  toast("ROUTE CLEARED");
+});
+
 $("resetBtn").addEventListener("click", ()=>{
   $("startInp").value = "";
   $("daysSel").value = "";
@@ -1048,20 +1274,16 @@ $("resetBtn").addEventListener("click", ()=>{
   $("summaryPills").innerHTML = "";
   $("pkgGrid").innerHTML = `<div class="sub">TYPE START AND CLICK FIND…</div>`;
   $("placesButtons").innerHTML = `<span class="sub">CLICK A PACKAGE TO SHOW PLACES…</span>`;
+  $("recoButtons").innerHTML = `<span class="sub">OPEN A PACKAGE TO SEE RECOMMENDATIONS…</span>`;
   $("placesCount").textContent = "—";
   renderCostBox({status:"idle"});
 
-  $("placeDetail").querySelector("h3").textContent = "PLACE DETAILS";
+  $("placeDetail").querySelector("h3").textContent = "Place Details";
   $("placeDetail").querySelector(".meta").textContent = "CLICK ANY PLACE TO SEE DETAILS.";
   $("placeDesc").textContent = "—";
 
   clearMap();
   toast("RESET DONE");
-});
-$("fitBtn").addEventListener("click", fitMap);
-$("clearBtn").addEventListener("click", ()=>{
-  clearMap();
-  toast("ROUTE CLEARED");
 });
 
 /***********************
