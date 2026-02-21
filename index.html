@@ -578,12 +578,7 @@ function stopsFromTemplate(tpl){
 function stopsCount(tpl){ return stopsFromTemplate(tpl).length; }
 
 /***********************
- * ✅ END DISTRICT (your requirement)
- * - If end_point is a place like "Mathura", find its location in LOCS by name → get District
- * - Else use last stop's District
- * - If Kasol is last stop and District is Kullu → show KULLU
- ***********************/
- function getEndDistrictKey(tpl){
+function getEndDistrictKey(tpl){
   const startPointName = String(tpl.start_point || "").trim();
   const startPid = NAME_TO_ID.get(startPointName.toLowerCase());
   const startDistrict = startPid ? normDistrict((LOCS[startPid]||{})["District"] || (LOCS[startPid]||{}).district || "") : "";
@@ -620,8 +615,7 @@ function stopsCount(tpl){ return stopsFromTemplate(tpl).length; }
   // 3) final fallback
   if(endPointName) return endPointName.toUpperCase();
   return "UNKNOWN";
-}
-  
+} 
 /*********************
  * ✅ PLACE THUMB
  ***********************/
