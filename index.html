@@ -578,44 +578,57 @@ function stopsFromTemplate(tpl){
 function stopsCount(tpl){ return stopsFromTemplate(tpl).length; }
 
 
+/***********************
+ * ✅ END DISTRICT (CORRECTED)
+ * RULE:
+ * 1) If end_point is a place-name and exists in /locations, use its District
+ * 2) Else use last stop District
+ * 3) BUT if last stop District == start District (return-to-start loop),
+ *    then use SECOND-LAST stop District as END
+ ***********************/
 function getEndDistrictKey(tpl){
   const startPointName = String(tpl.start_point || "").trim();
   const startPid = NAME_TO_ID.get(startPointName.toLowerCase());
-  const startDistrict = startPid ? normDistrict((LOCS[startPid]||{})["District"] || (LOCS[startPid]||{}).district || "") : "";
+  const startDistrict = startPid
+    ? normDistrict((LOCS[startPid] || {})["District"] || (LOCS[startPid] || {}).district || "")
+    : "";
 
-  // 1) If end_point is a place-name and exists in LOCS, try its district first
+  // 1) Try end_point -> district (if end_point matches a location name)
   const endPointName = String(tpl.end_point || "").trim();
   if(endPointName){
-    const pid = NAME_TO_ID.get(endPointName.toLowerCase());
-    if(pid){
-      const p = LOCS[pid] || {};
-      const d = normDistrict(p["District"] || p.district || "");
+    const endPid = NAME_TO_ID.get(endPointName.toLowerCase());
+    if(endPid){
+      const ep = LOCS[endPid] || {};
+      const d = normDistrict(ep["District"] || ep.district || "");
       if(d) return d;
     }
   }
 
-  // 2) Use last stop district, but if it equals start district, use second-last stop
-  const stops = stopsFromTemplate(tpl);
-  if(stops.length){
-    const lastId = stops[stops.length - 1];
-    const lastP  = LOCS[lastId] || {};
-    const lastD  = normDistrict(lastP["District"] || lastP.district || "");
+  // 2) Derive from stops (last, or second-last if return-to-start loop)
+  const stops = stopsFromTemplate(tpl).filter(Boolean);
 
-    // ✅ NEW: if lastD == startDistrict, use second-last stop to decide END DISTRICT
+  if(stops.length >= 1){
+    const lastId = stops[stops.length - 1];
+    const lp = LOCS[lastId] || {};
+    const lastD = normDistrict(lp["District"] || lp.district || "");
+
+    // ✅ Return-to-start loop fix: if lastD == startDistrict, use second-last
     if(startDistrict && lastD && lastD === startDistrict && stops.length >= 2){
       const secondLastId = stops[stops.length - 2];
-      const p2 = LOCS[secondLastId] || {};
-      const d2 = normDistrict(p2["District"] || p2.district || "");
-      if(d2) return d2;
+      const sp = LOCS[secondLastId] || {};
+      const secondLastD = normDistrict(sp["District"] || sp.district || "");
+      if(secondLastD) return secondLastD;
     }
 
     if(lastD) return lastD;
   }
 
-  // 3) final fallback
+  // 3) Final fallback: show end_point text (or UNKNOWN)
   if(endPointName) return endPointName.toUpperCase();
   return "UNKNOWN";
-} 
+}
+
+
 /*********************
  * ✅ PLACE THUMB
  ***********************/
