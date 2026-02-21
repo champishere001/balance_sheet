@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — Packages Grid + Road KM + Per Person</title>
+  <title>Himachal Explorer — Start → End District Packages</title>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -15,139 +15,69 @@
 
   <style>
     :root{
-      --bg0:#f6f8ff;
-      --stroke: rgba(12,18,40,.10);
+      --bg0:#f2f6ff;
+      --stroke: rgba(12,18,40,.12);
       --muted: rgba(12,18,40,.66);
       --text: #0b1220;
-      --card: rgba(255,255,255,.90);
+      --card: rgba(255,255,255,.78);
       --shadow: 0 18px 55px rgba(12,18,40,.12);
       --radius: 18px;
       --accent: #2563eb;
       --ok:#10b981;
       --warn:#f59e0b;
-      --bad:#ef4444;
     }
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
+    body{ margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--text); overflow-x:hidden; background:var(--bg0); }
 
-    /* ✅ LIGHT PREMIUM BACKGROUND (NSO STYLE) */
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: var(--bg0);
-      color:var(--text);
-      overflow-x:hidden;
-    }
-    .bg{
-      position:fixed; inset:0; z-index:-4;
+    /* ✅ Visible live background */
+    .bg{ position:fixed; inset:0; z-index:-5;
       background:
-        radial-gradient(1200px 560px at 18% 12%, rgba(37,99,235,.16), transparent 60%),
-        radial-gradient(1100px 580px at 82% 18%, rgba(16,185,129,.14), transparent 60%),
-        radial-gradient(900px 520px at 50% 86%, rgba(167,139,250,.10), transparent 65%),
-        linear-gradient(180deg, #f2f6ff, #ffffff);
+        radial-gradient(1200px 560px at 18% 12%, rgba(37,99,235,.22), transparent 60%),
+        radial-gradient(1100px 580px at 82% 18%, rgba(16,185,129,.20), transparent 60%),
+        radial-gradient(900px 520px at 50% 86%, rgba(167,139,250,.16), transparent 65%),
+        linear-gradient(180deg, #eef4ff, #ffffff);
     }
-    .noise{
-      position:fixed; inset:0; z-index:-3;
+    .noise{ position:fixed; inset:0; z-index:-4; pointer-events:none; opacity:.10; mix-blend-mode:overlay;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
-      opacity:.08;
-      mix-blend-mode:overlay;
-      pointer-events:none;
     }
-    .blob{
-      position:fixed;
-      width:420px; height:420px;
-      border-radius:50%;
-      filter: blur(55px);
-      opacity:.14;
-      z-index:-2;
-      animation: float 9s ease-in-out infinite;
-      pointer-events:none;
-    }
-    .b1{ left:-120px; top:80px;  background: rgba(37,99,235,.95); }
-    .b2{ right:-160px; top:140px; background: rgba(16,185,129,.90); animation-duration: 11s; }
-    .b3{ left:38%; bottom:-220px; background: rgba(167,139,250,.90); animation-duration: 13s; }
-    @keyframes float{
-      0%,100%{ transform: translate(0,0) scale(1); }
-      50%{ transform: translate(26px,-18px) scale(1.07); }
-    }
-    #fx{
-      position:fixed; inset:0; z-index:-1;
-      pointer-events:none;
-      opacity:.55;
-    }
+    .blob{ position:fixed; width:460px; height:460px; border-radius:50%; filter: blur(60px); opacity:.22; z-index:-3; pointer-events:none; animation: float 10s ease-in-out infinite; }
+    .b1{ left:-140px; top:60px;  background: rgba(37,99,235,.95); }
+    .b2{ right:-180px; top:140px; background: rgba(16,185,129,.92); animation-duration: 12s; }
+    .b3{ left:36%; bottom:-240px; background: rgba(167,139,250,.92); animation-duration: 14s; }
+    @keyframes float{ 0%,100%{ transform: translate(0,0) scale(1); } 50%{ transform: translate(28px,-20px) scale(1.08); } }
+    #fx{ position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.95; }
 
     .wrap{ max-width: 1400px; margin: 0 auto; padding: 16px; }
-
-    .card{
-      background: var(--card);
-      border: 1px solid var(--stroke);
-      box-shadow: var(--shadow);
-      border-radius: var(--radius);
-      overflow:hidden;
-      backdrop-filter: blur(10px);
-    }
-    .pad{ padding: 14px; }
-    .hrow{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
-    .title{ font-size: 18px; font-weight: 900; letter-spacing: .2px; text-transform: uppercase; }
-    .sub{ color: var(--muted); font-size: 12.5px; line-height:1.35; text-transform: uppercase; }
-
-    .hero{
-      padding: 18px 16px;
+    .card{ background: var(--card); border: 1px solid var(--stroke); box-shadow: var(--shadow); border-radius: var(--radius); overflow:hidden; backdrop-filter: blur(14px); }
+    .hero{ padding: 18px 16px; border-bottom: 1px solid var(--stroke);
       background:
-        linear-gradient(135deg, rgba(37,99,235,.10), rgba(16,185,129,.07)),
-        radial-gradient(900px 350px at 20% -20%, rgba(37,99,235,.16), transparent 60%),
-        radial-gradient(700px 300px at 95% 0%, rgba(16,185,129,.12), transparent 60%);
-      border-bottom: 1px solid var(--stroke);
+        linear-gradient(135deg, rgba(37,99,235,.10), rgba(16,185,129,.08)),
+        radial-gradient(900px 350px at 20% -20%, rgba(37,99,235,.20), transparent 60%),
+        radial-gradient(700px 300px at 95% 0%, rgba(16,185,129,.18), transparent 60%);
     }
-
-    /* ✅ Logo row */
-    .hero-top{
-      display:flex;
-      align-items:center;
-      gap:16px;
-      margin-bottom:14px;
-    }
-    .site-logo{
-      height:72px;
-      width:auto;
-      background:white;
-      padding:8px;
-      border-radius:18px;
-      box-shadow:0 12px 35px rgba(0,0,0,.18);
-    }
+    .hero-top{ display:flex; align-items:center; gap:16px; margin-bottom:14px; }
+    .site-logo{ height:72px; width:auto; background:white; padding:8px; border-radius:18px; box-shadow:0 12px 35px rgba(0,0,0,.16); }
     .hero-text h1{ margin:0; font-size: 22px; text-transform: uppercase; }
     .hero-text p{ margin:6px 0 0; color:var(--muted); font-size: 13px; max-width: 1050px; text-transform:none; }
+    @media(max-width:780px){ .hero-top{ flex-direction:column; text-align:center; } .site-logo{ height:56px; } }
 
-    @media(max-width:780px){
-      .hero-top{ flex-direction:column; text-align:center; }
-      .site-logo{ height:56px; }
-    }
+    .title{ font-size: 18px; font-weight: 900; letter-spacing: .2px; text-transform: uppercase; }
+    .sub{ color: var(--muted); font-size: 12.5px; line-height:1.35; text-transform: uppercase; }
+    .hrow{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
 
-    /* Main layout: left + map */
-    .layout{ display:grid; grid-template-columns: 72% 28%; gap: 14px; align-items:start; margin-top:14px; }
-    @media (max-width: 980px){ .layout{ grid-template-columns: 1fr; } }
-
-    /* Controls */
-    .controls{
-      display:grid;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      gap:10px;
-      margin-top: 12px;
-    }
+    .controls{ display:grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap:10px; margin-top: 12px; }
     @media (max-width: 980px){ .controls{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
     .field label{ display:block; font-size:11px; color:var(--muted); margin:0 0 6px 2px; text-transform: uppercase; }
     select, input{
-      width:100%;
-      padding: 10px 10px;
-      border-radius: 12px;
+      width:100%; padding: 10px 10px; border-radius: 12px;
       border: 1px solid var(--stroke);
-      background: rgba(255,255,255,.96);
-      outline:none;
-      color: var(--text);
+      background: rgba(255,255,255,.92);
+      outline:none; color: var(--text);
       text-transform: uppercase;
     }
-    select:focus, input:focus{ border-color: rgba(37,99,235,.35); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
+    select:focus, input:focus{ border-color: rgba(37,99,235,.38); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
 
     .btn{
       appearance:none; border:0; border-radius: 12px; padding: 10px 12px;
@@ -156,14 +86,8 @@
       transition: transform .12s ease, filter .12s ease; width:100%;
       text-transform: uppercase;
     }
-    .btn.secondary{
-      background: rgba(255,255,255,.96);
-      color: var(--text);
-      border: 1px solid var(--stroke);
-      box-shadow:none;
-    }
+    .btn.secondary{ background: rgba(255,255,255,.92); color: var(--text); border: 1px solid var(--stroke); box-shadow:none; }
     .btn:hover{ transform: translateY(-1px); filter: brightness(1.02); }
-    .btn:active{ transform: translateY(0); }
 
     .pill{
       display:inline-flex; align-items:center; gap:8px;
@@ -176,25 +100,17 @@
     }
     .pill b{ color: var(--text); }
 
-    /* ✅ Packages grid: 3 columns desktop */
-    .pkgGrid{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 12px;
-    }
+    .pkgGrid{ display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
     @media (max-width: 1100px){ .pkgGrid{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 780px){ .pkgGrid{ grid-template-columns: 1fr; } }
 
     .pkg{
       border: 1px solid var(--stroke);
       border-radius: 16px;
-      background: rgba(255,255,255,.95);
+      background: rgba(255,255,255,.92);
       padding: 12px;
       cursor:pointer;
       transition: transform .12s ease, border-color .12s ease;
-      position: relative;
-      overflow:hidden;
     }
     .pkg:hover{ transform: translateY(-1px); border-color: rgba(37,99,235,.28); }
     .pkg.active{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 3px rgba(37,99,235,.10); }
@@ -205,57 +121,22 @@
       border: 1px solid var(--stroke);
       background: rgba(16,185,129,.10);
       color: rgba(16,185,129,1);
-      white-space: nowrap;
-      text-transform: uppercase;
-      font-weight: 900;
+      white-space: nowrap; text-transform: uppercase; font-weight: 900;
     }
     .badge.warn{ background: rgba(245,158,11,.12); color: rgba(245,158,11,1); }
-    .badge.bad{ background: rgba(239,68,68,.12); color: rgba(239,68,68,1); }
 
-    .pkgMeta{
-      margin-top: 8px;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.35;
-      text-transform: uppercase;
-    }
+    .pkgMeta{ margin-top: 8px; font-size: 12px; color: var(--muted); line-height: 1.35; text-transform: uppercase; }
     .pkgMeta b{ color: var(--text); }
 
-    .pkgMiniPrice{
-      margin-top: 10px;
-      border-top: 1px dashed var(--stroke);
-      padding-top: 10px;
-      display:flex;
-      justify-content:space-between;
-      align-items:baseline;
-      gap:10px;
-      text-transform: uppercase;
-    }
-    .pkgMiniPrice .pp{ font-weight: 950; }
-    .pkgMiniPrice .save{
-      font-size: 11px;
-      font-weight: 950;
-      color: rgba(16,185,129,1);
-      background: rgba(16,185,129,.10);
-      border: 1px solid rgba(16,185,129,.25);
-      border-radius: 999px;
-      padding: 5px 8px;
-      white-space: nowrap;
-    }
-
-    /* Places */
     .placesWrap{ margin-top: 12px; border-top: 1px solid var(--stroke); padding-top: 12px; }
     .placesHdr{ display:flex; gap:10px; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom: 10px; }
     .count{ font-size:12px; color: var(--muted); text-transform: uppercase; }
     .btnRow{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
 
-    .placeBtns{
-      display:flex; gap:8px; flex-wrap:wrap; max-height: 280px; overflow:auto; padding: 2px;
-    }
-
+    .placeBtns{ display:flex; gap:8px; flex-wrap:wrap; max-height: 280px; overflow:auto; padding: 2px; }
     .place-btn{
       border:1px solid var(--stroke);
-      background: rgba(255,255,255,.96);
+      background: rgba(255,255,255,.92);
       border-radius: 14px;
       padding: 8px 10px;
       cursor:pointer;
@@ -275,7 +156,7 @@
       border: 1px solid var(--stroke);
       overflow:hidden;
       flex: 0 0 auto;
-      background: linear-gradient(135deg, rgba(37,99,235,.16), rgba(16,185,129,.12));
+      background: linear-gradient(135deg, rgba(37,99,235,.18), rgba(16,185,129,.14));
       display:grid; place-items:center;
       font-weight:950;
       color: rgba(12,18,40,.55);
@@ -284,20 +165,13 @@
     .pinfo{ display:flex; flex-direction:column; gap:2px; min-width: 0; }
     .pname{ font-weight:950; font-size: 12.8px; white-space:nowrap; overflow:hidden; text-overflow: ellipsis; }
     .pmeta{ font-size:11px; color: var(--muted); white-space:nowrap; overflow:hidden; text-overflow: ellipsis; }
-    .ord{
-      width:22px; height:22px; display:inline-grid; place-items:center;
-      border-radius: 50%;
-      font-weight: 950;
-      background: rgba(37,99,235,.10);
-      color: rgba(37,99,235,1);
-      flex: 0 0 auto;
-      margin-left:auto;
-    }
+    .ord{ width:22px; height:22px; display:inline-grid; place-items:center; border-radius: 50%; font-weight: 950;
+      background: rgba(37,99,235,.10); color: rgba(37,99,235,1); margin-left:auto; }
 
     .detail{
       border: 1px solid var(--stroke);
       border-radius: 14px;
-      background: rgba(255,255,255,.92);
+      background: rgba(255,255,255,.88);
       padding: 12px;
       min-height: 120px;
     }
@@ -305,11 +179,10 @@
     .detail .meta{ font-size:12px; color:var(--muted); margin-bottom: 8px; text-transform: uppercase; }
     .detail .desc{ font-size:13px; color:var(--text); line-height: 1.35; text-transform:none; }
 
-    /* Cost box */
     .costBox{
       border: 1px solid var(--stroke);
       border-radius: 14px;
-      background: rgba(255,255,255,.92);
+      background: rgba(255,255,255,.88);
       padding: 12px;
     }
     .costRow{ display:flex; justify-content:space-between; gap:10px; padding:6px 0; font-size:13px; text-transform: uppercase; }
@@ -336,21 +209,16 @@
       text-transform: uppercase;
     }
 
-    /* Map */
+    .layout{ display:grid; grid-template-columns: 72% 28%; gap: 14px; align-items:start; margin-top:14px; }
+    @media (max-width: 980px){ .layout{ grid-template-columns: 1fr; } }
     .mapCard .pad{ padding: 10px; }
-    #map{
-      width:100%;
-      height: calc(100vh - 140px);
-      min-height: 520px;
-      border-radius: 14px;
-      border: 1px solid var(--stroke);
-      overflow:hidden;
-    }
+    .pad{ padding:14px; }
+    #map{ width:100%; height: calc(100vh - 140px); min-height: 520px; border-radius: 14px; border: 1px solid var(--stroke); overflow:hidden; background: rgba(255,255,255,.40); }
     @media (max-width: 980px){ #map{ height: 420px; min-height: 420px; } }
 
     .toast{
       position: fixed; left: 16px; bottom: 16px;
-      background: rgba(255,255,255,.96);
+      background: rgba(255,255,255,.94);
       border: 1px solid var(--stroke);
       border-radius: 14px;
       padding: 10px 12px;
@@ -368,7 +236,6 @@
 </head>
 
 <body>
-  <!-- ✅ PREMIUM BACKGROUND LAYER -->
   <div class="bg"></div>
   <canvas id="fx"></canvas>
   <div class="noise"></div>
@@ -379,16 +246,15 @@
   <div class="wrap">
     <div class="card">
       <div class="hero">
-
-        <!-- ✅ LOGO + TITLE -->
         <div class="hero-top">
-          <!-- change to logo.jpg if your file is jpg -->
           <img src="logo.png" class="site-logo" alt="Himachal Explorer Logo">
           <div class="hero-text">
-            <h1>Himachal Explorer — Packages Grid + Road KM + Per Person</h1>
+            <h1>Start → End District Packages</h1>
             <p>
-              Select <b>START</b> → shows packages in <b>3-column grid</b>. Click package → map draws <b>actual road route</b>
-              & shows <b>road KM</b>. Prices show <b>PER PERSON</b> and are <b>6–10% cheaper</b>.
+              You type the <b>STARTING POINT</b>. System returns packages where the title is:
+              <b>START → END DISTRICT</b>.
+              Example: <b>AMRITSAR → KULLU</b> (even if the last place is KASOL).
+              If end is <b>MATHURA</b>, it will show <b>MATHURA</b> (district derived from end place).
             </p>
           </div>
         </div>
@@ -398,13 +264,15 @@
         </div>
 
         <div class="controls">
-          <div class="field" style="grid-column: span 3;">
-            <label>START</label>
-            <select id="startSel"><option value="">LOADING…</option></select>
+          <!-- ✅ START as text input (you "give the starting point") -->
+          <div class="field" style="grid-column: span 5;">
+            <label>START (TYPE OR PICK)</label>
+            <input id="startInp" list="startList" placeholder="E.G. AMRITSAR / DELHI / CHANDIGARH"/>
+            <datalist id="startList"></datalist>
           </div>
 
-          <div class="field" style="grid-column: span 2;">
-            <label>DAYS (FILTER)</label>
+          <div class="field" style="grid-column: span 3;">
+            <label>DAYS (OPTIONAL)</label>
             <select id="daysSel">
               <option value="">ANY</option>
               <option value="1">1</option><option value="2">2</option><option value="3">3</option>
@@ -413,7 +281,7 @@
             </select>
           </div>
 
-          <div class="field" style="grid-column: span 2;">
+          <div class="field" style="grid-column: span 3;">
             <label>PEOPLE (PAX)</label>
             <select id="paxSel">
               <option value="2">2</option><option value="3">3</option><option value="4">4</option>
@@ -423,39 +291,30 @@
             </select>
           </div>
 
-          <div class="field" style="grid-column: span 2;">
-            <label>VEHICLE (FILTER)</label>
-            <select id="vehSel">
-              <option value="any">ANY</option>
-              <option value="tempo">TEMPO TRAVELLER ONLY</option>
-            </select>
-          </div>
-
-          <div class="field" style="grid-column: span 2;">
-            <label>SEARCH (ROUTE/END)</label>
-            <input id="searchInp" placeholder="E.G. KUFRI, MANALI, R1, SHIMLA"/>
-          </div>
-
           <div class="field" style="grid-column: span 1;">
             <label>&nbsp;</label>
             <button class="btn secondary" id="resetBtn">RESET</button>
+          </div>
+
+          <div class="field" style="grid-column: span 12;">
+            <button class="btn" id="runBtn">FIND PACKAGES</button>
           </div>
         </div>
 
         <div class="pad" style="padding-left:0; padding-right:0;">
           <div class="title">PACKAGES</div>
-          <div class="sub">DUPLICATES REMOVED BY ROUTE CONTENT. GRID VIEW (3 COLUMNS). CLICK A CARD TO OPEN FULL ROAD ROUTE + PRICING.</div>
+          <div class="sub">ONE END DISTRICT = ONE BEST PACKAGE (BEST = MAX LOCATIONS).</div>
           <div id="summaryPills"></div>
 
           <div class="pkgGrid" id="pkgGrid">
-            <div class="sub">SELECT START TO LOAD PACKAGES…</div>
+            <div class="sub">TYPE START AND CLICK FIND…</div>
           </div>
         </div>
 
         <div class="placesWrap">
           <div class="placesHdr">
             <div style="display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;">
-              <div class="title">ESSENTIAL PLACES</div>
+              <div class="title">PACKAGE PLACES</div>
               <div class="count" id="placesCount">—</div>
             </div>
             <div class="btnRow">
@@ -477,7 +336,7 @@
 
             <div class="costBox">
               <div class="title">PRICING</div>
-              <div class="sub">USES OSRM ROAD KM. THEN APPLIES 6–10% DISCOUNT. SHOWS PER PERSON.</div>
+              <div class="sub">OSRM ROAD KM + 6–10% DISCOUNT. PER PERSON PRICE.</div>
               <div id="costRows"></div>
             </div>
           </div>
@@ -490,9 +349,10 @@
       <div class="card pad">
         <div class="title">RULE</div>
         <div class="sub" style="text-transform:none;">
-          ✅ NO AERIAL DISTANCE. ROAD KM & ROAD LINE ONLY (OSRM).<br/>
-          ✅ PLACE NAMES IN CAPS.<br/>
-          ✅ PER PERSON PRICE SHOWN.
+          ✅ You provide START (type it).<br/>
+          ✅ Package title shows END as <b>DISTRICT</b> (not place).<br/>
+          ✅ Example: AMRITSAR → KULLU (even if last place is KASOL).<br/>
+          ✅ If end is MATHURA, title will be AMRITSAR → MATHURA.
         </div>
       </div>
 
@@ -510,52 +370,47 @@
 
 <script>
 /***********************
- * ✅ BACKGROUND PARTICLES (LIGHT)
+ * ✅ LIVE PARTICLES (VISIBLE)
  ***********************/
 (function(){
   const c = document.getElementById('fx');
   const ctx = c.getContext('2d');
   let W, H, particles = [];
-
   function resize(){
     W = c.width = window.innerWidth;
     H = c.height = window.innerHeight;
-    particles = Array.from({length: 70}, () => ({
+    particles = Array.from({length: 90}, () => ({
       x: Math.random()*W,
       y: Math.random()*H,
-      r: Math.random()*1.6 + 0.4,
-      vx: (Math.random()*0.6 + 0.2) * (Math.random()<0.5?-1:1),
-      vy: (Math.random()*0.6 + 0.2) * (Math.random()<0.5?-1:1),
-      a: Math.random()*0.22 + 0.10
+      r: Math.random()*1.8 + 0.6,
+      vx: (Math.random()*0.7 + 0.2) * (Math.random()<0.5?-1:1),
+      vy: (Math.random()*0.7 + 0.2) * (Math.random()<0.5?-1:1),
+      a: Math.random()*0.28 + 0.14
     }));
   }
   window.addEventListener('resize', resize);
   resize();
-
   function draw(){
     ctx.clearRect(0,0,W,H);
-
     for(const p of particles){
       p.x += p.vx; p.y += p.vy;
       if(p.x < -20) p.x = W+20;
       if(p.x > W+20) p.x = -20;
       if(p.y < -20) p.y = H+20;
       if(p.y > H+20) p.y = -20;
-
       ctx.beginPath();
       ctx.globalAlpha = p.a;
       ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle = "#0b1b3a";
+      ctx.fillStyle = "#0b255a";
       ctx.fill();
     }
-
     for(let i=0;i<particles.length;i++){
       for(let j=i+1;j<particles.length;j++){
         const a = particles[i], b = particles[j];
         const dx = a.x-b.x, dy = a.y-b.y;
         const dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < 140){
-          ctx.globalAlpha = (1 - dist/140) * 0.10;
+        if(dist < 165){
+          ctx.globalAlpha = (1 - dist/165) * 0.16;
           ctx.strokeStyle = "#2563eb";
           ctx.lineWidth = 1;
           ctx.beginPath();
@@ -572,7 +427,7 @@
 })();
 
 /***********************
- * ✅ YOUR FIREBASE CONFIG
+ * ✅ FIREBASE CONFIG (yours)
  ***********************/
 const firebaseConfig = {
   apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
@@ -592,7 +447,6 @@ const db = firebase.database();
  ***********************/
 const map = L.map('map', { zoomControl: true }).setView([31.1048, 77.1734], 8);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
-
 let markersLayer = L.layerGroup().addTo(map);
 let routeLine = null;
 
@@ -632,6 +486,9 @@ function initials(name){
 function rupees(n){
   return "₹" + Math.round(Number(n)||0).toLocaleString("en-IN");
 }
+function normDistrict(d){
+  return String(d||"").trim().toUpperCase().replace(/\s+/g," ");
+}
 
 /***********************
  * ✅ DATA
@@ -639,9 +496,8 @@ function rupees(n){
 let LOCS = {};
 let TEMPLATES = {};
 let ACTIVE_TEMPLATES = [];
-let ACTIVE_TEMPLATE_KEY = null;
-let CURRENT_STOPS = [];
-let CURRENT_ROAD_KM = 0;
+let NAME_TO_ID = new Map();     // ✅ for matching "Mathura" by name
+let STARTS = [];               // start points list
 
 /***********************
  * ✅ LOAD
@@ -662,21 +518,36 @@ async function loadAll(){
       return st === "active" || st === "enabled" || st === "true";
     });
 
-  fillStartDropdown(ACTIVE_TEMPLATES);
+  buildNameIndex();
+  buildStartList(ACTIVE_TEMPLATES);
+
   setStatus(`LOADED ${ACTIVE_TEMPLATES.length} TEMPLATES • ${Object.keys(LOCS).length} LOCATIONS`);
 }
 
-function fillStartDropdown(templates){
-  const startSel = $("startSel");
-  startSel.innerHTML = "";
-  startSel.appendChild(new Option("SELECT START", ""));
-  const starts = new Set();
+function buildNameIndex(){
+  NAME_TO_ID = new Map();
+  for(const [pid, p] of Object.entries(LOCS)){
+    const nm = String(p["Location Name"] || p.name || "").trim();
+    if(!nm) continue;
+    NAME_TO_ID.set(nm.toLowerCase(), pid);
+  }
+}
+
+function buildStartList(templates){
+  const set = new Set();
   templates.forEach(t=>{
     const s = String(t.start_point || "").trim();
-    if(s) starts.add(s);
+    if(s) set.add(s);
   });
-  Array.from(starts).sort((a,b)=>a.localeCompare(b))
-    .forEach(s => startSel.appendChild(new Option(String(s).toUpperCase(), s)));
+  STARTS = Array.from(set).sort((a,b)=>a.localeCompare(b));
+
+  const dl = $("startList");
+  dl.innerHTML = "";
+  STARTS.forEach(s=>{
+    const opt = document.createElement("option");
+    opt.value = String(s).toUpperCase();
+    dl.appendChild(opt);
+  });
 }
 
 /***********************
@@ -687,7 +558,7 @@ function stopsFromTemplate(tpl){
   const out = [];
   const seen = new Set();
 
-  for(let d=1; d<=Math.min(9, Math.max(1, days)); d++){
+  for(let d=1; d<=Math.min(12, Math.max(1, days)); d++){
     const k = `day${d}_place_ids`;
     const raw = String(tpl[k] || "").trim();
     if(!raw) continue;
@@ -704,44 +575,55 @@ function stopsFromTemplate(tpl){
   }
   return out;
 }
+function stopsCount(tpl){ return stopsFromTemplate(tpl).length; }
 
 /***********************
- * ✅ DEDUPE BY ROUTE CONTENT (FIX FOR YOUR ISSUE)
+ * ✅ END DISTRICT (your requirement)
+ * - If end_point is a place like "Mathura", find its location in LOCS by name → get District
+ * - Else use last stop's District
+ * - If Kasol is last stop and District is Kullu → show KULLU
  ***********************/
-function normalizeStopsSignature(t){
-  const rp = String(t.route_path || "").trim();
-  if(rp){
-    return rp.toLowerCase().replace(/\s+/g,"").replace(/>>+/g,">").replace(/^>+|>+$/g,"");
+ function getEndDistrictKey(tpl){
+  const startPointName = String(tpl.start_point || "").trim();
+  const startPid = NAME_TO_ID.get(startPointName.toLowerCase());
+  const startDistrict = startPid ? normDistrict((LOCS[startPid]||{})["District"] || (LOCS[startPid]||{}).district || "") : "";
+
+  // 1) If end_point is a place-name and exists in LOCS, try its district first
+  const endPointName = String(tpl.end_point || "").trim();
+  if(endPointName){
+    const pid = NAME_TO_ID.get(endPointName.toLowerCase());
+    if(pid){
+      const p = LOCS[pid] || {};
+      const d = normDistrict(p["District"] || p.district || "");
+      if(d) return d;
+    }
   }
-  const stops = stopsFromTemplate(t).map(s=>String(s).trim().toLowerCase()).filter(Boolean);
-  return stops.join(">");
-}
 
-function dedupeTemplates(list){
-  const sorted = [...list].sort((a,b)=>{
-    const pa = Number(a.priority ?? 999);
-    const pb = Number(b.priority ?? 999);
-    const ka = Number(a.total_km_est ?? a.estimated_drive_km ?? 1e9);
-    const kb = Number(b.total_km_est ?? b.estimated_drive_km ?? 1e9);
-    return (pa-pb) || (ka-kb);
-  });
+  // 2) Use last stop district, but if it equals start district, use second-last stop
+  const stops = stopsFromTemplate(tpl);
+  if(stops.length){
+    const lastId = stops[stops.length - 1];
+    const lastP  = LOCS[lastId] || {};
+    const lastD  = normDistrict(lastP["District"] || lastP.district || "");
 
-  const seen = new Map();
-  for(const t of sorted){
-    const sig = [
-      safeLower(t.start_point),
-      safeLower(t.end_point),
-      String(Number(t.days||0)),
-      normalizeStopsSignature(t)
-    ].join("|");
+    // ✅ NEW: if lastD == startDistrict, use second-last stop to decide END DISTRICT
+    if(startDistrict && lastD && lastD === startDistrict && stops.length >= 2){
+      const secondLastId = stops[stops.length - 2];
+      const p2 = LOCS[secondLastId] || {};
+      const d2 = normDistrict(p2["District"] || p2.district || "");
+      if(d2) return d2;
+    }
 
-    if(!seen.has(sig)) seen.set(sig, t);
+    if(lastD) return lastD;
   }
-  return Array.from(seen.values());
-}
 
-/***********************
- * ✅ PLACE THUMB (ONE PIC)
+  // 3) final fallback
+  if(endPointName) return endPointName.toUpperCase();
+  return "UNKNOWN";
+}
+  
+ *********************
+ * ✅ PLACE THUMB
  ***********************/
 function getPlaceThumbUrl(p){
   p = p || {};
@@ -755,23 +637,18 @@ function getPlaceThumbUrl(p){
 }
 
 /***********************
- * ✅ VEHICLE BY PAX (FOR PRICING)
+ * ✅ VEHICLE & PRICING
  ***********************/
 function pickVehicleByPax(pax){
   if(pax <= 4) return "sedan";
   if(pax <= 6) return "suv";
   return "tempo";
 }
-
-/***********************
- * ✅ PRICE ENGINE (6–10% CHEAPER)
- ***********************/
 function discountedCost(marketCost){
-  const discount = 0.06 + Math.random()*0.04; // 6%..10%
+  const discount = 0.06 + Math.random()*0.04;
   const finalCost = Math.round(marketCost * (1 - discount));
   return { final: finalCost, discountPercent: Math.round(discount*100) };
 }
-
 function estimateMarketCost({ km=0, days=3, pax=2, vehicle="sedan" }){
   const ratePerKm = { sedan:16, suv:20, tempo:28 }[vehicle] || 16;
   const driverPerDay = (vehicle==="tempo") ? 1300 : 1000;
@@ -780,7 +657,6 @@ function estimateMarketCost({ km=0, days=3, pax=2, vehicle="sedan" }){
   const transport = Math.round(minKm * ratePerKm);
   const driver = Math.round(days * driverPerDay);
 
-  // stay placeholder
   const rooms = Math.ceil(pax / 2);
   const stayPerRoomNight = 1800;
   const stay = Math.round(rooms * stayPerRoomNight * Math.max(1, (days - 1)));
@@ -790,10 +666,8 @@ function estimateMarketCost({ km=0, days=3, pax=2, vehicle="sedan" }){
 
   return { transport, driver, stay, service, marketTotal };
 }
-
 function renderCostBox({status="idle", km=0, days=3, pax=2}){
   const box = $("costRows");
-
   if(status === "idle"){
     box.innerHTML = `<div class="sub" style="margin-top:8px;">SELECT A PACKAGE TO CALCULATE COST.</div>`;
     return;
@@ -832,25 +706,23 @@ function renderCostBox({status="idle", km=0, days=3, pax=2}){
 }
 
 /***********************
- * ✅ ROAD ROUTE + ROAD KM (OSRM)
+ * ✅ ROAD ROUTE (OSRM)
  ***********************/
 async function drawRoadRouteFromPlaces(placeIds){
-  clearMap();
-  CURRENT_ROAD_KM = 0;
+  markersLayer.clearLayers();
+  if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
 
   const coords = [];
-  const validPlaceIds = [];
-
+  const valid = [];
   placeIds.forEach(pid=>{
     const p = LOCS[pid] || {};
     const lat = Number(p.Latitude ?? p.lat);
     const lng = Number(p.Longitude ?? p.lng);
     if(isFinite(lat) && isFinite(lng)){
       coords.push([lng,lat]);
-      validPlaceIds.push(pid);
+      valid.push(pid);
     }
   });
-
   if(coords.length < 2){
     toast("NOT ENOUGH COORDINATES FOR ROAD ROUTE");
     return { ok:false, km:0 };
@@ -859,12 +731,10 @@ async function drawRoadRouteFromPlaces(placeIds){
   try{
     const maxPts = 25;
     let used = coords;
-
     if(coords.length > maxPts){
       const step = Math.ceil(coords.length / maxPts);
       used = coords.filter((_,i)=> i % step === 0 || i === coords.length-1);
     }
-
     const url =
       "https://router.project-osrm.org/route/v1/driving/" +
       used.map(c=>c.join(",")).join(";") +
@@ -872,7 +742,6 @@ async function drawRoadRouteFromPlaces(placeIds){
 
     const res = await fetch(url);
     const data = await res.json();
-
     if(!data.routes?.length){
       toast("ROAD ROUTE NOT AVAILABLE");
       return { ok:false, km:0 };
@@ -884,28 +753,21 @@ async function drawRoadRouteFromPlaces(placeIds){
     map.fitBounds(routeLine.getBounds(), { padding:[20,20] });
 
     coords.forEach((c,i)=>{
-      const pid = validPlaceIds[i] || placeIds[i];
+      const pid = valid[i] || placeIds[i];
       const p = LOCS[pid] || {};
-      const name = (p["Location Name"] || p.name || pid).toUpperCase();
-      L.marker([c[1], c[0]]).addTo(markersLayer).bindPopup(`<b>${i+1}. ${escapeHtml(name)}</b>`);
+      const nm = (p["Location Name"] || pid).toUpperCase();
+      L.marker([c[1], c[0]]).addTo(markersLayer).bindPopup(`<b>${i+1}. ${escapeHtml(nm)}</b>`);
     });
 
-    const km = Number(route.distance / 1000);
-    CURRENT_ROAD_KM = km;
-    return { ok:true, km };
-
-  }catch(err){
-    console.error(err);
+    return { ok:true, km: Number(route.distance/1000) };
+  }catch(e){
+    console.error(e);
     toast("ROAD ROUTE ERROR");
     return { ok:false, km:0 };
   }
 }
-
 function fitMap(){
   if(routeLine){ map.fitBounds(routeLine.getBounds(), { padding:[18,18] }); return; }
-  const all=[];
-  markersLayer.eachLayer(l=>{ if(l.getLatLng) all.push(l.getLatLng()); });
-  if(all.length) map.fitBounds(L.latLngBounds(all), { padding:[18,18] });
 }
 
 /***********************
@@ -914,7 +776,6 @@ function fitMap(){
 function renderPlaceButtons(placeIds){
   const box = $("placesButtons");
   box.innerHTML = "";
-
   if(!placeIds.length){
     box.innerHTML = `<span class="sub">NO PLACES FOUND IN THIS PACKAGE.</span>`;
     $("placesCount").textContent = "0 PLACES";
@@ -924,7 +785,7 @@ function renderPlaceButtons(placeIds){
 
   placeIds.forEach((pid, idx)=>{
     const p = LOCS[pid] || {};
-    const name = (p["Location Name"] || p.name || pid).toUpperCase();
+    const name = (p["Location Name"] || pid).toUpperCase();
     const seg  = String(p["Segment Type"] || p.segment || "—").toUpperCase();
     const url = getPlaceThumbUrl(p);
 
@@ -946,24 +807,19 @@ function renderPlaceButtons(placeIds){
     box.appendChild(btn);
   });
 }
-
-function highlightActiveButton(index1based){
+function selectPlace(placeId, order){
   const btns = $("placesButtons").querySelectorAll(".place-btn");
   btns.forEach(b=>b.classList.remove("active"));
-  const target = btns[index1based-1];
+  const target = btns[order-1];
   if(target) target.classList.add("active");
-}
-
-function selectPlace(placeId, order){
-  highlightActiveButton(order);
 
   const p = LOCS[placeId] || {};
-  const name = (p["Location Name"] || p.name || placeId).toUpperCase();
+  const name = (p["Location Name"] || placeId).toUpperCase();
   const seg  = String(p["Segment Type"] || p.segment || "—").toUpperCase();
   const typ  = String(p["Location Type"] || p.type || "—").toUpperCase();
-  const short= String(p["Short Description"] || p.short || "");
-  const ov   = String(p["Overview"] || p.overview || "");
-  const how  = String(p["How to Reach"] || p.how || "");
+  const short= String(p["Short Description"] || "");
+  const ov   = String(p["Overview"] || "");
+  const how  = String(p["How to Reach"] || "");
 
   $("placeDetail").querySelector("h3").textContent = name;
   $("placeDetail").querySelector(".meta").textContent = `${seg} • ${typ}`;
@@ -979,59 +835,95 @@ function selectPlace(placeId, order){
 }
 
 /***********************
- * ✅ PACKAGES GRID RENDER
+ * ✅ ONE END DISTRICT = ONE BEST PACKAGE
+ * BEST = MAX LOCATIONS, then priority, then KM
  ***********************/
+function packageScore(tpl){
+  const locs = stopsCount(tpl);
+  const pri  = Number(tpl.priority ?? 999);
+  const km   = Number(tpl.total_km_est ?? tpl.estimated_drive_km ?? 1e9);
+  return { locs, pri, km };
+}
+function isBetter(a,b){
+  if(a.locs !== b.locs) return a.locs > b.locs;
+  if(a.pri !== b.pri)   return a.pri < b.pri;
+  return a.km < b.km;
+}
+
+/***********************
+ * ✅ FIND PACKAGES (Start typed by user)
+ ***********************/
+function normalizeStartInput(){
+  const typed = String($("startInp").value || "").trim().toUpperCase();
+  if(!typed) return "";
+
+  // exact match ignoring case
+  const match = STARTS.find(s => String(s).trim().toUpperCase() === typed);
+  if(match) return match;
+
+  // partial begins-with match
+  const match2 = STARTS.find(s => String(s).trim().toUpperCase().startsWith(typed));
+  if(match2) return match2;
+
+  return ""; // not found
+}
+
 function applyFilters(){
-  const start = $("startSel").value.trim();
+  const start = normalizeStartInput();
   const daysF = $("daysSel").value.trim();
-  const vehF  = $("vehSel").value;
-  const q     = $("searchInp").value.trim().toLowerCase();
+  const pax   = Number($("paxSel").value || 2);
 
   $("summaryPills").innerHTML = "";
-  $("pkgGrid").innerHTML = `<div class="sub">SELECT START TO LOAD PACKAGES…</div>`;
+  $("pkgGrid").innerHTML = `<div class="sub">TYPE START AND CLICK FIND…</div>`;
   $("placesButtons").innerHTML = `<span class="sub">CLICK A PACKAGE TO SHOW PLACES…</span>`;
   $("placesCount").textContent = "—";
   renderCostBox({status:"idle"});
   clearMap();
-  ACTIVE_TEMPLATE_KEY = null;
-  CURRENT_STOPS = [];
-  CURRENT_ROAD_KM = 0;
 
-  if(!start) return;
-
-  let list = ACTIVE_TEMPLATES.filter(t => String(t.start_point||"").trim() === start);
-
-  if(daysF) list = list.filter(t => Number(t.days||0) === Number(daysF));
-  if(vehF === "tempo") list = list.filter(t => t.tempo_ok === true || safeLower(t.tempo_ok) === "true");
-
-  if(q){
-    list = list.filter(t=>{
-      const name = safeLower(t.route_name || t.title || "");
-      const end  = safeLower(t.end_point || "");
-      const rid  = safeLower(t.route_id || "");
-      const reg  = safeLower(t.region_style || "");
-      return (name.includes(q) || end.includes(q) || rid.includes(q) || reg.includes(q));
-    });
+  if(!start){
+    toast("START NOT FOUND IN DATABASE");
+    return;
   }
 
-  list = dedupeTemplates(list);
+  let list = ACTIVE_TEMPLATES.filter(t => String(t.start_point||"").trim().toUpperCase() === String(start).trim().toUpperCase());
+  if(daysF) list = list.filter(t => Number(t.days||0) === Number(daysF));
 
-  list.sort((a,b)=>{
-    const pa = Number(a.priority ?? 999);
-    const pb = Number(b.priority ?? 999);
-    const ka = Number(a.total_km_est ?? a.estimated_drive_km ?? 1e9);
-    const kb = Number(b.total_km_est ?? b.estimated_drive_km ?? 1e9);
-    return (pa-pb) || (ka-kb);
+  // one end district = one best package
+  const bestByDistrict = new Map();
+  const scByDistrict = new Map();
+
+  for(const t of list){
+    const endDistrict = getEndDistrictKey(t);
+    const sc = packageScore(t);
+
+    if(!bestByDistrict.has(endDistrict)){
+      bestByDistrict.set(endDistrict, t);
+      scByDistrict.set(endDistrict, sc);
+    }else{
+      const prev = scByDistrict.get(endDistrict);
+      if(isBetter(sc, prev)){
+        bestByDistrict.set(endDistrict, t);
+        scByDistrict.set(endDistrict, sc);
+      }
+    }
+  }
+
+  const finalList = Array.from(bestByDistrict.values()).sort((a,b)=>{
+    const A = packageScore(a), B = packageScore(b);
+    if(A.locs !== B.locs) return B.locs - A.locs;
+    if(A.pri !== B.pri) return A.pri - B.pri;
+    return A.km - B.km;
   });
 
   $("summaryPills").appendChild(pill("START", String(start).toUpperCase()));
-  $("summaryPills").appendChild(pill("PACKAGES", String(list.length)));
-  $("summaryPills").appendChild(pill("PAX", String($("paxSel").value)));
+  $("summaryPills").appendChild(pill("PACKAGES", String(finalList.length)));
+  $("summaryPills").appendChild(pill("PAX", String(pax)));
+  if(daysF) $("summaryPills").appendChild(pill("DAYS", String(daysF)));
 
-  renderPackagesGrid(list);
+  renderPackagesGrid(finalList, start);
 }
 
-function renderPackagesGrid(list){
+function renderPackagesGrid(list, start){
   const grid = $("pkgGrid");
   grid.innerHTML = "";
 
@@ -1040,20 +932,12 @@ function renderPackagesGrid(list){
     return;
   }
 
-  const pax = Number($("paxSel").value || 2);
-
   list.forEach(t=>{
     const key = t.key;
-    const name = String(t.route_name || t.title || t.package_id || key).toUpperCase();
-    const end  = String(t.end_point || "—").toUpperCase();
+    const endDistrict = getEndDistrictKey(t);
     const days = Number(t.days || 0) || 0;
     const tempoOk = (t.tempo_ok === true || safeLower(t.tempo_ok)==="true");
     const estKm = Number(t.total_km_est ?? t.estimated_drive_km ?? 0);
-
-    const vehicle = pickVehicleByPax(pax);
-    const mk = estimateMarketCost({ km: estKm || 0, days: days || Number($("daysSel").value||3) || 3, pax, vehicle });
-    const disc = discountedCost(mk.marketTotal);
-    const perPerson = Math.ceil(disc.final / Math.max(1, pax));
 
     const card = document.createElement("div");
     card.className = "pkg";
@@ -1061,21 +945,13 @@ function renderPackagesGrid(list){
 
     card.innerHTML = `
       <div class="pkgTop">
-        <div class="pkgName">${escapeHtml(name)}</div>
+        <div class="pkgName">${escapeHtml(String(start).toUpperCase())} → ${escapeHtml(String(endDistrict).toUpperCase())}</div>
         <div class="badge ${tempoOk ? "" : "warn"}">${tempoOk ? "TEMPO OK" : "TEMPO RISK"}</div>
       </div>
       <div class="pkgMeta">
-        <b>END:</b> ${escapeHtml(end)}<br/>
-        <b>DAYS:</b> ${days || "—"} &nbsp;•&nbsp;
-        <b>TEMPLATE KM:</b> ${isFinite(estKm) && estKm ? estKm : "—"}<br/>
+        <b>END DISTRICT:</b> ${escapeHtml(String(endDistrict).toUpperCase())}<br/>
+        <b>LOCATIONS:</b> ${stopsCount(t)} &nbsp;•&nbsp; <b>DAYS:</b> ${days || "—"}<br/>
         <b>ROUTE ID:</b> ${escapeHtml(String(t.route_id||"—").toUpperCase())}
-      </div>
-      <div class="pkgMiniPrice">
-        <div>
-          <div class="sub">PER PERSON (EST)</div>
-          <div class="pp">${rupees(perPerson)}</div>
-        </div>
-        <div class="save">CHEAPER ${disc.discountPercent}%</div>
       </div>
     `;
 
@@ -1084,7 +960,6 @@ function renderPackagesGrid(list){
       card.classList.add("active");
       await openTemplate(key);
     };
-
     grid.appendChild(card);
   });
 }
@@ -1096,11 +971,7 @@ async function openTemplate(key){
   const tpl = TEMPLATES[key];
   if(!tpl){ toast("PACKAGE NOT FOUND"); return; }
 
-  ACTIVE_TEMPLATE_KEY = key;
-
   const stops = stopsFromTemplate(tpl);
-  CURRENT_STOPS = stops;
-
   renderPlaceButtons(stops);
   if(stops.length) selectPlace(stops[0], 1);
 
@@ -1111,7 +982,6 @@ async function openTemplate(key){
   const pax = Number($("paxSel").value || 2);
 
   if(rr.ok){
-    $("summaryPills").appendChild(pill("ROAD KM", rr.km.toFixed(1)));
     renderCostBox({status:"ok", km: rr.km, days, pax});
     toast("ROAD ROUTE LOADED");
   }else{
@@ -1122,26 +992,18 @@ async function openTemplate(key){
 /***********************
  * ✅ EVENTS
  ***********************/
-$("startSel").addEventListener("change", applyFilters);
-$("daysSel").addEventListener("change", applyFilters);
-$("vehSel").addEventListener("change", applyFilters);
-
-$("searchInp").addEventListener("input", ()=>{
-  window.__t && clearTimeout(window.__t);
-  window.__t = setTimeout(applyFilters, 180);
-});
-
-$("paxSel").addEventListener("change", applyFilters);
+$("runBtn").addEventListener("click", applyFilters);
+$("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
+$("daysSel").addEventListener("change", ()=>{/* optional auto */});
+$("paxSel").addEventListener("change", ()=>{/* optional auto */});
 
 $("resetBtn").addEventListener("click", ()=>{
-  $("startSel").value = "";
+  $("startInp").value = "";
   $("daysSel").value = "";
-  $("vehSel").value = "any";
-  $("searchInp").value = "";
   $("paxSel").value = "2";
 
   $("summaryPills").innerHTML = "";
-  $("pkgGrid").innerHTML = `<div class="sub">SELECT START TO LOAD PACKAGES…</div>`;
+  $("pkgGrid").innerHTML = `<div class="sub">TYPE START AND CLICK FIND…</div>`;
   $("placesButtons").innerHTML = `<span class="sub">CLICK A PACKAGE TO SHOW PLACES…</span>`;
   $("placesCount").textContent = "—";
   renderCostBox({status:"idle"});
@@ -1151,10 +1013,6 @@ $("resetBtn").addEventListener("click", ()=>{
   $("placeDesc").textContent = "—";
 
   clearMap();
-  ACTIVE_TEMPLATE_KEY = null;
-  CURRENT_STOPS = [];
-  CURRENT_ROAD_KM = 0;
-
   toast("RESET DONE");
 });
 
