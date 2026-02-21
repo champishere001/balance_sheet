@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — Places + Packages</title>
+  <title>Himachal Explorer — Packages Only</title>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -22,7 +22,7 @@
       --muted: rgba(255,255,255,.72);
       --shadow: 0 20px 70px rgba(0,0,0,.55);
       --r: 18px; --r2: 26px;
-      --accent: #7aa7ff;
+      --accent:#7aa7ff;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -31,111 +31,66 @@
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--text);
       background:
-        radial-gradient(1200px 900px at 20% 10%, rgba(122,167,255,.18), transparent 55%),
-        radial-gradient(900px 700px at 80% 20%, rgba(165,122,255,.16), transparent 55%),
-        linear-gradient(180deg, #05070d, #070b15 55%, #05070d);
+        linear-gradient(180deg, rgba(0,0,0,.62), rgba(0,0,0,.80)),
+        url("Dark.jpg") center/cover no-repeat fixed;
       overflow-x:hidden;
     }
+    .wrap{max-width:1200px; margin:0 auto; padding:16px}
 
-    /* background film */
-    .bgFilm{
-      position:fixed; inset:0;
-      background:
-        linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.75)),
-        url("Dark.jpg") center/cover no-repeat;
-      opacity:.35;
-      pointer-events:none;
-      filter: saturate(1.1);
+    .topBar{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:10px 0 6px;
     }
-
-    /* hero slideshow */
-    .hero{
-      position:relative;
-      border-bottom: 1px solid var(--stroke);
-      overflow:hidden;
-    }
-    .heroMedia{
-      position:absolute; inset:0;
-      background:
-        linear-gradient(90deg, rgba(0,0,0,.55), rgba(0,0,0,.25)),
-        url("201-himalaya.jpg") center/cover no-repeat;
-      transform:scale(1.02);
-      filter:saturate(1.05) contrast(1.05);
-      transition: background-image 900ms ease;
-    }
-    .heroOverlay{
-      position:absolute; inset:0;
-      background:
-        radial-gradient(900px 600px at 25% 20%, rgba(122,167,255,.22), transparent 60%),
-        radial-gradient(800px 550px at 75% 10%, rgba(165,122,255,.20), transparent 60%),
-        linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.65));
-    }
-    .wrap{max-width:1200px; margin:0 auto; padding:18px}
-    .heroGrid{
-      position:relative;
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:16px;
-      padding:22px 0 18px;
-    }
-    .brandRow{
-      display:flex; align-items:center; gap:12px;
+    .brand{
+      display:flex; align-items:center; gap:10px;
     }
     .logo{
-      width:44px; height:44px; border-radius:14px;
+      width:40px; height:40px; border-radius:14px;
       background: rgba(255,255,255,.10) url("logo.png") center/cover no-repeat;
       border:1px solid var(--stroke);
       box-shadow: var(--shadow);
     }
-    h1{margin:8px 0 8px; font-size: 30px; letter-spacing:.2px}
-    .sub{color:var(--muted); line-height:1.5; max-width:60ch}
-    .quoteBox{
-      margin-top:14px;
-      padding:14px;
-      border-radius: var(--r2);
-      background: rgba(255,255,255,.08);
-      border:1px solid var(--stroke);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
+    .title{
+      display:flex; flex-direction:column;
+      line-height:1.1;
     }
-    .quoteTop{display:flex; align-items:center; justify-content:space-between; gap:10px}
+    .title b{font-size:16px}
+    .title span{font-size:12px; color:var(--muted)}
+
     .pill{
-      display:inline-flex; gap:8px; align-items:center;
-      padding:8px 10px; border-radius:999px;
-      background: rgba(0,0,0,.25);
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
       border:1px solid var(--stroke);
-      color: var(--muted);
-      font-size: 12px;
-    }
-    .quote{
-      margin:10px 0 0;
-      font-size: 14px;
-      line-height:1.6;
-      color: rgba(255,255,255,.86);
-      min-height: 52px;
+      background: rgba(0,0,0,.22);
+      font-size:12px;
+      color:var(--muted);
     }
 
-    .planner{
-      padding:14px;
+    .grid{
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      gap:12px;
+      margin-top:10px;
+    }
+
+    .card{
       border-radius: var(--r2);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.07)),
-        url("Travelers.jpg") center/cover no-repeat;
-      background-blend-mode: overlay;
       border:1px solid var(--stroke);
+      background: rgba(255,255,255,.07);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      position:relative;
       overflow:hidden;
+      position:relative;
     }
-    .planner:before{
-      content:"";
-      position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.65));
-      pointer-events:none;
+    .cardHead{
+      padding:12px 14px;
+      border-bottom:1px solid rgba(255,255,255,.12);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
     }
-    .planner > *{position:relative}
-    .planner h2{margin:0 0 10px; font-size:16px}
+    .cardHead h3{margin:0; font-size:14px}
+    .cardBody{padding:12px 14px}
+
+    /* Planner */
     .row{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
     label{font-size:12px; color:var(--muted); display:block; margin:0 0 6px}
     select,input{
@@ -155,172 +110,23 @@
       border:1px solid rgba(255,255,255,.18);
       background: linear-gradient(180deg, rgba(122,167,255,.35), rgba(122,167,255,.16));
       color: var(--text);
-      font-weight:700;
+      font-weight:800;
       cursor:pointer;
     }
     .btn:active{transform: translateY(1px)}
     .note{font-size:12px; color:var(--muted); margin-top:8px}
 
-    /* main layout */
-    .main{
-      display:grid;
-      grid-template-columns: 320px 1fr;
-      gap:14px;
-      padding:14px 0 26px;
-    }
-    .panel{
-      border-radius: var(--r2);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.06)),
-        url("kinnaur-kailash.webp") center/cover no-repeat;
-      background-blend-mode: overlay;
-      border:1px solid var(--stroke);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      position:relative;
-    }
-    .panel:before{
-      content:"";
-      position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.75));
-      pointer-events:none;
-    }
-    .panel > *{position:relative}
-    .panelHead{
-      padding:14px 14px 10px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      border-bottom:1px solid rgba(255,255,255,.12);
-    }
-    .panelHead h3{margin:0; font-size:14px}
-    .panelBody{padding:12px 14px 14px}
-    .search{
-      width:100%;
-      padding:11px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.25);
-      color: var(--text);
-      outline:none;
-      margin-bottom:10px;
-    }
-    .filterGrid{display:grid; grid-template-columns: 1fr; gap:10px}
-    .small{font-size:12px; color:var(--muted)}
-    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
-    .chip{
-      padding:8px 10px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.18);
-      font-size:12px;
-      cursor:pointer;
-      user-select:none;
-    }
-    .chip.active{
-      border-color: rgba(122,167,255,.55);
-      background: rgba(122,167,255,.18);
-    }
+    /* Map smaller */
+    #map{height:260px; width:100%}
 
-    .content{
-      display:grid;
-      grid-template-rows: 360px auto auto;
-      gap:14px;
-    }
-
-    .mapCard{
-      border-radius: var(--r2);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.06)),
-        url("activity.jpg") center/cover no-repeat;
-      background-blend-mode: overlay;
-      border:1px solid var(--stroke);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      position:relative;
-    }
-    .mapCard:before{
-      content:"";
-      position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.70));
-      pointer-events:none;
-    }
-    .mapCard > *{position:relative}
-    #map{height:360px; width:100%}
-
-    .sectionCard{
-      border-radius: var(--r2);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.06));
-      border:1px solid var(--stroke);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .sectionHead{
-      padding:12px 14px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      border-bottom:1px solid rgba(255,255,255,.12);
-    }
-    .sectionHead h3{margin:0; font-size:14px}
-    .muted{color:var(--muted); font-size:12px}
-
-    .grid{
-      padding:14px;
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:12px;
-    }
-    .card{
-      border-radius: 18px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.22);
-      box-shadow: 0 14px 50px rgba(0,0,0,.35);
-      cursor:pointer;
-      position:relative;
-      min-height: 176px;
-    }
-    .cardMedia{
-      position:absolute; inset:0;
-      background: url("temple.jpg") center/cover no-repeat;
-      filter: saturate(1.05);
-      transform: scale(1.02);
-    }
-    .cardShade{
-      position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.85));
-    }
-    .cardBody{
-      position:relative;
-      padding:12px;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      height:100%;
-      justify-content:flex-end;
-    }
-    .cardTitle{font-weight:800; letter-spacing:.2px}
-    .cardMeta{font-size:12px; color:rgba(255,255,255,.78)}
-    .cardTagline{
-      font-size:12px;
-      color:rgba(255,255,255,.86);
-      line-height:1.45;
-      display:-webkit-box;
-      -webkit-line-clamp:3;
-      -webkit-box-orient: vertical;
-      overflow:hidden;
-    }
-
-    .pkgGrid{
-      padding:14px;
-      display:grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap:12px;
-    }
+    /* Packages list */
+    .pkgList{display:grid; grid-template-columns: 1fr; gap:10px}
     .pkg{
       border-radius: 18px;
       border:1px solid rgba(255,255,255,.14);
       background:
         linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06)),
-        url("trek.jpeg") center/cover no-repeat;
+        url("Travelers.jpg") center/cover no-repeat;
       background-blend-mode: overlay;
       box-shadow: 0 14px 50px rgba(0,0,0,.35);
       overflow:hidden;
@@ -329,7 +135,7 @@
     }
     .pkg:before{
       content:""; position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.78));
+      background: linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.78));
     }
     .pkg > *{position:relative}
     .pkgBody{padding:12px}
@@ -343,64 +149,111 @@
       padding:9px 11px;
       border-radius: 999px;
       border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.25);
+      background: rgba(0,0,0,.22);
       font-size:12px;
     }
-
-    /* responsive */
-    @media (max-width: 980px){
-      .heroGrid{grid-template-columns: 1fr; gap:12px}
-      .main{grid-template-columns: 1fr; }
-      .content{grid-template-rows: 320px auto auto}
-      #map{height:320px}
-      .grid{grid-template-columns: repeat(2, 1fr)}
-      .pkgGrid{grid-template-columns: 1fr}
+    .pkg.active{
+      border-color: rgba(122,167,255,.6);
+      box-shadow: 0 0 0 3px rgba(122,167,255,.18), 0 14px 50px rgba(0,0,0,.35);
     }
-    @media (max-width: 560px){
-      h1{font-size:24px}
-      .grid{grid-template-columns: 1fr}
-      .row{grid-template-columns: 1fr}
+
+    /* Route details (day-wise) */
+    .days{
+      display:grid; grid-template-columns: 1fr; gap:10px;
+    }
+    .day{
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      overflow:hidden;
+    }
+    .dayTop{
+      padding:10px 12px;
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .dayTop b{font-size:13px}
+    .dayTop span{font-size:12px; color:var(--muted)}
+    .dayPlaces{padding:10px 12px; display:flex; flex-wrap:wrap; gap:8px}
+    .tag{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.18);
+      font-size:12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .tag:hover{border-color: rgba(122,167,255,.45)}
+
+    /* Taglines section */
+    .taglines{
+      display:grid; grid-template-columns: 1fr; gap:10px;
+    }
+    .tl{
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06)),
+        url("201-himalaya.jpg") center/cover no-repeat;
+      background-blend-mode: overlay;
+      overflow:hidden;
+      position:relative;
+    }
+    .tl:before{
+      content:""; position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.85));
+    }
+    .tl > *{position:relative}
+    .tlBody{padding:12px}
+    .tlTitle{font-weight:900; margin:0 0 6px}
+    .tlMeta{font-size:12px; color:rgba(255,255,255,.78)}
+    .tlText{
+      margin-top:8px;
+      font-size:12px;
+      line-height:1.55;
+      color:rgba(255,255,255,.88);
+      display:-webkit-box;
+      -webkit-line-clamp:4;
+      -webkit-box-orient: vertical;
+      overflow:hidden;
+    }
+
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+      #map{height:240px}
     }
   </style>
 </head>
 
 <body>
-  <div class="bgFilm"></div>
-
-  <header class="hero">
-    <div class="heroMedia" id="heroMedia"></div>
-    <div class="heroOverlay"></div>
-    <div class="wrap">
-      <div class="heroGrid">
-        <div>
-          <div class="brandRow">
-            <div class="logo" aria-hidden="true"></div>
-            <div class="pill">Himachal Explorer • Places • Packages • Map</div>
-          </div>
-          <h1>Plan Himachal like a pro — places, packages & routes</h1>
-          <div class="sub">
-            Explore districts, segments (temple / trek / activity / destinations), and pick best-value packages.
-            Click any place to open full details with photos and tagline.
-          </div>
-
-          <div class="quoteBox">
-            <div class="quoteTop">
-              <div class="pill">Changing quotes</div>
-              <div class="pill">Auto every 5 sec</div>
-            </div>
-            <div class="quote" id="quoteText">Loading…</div>
-          </div>
+  <div class="wrap">
+    <div class="topBar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="title">
+          <b>Himachal Explorer</b>
+          <span>Packages • Route-wise plan • Taglines • Map</span>
         </div>
+      </div>
+      <div class="pill" id="statusPill">Loading Firebase…</div>
+    </div>
 
-        <div class="planner">
-          <h2>Quick Package Planner</h2>
+    <div class="grid">
+      <!-- LEFT: Planner + Packages -->
+      <section class="card">
+        <div class="cardHead">
+          <h3>Package Planner</h3>
+          <span class="pill" id="selPkgPill">No package selected</span>
+        </div>
+        <div class="cardBody">
           <div class="row">
             <div>
-              <label>Start</label>
+              <label>Start (district)</label>
               <select id="startSelect"></select>
             </div>
             <div>
-              <label>End</label>
+              <label>End (district)</label>
               <select id="endSelect"></select>
             </div>
             <div>
@@ -412,439 +265,379 @@
               <input id="paxInput" type="number" min="1" max="24" value="4"/>
             </div>
           </div>
-          <button class="btn" id="btnBestPkg">Generate Best Packages</button>
-          <div class="note" id="plannerNote">Tip: We’ll show packages whose major places match your start/end region.</div>
-        </div>
-      </div>
-    </div>
-  </header>
+          <button class="btn" id="btnFindPkgs">Find Packages</button>
+          <div class="note" id="plannerNote">Packages will appear below. Nothing else will show until you select one.</div>
 
-  <main class="wrap">
-    <div class="main">
-      <!-- LEFT PANEL -->
-      <aside class="panel">
-        <div class="panelHead">
-          <h3>Filters</h3>
-          <div class="small" id="countInfo">0 places</div>
-        </div>
-        <div class="panelBody">
-          <input class="search" id="searchInput" placeholder="Search place name, district, segment…"/>
-
-          <div class="filterGrid">
-            <div>
-              <label>District</label>
-              <select id="districtSelect"></select>
-            </div>
-            <div>
-              <label>Segment</label>
-              <select id="segmentSelect"></select>
-            </div>
-            <div>
-              <label>Category</label>
-              <select id="categorySelect"></select>
-            </div>
+          <div style="height:12px"></div>
+          <div class="cardHead" style="border-radius:18px; border:1px solid rgba(255,255,255,.10); background:rgba(0,0,0,.18)">
+            <h3 style="margin:0">Packages</h3>
+            <span class="pill" id="pkgCount">0</span>
           </div>
-
-          <div class="chips" id="quickChips">
-            <div class="chip" data-seg="Temple">Temple</div>
-            <div class="chip" data-seg="Trek">Trek</div>
-            <div class="chip" data-seg="Activity">Activity</div>
-            <div class="chip" data-seg="Destination">Destination</div>
-          </div>
-
-          <div class="note">Click a place card to open details page.</div>
+          <div style="height:10px"></div>
+          <div class="pkgList" id="pkgList"></div>
         </div>
-      </aside>
+      </section>
 
-      <!-- RIGHT CONTENT -->
-      <section class="content">
-        <div class="mapCard">
+      <!-- RIGHT: Map + Route details + Taglines -->
+      <section style="display:grid; gap:12px">
+        <div class="card">
+          <div class="cardHead">
+            <h3>Map (smaller)</h3>
+            <span class="pill" id="mapPill">Select a package</span>
+          </div>
           <div id="map"></div>
         </div>
 
-        <div class="sectionCard">
-          <div class="sectionHead">
-            <h3>Places</h3>
-            <div class="muted">Shows history_tagline + photos</div>
+        <div class="card">
+          <div class="cardHead">
+            <h3>Route-wise details</h3>
+            <span class="pill" id="routePill">Day-wise places</span>
           </div>
-          <div class="grid" id="placesGrid"></div>
+          <div class="cardBody">
+            <div class="days" id="daysBox">
+              <div class="note">Select a package to show day-wise route details here.</div>
+            </div>
+          </div>
         </div>
 
-        <div class="sectionCard">
-          <div class="sectionHead">
-            <h3>Best value packages</h3>
-            <div class="muted">Click to view covered places</div>
+        <div class="card">
+          <div class="cardHead">
+            <h3>Taglines (only selected package)</h3>
+            <span class="pill" id="taglinePill">0</span>
           </div>
-          <div class="pkgGrid" id="pkgGrid"></div>
+          <div class="cardBody">
+            <div class="taglines" id="taglinesBox">
+              <div class="note">After selecting a package, you will see place taglines here.</div>
+            </div>
+          </div>
         </div>
       </section>
     </div>
-  </main>
+  </div>
 
   <script>
-    /***********************
-     *  Firebase Config
-     ***********************/
+    /************ Firebase Config (YOUR VALUES) ************/
     const firebaseConfig = {
-  apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
-  authDomain: "revnue-records.firebaseapp.com",
-  databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "revnue-records",
-  storageBucket: "revnue-records.firebasestorage.app",
-  messagingSenderId: "182348503564",
-  appId: "1:182348503564:web:480085405b09177245ac29"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+      apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
+      authDomain: "revnue-records.firebaseapp.com",
+      databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "revnue-records",
+      storageBucket: "revnue-records.firebasestorage.app",
+      messagingSenderId: "182348503564",
+      appId: "1:182348503564:web:480085405b09177245ac29"
+    };
 
-    /***********************
-     *  Utils
-     ***********************/
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    /************ Utils ************/
+    const $ = (id)=>document.getElementById(id);
+    const safe = (v)=> (v===undefined || v===null) ? "" : String(v);
+
     function parsePlaceIds(val){
       if(!val) return [];
-      return String(val)
-        .split(/[;,|]/)         // ✅ supports , ; |
-        .map(v=>v.trim())
-        .filter(Boolean);
-    }
-    function safeStr(v){ return (v===undefined || v===null) ? "" : String(v); }
-
-    function pickPhoto(p){
-      return p?.photo_1 || p?.photo1 || p?.photo || "temple.jpg";
+      return String(val).split(/[;,|]/).map(v=>v.trim()).filter(Boolean);
     }
 
-    /***********************
-     *  Hero slideshow + quotes
-     ***********************/
-    const heroImages = [
-      "201-himalaya.jpg",
-      "Travelers.jpg",
-      "kinnaur-kailash.webp",
-      "activity.jpg",
-      "trek.jpeg",
-      "temple.jpg"
-    ];
-    const quotes = [
-      "Himachal is not just a place — it’s a feeling of mountains, forests, and calm.",
-      "Every valley has a story. Every ridge has a view worth the climb.",
-      "Temples, treks, and trails — Himachal rewards every traveler.",
-      "Slow down. Breathe deep. Let the hills do the healing.",
-      "Plan smart: cluster nearby places to save time and enjoy more."
-    ];
-    let heroI=0, quoteI=0;
-    const heroMedia = document.getElementById("heroMedia");
-    const quoteText = document.getElementById("quoteText");
-
-    function rotateHero(){
-      heroI = (heroI+1)%heroImages.length;
-      heroMedia.style.backgroundImage =
-        `linear-gradient(90deg, rgba(0,0,0,.55), rgba(0,0,0,.25)), url("${heroImages[heroI]}")`;
+    function uniq(arr){
+      return [...new Set(arr.filter(Boolean))];
     }
-    function rotateQuote(){
-      quoteI = (quoteI+1)%quotes.length;
-      quoteText.textContent = quotes[quoteI];
-    }
-    quoteText.textContent = quotes[0];
-    setInterval(rotateHero, 5500);
-    setInterval(rotateQuote, 5000);
 
-    /***********************
-     *  Map
-     ***********************/
+    /************ Map ************/
     const map = L.map("map", { zoomControl:true }).setView([31.7, 77.2], 7);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18, attribution: "&copy; OpenStreetMap"
     }).addTo(map);
+    const markersLayer = L.layerGroup().addTo(map);
 
-    let markersLayer = L.layerGroup().addTo(map);
-
-    /***********************
-     *  State
-     ***********************/
-    let ALL_PLACES = [];  // array of {place_id, ...}
-    let ALL_TEMPLATES = [];
-    let FILTER = { q:"", district:"All", segment:"All", category:"All" };
-
-    /***********************
-     *  DOM
-     ***********************/
-    const placesGrid = document.getElementById("placesGrid");
-    const pkgGrid = document.getElementById("pkgGrid");
-    const countInfo = document.getElementById("countInfo");
-
-    const districtSelect = document.getElementById("districtSelect");
-    const segmentSelect  = document.getElementById("segmentSelect");
-    const categorySelect = document.getElementById("categorySelect");
-    const searchInput    = document.getElementById("searchInput");
-
-    const startSelect = document.getElementById("startSelect");
-    const endSelect   = document.getElementById("endSelect");
-    const btnBestPkg  = document.getElementById("btnBestPkg");
-    const plannerNote = document.getElementById("plannerNote");
-
-    function setOptions(select, values, labelAll="All"){
-      const cur = select.value;
-      select.innerHTML = "";
-      const optAll = document.createElement("option");
-      optAll.value = "All"; optAll.textContent = labelAll;
-      select.appendChild(optAll);
-      values.forEach(v=>{
-        const o=document.createElement("option");
-        o.value=v; o.textContent=v;
-        select.appendChild(o);
-      });
-      if(values.includes(cur)) select.value=cur;
-    }
-
-    function normalizeForSearch(s){
-      return safeStr(s).toLowerCase().trim();
-    }
-
-    function applyFilters(){
-      const q = normalizeForSearch(FILTER.q);
-      let list = ALL_PLACES.filter(p=>{
-        const okDistrict = (FILTER.district==="All") || (safeStr(p.district)===FILTER.district);
-        const okSegment  = (FILTER.segment==="All")  || (safeStr(p.segment)===FILTER.segment);
-        const okCategory = (FILTER.category==="All") || (safeStr(p.category)===FILTER.category);
-
-        const hay = [
-          p.name, p.place_id, p.district, p.segment, p.category, p.region, p.group,
-          p.history_tagline, p.what_you_find
-        ].map(normalizeForSearch).join(" | ");
-
-        const okQ = !q || hay.includes(q);
-        return okDistrict && okSegment && okCategory && okQ;
-      });
-
-      countInfo.textContent = `${list.length} places`;
-      renderPlaces(list);
-      renderMarkers(list);
-    }
-
-    function renderMarkers(list){
+    function clearMap(){
       markersLayer.clearLayers();
-      list.slice(0, 220).forEach(p=>{
+    }
+
+    function plotPlacesOnMap(places){
+      clearMap();
+      const bounds = [];
+      places.forEach(p=>{
         const lat = Number(p.latitude), lng = Number(p.longitude);
         if(!isFinite(lat) || !isFinite(lng)) return;
         const m = L.marker([lat,lng]).addTo(markersLayer);
-        m.bindPopup(`
-          <b>${safeStr(p.name)}</b><br/>
-          <span style="color:#ccc">${safeStr(p.district)} • ${safeStr(p.segment)}</span><br/>
-          <a href="place.html?id=${encodeURIComponent(p.place_id)}">Open details</a>
-        `);
+        m.bindPopup(`<b>${safe(p.name)}</b><br/><span style="color:#ccc">${safe(p.district)} • ${safe(p.segment)}</span>`);
+        bounds.push([lat,lng]);
       });
+      if(bounds.length){
+        try{ map.fitBounds(bounds, {padding:[25,25]}); }catch(e){}
+      }
     }
 
-    function placeCardHTML(p){
-      const photo = pickPhoto(p);
-      const tagline = safeStr(p.history_tagline || p.what_you_find || "");
-      const meta = [p.district, p.segment, p.category].filter(Boolean).join(" • ");
-      return `
-        <div class="card" data-id="${safeStr(p.place_id)}">
-          <div class="cardMedia" style="background-image:url('${photo}');"></div>
-          <div class="cardShade"></div>
-          <div class="cardBody">
-            <div class="cardTitle">${safeStr(p.name)}</div>
-            <div class="cardMeta">${safeStr(meta)}</div>
-            <div class="cardTagline">${safeStr(tagline)}</div>
-          </div>
-        </div>
-      `;
+    /************ State ************/
+    let PLACES_BY_ID = {};   // { place_id: placeObj }
+    let TEMPLATES = [];      // templates array
+    let SELECTED_PACKAGE_ID = "";
+
+    /************ DOM ************/
+    const statusPill = $("statusPill");
+    const startSelect = $("startSelect");
+    const endSelect = $("endSelect");
+    const daysInput = $("daysInput");
+    const paxInput = $("paxInput");
+    const btnFindPkgs = $("btnFindPkgs");
+    const pkgList = $("pkgList");
+    const pkgCount = $("pkgCount");
+
+    const selPkgPill = $("selPkgPill");
+    const mapPill = $("mapPill");
+    const routePill = $("routePill");
+    const daysBox = $("daysBox");
+
+    const taglinePill = $("taglinePill");
+    const taglinesBox = $("taglinesBox");
+    const plannerNote = $("plannerNote");
+
+    /************ UI Helpers ************/
+    function setSelectOptions(select, values){
+      select.innerHTML = values.map(v=>`<option value="${v}">${v}</option>`).join("");
     }
 
-    function renderPlaces(list){
-      placesGrid.innerHTML = list.slice(0, 60).map(placeCardHTML).join("");
-      [...placesGrid.querySelectorAll(".card")].forEach(el=>{
-        el.addEventListener("click", ()=>{
-          const id = el.getAttribute("data-id");
-          window.location.href = `place.html?id=${encodeURIComponent(id)}`;
-        });
-      });
+    function templateScore(t){
+      // simple "value" scoring: active + moderate days + shorter km
+      const days = Number(t.days||0);
+      const km = Number(t.total_km_est||0);
+      const active = safe(t.status).toLowerCase() !== "inactive";
+      let s = 0;
+      s += active ? 50 : 0;
+      if(days>=2 && days<=6) s += 25;
+      if(isFinite(km) && km>0) s += Math.max(0, 35 - km/35);
+      return s;
     }
 
-    function bestValueScore(t){
-      // Simple scoring: prefer active + shorter km + days 2-6
-      const days = Number(t.days || 0);
-      const km = Number(t.total_km_est || 0);
-      const active = (safeStr(t.status).toLowerCase() !== "inactive");
-      let score = 0;
-      score += active ? 50 : 0;
-      if(days>=2 && days<=6) score += 25;
-      if(isFinite(km) && km>0) score += Math.max(0, 35 - km/30);
-      return score;
-    }
+    function renderPackageList(list){
+      pkgCount.textContent = String(list.length);
+      if(!list.length){
+        pkgList.innerHTML = `<div class="note">No packages found for selected filters.</div>`;
+        return;
+      }
+      // sorted best first
+      const top = [...list].sort((a,b)=>templateScore(b)-templateScore(a)).slice(0,12);
 
-    function renderPackages(list){
-      // show top 6 best value
-      const top = [...list].sort((a,b)=>bestValueScore(b)-bestValueScore(a)).slice(0,6);
-
-      pkgGrid.innerHTML = top.map(t=>{
-        const majors = parsePlaceIds(t.major_place_ids).slice(0,5).join(", ");
+      pkgList.innerHTML = top.map(t=>{
+        const majors = parsePlaceIds(t.major_place_ids).slice(0,6).join(", ");
         return `
-          <div class="pkg" data-pkg="${safeStr(t.package_id)}">
+          <div class="pkg" data-id="${safe(t.package_id)}">
             <div class="pkgBody">
-              <div class="pkgTitle">${safeStr(t.route_name || t.package_id)}</div>
-              <div class="pkgMeta">${safeStr(t.days)} days • ${safeStr(t.total_km_est || "")} km • ${safeStr(t.best_season || "")}</div>
-              <div class="pkgLine"><b>Major places:</b> ${safeStr(majors || "—")}</div>
-              <div class="pkgBtn">View covered places →</div>
+              <div class="pkgTitle">${safe(t.route_name || t.package_id)}</div>
+              <div class="pkgMeta">${safe(t.days)} days • ${safe(t.total_km_est || "")} km • ${safe(t.best_season || "")}</div>
+              <div class="pkgLine"><b>Major:</b> ${safe(majors || "—")}</div>
+              <div class="pkgBtn">Select package →</div>
             </div>
           </div>
         `;
       }).join("");
 
-      [...pkgGrid.querySelectorAll(".pkg")].forEach(el=>{
+      [...pkgList.querySelectorAll(".pkg")].forEach(el=>{
         el.addEventListener("click", ()=>{
-          const id = el.getAttribute("data-pkg");
-          openPackagePlaces(id);
+          [...pkgList.querySelectorAll(".pkg")].forEach(x=>x.classList.remove("active"));
+          el.classList.add("active");
+          const id = el.getAttribute("data-id");
+          selectPackage(id);
         });
       });
     }
 
-    async function openPackagePlaces(packageId){
-      const t = ALL_TEMPLATES.find(x=>safeStr(x.package_id)===safeStr(packageId));
+    function renderRouteDetails(t, placesList){
+      const days = Number(t.days || 0);
+      const dayCols = ["day1_place_ids","day2_place_ids","day3_place_ids","day4_place_ids","day5_place_ids","day6_place_ids","day7_place_ids","day8_place_ids","day9_place_ids"];
+
+      const html = [];
+      for(let i=0; i<Math.min(9, Math.max(days, 1)); i++){
+        const key = dayCols[i];
+        const ids = parsePlaceIds(t[key]);
+        if(!ids.length) continue;
+
+        const tags = ids.map(pid=>{
+          const p = PLACES_BY_ID[pid];
+          const label = p ? safe(p.name) : pid;
+          return `<div class="tag" data-pid="${pid}" title="${pid}">${label}</div>`;
+        }).join("");
+
+        html.push(`
+          <div class="day">
+            <div class="dayTop">
+              <b>Day ${i+1}</b>
+              <span>${ids.length} stops</span>
+            </div>
+            <div class="dayPlaces">${tags}</div>
+          </div>
+        `);
+      }
+
+      if(!html.length){
+        daysBox.innerHTML = `<div class="note">No day-wise places found in this template. Check day1_place_ids… columns in Firebase.</div>`;
+      }else{
+        daysBox.innerHTML = html.join("");
+        // click a place tag -> focus on map
+        [...daysBox.querySelectorAll(".tag")].forEach(tag=>{
+          tag.addEventListener("click", ()=>{
+            const pid = tag.getAttribute("data-pid");
+            const p = PLACES_BY_ID[pid];
+            if(!p) return;
+            const lat = Number(p.latitude), lng = Number(p.longitude);
+            if(isFinite(lat) && isFinite(lng)){
+              map.setView([lat,lng], 12);
+            }
+          });
+        });
+      }
+
+      routePill.textContent = `${safe(t.route_name || t.package_id)} • ${safe(t.days)} days`;
+    }
+
+    function renderTaglines(placesList){
+      const cards = placesList.slice(0, 18).map(p=>{
+        const meta = [p.district, p.segment, p.category].filter(Boolean).join(" • ");
+        const tl = safe(p.history_tagline || p.what_you_find || "");
+        return `
+          <div class="tl">
+            <div class="tlBody">
+              <div class="tlTitle">${safe(p.name)}</div>
+              <div class="tlMeta">${safe(meta)}</div>
+              <div class="tlText">${safe(tl || "—")}</div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      taglinePill.textContent = String(placesList.length);
+      taglinesBox.innerHTML = cards || `<div class="note">No taglines found for this package places.</div>`;
+    }
+
+    /************ Package selection ************/
+    function collectPackagePlaceIds(t){
+      const ids = [];
+      ids.push(...parsePlaceIds(t.major_place_ids));
+      ids.push(...parsePlaceIds(t.day1_place_ids));
+      ids.push(...parsePlaceIds(t.day2_place_ids));
+      ids.push(...parsePlaceIds(t.day3_place_ids));
+      ids.push(...parsePlaceIds(t.day4_place_ids));
+      ids.push(...parsePlaceIds(t.day5_place_ids));
+      ids.push(...parsePlaceIds(t.day6_place_ids));
+      ids.push(...parsePlaceIds(t.day7_place_ids));
+      ids.push(...parsePlaceIds(t.day8_place_ids));
+      ids.push(...parsePlaceIds(t.day9_place_ids));
+      return uniq(ids);
+    }
+
+    async function selectPackage(packageId){
+      SELECTED_PACKAGE_ID = packageId;
+      const t = TEMPLATES.find(x => safe(x.package_id) === safe(packageId));
       if(!t) return;
 
-      // collect all day ids
-      const ids = [
-        ...parsePlaceIds(t.major_place_ids),
-        ...parsePlaceIds(t.day1_place_ids),
-        ...parsePlaceIds(t.day2_place_ids),
-        ...parsePlaceIds(t.day3_place_ids),
-        ...parsePlaceIds(t.day4_place_ids),
-        ...parsePlaceIds(t.day5_place_ids),
-        ...parsePlaceIds(t.day6_place_ids),
-        ...parsePlaceIds(t.day7_place_ids),
-        ...parsePlaceIds(t.day8_place_ids),
-        ...parsePlaceIds(t.day9_place_ids)
-      ];
+      selPkgPill.textContent = safe(t.route_name || t.package_id);
+      mapPill.textContent = `Showing: ${safe(t.route_name || t.package_id)}`;
 
-      // unique
-      const uniq = [...new Set(ids)].filter(Boolean);
+      // Load only package places (no all places anywhere)
+      const ids = collectPackagePlaceIds(t);
 
-      // match from ALL_PLACES (fast). If not found, try DB fetch (fallback)
-      let list = uniq.map(id => ALL_PLACES.find(p=>safeStr(p.place_id)===id)).filter(Boolean);
+      const placesList = [];
+      const missing = [];
 
-      // If some missing, fallback fetch
-      const missing = uniq.filter(id=>!list.some(p=>safeStr(p.place_id)===id));
+      ids.forEach(id=>{
+        const p = PLACES_BY_ID[id];
+        if(p) placesList.push(p);
+        else missing.push(id);
+      });
+
+      // Fallback: if some ids missing, try to fetch directly
       if(missing.length){
-        const snaps = await Promise.all(missing.slice(0,40).map(id => db.ref("places/"+id).get().catch(()=>null)));
+        const snaps = await Promise.all(missing.slice(0,50).map(id => db.ref("places/"+id).get().catch(()=>null)));
         snaps.forEach((s,i)=>{
           if(s && s.exists()){
-            const p = s.val(); p.place_id = missing[i];
-            list.push(p);
+            const p = s.val() || {};
+            p.place_id = missing[i];
+            PLACES_BY_ID[p.place_id] = p;
+            placesList.push(p);
           }
         });
       }
 
-      // Render in Places grid + fit bounds
-      FILTER.q = "";
-      searchInput.value = "";
-      renderPlaces(list);
-      renderMarkers(list);
+      renderRouteDetails(t, placesList);
+      renderTaglines(placesList);
+      plotPlacesOnMap(placesList);
 
-      try{
-        const bounds = [];
-        list.forEach(p=>{
-          const lat = Number(p.latitude), lng = Number(p.longitude);
-          if(isFinite(lat) && isFinite(lng)) bounds.push([lat,lng]);
-        });
-        if(bounds.length) map.fitBounds(bounds, {padding:[30,30]});
-      }catch(e){}
-
-      plannerNote.textContent = `Showing places for package: ${safeStr(t.route_name || t.package_id)} (${list.length} places)`;
-      window.scrollTo({top: document.querySelector(".sectionCard").offsetTop - 10, behavior:"smooth"});
+      plannerNote.textContent = `Loaded package places only: ${placesList.length} places.`;
     }
 
-    function fillPlannerOptions(){
-      // Use districts + popular start points from places
-      const starts = [...new Set(ALL_PLACES.map(p=>safeStr(p.district)).filter(Boolean))].sort();
-      startSelect.innerHTML = starts.map(s=>`<option value="${s}">${s}</option>`).join("");
-      endSelect.innerHTML = starts.map(s=>`<option value="${s}">${s}</option>`).join("");
-      startSelect.value = starts[0] || "";
-      endSelect.value = starts[Math.min(2, starts.length-1)] || starts[0] || "";
-    }
-
-    function plannerFilterTemplates(){
+    /************ Planner filtering ************/
+    function filterPackagesByPlanner(){
       const start = startSelect.value;
       const end = endSelect.value;
       const days = Number(daysInput.value || 0);
 
-      // simple match: template route_path contains start/end OR major ids include places in those districts
-      let list = ALL_TEMPLATES.filter(t=>{
-        const okDays = !days || Number(t.days||0)===days;
-        const txt = safeStr(t.route_path) + " " + safeStr(t.start_point) + " " + safeStr(t.end_point);
-        const okSE = (!start || txt.includes(start)) && (!end || txt.includes(end));
-        return okDays && (okSE || true);
-      });
+      let list = [...TEMPLATES];
 
-      // better: use district-based major places
-      const startIds = new Set(ALL_PLACES.filter(p=>safeStr(p.district)===start).map(p=>p.place_id));
-      const endIds   = new Set(ALL_PLACES.filter(p=>safeStr(p.district)===end).map(p=>p.place_id));
+      if(days){
+        list = list.filter(t => Number(t.days||0) === days);
+      }
 
+      // optional: match start/end in text fields
       list = list.filter(t=>{
-        const majors = parsePlaceIds(t.major_place_ids);
-        const hitStart = majors.some(id=>startIds.has(id));
-        const hitEnd   = majors.some(id=>endIds.has(id));
-        return hitStart || hitEnd || true;
+        const txt = (safe(t.start_point) + " " + safe(t.end_point) + " " + safe(t.route_path)).toLowerCase();
+        const okStart = !start || txt.includes(start.toLowerCase());
+        const okEnd = !end || txt.includes(end.toLowerCase());
+        return okStart && okEnd;
       });
 
-      renderPackages(list);
+      renderPackageList(list);
     }
 
-    /***********************
-     *  Load Data
-     ***********************/
+    /************ Load Firebase ************/
     async function loadAll(){
+      statusPill.textContent = "Connecting…";
+
       // places
       const placesSnap = await db.ref("places").get();
-      const placesObj = placesSnap.exists() ? placesSnap.val() : {};
-      ALL_PLACES = Object.keys(placesObj).map(k => ({ place_id:k, ...placesObj[k] }));
+      if(!placesSnap.exists()){
+        statusPill.textContent = "No /places found";
+        return;
+      }
+      const placesObj = placesSnap.val() || {};
+      PLACES_BY_ID = {};
+      Object.keys(placesObj).forEach(k=>{
+        PLACES_BY_ID[k] = { place_id:k, ...placesObj[k] };
+      });
 
       // templates
       const tmplSnap = await db.ref("templates").get();
       const tmplObj = tmplSnap.exists() ? tmplSnap.val() : {};
-      ALL_TEMPLATES = Object.keys(tmplObj).map(k => ({ package_id:k, ...tmplObj[k] }));
+      TEMPLATES = Object.keys(tmplObj).map(k => ({ package_id:k, ...tmplObj[k] }));
 
-      // dropdown data
-      const districts = [...new Set(ALL_PLACES.map(p=>safeStr(p.district)).filter(Boolean))].sort();
-      const segments  = [...new Set(ALL_PLACES.map(p=>safeStr(p.segment)).filter(Boolean))].sort();
-      const cats      = [...new Set(ALL_PLACES.map(p=>safeStr(p.category)).filter(Boolean))].sort();
+      // fill planner districts (from places)
+      const districts = [...new Set(Object.values(PLACES_BY_ID).map(p=>safe(p.district)).filter(Boolean))].sort();
+      if(!districts.length) districts.push("Shimla");
+      setSelectOptions(startSelect, districts);
+      setSelectOptions(endSelect, districts);
+      startSelect.value = districts[0] || "";
+      endSelect.value = districts[Math.min(2, districts.length-1)] || districts[0] || "";
 
-      setOptions(districtSelect, districts, "All districts");
-      setOptions(segmentSelect, segments, "All segments");
-      setOptions(categorySelect, cats, "All categories");
+      // start with packages list only (no places)
+      renderPackageList(TEMPLATES);
+      statusPill.textContent = "Firebase Loaded ✅";
 
-      fillPlannerOptions();
-      applyFilters();
-      renderPackages(ALL_TEMPLATES);
+      // Reset sections (no package selected)
+      selPkgPill.textContent = "No package selected";
+      mapPill.textContent = "Select a package";
+      daysBox.innerHTML = `<div class="note">Select a package to show day-wise route details here.</div>`;
+      taglinesBox.innerHTML = `<div class="note">After selecting a package, you will see place taglines here.</div>`;
+      taglinePill.textContent = "0";
+      clearMap();
     }
 
-    /***********************
-     *  Events
-     ***********************/
-    districtSelect.addEventListener("change", e=>{ FILTER.district = e.target.value; applyFilters(); });
-    segmentSelect.addEventListener("change",  e=>{ FILTER.segment  = e.target.value; applyFilters(); });
-    categorySelect.addEventListener("change", e=>{ FILTER.category = e.target.value; applyFilters(); });
-    searchInput.addEventListener("input", e=>{ FILTER.q = e.target.value; applyFilters(); });
-
-    document.getElementById("quickChips").addEventListener("click",(e)=>{
-      const chip = e.target.closest(".chip");
-      if(!chip) return;
-      const seg = chip.getAttribute("data-seg");
-      const active = chip.classList.toggle("active");
-      FILTER.segment = active ? seg : "All";
-      segmentSelect.value = FILTER.segment;
-      [...document.querySelectorAll(".chip")].forEach(c=>{ if(c!==chip) c.classList.remove("active"); });
-      applyFilters();
-    });
-
-    btnBestPkg.addEventListener("click", plannerFilterTemplates);
-    startSelect.addEventListener("change", plannerFilterTemplates);
-    endSelect.addEventListener("change", plannerFilterTemplates);
+    btnFindPkgs.addEventListener("click", filterPackagesByPlanner);
+    startSelect.addEventListener("change", filterPackagesByPlanner);
+    endSelect.addEventListener("change", filterPackagesByPlanner);
 
     loadAll().catch(err=>{
       console.error(err);
-      quoteText.textContent = "Firebase not loading. Check databaseURL + rules + config.";
+      statusPill.textContent = "Firebase error (check rules)";
     });
   </script>
 </body>
