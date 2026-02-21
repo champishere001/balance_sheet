@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — Packages (Major Cities Only)</title>
+  <title>Himachal Explorer — Premium Packages (Major Cities Only)</title>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -15,24 +15,27 @@
 
   <style>
     :root{
-      --bg0:#0a1020;
-      --bg1:#0d1730;
-      --card: rgba(255,255,255,.08);
-      --stroke: rgba(255,255,255,.14);
+      --bg0:#070A14;
+      --bg1:#0A1020;
+      --glass: rgba(255,255,255,.06);
+      --glass2: rgba(255,255,255,.045);
+      --stroke: rgba(255,255,255,.10);
       --text: rgba(255,255,255,.94);
-      --muted: rgba(255,255,255,.72);
+      --muted: rgba(255,255,255,.70);
       --muted2: rgba(255,255,255,.56);
-      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --shadow: 0 22px 70px rgba(0,0,0,.55);
       --r: 18px;
       --r2: 26px;
 
-      --accent:#86b6ff;
-      --accent2:#a5ffcf;
-      --warn:#ffcc66;
+      --accent:#6EA8FF;
+      --accent2:#93FFE0;
+      --gold:#FFD27A;
+      --bad:#FF6B6B;
 
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
+
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -40,69 +43,128 @@
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color: var(--text);
       background:
-        radial-gradient(900px 600px at 15% 10%, rgba(134,182,255,.22), transparent 60%),
-        radial-gradient(900px 600px at 85% 20%, rgba(165,255,207,.18), transparent 60%),
+        radial-gradient(1200px 700px at 10% 10%, rgba(110,168,255,.22), transparent 55%),
+        radial-gradient(900px 600px at 90% 20%, rgba(147,255,224,.16), transparent 60%),
+        radial-gradient(900px 700px at 50% 120%, rgba(255,210,122,.10), transparent 60%),
         linear-gradient(180deg, var(--bg0), var(--bg1));
       overflow:hidden;
     }
 
-    /* Header */
+    /* Top bar (premium) */
     .topbar{
-      position:sticky; top:0; z-index:50;
-      padding: calc(12px + var(--safe-top)) 14px 10px;
-      background: linear-gradient(180deg, rgba(10,16,32,.92), rgba(10,16,32,.55));
-      backdrop-filter: blur(10px);
+      position:sticky; top:0; z-index:60;
+      padding: calc(14px + var(--safe-top)) 14px 12px;
+      background: linear-gradient(180deg, rgba(7,10,20,.90), rgba(7,10,20,.55));
       border-bottom:1px solid var(--stroke);
+      backdrop-filter: blur(12px);
     }
-    .brand{
-      display:flex; align-items:center; justify-content:space-between;
+
+    .brandRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
       gap:12px;
     }
-    .brand h1{
-      margin:0;
-      font-size: 16px;
-      letter-spacing:.2px;
+
+    .brand{
       display:flex; align-items:center; gap:10px;
-      font-weight: 750;
+      min-width:0;
     }
-    .dot{
+
+    .logo{
+      width:34px; height:34px; border-radius:12px;
+      background: linear-gradient(135deg, rgba(110,168,255,.40), rgba(147,255,224,.28));
+      border:1px solid rgba(110,168,255,.35);
+      box-shadow: 0 0 28px rgba(110,168,255,.18);
+      display:flex; align-items:center; justify-content:center;
+      flex:0 0 auto;
+    }
+    .logoDot{
       width:10px; height:10px; border-radius:999px;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
-      box-shadow: 0 0 18px rgba(134,182,255,.5);
+      box-shadow: 0 0 18px rgba(110,168,255,.35);
     }
-    .chip{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 8px 10px;
-      border:1px solid var(--stroke);
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      color: var(--muted);
-      font-size: 12px;
-      user-select:none;
-      max-width: 62vw;
+
+    .brandText{min-width:0}
+    .brandText h1{
+      margin:0;
+      font-size:16px;
+      letter-spacing:.2px;
+      font-weight:900;
+      line-height:1.1;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
     }
-    .chip b{color: var(--text); font-weight:700}
-    .row{
+    .brandText .sub{
+      margin-top:4px;
+      font-size:12px;
+      color: var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .chips{
       display:flex; gap:10px; flex-wrap:wrap;
       margin-top:10px;
       align-items:center;
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 9px 10px;
+      border:1px solid var(--stroke);
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      font-size: 12px;
+      user-select:none;
+      max-width: 76vw;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .chip b{color: var(--text); font-weight:800}
+    .chip.ok{border-color: rgba(147,255,224,.26)}
+    .chip.bad{border-color: rgba(255,107,107,.35)}
+    .chip.gold{border-color: rgba(255,210,122,.30)}
+
+    /* Mobile tabs */
+    .mobileTabs{
+      display:none;
+      margin-top:12px;
+      gap:10px;
+    }
+    .tabBtn{
+      flex:1;
+      padding: 12px;
+      border-radius: 16px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      font-weight: 900;
+      font-size: 13px;
+      text-align:center;
+      cursor:pointer;
+      user-select:none;
+    }
+    .tabBtn.active{
+      border-color: rgba(110,168,255,.45);
+      background: rgba(110,168,255,.12);
     }
 
     /* Layout */
     .shell{
       height: calc(100% - 0px);
       display:grid;
-      grid-template-columns: 360px 1fr;
-      gap:12px;
-      padding: 12px;
-      padding-bottom: calc(12px + var(--safe-bottom));
+      grid-template-columns: 380px 1fr;
+      gap:14px;
+      padding: 14px;
+      padding-bottom: calc(14px + var(--safe-bottom));
     }
 
     .panel{
-      background: rgba(255,255,255,.06);
+      background: rgba(255,255,255,.05);
       border:1px solid var(--stroke);
       border-radius: var(--r2);
       box-shadow: var(--shadow);
@@ -113,26 +175,28 @@
     }
 
     .panelHead{
-      padding: 12px;
+      padding: 14px 14px;
       border-bottom:1px solid var(--stroke);
-      background: rgba(0,0,0,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
       display:flex;
       justify-content:space-between;
+      align-items:flex-start;
       gap:10px;
-      align-items:center;
     }
     .panelHead .title{
       font-size: 13px;
-      font-weight: 750;
+      font-weight: 950;
       letter-spacing:.2px;
+      margin:0;
     }
     .panelHead .sub{
       color: var(--muted);
       font-size: 12px;
-      margin-top:2px;
+      margin-top:4px;
+      line-height:1.35;
     }
     .panelBody{
-      padding: 12px;
+      padding: 14px;
       overflow:auto;
       min-height: 0;
     }
@@ -145,61 +209,67 @@
       border:1px solid var(--stroke);
       background: rgba(255,255,255,.06);
       color: var(--text);
-      padding: 11px 12px;
+      padding: 12px 12px;
       outline:none;
       font-size: 14px;
     }
     .inp::placeholder{color: rgba(255,255,255,.45)}
     select option{color:#0b1220}
+
     .btn{
       border:1px solid var(--stroke);
-      background: rgba(255,255,255,.08);
+      background: rgba(255,255,255,.06);
       color: var(--text);
       border-radius: 14px;
-      padding: 11px 12px;
+      padding: 12px 12px;
       font-size: 14px;
       cursor:pointer;
       user-select:none;
       display:inline-flex; align-items:center; justify-content:center;
       gap:8px;
+      font-weight:850;
     }
     .btn:active{transform: translateY(1px)}
     .btn.primary{
-      background: linear-gradient(135deg, rgba(134,182,255,.24), rgba(165,255,207,.18));
-      border-color: rgba(134,182,255,.42);
+      background: linear-gradient(135deg, rgba(110,168,255,.22), rgba(147,255,224,.14));
+      border-color: rgba(110,168,255,.40);
     }
     .btn.danger{
-      border-color: rgba(255,107,107,.45);
+      border-color: rgba(255,107,107,.35);
       background: rgba(255,107,107,.08);
       color: #ffd7d7;
     }
+
     .muted{color: var(--muted); font-size: 12px}
     .muted2{color: var(--muted2); font-size: 12px}
+
     .grid2{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
     .grid3{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px}
     .sep{height:1px; background: var(--stroke); margin: 12px 0}
 
-    /* Tiles */
-    .tiles{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:10px;
-    }
+    /* Tiles (premium cards) */
+    .tiles{display:grid; grid-template-columns: 1fr; gap:10px}
     .tile{
       border:1px solid var(--stroke);
-      background: rgba(255,255,255,.06);
-      border-radius: 18px;
+      background: rgba(255,255,255,.05);
+      border-radius: 20px;
       overflow:hidden;
       cursor:pointer;
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+    .tile:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 18px 55px rgba(0,0,0,.40);
+      border-color: rgba(110,168,255,.24);
     }
     .tileTop{
-      display:flex; gap:10px;
-      padding: 10px;
+      display:flex; gap:12px;
+      padding: 12px;
       align-items:center;
     }
     .thumb{
-      width:64px; height:64px;
-      border-radius: 16px;
+      width:74px; height:74px;
+      border-radius: 18px;
       border:1px solid var(--stroke);
       background: rgba(0,0,0,.18);
       flex:0 0 auto;
@@ -209,10 +279,10 @@
     .thumb img{width:100%; height:100%; object-fit:cover; display:block}
     .tileInfo{min-width:0}
     .tileInfo .name{
-      font-weight: 800;
-      font-size: 14px;
-      line-height: 1.15;
-      margin:0 0 6px;
+      font-weight: 950;
+      font-size: 14.5px;
+      line-height: 1.18;
+      margin:0 0 8px;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
@@ -223,89 +293,86 @@
       padding: 6px 8px;
       border-radius: 999px;
       border:1px solid var(--stroke);
-      background: rgba(255,255,255,.06);
+      background: rgba(255,255,255,.05);
       color: var(--muted);
+      font-weight:800;
     }
-    .badge.good{border-color: rgba(165,255,207,.4); color: #d7ffee}
-    .badge.blue{border-color: rgba(134,182,255,.45); color: #d9e7ff}
+    .badge.blue{border-color: rgba(110,168,255,.28); color: #dbe9ff}
+    .badge.good{border-color: rgba(147,255,224,.24); color: #d6fff5}
+
     .tileBot{
-      padding: 0 10px 10px;
+      padding: 0 12px 12px;
       color: var(--muted);
       font-size: 12px;
       display:-webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow:hidden;
+      line-height:1.4;
     }
 
     /* Map */
-    #map{ width:100%; height:100%; border-radius: var(--r2); }
     .mapWrap{position:relative; height:100%; min-height:0}
+    #map{width:100%; height:100%; border-radius: var(--r2)}
     .mapOverlay{
       position:absolute;
-      left:12px; top:12px;
-      display:flex; flex-direction:column; gap:8px;
+      left:14px; top:14px;
+      display:flex; flex-direction:column; gap:10px;
       z-index: 400;
-      max-width: min(440px, 64vw);
+      max-width: min(520px, 62vw);
     }
     .overlayCard{
       border:1px solid var(--stroke);
-      background: rgba(10,16,32,.55);
-      backdrop-filter: blur(10px);
-      border-radius: 18px;
-      padding: 10px 12px;
+      background: rgba(7,10,20,.58);
+      backdrop-filter: blur(14px);
+      border-radius: 22px;
+      padding: 12px 12px;
       box-shadow: var(--shadow);
     }
-    .overlayRow{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
+
+    .overlayHead{
+      display:flex; justify-content:space-between; gap:10px; align-items:flex-start;
+    }
+    .selTitle{
+      font-weight: 950;
+      font-size: 14.5px;
+      line-height:1.12;
+      margin:0;
+    }
+    .selMeta{color: var(--muted2); font-size: 12px; margin-top:5px; line-height:1.35}
+    .overlayRow{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
     .tiny{
-      font-size:11px;
+      font-size: 11px;
       padding: 6px 8px;
       border-radius: 12px;
       border:1px solid var(--stroke);
-      background: rgba(255,255,255,.06);
+      background: rgba(255,255,255,.05);
       color: var(--muted);
+      font-weight:800;
     }
+
     .miniBtn{
       padding: 9px 10px;
       border-radius: 14px;
       border:1px solid var(--stroke);
-      background: rgba(255,255,255,.07);
+      background: rgba(255,255,255,.06);
       color: var(--text);
       cursor:pointer;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 12px;
       user-select:none;
     }
 
-    /* Mobile UX: tabs + bottom planner */
-    .mobileTabs{
-      display:none;
-      position:sticky;
-      top: calc(58px + var(--safe-top));
-      z-index:60;
-      padding: 10px 12px;
-      gap:10px;
-      background: linear-gradient(180deg, rgba(10,16,32,.6), rgba(10,16,32,0));
-      backdrop-filter: blur(6px);
-    }
-    .tabBtn{
-      flex:1;
-      padding: 12px;
-      border-radius: 16px;
+    /* Planner output card */
+    .planCard{
+      background: rgba(255,255,255,.04);
       border:1px solid var(--stroke);
-      background: rgba(255,255,255,.07);
-      color: var(--text);
-      font-weight: 800;
-      font-size: 13px;
-      text-align:center;
-      cursor:pointer;
-      user-select:none;
-    }
-    .tabBtn.active{
-      border-color: rgba(134,182,255,.5);
-      background: rgba(134,182,255,.14);
+      border-radius: 18px;
+      padding: 12px;
+      margin-top: 10px;
     }
 
+    /* Mobile bottom planner sheet */
     .bottomPlanner{
       display:none;
       position:fixed;
@@ -315,8 +382,8 @@
     }
     .sheet{
       border:1px solid var(--stroke);
-      background: rgba(10,16,32,.65);
-      backdrop-filter: blur(12px);
+      background: rgba(7,10,20,.62);
+      backdrop-filter: blur(16px);
       border-radius: 22px;
       box-shadow: var(--shadow);
       overflow:hidden;
@@ -328,22 +395,22 @@
       gap:10px;
     }
     .sheetHead .left{min-width:0}
-    .sheetHead .left .t{font-weight:900; font-size: 13px}
+    .sheetHead .left .t{font-weight:950; font-size: 13px}
     .sheetHead .left .s{font-size: 12px; color: var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
     .sheetBody{padding: 12px}
     .hideOnMobile{display:block}
 
-    @media (max-width: 980px){
-      .shell{grid-template-columns: 340px 1fr}
+    /* Responsive */
+    @media (max-width: 1020px){
+      .shell{grid-template-columns: 360px 1fr}
     }
     @media (max-width: 860px){
       body{overflow:auto}
       .shell{
         height:auto;
         grid-template-columns: 1fr;
-        padding: 0 12px 120px;
+        padding: 12px 12px 130px;
       }
-      .panel.mapPanel{height: 62vh}
       .mobileTabs{display:flex}
       .bottomPlanner{display:block}
       .hideOnMobile{display:none!important}
@@ -351,6 +418,8 @@
       .panel.listPanel.show{display:flex}
       .panel.mapPanel{display:none}
       .panel.mapPanel.show{display:flex}
+      .panel.mapPanel{height: 58vh}
+      .mapOverlay{max-width: calc(100vw - 28px)}
     }
   </style>
 </head>
@@ -358,13 +427,19 @@
 <body>
   <!-- HEADER -->
   <div class="topbar">
-    <div class="brand">
-      <h1><span class="dot"></span> Himachal Explorer</h1>
-      <div id="statusChip" class="chip">Status: <b>Loading…</b></div>
+    <div class="brandRow">
+      <div class="brand">
+        <div class="logo"><div class="logoDot"></div></div>
+        <div class="brandText">
+          <h1>Himachal Explorer</h1>
+          <div class="sub">Premium planner • Start/End from major cities only</div>
+        </div>
+      </div>
+      <div id="statusChip" class="chip ok">Status: <b>Loading…</b></div>
     </div>
 
-    <div class="row">
-      <div class="chip" id="chipSelected">Selected: <b>None</b></div>
+    <div class="chips">
+      <div class="chip gold" id="chipSelected">Selected: <b>None</b></div>
       <div class="chip" id="chipCount">Places: <b>0</b></div>
     </div>
 
@@ -381,8 +456,8 @@
     <div id="listPanel" class="panel listPanel show">
       <div class="panelHead">
         <div>
-          <div class="title">Filters + Places</div>
-          <div class="sub">Tap a place to select. Package start/end = major cities only.</div>
+          <div class="title">Discover Places</div>
+          <div class="sub">Filter, search, then tap a place to select it. Package routes always start/end from major cities.</div>
         </div>
         <button id="btnReset" class="btn" type="button">Reset</button>
       </div>
@@ -406,7 +481,7 @@
           </div>
           <div>
             <label class="lbl">Search</label>
-            <input id="fSearch" class="inp" placeholder="e.g. temple, lake, mall road"/>
+            <input id="fSearch" class="inp" placeholder="Temple, lake, viewpoint, trek…"/>
           </div>
         </div>
 
@@ -431,21 +506,21 @@
         <!-- Overlay -->
         <div class="mapOverlay">
           <div class="overlayCard">
-            <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-start;">
+            <div class="overlayHead">
               <div style="min-width:0">
-                <div style="font-weight:900; font-size:14px; line-height:1.1" id="selName">No place selected</div>
-                <div class="muted2" id="selMeta">Tap a card to select</div>
+                <div class="selTitle" id="selName">No place selected</div>
+                <div class="selMeta" id="selMeta">Tap a place card to select</div>
               </div>
               <button id="btnCenter" class="miniBtn" type="button">Center</button>
             </div>
 
-            <div class="overlayRow" style="margin-top:10px;">
+            <div class="overlayRow">
               <span class="tiny" id="selBadge1">—</span>
               <span class="tiny" id="selBadge2">—</span>
               <span class="tiny" id="selBadge3">—</span>
             </div>
 
-            <div class="sep" style="margin:10px 0"></div>
+            <div class="sep" style="margin:12px 0"></div>
 
             <!-- DESKTOP PLANNER -->
             <div class="hideOnMobile">
@@ -492,8 +567,7 @@
                 <button id="btnClearPlan" class="btn danger" type="button">Clear</button>
               </div>
 
-              <div class="sep" style="margin:10px 0"></div>
-              <div id="planOut" class="muted"></div>
+              <div id="planOut" class="planCard"></div>
             </div>
           </div>
         </div>
@@ -557,8 +631,7 @@
           <button id="btnClearPlanM" class="btn danger" type="button">Clear</button>
         </div>
 
-        <div class="sep" style="margin:10px 0"></div>
-        <div id="planOutM" class="muted"></div>
+        <div id="planOutM" class="planCard"></div>
       </div>
     </div>
   </div>
@@ -624,8 +697,9 @@
 
     function setStatus(text, ok=true){
       const chip = $("statusChip");
+      chip.classList.remove("ok","bad");
+      chip.classList.add(ok ? "ok" : "bad");
       chip.innerHTML = `Status: <b>${text}</b>`;
-      chip.style.borderColor = ok ? "rgba(165,255,207,.35)" : "rgba(255,107,107,.45)";
     }
 
     function safeStr(v){ return (v===undefined || v===null) ? "" : String(v); }
@@ -900,12 +974,17 @@
       const district = safeStr(SELECTED_PLACE.District || SELECTED_PLACE.district || "—");
 
       out.innerHTML = `
-        <div style="font-weight:900; font-size:13px; margin-bottom:6px;">Package Preview</div>
-        <div class="muted2" style="margin-bottom:10px;">
-          <b>${escapeHtml(hubNameById(startId))}</b> → <b>${escapeHtml(name)}</b> (${escapeHtml(district)}) → <b>${escapeHtml(hubNameById(endId))}</b>
+        <div style="font-weight:950; font-size:13px; margin-bottom:8px;">Package Preview</div>
+        <div class="muted2" style="margin-bottom:10px; line-height:1.35;">
+          <span style="color:var(--gold); font-weight:900;">${escapeHtml(hubNameById(startId))}</span>
+          &nbsp;→&nbsp;
+          <span style="font-weight:900;">${escapeHtml(name)}</span>
+          <span class="muted2">(${escapeHtml(district)})</span>
+          &nbsp;→&nbsp;
+          <span style="color:var(--gold); font-weight:900;">${escapeHtml(hubNameById(endId))}</span>
         </div>
 
-        <div class="muted" style="line-height:1.55">
+        <div class="muted" style="line-height:1.62">
           • Days: <b>${days}</b> (${nights} nights)<br>
           • People: <b>${people}</b><br>
           • Vehicle: <b>${escapeHtml(vehicle.toUpperCase())}</b><br>
@@ -914,15 +993,15 @@
 
         <div class="sep" style="margin:10px 0"></div>
 
-        <div class="muted" style="line-height:1.55">
+        <div class="muted" style="line-height:1.62">
           Transport: <b>₹${transport.toFixed(0)}</b><br>
           Stay: <b>₹${stay.toFixed(0)}</b><br>
           Driver: <b>₹${driver.toFixed(0)}</b><br>
-          <span style="color:var(--warn)">Total (estimate): <b>₹${total.toFixed(0)}</b></span>
+          <span style="color:var(--gold)">Total (estimate): <b>₹${total.toFixed(0)}</b></span>
         </div>
 
         <div class="muted2" style="margin-top:10px;">
-          Note: This is a quick estimate. Replace straight-line km with your route/km sheet later for exact pricing.
+          Note: This is a quick estimate. Replace straight-line km with your route/km data later for exact pricing.
         </div>
       `;
 
@@ -990,7 +1069,7 @@
 
         ALL_PLACES = arr;
         setStatus(`Loaded ${ALL_PLACES.length} places`, true);
-        $("chipCount").innerHTML = `Places: <b>${ALL_PLACES.length}</b>`;
+        $("chipCount").innerHTML = `Places: <b>${VIEW_PLACES.length || ALL_PLACES.length}</b>`;
 
         const districts = uniqueSorted(ALL_PLACES.map(p=>safeStr(p.District || p.district)));
         const segments  = uniqueSorted(ALL_PLACES.map(p=>safeStr(p["Segment Type"] || p.segment || p.segmentType)));
