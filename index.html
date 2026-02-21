@@ -28,15 +28,54 @@
       --bad:#ef4444;
     }
     *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+
+    /* ✅ LIGHT PREMIUM BACKGROUND (NSO STYLE) */
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:
-        radial-gradient(1200px 600px at 15% -10%, rgba(37,99,235,.14), transparent 60%),
-        radial-gradient(1000px 550px at 85% 0%, rgba(16,185,129,.12), transparent 60%),
-        linear-gradient(180deg, var(--bg0), #fff);
+      background: var(--bg0);
       color:var(--text);
+      overflow-x:hidden;
     }
+    .bg{
+      position:fixed; inset:0; z-index:-4;
+      background:
+        radial-gradient(1200px 560px at 18% 12%, rgba(37,99,235,.16), transparent 60%),
+        radial-gradient(1100px 580px at 82% 18%, rgba(16,185,129,.14), transparent 60%),
+        radial-gradient(900px 520px at 50% 86%, rgba(167,139,250,.10), transparent 65%),
+        linear-gradient(180deg, #f2f6ff, #ffffff);
+    }
+    .noise{
+      position:fixed; inset:0; z-index:-3;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+      opacity:.08;
+      mix-blend-mode:overlay;
+      pointer-events:none;
+    }
+    .blob{
+      position:fixed;
+      width:420px; height:420px;
+      border-radius:50%;
+      filter: blur(55px);
+      opacity:.14;
+      z-index:-2;
+      animation: float 9s ease-in-out infinite;
+      pointer-events:none;
+    }
+    .b1{ left:-120px; top:80px;  background: rgba(37,99,235,.95); }
+    .b2{ right:-160px; top:140px; background: rgba(16,185,129,.90); animation-duration: 11s; }
+    .b3{ left:38%; bottom:-220px; background: rgba(167,139,250,.90); animation-duration: 13s; }
+    @keyframes float{
+      0%,100%{ transform: translate(0,0) scale(1); }
+      50%{ transform: translate(26px,-18px) scale(1.07); }
+    }
+    #fx{
+      position:fixed; inset:0; z-index:-1;
+      pointer-events:none;
+      opacity:.55;
+    }
+
     .wrap{ max-width: 1400px; margin: 0 auto; padding: 16px; }
 
     .card{
@@ -50,14 +89,14 @@
     .pad{ padding: 14px; }
     .hrow{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
     .title{ font-size: 18px; font-weight: 900; letter-spacing: .2px; text-transform: uppercase; }
-    .sub{ color: var(--muted); font-size: 12.5px; line-height:1.35; }
+    .sub{ color: var(--muted); font-size: 12.5px; line-height:1.35; text-transform: uppercase; }
 
     .hero{
       padding: 18px 16px;
       background:
-        linear-gradient(135deg, rgba(37,99,235,.12), rgba(16,185,129,.08)),
-        radial-gradient(900px 350px at 20% -20%, rgba(37,99,235,.18), transparent 60%),
-        radial-gradient(700px 300px at 95% 0%, rgba(16,185,129,.14), transparent 60%);
+        linear-gradient(135deg, rgba(37,99,235,.10), rgba(16,185,129,.07)),
+        radial-gradient(900px 350px at 20% -20%, rgba(37,99,235,.16), transparent 60%),
+        radial-gradient(700px 300px at 95% 0%, rgba(16,185,129,.12), transparent 60%);
       border-bottom: 1px solid var(--stroke);
     }
 
@@ -74,10 +113,10 @@
       background:white;
       padding:8px;
       border-radius:18px;
-      box-shadow:0 12px 35px rgba(0,0,0,.25);
+      box-shadow:0 12px 35px rgba(0,0,0,.18);
     }
     .hero-text h1{ margin:0; font-size: 22px; text-transform: uppercase; }
-    .hero-text p{ margin:6px 0 0; color:var(--muted); font-size: 13px; max-width: 1050px; }
+    .hero-text p{ margin:6px 0 0; color:var(--muted); font-size: 13px; max-width: 1050px; text-transform:none; }
 
     @media(max-width:780px){
       .hero-top{ flex-direction:column; text-align:center; }
@@ -113,7 +152,7 @@
     .btn{
       appearance:none; border:0; border-radius: 12px; padding: 10px 12px;
       cursor:pointer; font-weight:900; background: var(--accent); color:white;
-      box-shadow: 0 12px 30px rgba(37,99,235,.25);
+      box-shadow: 0 12px 30px rgba(37,99,235,.20);
       transition: transform .12s ease, filter .12s ease; width:100%;
       text-transform: uppercase;
     }
@@ -264,7 +303,7 @@
     }
     .detail h3{ margin:0 0 4px; font-size: 15.5px; text-transform: uppercase; }
     .detail .meta{ font-size:12px; color:var(--muted); margin-bottom: 8px; text-transform: uppercase; }
-    .detail .desc{ font-size:13px; color:var(--text); line-height: 1.35; }
+    .detail .desc{ font-size:13px; color:var(--text); line-height: 1.35; text-transform:none; }
 
     /* Cost box */
     .costBox{
@@ -329,6 +368,14 @@
 </head>
 
 <body>
+  <!-- ✅ PREMIUM BACKGROUND LAYER -->
+  <div class="bg"></div>
+  <canvas id="fx"></canvas>
+  <div class="noise"></div>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+
   <div class="wrap">
     <div class="card">
       <div class="hero">
@@ -397,7 +444,7 @@
 
         <div class="pad" style="padding-left:0; padding-right:0;">
           <div class="title">PACKAGES</div>
-          <div class="sub">Duplicates removed by route content. Grid view (3 columns). Click a card to open full road route + pricing.</div>
+          <div class="sub">DUPLICATES REMOVED BY ROUTE CONTENT. GRID VIEW (3 COLUMNS). CLICK A CARD TO OPEN FULL ROAD ROUTE + PRICING.</div>
           <div id="summaryPills"></div>
 
           <div class="pkgGrid" id="pkgGrid">
@@ -430,7 +477,7 @@
 
             <div class="costBox">
               <div class="title">PRICING</div>
-              <div class="sub">Uses OSRM road KM. Then applies 6–10% discount. Shows PER PERSON.</div>
+              <div class="sub">USES OSRM ROAD KM. THEN APPLIES 6–10% DISCOUNT. SHOWS PER PERSON.</div>
               <div id="costRows"></div>
             </div>
           </div>
@@ -442,7 +489,7 @@
     <div class="layout">
       <div class="card pad">
         <div class="title">RULE</div>
-        <div class="sub">
+        <div class="sub" style="text-transform:none;">
           ✅ NO AERIAL DISTANCE. ROAD KM & ROAD LINE ONLY (OSRM).<br/>
           ✅ PLACE NAMES IN CAPS.<br/>
           ✅ PER PERSON PRICE SHOWN.
@@ -462,6 +509,68 @@
   <div class="toast" id="toast"></div>
 
 <script>
+/***********************
+ * ✅ BACKGROUND PARTICLES (LIGHT)
+ ***********************/
+(function(){
+  const c = document.getElementById('fx');
+  const ctx = c.getContext('2d');
+  let W, H, particles = [];
+
+  function resize(){
+    W = c.width = window.innerWidth;
+    H = c.height = window.innerHeight;
+    particles = Array.from({length: 70}, () => ({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      r: Math.random()*1.6 + 0.4,
+      vx: (Math.random()*0.6 + 0.2) * (Math.random()<0.5?-1:1),
+      vy: (Math.random()*0.6 + 0.2) * (Math.random()<0.5?-1:1),
+      a: Math.random()*0.22 + 0.10
+    }));
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    for(const p of particles){
+      p.x += p.vx; p.y += p.vy;
+      if(p.x < -20) p.x = W+20;
+      if(p.x > W+20) p.x = -20;
+      if(p.y < -20) p.y = H+20;
+      if(p.y > H+20) p.y = -20;
+
+      ctx.beginPath();
+      ctx.globalAlpha = p.a;
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle = "#0b1b3a";
+      ctx.fill();
+    }
+
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const a = particles[i], b = particles[j];
+        const dx = a.x-b.x, dy = a.y-b.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if(dist < 140){
+          ctx.globalAlpha = (1 - dist/140) * 0.10;
+          ctx.strokeStyle = "#2563eb";
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(a.x,a.y);
+          ctx.lineTo(b.x,b.y);
+          ctx.stroke();
+        }
+      }
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
 /***********************
  * ✅ YOUR FIREBASE CONFIG
  ***********************/
