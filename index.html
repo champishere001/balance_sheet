@@ -3095,50 +3095,156 @@ loadAll().then(()=>toast("Portal ready")).catch(err=>{
   toast("Firebase load error");
 });
 
-/* ===== COST CALCULATOR ===== */
+  /* ===== COST CALCULATOR (DB BASED) =====
+   Uses: /pricing_transport and /stay_rate_rules from RTDB
+   Output: #priceTotal and #pricePer (already on your page)
+   No new inputs needed.
+*/
 
-function estimateTotalCost(route){
+let TRANSPORT = {};   // pricing_transport
+let STAYRULES = {};   // stay_rate_rules
+let PRICING_READY = false;
 
-  const km = Number(route.total_km_est || 0);
+// load pricing nodes
+async function loadPricingNodes(){
+  try{
+    const [tSnap, sSnap] = await Promise.all([
+      db.ref("pricing_transport").once("value"),
+      db.ref("stay_rate_rules").once("value")
+    ]);
+    TRANSPORT = tSnap.val() || {};
+    STAYRULES = sSnap.val() || {};
+    PRICING_READY = true;
+    //toast("Pricing loaded");
+  }catch(e){
+    console.error(e);
+    PRICING_READY = false;
+    toast("Pricing nodes not readable");
+  }
+}
 
-  const vehicleKey = document.getElementById("vehicleSel")?.value;
-  const stayKey = document.getElementById("stayRuleSel")?.value;
-  const persons = Number(document.getElementById("personsInp")?.value || 1);
+// choose vehicle key from pax (matches your DB keys)
+function vehicleKeyByPax(pax){
+  pax = Number(pax || 2);
+  if(pax <= 4) return "sedan";   // exists in your DB
+  if(pax <= 7) return "suv";     // exists
+  return "tempo";               // exists
+}
 
-  const vehicle = TRANSPORT?.[vehicleKey];
-  const stay = STAYRULES?.[stayKey];
+// choose stay rule key (you can change default here)
+function stayRuleKeyDefault(){
+  // your DB shows r1, r2, r3... choose r2 as default midrange
+  if(STAYRULES?.r2) return "r2";
+  // fallback to any first active rule
+  const keys = Object.keys(STAYRULES || {});
+  return keys[0] || "";
+}
 
-  if(!vehicle || !stay || !km) return {total:NaN, perPerson:NaN};
+// main estimator (km from OSRM, days from template, pax from paxSel)
+function estimateTotalCostFromDb({ km=0, days=3, pax=2 }){
+  km = Number(km || 0);
+  days = Number(days || 0);
+  pax = Math.max(1, Number(pax || 1));
+  const nights = Math.max(0, days - 1);
 
-  const days = Number(route.days || 0);
-  const nights = Math.max(0, days-1);
+  if(!PRICING_READY || !km || !days) return { total: NaN, perPerson: NaN };
+
+  const vKey = vehicleKeyByPax(pax);
+  const sKey = stayRuleKeyDefault();
+
+  const vehicle = TRANSPORT?.[vKey];
+  const stay = STAYRULES?.[sKey];
+
+  if(!vehicle || !stay) return { total: NaN, perPerson: NaN };
+
+  const perKm = Number(vehicle.per_km || 0);
+  const driverPerDay = Number(vehicle.driver_per_day || 0);
+  const nightCharge = Number(vehicle.night_charge || 0);
 
   const transport =
-      km * Number(vehicle.per_km || 0)
-    + days * Number(vehicle.driver_per_day || 0)
-    + nights * Number(vehicle.night_charge || 0);
+      km * perKm
+    + days * driverPerDay
+    + nights * nightCharge;
 
-  const hotel = Number(stay.base_rate_mid || 0) * nights;
+  // stay rates are per room/night in your rules. Your UI is per-person estimate,
+  // so we assume rooms = ceil(pax/2) like you did earlier.
+  const rooms = Math.ceil(pax / 2);
+  const baseRate = Number(stay.base_rate_mid || stay.base_rate_low || stay.base_rate_peak || 0);
+  const hotel = rooms * baseRate * nights;
 
   const total = transport + hotel;
-  const perPerson = total / persons;
+  const perPerson = total / pax;
 
-  return {total, perPerson};
+  return { total, perPerson, meta: { vKey, sKey, rooms, nights } };
 }
-function updatePriceBox(total, perPerson){
 
-  const el = document.getElementById("priceTotal");
-  if(!el) return;
+// update UI (your existing boxes)
+function updatePriceBoxes(total, perPerson){
+  const totalEl = document.getElementById("priceTotal");
+  const perEl   = document.getElementById("pricePer");
+  if(!totalEl || !perEl) return;
 
   if(!isFinite(total)){
-    el.innerHTML = "— <small></small>";
+    totalEl.innerHTML = "— <small></small>";
+    perEl.innerHTML = "— <small></small>";
     return;
   }
 
-  el.innerHTML =
+  totalEl.innerHTML =
     "₹" + Math.round(total).toLocaleString("en-IN") +
-    ` <small>(~₹${Math.round(perPerson).toLocaleString("en-IN")}/person)</small>`;
+    ` <small>(DB rates)</small>`;
+
+  perEl.innerHTML =
+    "₹" + Math.round(perPerson).toLocaleString("en-IN") +
+    ` <small>per person</small>`;
 }
+
+/* ✅ WRAP openTemplate WITHOUT CHANGING IT */
+(function attachDbCostCalculator(){
+  const _openTemplate = openTemplate;
+
+  openTemplate = async function(key, start){
+    await _openTemplate(key, start); // run your existing logic first
+
+    try{
+      // Only run if we have km + template
+      const tpl = TEMPLATES?.[key];
+      if(!tpl) return;
+
+      const pax = Number(document.getElementById("paxSel")?.value || 2);
+      const days = Number(tpl.days || document.getElementById("daysSel")?.value || 3);
+      const km = Number(CURRENT_ROUTE_KM || 0);
+
+      if(!km || !days){
+        updatePriceBoxes(NaN, NaN);
+        return;
+      }
+
+      const est = estimateTotalCostFromDb({ km, days, pax });
+      updatePriceBoxes(est.total, est.perPerson);
+    }catch(e){
+      console.error(e);
+    }
+  };
+})();
+
+/* ✅ if pax changes, recompute current package price (if already opened) */
+document.getElementById("paxSel")?.addEventListener("change", ()=>{
+  if(!CURRENT_TEMPLATE_KEY) return;
+  // re-run price calc using current km + current template
+  try{
+    const tpl = TEMPLATES?.[CURRENT_TEMPLATE_KEY];
+    if(!tpl) return;
+
+    const pax = Number(document.getElementById("paxSel")?.value || 2);
+    const days = Number(tpl.days || document.getElementById("daysSel")?.value || 3);
+    const km = Number(CURRENT_ROUTE_KM || 0);
+
+    const est = estimateTotalCostFromDb({ km, days, pax });
+    updatePriceBoxes(est.total, est.perPerson);
+  }catch(e){}
+});
+
 </script>
 </body>
 </html>
