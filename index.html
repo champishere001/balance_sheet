@@ -162,7 +162,7 @@
       gap: var(--gap);
       padding: 14px;
       overflow:hidden;
-      padding-bottom:110px; /* ✅ keeps content above footer */
+      padding-bottom:14px; /* ✅ footer removed */
     }
 
     .pane{
@@ -387,6 +387,74 @@
     .mini .v{ margin-top:6px; font-size: 14px; font-weight: 950; letter-spacing:.06em; color:#fff; }
     .mini .v small{ font-size: 11px; color: rgba(255,255,255,.72); font-weight: 800; }
 
+    /* ✅ Contact Card (placed inside right pane) */
+    .contactCard{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      border-radius:16px;
+      padding:12px;
+    }
+    .contactTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .contactLeft{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .contactAvatar{
+      width:44px; height:44px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      overflow:hidden;
+      display:grid; place-items:center;
+      font-weight:950;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:#fff;
+      flex:0 0 auto;
+    }
+    .contactAvatar img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .contactName{
+      font-size:12.5px;
+      font-weight:950;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .contactMeta{
+      margin-top:4px;
+      font-size:11px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.70);
+      line-height:1.35;
+    }
+    .contactActions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .motoLine{
+      margin-top:10px;
+      border-top:1px solid rgba(255,255,255,.10);
+      padding-top:10px;
+      font-size:11px;
+      letter-spacing:.12em;
+      opacity:.88;
+      line-height:1.45;
+      text-transform:none;
+    }
+
     .daysList{ display:flex; flex-direction:column; gap:10px; }
     .dayCard{
       border:1px solid rgba(255,255,255,.12);
@@ -532,121 +600,6 @@
       box-shadow:0 40px 120px rgba(0,0,0,.75);
       z-index:100000;
     }
-
-    /* ✅ FOOTER (UPDATED) */
-    .footerBar{
-      position:fixed;
-      left:0; right:0; bottom:0;
-      padding:12px 18px;
-      display:grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items:center;
-      gap:16px;
-
-      background:linear-gradient(180deg, rgba(10,14,24,.55), rgba(10,14,24,.96));
-      backdrop-filter: blur(14px);
-      border-top:1px solid rgba(255,255,255,.12);
-
-      color:rgba(255,255,255,.88);
-      font-size:12px;
-      letter-spacing:.10em;
-      text-transform:uppercase;
-      z-index:9999;
-    }
-
-    .footerLeft{
-      justify-self:start;
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width: 220px;
-    }
-    .footerStack{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-
-    .footerCenter{
-      justify-self:center;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:8px;
-      text-align:center;
-    }
-    .footerLogo{
-      height:34px;
-      width:auto;
-      border-radius:10px;
-      background:white;
-      padding:4px;
-      box-shadow:0 8px 20px rgba(0,0,0,.4);
-    }
-    .footerMoto{
-      font-size:11px;
-      letter-spacing:.12em;
-      opacity:.85;
-      max-width: 520px;
-      line-height:1.35;
-    }
-
-    .footerRight{
-      justify-self:end;
-      display:flex;
-      flex-direction:column;
-      align-items:flex-end;
-      text-align:right;
-      gap:8px;
-      min-width: 220px;
-    }
-    .footerRow{
-      font-size:12px;
-      letter-spacing:.10em;
-    }
-    .footerRow a{
-      color:#fff;
-      text-decoration:none;
-      font-weight:900;
-    }
-    .footerLabel{
-      opacity:.7;
-      margin-right:6px;
-    }
-    .footerBtns{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
-    .footerBtn{
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.06);
-      color:#fff;
-      padding:8px 12px;
-      border-radius:12px;
-      cursor:pointer;
-      font-size:11px;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      text-decoration:none;
-    }
-    .footerBtn:hover{ background:rgba(255,255,255,.12); }
-
-    @media (max-width: 820px){
-      .footerBar{
-        grid-template-columns: 1fr;
-        gap:10px;
-        text-align:center;
-      }
-      .footerLeft, .footerRight{
-        justify-self:center;
-        align-items:center;
-        text-align:center;
-        min-width: unset;
-      }
-      .footerBtns{ justify-content:center; }
-    }
   </style>
 </head>
 
@@ -760,13 +713,29 @@
         </div>
 
         <div class="itWrap">
-          <div class="mini" style="background:rgba(0,0,0,.22);">
-            <div class="k">Quick Actions</div>
-            <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
-              <a class="toolBtn" href="https://wa.me/917018138847" target="_blank" rel="noopener">WhatsApp</a>
-              <button class="toolBtn" type="button" id="copyContactBtn">Copy Details</button>
+          <!-- ✅ CONTACT DETAILS (appropriate position: top of itinerary pane) -->
+          <div class="contactCard">
+            <div class="contactTop">
+              <div class="contactLeft">
+                <div class="contactAvatar">
+                  <img src="logo.png" alt="Logo" onerror="this.remove(); this.parentNode.textContent='CP';">
+                </div>
+                <div style="min-width:0;">
+                  <div class="contactName">Chandan Panwar</div>
+                  <div class="contactMeta">
+                    <a class="toolBtn" style="padding:6px 10px; border-radius:12px;" href="tel:+917018138847">Call: +91 7018138847</a>
+                    <a class="toolBtn" style="padding:6px 10px; border-radius:12px;" href="mailto:chandanpanwar001@gmail.com">Mail</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="contactActions">
+                <a class="toolBtn" href="https://wa.me/917018138847" target="_blank" rel="noopener">WhatsApp</a>
+                <button class="toolBtn" type="button" id="copyContactBtn">Copy Details</button>
+              </div>
             </div>
-            <div class="muted" style="margin-top:10px; line-height:1.45;">
+
+            <div class="motoLine">
               “Creating Memorable Journeys for Visitors — Revenue Comes After Trust.”
             </div>
           </div>
@@ -856,39 +825,6 @@
     </div>
   </div>
 
-  <!-- ✅ FOOTER: LEFT(name+phone) | CENTER(logo+tagline) | RIGHT(email+copy) -->
-  <div class="footerBar">
-    <div class="footerLeft">
-      <div class="footerStack">
-        <div class="footerRow">
-          <span class="footerLabel">Name</span>
-          <b>Chandan Panwar</b>
-        </div>
-        <div class="footerRow">
-          <span class="footerLabel">Phone</span>
-          <a href="tel:+917018138847">+91 7018138847</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="footerCenter">
-      <img src="logo.png" class="footerLogo" alt="Logo" onerror="this.style.display='none'">
-      <div class="footerMoto">
-        “Creating Memorable Journeys for Visitors — Revenue Comes After Trust.”
-      </div>
-    </div>
-
-    <div class="footerRight">
-      <div class="footerRow">
-        <span class="footerLabel">Email</span>
-        <a href="mailto:chandanpanwar001@gmail.com">chandanpanwar001@gmail.com</a>
-      </div>
-      <div class="footerBtns">
-        <button class="footerBtn" id="copyFooterContact" type="button">Copy Details</button>
-      </div>
-    </div>
-  </div>
-
   <script>
   /* ===============================
      ✅ Firebase Config
@@ -948,19 +884,8 @@
     return String(sel).replace(/["\\]/g,"\\$&");
   }
 
-  // ✅ Contact copy (right quick actions)
+  // ✅ Copy contact (contact card button)
   $("copyContactBtn")?.addEventListener("click", async ()=>{
-    const text =
-`Himachal Explorer Portal
-Name: Chandan Panwar
-Phone: +91 7018138847
-Email: chandanpanwar001@gmail.com`;
-    try{ await navigator.clipboard.writeText(text); toast("Contact copied"); }
-    catch(e){ toast("Copy not allowed"); }
-  });
-
-  // ✅ Footer contact copy
-  $("copyFooterContact")?.addEventListener("click", async ()=>{
     const txt =
 `Himachal Explorer Portal
 Chandan Panwar
