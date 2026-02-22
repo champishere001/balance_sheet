@@ -19,11 +19,7 @@
     :root{
       --bg0:#070A12;
       --bg1:#0B1220;
-
-      /* ✅ Put your attached photo file name here (same folder) */
-      /* Example: --pkgBg: url("my-attached-photo.jpg"); */
       --pkgBg: url("kinnaur-kailash.webp");
-
       --card:rgba(255,255,255,.06);
       --stroke:rgba(255,255,255,.10);
       --muted:rgba(255,255,255,.65);
@@ -202,6 +198,7 @@
       text-transform: uppercase;
     }
 
+    /* Left */
     .filters{
       padding: 12px;
       border-bottom:1px solid var(--stroke);
@@ -390,7 +387,7 @@
     .mini .v{ margin-top:6px; font-size: 14px; font-weight: 950; letter-spacing:.06em; color:#fff; }
     .mini .v small{ font-size: 11px; color: rgba(255,255,255,.72); font-weight: 800; }
 
-    /* ✅ Contact Card */
+    /* ✅ Contact Card (top of itinerary pane) */
     .contactCard{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.22);
@@ -561,92 +558,32 @@
       .actions{ min-width:unset; }
     }
 
-    /* ✅ HERO FINDER: 75% PHOTO + 25% GLASS BOX */
-    .pane.pkgPane.heroFinder{
-      display:flex;
-      flex-direction:column;
-      overflow:hidden;
-      position:relative;
-      background:none;
-    }
-
-    .finderPhoto{
-      flex: 0 0 75%;
-      position:relative;
+    /* ✅ Package Finder BG image */
+    .pane.pkgPane{
+      position: relative;
       background:
-        linear-gradient(180deg, rgba(10,14,24,.20), rgba(10,14,24,.78)),
+        linear-gradient(180deg, rgba(10,14,24,.76), rgba(10,14,24,.88)),
         var(--pkgBg) center/cover no-repeat;
     }
-
-    .finderTopBar{
-      position:absolute;
-      left:0; right:0; top:0;
-      padding:12px 12px 10px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:10px;
+    .pane.pkgPane::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(900px 520px at 30% 20%, rgba(124,58,237,.22), transparent 60%),
+        radial-gradient(900px 520px at 80% 30%, rgba(34,197,94,.16), transparent 62%),
+        linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.55));
+      pointer-events:none;
+    }
+    .pane.pkgPane > *{ position: relative; z-index: 2; }
+    .pane.pkgPane .filters,
+    .pane.pkgPane .metaPills,
+    .pane.pkgPane .pkgList{
       background: rgba(0,0,0,.18);
       backdrop-filter: blur(10px);
     }
-
-    .finderGlass{
-      flex: 0 0 25%;
-      position:relative;
-      padding:12px;
-      border-top:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.16);
-      backdrop-filter: blur(18px);
-    }
-
-    .glassInner{
-      height:100%;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      border-radius: 18px;
-      padding: 12px;
-      box-shadow: 0 24px 70px rgba(0,0,0,.45);
-
-      display:flex;
-      flex-direction:column;
-      justify-content:flex-end;
-    }
-
-    .row3{
-      display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap:10px;
-      margin-top:10px;
-    }
-    .row3 .btnRow{
-      display:flex;
-      gap:10px;
-      align-items:stretch;
-    }
-    .row3 .btnRow .btn{
-      flex:1;
-      height:100%;
-    }
-
-    .heroFinder .pkgList{
-      flex:1;
-      padding:12px;
-      overflow:auto;
-      background: rgba(0,0,0,.18);
-      backdrop-filter: blur(10px);
-    }
-
-    .heroFinder input,
-    .heroFinder select{
-      background: rgba(0,0,0,.28);
-      border: 1px solid rgba(255,255,255,.16);
-    }
-
-    @media (max-width: 980px){
-      .finderPhoto{ flex-basis: 60%; }
-      .finderGlass{ flex-basis: 40%; }
-      .row3{ grid-template-columns: 1fr; }
+    .pane.pkgPane .paneHdr{
+      background: rgba(0,0,0,.20);
+      backdrop-filter: blur(12px);
     }
 
     /* ✅ Place Modal styles */
@@ -702,59 +639,49 @@
 
     <!-- MAIN -->
     <div class="main">
-      <!-- LEFT (HERO PHOTO + GLASS FORM) -->
-      <div class="pane pkgPane heroFinder">
+      <!-- LEFT -->
+      <div class="pane pkgPane">
+        <div class="paneHdr">
+          <div>
+            <p class="t">Package Finder</p>
+            <div class="s">End derived from route_path (Column G)</div>
+          </div>
+          <div class="s" id="pkgCount">—</div>
+        </div>
 
-        <!-- 75% Photo -->
-        <div class="finderPhoto">
-          <div class="finderTopBar">
-            <div>
-              <p class="t">Package Finder</p>
-              <div class="s">End derived from route_path (Column G)</div>
-            </div>
-            <div class="s" id="pkgCount">—</div>
+        <div class="filters">
+          <div class="field">
+            <label>Start (Templates)</label>
+            <input id="startInp" list="startList" placeholder="E.g. AMRITSAR / DELHI / CHANDIGARH">
+            <datalist id="startList"></datalist>
+          </div>
+
+          <div class="field">
+            <label>Days (Optional)</label>
+            <select id="daysSel">
+              <option value="">ANY</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+              <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+              <option>11</option><option>12</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Pax</label>
+            <select id="paxSel">
+              <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+              <option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+            </select>
+          </div>
+
+          <div class="btnRow">
+            <button class="btn secondary" id="resetBtn" type="button">Reset</button>
+            <button class="btn" id="genBtn" type="button">Generate</button>
           </div>
         </div>
 
-        <!-- 25% Glass -->
-        <div class="finderGlass">
-          <div class="glassInner">
-            <div class="field">
-              <label>Start (Templates)</label>
-              <input id="startInp" list="startList" placeholder="E.g. AMRITSAR / DELHI / CHANDIGARH">
-              <datalist id="startList"></datalist>
-            </div>
+        <div class="metaPills" id="pills"></div>
 
-            <div class="row3">
-              <div class="field">
-                <label>Days (Optional)</label>
-                <select id="daysSel">
-                  <option value="">ANY</option>
-                  <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-                  <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
-                  <option>11</option><option>12</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label>Pax</label>
-                <select id="paxSel">
-                  <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
-                  <option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
-                </select>
-              </div>
-
-              <div class="btnRow">
-                <button class="btn secondary" id="resetBtn" type="button">Reset</button>
-                <button class="btn" id="genBtn" type="button">Generate</button>
-              </div>
-            </div>
-
-            <div class="metaPills" id="pills" style="padding:0; margin-top:10px;"></div>
-          </div>
-        </div>
-
-        <!-- Results -->
         <div class="pkgList" id="pkgList">
           <div class="pill"><span>Type Start & click</span> <b>Generate</b></div>
         </div>
@@ -790,7 +717,7 @@
         </div>
 
         <div class="itWrap">
-          <!-- Contact -->
+          <!-- ✅ CONTACT DETAILS -->
           <div class="contactCard">
             <div class="contactTop">
               <div class="contactLeft">
@@ -1224,7 +1151,7 @@ chandanpanwar001@gmail.com`;
   }
 
   /* ===============================
-     ✅ Start must be included in route + Sanity filter
+     ✅ START MUST BE INCLUDED IN ROUTE + SANITY FILTER
      =============================== */
   function getPlaceIdByNameAny(name){
     const nm = String(name || "").trim();
@@ -1248,6 +1175,7 @@ chandanpanwar001@gmail.com`;
     return baseStops;
   }
 
+  // ✅ Smart remove wrong-district places for local packages (fixes CHAMBA showing SHIMLA "MALL ROAD")
   function sanitizeStopsForTemplate(tpl, ids, endDistrictKey){
     const out = [];
     const removed = [];
@@ -1255,6 +1183,9 @@ chandanpanwar001@gmail.com`;
     const days = Number(tpl?.days || 0);
     const endD = String(endDistrictKey || "").trim().toUpperCase();
 
+    // We only apply strict filtering to "local" packages:
+    // - End is a HP district name, AND
+    // - days <= 4 (local trip), OR template region/region_style strongly indicates local.
     const regionHint = String(tpl?.region_style || tpl?.region || tpl?.route_name || "").toUpperCase();
     const localHint = (regionHint.includes(endD) || regionHint.includes("LOCAL") || regionHint.includes("CORE"));
     const shouldStrict = (!!endD && (days > 0 && days <= 4 || localHint));
@@ -1264,12 +1195,15 @@ chandanpanwar001@gmail.com`;
     for(const pid of (ids || [])){
       const p = LOCS[pid];
       if(!p){ out.push(pid); continue; }
+
       const d = districtAny(p);
       if(!d){ out.push(pid); continue; }
 
+      // Keep if same district as end district
       if(d === endD){
         out.push(pid);
       }else{
+        // Remove obvious wrong-district item (example: SHIMLA place inside CHAMBA local package)
         removed.push({ pid, name: placeNameAny(p, pid), district: d });
       }
     }
@@ -1321,6 +1255,7 @@ chandanpanwar001@gmail.com`;
       const days = Number(t.days || 0) || 0;
       const tempoOk = (t.tempo_ok === true || safeLower(t.tempo_ok)==="true");
 
+      // ✅ thumbnail from START of route
       const routeIds = routeIdsFromTemplateIncludingStart(t);
       let thumbUrl="", ini="HP";
       if(routeIds[0]){
@@ -1406,6 +1341,7 @@ chandanpanwar001@gmail.com`;
     const daysList = $("daysList");
     daysList.innerHTML = "";
 
+    // Build day blocks, but remove any "sanityRemoved" IDs inside them too
     const removedSet = new Set((sanityRemoved || []).map(x=>x.pid));
     const blocks = buildDayWise(tpl).map(b=>({
       day: b.day,
@@ -1635,7 +1571,10 @@ chandanpanwar001@gmail.com`;
 
     const endKey = endKeyFromColumnG(tpl);
 
+    // ✅ route includes START (if exists in DB)
     const routeIdsRaw = routeIdsFromTemplateIncludingStart(tpl);
+
+    // ✅ remove wrong district places for local packages (fixes CHAMBA + SHIMLA mall-road)
     const sanity = sanitizeStopsForTemplate(tpl, routeIdsRaw, endKey);
     const routeIds = sanity.ids;
 
