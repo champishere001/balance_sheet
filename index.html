@@ -345,6 +345,7 @@
       display:inline-flex; align-items:center; gap:10px;
       user-select:none;
       white-space: nowrap;
+      text-decoration:none;
     }
     .toolBtn:hover{ background: rgba(255,255,255,.08); }
 
@@ -487,46 +488,36 @@
       .quote{ display:none; }
       .actions{ min-width:unset; }
     }
-       /* ===========================
-   ✅ Package Finder BG image
-   =========================== */
-.pane.pkgPane{
-  position: relative;
-  background:
-    linear-gradient(180deg, rgba(10,14,24,.76), rgba(10,14,24,.88)),
-    var(--pkgBg) center/cover no-repeat;
-}
 
-/* extra dark layer so text stays readable */
-.pane.pkgPane::before{
-  content:"";
-  position:absolute; inset:0;
-  background:
-    radial-gradient(900px 520px at 30% 20%, rgba(124,58,237,.22), transparent 60%),
-    radial-gradient(900px 520px at 80% 30%, rgba(34,197,94,.16), transparent 62%),
-    linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.55));
-  pointer-events:none;
-}
-
-/* bring inner content above overlay */
-.pane.pkgPane > *{
-  position: relative;
-  z-index: 2;
-}
-
-/* make cards inside more “glass” */
-.pane.pkgPane .filters,
-.pane.pkgPane .metaPills,
-.pane.pkgPane .pkgList{
-  background: rgba(0,0,0,.18);
-  backdrop-filter: blur(10px);
-}
-
-/* header also glass */
-.pane.pkgPane .paneHdr{
-  background: rgba(0,0,0,.20);
-  backdrop-filter: blur(12px);
-}
+    /* ===========================
+       ✅ Package Finder BG image
+       =========================== */
+    .pane.pkgPane{
+      position: relative;
+      background:
+        linear-gradient(180deg, rgba(10,14,24,.76), rgba(10,14,24,.88)),
+        var(--pkgBg) center/cover no-repeat;
+    }
+    .pane.pkgPane::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(900px 520px at 30% 20%, rgba(124,58,237,.22), transparent 60%),
+        radial-gradient(900px 520px at 80% 30%, rgba(34,197,94,.16), transparent 62%),
+        linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.55));
+      pointer-events:none;
+    }
+    .pane.pkgPane > *{ position: relative; z-index: 2; }
+    .pane.pkgPane .filters,
+    .pane.pkgPane .metaPills,
+    .pane.pkgPane .pkgList{
+      background: rgba(0,0,0,.18);
+      backdrop-filter: blur(10px);
+    }
+    .pane.pkgPane .paneHdr{
+      background: rgba(0,0,0,.20);
+      backdrop-filter: blur(12px);
+    }
 
     /* ===========================
        ✅ Place Modal styles
@@ -579,11 +570,6 @@
       box-shadow:0 8px 20px rgba(0,0,0,.4);
     }
 
-    .footerText b{
-      color:#fff;
-      font-weight:900;
-    }
-
     .footerMoto{
       width:100%;
       text-align:center;
@@ -592,54 +578,48 @@
       opacity:.85;
       margin-top:4px;
     }
-     .footerContact{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:6px;
-  text-align:center;
-}
-
-.footerRow{
-  font-size:12px;
-  letter-spacing:.10em;
-}
-
-.footerRow a{
-  color:#fff;
-  text-decoration:none;
-  font-weight:900;
-}
-
-.footerLabel{
-  opacity:.7;
-  margin-right:6px;
-}
-
-.footerBtns{
-  margin-top:6px;
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  justify-content:center;
-}
-
-.footerBtn{
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.06);
-  color:#fff;
-  padding:8px 12px;
-  border-radius:12px;
-  cursor:pointer;
-  font-size:11px;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-}
-
-.footerBtn:hover{
-  background:rgba(255,255,255,.12);
-}
-    .footerDivider{ opacity:.35; }
+    .footerContact{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:6px;
+      text-align:center;
+    }
+    .footerRow{
+      font-size:12px;
+      letter-spacing:.10em;
+    }
+    .footerRow a{
+      color:#fff;
+      text-decoration:none;
+      font-weight:900;
+    }
+    .footerLabel{
+      opacity:.7;
+      margin-right:6px;
+    }
+    .footerBtns{
+      margin-top:6px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+    .footerBtn{
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      color:#fff;
+      padding:8px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:11px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      text-decoration:none;
+    }
+    .footerBtn:hover{
+      background:rgba(255,255,255,.12);
+    }
   </style>
 </head>
 
@@ -676,7 +656,7 @@
     <!-- MAIN -->
     <div class="main">
       <!-- LEFT -->
-      <div class="pane">
+      <div class="pane pkgPane">
         <div class="paneHdr">
           <div>
             <p class="t">Package Finder</p>
@@ -711,8 +691,8 @@
           </div>
 
           <div class="btnRow">
-            <button class="btn secondary" id="resetBtn">Reset</button>
-            <button class="btn" id="genBtn">Generate</button>
+            <button class="btn secondary" id="resetBtn" type="button">Reset</button>
+            <button class="btn" id="genBtn" type="button">Generate</button>
           </div>
         </div>
 
@@ -742,7 +722,7 @@
         </div>
       </div>
 
-      <!-- RIGHT -->
+      <!-- RIGHT (FIXED HTML STRUCTURE) -->
       <div class="pane">
         <div class="paneHdr">
           <div>
@@ -753,18 +733,17 @@
         </div>
 
         <div class="itWrap">
-        <div class="mini" style="background:rgba(0,0,0,.22);">
-      <div class="k">Quick Actions</div>
-      <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
-        <a class="toolBtn" href="https://wa.me/917018138847" target="_blank" rel="noopener">WhatsApp</a>
-        <button class="toolBtn" type="button" id="copyContactBtn">Copy Details</button>
-      </div>
-      <div class="muted" style="margin-top:10px; line-height:1.45;">
-        “Creating Memorable Journeys for Visitors — Revenue Comes After Trust.”
-      </div>
-    </div>
-  </div>
-</div>
+          <div class="mini" style="background:rgba(0,0,0,.22);">
+            <div class="k">Quick Actions</div>
+            <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+              <a class="toolBtn" href="https://wa.me/917018138847" target="_blank" rel="noopener">WhatsApp</a>
+              <button class="toolBtn" type="button" id="copyContactBtn">Copy Details</button>
+            </div>
+            <div class="muted" style="margin-top:10px; line-height:1.45;">
+              “Creating Memorable Journeys for Visitors — Revenue Comes After Trust.”
+            </div>
+          </div>
+
           <div class="heroCard">
             <h3 class="bigTitle" id="itTitle">Select a package</h3>
             <div class="muted" id="itMeta">Day-wise details will appear here</div>
@@ -809,7 +788,7 @@
           —
         </div>
       </div>
-      <button id="mClose" style="border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06);
+      <button id="mClose" type="button" style="border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06);
         color:rgba(255,255,255,.85); border-radius:14px; padding:10px 12px; cursor:pointer;
         font-weight:900; letter-spacing:.10em; text-transform:uppercase;">Close</button>
     </div>
@@ -837,11 +816,11 @@
         </div>
 
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button id="mFocus" style="border:1px solid rgba(255,255,255,.14); background:linear-gradient(135deg, rgba(124,58,237,.95), rgba(6,182,212,.65));
+          <button id="mFocus" type="button" style="border:1px solid rgba(255,255,255,.14); background:linear-gradient(135deg, rgba(124,58,237,.95), rgba(6,182,212,.65));
             color:#fff; border-radius:14px; padding:10px 12px; cursor:pointer; font-weight:900; letter-spacing:.10em; text-transform:uppercase;">
             Focus on Map
           </button>
-          <button id="mCopy" style="border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06);
+          <button id="mCopy" type="button" style="border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06);
             color:rgba(255,255,255,.85); border-radius:14px; padding:10px 12px; cursor:pointer; font-weight:900; letter-spacing:.10em; text-transform:uppercase;">
             Copy Place ID
           </button>
@@ -850,44 +829,35 @@
     </div>
   </div>
 
+  <!-- Footer -->
   <div class="footerBar">
+    <img src="logo.png" class="footerLogo" alt="Logo" onerror="this.style.display='none'">
 
-  <img src="logo.png" class="footerLogo" alt="Logo"
-       onerror="this.style.display='none'">
+    <div class="footerContact">
+      <div class="footerRow">
+        <span class="footerLabel">Developer</span>
+        <b>Chandan Panwar</b>
+      </div>
 
-  <div class="footerContact">
+      <div class="footerRow">
+        <span class="footerLabel">Phone</span>
+        <a href="tel:+917018138847">+91 7018138847</a>
+      </div>
 
-    <div class="footerRow">
-      <span class="footerLabel">Developer</span>
-      <b>Chandan Panwar</b>
+      <div class="footerRow">
+        <span class="footerLabel">Email</span>
+        <a href="mailto:chandanpanwar001@gmail.com">chandanpanwar001@gmail.com</a>
+      </div>
+
+      <div class="footerBtns">
+        <a class="footerBtn" href="https://wa.me/917018138847" target="_blank" rel="noopener">WhatsApp</a>
+        <button class="footerBtn" id="copyFooterContact" type="button">Copy Details</button>
+      </div>
+
+      <div class="footerMoto">
+        “Creating Memorable Journeys for Visitors — Revenue Comes After Trust.”
+      </div>
     </div>
-
-    <div class="footerRow">
-      <span class="footerLabel">Phone</span>
-      <a href="tel:+917018138847">+91 7018138847</a>
-    </div>
-
-    <div class="footerRow">
-      <span class="footerLabel">Email</span>
-      <a href="mailto:chandanpanwar001@gmail.com">
-        chandanpanwar001@gmail.com
-      </a>
-    </div>
-
-    <div class="footerBtns">
-      <a class="footerBtn" href="https://wa.me/917018138847" target="_blank">
-        WhatsApp
-      </a>
-      <button class="footerBtn" id="copyFooterContact">
-        Copy Details
-      </button>
-    </div>
-
-    <div class="footerMoto">
-      “Creating Memorable Journeys for Visitors — Revenue Comes After Trust.”
-    </div>
-
-  </div>
   </div>
 
   <script>
@@ -899,7 +869,11 @@
     authDomain: "revnue-records.firebaseapp.com",
     databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "revnue-records",
+
+    // NOTE:
+    // If Storage fails, replace with the exact bucket from Firebase Console, commonly: "revnue-records.appspot.com"
     storageBucket: "revnue-records.firebasestorage.app",
+
     messagingSenderId: "182348503564",
     appId: "1:182348503564:web:480085405b09177245ac29",
     measurementId: "G-MGTDBCG896"
@@ -915,6 +889,7 @@
      ✅ Helpers
      =============================== */
   const $ = (id)=>document.getElementById(id);
+
   function toast(msg){
     const t = $("toast");
     t.textContent = String(msg||"");
@@ -924,8 +899,8 @@
   function safeLower(x){ return String(x ?? "").trim().toLowerCase(); }
   function escapeHtml(str){
     return String(str ?? "")
-      .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
   }
   function normCaps(x){ return String(x||"").trim().toUpperCase().replace(/\s+/g," "); }
   function initials(name){
@@ -943,20 +918,43 @@
       .replace(/-+/g,"-")
       .replace(/^-|-$/g,"");
   }
-     // ✅ Contact copy
-document.getElementById("copyContactBtn")?.addEventListener("click", async ()=>{
-  const text =
+
+  // ✅ Safer CSS escape for older browsers
+  function cssEscapeSafe(sel){
+    if(window.CSS && typeof CSS.escape === "function") return CSS.escape(sel);
+    return String(sel).replace(/["\\]/g,"\\$&");
+  }
+
+  // ✅ Contact copy (right quick actions)
+  $("copyContactBtn")?.addEventListener("click", async ()=>{
+    const text =
 `Himachal Explorer Portal
 Name: Chandan Panwar
 Phone: +91 7018138847
 Email: chandanpanwar001@gmail.com`;
-  try{
-    await navigator.clipboard.writeText(text);
-    toast("Contact copied");
-  }catch(e){
-    toast("Copy not allowed");
-  }
-});
+    try{
+      await navigator.clipboard.writeText(text);
+      toast("Contact copied");
+    }catch(e){
+      toast("Copy not allowed");
+    }
+  });
+
+  // ✅ Footer contact copy
+  $("copyFooterContact")?.addEventListener("click", async ()=>{
+    const txt =
+`Himachal Explorer Portal
+Chandan Panwar
++91 7018138847
+chandanpanwar001@gmail.com`;
+    try{
+      await navigator.clipboard.writeText(txt);
+      toast("Contact copied");
+    }catch(e){
+      toast("Copy not allowed");
+    }
+  });
+
   /* ===============================
      ✅ Quotes
      =============================== */
@@ -1180,18 +1178,7 @@ Email: chandanpanwar001@gmail.com`;
 
     return "";
   }
-     document.getElementById("copyFooterContact")?.addEventListener("click", async ()=>{
-  const txt =
-`Himachal Explorer Portal
-Chandan Panwar
-+91 7018138847
-chandanpanwar001@gmail.com`;
 
-  try{
-    await navigator.clipboard.writeText(txt);
-    toast("Contact copied");
-  }catch(e){}
-});
   /* ===============================
      ✅ Best package per END
      =============================== */
@@ -1509,7 +1496,7 @@ chandanpanwar001@gmail.com`;
     CURRENT_TEMPLATE_KEY = key;
 
     document.querySelectorAll(".pkg").forEach(x=>x.classList.remove("active"));
-    const node = document.querySelector(`.pkg[data-key="${CSS.escape(key)}"]`);
+    const node = document.querySelector(`.pkg[data-key="${cssEscapeSafe(key)}"]`);
     if(node) node.classList.add("active");
 
     const endKey = endKeyFromColumnG(tpl);
@@ -1521,7 +1508,6 @@ chandanpanwar001@gmail.com`;
 
     if(rr.ok){
       CURRENT_ROUTE_KM = rr.km;
-      // price will be calculated by DB-cost wrapper below
       computeDbPriceForCurrent();
     }else{
       CURRENT_ROUTE_KM = 0;
@@ -1607,10 +1593,7 @@ chandanpanwar001@gmail.com`;
   }
 
   /* ======================================================
-     ✅ DB BASED COST CALCULATOR (FIXED FOR YOUR FIREBASE)
-     Nodes:
-       /pricing_transport/{vehicleKey}: per_km, driver_per_day, night_charge, max_pax, ...
-       /stay_rate_rules/{r1,r2...}: base_rate_low/mid/peak, weekend_multiplier, festival_multiplier, ...
+     ✅ DB BASED COST CALCULATOR
      ====================================================== */
   let TRANSPORT = {};
   let STAYRULES = {};
@@ -1632,7 +1615,6 @@ chandanpanwar001@gmail.com`;
     }
   }
 
-  // ✅ Choose smallest vehicle that fits pax using your DB max_pax
   function vehicleKeyByPax(pax){
     pax = Number(pax || 2);
     let chosen = null;
@@ -1645,12 +1627,11 @@ chandanpanwar001@gmail.com`;
         chosen = key;
       }
     }
-    // fallback if max_pax missing in DB
     return chosen || (pax<=4 ? "sedan" : pax<=7 ? "suv" : "tempo");
   }
 
   function stayRuleKeyDefault(){
-    if(STAYRULES?.r2) return "r2"; // midrange default
+    if(STAYRULES?.r2) return "r2";
     const keys = Object.keys(STAYRULES || {});
     return keys[0] || "";
   }
@@ -1675,15 +1656,12 @@ chandanpanwar001@gmail.com`;
     const driverPerDay = Number(vehicle.driver_per_day || 0);
     const nightCharge = Number(vehicle.night_charge || 0);
 
-    // transport total
     const transport = (km * perKm) + (days * driverPerDay) + (nights * nightCharge);
 
-    // stay total (rooms = ceil(pax/2))
     const rooms = Math.ceil(pax / 2);
     const baseRate = Number(stay.base_rate_mid || stay.base_rate_low || stay.base_rate_peak || 0);
     const hotel = rooms * baseRate * nights;
 
-    // optional buffers from vehicle (parking/toll percentage)
     const bufferPct = Number(vehicle.parking_toll_buffer_pct || 0);
     const buffer = (bufferPct > 0) ? ((transport + hotel) * bufferPct / 100) : 0;
 
@@ -1784,12 +1762,10 @@ chandanpanwar001@gmail.com`;
     toast(tilesDark ? "Dark tiles on" : "Light tiles on");
   });
 
-  // ✅ if pax changes, recompute current package price (if already opened)
   $("paxSel")?.addEventListener("change", computeDbPriceForCurrent);
 
   /* ===============================
-     ✅ Init (FIXED)
-     ✅ pricing nodes are loaded BEFORE portal ready
+     ✅ Init
      =============================== */
   initMap();
 
@@ -1802,7 +1778,6 @@ chandanpanwar001@gmail.com`;
     setStatus("Firebase load error (check rules / nodes)");
     toast("Firebase load error");
   });
-
   </script>
 </body>
 </html>
