@@ -1576,15 +1576,23 @@ $("toggleTilesBtn").addEventListener("click", ()=>{
 /* ===============================
    ✅ Init
    =============================== */
+    /* ===============================
+   ✅ Init
+   =============================== */
 initMap();
-loadAll().then(()=>toast("Portal ready")).catch(err=>{
-  console.error(err);
-  setStatus("Firebase load error (check rules / nodes)");
-  toast("Firebase load error");
-});
-</script>
-</body>
-</html>
+
+// ✅ Load pricing nodes (required for DB-based cost calculator)
+loadPricingNodes();
+
+// ✅ Load templates + places (your existing loader)
+loadAll()
+  .then(()=>toast("Portal ready"))
+  .catch(err=>{
+    console.error(err);
+    setStatus("Firebase load error (check rules / nodes)");
+    toast("Firebase load error");
+  });
+
 
   /* ===== COST CALCULATOR (DB BASED) =====
    Uses: /pricing_transport and /stay_rate_rules from RTDB
