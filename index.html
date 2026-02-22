@@ -523,32 +523,44 @@
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:14px;
+  gap:16px;
   flex-wrap:wrap;
 
-  background:linear-gradient(180deg, rgba(10,14,24,.55), rgba(10,14,24,.95));
+  background:linear-gradient(180deg, rgba(10,14,24,.55), rgba(10,14,24,.96));
   backdrop-filter: blur(14px);
   border-top:1px solid rgba(255,255,255,.12);
 
-  color:rgba(255,255,255,.85);
+  color:rgba(255,255,255,.88);
   font-size:12px;
-  letter-spacing:.12em;
+  letter-spacing:.10em;
   text-transform:uppercase;
   z-index:9999;
 }
 
-.footerBar b{
+.footerLogo{
+  height:34px;
+  width:auto;
+  border-radius:10px;
+  background:white;
+  padding:4px;
+  box-shadow:0 8px 20px rgba(0,0,0,.4);
+}
+
+.footerText b{
   color:#fff;
   font-weight:900;
 }
 
-.footerIcon{
-  opacity:.75;
+.footerMoto{
+  width:100%;
+  text-align:center;
+  font-size:11px;
+  letter-spacing:.12em;
+  opacity:.85;
+  margin-top:4px;
 }
 
-.footerDivider{
-  opacity:.35;
-}
+.footerDivider{ opacity:.35; }
   </style>
 </head>
 
@@ -748,18 +760,23 @@
   </div>
   <div class="footerBar">
 
-  <span class="footerIcon">👨‍💻</span>
-  <span>Developed by <b>Chandan Panwar</b></span>
+  <!-- LOGO -->
+  <img src="logo.png" class="footerLogo" alt="Logo"
+       onerror="this.style.display='none'">
 
-  <span class="footerDivider">•</span>
+  <!-- CONTACT -->
+  <div class="footerText">
+    Developed by <b>Chandan Panwar</b>
+    <span class="footerDivider">•</span>
+    📞 <b>7018138847</b>
+    <span class="footerDivider">•</span>
+    ✉ <b>chandanpanwar001@gmail.com</b>
+  </div>
 
-  <span class="footerIcon">📞</span>
-  <span><b>7018138847</b></span>
-
-  <span class="footerDivider">•</span>
-
-  <span class="footerIcon">✉</span>
-  <span><b>chandanpanwar001@gmail.com</b></span>
+  <!-- MOTO -->
+  <div class="footerMoto">
+    “Creating Memorable Journeys for Visitors — Revenue Comes After Trust.”
+  </div>
 
 </div>
 
