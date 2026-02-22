@@ -667,6 +667,49 @@
         </div>
 
         <div class="itWrap">
+          <!-- ✅ CONTACT US -->
+<div class="heroCard" id="contactCard">
+  <h3 class="bigTitle">Contact Us</h3>
+  <div class="muted" style="margin-top:6px;">
+    Need help planning a route, customizing a package, or booking support? Contact us anytime.
+  </div>
+
+  <div style="margin-top:12px; display:grid; grid-template-columns: 1fr; gap:10px;">
+    <div class="mini" style="background:rgba(0,0,0,.22);">
+      <div class="k">Developer / Owner</div>
+      <div class="v" id="cName">Chandan Panwar</div>
+    </div>
+
+    <div class="row2">
+      <div class="mini" style="background:rgba(0,0,0,.22);">
+        <div class="k">Phone / WhatsApp</div>
+        <div class="v">
+          <a id="cPhone" href="tel:+917018138847" style="color:#fff; text-decoration:none;">+91 7018138847</a>
+        </div>
+      </div>
+
+      <div class="mini" style="background:rgba(0,0,0,.22);">
+        <div class="k">Email</div>
+        <div class="v" style="font-size:13px;">
+          <a id="cEmail" href="mailto:chandanpanwar001@gmail.com" style="color:#fff; text-decoration:none;">
+            chandanpanwar001@gmail.com
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mini" style="background:rgba(0,0,0,.22);">
+      <div class="k">Quick Actions</div>
+      <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="toolBtn" href="https://wa.me/917018138847" target="_blank" rel="noopener">WhatsApp</a>
+        <button class="toolBtn" type="button" id="copyContactBtn">Copy Details</button>
+      </div>
+      <div class="muted" style="margin-top:10px; line-height:1.45;">
+        “Creating Memorable Journeys for Visitors — Revenue Comes After Trust.”
+      </div>
+    </div>
+  </div>
+</div>
           <div class="heroCard">
             <h3 class="bigTitle" id="itTitle">Select a package</h3>
             <div class="muted" id="itMeta">Day-wise details will appear here</div>
@@ -817,7 +860,20 @@
       .replace(/-+/g,"-")
       .replace(/^-|-$/g,"");
   }
-
+     // ✅ Contact copy
+document.getElementById("copyContactBtn")?.addEventListener("click", async ()=>{
+  const text =
+`Himachal Explorer Portal
+Name: Chandan Panwar
+Phone: +91 7018138847
+Email: chandanpanwar001@gmail.com`;
+  try{
+    await navigator.clipboard.writeText(text);
+    toast("Contact copied");
+  }catch(e){
+    toast("Copy not allowed");
+  }
+});
   /* ===============================
      ✅ Quotes
      =============================== */
