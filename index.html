@@ -35,7 +35,7 @@
       --topH: 92px;
       --gap: 14px;
 
-      /* ✅ WIDTHS: map gets least width */
+      /* ✅ WIDTHS */
       --leftPct: 36%;
       --mapPct: 24%;
       --rightPct: 40%;
@@ -162,7 +162,9 @@
       gap: var(--gap);
       padding: 14px;
       overflow:hidden;
-      padding-bottom:80px;
+
+      /* ✅ keep content above footer */
+      padding-bottom: 110px;
     }
 
     .pane{
@@ -540,15 +542,17 @@
       z-index:100000;
     }
 
+    /* ===========================
+       ✅ Footer (logo left, content right)
+       =========================== */
     .footerBar{
       position:fixed;
       left:0; right:0; bottom:0;
       padding:12px 18px;
       display:flex;
-      justify-content:center;
+      justify-content:space-between;
       align-items:center;
       gap:16px;
-      flex-wrap:wrap;
 
       background:linear-gradient(180deg, rgba(10,14,24,.55), rgba(10,14,24,.96));
       backdrop-filter: blur(14px);
@@ -561,6 +565,13 @@
       z-index:9999;
     }
 
+    .footerLeft{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:140px;
+    }
+
     .footerLogo{
       height:34px;
       width:auto;
@@ -570,24 +581,21 @@
       box-shadow:0 8px 20px rgba(0,0,0,.4);
     }
 
-    .footerMoto{
-      width:100%;
-      text-align:center;
-      font-size:11px;
-      letter-spacing:.12em;
-      opacity:.85;
-      margin-top:4px;
-    }
-    .footerContact{
+    .footerRight{
       display:flex;
       flex-direction:column;
-      align-items:center;
+      align-items:flex-end;
+      text-align:right;
       gap:6px;
-      text-align:center;
     }
+
     .footerRow{
       font-size:12px;
       letter-spacing:.10em;
+      display:flex;
+      gap:8px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
     }
     .footerRow a{
       color:#fff;
@@ -596,14 +604,13 @@
     }
     .footerLabel{
       opacity:.7;
-      margin-right:6px;
     }
     .footerBtns{
       margin-top:6px;
       display:flex;
       gap:10px;
       flex-wrap:wrap;
-      justify-content:center;
+      justify-content:flex-end;
     }
     .footerBtn{
       border:1px solid rgba(255,255,255,.14);
@@ -619,6 +626,23 @@
     }
     .footerBtn:hover{
       background:rgba(255,255,255,.12);
+    }
+
+    .footerMoto{
+      width:auto;
+      text-align:right;
+      font-size:11px;
+      letter-spacing:.12em;
+      opacity:.85;
+      margin-top:2px;
+    }
+
+    @media (max-width: 720px){
+      .footerBar{ flex-direction:column; align-items:stretch; }
+      .footerRight{ align-items:center; text-align:center; }
+      .footerRow{ justify-content:center; }
+      .footerBtns{ justify-content:center; }
+      .footerMoto{ text-align:center; }
     }
   </style>
 </head>
@@ -722,7 +746,7 @@
         </div>
       </div>
 
-      <!-- RIGHT (FIXED HTML STRUCTURE) -->
+      <!-- RIGHT -->
       <div class="pane">
         <div class="paneHdr">
           <div>
@@ -831,9 +855,11 @@
 
   <!-- Footer -->
   <div class="footerBar">
-    <img src="logo.png" class="footerLogo" alt="Logo" onerror="this.style.display='none'">
+    <div class="footerLeft">
+      <img src="logo.png" class="footerLogo" alt="Logo" onerror="this.style.display='none'">
+    </div>
 
-    <div class="footerContact">
+    <div class="footerRight">
       <div class="footerRow">
         <span class="footerLabel">Developer</span>
         <b>Chandan Panwar</b>
@@ -869,11 +895,8 @@
     authDomain: "revnue-records.firebaseapp.com",
     databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "revnue-records",
-
-    // NOTE:
-    // If Storage fails, replace with the exact bucket from Firebase Console, commonly: "revnue-records.appspot.com"
+    // NOTE: If Storage fails, replace with: "revnue-records.appspot.com"
     storageBucket: "revnue-records.firebasestorage.app",
-
     messagingSenderId: "182348503564",
     appId: "1:182348503564:web:480085405b09177245ac29",
     measurementId: "G-MGTDBCG896"
@@ -918,8 +941,6 @@
       .replace(/-+/g,"-")
       .replace(/^-|-$/g,"");
   }
-
-  // ✅ Safer CSS escape for older browsers
   function cssEscapeSafe(sel){
     if(window.CSS && typeof CSS.escape === "function") return CSS.escape(sel);
     return String(sel).replace(/["\\]/g,"\\$&");
@@ -996,7 +1017,7 @@ chandanpanwar001@gmail.com`;
   /* ===============================
      ✅ Data
      =============================== */
-  let LOCS = {};              // unified place object by place_id
+  let LOCS = {};
   let TEMPLATES = {};
   let ACTIVE_TEMPLATES = [];
   let NAME_TO_ID = new Map();
@@ -1027,6 +1048,36 @@ chandanpanwar001@gmail.com`;
   function regionAny(p){ return String(p?.region || "").toUpperCase(); }
 
   /* ===============================
+     ✅ Detect "Start within Himachal"
+     - Uses your template start_point strings (most reliable)
+     - Edit this list to match your actual start_point values
+     =============================== */
+  const HP_STARTS = new Set([
+    "SHIMLA","MANALI","KULLU","DHARAMSHALA","DALHOUSIE","CHAMBA","KASOL","PALAMPUR",
+    "KANGRA","HAMIRPUR","UNA","MANDI","BILASPUR","SOLAN","CHAIL","KUFRI","KINNAUR",
+    "KALPA","RECKONG PEO","SANGla","CHITKUL","SPITI","KAZA","KEYLONG","LAHAUL",
+    "NARKANDA","TIRTHAN","JIBHI","SIRMAUR","PAONTA SAHIB","NAHAN"
+  ]);
+
+  function isStartWithinHimachal(startStr){
+    const s = String(startStr||"").trim().toUpperCase();
+    if(!s) return false;
+    if(HP_STARTS.has(s)) return true;
+
+    // fallback: if typed start matches a place and its district is HP
+    const pid = NAME_TO_ID.get(s.toLowerCase());
+    if(pid && LOCS[pid]){
+      const d = districtAny(LOCS[pid]);
+      const HP_DIST = new Set([
+        "SHIMLA","KULLU","KANGRA","CHAMBA","MANDI","SOLAN","BILASPUR","HAMIRPUR",
+        "UNA","KINNAUR","LAHAUL AND SPITI","LAHAUL & SPITI","SIRMAUR"
+      ]);
+      return HP_DIST.has(d);
+    }
+    return false;
+  }
+
+  /* ===============================
      ✅ Load: templates + places (fallback locations)
      =============================== */
   async function loadAll(){
@@ -1035,7 +1086,7 @@ chandanpanwar001@gmail.com`;
     const [tplSnap, placesSnap, locSnap] = await Promise.all([
       db.ref("templates").once("value"),
       db.ref("places").once("value"),
-      db.ref("locations").once("value").catch(()=>({ val:()=>null })) // optional fallback
+      db.ref("locations").once("value").catch(()=>({ val:()=>null }))
     ]);
 
     TEMPLATES = tplSnap.val() || {};
@@ -1049,7 +1100,6 @@ chandanpanwar001@gmail.com`;
       LOCS[id] = { ...obj, place_id: obj.place_id || id };
     }
 
-    // direct or nested
     for(const [k,v] of Object.entries(places)){
       if(v && typeof v === "object" && (v.name || v.place_id || v.latitude || v.longitude || v.Latitude || v.Longitude)){
         ingestPlace(k, v);
@@ -1180,7 +1230,7 @@ chandanpanwar001@gmail.com`;
   }
 
   /* ===============================
-     ✅ Best package per END
+     ✅ Scoring
      =============================== */
   function packageScore(tpl){
     const locs = stopsCount(tpl);
@@ -1423,6 +1473,9 @@ chandanpanwar001@gmail.com`;
 
   /* ===============================
      ✅ Generate packages
+     RULE:
+     - If start is within Himachal => show ALL packages for that start BUT only max 2 days
+     - Otherwise => old behavior (best-by-end) + optional days filter
      =============================== */
   function applyFilters(){
     const start = normalizeStartInput();
@@ -1445,46 +1498,78 @@ chandanpanwar001@gmail.com`;
       return;
     }
 
-    let list = ACTIVE_TEMPLATES
-      .filter(t => String(t.start_point||"").trim().toUpperCase() === String(start).trim().toUpperCase());
-    if(daysF) list = list.filter(t => Number(t.days||0) === Number(daysF));
+    const startUpper = String(start).trim().toUpperCase();
+    const startIsHP = isStartWithinHimachal(startUpper);
 
-    const bestByEnd = new Map();
-    const scByEnd = new Map();
+    let list = ACTIVE_TEMPLATES.filter(t =>
+      String(t.start_point||"").trim().toUpperCase() === startUpper
+    );
 
-    for(const t of list){
-      const endKey = endKeyFromColumnG(t);
-      const sc = packageScore(t);
-      if(!bestByEnd.has(endKey)){
-        bestByEnd.set(endKey, t);
-        scByEnd.set(endKey, sc);
-      }else{
-        const prev = scByEnd.get(endKey);
-        if(isBetter(sc, prev)){
-          bestByEnd.set(endKey, t);
-          scByEnd.set(endKey, sc);
-        }
+    if(startIsHP){
+      // ✅ Force max 2 day packages
+      list = list.filter(t => {
+        const d = Number(t.days||0);
+        return d > 0 && d <= 2;
+      });
+
+      // Optional: if user selects 1 or 2 explicitly, apply it
+      if(daysF && (Number(daysF) === 1 || Number(daysF) === 2)){
+        list = list.filter(t => Number(t.days||0) === Number(daysF));
       }
+    }else{
+      // Normal filter for outside HP
+      if(daysF) list = list.filter(t => Number(t.days||0) === Number(daysF));
     }
 
-    const finalList = Array.from(bestByEnd.values()).sort((a,b)=>{
-      const A = packageScore(a), B = packageScore(b);
-      if(A.locs !== B.locs) return B.locs - A.locs;
-      if(A.pri !== B.pri) return A.pri - B.pri;
-      return A.km - B.km;
-    });
+    let finalList = [];
+
+    if(startIsHP){
+      // ✅ SHOW ALL packages (no best-by-end)
+      finalList = list.sort((a,b)=>{
+        const A = packageScore(a), B = packageScore(b);
+        if(A.locs !== B.locs) return B.locs - A.locs;
+        if(A.pri !== B.pri) return A.pri - B.pri;
+        return A.km - B.km;
+      });
+    }else{
+      // Old "best-by-end"
+      const bestByEnd = new Map();
+      const scByEnd = new Map();
+
+      for(const t of list){
+        const endKey = endKeyFromColumnG(t);
+        const sc = packageScore(t);
+        if(!bestByEnd.has(endKey)){
+          bestByEnd.set(endKey, t);
+          scByEnd.set(endKey, sc);
+        }else{
+          const prev = scByEnd.get(endKey);
+          if(isBetter(sc, prev)){
+            bestByEnd.set(endKey, t);
+            scByEnd.set(endKey, sc);
+          }
+        }
+      }
+
+      finalList = Array.from(bestByEnd.values()).sort((a,b)=>{
+        const A = packageScore(a), B = packageScore(b);
+        if(A.locs !== B.locs) return B.locs - A.locs;
+        if(A.pri !== B.pri) return A.pri - B.pri;
+        return A.km - B.km;
+      });
+    }
 
     CURRENT_LIST = finalList;
 
     setPills({
-      START: String(start).toUpperCase(),
+      START: startUpper,
       PACKAGES: finalList.length,
       PAX: pax,
-      DAYS: daysF ? daysF : "ANY"
+      DAYS: startIsHP ? "MAX 2 DAYS (HP START)" : (daysF ? daysF : "ANY")
     });
 
     renderPackages(finalList, start);
-    toast("Packages generated");
+    toast(startIsHP ? "HP start: showing all (max 2 days)" : "Packages generated");
   }
 
   /* ===============================
