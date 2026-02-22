@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — Live Package Generator (Start → End from Column G)</title>
+  <title>Himachal Explorer — The Portal</title>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -15,650 +15,742 @@
 
   <style>
     :root{
-      --bg0:#f2f6ff;
-      --stroke: rgba(12,18,40,.12);
-      --muted: rgba(12,18,40,.66);
-      --text: #0b1220;
-      --card: rgba(255,255,255,.80);
-      --shadow: 0 18px 55px rgba(12,18,40,.12);
+      --bg0:#070A12;
+      --bg1:#0B1220;
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.08);
+      --stroke:rgba(255,255,255,.10);
+      --muted:rgba(255,255,255,.65);
+      --text:rgba(255,255,255,.92);
+      --shadow: 0 24px 90px rgba(0,0,0,.55);
       --radius: 18px;
-      --accent: #2563eb;
-      --ok:#10b981;
-      --warn:#f59e0b;
 
-      --mapW: 34%;
+      --acc:#7C3AED;     /* violet */
+      --acc2:#22C55E;    /* green */
+      --acc3:#06B6D4;    /* cyan */
+      --warn:#F59E0B;
+
+      --leftW: 360px;
+      --rightW: 420px;
+      --topH: 92px;
       --gap: 14px;
     }
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
-    body{ margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--text); overflow-x:hidden; background:var(--bg0); }
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(124,58,237,.18), transparent 60%),
+                  radial-gradient(900px 520px at 85% 10%, rgba(34,197,94,.14), transparent 60%),
+                  radial-gradient(900px 520px at 50% 90%, rgba(6,182,212,.12), transparent 60%),
+                  linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow:hidden;
+    }
 
-    /* Background FX (unchanged) */
-    .bg{
-      position:fixed; inset:0; z-index:-5;
+    /* subtle animated aurora */
+    .aurora{
+      position:fixed; inset:-30%;
       background:
-        radial-gradient(1200px 560px at 18% 12%, rgba(37,99,235,.24), transparent 60%),
-        radial-gradient(1100px 580px at 82% 18%, rgba(16,185,129,.22), transparent 60%),
-        radial-gradient(900px 520px at 50% 86%, rgba(167,139,250,.18), transparent 65%),
-        linear-gradient(180deg, #eef4ff, #ffffff);
+        radial-gradient(900px 500px at 25% 30%, rgba(124,58,237,.22), transparent 65%),
+        radial-gradient(900px 520px at 75% 25%, rgba(34,197,94,.18), transparent 66%),
+        radial-gradient(860px 540px at 55% 75%, rgba(6,182,212,.14), transparent 66%);
+      filter: blur(45px);
+      opacity:.9;
+      animation: drift 14s ease-in-out infinite;
+      pointer-events:none;
+      z-index:-3;
+    }
+    @keyframes drift{
+      0%,100%{ transform: translate3d(0,0,0) scale(1); }
+      50%{ transform: translate3d(3%, -2%, 0) scale(1.06); }
     }
     .noise{
-      position:fixed; inset:0; z-index:-4; pointer-events:none; opacity:.10; mix-blend-mode:overlay;
+      position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.12; mix-blend-mode:overlay;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
     }
-    .blob{ position:fixed; width:460px; height:460px; border-radius:50%; filter: blur(60px); opacity:.22; z-index:-3; pointer-events:none; animation: float 10s ease-in-out infinite; }
-    .b1{ left:-140px; top:60px;  background: rgba(37,99,235,.95); }
-    .b2{ right:-180px; top:140px; background: rgba(16,185,129,.92); animation-duration: 12s; }
-    .b3{ left:36%; bottom:-240px; background: rgba(167,139,250,.92); animation-duration: 14s; }
-    @keyframes float{ 0%,100%{ transform: translate(0,0) scale(1); } 50%{ transform: translate(28px,-20px) scale(1.08); } }
-    #fx{ position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.90; }
 
-    .wrap{ max-width: 1480px; margin: 0 auto; padding: 16px; }
-    .card{ background: var(--card); border: 1px solid var(--stroke); box-shadow: var(--shadow); border-radius: var(--radius); overflow:hidden; backdrop-filter: blur(14px); }
-
-    .hero{
-      padding: 18px 16px; border-bottom: 1px solid var(--stroke);
-      background:
-        linear-gradient(135deg, rgba(37,99,235,.10), rgba(16,185,129,.08)),
-        radial-gradient(900px 350px at 20% -20%, rgba(37,99,235,.20), transparent 60%),
-        radial-gradient(700px 300px at 95% 0%, rgba(16,185,129,.18), transparent 60%);
+    /* layout */
+    .app{
+      height:100%;
+      display:grid;
+      grid-template-rows: var(--topH) 1fr;
     }
-    .hero-top{ display:flex; align-items:center; gap:16px; margin-bottom:14px; }
-    .site-logo{ height:68px; width:auto; background:white; padding:8px; border-radius:18px; box-shadow:0 12px 35px rgba(0,0,0,.16); }
-    .hero-text h1{ margin:0; font-size: 22px; text-transform: uppercase; }
-    .hero-text p{ margin:6px 0 0; color:var(--muted); font-size: 13px; max-width: 1100px; }
-
-    .title{ font-size: 16px; font-weight: 950; letter-spacing: .2px; text-transform: uppercase; }
-    .sub{ color: var(--muted); font-size: 12.5px; line-height:1.35; text-transform: uppercase; }
-
-    .topbar{
-      padding: 14px 16px;
+    .top{
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 14px 14px 12px;
       border-bottom: 1px solid var(--stroke);
-      background: rgba(255,255,255,.55);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      backdrop-filter: blur(14px);
     }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      min-width: 280px;
+    }
+    .logo{
+      width:54px; height:54px; border-radius:16px;
+      background: rgba(255,255,255,.10);
+      border:1px solid var(--stroke);
+      display:grid; place-items:center;
+      overflow:hidden;
+      box-shadow: 0 18px 40px rgba(0,0,0,.35);
+    }
+    .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .brand h1{ margin:0; font-size: 14px; letter-spacing:.18em; text-transform:uppercase; }
+    .brand p{ margin:4px 0 0; font-size:12px; color:var(--muted); line-height:1.25; }
 
-    /* Controls Row (compact + single line on desktop) */
-    .controls{
-      display:grid;
-      grid-template-columns: 2.2fr 1fr 1fr .8fr 1.2fr;
-      gap:10px;
-      align-items:end;
-      margin-top: 10px;
+    .quote{
+      flex:1;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding: 0 14px;
+      min-width: 0;
     }
-    .field label{ display:block; font-size:11px; color:var(--muted); margin:0 0 6px 2px; text-transform: uppercase; }
-    select, input{
-      width:100%; padding: 10px 10px; border-radius: 12px;
+    .quoteBox{
+      width:min(780px, 100%);
       border: 1px solid var(--stroke);
-      background: rgba(255,255,255,.92);
-      outline:none; color: var(--text);
-      text-transform: uppercase;
+      background: rgba(255,255,255,.05);
+      border-radius: 999px;
+      padding: 10px 14px;
+      display:flex; align-items:center; gap:10px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+      backdrop-filter: blur(12px);
+      overflow:hidden;
     }
-    select:focus, input:focus{ border-color: rgba(37,99,235,.38); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
-
-    .btn{
-      appearance:none; border:0; border-radius: 12px; padding: 10px 12px;
-      cursor:pointer; font-weight:950; background: var(--accent); color:white;
-      box-shadow: 0 12px 30px rgba(37,99,235,.20);
-      transition: transform .12s ease, filter .12s ease; width:100%;
-      text-transform: uppercase;
+    .spark{
+      width:30px; height:30px; border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(124,58,237,.55));
+      box-shadow: 0 0 0 6px rgba(124,58,237,.14);
+      flex:0 0 auto;
     }
-    .btn.secondary{ background: rgba(255,255,255,.92); color: var(--text); border: 1px solid var(--stroke); box-shadow:none; }
-    .btn:hover{ transform: translateY(-1px); filter: brightness(1.02); }
-
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 8px 10px; border-radius: 999px;
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,.92);
-      font-size: 12px; color: var(--muted);
-      margin: 6px 6px 0 0; white-space: nowrap;
-      text-transform: uppercase;
-      font-weight: 850;
+    .quoteText{
+      font-size: 12.5px;
+      color: rgba(255,255,255,.86);
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
     }
-    .pill b{ color: var(--text); }
+    .quoteText b{ color:#fff; }
 
-    /* ✅ NEW MAIN LAYOUT: results left, map right (sticky) */
+    .actions{
+      display:flex; gap:10px; align-items:center;
+      min-width: 280px;
+      justify-content:flex-end;
+    }
+    .chip{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 9px 12px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing:.08em;
+      display:inline-flex; align-items:center; gap:10px;
+      cursor:pointer;
+      user-select:none;
+      backdrop-filter: blur(12px);
+    }
+    .chip:hover{ background: rgba(255,255,255,.08); color: rgba(255,255,255,.82); }
+    .chip kbd{
+      font-size: 11px;
+      border:1px solid var(--stroke);
+      border-bottom-color: rgba(255,255,255,.20);
+      background: rgba(0,0,0,.25);
+      padding: 2px 8px;
+      border-radius: 999px;
+      color: rgba(255,255,255,.84);
+    }
+
+    /* main 3 panes */
     .main{
+      height:100%;
       display:grid;
-      grid-template-columns: calc(100% - var(--mapW) - var(--gap)) var(--mapW);
+      grid-template-columns: var(--leftW) 1fr var(--rightW);
       gap: var(--gap);
       padding: 14px;
-      align-items:start;
+      overflow:hidden;
     }
-
-    .results{
-      min-height: 60vh;
-    }
-
-    .mapPanel{
-      position: sticky;
-      top: 14px;
-      align-self: start;
-    }
-
-    .panel{
-      background: rgba(255,255,255,.72);
+    .pane{
       border: 1px solid var(--stroke);
-      border-radius: 16px;
-      padding: 12px;
-    }
-
-    .panel + .panel{ margin-top: 12px; }
-
-    /* Packages grid */
-    .pkgGrid{ display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
-    @media (max-width: 1250px){ .pkgGrid{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 980px){ .pkgGrid{ grid-template-columns: 1fr; } }
-
-    .pkg{
-      border: 1px solid var(--stroke);
-      border-radius: 16px;
-      background: rgba(255,255,255,.92);
-      padding: 12px;
-      cursor:pointer;
-      transition: transform .12s ease, border-color .12s ease;
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      overflow:hidden;
       display:flex;
-      gap:12px;
-      align-items:flex-start;
+      flex-direction:column;
+      min-width:0;
     }
-    .pkg:hover{ transform: translateY(-1px); border-color: rgba(37,99,235,.28); }
-    .pkg.active{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 3px rgba(37,99,235,.10); }
+    .paneHdr{
+      padding: 12px 12px 10px;
+      border-bottom:1px solid var(--stroke);
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .paneHdr .t{
+      font-size:12px;
+      letter-spacing:.18em;
+      text-transform: uppercase;
+      margin:0;
+    }
+    .paneHdr .s{
+      font-size:11px;
+      color:var(--muted);
+      letter-spacing:.08em;
+      text-transform: uppercase;
+    }
+
+    /* left - filters + packages */
+    .filters{
+      padding: 12px;
+      border-bottom:1px solid var(--stroke);
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+    }
+    .field label{
+      display:block;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing:.12em;
+      margin:0 0 6px 2px;
+    }
+    input, select{
+      width:100%;
+      padding: 11px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.25);
+      color: rgba(255,255,255,.92);
+      outline:none;
+      text-transform: uppercase;
+    }
+    input:focus, select:focus{
+      border-color: rgba(124,58,237,.55);
+      box-shadow: 0 0 0 3px rgba(124,58,237,.16);
+    }
+    .btnRow{
+      display:flex; gap:10px;
+    }
+    .btn{
+      flex:1;
+      padding: 11px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: linear-gradient(135deg, rgba(124,58,237,.95), rgba(6,182,212,.65));
+      color:#fff;
+      font-weight: 900;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      cursor:pointer;
+    }
+    .btn.secondary{
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.85);
+    }
+    .btn:hover{ filter: brightness(1.05); transform: translateY(-1px); }
+    .btn:active{ transform: translateY(0px); }
+
+    .metaPills{
+      padding: 0 12px 12px;
+      display:flex; flex-wrap:wrap; gap:8px;
+    }
+    .pill{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 11px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.78);
+      display:inline-flex; align-items:center; gap:8px;
+    }
+    .pill b{ color:#fff; letter-spacing:.06em; }
+
+    .pkgList{
+      padding: 12px;
+      overflow:auto;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+    }
+    .pkg{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      border-radius: 16px;
+      padding: 10px;
+      cursor:pointer;
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+      display:flex; gap:10px;
+      min-width:0;
+    }
+    .pkg:hover{ transform: translateY(-1px); border-color: rgba(124,58,237,.35); background: rgba(0,0,0,.28); }
+    .pkg.active{ border-color: rgba(124,58,237,.70); box-shadow: 0 0 0 3px rgba(124,58,237,.18); }
 
     .pkgPic{
-      width:74px; height:74px; border-radius:16px; overflow:hidden; flex:0 0 auto;
-      border:1px solid var(--stroke);
-      background: linear-gradient(135deg, rgba(37,99,235,.18), rgba(16,185,129,.14));
+      width:58px; height:58px; border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.14), rgba(124,58,237,.18));
+      overflow:hidden;
+      flex:0 0 auto;
       display:grid; place-items:center;
-      font-weight:950; color: rgba(12,18,40,.55);
+      font-weight: 950;
+      color: rgba(255,255,255,.85);
     }
     .pkgPic img{ width:100%; height:100%; object-fit:cover; display:block; }
-
     .pkgBody{ min-width:0; flex:1; }
-    .pkgTop{ display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
-    .pkgName{ font-weight: 950; font-size: 13.5px; line-height:1.25; text-transform: uppercase; }
-    .badge{
-      font-size: 11px; padding: 5px 8px; border-radius: 999px;
-      border: 1px solid var(--stroke);
-      background: rgba(16,185,129,.10);
-      color: rgba(16,185,129,1);
-      white-space: nowrap; text-transform: uppercase; font-weight: 900;
-    }
-    .badge.warn{ background: rgba(245,158,11,.12); color: rgba(245,158,11,1); }
-    .pkgMeta{ margin-top: 8px; font-size: 12px; color: var(--muted); line-height: 1.35; text-transform: uppercase; }
-    .pkgMeta b{ color: var(--text); }
-
-    /* Places list */
-    .placesHdr{ display:flex; gap:10px; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom: 10px; }
-    .count{ font-size:12px; color: var(--muted); text-transform: uppercase; }
-    .btnRow{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
-
-    .placeBtns{ display:flex; gap:8px; flex-wrap:wrap; max-height: 320px; overflow:auto; padding: 2px; }
-    .place-btn{
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.92);
-      border-radius: 14px;
-      padding: 8px 10px;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width: 240px;
-      transition: transform .12s ease, border-color .12s ease;
-      text-transform: uppercase;
-    }
-    .place-btn:hover{ transform: translateY(-1px); border-color: rgba(37,99,235,.28); }
-    .place-btn.active{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 3px rgba(37,99,235,.10); }
-
-    .thumb{
-      width:46px; height:46px;
-      border-radius: 12px;
-      border: 1px solid var(--stroke);
-      overflow:hidden;
-      flex: 0 0 auto;
-      background: linear-gradient(135deg, rgba(37,99,235,.18), rgba(16,185,129,.14));
-      display:grid; place-items:center;
-      font-weight:950;
-      color: rgba(12,18,40,.55);
-    }
-    .thumb img{ width:100%; height:100%; object-fit: cover; display:block; }
-    .pinfo{ display:flex; flex-direction:column; gap:2px; min-width: 0; }
-    .pname{ font-weight:950; font-size: 12.8px; white-space:nowrap; overflow:hidden; text-overflow: ellipsis; }
-    .pmeta{ font-size:11px; color: var(--muted); white-space:nowrap; overflow:hidden; text-overflow: ellipsis; }
-    .ord{ width:22px; height:22px; display:inline-grid; place-items:center; border-radius: 50%; font-weight: 950;
-      background: rgba(37,99,235,.10); color: rgba(37,99,235,1); margin-left:auto; }
-
-    /* Detail + pricing as 2 cards */
-    .twoCards{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top:10px; }
-    @media (max-width: 980px){ .twoCards{ grid-template-columns: 1fr; } }
-
-    .detail{
-      border: 1px solid var(--stroke);
-      border-radius: 14px;
-      background: rgba(255,255,255,.88);
-      padding: 12px;
-      min-height: 120px;
-    }
-    .detail h3{ margin:0 0 4px; font-size: 15.5px; text-transform: uppercase; }
-    .detail .meta{ font-size:12px; color:var(--muted); margin-bottom: 8px; text-transform: uppercase; }
-    .detail .desc{ font-size:13px; color:var(--text); line-height: 1.35; text-transform:none; }
-
-    .costBox{
-      border: 1px solid var(--stroke);
-      border-radius: 14px;
-      background: rgba(255,255,255,.88);
-      padding: 12px;
-    }
-    .costRow{ display:flex; justify-content:space-between; gap:10px; padding:6px 0; font-size:13px; text-transform: uppercase; }
-    .costRow span{ color: var(--muted); }
-    .costRow b{ color: var(--text); }
-    .costTotal{
-      margin-top:8px;
-      border-top:1px solid var(--stroke);
-      padding-top:10px;
-      display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
-      text-transform: uppercase;
-    }
-    .costTotal .big{ font-size:18px; font-weight:950; }
-    .saveTag{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(16,185,129,.35);
-      background: rgba(16,185,129,.10);
-      color: rgba(16,185,129,1);
-      font-size: 12px;
+    .pkgName{
+      font-size: 12.5px;
       font-weight: 950;
-      white-space: nowrap;
+      letter-spacing:.10em;
       text-transform: uppercase;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 6px;
     }
+    .pkgMeta{
+      font-size: 11px;
+      color: rgba(255,255,255,.72);
+      letter-spacing:.08em;
+      text-transform: uppercase;
+      line-height: 1.35;
+    }
+    .tag{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 5px 9px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      font-size: 10.5px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.78);
+      margin-top: 8px;
+      width:fit-content;
+    }
+    .tag.ok{ border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.10); color: rgba(34,197,94,.98); }
+    .tag.warn{ border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.10); color: rgba(245,158,11,.98); }
 
-    /* Map */
+    /* center - map */
     #map{
       width:100%;
-      height: calc(100vh - 210px);
-      min-height: 540px;
-      border-radius: 14px;
-      border: 1px solid var(--stroke);
-      overflow:hidden;
-      background: rgba(255,255,255,.40);
+      height:100%;
+      background: rgba(255,255,255,.04);
     }
-    .mapHdr{
+    .mapTools{
+      padding: 10px 12px;
+      border-top:1px solid var(--stroke);
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .toolBtn{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      color: rgba(255,255,255,.88);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 11px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      cursor:pointer;
+      display:inline-flex; align-items:center; gap:10px;
+      user-select:none;
+    }
+    .toolBtn:hover{ background: rgba(255,255,255,.08); }
+
+    /* right - itinerary */
+    .itWrap{
+      padding: 12px;
+      overflow:auto;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .bigTitle{
+      margin:0;
+      font-size: 13px;
+      letter-spacing:.18em;
+      text-transform: uppercase;
+      color:#fff;
+    }
+    .muted{ color: var(--muted); font-size: 11.5px; letter-spacing:.08em; text-transform: uppercase; line-height:1.35; }
+    .heroCard{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      border-radius: 16px;
+      padding: 12px;
+    }
+    .row2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .mini{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      border-radius: 16px;
+      padding: 10px;
+    }
+    .mini .k{ font-size: 10.5px; letter-spacing:.16em; text-transform: uppercase; color: rgba(255,255,255,.70); }
+    .mini .v{ margin-top:6px; font-size: 14px; font-weight: 950; letter-spacing:.06em; color:#fff; }
+    .mini .v small{ font-size: 11px; color: rgba(255,255,255,.72); font-weight: 800; }
+
+    .daysList{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .dayCard{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      border-radius: 16px;
+      padding: 12px;
+    }
+    .dayTop{
       display:flex;
       justify-content:space-between;
-      align-items:flex-end;
+      align-items:center;
       gap:10px;
-      margin-bottom: 10px;
-      flex-wrap:wrap;
+      margin-bottom: 8px;
+    }
+    .dayTop .d{
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing:.18em;
+      text-transform: uppercase;
+    }
+    .placeLine{
+      display:flex; align-items:center; gap:10px;
+      padding: 8px 10px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      border-radius: 14px;
+      margin-top: 8px;
+      cursor:pointer;
+    }
+    .placeLine:hover{ background: rgba(255,255,255,.08); }
+    .thumb{
+      width:40px; height:40px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.14), rgba(6,182,212,.18));
+      flex:0 0 auto;
+      display:grid; place-items:center;
+      font-weight:950;
+      color: rgba(255,255,255,.9);
+    }
+    .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .pinfo{ min-width:0; flex:1; }
+    .pname{
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .pmeta{
+      margin-top:3px;
+      font-size: 10.5px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.68);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
     }
 
-    /* Responsive */
-    @media (max-width: 1100px){
-      :root{ --mapW: 40%; }
+    /* command palette */
+    .palBack{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(8px);
+      display:none;
+      z-index: 9998;
+    }
+    .palBack.show{ display:block; }
+    .palette{
+      position:fixed;
+      top: 12%;
+      left:50%;
+      transform: translateX(-50%);
+      width: min(820px, calc(100% - 24px));
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(10,14,24,.82);
+      box-shadow: 0 40px 120px rgba(0,0,0,.75);
+      overflow:hidden;
+      display:none;
+      z-index: 9999;
+    }
+    .palette.show{ display:block; }
+    .palTop{
+      padding: 12px;
+      border-bottom:1px solid rgba(255,255,255,.12);
+      display:flex; gap:10px; align-items:center;
+    }
+    .palTop input{
+      background: rgba(0,0,0,.35);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 14px;
+      padding: 12px 12px;
+      color:#fff;
+      text-transform:none;
+      letter-spacing:.02em;
+    }
+    .palHint{ font-size: 11px; color: rgba(255,255,255,.65); letter-spacing:.10em; text-transform: uppercase; white-space:nowrap; }
+    .palList{
+      max-height: 420px;
+      overflow:auto;
+      padding: 10px;
+      display:grid;
+      gap:10px;
+    }
+    .palItem{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      border-radius: 16px;
+      padding: 10px;
+      cursor:pointer;
+      display:flex; gap:10px; align-items:center;
+    }
+    .palItem:hover{ background: rgba(255,255,255,.08); border-color: rgba(124,58,237,.35); }
+    .palItem .t{ font-weight: 950; letter-spacing:.10em; text-transform: uppercase; font-size: 12px; }
+    .palItem .s{ font-size: 11px; color: rgba(255,255,255,.70); letter-spacing:.08em; text-transform: uppercase; }
+
+    /* responsive */
+    @media (max-width: 1200px){
+      :root{ --leftW: 340px; --rightW: 380px; }
     }
     @media (max-width: 980px){
-      .controls{ grid-template-columns: 1fr 1fr; }
-      .main{ grid-template-columns: 1fr; }
-      .mapPanel{ position: relative; top:auto; }
-      #map{ height: 420px; min-height: 420px; }
+      body{ overflow:auto; }
+      .app{ height:auto; min-height:100%; }
+      .main{
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 420px auto;
+        overflow:visible;
+      }
+      .pane{ height:auto; }
+      #map{ height: 420px; }
+      .quote{ display:none; }
+      .actions{ min-width:unset; }
     }
 
     .toast{
-      position: fixed; left: 16px; bottom: 16px;
-      background: rgba(255,255,255,.94);
-      border: 1px solid var(--stroke);
-      border-radius: 14px;
+      position:fixed;
+      left: 14px;
+      bottom: 14px;
+      z-index: 9999;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(10,14,24,.88);
+      border-radius: 16px;
       padding: 10px 12px;
-      box-shadow: var(--shadow);
-      color: var(--muted);
-      font-size: 12.5px;
+      color: rgba(255,255,255,.82);
+      font-size: 11px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      box-shadow: 0 30px 90px rgba(0,0,0,.65);
       display:none;
       max-width: 560px;
-      z-index: 9999;
-      text-transform: uppercase;
-      font-weight: 900;
     }
     .toast.show{ display:block; }
-
-/* =========================
-   ✅ OPTION A LAYOUT (NEW)
-   Results Left (scroll) + Sticky Map Right
-   ========================= */
-
-:root{
-  --gap: 14px;
-  --mapW: 34%;
-}
-
-/* main shell inside card */
-.shell{
-  padding: 14px;
-}
-
-/* main two-column layout */
-.mainA{
-  display:grid;
-  grid-template-columns: calc(100% - var(--mapW) - var(--gap)) var(--mapW);
-  gap: var(--gap);
-  align-items:start;
-}
-
-/* left results side */
-.leftA{
-  min-height: 60vh;
-}
-
-/* right sticky map side */
-.rightA{
-  position: sticky;
-  top: 14px;
-  align-self: start;
-}
-
-/* simple inner panels */
-.panelA{
-  background: rgba(255,255,255,.72);
-  border: 1px solid var(--stroke);
-  border-radius: 16px;
-  padding: 12px;
-}
-
-/* spacing between panels */
-.panelA + .panelA{ margin-top: 12px; }
-
-/* map sizing (better) */
-#map{
-  width:100%;
-  height: calc(100vh - 230px);
-  min-height: 540px;
-  border-radius: 14px;
-  border: 1px solid var(--stroke);
-  overflow:hidden;
-  background: rgba(255,255,255,.40);
-}
-
-/* header row inside map */
-.mapHdrA{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-end;
-  gap:10px;
-  margin-bottom: 10px;
-  flex-wrap:wrap;
-}
-
-/* controls row becomes compact */
-.controls{
-  display:grid;
-  grid-template-columns: 2.2fr 1fr 1fr .8fr 1.2fr;
-  gap:10px;
-  align-items:end;
-}
-
-/* responsive */
-@media (max-width: 1100px){
-  :root{ --mapW: 40%; }
-}
-@media (max-width: 980px){
-  .controls{ grid-template-columns: 1fr 1fr; }
-  .mainA{ grid-template-columns: 1fr; }
-  .rightA{ position: relative; top:auto; }
-  #map{ height: 420px; min-height: 420px; }
-}
-
   </style>
 </head>
 
 <body>
-  <div class="bg"></div>
-  <canvas id="fx"></canvas>
+  <div class="aurora"></div>
   <div class="noise"></div>
-  <div class="blob b1"></div>
-  <div class="blob b2"></div>
-  <div class="blob b3"></div>
 
-  <div class="wrap">
-    <div class="card">
+  <div class="app">
 
-      <!-- HERO -->
-      <div class="hero">
-        <div class="hero-top">
-          <img src="logo.png" class="site-logo" alt="Himachal Explorer Logo">
-          <div class="hero-text">
-            <h1>Live Package Generator</h1>
-            <p>
-              Type <b>START</b> (must exist in your Templates DB). Optional <b>DAYS</b> and <b>PAX</b>.
-              Result: <b>ONE BEST PACKAGE PER END</b> (best = maximum locations).<br/>
-              ✅ Package name uses <b>START</b> and <b>END derived from Column G (route_path)</b>.
-              If last point repeats START, system uses <b>second-last point</b> as END.
-            </p>
-            <div class="sub" id="dataStatus" style="margin-top:10px;">LOADING TEMPLATES…</div>
-          </div>
+    <!-- TOP -->
+    <div class="top">
+      <div class="brand">
+        <div class="logo" title="Put your logo as logo.png in same folder">
+          <img src="logo.png" alt="Logo" onerror="this.remove(); this.parentNode.textContent='HP';">
+        </div>
+        <div>
+          <h1>Himachal Explorer Portal</h1>
+          <p id="statusLine">Loading templates & locations…</p>
         </div>
       </div>
 
-      <!-- CONTROLS BAR -->
-      <div class="topbar">
-        <div class="controls">
+      <div class="quote">
+        <div class="quoteBox">
+          <div class="spark"></div>
+          <div class="quoteText" id="quoteText">“The mountains are calling…”</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <div class="chip" id="openPalette">Search <kbd>Ctrl</kbd><kbd>K</kbd></div>
+        <div class="chip" id="fitMapBtn">Fit Route</div>
+        <div class="chip" id="clearRouteBtn">Clear</div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <!-- LEFT PANE -->
+      <div class="pane">
+        <div class="paneHdr">
+          <div>
+            <p class="t">Package Finder</p>
+            <div class="s">Start → End from Column G (route_path)</div>
+          </div>
+          <div class="s" id="pkgCount">—</div>
+        </div>
+
+        <div class="filters">
           <div class="field">
-            <label>START (TYPE OR PICK)</label>
-            <input id="startInp" list="startList" placeholder="E.G. AMRITSAR / DELHI / CHANDIGARH"/>
+            <label>Start (Templates)</label>
+            <input id="startInp" list="startList" placeholder="E.g. AMRITSAR / DELHI / CHANDIGARH">
             <datalist id="startList"></datalist>
           </div>
 
           <div class="field">
-            <label>DAYS (OPTIONAL)</label>
+            <label>Days (Optional)</label>
             <select id="daysSel">
               <option value="">ANY</option>
-              <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-              <option value="4">4</option><option value="5">5</option><option value="6">6</option>
-              <option value="7">7</option><option value="8">8</option><option value="9">9</option>
-              <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+              <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+              <option>11</option><option>12</option>
             </select>
           </div>
 
           <div class="field">
-            <label>PEOPLE (PAX)</label>
+            <label>Pax</label>
             <select id="paxSel">
-              <option value="2">2</option><option value="3">3</option><option value="4">4</option>
-              <option value="5">5</option><option value="6">6</option><option value="7">7</option>
-              <option value="8">8</option><option value="9">9</option><option value="10">10</option>
-              <option value="11">11</option><option value="12">12</option>
+              <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+              <option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
             </select>
           </div>
 
-          <div class="field">
-            <label>&nbsp;</label>
-            <button class="btn secondary" id="resetBtn">RESET</button>
+          <div class="btnRow">
+            <button class="btn secondary" id="resetBtn">Reset</button>
+            <button class="btn" id="genBtn">Generate</button>
           </div>
+        </div>
 
-          <div class="field">
-            <label>&nbsp;</label>
-            <button class="btn" id="runBtn">GENERATE</button>
-          </div>
+        <div class="metaPills" id="pills"></div>
+
+        <div class="pkgList" id="pkgList">
+          <div class="pill"><span>Type Start & click</span> <b>Generate</b></div>
         </div>
       </div>
 
-      <!-- MAIN: RESULTS + MAP -->
-      <div class="main">
-
-        <!-- LEFT: RESULTS -->
-        <div class="results">
-
-          <div class="panel">
-            <div class="title">Packages</div>
-            <div class="sub">ONE END (FROM COLUMN G) = ONE BEST PACKAGE (MAX LOCATIONS).</div>
-            <div id="summaryPills"></div>
-
-            <div class="pkgGrid" id="pkgGrid" style="margin-top:12px;">
-              <div class="sub">TYPE START AND CLICK GENERATE…</div>
-            </div>
+      <!-- CENTER PANE -->
+      <div class="pane">
+        <div class="paneHdr">
+          <div>
+            <p class="t">Live Route Map</p>
+            <div class="s">Road polyline (OSRM) + place markers</div>
           </div>
-
-          <div class="panel" style="margin-top:12px;">
-            <div class="placesHdr">
-              <div style="display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;">
-                <div class="title">Package Places</div>
-                <div class="count" id="placesCount">—</div>
-              </div>
-              <div class="btnRow">
-                <button class="btn secondary" id="fitBtn" style="width:auto;">FIT MAP</button>
-                <button class="btn secondary" id="clearBtn" style="width:auto;">CLEAR ROUTE</button>
-              </div>
-            </div>
-
-            <div class="placeBtns" id="placesButtons">
-              <span class="sub">CLICK A PACKAGE TO SHOW PLACES…</span>
-            </div>
-
-            <div class="twoCards">
-              <div class="detail" id="placeDetail">
-                <h3>PLACE DETAILS</h3>
-                <div class="meta">CLICK ANY PLACE TO SEE DETAILS.</div>
-                <div class="desc" id="placeDesc">—</div>
-              </div>
-
-              <div class="costBox">
-                <div class="title">PRICING</div>
-                <div class="sub">OSRM ROAD KM + 6–10% DISCOUNT. PER PERSON PRICE.</div>
-                <div id="costRows"></div>
-              </div>
-            </div>
-          </div>
-
+          <div class="s" id="kmBadge">—</div>
         </div>
 
-        <!-- RIGHT: MAP -->
-        <div class="mapPanel">
-          <div class="panel">
-            <div class="mapHdr">
-              <div>
-                <div class="title">Map</div>
-                <div class="sub">ACTUAL ROAD ROUTE LINE</div>
-              </div>
-              <div class="sub" style="text-transform:none;">
-                ✅ End derived from <b>Column G</b> • ✅ Route line = OSRM
-              </div>
-            </div>
-            <div id="map"></div>
-          </div>
-        </div>
+        <div id="map"></div>
 
+        <div class="mapTools">
+          <div class="toolBtn" id="showAllStopsBtn">Show Stops</div>
+          <div class="toolBtn" id="showStartEndBtn">Start/End Only</div>
+          <div class="toolBtn" id="toggleDarkTilesBtn">Toggle Tiles</div>
+        </div>
       </div>
+
+      <!-- RIGHT PANE -->
+      <div class="pane">
+        <div class="paneHdr">
+          <div>
+            <p class="t">Itinerary</p>
+            <div class="s">Day-wise plan + inclusions/exclusions</div>
+          </div>
+          <div class="s" id="activePkgName">—</div>
+        </div>
+
+        <div class="itWrap">
+          <div class="heroCard">
+            <h3 class="bigTitle" id="itTitle">Select a package</h3>
+            <div class="muted" id="itMeta">Day-wise details will appear here</div>
+          </div>
+
+          <div class="row2">
+            <div class="mini">
+              <div class="k">Our Price (est.)</div>
+              <div class="v" id="priceTotal">— <small></small></div>
+            </div>
+            <div class="mini">
+              <div class="k">Per Person</div>
+              <div class="v" id="pricePer">— <small></small></div>
+            </div>
+          </div>
+
+          <div class="heroCard">
+            <div class="muted" style="margin-bottom:8px;">Package includes / excludes</div>
+            <div class="muted" id="incExc">—</div>
+          </div>
+
+          <div class="daysList" id="daysList"></div>
+        </div>
+      </div>
+
     </div>
+  </div>
+
+  <!-- Command Palette -->
+  <div class="palBack" id="palBack"></div>
+  <div class="palette" id="palette">
+    <div class="palTop">
+      <input id="palInput" placeholder="Search packages, places, districts… (type then Enter)">
+      <div class="palHint">Esc to close</div>
+    </div>
+    <div class="palList" id="palList"></div>
   </div>
 
   <div class="toast" id="toast"></div>
 
 <script>
-/***********************
- * ✅ LIVE PARTICLES (VISIBLE)
- ***********************/
-(function(){
-  const c = document.getElementById('fx');
-  const ctx = c.getContext('2d');
-  let W, H, particles = [];
-  function resize(){
-    W = c.width = window.innerWidth;
-    H = c.height = window.innerHeight;
-    particles = Array.from({length: 90}, () => ({
-      x: Math.random()*W,
-      y: Math.random()*H,
-      r: Math.random()*1.8 + 0.6,
-      vx: (Math.random()*0.7 + 0.2) * (Math.random()<0.5?-1:1),
-      vy: (Math.random()*0.7 + 0.2) * (Math.random()<0.5?-1:1),
-      a: Math.random()*0.28 + 0.14
-    }));
-  }
-  window.addEventListener('resize', resize);
-  resize();
-  function draw(){
-    ctx.clearRect(0,0,W,H);
-    for(const p of particles){
-      p.x += p.vx; p.y += p.vy;
-      if(p.x < -20) p.x = W+20;
-      if(p.x > W+20) p.x = -20;
-      if(p.y < -20) p.y = H+20;
-      if(p.y > H+20) p.y = -20;
-      ctx.beginPath();
-      ctx.globalAlpha = p.a;
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle = "#0b255a";
-      ctx.fill();
-    }
-    for(let i=0;i<particles.length;i++){
-      for(let j=i+1;j<particles.length;j++){
-        const a = particles[i], b = particles[j];
-        const dx = a.x-b.x, dy = a.y-b.y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < 165){
-          ctx.globalAlpha = (1 - dist/165) * 0.16;
-          ctx.strokeStyle = "#2563eb";
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(a.x,a.y);
-          ctx.lineTo(b.x,b.y);
-          ctx.stroke();
-        }
-      }
-    }
-    ctx.globalAlpha = 1;
-    requestAnimationFrame(draw);
-  }
-  draw();
-})();
-
-/***********************
- * ✅ FIREBASE CONFIG (yours)
- ***********************/
+/* ===============================
+   ✅ FIREBASE CONFIG (PUT YOURS)
+   =============================== */
 const firebaseConfig = {
-  apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
+  apiKey: "REPLACE_ME",
   authDomain: "revnue-records.firebaseapp.com",
   databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "revnue-records",
   storageBucket: "revnue-records.appspot.com",
-  messagingSenderId: "000000000000",
-  appId: "1:000000000000:web:0000000000000000000000",
-  measurementId: "G-0000000000"
+  messagingSenderId: "REPLACE_ME",
+  appId: "REPLACE_ME"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-/***********************
- * ✅ MAP
- ***********************/
-const map = L.map('map', { zoomControl: true }).setView([31.1048, 77.1734], 8);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
-let markersLayer = L.layerGroup().addTo(map);
-let routeLine = null;
-
-function clearMap(){
-  markersLayer.clearLayers();
-  if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
-}
-
-/***********************
- * ✅ HELPERS
- ***********************/
+/* ===============================
+   ✅ UTIL
+   =============================== */
 const $ = (id)=>document.getElementById(id);
-function setStatus(msg){ $("dataStatus").textContent = msg; }
 function toast(msg){
-  const t=$("toast");
-  t.textContent=msg;
+  const t = $("toast");
+  t.textContent = String(msg||"");
   t.classList.add("show");
   setTimeout(()=>t.classList.remove("show"), 2200);
 }
+function safeLower(x){ return String(x ?? "").trim().toLowerCase(); }
 function escapeHtml(str){
   return String(str ?? "")
     .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
     .replaceAll('"',"&quot;").replaceAll("'","&#039;");
 }
-function safeLower(x){ return String(x ?? "").trim().toLowerCase(); }
-function pill(label, value){
-  const div = document.createElement("div");
-  div.className = "pill";
-  div.innerHTML = `${escapeHtml(label)}: <b>${escapeHtml(value)}</b>`;
-  return div;
-}
+function normCaps(x){ return String(x||"").trim().toUpperCase().replace(/\s+/g," "); }
 function initials(name){
   const parts = String(name||"").trim().split(/\s+/).slice(0,2);
   const ini = parts.map(x=>x[0]).join("").toUpperCase();
@@ -669,8 +761,7 @@ function rupees(n){
 }
 function slugifyName(name){
   return String(name||"")
-    .trim()
-    .toLowerCase()
+    .trim().toLowerCase()
     .replace(/&/g," and ")
     .replace(/['"]/g,"")
     .replace(/[^a-z0-9]+/g,"-")
@@ -678,45 +769,128 @@ function slugifyName(name){
     .replace(/^-|-$/g,"");
 }
 
-/***********************
- * ✅ DATA
- ***********************/
+/* ===============================
+   ✅ QUOTES ROTATOR
+   =============================== */
+const QUOTES = [
+  "Himachal is not a destination — it’s a <b>feeling</b>.",
+  "Every turn in the mountains is a new <b>story</b>.",
+  "Let your route be scenic, your pace be <b>human</b>.",
+  "Collect moments, not things — especially in the <b>hills</b>.",
+  "Snow, cedar, rivers — welcome to <b>Himachal</b>."
+];
+let qIndex=0;
+setInterval(()=>{
+  qIndex = (qIndex+1)%QUOTES.length;
+  $("quoteText").innerHTML = "“" + QUOTES[qIndex] + "”";
+}, 5000);
+
+/* ===============================
+   ✅ MAP
+   =============================== */
+let map, tile, markersLayer, routeLine;
+let showMode = "all"; // all | startend
+let tilesDark = false;
+
+function initMap(){
+  map = L.map('map', { zoomControl:true }).setView([31.1048, 77.1734], 8);
+  tile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
+  tile.addTo(map);
+
+  markersLayer = L.layerGroup().addTo(map);
+}
+function clearMap(){
+  markersLayer.clearLayers();
+  if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
+  $("kmBadge").textContent = "—";
+}
+function fitRoute(){
+  if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] });
+}
+async function drawRoadRouteFromPlaces(placeIds){
+  markersLayer.clearLayers();
+  if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
+
+  const pts = [];
+  const validIds = [];
+  for(const pid of placeIds){
+    const p = LOCS[pid] || {};
+    const lat = Number(p.Latitude ?? p.lat);
+    const lng = Number(p.Longitude ?? p.lng);
+    if(isFinite(lat) && isFinite(lng)){
+      pts.push([lng,lat]);
+      validIds.push(pid);
+    }
+  }
+  if(pts.length < 2){
+    toast("Not enough coordinates for route");
+    return { ok:false, km:0 };
+  }
+
+  // reduce points for OSRM limit
+  const maxPts = 25;
+  let used = pts;
+  if(pts.length > maxPts){
+    const step = Math.ceil(pts.length / maxPts);
+    used = pts.filter((_,i)=> i%step===0 || i===pts.length-1);
+  }
+
+  try{
+    const url =
+      "https://router.project-osrm.org/route/v1/driving/" +
+      used.map(c=>c.join(",")).join(";") +
+      "?overview=full&geometries=geojson&steps=false";
+
+    const res = await fetch(url);
+    const data = await res.json();
+    if(!data.routes?.length){
+      toast("Road route not available");
+      return { ok:false, km:0 };
+    }
+    const r = data.routes[0];
+    const latlngs = r.geometry.coordinates.map(c=>[c[1],c[0]]);
+    routeLine = L.polyline(latlngs, { weight: 5, opacity: .95 }).addTo(map);
+    fitRoute();
+
+    // markers: all or start/end only
+    const markIds = (showMode==="startend")
+      ? [validIds[0], validIds[validIds.length-1]]
+      : validIds;
+
+    for(let i=0;i<markIds.length;i++){
+      const pid = markIds[i];
+      const p = LOCS[pid] || {};
+      const lat = Number(p.Latitude ?? p.lat);
+      const lng = Number(p.Longitude ?? p.lng);
+      if(!isFinite(lat)||!isFinite(lng)) continue;
+      const nm = (p["Location Name"] || pid).toUpperCase();
+      L.marker([lat,lng]).addTo(markersLayer).bindPopup(`<b>${escapeHtml(nm)}</b>`);
+    }
+
+    const km = Number(r.distance/1000);
+    $("kmBadge").textContent = km.toFixed(1) + " KM";
+    return { ok:true, km };
+  }catch(e){
+    console.error(e);
+    toast("Route error");
+    return { ok:false, km:0 };
+  }
+}
+
+/* ===============================
+   ✅ DATA LOAD
+   =============================== */
 let LOCS = {};
 let TEMPLATES = {};
 let ACTIVE_TEMPLATES = [];
 let NAME_TO_ID = new Map();
 let STARTS = [];
 
-/***********************
- * ✅ LOAD
- ***********************/
-async function loadAll(){
-  setStatus("LOADING /templates & /locations…");
-  const [tplSnap, locSnap] = await Promise.all([
-    db.ref("templates").once("value"),
-    db.ref("locations").once("value"),
-  ]);
-  TEMPLATES = tplSnap.val() || {};
-  LOCS = locSnap.val() || {};
-
-  ACTIVE_TEMPLATES = Object.entries(TEMPLATES)
-    .map(([key, obj]) => ({ key, ...(obj||{}) }))
-    .filter(t => {
-      const st = safeLower(t.status || "active");
-      return st === "active" || st === "enabled" || st === "true";
-    });
-
-  buildNameIndex();
-  buildStartList(ACTIVE_TEMPLATES);
-
-  setStatus(`LOADED ${ACTIVE_TEMPLATES.length} TEMPLATES • ${Object.keys(LOCS).length} LOCATIONS`);
-}
 function buildNameIndex(){
   NAME_TO_ID = new Map();
   for(const [pid, p] of Object.entries(LOCS)){
     const nm = String(p["Location Name"] || p.name || "").trim();
-    if(!nm) continue;
-    NAME_TO_ID.set(nm.toLowerCase(), pid);
+    if(nm) NAME_TO_ID.set(nm.toLowerCase(), pid);
   }
 }
 function buildStartList(templates){
@@ -734,10 +908,34 @@ function buildStartList(templates){
     dl.appendChild(opt);
   });
 }
+function setStatus(msg){
+  $("statusLine").textContent = msg;
+}
+async function loadAll(){
+  setStatus("Loading /templates & /locations…");
+  const [tplSnap, locSnap] = await Promise.all([
+    db.ref("templates").once("value"),
+    db.ref("locations").once("value"),
+  ]);
+  TEMPLATES = tplSnap.val() || {};
+  LOCS = locSnap.val() || {};
 
-/***********************
- * ✅ STOPS IN ROUTE ORDER (DAY-WISE)
- ***********************/
+  ACTIVE_TEMPLATES = Object.entries(TEMPLATES)
+    .map(([key, obj]) => ({ key, ...(obj||{}) }))
+    .filter(t => {
+      const st = safeLower(t.status || "active");
+      return st === "active" || st === "enabled" || st === "true";
+    });
+
+  buildNameIndex();
+  buildStartList(ACTIVE_TEMPLATES);
+
+  setStatus(`Loaded ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(LOCS).length} locations`);
+}
+
+/* ===============================
+   ✅ CORE: stops + end from Column G
+   =============================== */
 function stopsFromTemplate(tpl){
   const days = Number(tpl.days || 1);
   const out = [];
@@ -753,7 +951,6 @@ function stopsFromTemplate(tpl){
       out.push(pid);
     });
   }
-
   if(!out.length){
     const raw = String(tpl.major_place_ids || "").trim();
     raw.split(",").map(x=>x.trim()).filter(Boolean).forEach(pid=>out.push(pid));
@@ -762,52 +959,47 @@ function stopsFromTemplate(tpl){
 }
 function stopsCount(tpl){ return stopsFromTemplate(tpl).length; }
 
-/***********************
- * ✅ END LOCATION FROM COLUMN G (route_path)
- ***********************/
 function getEndNameFromColumnG(tpl){
   const start = String(tpl.start_point || "").trim().toLowerCase();
   const rpRaw = String(tpl.route_path || "").trim();
   if(!rpRaw) return String(tpl.end_point || "").trim() || "UNKNOWN";
 
-  const tokens = rpRaw
-    .replace(/->/g,">")
-    .split(">")
-    .map(x=>String(x||"").trim())
-    .filter(Boolean);
+  const tokens = rpRaw.replace(/->/g,">").split(">")
+    .map(x=>String(x||"").trim()).filter(Boolean);
 
   if(!tokens.length) return String(tpl.end_point || "").trim() || "UNKNOWN";
 
   let end = tokens[tokens.length - 1];
-  if(end && start && end.trim().toLowerCase() === start && tokens.length >= 2){
+  if(end && start && end.toLowerCase() === start && tokens.length >= 2){
     end = tokens[tokens.length - 2];
   }
   return end || "UNKNOWN";
 }
-function normCaps(x){ return String(x||"").trim().toUpperCase().replace(/\s+/g," "); }
 function endKeyFromColumnG(tpl){
   const endName = getEndNameFromColumnG(tpl);
   const pidByName = NAME_TO_ID.get(String(endName).toLowerCase());
-
   if(pidByName){
     const p = LOCS[pidByName] || {};
     const d = normCaps(p["District"] || p.district || "");
     return d || normCaps(endName);
   }
-
   const slug = slugifyName(endName);
   if(LOCS[slug]){
     const p = LOCS[slug] || {};
     const d = normCaps(p["District"] || p.district || "");
     return d || normCaps(endName);
   }
-
   return normCaps(endName);
 }
-
-/***********************
- * ✅ PLACE THUMB
- ***********************/
+function normalizeStartInput(){
+  const typed = String($("startInp").value || "").trim().toUpperCase();
+  if(!typed) return "";
+  const exact = STARTS.find(s => String(s).trim().toUpperCase() === typed);
+  if(exact) return exact;
+  const partial = STARTS.find(s => String(s).trim().toUpperCase().startsWith(typed));
+  if(partial) return partial;
+  return "";
+}
 function getPlaceThumbUrl(p){
   p = p || {};
   const p1 = p["photo 1"] || p.photo1 || p.photo_1 || p.photo || "";
@@ -819,9 +1011,24 @@ function getPlaceThumbUrl(p){
   return "";
 }
 
-/***********************
- * ✅ VEHICLE & PRICING
- ***********************/
+/* ===============================
+   ✅ PICK BEST PACKAGE PER END
+   =============================== */
+function packageScore(tpl){
+  const locs = stopsCount(tpl);
+  const pri  = Number(tpl.priority ?? 999);
+  const km   = Number(tpl.total_km_est ?? tpl.estimated_drive_km ?? 1e9);
+  return { locs, pri, km };
+}
+function isBetter(a,b){
+  if(a.locs !== b.locs) return a.locs > b.locs;
+  if(a.pri !== b.pri)   return a.pri < b.pri;
+  return a.km < b.km;
+}
+
+/* ===============================
+   ✅ PRICING (same style, better display)
+   =============================== */
 function pickVehicleByPax(pax){
   if(pax <= 4) return "sedan";
   if(pax <= 6) return "suv";
@@ -849,249 +1056,210 @@ function estimateMarketCost({ km=0, days=3, pax=2, vehicle="sedan" }){
 
   return { transport, driver, stay, service, marketTotal };
 }
-function renderCostBox({status="idle", km=0, days=3, pax=2}){
-  const box = $("costRows");
-  if(status === "idle"){
-    box.innerHTML = `<div class="sub" style="margin-top:8px;">SELECT A PACKAGE TO CALCULATE COST.</div>`;
-    return;
+
+/* ===============================
+   ✅ UI RENDER
+   =============================== */
+let CURRENT_LIST = [];
+let CURRENT_TEMPLATE_KEY = "";
+let CURRENT_ROUTE_KM = 0;
+
+function setPills(obj){
+  const box = $("pills");
+  box.innerHTML = "";
+  for(const [k,v] of Object.entries(obj)){
+    const div = document.createElement("div");
+    div.className = "pill";
+    div.innerHTML = `${escapeHtml(k)} <b>${escapeHtml(String(v))}</b>`;
+    box.appendChild(div);
   }
-  if(status === "error"){
-    box.innerHTML = `<div class="sub" style="margin-top:8px;">COST NOT AVAILABLE (ROAD KM NOT READY).</div>`;
-    return;
-  }
-
-  const vehicle = pickVehicleByPax(pax);
-  const mk = estimateMarketCost({ km, days, pax, vehicle });
-  const disc = discountedCost(mk.marketTotal);
-  const perPerson = Math.ceil(disc.final / Math.max(1, pax));
-
-  box.innerHTML = `
-    <div class="costRow"><span>ROAD KM</span><b>${km.toFixed(1)} KM</b></div>
-    <div class="costRow"><span>DAYS</span><b>${days}</b></div>
-    <div class="costRow"><span>PEOPLE</span><b>${pax}</b></div>
-    <div class="costRow"><span>VEHICLE</span><b>${vehicle.toUpperCase()}</b></div>
-
-    <div class="costRow"><span>TRANSPORT (MARKET)</span><b>${rupees(mk.transport)}</b></div>
-    <div class="costRow"><span>DRIVER</span><b>${rupees(mk.driver)}</b></div>
-    <div class="costRow"><span>STAY</span><b>${rupees(mk.stay)}</b></div>
-    <div class="costRow"><span>SERVICE / MARGIN</span><b>${rupees(mk.service)}</b></div>
-
-    <div class="costTotal">
-      <div>
-        <div class="sub">OUR TOTAL PRICE</div>
-        <div class="big">${rupees(disc.final)}</div>
-        <div class="sub" style="margin-top:6px;">PER PERSON</div>
-        <div class="big">${rupees(perPerson)}</div>
-      </div>
-      <div class="saveTag">CHEAPER BY ${disc.discountPercent}%</div>
-    </div>
-  `;
 }
 
-/***********************
- * ✅ ROAD ROUTE (OSRM)
- ***********************/
-async function drawRoadRouteFromPlaces(placeIds){
-  markersLayer.clearLayers();
-  if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
+function renderPackages(list, start){
+  const box = $("pkgList");
+  box.innerHTML = "";
+  $("pkgCount").textContent = `${list.length} Results`;
 
-  const coords = [];
-  const valid = [];
-  placeIds.forEach(pid=>{
-    const p = LOCS[pid] || {};
-    const lat = Number(p.Latitude ?? p.lat);
-    const lng = Number(p.Longitude ?? p.lng);
-    if(isFinite(lat) && isFinite(lng)){
-      coords.push([lng,lat]);
-      valid.push(pid);
-    }
-  });
-  if(coords.length < 2){
-    toast("NOT ENOUGH COORDINATES FOR ROAD ROUTE");
-    return { ok:false, km:0 };
+  if(!list.length){
+    box.innerHTML = `<div class="pill">No packages for <b>${escapeHtml(String(start).toUpperCase())}</b></div>`;
+    return;
   }
 
-  try{
-    const maxPts = 25;
-    let used = coords;
-    if(coords.length > maxPts){
-      const step = Math.ceil(coords.length / maxPts);
-      used = coords.filter((_,i)=> i % step === 0 || i === coords.length-1);
-    }
-    const url =
-      "https://router.project-osrm.org/route/v1/driving/" +
-      used.map(c=>c.join(",")).join(";") +
-      "?overview=full&geometries=geojson&steps=false";
+  list.forEach(t=>{
+    const endKey = endKeyFromColumnG(t);
+    const days = Number(t.days || 0) || 0;
+    const tempoOk = (t.tempo_ok === true || safeLower(t.tempo_ok)==="true");
+    const stops = stopsFromTemplate(t);
 
-    const res = await fetch(url);
-    const data = await res.json();
-    if(!data.routes?.length){
-      toast("ROAD ROUTE NOT AVAILABLE");
-      return { ok:false, km:0 };
+    // thumb from first stop
+    let thumbUrl="", ini="HP";
+    if(stops[0]){
+      const p = LOCS[stops[0]] || {};
+      const nm = (p["Location Name"] || stops[0]).toUpperCase();
+      ini = initials(nm);
+      thumbUrl = getPlaceThumbUrl(p);
     }
 
-    const route = data.routes[0];
-    const latlngs = route.geometry.coordinates.map(c=>[c[1],c[0]]);
-    routeLine = L.polyline(latlngs, { weight: 5, opacity: .95 }).addTo(map);
-    map.fitBounds(routeLine.getBounds(), { padding:[20,20] });
+    const el = document.createElement("div");
+    el.className = "pkg";
+    el.dataset.key = t.key;
+    el.innerHTML = `
+      <div class="pkgPic">
+        ${thumbUrl
+          ? `<img src="${escapeHtml(thumbUrl)}" alt="thumb" loading="lazy" referrerpolicy="no-referrer"
+                onerror="this.remove(); this.parentNode.textContent='${escapeHtml(ini)}';">`
+          : escapeHtml(ini)
+        }
+      </div>
+      <div class="pkgBody">
+        <div class="pkgName">${escapeHtml(String(start).toUpperCase())} → ${escapeHtml(String(endKey).toUpperCase())}</div>
+        <div class="pkgMeta">
+          LOCATIONS: ${stopsCount(t)} • DAYS: ${days || "—"}<br/>
+          ROUTE ID: ${escapeHtml(String(t.route_id||"—").toUpperCase())}
+        </div>
+        <div class="tag ${tempoOk ? "ok" : "warn"}">${tempoOk ? "TEMPO OK" : "TEMPO RISK"}</div>
+      </div>
+    `;
 
-    coords.forEach((c,i)=>{
-      const pid = valid[i] || placeIds[i];
+    el.onclick = ()=>openTemplate(t.key, start);
+    box.appendChild(el);
+  });
+}
+
+function buildDayWise(tpl){
+  const days = Number(tpl.days || 1);
+  const dayBlocks = [];
+  for(let d=1; d<=Math.min(12, Math.max(1, days)); d++){
+    const k = `day${d}_place_ids`;
+    const raw = String(tpl[k] || "").trim();
+    const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
+    dayBlocks.push({ day:d, ids });
+  }
+
+  // fallback: if no day-wise ids exist, build 1 day block from major_place_ids
+  const anyHas = dayBlocks.some(x=>x.ids.length);
+  if(!anyHas){
+    const raw = String(tpl.major_place_ids || "").trim();
+    const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
+    return [{ day:1, ids }];
+  }
+  return dayBlocks.filter(x=>x.ids.length);
+}
+
+function renderItinerary(tpl, start, endKey){
+  $("activePkgName").textContent = `${String(tpl.days||"—")}D`;
+
+  const title = `${String(start).toUpperCase()} → ${String(endKey).toUpperCase()}`;
+  $("itTitle").textContent = title;
+
+  const metaParts = [];
+  if(tpl.route_path) metaParts.push(`Route: ${tpl.route_path}`);
+  if(tpl.best_season) metaParts.push(`Season: ${tpl.best_season}`);
+  if(tpl.ideal_for) metaParts.push(`Ideal: ${tpl.ideal_for}`);
+  $("itMeta").textContent = metaParts.join(" • ") || "—";
+
+  const inc = String(tpl.inclusions || "").trim();
+  const exc = String(tpl.exclusions || "").trim();
+  const note = String(tpl.important_notes || tpl.notes || "").trim();
+  $("incExc").innerHTML =
+    `<b style="color:#fff;letter-spacing:.12em;">INCLUDES:</b> ${escapeHtml(inc || "—")}<br><br>` +
+    `<b style="color:#fff;letter-spacing:.12em;">EXCLUDES:</b> ${escapeHtml(exc || "—")}<br><br>` +
+    `<b style="color:#fff;letter-spacing:.12em;">NOTES:</b> ${escapeHtml(note || "—")}`;
+
+  const daysList = $("daysList");
+  daysList.innerHTML = "";
+
+  const blocks = buildDayWise(tpl);
+
+  blocks.forEach(block=>{
+    const dayCard = document.createElement("div");
+    dayCard.className = "dayCard";
+    dayCard.innerHTML = `
+      <div class="dayTop">
+        <div class="d">Day ${block.day}</div>
+        <div class="muted">${block.ids.length} places</div>
+      </div>
+      <div class="muted">Tap a place to focus on map</div>
+      <div class="dayPlaces"></div>
+    `;
+    const cont = dayCard.querySelector(".dayPlaces");
+
+    block.ids.forEach(pid=>{
       const p = LOCS[pid] || {};
-      const nm = (p["Location Name"] || pid).toUpperCase();
-      L.marker([c[1], c[0]]).addTo(markersLayer).bindPopup(`<b>${i+1}. ${escapeHtml(nm)}</b>`);
+      const name = (p["Location Name"] || pid).toUpperCase();
+      const seg  = String(p["Segment Type"] || p.segment || "—").toUpperCase();
+      const dist = String(p["District"] || p.district || "—").toUpperCase();
+      const url = getPlaceThumbUrl(p);
+
+      const line = document.createElement("div");
+      line.className = "placeLine";
+      line.innerHTML = `
+        <div class="thumb">
+          ${url
+            ? `<img src="${escapeHtml(url)}" alt="pic" loading="lazy" referrerpolicy="no-referrer"
+                  onerror="this.remove(); this.parentNode.textContent='${escapeHtml(initials(name))}';">`
+            : escapeHtml(initials(name))
+          }
+        </div>
+        <div class="pinfo">
+          <div class="pname">${escapeHtml(name)}</div>
+          <div class="pmeta">${escapeHtml(seg)} • ${escapeHtml(dist)}</div>
+        </div>
+      `;
+      line.onclick = ()=>focusPlace(pid);
+      cont.appendChild(line);
     });
 
-    return { ok:true, km: Number(route.distance/1000) };
-  }catch(e){
-    console.error(e);
-    toast("ROAD ROUTE ERROR");
-    return { ok:false, km:0 };
-  }
-}
-function fitMap(){
-  if(routeLine){ map.fitBounds(routeLine.getBounds(), { padding:[18,18] }); }
-}
-
-/***********************
- * ✅ PLACES UI
- ***********************/
-function renderPlaceButtons(placeIds){
-  const box = $("placesButtons");
-  box.innerHTML = "";
-  if(!placeIds.length){
-    box.innerHTML = `<span class="sub">NO PLACES FOUND IN THIS PACKAGE.</span>`;
-    $("placesCount").textContent = "0 PLACES";
-    return;
-  }
-  $("placesCount").textContent = `${placeIds.length} PLACES`;
-
-  placeIds.forEach((pid, idx)=>{
-    const p = LOCS[pid] || {};
-    const name = (p["Location Name"] || pid).toUpperCase();
-    const seg  = String(p["Segment Type"] || p.segment || "—").toUpperCase();
-    const url = getPlaceThumbUrl(p);
-
-    const btn = document.createElement("button");
-    btn.className = "place-btn";
-    btn.innerHTML = `
-      <div class="thumb">
-        ${url ? `<img src="${escapeHtml(url)}" alt="${escapeHtml(name)}" loading="lazy"
-                 referrerpolicy="no-referrer"
-                 onerror="this.remove(); this.parentNode.textContent='${escapeHtml(initials(name))}';">`
-              : `${escapeHtml(initials(name))}`}
-      </div>
-      <div class="pinfo">
-        <div class="pname">${escapeHtml(name)}</div>
-        <div class="pmeta">${escapeHtml(seg)}</div>
-      </div>
-      <span class="ord">${idx+1}</span>
-    `;
-    btn.onclick = ()=>selectPlace(pid, idx+1);
-    box.appendChild(btn);
+    daysList.appendChild(dayCard);
   });
 }
-function selectPlace(placeId, order){
-  const btns = $("placesButtons").querySelectorAll(".place-btn");
-  btns.forEach(b=>b.classList.remove("active"));
-  const target = btns[order-1];
-  if(target) target.classList.add("active");
 
-  const p = LOCS[placeId] || {};
-  const name = (p["Location Name"] || placeId).toUpperCase();
-  const seg  = String(p["Segment Type"] || p.segment || "—").toUpperCase();
-  const typ  = String(p["Location Type"] || p.type || "—").toUpperCase();
-  const short= String(p["Short Description"] || "");
-  const ov   = String(p["Overview"] || "");
-  const how  = String(p["How to Reach"] || "");
-
-  $("placeDetail").querySelector("h3").textContent = name;
-  $("placeDetail").querySelector(".meta").textContent = `${seg} • ${typ}`;
-  $("placeDesc").innerHTML =
-    `<div class="sub" style="margin-bottom:6px;"><b>HOW TO REACH:</b> ${escapeHtml(how||"—").toUpperCase()}</div>` +
-    `<div class="desc">${escapeHtml((short || ov || "—"))}</div>`;
-
+function focusPlace(pid){
+  const p = LOCS[pid] || {};
   const lat = Number(p.Latitude ?? p.lat);
   const lng = Number(p.Longitude ?? p.lng);
   if(isFinite(lat) && isFinite(lng)){
     map.setView([lat,lng], Math.max(map.getZoom(), 12));
+  }else{
+    toast("No lat/long for this place");
   }
 }
 
-/***********************
- * ✅ ONE END KEY = ONE BEST PACKAGE
- ***********************/
-function packageScore(tpl){
-  const locs = stopsCount(tpl);
-  const pri  = Number(tpl.priority ?? 999);
-  const km   = Number(tpl.total_km_est ?? tpl.estimated_drive_km ?? 1e9);
-  return { locs, pri, km };
-}
-function isBetter(a,b){
-  if(a.locs !== b.locs) return a.locs > b.locs;
-  if(a.pri !== b.pri)   return a.pri < b.pri;
-  return a.km < b.km;
-}
-
-/***********************
- * ✅ START INPUT NORMALIZATION
- ***********************/
-function normalizeStartInput(){
-  const typed = String($("startInp").value || "").trim().toUpperCase();
-  if(!typed) return "";
-
-  const exact = STARTS.find(s => String(s).trim().toUpperCase() === typed);
-  if(exact) return exact;
-
-  const partial = STARTS.find(s => String(s).trim().toUpperCase().startsWith(typed));
-  if(partial) return partial;
-
-  return "";
-}
-
-/***********************
- * ✅ PACKAGE THUMB
- ***********************/
-function getPackageThumbFromTemplate(tpl){
-  const stops = stopsFromTemplate(tpl);
-  const first = stops[0];
-  if(!first) return { url:"", ini:"HP" };
-  const p = LOCS[first] || {};
-  const nm = (p["Location Name"] || first).toUpperCase();
-  const url = getPlaceThumbUrl(p);
-  return { url, ini: initials(nm) };
-}
-
-/***********************
- * ✅ APPLY FILTERS + GENERATE
- ***********************/
+/* ===============================
+   ✅ GENERATE
+   =============================== */
 function applyFilters(){
   const start = normalizeStartInput();
   const daysF = $("daysSel").value.trim();
   const pax   = Number($("paxSel").value || 2);
 
-  $("summaryPills").innerHTML = "";
-  $("pkgGrid").innerHTML = `<div class="sub">TYPE START AND CLICK GENERATE…</div>`;
-  $("placesButtons").innerHTML = `<span class="sub">CLICK A PACKAGE TO SHOW PLACES…</span>`;
-  $("placesCount").textContent = "—";
-  renderCostBox({status:"idle"});
   clearMap();
+  $("activePkgName").textContent = "—";
+  $("itTitle").textContent = "Select a package";
+  $("itMeta").textContent = "Day-wise details will appear here";
+  $("incExc").textContent = "—";
+  $("daysList").innerHTML = "";
+  $("priceTotal").innerHTML = "— <small></small>";
+  $("pricePer").innerHTML = "— <small></small>";
+  CURRENT_TEMPLATE_KEY = "";
+  CURRENT_ROUTE_KM = 0;
 
   if(!start){
-    toast("START NOT FOUND IN DATABASE");
+    toast("Start not found in templates");
     return;
   }
 
-  let list = ACTIVE_TEMPLATES.filter(t => String(t.start_point||"").trim().toUpperCase() === String(start).trim().toUpperCase());
+  let list = ACTIVE_TEMPLATES
+    .filter(t => String(t.start_point||"").trim().toUpperCase() === String(start).trim().toUpperCase());
   if(daysF) list = list.filter(t => Number(t.days||0) === Number(daysF));
 
+  // one best per endKey (end from column G)
   const bestByEnd = new Map();
   const scByEnd = new Map();
 
   for(const t of list){
     const endKey = endKeyFromColumnG(t);
     const sc = packageScore(t);
-
     if(!bestByEnd.has(endKey)){
       bestByEnd.set(endKey, t);
       scByEnd.set(endKey, sc);
@@ -1111,131 +1279,216 @@ function applyFilters(){
     return A.km - B.km;
   });
 
-  $("summaryPills").appendChild(pill("START", String(start).toUpperCase()));
-  $("summaryPills").appendChild(pill("PACKAGES", String(finalList.length)));
-  $("summaryPills").appendChild(pill("PAX", String(pax)));
-  if(daysF) $("summaryPills").appendChild(pill("DAYS", String(daysF)));
+  CURRENT_LIST = finalList;
 
-  renderPackagesGrid(finalList, start);
+  setPills({
+    START: String(start).toUpperCase(),
+    PACKAGES: finalList.length,
+    PAX: pax,
+    DAYS: daysF ? daysF : "ANY"
+  });
+
+  renderPackages(finalList, start);
+  toast("Packages generated");
 }
 
-function renderPackagesGrid(list, start){
-  const grid = $("pkgGrid");
-  grid.innerHTML = "";
+/* ===============================
+   ✅ OPEN PACKAGE
+   =============================== */
+async function openTemplate(key, start){
+  const tpl = TEMPLATES[key];
+  if(!tpl){ toast("Package not found"); return; }
+  CURRENT_TEMPLATE_KEY = key;
 
-  if(!list.length){
-    grid.innerHTML = `<div class="sub">NO PACKAGES FOUND FOR THIS START (WITH CURRENT FILTERS).</div>`;
+  document.querySelectorAll(".pkg").forEach(x=>x.classList.remove("active"));
+  const node = document.querySelector(`.pkg[data-key="${CSS.escape(key)}"]`);
+  if(node) node.classList.add("active");
+
+  const endKey = endKeyFromColumnG(tpl);
+
+  // itinerary (day-wise litany on right)
+  renderItinerary(tpl, start, endKey);
+
+  // route on map
+  const stops = stopsFromTemplate(tpl);
+  const rr = await drawRoadRouteFromPlaces(stops);
+  if(rr.ok){
+    CURRENT_ROUTE_KM = rr.km;
+    const days = Number(tpl.days || $("daysSel").value || 3);
+    const pax = Number($("paxSel").value || 2);
+    const vehicle = pickVehicleByPax(pax);
+    const mk = estimateMarketCost({ km: rr.km, days, pax, vehicle });
+    const disc = discountedCost(mk.marketTotal);
+    const per = Math.ceil(disc.final / Math.max(1,pax));
+
+    $("priceTotal").innerHTML = `${rupees(disc.final)} <small>(${disc.discountPercent}% off)</small>`;
+    $("pricePer").innerHTML = `${rupees(per)} <small>per person</small>`;
+  }else{
+    $("priceTotal").innerHTML = "— <small></small>";
+    $("pricePer").innerHTML = "— <small></small>";
+  }
+}
+
+/* ===============================
+   ✅ COMMAND PALETTE
+   =============================== */
+function openPalette(){
+  $("palBack").classList.add("show");
+  $("palette").classList.add("show");
+  $("palInput").value = "";
+  renderPalette("");
+  setTimeout(()=>$("palInput").focus(), 40);
+}
+function closePalette(){
+  $("palBack").classList.remove("show");
+  $("palette").classList.remove("show");
+}
+function renderPalette(q){
+  const list = $("palList");
+  list.innerHTML = "";
+
+  const query = safeLower(q);
+  const items = [];
+
+  // packages (from current list if exists else from active)
+  const basePkgs = CURRENT_LIST.length ? CURRENT_LIST : ACTIVE_TEMPLATES.slice(0, 200);
+  for(const t of basePkgs){
+    const start = String(t.start_point||"");
+    const endKey = endKeyFromColumnG(t);
+    const title = `${start} → ${endKey}`;
+    if(query && !safeLower(title).includes(query) && !safeLower(t.route_id||"").includes(query)) continue;
+    items.push({ type:"package", title, sub:`${stopsCount(t)} places • ${t.days||"—"} days • ${t.route_id||"—"}`, key:t.key, start });
+  }
+
+  // places quick search
+  let placeAdded = 0;
+  if(query){
+    for(const [pid,p] of Object.entries(LOCS)){
+      const nm = safeLower(p["Location Name"] || pid);
+      const dist = safeLower(p["District"] || "");
+      if(nm.includes(query) || dist.includes(query)){
+        items.push({ type:"place", title:(p["Location Name"]||pid), sub:`${p["Segment Type"]||"—"} • ${p["District"]||"—"}`, pid });
+        placeAdded++;
+        if(placeAdded>40) break;
+      }
+    }
+  }
+
+  if(!items.length){
+    list.innerHTML = `<div class="palItem"><div><div class="t">No results</div><div class="s">Try another search</div></div></div>`;
     return;
   }
 
-  list.forEach(t=>{
-    const key = t.key;
-    const endKey = endKeyFromColumnG(t);
-    const days = Number(t.days || 0) || 0;
-    const tempoOk = (t.tempo_ok === true || safeLower(t.tempo_ok)==="true");
-    const thumb = getPackageThumbFromTemplate(t);
-
-    const card = document.createElement("div");
-    card.className = "pkg";
-    card.dataset.key = key;
-
-    card.innerHTML = `
-      <div class="pkgPic">
-        ${thumb.url
-          ? `<img src="${escapeHtml(thumb.url)}" alt="PACKAGE" loading="lazy"
-                 referrerpolicy="no-referrer"
-                 onerror="this.remove(); this.parentNode.textContent='${escapeHtml(thumb.ini)}';">`
-          : `${escapeHtml(thumb.ini)}`
-        }
-      </div>
-
-      <div class="pkgBody">
-        <div class="pkgTop">
-          <div class="pkgName">${escapeHtml(String(start).toUpperCase())} → ${escapeHtml(String(endKey).toUpperCase())}</div>
-          <div class="badge ${tempoOk ? "" : "warn"}">${tempoOk ? "TEMPO OK" : "TEMPO RISK"}</div>
-        </div>
-
-        <div class="pkgMeta">
-          <b>END (FROM G):</b> ${escapeHtml(String(endKey).toUpperCase())}<br/>
-          <b>LOCATIONS:</b> ${stopsCount(t)} &nbsp;•&nbsp; <b>DAYS:</b> ${days || "—"}<br/>
-          <b>ROUTE ID:</b> ${escapeHtml(String(t.route_id||"—").toUpperCase())}
-        </div>
+  items.slice(0, 80).forEach(it=>{
+    const el = document.createElement("div");
+    el.className = "palItem";
+    el.innerHTML = `
+      <div style="width:10px;height:10px;border-radius:50%;background:${it.type==="package" ? "rgba(124,58,237,.9)" : "rgba(6,182,212,.9)"};box-shadow:0 0 0 6px rgba(255,255,255,.06);"></div>
+      <div style="min-width:0;">
+        <div class="t">${escapeHtml(String(it.title).toUpperCase())}</div>
+        <div class="s">${escapeHtml(String(it.sub||""))}</div>
       </div>
     `;
-
-    card.onclick = async ()=>{
-      document.querySelectorAll(".pkg").forEach(x=>x.classList.remove("active"));
-      card.classList.add("active");
-      await openTemplate(key);
+    el.onclick = async ()=>{
+      if(it.type==="package"){
+        closePalette();
+        // open package (ensure start dropdown matches)
+        $("startInp").value = String(it.start).toUpperCase();
+        applyFilters();
+        setTimeout(()=>openTemplate(it.key, it.start), 60);
+      }else{
+        closePalette();
+        focusPlace(it.pid);
+        toast("Focused place");
+      }
     };
-    grid.appendChild(card);
+    list.appendChild(el);
   });
 }
 
-/***********************
- * ✅ OPEN PACKAGE
- ***********************/
-async function openTemplate(key){
-  const tpl = TEMPLATES[key];
-  if(!tpl){ toast("PACKAGE NOT FOUND"); return; }
-
-  const stops = stopsFromTemplate(tpl);
-  renderPlaceButtons(stops);
-  if(stops.length) selectPlace(stops[0], 1);
-
-  renderCostBox({status:"idle"});
-  const rr = await drawRoadRouteFromPlaces(stops);
-
-  const days = Number(tpl.days || $("daysSel").value || 3);
-  const pax = Number($("paxSel").value || 2);
-
-  if(rr.ok){
-    renderCostBox({status:"ok", km: rr.km, days, pax});
-    toast("ROAD ROUTE LOADED");
-  }else{
-    renderCostBox({status:"error"});
-  }
-}
-
-/***********************
- * ✅ EVENTS
- ***********************/
-$("runBtn").addEventListener("click", applyFilters);
-$("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
-
+/* ===============================
+   ✅ BUTTONS / EVENTS
+   =============================== */
+$("genBtn").addEventListener("click", applyFilters);
 $("resetBtn").addEventListener("click", ()=>{
-  $("startInp").value = "";
-  $("daysSel").value = "";
-  $("paxSel").value = "2";
-
-  $("summaryPills").innerHTML = "";
-  $("pkgGrid").innerHTML = `<div class="sub">TYPE START AND CLICK GENERATE…</div>`;
-  $("placesButtons").innerHTML = `<span class="sub">CLICK A PACKAGE TO SHOW PLACES…</span>`;
-  $("placesCount").textContent = "—";
-  renderCostBox({status:"idle"});
-
-  $("placeDetail").querySelector("h3").textContent = "PLACE DETAILS";
-  $("placeDetail").querySelector(".meta").textContent = "CLICK ANY PLACE TO SEE DETAILS.";
-  $("placeDesc").textContent = "—";
-
+  $("startInp").value="";
+  $("daysSel").value="";
+  $("paxSel").value="2";
+  $("pills").innerHTML="";
+  $("pkgList").innerHTML = `<div class="pill">Type Start & click <b>Generate</b></div>`;
+  $("pkgCount").textContent="—";
+  $("activePkgName").textContent="—";
+  $("itTitle").textContent="Select a package";
+  $("itMeta").textContent="Day-wise details will appear here";
+  $("incExc").textContent="—";
+  $("daysList").innerHTML="";
+  $("priceTotal").innerHTML="— <small></small>";
+  $("pricePer").innerHTML="— <small></small>";
   clearMap();
-  toast("RESET DONE");
+  toast("Reset done");
+});
+$("startInp").addEventListener("keydown", (e)=>{ if(e.key==="Enter") applyFilters(); });
+
+$("fitMapBtn").addEventListener("click", fitRoute);
+$("clearRouteBtn").addEventListener("click", ()=>{ clearMap(); toast("Cleared"); });
+
+$("showAllStopsBtn").addEventListener("click", async ()=>{
+  showMode="all";
+  toast("Markers: all stops");
+  if(CURRENT_TEMPLATE_KEY){
+    const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
+    await drawRoadRouteFromPlaces(stopsFromTemplate(tpl));
+  }
+});
+$("showStartEndBtn").addEventListener("click", async ()=>{
+  showMode="startend";
+  toast("Markers: start/end");
+  if(CURRENT_TEMPLATE_KEY){
+    const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
+    await drawRoadRouteFromPlaces(stopsFromTemplate(tpl));
+  }
+});
+$("toggleDarkTilesBtn").addEventListener("click", ()=>{
+  tilesDark = !tilesDark;
+  // quick visual hack: swap tile source to a dark basemap (carto) without key
+  // if blocked by network/CORS in your environment, it will still keep old tiles.
+  try{
+    map.removeLayer(tile);
+    tile = tilesDark
+      ? L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 18 })
+      : L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
+    tile.addTo(map);
+  }catch(e){}
+  toast(tilesDark ? "Dark tiles on" : "Light tiles on");
 });
 
-$("fitBtn").addEventListener("click", fitMap);
-$("clearBtn").addEventListener("click", ()=>{
-  clearMap();
-  toast("ROUTE CLEARED");
+/* palette */
+$("openPalette").addEventListener("click", openPalette);
+$("palBack").addEventListener("click", closePalette);
+$("palInput").addEventListener("input", (e)=>renderPalette(e.target.value));
+$("palInput").addEventListener("keydown",(e)=>{
+  if(e.key==="Escape") closePalette();
+  if(e.key==="Enter"){
+    const first = $("palList").querySelector(".palItem");
+    if(first) first.click();
+  }
+});
+window.addEventListener("keydown",(e)=>{
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==="k"){
+    e.preventDefault();
+    openPalette();
+  }
+  if(e.key==="Escape") closePalette();
 });
 
-/***********************
- * ✅ INIT
- ***********************/
-renderCostBox({status:"idle"});
-loadAll().catch(err=>{
+/* ===============================
+   ✅ INIT
+   =============================== */
+initMap();
+loadAll().then(()=>toast("Portal ready")).catch(err=>{
   console.error(err);
-  setStatus("ERROR LOADING FIREBASE DATA");
-  toast("FIREBASE LOAD ERROR (CHECK RULES / NODE NAMES)");
+  setStatus("Firebase load error (check rules / nodes)");
+  toast("Firebase load error");
 });
 </script>
 </body>
