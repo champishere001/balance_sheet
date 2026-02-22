@@ -11,9 +11,9 @@
 
   <!-- Firebase (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics-compat.js"></script>
 
   <style>
     :root{
@@ -153,15 +153,6 @@
       white-space: nowrap;
     }
     .chip:hover{ background: rgba(255,255,255,.08); color: rgba(255,255,255,.82); }
-    .chip kbd{
-      font-size: 11px;
-      border:1px solid var(--stroke);
-      border-bottom-color: rgba(255,255,255,.20);
-      background: rgba(0,0,0,.25);
-      padding: 2px 8px;
-      border-radius: 999px;
-      color: rgba(255,255,255,.84);
-    }
 
     /* ✅ MAIN 3-pane layout */
     .main{
@@ -171,8 +162,8 @@
       gap: var(--gap);
       padding: 14px;
       overflow:hidden;
+      padding-bottom:80px;
     }
-     .main{ padding-bottom:80px; }
 
     .pane{
       border: 1px solid var(--stroke);
@@ -517,51 +508,52 @@
       box-shadow:0 40px 120px rgba(0,0,0,.75);
       z-index:100000;
     }
-      .footerBar{
-  position:fixed;
-  left:0; right:0; bottom:0;
-  padding:12px 18px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:16px;
-  flex-wrap:wrap;
 
-  background:linear-gradient(180deg, rgba(10,14,24,.55), rgba(10,14,24,.96));
-  backdrop-filter: blur(14px);
-  border-top:1px solid rgba(255,255,255,.12);
+    .footerBar{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      padding:12px 18px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:16px;
+      flex-wrap:wrap;
 
-  color:rgba(255,255,255,.88);
-  font-size:12px;
-  letter-spacing:.10em;
-  text-transform:uppercase;
-  z-index:9999;
-}
+      background:linear-gradient(180deg, rgba(10,14,24,.55), rgba(10,14,24,.96));
+      backdrop-filter: blur(14px);
+      border-top:1px solid rgba(255,255,255,.12);
 
-.footerLogo{
-  height:34px;
-  width:auto;
-  border-radius:10px;
-  background:white;
-  padding:4px;
-  box-shadow:0 8px 20px rgba(0,0,0,.4);
-}
+      color:rgba(255,255,255,.88);
+      font-size:12px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      z-index:9999;
+    }
 
-.footerText b{
-  color:#fff;
-  font-weight:900;
-}
+    .footerLogo{
+      height:34px;
+      width:auto;
+      border-radius:10px;
+      background:white;
+      padding:4px;
+      box-shadow:0 8px 20px rgba(0,0,0,.4);
+    }
 
-.footerMoto{
-  width:100%;
-  text-align:center;
-  font-size:11px;
-  letter-spacing:.12em;
-  opacity:.85;
-  margin-top:4px;
-}
+    .footerText b{
+      color:#fff;
+      font-weight:900;
+    }
 
-.footerDivider{ opacity:.35; }
+    .footerMoto{
+      width:100%;
+      text-align:center;
+      font-size:11px;
+      letter-spacing:.12em;
+      opacity:.85;
+      margin-top:4px;
+    }
+
+    .footerDivider{ opacity:.35; }
   </style>
 </head>
 
@@ -701,7 +693,7 @@
       </div>
     </div>
   </div>
-   
+
   <!-- Toast -->
   <div class="toast" id="toast"></div>
 
@@ -759,991 +751,908 @@
       </div>
     </div>
   </div>
+
   <div class="footerBar">
-
-  <!-- LOGO -->
-  <img src="logo.png" class="footerLogo" alt="Logo"
-       onerror="this.style.display='none'">
-
-  <!-- CONTACT -->
-  <div class="footerText">
-    Developed by <b>Chandan Panwar</b>
-    <span class="footerDivider">•</span>
-    📞 <b>7018138847</b>
-    <span class="footerDivider">•</span>
-    ✉ <b>chandanpanwar001@gmail.com</b>
+    <img src="logo.png" class="footerLogo" alt="Logo" onerror="this.style.display='none'">
+    <div class="footerText">
+      Developed by <b>Chandan Panwar</b>
+      <span class="footerDivider">•</span>
+      📞 <b>7018138847</b>
+      <span class="footerDivider">•</span>
+      ✉ <b>chandanpanwar001@gmail.com</b>
+    </div>
+    <div class="footerMoto">“Creating Memorable Journeys for Visitors — Revenue Comes After Trust.”</div>
   </div>
 
-  <!-- MOTO -->
-  <div class="footerMoto">
-    “Creating Memorable Journeys for Visitors — Revenue Comes After Trust.”
-  </div>
+  <script>
+  /* ===============================
+     ✅ Firebase Config
+     =============================== */
+  const firebaseConfig = {
+    apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
+    authDomain: "revnue-records.firebaseapp.com",
+    databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "revnue-records",
+    storageBucket: "revnue-records.firebasestorage.app",
+    messagingSenderId: "182348503564",
+    appId: "1:182348503564:web:480085405b09177245ac29",
+    measurementId: "G-MGTDBCG896"
+  };
 
-</div>
+  firebase.initializeApp(firebaseConfig);
 
-<script>
-/* ===============================
-   ✅ Firebase Config (PUT YOURS)
-   =============================== */
-const firebaseConfig = {
-  apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
-  authDomain: "revnue-records.firebaseapp.com",
-  databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "revnue-records",
-  storageBucket: "revnue-records.firebasestorage.app",
-  messagingSenderId: "182348503564",
-  appId: "1:182348503564:web:480085405b09177245ac29",
-  measurementId: "G-MGTDBCG896"
-};
+  const db = firebase.database();
+  const storage = firebase.storage();
+  const analytics = firebase.analytics();
 
-firebase.initializeApp(firebaseConfig);
-
-const db = firebase.database();
-const storage = firebase.storage();
-const analytics = firebase.analytics();
-
-/* ===============================
-   ✅ Helpers
-   =============================== */
-const $ = (id)=>document.getElementById(id);
-function toast(msg){
-  const t = $("toast");
-  t.textContent = String(msg||"");
-  t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"), 2200);
-}
-function safeLower(x){ return String(x ?? "").trim().toLowerCase(); }
-function escapeHtml(str){
-  return String(str ?? "")
-    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
-}
-function normCaps(x){ return String(x||"").trim().toUpperCase().replace(/\s+/g," "); }
-function initials(name){
-  const parts = String(name||"").trim().split(/\s+/).slice(0,2);
-  const ini = parts.map(x=>x[0]).join("").toUpperCase();
-  return ini || "HP";
-}
-function rupees(n){ return "₹" + Math.round(Number(n)||0).toLocaleString("en-IN"); }
-function slugifyName(name){
-  return String(name||"")
-    .trim().toLowerCase()
-    .replace(/&/g," and ")
-    .replace(/['"]/g,"")
-    .replace(/[^a-z0-9]+/g,"-")
-    .replace(/-+/g,"-")
-    .replace(/^-|-$/g,"");
-}
-
-/* ===============================
-   ✅ Quotes
-   =============================== */
-const QUOTES = [
-  "Himachal is not a destination — it’s a <b>feeling</b>.",
-  "Every turn in the mountains is a new <b>story</b>.",
-  "Let your route be scenic, your pace be <b>human</b>.",
-  "Collect moments, not things — especially in the <b>hills</b>.",
-  "Snow, cedar, rivers — welcome to <b>Himachal</b>."
-];
-let qIndex=0;
-setInterval(()=>{
-  qIndex=(qIndex+1)%QUOTES.length;
-  $("quoteText").innerHTML = "“" + QUOTES[qIndex] + "”";
-}, 5000);
-
-/* ===============================
-   ✅ Map
-   =============================== */
-let map, tile, markersLayer, routeLine;
-let showMode = "all";  // all | startend
-let tilesDark = false;
-
-function initMap(){
-  map = L.map('map', { zoomControl:true }).setView([31.1048, 77.1734], 8);
-  tile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
-  tile.addTo(map);
-  markersLayer = L.layerGroup().addTo(map);
-}
-function clearMap(){
-  markersLayer.clearLayers();
-  if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
-  $("kmBadge").textContent = "—";
-}
-function fitRoute(){
-  if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] });
-}
-
-/* ===============================
-   ✅ Data
-   =============================== */
-let LOCS = {};              // unified place object by place_id
-let TEMPLATES = {};
-let ACTIVE_TEMPLATES = [];
-let NAME_TO_ID = new Map();
-let STARTS = [];
-let CURRENT_LIST = [];
-let CURRENT_TEMPLATE_KEY = "";
-let CURRENT_ROUTE_KM = 0;
-
-function setStatus(msg){ $("statusLine").textContent = msg; }
-
-function placeNameAny(p, id){
-  return String(p?.["Location Name"] || p?.name || id || "PLACE").toUpperCase();
-}
-function pickPhotoAny(p){
-  const p1 = p?.["photo 1"] || p?.photo1 || p?.photo_1 || p?.photo || "";
-  if(p1 && String(p1).trim()) return String(p1).trim();
-  if(Array.isArray(p?.photos) && p.photos[0]) return String(p.photos[0]).trim();
-  if(Array.isArray(p?.images) && p.images[0]) return String(p.images[0]).trim();
-  const p2 = p?.["photo 2"] || p?.photo2 || "";
-  if(p2 && String(p2).trim()) return String(p2).trim();
-  return "";
-}
-function latAny(p){ return Number(p?.Latitude ?? p?.latitude ?? p?.lat); }
-function lngAny(p){ return Number(p?.Longitude ?? p?.longitude ?? p?.lng); }
-function districtAny(p){ return String(p?.District || p?.district || "").toUpperCase(); }
-function segmentAny(p){ return String(p?.["Segment Type"] || p?.segment || "").toUpperCase(); }
-function categoryAny(p){ return String(p?.["Location Type"] || p?.category || "").toUpperCase(); }
-function regionAny(p){ return String(p?.region || "").toUpperCase(); }
-
-/* ===============================
-   ✅ Load: templates + places (fallback locations)
-   =============================== */
-async function loadAll(){
-  setStatus("Loading /templates & /places…");
-
-  const [tplSnap, placesSnap, locSnap] = await Promise.all([
-    db.ref("templates").once("value"),
-    db.ref("places").once("value"),
-    db.ref("locations").once("value").catch(()=>({ val:()=>null })) // optional fallback
-  ]);
-
-  TEMPLATES = tplSnap.val() || {};
-  const places = placesSnap.val() || {};
-  const locations = (locSnap && typeof locSnap.val==="function") ? (locSnap.val() || {}) : {};
-
-  // ✅ Normalize /places (nested by groups or direct). Your screenshot shows: /places/{place_id}/{fields}
-  // Some users keep /places/{district}/{place_id}. We'll handle both.
-  LOCS = {};
-
-  function ingestPlace(id, obj){
-    if(!id || !obj) return;
-    LOCS[id] = { ...obj, place_id: obj.place_id || id };
+  /* ===============================
+     ✅ Helpers
+     =============================== */
+  const $ = (id)=>document.getElementById(id);
+  function toast(msg){
+    const t = $("toast");
+    t.textContent = String(msg||"");
+    t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"), 2200);
+  }
+  function safeLower(x){ return String(x ?? "").trim().toLowerCase(); }
+  function escapeHtml(str){
+    return String(str ?? "")
+      .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+  }
+  function normCaps(x){ return String(x||"").trim().toUpperCase().replace(/\s+/g," "); }
+  function initials(name){
+    const parts = String(name||"").trim().split(/\s+/).slice(0,2);
+    const ini = parts.map(x=>x[0]).join("").toUpperCase();
+    return ini || "HP";
+  }
+  function rupees(n){ return "₹" + Math.round(Number(n)||0).toLocaleString("en-IN"); }
+  function slugifyName(name){
+    return String(name||"")
+      .trim().toLowerCase()
+      .replace(/&/g," and ")
+      .replace(/['"]/g,"")
+      .replace(/[^a-z0-9]+/g,"-")
+      .replace(/-+/g,"-")
+      .replace(/^-|-$/g,"");
   }
 
-  // Try direct
-  for(const [k,v] of Object.entries(places)){
-    if(v && typeof v === "object" && (v.name || v.place_id || v.latitude || v.longitude)){
-      ingestPlace(k, v);
-    }else if(v && typeof v === "object"){
-      // nested
-      for(const [k2,v2] of Object.entries(v)){
-        if(v2 && typeof v2 === "object") ingestPlace(k2, v2);
+  /* ===============================
+     ✅ Quotes
+     =============================== */
+  const QUOTES = [
+    "Himachal is not a destination — it’s a <b>feeling</b>.",
+    "Every turn in the mountains is a new <b>story</b>.",
+    "Let your route be scenic, your pace be <b>human</b>.",
+    "Collect moments, not things — especially in the <b>hills</b>.",
+    "Snow, cedar, rivers — welcome to <b>Himachal</b>."
+  ];
+  let qIndex=0;
+  setInterval(()=>{
+    qIndex=(qIndex+1)%QUOTES.length;
+    $("quoteText").innerHTML = "“" + QUOTES[qIndex] + "”";
+  }, 5000);
+
+  /* ===============================
+     ✅ Map
+     =============================== */
+  let map, tile, markersLayer, routeLine;
+  let showMode = "all";  // all | startend
+  let tilesDark = false;
+
+  function initMap(){
+    map = L.map('map', { zoomControl:true }).setView([31.1048, 77.1734], 8);
+    tile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
+    tile.addTo(map);
+    markersLayer = L.layerGroup().addTo(map);
+  }
+  function clearMap(){
+    markersLayer.clearLayers();
+    if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
+    $("kmBadge").textContent = "—";
+  }
+  function fitRoute(){
+    if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] });
+  }
+
+  /* ===============================
+     ✅ Data
+     =============================== */
+  let LOCS = {};              // unified place object by place_id
+  let TEMPLATES = {};
+  let ACTIVE_TEMPLATES = [];
+  let NAME_TO_ID = new Map();
+  let STARTS = [];
+  let CURRENT_LIST = [];
+  let CURRENT_TEMPLATE_KEY = "";
+  let CURRENT_ROUTE_KM = 0;
+
+  function setStatus(msg){ $("statusLine").textContent = msg; }
+
+  function placeNameAny(p, id){
+    return String(p?.["Location Name"] || p?.name || id || "PLACE").toUpperCase();
+  }
+  function pickPhotoAny(p){
+    const p1 = p?.["photo 1"] || p?.photo1 || p?.photo_1 || p?.photo || "";
+    if(p1 && String(p1).trim()) return String(p1).trim();
+    if(Array.isArray(p?.photos) && p.photos[0]) return String(p.photos[0]).trim();
+    if(Array.isArray(p?.images) && p.images[0]) return String(p.images[0]).trim();
+    const p2 = p?.["photo 2"] || p?.photo2 || "";
+    if(p2 && String(p2).trim()) return String(p2).trim();
+    return "";
+  }
+  function latAny(p){ return Number(p?.Latitude ?? p?.latitude ?? p?.lat); }
+  function lngAny(p){ return Number(p?.Longitude ?? p?.longitude ?? p?.lng); }
+  function districtAny(p){ return String(p?.District || p?.district || "").toUpperCase(); }
+  function segmentAny(p){ return String(p?.["Segment Type"] || p?.segment || "").toUpperCase(); }
+  function categoryAny(p){ return String(p?.["Location Type"] || p?.category || "").toUpperCase(); }
+  function regionAny(p){ return String(p?.region || "").toUpperCase(); }
+
+  /* ===============================
+     ✅ Load: templates + places (fallback locations)
+     =============================== */
+  async function loadAll(){
+    setStatus("Loading /templates & /places…");
+
+    const [tplSnap, placesSnap, locSnap] = await Promise.all([
+      db.ref("templates").once("value"),
+      db.ref("places").once("value"),
+      db.ref("locations").once("value").catch(()=>({ val:()=>null })) // optional fallback
+    ]);
+
+    TEMPLATES = tplSnap.val() || {};
+    const places = placesSnap.val() || {};
+    const locations = (locSnap && typeof locSnap.val==="function") ? (locSnap.val() || {}) : {};
+
+    LOCS = {};
+
+    function ingestPlace(id, obj){
+      if(!id || !obj) return;
+      LOCS[id] = { ...obj, place_id: obj.place_id || id };
+    }
+
+    // direct or nested
+    for(const [k,v] of Object.entries(places)){
+      if(v && typeof v === "object" && (v.name || v.place_id || v.latitude || v.longitude || v.Latitude || v.Longitude)){
+        ingestPlace(k, v);
+      }else if(v && typeof v === "object"){
+        for(const [k2,v2] of Object.entries(v)){
+          if(v2 && typeof v2 === "object") ingestPlace(k2, v2);
+        }
       }
     }
+
+    if(Object.keys(LOCS).length === 0){
+      for(const [k,v] of Object.entries(locations)){
+        ingestPlace(k, v);
+      }
+    }
+
+    ACTIVE_TEMPLATES = Object.entries(TEMPLATES)
+      .map(([key, obj]) => ({ key, ...(obj||{}) }))
+      .filter(t => {
+        const st = safeLower(t.status || "active");
+        return st === "active" || st === "enabled" || st === "true";
+      });
+
+    buildNameIndex();
+    buildStartList(ACTIVE_TEMPLATES);
+
+    setStatus(`Loaded ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(LOCS).length} places`);
   }
 
-  // fallback: if LOCS is empty, use /locations
-  if(Object.keys(LOCS).length === 0){
-    for(const [k,v] of Object.entries(locations)){
-      ingestPlace(k, v);
+  function buildNameIndex(){
+    NAME_TO_ID = new Map();
+    for(const [pid, p] of Object.entries(LOCS)){
+      const nm = String(p["Location Name"] || p.name || "").trim();
+      if(nm) NAME_TO_ID.set(nm.toLowerCase(), pid);
     }
   }
-
-  ACTIVE_TEMPLATES = Object.entries(TEMPLATES)
-    .map(([key, obj]) => ({ key, ...(obj||{}) }))
-    .filter(t => {
-      const st = safeLower(t.status || "active");
-      return st === "active" || st === "enabled" || st === "true";
+  function buildStartList(templates){
+    const set = new Set();
+    templates.forEach(t=>{
+      const s = String(t.start_point || "").trim();
+      if(s) set.add(s);
     });
-
-  buildNameIndex();
-  buildStartList(ACTIVE_TEMPLATES);
-
-  setStatus(`Loaded ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(LOCS).length} places`);
-}
-
-function buildNameIndex(){
-  NAME_TO_ID = new Map();
-  for(const [pid, p] of Object.entries(LOCS)){
-    const nm = String(p["Location Name"] || p.name || "").trim();
-    if(nm) NAME_TO_ID.set(nm.toLowerCase(), pid);
-  }
-}
-function buildStartList(templates){
-  const set = new Set();
-  templates.forEach(t=>{
-    const s = String(t.start_point || "").trim();
-    if(s) set.add(s);
-  });
-  STARTS = Array.from(set).sort((a,b)=>a.localeCompare(b));
-  const dl = $("startList");
-  dl.innerHTML = "";
-  STARTS.forEach(s=>{
-    const opt = document.createElement("option");
-    opt.value = String(s).toUpperCase();
-    dl.appendChild(opt);
-  });
-}
-
-/* ===============================
-   ✅ Stops + End from Column G
-   =============================== */
-function stopsFromTemplate(tpl){
-  const days = Number(tpl.days || 1);
-  const out = [];
-  const seen = new Set();
-
-  for(let d=1; d<=Math.min(12, Math.max(1, days)); d++){
-    const k = `day${d}_place_ids`;
-    const raw = String(tpl[k] || "").trim();
-    if(!raw) continue;
-    raw.split(",").map(x=>x.trim()).filter(Boolean).forEach(pid=>{
-      if(seen.has(pid)) return;
-      seen.add(pid);
-      out.push(pid);
+    STARTS = Array.from(set).sort((a,b)=>a.localeCompare(b));
+    const dl = $("startList");
+    dl.innerHTML = "";
+    STARTS.forEach(s=>{
+      const opt = document.createElement("option");
+      opt.value = String(s).toUpperCase();
+      dl.appendChild(opt);
     });
   }
 
-  if(!out.length){
-    const raw = String(tpl.major_place_ids || "").trim();
-    raw.split(",").map(x=>x.trim()).filter(Boolean).forEach(pid=>out.push(pid));
-  }
-  return out;
-}
-function stopsCount(tpl){ return stopsFromTemplate(tpl).length; }
+  /* ===============================
+     ✅ Stops + End from Column G
+     =============================== */
+  function stopsFromTemplate(tpl){
+    const days = Number(tpl.days || 1);
+    const out = [];
+    const seen = new Set();
 
-function getEndNameFromColumnG(tpl){
-  const start = String(tpl.start_point || "").trim().toLowerCase();
-  const rpRaw = String(tpl.route_path || "").trim();
-  if(!rpRaw) return String(tpl.end_point || "").trim() || "UNKNOWN";
-
-  const tokens = rpRaw.replace(/->/g,">").split(">")
-    .map(x=>String(x||"").trim()).filter(Boolean);
-
-  if(!tokens.length) return String(tpl.end_point || "").trim() || "UNKNOWN";
-
-  let end = tokens[tokens.length - 1];
-  if(end && start && end.toLowerCase() === start && tokens.length >= 2){
-    end = tokens[tokens.length - 2];
-  }
-  return end || "UNKNOWN";
-}
-function endKeyFromColumnG(tpl){
-  const endName = getEndNameFromColumnG(tpl);
-  const pidByName = NAME_TO_ID.get(String(endName).toLowerCase());
-
-  if(pidByName){
-    const p = LOCS[pidByName] || {};
-    const d = districtAny(p);
-    return d || normCaps(endName);
-  }
-
-  const slug = slugifyName(endName);
-  if(LOCS[slug]){
-    const p = LOCS[slug] || {};
-    const d = districtAny(p);
-    return d || normCaps(endName);
-  }
-
-  return normCaps(endName);
-}
-
-function normalizeStartInput(){
-  const typed = String($("startInp").value || "").trim().toUpperCase();
-  if(!typed) return "";
-
-  const exact = STARTS.find(s => String(s).trim().toUpperCase() === typed);
-  if(exact) return exact;
-
-  const partial = STARTS.find(s => String(s).trim().toUpperCase().startsWith(typed));
-  if(partial) return partial;
-
-  return "";
-}
-
-/* ===============================
-   ✅ Best package per END
-   =============================== */
-function packageScore(tpl){
-  const locs = stopsCount(tpl);
-  const pri  = Number(tpl.priority ?? 999);
-  const km   = Number(tpl.total_km_est ?? tpl.estimated_drive_km ?? 1e9);
-  return { locs, pri, km };
-}
-function isBetter(a,b){
-  if(a.locs !== b.locs) return a.locs > b.locs;
-  if(a.pri !== b.pri)   return a.pri < b.pri;
-  return a.km < b.km;
-}
-
-/* ===============================
-   ✅ Pricing
-   =============================== */
-function pickVehicleByPax(pax){
-  if(pax <= 4) return "sedan";
-  if(pax <= 6) return "suv";
-  return "tempo";
-}
-function discountedCost(marketCost){
-  const discount = 0.06 + Math.random()*0.04;
-  const finalCost = Math.round(marketCost * (1 - discount));
-  return { final: finalCost, discountPercent: Math.round(discount*100) };
-}
-function estimateMarketCost({ km=0, days=3, pax=2, vehicle="sedan" }){
-  const ratePerKm = { sedan:16, suv:20, tempo:28 }[vehicle] || 16;
-  const driverPerDay = (vehicle==="tempo") ? 1300 : 1000;
-
-  const minKm = Math.max(60, km || 0);
-  const transport = Math.round(minKm * ratePerKm);
-  const driver = Math.round(days * driverPerDay);
-
-  const rooms = Math.ceil(pax / 2);
-  const stayPerRoomNight = 1800;
-  const stay = Math.round(rooms * stayPerRoomNight * Math.max(1, (days - 1)));
-
-  const service = Math.round((transport + driver + stay) * 0.08);
-  const marketTotal = transport + driver + stay + service;
-
-  return { transport, driver, stay, service, marketTotal };
-}
-
-/* ===============================
-   ✅ UI
-   =============================== */
-function setPills(obj){
-  const box = $("pills");
-  box.innerHTML = "";
-  for(const [k,v] of Object.entries(obj)){
-    const div = document.createElement("div");
-    div.className = "pill";
-    div.innerHTML = `${escapeHtml(k)} <b>${escapeHtml(String(v))}</b>`;
-    box.appendChild(div);
-  }
-}
-
-function renderPackages(list, start){
-  const box = $("pkgList");
-  box.innerHTML = "";
-  $("pkgCount").textContent = `${list.length} Results`;
-
-  if(!list.length){
-    box.innerHTML = `<div class="pill">No packages for <b>${escapeHtml(String(start).toUpperCase())}</b></div>`;
-    return;
-  }
-
-  list.forEach(t=>{
-    const endKey = endKeyFromColumnG(t);
-    const days = Number(t.days || 0) || 0;
-    const tempoOk = (t.tempo_ok === true || safeLower(t.tempo_ok)==="true");
-    const stops = stopsFromTemplate(t);
-
-    // thumb from first stop
-    let thumbUrl="", ini="HP";
-    if(stops[0]){
-      const p = LOCS[stops[0]] || {};
-      const nm = placeNameAny(p, stops[0]);
-      ini = initials(nm);
-      thumbUrl = pickPhotoAny(p);
+    for(let d=1; d<=Math.min(12, Math.max(1, days)); d++){
+      const k = `day${d}_place_ids`;
+      const raw = String(tpl[k] || "").trim();
+      if(!raw) continue;
+      raw.split(",").map(x=>x.trim()).filter(Boolean).forEach(pid=>{
+        if(seen.has(pid)) return;
+        seen.add(pid);
+        out.push(pid);
+      });
     }
 
-    const el = document.createElement("div");
-    el.className = "pkg";
-    el.dataset.key = t.key;
+    if(!out.length){
+      const raw = String(tpl.major_place_ids || "").trim();
+      raw.split(",").map(x=>x.trim()).filter(Boolean).forEach(pid=>out.push(pid));
+    }
+    return out;
+  }
+  function stopsCount(tpl){ return stopsFromTemplate(tpl).length; }
 
-    el.innerHTML = `
-      <div class="pkgPic">
-        ${thumbUrl
-          ? `<img src="${escapeHtml(thumbUrl)}" alt="thumb" loading="lazy" referrerpolicy="no-referrer"
-                onerror="this.remove(); this.parentNode.textContent='${escapeHtml(ini)}';">`
-          : escapeHtml(ini)
-        }
-      </div>
-      <div class="pkgBody">
-        <div class="pkgName">${escapeHtml(String(start).toUpperCase())} → ${escapeHtml(String(endKey).toUpperCase())}</div>
-        <div class="pkgMeta">
-          LOCATIONS: ${stopsCount(t)} • DAYS: ${days || "—"}<br/>
-          ROUTE ID: ${escapeHtml(String(t.route_id||"—").toUpperCase())}
-        </div>
-        <div class="tag ${tempoOk ? "ok" : "warn"}">${tempoOk ? "TEMPO OK" : "TEMPO RISK"}</div>
-      </div>
-    `;
+  function getEndNameFromColumnG(tpl){
+    const start = String(tpl.start_point || "").trim().toLowerCase();
+    const rpRaw = String(tpl.route_path || "").trim();
+    if(!rpRaw) return String(tpl.end_point || "").trim() || "UNKNOWN";
 
-    el.onclick = ()=>openTemplate(t.key, start);
-    box.appendChild(el);
-  });
-}
+    const tokens = rpRaw.replace(/->/g,">").split(">")
+      .map(x=>String(x||"").trim()).filter(Boolean);
 
-/* ===============================
-   ✅ Day wise blocks
-   =============================== */
-function buildDayWise(tpl){
-  const days = Number(tpl.days || 1);
-  const blocks = [];
-  for(let d=1; d<=Math.min(12, Math.max(1, days)); d++){
-    const k = `day${d}_place_ids`;
-    const raw = String(tpl[k] || "").trim();
-    const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
-    blocks.push({ day:d, ids });
+    if(!tokens.length) return String(tpl.end_point || "").trim() || "UNKNOWN";
+
+    let end = tokens[tokens.length - 1];
+    if(end && start && end.toLowerCase() === start && tokens.length >= 2){
+      end = tokens[tokens.length - 2];
+    }
+    return end || "UNKNOWN";
   }
 
-  const anyHas = blocks.some(x=>x.ids.length);
-  if(!anyHas){
-    const raw = String(tpl.major_place_ids || "").trim();
-    const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
-    return [{ day:1, ids }];
+  function endKeyFromColumnG(tpl){
+    const endName = getEndNameFromColumnG(tpl);
+    const pidByName = NAME_TO_ID.get(String(endName).toLowerCase());
+
+    if(pidByName){
+      const p = LOCS[pidByName] || {};
+      const d = districtAny(p);
+      return d || normCaps(endName);
+    }
+
+    const slug = slugifyName(endName);
+    if(LOCS[slug]){
+      const p = LOCS[slug] || {};
+      const d = districtAny(p);
+      return d || normCaps(endName);
+    }
+
+    return normCaps(endName);
   }
-  return blocks.filter(x=>x.ids.length);
-}
 
-function renderItinerary(tpl, start, endKey){
-  $("activePkgName").textContent = `${String(tpl.days||"—")}D`;
-  $("itTitle").textContent = `${String(start).toUpperCase()} → ${String(endKey).toUpperCase()}`;
+  function normalizeStartInput(){
+    const typed = String($("startInp").value || "").trim().toUpperCase();
+    if(!typed) return "";
 
-  const metaParts = [];
-  if(tpl.route_path) metaParts.push(`Route: ${tpl.route_path}`);
-  if(tpl.best_season) metaParts.push(`Season: ${tpl.best_season}`);
-  if(tpl.ideal_for) metaParts.push(`Ideal: ${tpl.ideal_for}`);
-  $("itMeta").textContent = metaParts.join(" • ") || "—";
+    const exact = STARTS.find(s => String(s).trim().toUpperCase() === typed);
+    if(exact) return exact;
 
-  const inc = String(tpl.inclusions || "").trim();
-  const exc = String(tpl.exclusions || "").trim();
-  const note = String(tpl.important_notes || tpl.notes || "").trim();
-  $("incExc").innerHTML =
-    `<b style="color:#fff;letter-spacing:.12em;">INCLUDES:</b> ${escapeHtml(inc || "—")}<br><br>` +
-    `<b style="color:#fff;letter-spacing:.12em;">EXCLUDES:</b> ${escapeHtml(exc || "—")}<br><br>` +
-    `<b style="color:#fff;letter-spacing:.12em;">NOTES:</b> ${escapeHtml(note || "—")}`;
+    const partial = STARTS.find(s => String(s).trim().toUpperCase().startsWith(typed));
+    if(partial) return partial;
 
-  const daysList = $("daysList");
-  daysList.innerHTML = "";
+    return "";
+  }
 
-  const blocks = buildDayWise(tpl);
+  /* ===============================
+     ✅ Best package per END
+     =============================== */
+  function packageScore(tpl){
+    const locs = stopsCount(tpl);
+    const pri  = Number(tpl.priority ?? 999);
+    const km   = Number(tpl.total_km_est ?? tpl.estimated_drive_km ?? 1e9);
+    return { locs, pri, km };
+  }
+  function isBetter(a,b){
+    if(a.locs !== b.locs) return a.locs > b.locs;
+    if(a.pri !== b.pri)   return a.pri < b.pri;
+    return a.km < b.km;
+  }
 
-  blocks.forEach(block=>{
-    const dayCard = document.createElement("div");
-    dayCard.className = "dayCard";
-    dayCard.innerHTML = `
-      <div class="dayTop">
-        <div class="d">Day ${block.day}</div>
-        <div class="muted">${block.ids.length} places</div>
-      </div>
-      <div class="muted">Tap a place to open details popup</div>
-      <div class="dayPlaces"></div>
-    `;
-    const cont = dayCard.querySelector(".dayPlaces");
+  /* ===============================
+     ✅ UI
+     =============================== */
+  function setPills(obj){
+    const box = $("pills");
+    box.innerHTML = "";
+    for(const [k,v] of Object.entries(obj)){
+      const div = document.createElement("div");
+      div.className = "pill";
+      div.innerHTML = `${escapeHtml(k)} <b>${escapeHtml(String(v))}</b>`;
+      box.appendChild(div);
+    }
+  }
 
-    block.ids.forEach(pid=>{
-      const p = LOCS[pid] || {};
-      const name = placeNameAny(p, pid);
-      const seg  = segmentAny(p) || "—";
-      const dist = districtAny(p) || "—";
-      const url = pickPhotoAny(p);
+  function renderPackages(list, start){
+    const box = $("pkgList");
+    box.innerHTML = "";
+    $("pkgCount").textContent = `${list.length} Results`;
 
-      const line = document.createElement("div");
-      line.className = "placeLine";
-      line.innerHTML = `
-        <div class="thumb">
-          ${url
-            ? `<img src="${escapeHtml(url)}" alt="pic" loading="lazy" referrerpolicy="no-referrer"
-                  onerror="this.remove(); this.parentNode.textContent='${escapeHtml(initials(name))}';">`
-            : escapeHtml(initials(name))
+    if(!list.length){
+      box.innerHTML = `<div class="pill">No packages for <b>${escapeHtml(String(start).toUpperCase())}</b></div>`;
+      return;
+    }
+
+    list.forEach(t=>{
+      const endKey = endKeyFromColumnG(t);
+      const days = Number(t.days || 0) || 0;
+      const tempoOk = (t.tempo_ok === true || safeLower(t.tempo_ok)==="true");
+      const stops = stopsFromTemplate(t);
+
+      let thumbUrl="", ini="HP";
+      if(stops[0]){
+        const p = LOCS[stops[0]] || {};
+        const nm = placeNameAny(p, stops[0]);
+        ini = initials(nm);
+        thumbUrl = pickPhotoAny(p);
+      }
+
+      const el = document.createElement("div");
+      el.className = "pkg";
+      el.dataset.key = t.key;
+
+      el.innerHTML = `
+        <div class="pkgPic">
+          ${thumbUrl
+            ? `<img src="${escapeHtml(thumbUrl)}" alt="thumb" loading="lazy" referrerpolicy="no-referrer"
+                  onerror="this.remove(); this.parentNode.textContent='${escapeHtml(ini)}';">`
+            : escapeHtml(ini)
           }
         </div>
-        <div class="pinfo">
-          <div class="pname">${escapeHtml(name)}</div>
-          <div class="pmeta">${escapeHtml(seg)} • ${escapeHtml(dist)}</div>
+        <div class="pkgBody">
+          <div class="pkgName">${escapeHtml(String(start).toUpperCase())} → ${escapeHtml(String(endKey).toUpperCase())}</div>
+          <div class="pkgMeta">
+            LOCATIONS: ${stopsCount(t)} • DAYS: ${days || "—"}<br/>
+            ROUTE ID: ${escapeHtml(String(t.route_id||"—").toUpperCase())}
+          </div>
+          <div class="tag ${tempoOk ? "ok" : "warn"}">${tempoOk ? "TEMPO OK" : "TEMPO RISK"}</div>
         </div>
       `;
-      /* ✅ NEW: click opens popup (and you can still focus via button inside popup) */
-      line.onclick = ()=>showPlacePopup(pid);
 
-      cont.appendChild(line);
+      el.onclick = ()=>openTemplate(t.key, start);
+      box.appendChild(el);
     });
-
-    daysList.appendChild(dayCard);
-  });
-}
-
-/* ===============================
-   ✅ OSRM route draw
-   =============================== */
-async function drawRoadRouteFromPlaces(placeIds){
-  markersLayer.clearLayers();
-  if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
-
-  const pts = [];
-  const validIds = [];
-  for(const pid of placeIds){
-    const p = LOCS[pid] || {};
-    const lat = latAny(p);
-    const lng = lngAny(p);
-    if(isFinite(lat) && isFinite(lng)){
-      pts.push([lng,lat]);
-      validIds.push(pid);
-    }
-  }
-  if(pts.length < 2){
-    toast("Not enough coordinates for route");
-    return { ok:false, km:0 };
   }
 
-  const maxPts = 25;
-  let used = pts;
-  if(pts.length > maxPts){
-    const step = Math.ceil(pts.length / maxPts);
-    used = pts.filter((_,i)=> i%step===0 || i===pts.length-1);
-  }
-
-  try{
-    const url =
-      "https://router.project-osrm.org/route/v1/driving/" +
-      used.map(c=>c.join(",")).join(";") +
-      "?overview=full&geometries=geojson&steps=false";
-
-    const res = await fetch(url);
-    const data = await res.json();
-    if(!data.routes?.length){
-      toast("Road route not available");
-      return { ok:false, km:0 };
+  /* ===============================
+     ✅ Day wise blocks
+     =============================== */
+  function buildDayWise(tpl){
+    const days = Number(tpl.days || 1);
+    const blocks = [];
+    for(let d=1; d<=Math.min(12, Math.max(1, days)); d++){
+      const k = `day${d}_place_ids`;
+      const raw = String(tpl[k] || "").trim();
+      const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
+      blocks.push({ day:d, ids });
     }
 
-    const r = data.routes[0];
-    const latlngs = r.geometry.coordinates.map(c=>[c[1],c[0]]);
-    routeLine = L.polyline(latlngs, { weight: 5, opacity: .95 }).addTo(map);
-    fitRoute();
+    const anyHas = blocks.some(x=>x.ids.length);
+    if(!anyHas){
+      const raw = String(tpl.major_place_ids || "").trim();
+      const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
+      return [{ day:1, ids }];
+    }
+    return blocks.filter(x=>x.ids.length);
+  }
 
-    const markIds = (showMode==="startend")
-      ? [validIds[0], validIds[validIds.length-1]]
-      : validIds;
+  function renderItinerary(tpl, start, endKey){
+    $("activePkgName").textContent = `${String(tpl.days||"—")}D`;
+    $("itTitle").textContent = `${String(start).toUpperCase()} → ${String(endKey).toUpperCase()}`;
 
-    for(const pid of markIds){
+    const metaParts = [];
+    if(tpl.route_path) metaParts.push(`Route: ${tpl.route_path}`);
+    if(tpl.best_season) metaParts.push(`Season: ${tpl.best_season}`);
+    if(tpl.ideal_for) metaParts.push(`Ideal: ${tpl.ideal_for}`);
+    $("itMeta").textContent = metaParts.join(" • ") || "—";
+
+    const inc = String(tpl.inclusions || "").trim();
+    const exc = String(tpl.exclusions || "").trim();
+    const note = String(tpl.important_notes || tpl.notes || "").trim();
+    $("incExc").innerHTML =
+      `<b style="color:#fff;letter-spacing:.12em;">INCLUDES:</b> ${escapeHtml(inc || "—")}<br><br>` +
+      `<b style="color:#fff;letter-spacing:.12em;">EXCLUDES:</b> ${escapeHtml(exc || "—")}<br><br>` +
+      `<b style="color:#fff;letter-spacing:.12em;">NOTES:</b> ${escapeHtml(note || "—")}`;
+
+    const daysList = $("daysList");
+    daysList.innerHTML = "";
+
+    const blocks = buildDayWise(tpl);
+
+    blocks.forEach(block=>{
+      const dayCard = document.createElement("div");
+      dayCard.className = "dayCard";
+      dayCard.innerHTML = `
+        <div class="dayTop">
+          <div class="d">Day ${block.day}</div>
+          <div class="muted">${block.ids.length} places</div>
+        </div>
+        <div class="muted">Tap a place to open details popup</div>
+        <div class="dayPlaces"></div>
+      `;
+      const cont = dayCard.querySelector(".dayPlaces");
+
+      block.ids.forEach(pid=>{
+        const p = LOCS[pid] || {};
+        const name = placeNameAny(p, pid);
+        const seg  = segmentAny(p) || "—";
+        const dist = districtAny(p) || "—";
+        const url = pickPhotoAny(p);
+
+        const line = document.createElement("div");
+        line.className = "placeLine";
+        line.innerHTML = `
+          <div class="thumb">
+            ${url
+              ? `<img src="${escapeHtml(url)}" alt="pic" loading="lazy" referrerpolicy="no-referrer"
+                    onerror="this.remove(); this.parentNode.textContent='${escapeHtml(initials(name))}';">`
+              : escapeHtml(initials(name))
+            }
+          </div>
+          <div class="pinfo">
+            <div class="pname">${escapeHtml(name)}</div>
+            <div class="pmeta">${escapeHtml(seg)} • ${escapeHtml(dist)}</div>
+          </div>
+        `;
+        line.onclick = ()=>showPlacePopup(pid);
+        cont.appendChild(line);
+      });
+
+      daysList.appendChild(dayCard);
+    });
+  }
+
+  /* ===============================
+     ✅ OSRM route draw
+     =============================== */
+  async function drawRoadRouteFromPlaces(placeIds){
+    markersLayer.clearLayers();
+    if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
+
+    const pts = [];
+    const validIds = [];
+    for(const pid of placeIds){
       const p = LOCS[pid] || {};
       const lat = latAny(p);
       const lng = lngAny(p);
-      if(!isFinite(lat)||!isFinite(lng)) continue;
-
-      const nm = placeNameAny(p, pid);
-      L.marker([lat,lng]).addTo(markersLayer)
-        .bindPopup(`<b>${escapeHtml(nm)}</b><br><small style="opacity:.8;">Tap marker to open details</small>`)
-        .on("click", ()=>showPlacePopup(pid));
-    }
-
-    const km = Number(r.distance/1000);
-    $("kmBadge").textContent = km.toFixed(1) + " KM";
-    return { ok:true, km };
-  }catch(e){
-    console.error(e);
-    toast("Route error");
-    return { ok:false, km:0 };
-  }
-}
-
-/* ===============================
-   ✅ Generate packages
-   =============================== */
-function applyFilters(){
-  const start = normalizeStartInput();
-  const daysF = $("daysSel").value.trim();
-  const pax   = Number($("paxSel").value || 2);
-
-  clearMap();
-  $("activePkgName").textContent = "—";
-  $("itTitle").textContent = "Select a package";
-  $("itMeta").textContent = "Day-wise details will appear here";
-  $("incExc").textContent = "—";
-  $("daysList").innerHTML = "";
-  $("priceTotal").innerHTML = "— <small></small>";
-  $("pricePer").innerHTML = "— <small></small>";
-  CURRENT_TEMPLATE_KEY = "";
-  CURRENT_ROUTE_KM = 0;
-
-  if(!start){
-    toast("Start not found in templates");
-    return;
-  }
-
-  let list = ACTIVE_TEMPLATES
-    .filter(t => String(t.start_point||"").trim().toUpperCase() === String(start).trim().toUpperCase());
-  if(daysF) list = list.filter(t => Number(t.days||0) === Number(daysF));
-
-  const bestByEnd = new Map();
-  const scByEnd = new Map();
-
-  for(const t of list){
-    const endKey = endKeyFromColumnG(t);
-    const sc = packageScore(t);
-    if(!bestByEnd.has(endKey)){
-      bestByEnd.set(endKey, t);
-      scByEnd.set(endKey, sc);
-    }else{
-      const prev = scByEnd.get(endKey);
-      if(isBetter(sc, prev)){
-        bestByEnd.set(endKey, t);
-        scByEnd.set(endKey, sc);
+      if(isFinite(lat) && isFinite(lng)){
+        pts.push([lng,lat]);
+        validIds.push(pid);
       }
     }
+    if(pts.length < 2){
+      toast("Not enough coordinates for route");
+      return { ok:false, km:0 };
+    }
+
+    const maxPts = 25;
+    let used = pts;
+    if(pts.length > maxPts){
+      const step = Math.ceil(pts.length / maxPts);
+      used = pts.filter((_,i)=> i%step===0 || i===pts.length-1);
+    }
+
+    try{
+      const url =
+        "https://router.project-osrm.org/route/v1/driving/" +
+        used.map(c=>c.join(",")).join(";") +
+        "?overview=full&geometries=geojson&steps=false";
+
+      const res = await fetch(url);
+      const data = await res.json();
+      if(!data.routes?.length){
+        toast("Road route not available");
+        return { ok:false, km:0 };
+      }
+
+      const r = data.routes[0];
+      const latlngs = r.geometry.coordinates.map(c=>[c[1],c[0]]);
+      routeLine = L.polyline(latlngs, { weight: 5, opacity: .95 }).addTo(map);
+      fitRoute();
+
+      const markIds = (showMode==="startend")
+        ? [validIds[0], validIds[validIds.length-1]]
+        : validIds;
+
+      for(const pid of markIds){
+        const p = LOCS[pid] || {};
+        const lat = latAny(p);
+        const lng = lngAny(p);
+        if(!isFinite(lat)||!isFinite(lng)) continue;
+
+        const nm = placeNameAny(p, pid);
+        L.marker([lat,lng]).addTo(markersLayer)
+          .bindPopup(`<b>${escapeHtml(nm)}</b><br><small style="opacity:.8;">Tap marker to open details</small>`)
+          .on("click", ()=>showPlacePopup(pid));
+      }
+
+      const km = Number(r.distance/1000);
+      $("kmBadge").textContent = km.toFixed(1) + " KM";
+      return { ok:true, km };
+    }catch(e){
+      console.error(e);
+      toast("Route error");
+      return { ok:false, km:0 };
+    }
   }
 
-  const finalList = Array.from(bestByEnd.values()).sort((a,b)=>{
-    const A = packageScore(a), B = packageScore(b);
-    if(A.locs !== B.locs) return B.locs - A.locs;
-    if(A.pri !== B.pri) return A.pri - B.pri;
-    return A.km - B.km;
-  });
+  /* ===============================
+     ✅ Generate packages
+     =============================== */
+  function applyFilters(){
+    const start = normalizeStartInput();
+    const daysF = $("daysSel").value.trim();
+    const pax   = Number($("paxSel").value || 2);
 
-  CURRENT_LIST = finalList;
-
-  setPills({
-    START: String(start).toUpperCase(),
-    PACKAGES: finalList.length,
-    PAX: pax,
-    DAYS: daysF ? daysF : "ANY"
-  });
-
-  renderPackages(finalList, start);
-  toast("Packages generated");
-}
-
-/* ===============================
-   ✅ Open package
-   =============================== */
-async function openTemplate(key, start){
-  const tpl = TEMPLATES[key];
-  if(!tpl){ toast("Package not found"); return; }
-  CURRENT_TEMPLATE_KEY = key;
-
-  document.querySelectorAll(".pkg").forEach(x=>x.classList.remove("active"));
-  const node = document.querySelector(`.pkg[data-key="${CSS.escape(key)}"]`);
-  if(node) node.classList.add("active");
-
-  const endKey = endKeyFromColumnG(tpl);
-
-  renderItinerary(tpl, start, endKey);
-
-  const stops = stopsFromTemplate(tpl);
-  const rr = await drawRoadRouteFromPlaces(stops);
-
-  const pax = Number($("paxSel").value || 2);
-  const days = Number(tpl.days || $("daysSel").value || 3);
-
-  if(rr.ok){
-    CURRENT_ROUTE_KM = rr.km;
-    const vehicle = pickVehicleByPax(pax);
-    const mk = estimateMarketCost({ km: rr.km, days, pax, vehicle });
-    const disc = discountedCost(mk.marketTotal);
-    const per = Math.ceil(disc.final / Math.max(1,pax));
-
-    $("priceTotal").innerHTML = `${rupees(disc.final)} <small>(${disc.discountPercent}% off)</small>`;
-    $("pricePer").innerHTML = `${rupees(per)} <small>per person</small>`;
-  }else{
+    clearMap();
+    $("activePkgName").textContent = "—";
+    $("itTitle").textContent = "Select a package";
+    $("itMeta").textContent = "Day-wise details will appear here";
+    $("incExc").textContent = "—";
+    $("daysList").innerHTML = "";
     $("priceTotal").innerHTML = "— <small></small>";
     $("pricePer").innerHTML = "— <small></small>";
-  }
-}
+    CURRENT_TEMPLATE_KEY = "";
+    CURRENT_ROUTE_KM = 0;
 
-/* ===============================
-   ✅ Place Modal (Popup)
-   =============================== */
-function openPlaceModal(){
-  $("placeModalBack").style.display = "block";
-  $("placeModal").style.display = "block";
-}
-function closePlaceModal(){
-  $("placeModalBack").style.display = "none";
-  $("placeModal").style.display = "none";
-}
-$("placeModalBack").addEventListener("click", closePlaceModal);
-$("mClose").addEventListener("click", closePlaceModal);
-window.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closePlaceModal(); });
+    if(!start){
+      toast("Start not found in templates");
+      return;
+    }
 
-function metaFromAny(p){
-  const bits = [districtAny(p), categoryAny(p), segmentAny(p), regionAny(p)].filter(Boolean);
-  return bits.join(" • ") || "—";
-}
-function textAny(p, keys, fallback="—"){
-  for(const k of keys){
-    const v = p?.[k];
-    if(v && String(v).trim()) return String(v).trim();
-  }
-  return fallback;
-}
+    let list = ACTIVE_TEMPLATES
+      .filter(t => String(t.start_point||"").trim().toUpperCase() === String(start).trim().toUpperCase());
+    if(daysF) list = list.filter(t => Number(t.days||0) === Number(daysF));
 
-async function showPlacePopup(placeId){
-  const p = LOCS[placeId];
-  if(!p){
-    toast("Place not found in loaded data");
-    return;
-  }
+    const bestByEnd = new Map();
+    const scByEnd = new Map();
 
-  const title = placeNameAny(p, placeId);
-  $("mTitle").textContent = title;
-  $("mMeta").textContent = metaFromAny(p);
+    for(const t of list){
+      const endKey = endKeyFromColumnG(t);
+      const sc = packageScore(t);
+      if(!bestByEnd.has(endKey)){
+        bestByEnd.set(endKey, t);
+        scByEnd.set(endKey, sc);
+      }else{
+        const prev = scByEnd.get(endKey);
+        if(isBetter(sc, prev)){
+          bestByEnd.set(endKey, t);
+          scByEnd.set(endKey, sc);
+        }
+      }
+    }
 
-  const history = textAny(p, ["history_tagline","History Tagline","Short Description","Overview"], "—");
-  const find = textAny(p, ["what_you_find","What you find","Key Features"], "—");
+    const finalList = Array.from(bestByEnd.values()).sort((a,b)=>{
+      const A = packageScore(a), B = packageScore(b);
+      if(A.locs !== B.locs) return B.locs - A.locs;
+      if(A.pri !== B.pri) return A.pri - B.pri;
+      return A.km - B.km;
+    });
 
-  $("mHistory").textContent = history;
-  $("mFind").textContent = find;
+    CURRENT_LIST = finalList;
 
-  const photo = pickPhotoAny(p);
-  if(photo){
-    $("mPhoto").innerHTML = `<img src="${escapeHtml(photo)}" style="width:100%;height:220px;object-fit:cover;display:block;"
-      referrerpolicy="no-referrer"
-      onerror="this.remove(); this.parentNode.textContent='NO PHOTO';">`;
-  }else{
-    $("mPhoto").textContent = "NO PHOTO";
+    setPills({
+      START: String(start).toUpperCase(),
+      PACKAGES: finalList.length,
+      PAX: pax,
+      DAYS: daysF ? daysF : "ANY"
+    });
+
+    renderPackages(finalList, start);
+    toast("Packages generated");
   }
 
-  const lat = latAny(p);
-  const lng = lngAny(p);
+  /* ===============================
+     ✅ Open package
+     =============================== */
+  async function openTemplate(key, start){
+    const tpl = TEMPLATES[key];
+    if(!tpl){ toast("Package not found"); return; }
+    CURRENT_TEMPLATE_KEY = key;
 
-  $("mFocus").onclick = ()=>{
-    closePlaceModal();
-    if(isFinite(lat) && isFinite(lng)){
-      map.setView([lat,lng], Math.max(map.getZoom(), 12));
+    document.querySelectorAll(".pkg").forEach(x=>x.classList.remove("active"));
+    const node = document.querySelector(`.pkg[data-key="${CSS.escape(key)}"]`);
+    if(node) node.classList.add("active");
+
+    const endKey = endKeyFromColumnG(tpl);
+
+    renderItinerary(tpl, start, endKey);
+
+    const stops = stopsFromTemplate(tpl);
+    const rr = await drawRoadRouteFromPlaces(stops);
+
+    if(rr.ok){
+      CURRENT_ROUTE_KM = rr.km;
+      // price will be calculated by DB-cost wrapper below
+      computeDbPriceForCurrent();
     }else{
-      toast("No lat/long for this place");
+      CURRENT_ROUTE_KM = 0;
+      updatePriceBoxes(NaN, NaN);
     }
-  };
+  }
 
-  $("mCopy").onclick = async ()=>{
+  /* ===============================
+     ✅ Place Modal (Popup)
+     =============================== */
+  function openPlaceModal(){
+    $("placeModalBack").style.display = "block";
+    $("placeModal").style.display = "block";
+  }
+  function closePlaceModal(){
+    $("placeModalBack").style.display = "none";
+    $("placeModal").style.display = "none";
+  }
+  $("placeModalBack").addEventListener("click", closePlaceModal);
+  $("mClose").addEventListener("click", closePlaceModal);
+  window.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closePlaceModal(); });
+
+  function metaFromAny(p){
+    const bits = [districtAny(p), categoryAny(p), segmentAny(p), regionAny(p)].filter(Boolean);
+    return bits.join(" • ") || "—";
+  }
+  function textAny(p, keys, fallback="—"){
+    for(const k of keys){
+      const v = p?.[k];
+      if(v && String(v).trim()) return String(v).trim();
+    }
+    return fallback;
+  }
+
+  async function showPlacePopup(placeId){
+    const p = LOCS[placeId];
+    if(!p){
+      toast("Place not found in loaded data");
+      return;
+    }
+
+    const title = placeNameAny(p, placeId);
+    $("mTitle").textContent = title;
+    $("mMeta").textContent = metaFromAny(p);
+
+    const history = textAny(p, ["history_tagline","History Tagline","Short Description","Overview"], "—");
+    const find = textAny(p, ["what_you_find","What you find","Key Features"], "—");
+
+    $("mHistory").textContent = history;
+    $("mFind").textContent = find;
+
+    const photo = pickPhotoAny(p);
+    if(photo){
+      $("mPhoto").innerHTML = `<img src="${escapeHtml(photo)}" style="width:100%;height:220px;object-fit:cover;display:block;"
+        referrerpolicy="no-referrer"
+        onerror="this.remove(); this.parentNode.textContent='NO PHOTO';">`;
+    }else{
+      $("mPhoto").textContent = "NO PHOTO";
+    }
+
+    const lat = latAny(p);
+    const lng = lngAny(p);
+
+    $("mFocus").onclick = ()=>{
+      closePlaceModal();
+      if(isFinite(lat) && isFinite(lng)){
+        map.setView([lat,lng], Math.max(map.getZoom(), 12));
+      }else{
+        toast("No lat/long for this place");
+      }
+    };
+
+    $("mCopy").onclick = async ()=>{
+      try{
+        await navigator.clipboard.writeText(placeId);
+        toast("Place ID copied");
+      }catch(e){
+        toast("Copy not allowed");
+      }
+    };
+
+    openPlaceModal();
+  }
+
+  /* ======================================================
+     ✅ DB BASED COST CALCULATOR (FIXED FOR YOUR FIREBASE)
+     Nodes:
+       /pricing_transport/{vehicleKey}: per_km, driver_per_day, night_charge, max_pax, ...
+       /stay_rate_rules/{r1,r2...}: base_rate_low/mid/peak, weekend_multiplier, festival_multiplier, ...
+     ====================================================== */
+  let TRANSPORT = {};
+  let STAYRULES = {};
+  let PRICING_READY = false;
+
+  async function loadPricingNodes(){
     try{
-      await navigator.clipboard.writeText(placeId);
-      toast("Place ID copied");
+      const [tSnap, sSnap] = await Promise.all([
+        db.ref("pricing_transport").once("value"),
+        db.ref("stay_rate_rules").once("value")
+      ]);
+      TRANSPORT = tSnap.val() || {};
+      STAYRULES = sSnap.val() || {};
+      PRICING_READY = true;
     }catch(e){
-      toast("Copy not allowed");
+      console.error(e);
+      PRICING_READY = false;
+      toast("Pricing nodes not readable");
     }
-  };
-
-  openPlaceModal();
-}
-
-/* ===============================
-   ✅ Events
-   =============================== */
-$("genBtn").addEventListener("click", applyFilters);
-$("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
-
-$("resetBtn").addEventListener("click", ()=>{
-  $("startInp").value="";
-  $("daysSel").value="";
-  $("paxSel").value="2";
-  $("pills").innerHTML="";
-  $("pkgList").innerHTML = `<div class="pill"><span>Type Start & click</span> <b>Generate</b></div>`;
-  $("pkgCount").textContent="—";
-  $("activePkgName").textContent="—";
-  $("itTitle").textContent="Select a package";
-  $("itMeta").textContent="Day-wise details will appear here";
-  $("incExc").textContent="—";
-  $("daysList").innerHTML="";
-  $("priceTotal").innerHTML="— <small></small>";
-  $("pricePer").innerHTML="— <small></small>";
-  clearMap();
-  toast("Reset done");
-});
-
-$("fitMapBtn").addEventListener("click", fitRoute);
-$("clearRouteBtn").addEventListener("click", ()=>{ clearMap(); toast("Cleared"); });
-
-$("showAllStopsBtn").addEventListener("click", async ()=>{
-  showMode="all";
-  toast("Markers: all stops");
-  if(CURRENT_TEMPLATE_KEY){
-    const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
-    await drawRoadRouteFromPlaces(stopsFromTemplate(tpl));
   }
-});
-$("showStartEndBtn").addEventListener("click", async ()=>{
-  showMode="startend";
-  toast("Markers: start/end");
-  if(CURRENT_TEMPLATE_KEY){
-    const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
-    await drawRoadRouteFromPlaces(stopsFromTemplate(tpl));
+
+  // ✅ Choose smallest vehicle that fits pax using your DB max_pax
+  function vehicleKeyByPax(pax){
+    pax = Number(pax || 2);
+    let chosen = null;
+    let smallestFit = Infinity;
+
+    for(const [key,v] of Object.entries(TRANSPORT||{})){
+      const max = Number(v.max_pax || 0);
+      if(max >= pax && max < smallestFit){
+        smallestFit = max;
+        chosen = key;
+      }
+    }
+    // fallback if max_pax missing in DB
+    return chosen || (pax<=4 ? "sedan" : pax<=7 ? "suv" : "tempo");
   }
-});
-$("toggleTilesBtn").addEventListener("click", ()=>{
-  tilesDark = !tilesDark;
-  try{
-    map.removeLayer(tile);
-    tile = tilesDark
-      ? L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 18 })
-      : L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
-    tile.addTo(map);
-  }catch(e){}
-  toast(tilesDark ? "Dark tiles on" : "Light tiles on");
-});
 
-/* ===============================
-   ✅ Init
-   =============================== */
-    /* ===============================
-   ✅ Init
-   =============================== */
-initMap();
+  function stayRuleKeyDefault(){
+    if(STAYRULES?.r2) return "r2"; // midrange default
+    const keys = Object.keys(STAYRULES || {});
+    return keys[0] || "";
+  }
 
-// ✅ Load pricing nodes (required for DB-based cost calculator)
-loadPricingNodes();
+  function estimateTotalCostFromDb({ km=0, days=3, pax=2 }){
+    km = Number(km || 0);
+    days = Number(days || 0);
+    pax = Math.max(1, Number(pax || 1));
+    const nights = Math.max(0, days - 1);
 
-// ✅ Load templates + places (your existing loader)
-loadAll()
-  .then(()=>toast("Portal ready"))
-  .catch(err=>{
+    if(!PRICING_READY || !isFinite(km) || km <= 0 || !days) return { total: NaN, perPerson: NaN };
+
+    const vKey = vehicleKeyByPax(pax);
+    const sKey = stayRuleKeyDefault();
+
+    const vehicle = TRANSPORT?.[vKey];
+    const stay = STAYRULES?.[sKey];
+
+    if(!vehicle || !stay) return { total: NaN, perPerson: NaN };
+
+    const perKm = Number(vehicle.per_km || 0);
+    const driverPerDay = Number(vehicle.driver_per_day || 0);
+    const nightCharge = Number(vehicle.night_charge || 0);
+
+    // transport total
+    const transport = (km * perKm) + (days * driverPerDay) + (nights * nightCharge);
+
+    // stay total (rooms = ceil(pax/2))
+    const rooms = Math.ceil(pax / 2);
+    const baseRate = Number(stay.base_rate_mid || stay.base_rate_low || stay.base_rate_peak || 0);
+    const hotel = rooms * baseRate * nights;
+
+    // optional buffers from vehicle (parking/toll percentage)
+    const bufferPct = Number(vehicle.parking_toll_buffer_pct || 0);
+    const buffer = (bufferPct > 0) ? ((transport + hotel) * bufferPct / 100) : 0;
+
+    const total = transport + hotel + buffer;
+    const perPerson = total / pax;
+
+    return { total, perPerson, meta: { vKey, sKey, rooms, nights } };
+  }
+
+  function updatePriceBoxes(total, perPerson, meta){
+    const totalEl = $("priceTotal");
+    const perEl   = $("pricePer");
+    if(!totalEl || !perEl) return;
+
+    if(!isFinite(total)){
+      totalEl.innerHTML = "— <small></small>";
+      perEl.innerHTML = "— <small></small>";
+      return;
+    }
+
+    const extra = meta?.vKey ? ` <small>(${String(meta.vKey).toUpperCase()} • DB)</small>` : ` <small>(DB)</small>`;
+    totalEl.innerHTML = rupees(total) + extra;
+    perEl.innerHTML = rupees(perPerson) + ` <small>per person</small>`;
+  }
+
+  function computeDbPriceForCurrent(){
+    try{
+      if(!CURRENT_TEMPLATE_KEY) return;
+      const tpl = TEMPLATES?.[CURRENT_TEMPLATE_KEY];
+      if(!tpl) return;
+
+      const pax = Number($("paxSel")?.value || 2);
+      const days = Number(tpl.days || $("daysSel")?.value || 3);
+      const km = Number(CURRENT_ROUTE_KM || 0);
+
+      const est = estimateTotalCostFromDb({ km, days, pax });
+      updatePriceBoxes(est.total, est.perPerson, est.meta);
+    }catch(e){
+      console.error(e);
+      updatePriceBoxes(NaN, NaN);
+    }
+  }
+
+  /* ===============================
+     ✅ Events
+     =============================== */
+  $("genBtn").addEventListener("click", applyFilters);
+  $("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
+
+  $("resetBtn").addEventListener("click", ()=>{
+    $("startInp").value="";
+    $("daysSel").value="";
+    $("paxSel").value="2";
+    $("pills").innerHTML="";
+    $("pkgList").innerHTML = `<div class="pill"><span>Type Start & click</span> <b>Generate</b></div>`;
+    $("pkgCount").textContent="—";
+    $("activePkgName").textContent="—";
+    $("itTitle").textContent="Select a package";
+    $("itMeta").textContent="Day-wise details will appear here";
+    $("incExc").textContent="—";
+    $("daysList").innerHTML="";
+    $("priceTotal").innerHTML="— <small></small>";
+    $("pricePer").innerHTML="— <small></small>";
+    clearMap();
+    CURRENT_TEMPLATE_KEY = "";
+    CURRENT_ROUTE_KM = 0;
+    toast("Reset done");
+  });
+
+  $("fitMapBtn").addEventListener("click", fitRoute);
+  $("clearRouteBtn").addEventListener("click", ()=>{ clearMap(); toast("Cleared"); });
+
+  $("showAllStopsBtn").addEventListener("click", async ()=>{
+    showMode="all";
+    toast("Markers: all stops");
+    if(CURRENT_TEMPLATE_KEY){
+      const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
+      await drawRoadRouteFromPlaces(stopsFromTemplate(tpl));
+    }
+  });
+  $("showStartEndBtn").addEventListener("click", async ()=>{
+    showMode="startend";
+    toast("Markers: start/end");
+    if(CURRENT_TEMPLATE_KEY){
+      const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
+      await drawRoadRouteFromPlaces(stopsFromTemplate(tpl));
+    }
+  });
+  $("toggleTilesBtn").addEventListener("click", ()=>{
+    tilesDark = !tilesDark;
+    try{
+      map.removeLayer(tile);
+      tile = tilesDark
+        ? L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 18 })
+        : L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
+      tile.addTo(map);
+    }catch(e){}
+    toast(tilesDark ? "Dark tiles on" : "Light tiles on");
+  });
+
+  // ✅ if pax changes, recompute current package price (if already opened)
+  $("paxSel")?.addEventListener("change", computeDbPriceForCurrent);
+
+  /* ===============================
+     ✅ Init (FIXED)
+     ✅ pricing nodes are loaded BEFORE portal ready
+     =============================== */
+  initMap();
+
+  loadPricingNodes().then(()=>{
+    return loadAll();
+  }).then(()=>{
+    toast("Portal ready");
+  }).catch(err=>{
     console.error(err);
     setStatus("Firebase load error (check rules / nodes)");
     toast("Firebase load error");
   });
 
-
-  /* ===== COST CALCULATOR (DB BASED) =====
-   Uses: /pricing_transport and /stay_rate_rules from RTDB
-   Output: #priceTotal and #pricePer (already on your page)
-   No new inputs needed.
-*/
-
-let TRANSPORT = {};   // pricing_transport
-let STAYRULES = {};   // stay_rate_rules
-let PRICING_READY = false;
-
-// load pricing nodes
-async function loadPricingNodes(){
-  try{
-    const [tSnap, sSnap] = await Promise.all([
-      db.ref("pricing_transport").once("value"),
-      db.ref("stay_rate_rules").once("value")
-    ]);
-    TRANSPORT = tSnap.val() || {};
-    STAYRULES = sSnap.val() || {};
-    PRICING_READY = true;
-    //toast("Pricing loaded");
-  }catch(e){
-    console.error(e);
-    PRICING_READY = false;
-    toast("Pricing nodes not readable");
-  }
-}
-
-// choose vehicle key from pax (matches your DB keys)
-function vehicleKeyByPax(pax){
-  pax = Number(pax || 2);
-  if(pax <= 4) return "sedan";   // exists in your DB
-  if(pax <= 7) return "suv";     // exists
-  return "tempo";               // exists
-}
-
-// choose stay rule key (you can change default here)
-function stayRuleKeyDefault(){
-  // your DB shows r1, r2, r3... choose r2 as default midrange
-  if(STAYRULES?.r2) return "r2";
-  // fallback to any first active rule
-  const keys = Object.keys(STAYRULES || {});
-  return keys[0] || "";
-}
-
-// main estimator (km from OSRM, days from template, pax from paxSel)
-function estimateTotalCostFromDb({ km=0, days=3, pax=2 }){
-  km = Number(km || 0);
-  days = Number(days || 0);
-  pax = Math.max(1, Number(pax || 1));
-  const nights = Math.max(0, days - 1);
-
-  if(!PRICING_READY || !km || !days) return { total: NaN, perPerson: NaN };
-
-  const vKey = vehicleKeyByPax(pax);
-  const sKey = stayRuleKeyDefault();
-
-  const vehicle = TRANSPORT?.[vKey];
-  const stay = STAYRULES?.[sKey];
-
-  if(!vehicle || !stay) return { total: NaN, perPerson: NaN };
-
-  const perKm = Number(vehicle.per_km || 0);
-  const driverPerDay = Number(vehicle.driver_per_day || 0);
-  const nightCharge = Number(vehicle.night_charge || 0);
-
-  const transport =
-      km * perKm
-    + days * driverPerDay
-    + nights * nightCharge;
-
-  // stay rates are per room/night in your rules. Your UI is per-person estimate,
-  // so we assume rooms = ceil(pax/2) like you did earlier.
-  const rooms = Math.ceil(pax / 2);
-  const baseRate = Number(stay.base_rate_mid || stay.base_rate_low || stay.base_rate_peak || 0);
-  const hotel = rooms * baseRate * nights;
-
-  const total = transport + hotel;
-  const perPerson = total / pax;
-
-  return { total, perPerson, meta: { vKey, sKey, rooms, nights } };
-}
-
-// update UI (your existing boxes)
-function updatePriceBoxes(total, perPerson){
-  const totalEl = document.getElementById("priceTotal");
-  const perEl   = document.getElementById("pricePer");
-  if(!totalEl || !perEl) return;
-
-  if(!isFinite(total)){
-    totalEl.innerHTML = "— <small></small>";
-    perEl.innerHTML = "— <small></small>";
-    return;
-  }
-
-  totalEl.innerHTML =
-    "₹" + Math.round(total).toLocaleString("en-IN") +
-    ` <small>(DB rates)</small>`;
-
-  perEl.innerHTML =
-    "₹" + Math.round(perPerson).toLocaleString("en-IN") +
-    ` <small>per person</small>`;
-}
-
-/* ✅ WRAP openTemplate WITHOUT CHANGING IT */
-(function attachDbCostCalculator(){
-  const _openTemplate = openTemplate;
-
-  openTemplate = async function(key, start){
-    await _openTemplate(key, start); // run your existing logic first
-
-    try{
-      // Only run if we have km + template
-      const tpl = TEMPLATES?.[key];
-      if(!tpl) return;
-
-      const pax = Number(document.getElementById("paxSel")?.value || 2);
-      const days = Number(tpl.days || document.getElementById("daysSel")?.value || 3);
-      const km = Number(CURRENT_ROUTE_KM || 0);
-
-      if(!km || !days){
-        updatePriceBoxes(NaN, NaN);
-        return;
-      }
-
-      const est = estimateTotalCostFromDb({ km, days, pax });
-      updatePriceBoxes(est.total, est.perPerson);
-    }catch(e){
-      console.error(e);
-    }
-  };
-})();
-
-/* ✅ if pax changes, recompute current package price (if already opened) */
-document.getElementById("paxSel")?.addEventListener("change", ()=>{
-  if(!CURRENT_TEMPLATE_KEY) return;
-  // re-run price calc using current km + current template
-  try{
-    const tpl = TEMPLATES?.[CURRENT_TEMPLATE_KEY];
-    if(!tpl) return;
-
-    const pax = Number(document.getElementById("paxSel")?.value || 2);
-    const days = Number(tpl.days || document.getElementById("daysSel")?.value || 3);
-    const km = Number(CURRENT_ROUTE_KM || 0);
-
-    const est = estimateTotalCostFromDb({ km, days, pax });
-    updatePriceBoxes(est.total, est.perPerson);
-  }catch(e){}
-});
-
-</script>
+  </script>
 </body>
 </html>
