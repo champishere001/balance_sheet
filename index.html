@@ -3094,6 +3094,51 @@ loadAll().then(()=>toast("Portal ready")).catch(err=>{
   setStatus("Firebase load error (check rules / nodes)");
   toast("Firebase load error");
 });
+
+/* ===== COST CALCULATOR ===== */
+
+function estimateTotalCost(route){
+
+  const km = Number(route.total_km_est || 0);
+
+  const vehicleKey = document.getElementById("vehicleSel")?.value;
+  const stayKey = document.getElementById("stayRuleSel")?.value;
+  const persons = Number(document.getElementById("personsInp")?.value || 1);
+
+  const vehicle = TRANSPORT?.[vehicleKey];
+  const stay = STAYRULES?.[stayKey];
+
+  if(!vehicle || !stay || !km) return {total:NaN, perPerson:NaN};
+
+  const days = Number(route.days || 0);
+  const nights = Math.max(0, days-1);
+
+  const transport =
+      km * Number(vehicle.per_km || 0)
+    + days * Number(vehicle.driver_per_day || 0)
+    + nights * Number(vehicle.night_charge || 0);
+
+  const hotel = Number(stay.base_rate_mid || 0) * nights;
+
+  const total = transport + hotel;
+  const perPerson = total / persons;
+
+  return {total, perPerson};
+}
+function updatePriceBox(total, perPerson){
+
+  const el = document.getElementById("priceTotal");
+  if(!el) return;
+
+  if(!isFinite(total)){
+    el.innerHTML = "— <small></small>";
+    return;
+  }
+
+  el.innerHTML =
+    "₹" + Math.round(total).toLocaleString("en-IN") +
+    ` <small>(~₹${Math.round(perPerson).toLocaleString("en-IN")}/person)</small>`;
+}
 </script>
 </body>
 </html>
