@@ -162,7 +162,7 @@
       gap: var(--gap);
       padding: 14px;
       overflow:hidden;
-      padding-bottom:14px; /* ✅ footer removed */
+      padding-bottom:14px;
     }
 
     .pane{
@@ -198,7 +198,6 @@
       text-transform: uppercase;
     }
 
-    /* Left */
     .filters{
       padding: 12px;
       border-bottom:1px solid var(--stroke);
@@ -387,7 +386,7 @@
     .mini .v{ margin-top:6px; font-size: 14px; font-weight: 950; letter-spacing:.06em; color:#fff; }
     .mini .v small{ font-size: 11px; color: rgba(255,255,255,.72); font-weight: 800; }
 
-    /* ✅ Contact Card (placed inside right pane) */
+    /* ✅ Contact Card */
     .contactCard{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.22);
@@ -431,7 +430,11 @@
       text-overflow:ellipsis;
     }
     .contactMeta{
-      margin-top:4px;
+      margin-top:6px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
       font-size:11px;
       letter-spacing:.10em;
       text-transform:uppercase;
@@ -449,7 +452,7 @@
       border-top:1px solid rgba(255,255,255,.10);
       padding-top:10px;
       font-size:11px;
-      letter-spacing:.12em;
+      letter-spacing:.10em;
       opacity:.88;
       line-height:1.45;
       text-transform:none;
@@ -554,32 +557,92 @@
       .actions{ min-width:unset; }
     }
 
-    /* ✅ Package Finder BG image */
-    .pane.pkgPane{
-      position: relative;
+    /* ✅ HERO FINDER: 75% PHOTO + 25% GLASS BOX */
+    .pane.pkgPane.heroFinder{
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+      position:relative;
+      background:none;
+    }
+
+    .finderPhoto{
+      flex: 0 0 75%;
+      position:relative;
       background:
-        linear-gradient(180deg, rgba(10,14,24,.76), rgba(10,14,24,.88)),
+        linear-gradient(180deg, rgba(10,14,24,.20), rgba(10,14,24,.78)),
         var(--pkgBg) center/cover no-repeat;
     }
-    .pane.pkgPane::before{
-      content:"";
-      position:absolute; inset:0;
-      background:
-        radial-gradient(900px 520px at 30% 20%, rgba(124,58,237,.22), transparent 60%),
-        radial-gradient(900px 520px at 80% 30%, rgba(34,197,94,.16), transparent 62%),
-        linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.55));
-      pointer-events:none;
-    }
-    .pane.pkgPane > *{ position: relative; z-index: 2; }
-    .pane.pkgPane .filters,
-    .pane.pkgPane .metaPills,
-    .pane.pkgPane .pkgList{
+
+    .finderTopBar{
+      position:absolute;
+      left:0; right:0; top:0;
+      padding:12px 12px 10px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:10px;
       background: rgba(0,0,0,.18);
       backdrop-filter: blur(10px);
     }
-    .pane.pkgPane .paneHdr{
-      background: rgba(0,0,0,.20);
-      backdrop-filter: blur(12px);
+
+    .finderGlass{
+      flex: 0 0 25%;
+      position:relative;
+      padding:12px;
+      border-top:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.16);
+      backdrop-filter: blur(18px);
+    }
+
+    .glassInner{
+      height:100%;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      border-radius: 18px;
+      padding: 12px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.45);
+
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+    }
+
+    .row3{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    .row3 .btnRow{
+      display:flex;
+      gap:10px;
+      align-items:stretch;
+    }
+    .row3 .btnRow .btn{
+      flex:1;
+      height:100%;
+    }
+
+    .heroFinder .pkgList{
+      flex:1;
+      padding:12px;
+      overflow:auto;
+      background: rgba(0,0,0,.18);
+      backdrop-filter: blur(10px);
+    }
+
+    .heroFinder input,
+    .heroFinder select{
+      background: rgba(0,0,0,.28);
+      border: 1px solid rgba(255,255,255,.16);
+    }
+
+    @media (max-width: 980px){
+      .finderPhoto{ flex-basis: 60%; }
+      .finderGlass{ flex-basis: 40%; }
+      .row3{ grid-template-columns: 1fr; }
     }
 
     /* ✅ Place Modal styles */
@@ -635,49 +698,59 @@
 
     <!-- MAIN -->
     <div class="main">
-      <!-- LEFT -->
-      <div class="pane pkgPane">
-        <div class="paneHdr">
-          <div>
-            <p class="t">Package Finder</p>
-            <div class="s">End derived from route_path (Column G)</div>
-          </div>
-          <div class="s" id="pkgCount">—</div>
-        </div>
+      <!-- LEFT (HERO PHOTO + GLASS FORM) -->
+      <div class="pane pkgPane heroFinder">
 
-        <div class="filters">
-          <div class="field">
-            <label>Start (Templates)</label>
-            <input id="startInp" list="startList" placeholder="E.g. AMRITSAR / DELHI / CHANDIGARH">
-            <datalist id="startList"></datalist>
-          </div>
-
-          <div class="field">
-            <label>Days (Optional)</label>
-            <select id="daysSel">
-              <option value="">ANY</option>
-              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-              <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
-              <option>11</option><option>12</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label>Pax</label>
-            <select id="paxSel">
-              <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
-              <option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
-            </select>
-          </div>
-
-          <div class="btnRow">
-            <button class="btn secondary" id="resetBtn" type="button">Reset</button>
-            <button class="btn" id="genBtn" type="button">Generate</button>
+        <!-- 75% Photo -->
+        <div class="finderPhoto">
+          <div class="finderTopBar">
+            <div>
+              <p class="t">Package Finder</p>
+              <div class="s">End derived from route_path (Column G)</div>
+            </div>
+            <div class="s" id="pkgCount">—</div>
           </div>
         </div>
 
-        <div class="metaPills" id="pills"></div>
+        <!-- 25% Glass -->
+        <div class="finderGlass">
+          <div class="glassInner">
+            <div class="field">
+              <label>Start (Templates)</label>
+              <input id="startInp" list="startList" placeholder="E.g. AMRITSAR / DELHI / CHANDIGARH">
+              <datalist id="startList"></datalist>
+            </div>
 
+            <div class="row3">
+              <div class="field">
+                <label>Days (Optional)</label>
+                <select id="daysSel">
+                  <option value="">ANY</option>
+                  <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+                  <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+                  <option>11</option><option>12</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>Pax</label>
+                <select id="paxSel">
+                  <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+                  <option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+                </select>
+              </div>
+
+              <div class="btnRow">
+                <button class="btn secondary" id="resetBtn" type="button">Reset</button>
+                <button class="btn" id="genBtn" type="button">Generate</button>
+              </div>
+            </div>
+
+            <div class="metaPills" id="pills" style="padding:0; margin-top:10px;"></div>
+          </div>
+        </div>
+
+        <!-- Results -->
         <div class="pkgList" id="pkgList">
           <div class="pill"><span>Type Start & click</span> <b>Generate</b></div>
         </div>
@@ -713,7 +786,7 @@
         </div>
 
         <div class="itWrap">
-          <!-- ✅ CONTACT DETAILS (appropriate position: top of itinerary pane) -->
+          <!-- Contact -->
           <div class="contactCard">
             <div class="contactTop">
               <div class="contactLeft">
@@ -724,7 +797,7 @@
                   <div class="contactName">Chandan Panwar</div>
                   <div class="contactMeta">
                     <a class="toolBtn" style="padding:6px 10px; border-radius:12px;" href="tel:+917018138847">Call: +91 7018138847</a>
-                    <a class="toolBtn" style="padding:6px 10px; border-radius:12px;" href="mailto:chandanpanwar001@gmail.com">Mail</a>
+                    <a class="toolBtn" style="padding:6px 10px; border-radius:12px;" href="mailto:chandanpanwar001@gmail.com">Email</a>
                   </div>
                 </div>
               </div>
@@ -743,6 +816,7 @@
           <div class="heroCard">
             <h3 class="bigTitle" id="itTitle">Select a package</h3>
             <div class="muted" id="itMeta">Day-wise details will appear here</div>
+            <div class="muted" id="itSanityNote" style="margin-top:8px; display:none;"></div>
           </div>
 
           <div class="row2">
@@ -834,7 +908,7 @@
     authDomain: "revnue-records.firebaseapp.com",
     databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "revnue-records",
-    storageBucket: "revnue-records.firebasestorage.app", // if storage fails use: revnue-records.appspot.com
+    storageBucket: "revnue-records.firebasestorage.app",
     messagingSenderId: "182348503564",
     appId: "1:182348503564:web:480085405b09177245ac29",
     measurementId: "G-MGTDBCG896"
@@ -884,7 +958,7 @@
     return String(sel).replace(/["\\]/g,"\\$&");
   }
 
-  // ✅ Copy contact (contact card button)
+  // ✅ Copy contact
   $("copyContactBtn")?.addEventListener("click", async ()=>{
     const txt =
 `Himachal Explorer Portal
@@ -1146,6 +1220,60 @@ chandanpanwar001@gmail.com`;
   }
 
   /* ===============================
+     ✅ Start must be included in route + Sanity filter
+     =============================== */
+  function getPlaceIdByNameAny(name){
+    const nm = String(name || "").trim();
+    if(!nm) return "";
+    const pid = NAME_TO_ID.get(nm.toLowerCase());
+    if(pid && LOCS[pid]) return pid;
+    const slug = slugifyName(nm);
+    if(slug && LOCS[slug]) return slug;
+    return "";
+  }
+
+  function routeIdsFromTemplateIncludingStart(tpl){
+    const baseStops = stopsFromTemplate(tpl);
+    const startName = String(tpl?.start_point || "").trim();
+    const startPid = getPlaceIdByNameAny(startName);
+
+    if(startPid){
+      const filtered = baseStops.filter(x => x !== startPid);
+      return [startPid, ...filtered];
+    }
+    return baseStops;
+  }
+
+  function sanitizeStopsForTemplate(tpl, ids, endDistrictKey){
+    const out = [];
+    const removed = [];
+
+    const days = Number(tpl?.days || 0);
+    const endD = String(endDistrictKey || "").trim().toUpperCase();
+
+    const regionHint = String(tpl?.region_style || tpl?.region || tpl?.route_name || "").toUpperCase();
+    const localHint = (regionHint.includes(endD) || regionHint.includes("LOCAL") || regionHint.includes("CORE"));
+    const shouldStrict = (!!endD && (days > 0 && days <= 4 || localHint));
+
+    if(!shouldStrict) return { ids, removed };
+
+    for(const pid of (ids || [])){
+      const p = LOCS[pid];
+      if(!p){ out.push(pid); continue; }
+      const d = districtAny(p);
+      if(!d){ out.push(pid); continue; }
+
+      if(d === endD){
+        out.push(pid);
+      }else{
+        removed.push({ pid, name: placeNameAny(p, pid), district: d });
+      }
+    }
+
+    return { ids: out, removed };
+  }
+
+  /* ===============================
      ✅ Scoring
      =============================== */
   function packageScore(tpl){
@@ -1188,12 +1316,12 @@ chandanpanwar001@gmail.com`;
       const endKey = endKeyFromColumnG(t);
       const days = Number(t.days || 0) || 0;
       const tempoOk = (t.tempo_ok === true || safeLower(t.tempo_ok)==="true");
-      const stops = stopsFromTemplate(t);
 
+      const routeIds = routeIdsFromTemplateIncludingStart(t);
       let thumbUrl="", ini="HP";
-      if(stops[0]){
-        const p = LOCS[stops[0]] || {};
-        const nm = placeNameAny(p, stops[0]);
+      if(routeIds[0]){
+        const p = LOCS[routeIds[0]] || {};
+        const nm = placeNameAny(p, routeIds[0]);
         ini = initials(nm);
         thumbUrl = pickPhotoAny(p);
       }
@@ -1225,9 +1353,6 @@ chandanpanwar001@gmail.com`;
     });
   }
 
-  /* ===============================
-     ✅ Day wise blocks
-     =============================== */
   function buildDayWise(tpl){
     const days = Number(tpl.days || 1);
     const blocks = [];
@@ -1247,7 +1372,7 @@ chandanpanwar001@gmail.com`;
     return blocks.filter(x=>x.ids.length);
   }
 
-  function renderItinerary(tpl, start, endKey){
+  function renderItinerary(tpl, start, endKey, sanityRemoved){
     $("activePkgName").textContent = `${String(tpl.days||"—")}D`;
     $("itTitle").textContent = `${String(start).toUpperCase()} → ${String(endKey).toUpperCase()}`;
 
@@ -1256,6 +1381,15 @@ chandanpanwar001@gmail.com`;
     if(tpl.best_season) metaParts.push(`Season: ${tpl.best_season}`);
     if(tpl.ideal_for) metaParts.push(`Ideal: ${tpl.ideal_for}`);
     $("itMeta").textContent = metaParts.join(" • ") || "—";
+
+    const noteEl = $("itSanityNote");
+    if(sanityRemoved?.length){
+      noteEl.style.display = "block";
+      noteEl.innerHTML = `Auto-removed wrong-district places: <b style="color:#fff;">${sanityRemoved.map(x=>escapeHtml(x.name)).join(", ")}</b>`;
+    }else{
+      noteEl.style.display = "none";
+      noteEl.textContent = "";
+    }
 
     const inc = String(tpl.inclusions || "").trim();
     const exc = String(tpl.exclusions || "").trim();
@@ -1268,7 +1402,11 @@ chandanpanwar001@gmail.com`;
     const daysList = $("daysList");
     daysList.innerHTML = "";
 
-    const blocks = buildDayWise(tpl);
+    const removedSet = new Set((sanityRemoved || []).map(x=>x.pid));
+    const blocks = buildDayWise(tpl).map(b=>({
+      day: b.day,
+      ids: (b.ids || []).filter(pid => !removedSet.has(pid))
+    })).filter(b=>b.ids.length);
 
     blocks.forEach(block=>{
       const dayCard = document.createElement("div");
@@ -1365,15 +1503,20 @@ chandanpanwar001@gmail.com`;
         ? [validIds[0], validIds[validIds.length-1]]
         : validIds;
 
-      for(const pid of markIds){
+      for(let i=0;i<markIds.length;i++){
+        const pid = markIds[i];
         const p = LOCS[pid] || {};
         const lat = latAny(p);
         const lng = lngAny(p);
         if(!isFinite(lat)||!isFinite(lng)) continue;
 
         const nm = placeNameAny(p, pid);
+        const isFirst = (i===0);
         L.marker([lat,lng]).addTo(markersLayer)
-          .bindPopup(`<b>${escapeHtml(nm)}</b><br><small style="opacity:.8;">Tap marker to open details</small>`)
+          .bindPopup(
+            `<b>${escapeHtml(nm)}</b>` +
+            (isFirst ? `<br><small style="opacity:.85;">START OF PACKAGE</small>` : `<br><small style="opacity:.8;">Tap marker to open details</small>`)
+          )
           .on("click", ()=>showPlacePopup(pid));
       }
 
@@ -1389,8 +1532,6 @@ chandanpanwar001@gmail.com`;
 
   /* ===============================
      ✅ Generate packages
-     - If start within HP => show ALL packages but max 2 days
-     - Else => old logic (best package per end)
      =============================== */
   function applyFilters(){
     const start = normalizeStartInput();
@@ -1401,6 +1542,8 @@ chandanpanwar001@gmail.com`;
     $("activePkgName").textContent = "—";
     $("itTitle").textContent = "Select a package";
     $("itMeta").textContent = "Day-wise details will appear here";
+    $("itSanityNote").style.display = "none";
+    $("itSanityNote").textContent = "";
     $("incExc").textContent = "—";
     $("daysList").innerHTML = "";
     $("priceTotal").innerHTML = "— <small></small>";
@@ -1488,14 +1631,20 @@ chandanpanwar001@gmail.com`;
 
     const endKey = endKeyFromColumnG(tpl);
 
-    renderItinerary(tpl, start, endKey);
+    const routeIdsRaw = routeIdsFromTemplateIncludingStart(tpl);
+    const sanity = sanitizeStopsForTemplate(tpl, routeIdsRaw, endKey);
+    const routeIds = sanity.ids;
 
-    const stops = stopsFromTemplate(tpl);
-    const rr = await drawRoadRouteFromPlaces(stops);
+    renderItinerary(tpl, start, endKey, sanity.removed);
+
+    const rr = await drawRoadRouteFromPlaces(routeIds);
 
     if(rr.ok){
       CURRENT_ROUTE_KM = rr.km;
       computeDbPriceForCurrent();
+      if(sanity.removed?.length){
+        toast("Wrong-district place removed from this package");
+      }
     }else{
       CURRENT_ROUTE_KM = 0;
       updatePriceBoxes(NaN, NaN);
@@ -1704,6 +1853,8 @@ chandanpanwar001@gmail.com`;
     $("activePkgName").textContent="—";
     $("itTitle").textContent="Select a package";
     $("itMeta").textContent="Day-wise details will appear here";
+    $("itSanityNote").style.display = "none";
+    $("itSanityNote").textContent = "";
     $("incExc").textContent="—";
     $("daysList").innerHTML="";
     $("priceTotal").innerHTML="— <small></small>";
@@ -1722,7 +1873,10 @@ chandanpanwar001@gmail.com`;
     toast("Markers: all stops");
     if(CURRENT_TEMPLATE_KEY){
       const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
-      await drawRoadRouteFromPlaces(stopsFromTemplate(tpl));
+      const endKey = endKeyFromColumnG(tpl);
+      const routeIdsRaw = routeIdsFromTemplateIncludingStart(tpl);
+      const sanity = sanitizeStopsForTemplate(tpl, routeIdsRaw, endKey);
+      await drawRoadRouteFromPlaces(sanity.ids);
     }
   });
   $("showStartEndBtn").addEventListener("click", async ()=>{
@@ -1730,7 +1884,10 @@ chandanpanwar001@gmail.com`;
     toast("Markers: start/end");
     if(CURRENT_TEMPLATE_KEY){
       const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
-      await drawRoadRouteFromPlaces(stopsFromTemplate(tpl));
+      const endKey = endKeyFromColumnG(tpl);
+      const routeIdsRaw = routeIdsFromTemplateIncludingStart(tpl);
+      const sanity = sanitizeStopsForTemplate(tpl, routeIdsRaw, endKey);
+      await drawRoadRouteFromPlaces(sanity.ids);
     }
   });
   $("toggleTilesBtn").addEventListener("click", ()=>{
