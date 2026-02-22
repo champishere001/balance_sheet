@@ -592,7 +592,53 @@
       opacity:.85;
       margin-top:4px;
     }
+     .footerContact{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  text-align:center;
+}
 
+.footerRow{
+  font-size:12px;
+  letter-spacing:.10em;
+}
+
+.footerRow a{
+  color:#fff;
+  text-decoration:none;
+  font-weight:900;
+}
+
+.footerLabel{
+  opacity:.7;
+  margin-right:6px;
+}
+
+.footerBtns{
+  margin-top:6px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+.footerBtn{
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);
+  color:#fff;
+  padding:8px 12px;
+  border-radius:12px;
+  cursor:pointer;
+  font-size:11px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+
+.footerBtn:hover{
+  background:rgba(255,255,255,.12);
+}
     .footerDivider{ opacity:.35; }
   </style>
 </head>
@@ -707,38 +753,7 @@
         </div>
 
         <div class="itWrap">
-          <!-- ✅ CONTACT US -->
-<div class="heroCard" id="contactCard">
-  <h3 class="bigTitle">Contact Us</h3>
-  <div class="muted" style="margin-top:6px;">
-    Need help planning a route, customizing a package, or booking support? Contact us anytime.
-  </div>
-
-  <div style="margin-top:12px; display:grid; grid-template-columns: 1fr; gap:10px;">
-    <div class="mini" style="background:rgba(0,0,0,.22);">
-      <div class="k">Developer / Owner</div>
-      <div class="v" id="cName">Chandan Panwar</div>
-    </div>
-
-    <div class="row2">
-      <div class="mini" style="background:rgba(0,0,0,.22);">
-        <div class="k">Phone / WhatsApp</div>
-        <div class="v">
-          <a id="cPhone" href="tel:+917018138847" style="color:#fff; text-decoration:none;">+91 7018138847</a>
-        </div>
-      </div>
-
-      <div class="mini" style="background:rgba(0,0,0,.22);">
-        <div class="k">Email</div>
-        <div class="v" style="font-size:13px;">
-          <a id="cEmail" href="mailto:chandanpanwar001@gmail.com" style="color:#fff; text-decoration:none;">
-            chandanpanwar001@gmail.com
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <div class="mini" style="background:rgba(0,0,0,.22);">
+        <div class="mini" style="background:rgba(0,0,0,.22);">
       <div class="k">Quick Actions</div>
       <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
         <a class="toolBtn" href="https://wa.me/917018138847" target="_blank" rel="noopener">WhatsApp</a>
@@ -836,15 +851,43 @@
   </div>
 
   <div class="footerBar">
-    <img src="logo.png" class="footerLogo" alt="Logo" onerror="this.style.display='none'">
-    <div class="footerText">
-      Developed by <b>Chandan Panwar</b>
-      <span class="footerDivider">•</span>
-      📞 <b>7018138847</b>
-      <span class="footerDivider">•</span>
-      ✉ <b>chandanpanwar001@gmail.com</b>
+
+  <img src="logo.png" class="footerLogo" alt="Logo"
+       onerror="this.style.display='none'">
+
+  <div class="footerContact">
+
+    <div class="footerRow">
+      <span class="footerLabel">Developer</span>
+      <b>Chandan Panwar</b>
     </div>
-    <div class="footerMoto">“Creating Memorable Journeys for Visitors — Revenue Comes After Trust.”</div>
+
+    <div class="footerRow">
+      <span class="footerLabel">Phone</span>
+      <a href="tel:+917018138847">+91 7018138847</a>
+    </div>
+
+    <div class="footerRow">
+      <span class="footerLabel">Email</span>
+      <a href="mailto:chandanpanwar001@gmail.com">
+        chandanpanwar001@gmail.com
+      </a>
+    </div>
+
+    <div class="footerBtns">
+      <a class="footerBtn" href="https://wa.me/917018138847" target="_blank">
+        WhatsApp
+      </a>
+      <button class="footerBtn" id="copyFooterContact">
+        Copy Details
+      </button>
+    </div>
+
+    <div class="footerMoto">
+      “Creating Memorable Journeys for Visitors — Revenue Comes After Trust.”
+    </div>
+
+  </div>
   </div>
 
   <script>
@@ -1137,7 +1180,18 @@ Email: chandanpanwar001@gmail.com`;
 
     return "";
   }
+     document.getElementById("copyFooterContact")?.addEventListener("click", async ()=>{
+  const txt =
+`Himachal Explorer Portal
+Chandan Panwar
++91 7018138847
+chandanpanwar001@gmail.com`;
 
+  try{
+    await navigator.clipboard.writeText(txt);
+    toast("Contact copied");
+  }catch(e){}
+});
   /* ===============================
      ✅ Best package per END
      =============================== */
