@@ -516,6 +516,39 @@
       box-shadow:0 40px 120px rgba(0,0,0,.75);
       z-index:100000;
     }
+      .footerBar{
+  position:fixed;
+  left:0; right:0; bottom:0;
+  padding:12px 18px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+
+  background:linear-gradient(180deg, rgba(10,14,24,.55), rgba(10,14,24,.95));
+  backdrop-filter: blur(14px);
+  border-top:1px solid rgba(255,255,255,.12);
+
+  color:rgba(255,255,255,.85);
+  font-size:12px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  z-index:9999;
+}
+
+.footerBar b{
+  color:#fff;
+  font-weight:900;
+}
+
+.footerIcon{
+  opacity:.75;
+}
+
+.footerDivider{
+  opacity:.35;
+}
   </style>
 </head>
 
@@ -655,7 +688,7 @@
       </div>
     </div>
   </div>
-
+   
   <!-- Toast -->
   <div class="toast" id="toast"></div>
 
@@ -713,6 +746,22 @@
       </div>
     </div>
   </div>
+  <div class="footerBar">
+
+  <span class="footerIcon">👨‍💻</span>
+  <span>Developed by <b>Chandan Panwar</b></span>
+
+  <span class="footerDivider">•</span>
+
+  <span class="footerIcon">📞</span>
+  <span><b>7018138847</b></span>
+
+  <span class="footerDivider">•</span>
+
+  <span class="footerIcon">✉</span>
+  <span><b>chandanpanwar001@gmail.com</b></span>
+
+</div>
 
 <script>
 /* ===============================
