@@ -25,12 +25,15 @@
       --accent: #2563eb;
       --ok:#10b981;
       --warn:#f59e0b;
+
+      --mapW: 34%;
+      --gap: 14px;
     }
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
     body{ margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--text); overflow-x:hidden; background:var(--bg0); }
 
-    /* ✅ ONE LIVE BACKGROUND FOR WHOLE PAGE (visible) */
+    /* Background FX (unchanged) */
     .bg{
       position:fixed; inset:0; z-index:-5;
       background:
@@ -50,8 +53,9 @@
     @keyframes float{ 0%,100%{ transform: translate(0,0) scale(1); } 50%{ transform: translate(28px,-20px) scale(1.08); } }
     #fx{ position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.90; }
 
-    .wrap{ max-width: 1400px; margin: 0 auto; padding: 16px; }
+    .wrap{ max-width: 1480px; margin: 0 auto; padding: 16px; }
     .card{ background: var(--card); border: 1px solid var(--stroke); box-shadow: var(--shadow); border-radius: var(--radius); overflow:hidden; backdrop-filter: blur(14px); }
+
     .hero{
       padding: 18px 16px; border-bottom: 1px solid var(--stroke);
       background:
@@ -60,18 +64,27 @@
         radial-gradient(700px 300px at 95% 0%, rgba(16,185,129,.18), transparent 60%);
     }
     .hero-top{ display:flex; align-items:center; gap:16px; margin-bottom:14px; }
-    .site-logo{ height:72px; width:auto; background:white; padding:8px; border-radius:18px; box-shadow:0 12px 35px rgba(0,0,0,.16); }
+    .site-logo{ height:68px; width:auto; background:white; padding:8px; border-radius:18px; box-shadow:0 12px 35px rgba(0,0,0,.16); }
     .hero-text h1{ margin:0; font-size: 22px; text-transform: uppercase; }
-    .hero-text p{ margin:6px 0 0; color:var(--muted); font-size: 13px; max-width: 1050px; text-transform:none; }
-    @media(max-width:780px){ .hero-top{ flex-direction:column; text-align:center; } .site-logo{ height:56px; } }
+    .hero-text p{ margin:6px 0 0; color:var(--muted); font-size: 13px; max-width: 1100px; }
 
-    .title{ font-size: 18px; font-weight: 900; letter-spacing: .2px; text-transform: uppercase; }
+    .title{ font-size: 16px; font-weight: 950; letter-spacing: .2px; text-transform: uppercase; }
     .sub{ color: var(--muted); font-size: 12.5px; line-height:1.35; text-transform: uppercase; }
-    .hrow{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
 
-    .controls{ display:grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap:10px; margin-top: 12px; }
-    @media (max-width: 980px){ .controls{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .topbar{
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--stroke);
+      background: rgba(255,255,255,.55);
+    }
 
+    /* Controls Row (compact + single line on desktop) */
+    .controls{
+      display:grid;
+      grid-template-columns: 2.2fr 1fr 1fr .8fr 1.2fr;
+      gap:10px;
+      align-items:end;
+      margin-top: 10px;
+    }
     .field label{ display:block; font-size:11px; color:var(--muted); margin:0 0 6px 2px; text-transform: uppercase; }
     select, input{
       width:100%; padding: 10px 10px; border-radius: 12px;
@@ -84,7 +97,7 @@
 
     .btn{
       appearance:none; border:0; border-radius: 12px; padding: 10px 12px;
-      cursor:pointer; font-weight:900; background: var(--accent); color:white;
+      cursor:pointer; font-weight:950; background: var(--accent); color:white;
       box-shadow: 0 12px 30px rgba(37,99,235,.20);
       transition: transform .12s ease, filter .12s ease; width:100%;
       text-transform: uppercase;
@@ -100,14 +113,43 @@
       font-size: 12px; color: var(--muted);
       margin: 6px 6px 0 0; white-space: nowrap;
       text-transform: uppercase;
+      font-weight: 850;
     }
     .pill b{ color: var(--text); }
 
-    .pkgGrid{ display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
-    @media (max-width: 1100px){ .pkgGrid{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 780px){ .pkgGrid{ grid-template-columns: 1fr; } }
+    /* ✅ NEW MAIN LAYOUT: results left, map right (sticky) */
+    .main{
+      display:grid;
+      grid-template-columns: calc(100% - var(--mapW) - var(--gap)) var(--mapW);
+      gap: var(--gap);
+      padding: 14px;
+      align-items:start;
+    }
 
-    /* ✅ Package card with image */
+    .results{
+      min-height: 60vh;
+    }
+
+    .mapPanel{
+      position: sticky;
+      top: 14px;
+      align-self: start;
+    }
+
+    .panel{
+      background: rgba(255,255,255,.72);
+      border: 1px solid var(--stroke);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .panel + .panel{ margin-top: 12px; }
+
+    /* Packages grid */
+    .pkgGrid{ display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+    @media (max-width: 1250px){ .pkgGrid{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 980px){ .pkgGrid{ grid-template-columns: 1fr; } }
+
     .pkg{
       border: 1px solid var(--stroke);
       border-radius: 16px;
@@ -145,12 +187,12 @@
     .pkgMeta{ margin-top: 8px; font-size: 12px; color: var(--muted); line-height: 1.35; text-transform: uppercase; }
     .pkgMeta b{ color: var(--text); }
 
-    .placesWrap{ margin-top: 12px; border-top: 1px solid var(--stroke); padding-top: 12px; }
+    /* Places list */
     .placesHdr{ display:flex; gap:10px; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom: 10px; }
     .count{ font-size:12px; color: var(--muted); text-transform: uppercase; }
     .btnRow{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
 
-    .placeBtns{ display:flex; gap:8px; flex-wrap:wrap; max-height: 280px; overflow:auto; padding: 2px; }
+    .placeBtns{ display:flex; gap:8px; flex-wrap:wrap; max-height: 320px; overflow:auto; padding: 2px; }
     .place-btn{
       border:1px solid var(--stroke);
       background: rgba(255,255,255,.92);
@@ -184,6 +226,10 @@
     .pmeta{ font-size:11px; color: var(--muted); white-space:nowrap; overflow:hidden; text-overflow: ellipsis; }
     .ord{ width:22px; height:22px; display:inline-grid; place-items:center; border-radius: 50%; font-weight: 950;
       background: rgba(37,99,235,.10); color: rgba(37,99,235,1); margin-left:auto; }
+
+    /* Detail + pricing as 2 cards */
+    .twoCards{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top:10px; }
+    @media (max-width: 980px){ .twoCards{ grid-template-columns: 1fr; } }
 
     .detail{
       border: 1px solid var(--stroke);
@@ -226,12 +272,35 @@
       text-transform: uppercase;
     }
 
-    .layout{ display:grid; grid-template-columns: 72% 28%; gap: 14px; align-items:start; margin-top:14px; }
-    @media (max-width: 980px){ .layout{ grid-template-columns: 1fr; } }
-    .mapCard .pad{ padding: 10px; }
-    .pad{ padding:14px; }
-    #map{ width:100%; height: calc(100vh - 140px); min-height: 520px; border-radius: 14px; border: 1px solid var(--stroke); overflow:hidden; background: rgba(255,255,255,.40); }
-    @media (max-width: 980px){ #map{ height: 420px; min-height: 420px; } }
+    /* Map */
+    #map{
+      width:100%;
+      height: calc(100vh - 210px);
+      min-height: 540px;
+      border-radius: 14px;
+      border: 1px solid var(--stroke);
+      overflow:hidden;
+      background: rgba(255,255,255,.40);
+    }
+    .mapHdr{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:10px;
+      margin-bottom: 10px;
+      flex-wrap:wrap;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px){
+      :root{ --mapW: 40%; }
+    }
+    @media (max-width: 980px){
+      .controls{ grid-template-columns: 1fr 1fr; }
+      .main{ grid-template-columns: 1fr; }
+      .mapPanel{ position: relative; top:auto; }
+      #map{ height: 420px; min-height: 420px; }
+    }
 
     .toast{
       position: fixed; left: 16px; bottom: 16px;
@@ -246,9 +315,96 @@
       max-width: 560px;
       z-index: 9999;
       text-transform: uppercase;
-      font-weight: 800;
+      font-weight: 900;
     }
     .toast.show{ display:block; }
+
+/* =========================
+   ✅ OPTION A LAYOUT (NEW)
+   Results Left (scroll) + Sticky Map Right
+   ========================= */
+
+:root{
+  --gap: 14px;
+  --mapW: 34%;
+}
+
+/* main shell inside card */
+.shell{
+  padding: 14px;
+}
+
+/* main two-column layout */
+.mainA{
+  display:grid;
+  grid-template-columns: calc(100% - var(--mapW) - var(--gap)) var(--mapW);
+  gap: var(--gap);
+  align-items:start;
+}
+
+/* left results side */
+.leftA{
+  min-height: 60vh;
+}
+
+/* right sticky map side */
+.rightA{
+  position: sticky;
+  top: 14px;
+  align-self: start;
+}
+
+/* simple inner panels */
+.panelA{
+  background: rgba(255,255,255,.72);
+  border: 1px solid var(--stroke);
+  border-radius: 16px;
+  padding: 12px;
+}
+
+/* spacing between panels */
+.panelA + .panelA{ margin-top: 12px; }
+
+/* map sizing (better) */
+#map{
+  width:100%;
+  height: calc(100vh - 230px);
+  min-height: 540px;
+  border-radius: 14px;
+  border: 1px solid var(--stroke);
+  overflow:hidden;
+  background: rgba(255,255,255,.40);
+}
+
+/* header row inside map */
+.mapHdrA{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:10px;
+  margin-bottom: 10px;
+  flex-wrap:wrap;
+}
+
+/* controls row becomes compact */
+.controls{
+  display:grid;
+  grid-template-columns: 2.2fr 1fr 1fr .8fr 1.2fr;
+  gap:10px;
+  align-items:end;
+}
+
+/* responsive */
+@media (max-width: 1100px){
+  :root{ --mapW: 40%; }
+}
+@media (max-width: 980px){
+  .controls{ grid-template-columns: 1fr 1fr; }
+  .mainA{ grid-template-columns: 1fr; }
+  .rightA{ position: relative; top:auto; }
+  #map{ height: 420px; min-height: 420px; }
+}
+
   </style>
 </head>
 
@@ -262,6 +418,8 @@
 
   <div class="wrap">
     <div class="card">
+
+      <!-- HERO -->
       <div class="hero">
         <div class="hero-top">
           <img src="logo.png" class="site-logo" alt="Himachal Explorer Logo">
@@ -273,21 +431,21 @@
               ✅ Package name uses <b>START</b> and <b>END derived from Column G (route_path)</b>.
               If last point repeats START, system uses <b>second-last point</b> as END.
             </p>
+            <div class="sub" id="dataStatus" style="margin-top:10px;">LOADING TEMPLATES…</div>
           </div>
         </div>
+      </div>
 
-        <div class="hrow">
-          <div class="sub" id="dataStatus">LOADING TEMPLATES…</div>
-        </div>
-
+      <!-- CONTROLS BAR -->
+      <div class="topbar">
         <div class="controls">
-          <div class="field" style="grid-column: span 5;">
+          <div class="field">
             <label>START (TYPE OR PICK)</label>
             <input id="startInp" list="startList" placeholder="E.G. AMRITSAR / DELHI / CHANDIGARH"/>
             <datalist id="startList"></datalist>
           </div>
 
-          <div class="field" style="grid-column: span 3;">
+          <div class="field">
             <label>DAYS (OPTIONAL)</label>
             <select id="daysSel">
               <option value="">ANY</option>
@@ -298,7 +456,7 @@
             </select>
           </div>
 
-          <div class="field" style="grid-column: span 3;">
+          <div class="field">
             <label>PEOPLE (PAX)</label>
             <select id="paxSel">
               <option value="2">2</option><option value="3">3</option><option value="4">4</option>
@@ -308,77 +466,83 @@
             </select>
           </div>
 
-          <div class="field" style="grid-column: span 1;">
+          <div class="field">
             <label>&nbsp;</label>
             <button class="btn secondary" id="resetBtn">RESET</button>
           </div>
 
-          <div class="field" style="grid-column: span 12;">
-            <button class="btn" id="runBtn">GENERATE PACKAGES</button>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button class="btn" id="runBtn">GENERATE</button>
           </div>
-        </div>
-
-        <div class="pad" style="padding-left:0; padding-right:0;">
-          <div class="title">PACKAGES</div>
-          <div class="sub">ONE END (FROM COLUMN G) = ONE BEST PACKAGE (MAX LOCATIONS).</div>
-          <div id="summaryPills"></div>
-
-          <div class="pkgGrid" id="pkgGrid">
-            <div class="sub">TYPE START AND CLICK GENERATE…</div>
-          </div>
-        </div>
-
-        <div class="placesWrap">
-          <div class="placesHdr">
-            <div style="display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;">
-              <div class="title">PACKAGE PLACES</div>
-              <div class="count" id="placesCount">—</div>
-            </div>
-            <div class="btnRow">
-              <button class="btn secondary" id="fitBtn" style="width:auto;">FIT MAP</button>
-              <button class="btn secondary" id="clearBtn" style="width:auto;">CLEAR ROUTE</button>
-            </div>
-          </div>
-
-          <div class="placeBtns" id="placesButtons">
-            <span class="sub">CLICK A PACKAGE TO SHOW PLACES…</span>
-          </div>
-
-          <div class="layout" style="grid-template-columns: 1fr 1fr; gap: 10px; margin-top:10px;">
-            <div class="detail" id="placeDetail">
-              <h3>PLACE DETAILS</h3>
-              <div class="meta">CLICK ANY PLACE TO SEE DETAILS.</div>
-              <div class="desc" id="placeDesc">—</div>
-            </div>
-
-            <div class="costBox">
-              <div class="title">PRICING</div>
-              <div class="sub">OSRM ROAD KM + 6–10% DISCOUNT. PER PERSON PRICE.</div>
-              <div id="costRows"></div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <div class="layout">
-      <div class="card pad">
-        <div class="title">RULE</div>
-        <div class="sub" style="text-transform:none;">
-          ✅ End location is derived from <b>Column G = route_path</b> (last token).<br/>
-          ✅ If last token equals START, end becomes <b>second-last token</b>.<br/>
-          ✅ Card shows image (first stop photo) if available.<br/>
-          ✅ Click a package to draw road route + show photos in place list.
         </div>
       </div>
 
-      <div class="card mapCard">
-        <div class="pad">
-          <div class="title">MAP</div>
-          <div class="sub">ACTUAL ROAD ROUTE LINE</div>
-          <div id="map"></div>
+      <!-- MAIN: RESULTS + MAP -->
+      <div class="main">
+
+        <!-- LEFT: RESULTS -->
+        <div class="results">
+
+          <div class="panel">
+            <div class="title">Packages</div>
+            <div class="sub">ONE END (FROM COLUMN G) = ONE BEST PACKAGE (MAX LOCATIONS).</div>
+            <div id="summaryPills"></div>
+
+            <div class="pkgGrid" id="pkgGrid" style="margin-top:12px;">
+              <div class="sub">TYPE START AND CLICK GENERATE…</div>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top:12px;">
+            <div class="placesHdr">
+              <div style="display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;">
+                <div class="title">Package Places</div>
+                <div class="count" id="placesCount">—</div>
+              </div>
+              <div class="btnRow">
+                <button class="btn secondary" id="fitBtn" style="width:auto;">FIT MAP</button>
+                <button class="btn secondary" id="clearBtn" style="width:auto;">CLEAR ROUTE</button>
+              </div>
+            </div>
+
+            <div class="placeBtns" id="placesButtons">
+              <span class="sub">CLICK A PACKAGE TO SHOW PLACES…</span>
+            </div>
+
+            <div class="twoCards">
+              <div class="detail" id="placeDetail">
+                <h3>PLACE DETAILS</h3>
+                <div class="meta">CLICK ANY PLACE TO SEE DETAILS.</div>
+                <div class="desc" id="placeDesc">—</div>
+              </div>
+
+              <div class="costBox">
+                <div class="title">PRICING</div>
+                <div class="sub">OSRM ROAD KM + 6–10% DISCOUNT. PER PERSON PRICE.</div>
+                <div id="costRows"></div>
+              </div>
+            </div>
+          </div>
+
         </div>
+
+        <!-- RIGHT: MAP -->
+        <div class="mapPanel">
+          <div class="panel">
+            <div class="mapHdr">
+              <div>
+                <div class="title">Map</div>
+                <div class="sub">ACTUAL ROAD ROUTE LINE</div>
+              </div>
+              <div class="sub" style="text-transform:none;">
+                ✅ End derived from <b>Column G</b> • ✅ Route line = OSRM
+              </div>
+            </div>
+            <div id="map"></div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -503,8 +667,6 @@ function initials(name){
 function rupees(n){
   return "₹" + Math.round(Number(n)||0).toLocaleString("en-IN");
 }
-
-/* convert "The Ridge" -> "the-ridge" for fallback lookup */
 function slugifyName(name){
   return String(name||"")
     .trim()
@@ -522,8 +684,8 @@ function slugifyName(name){
 let LOCS = {};
 let TEMPLATES = {};
 let ACTIVE_TEMPLATES = [];
-let NAME_TO_ID = new Map();     // name -> placeId
-let STARTS = [];               // start points list
+let NAME_TO_ID = new Map();
+let STARTS = [];
 
 /***********************
  * ✅ LOAD
@@ -549,7 +711,6 @@ async function loadAll(){
 
   setStatus(`LOADED ${ACTIVE_TEMPLATES.length} TEMPLATES • ${Object.keys(LOCS).length} LOCATIONS`);
 }
-
 function buildNameIndex(){
   NAME_TO_ID = new Map();
   for(const [pid, p] of Object.entries(LOCS)){
@@ -603,9 +764,6 @@ function stopsCount(tpl){ return stopsFromTemplate(tpl).length; }
 
 /***********************
  * ✅ END LOCATION FROM COLUMN G (route_path)
- * - Column G in your sheet = route_path
- * - take last token from route_path split by ">" (also supports "->")
- * - if last token == start, use second-last token
  ***********************/
 function getEndNameFromColumnG(tpl){
   const start = String(tpl.start_point || "").trim().toLowerCase();
@@ -622,30 +780,21 @@ function getEndNameFromColumnG(tpl){
 
   let end = tokens[tokens.length - 1];
   if(end && start && end.trim().toLowerCase() === start && tokens.length >= 2){
-    end = tokens[tokens.length - 2]; // ✅ one place before ending is end
+    end = tokens[tokens.length - 2];
   }
   return end || "UNKNOWN";
 }
-
-/***********************
- * ✅ GET PACKAGE END KEY USED FOR "ONE END = ONE BEST PACKAGE"
- * We convert end name -> district if possible, otherwise keep end name.
- * If end is a place (Mathura etc.) and exists in LOCS by name, we can use its District.
- ***********************/
 function normCaps(x){ return String(x||"").trim().toUpperCase().replace(/\s+/g," "); }
-
 function endKeyFromColumnG(tpl){
   const endName = getEndNameFromColumnG(tpl);
   const pidByName = NAME_TO_ID.get(String(endName).toLowerCase());
 
-  // 1) direct name match
   if(pidByName){
     const p = LOCS[pidByName] || {};
     const d = normCaps(p["District"] || p.district || "");
     return d || normCaps(endName);
   }
 
-  // 2) slug match fallback
   const slug = slugifyName(endName);
   if(LOCS[slug]){
     const p = LOCS[slug] || {};
@@ -653,7 +802,6 @@ function endKeyFromColumnG(tpl){
     return d || normCaps(endName);
   }
 
-  // 3) fallback to endName itself (caps)
   return normCaps(endName);
 }
 
@@ -872,7 +1020,6 @@ function selectPlace(placeId, order){
 
 /***********************
  * ✅ ONE END KEY = ONE BEST PACKAGE
- * BEST = MAX LOCATIONS, then priority, then KM
  ***********************/
 function packageScore(tpl){
   const locs = stopsCount(tpl);
@@ -903,7 +1050,7 @@ function normalizeStartInput(){
 }
 
 /***********************
- * ✅ PACKAGE THUMB: first stop photo (or initials)
+ * ✅ PACKAGE THUMB
  ***********************/
 function getPackageThumbFromTemplate(tpl){
   const stops = stopsFromTemplate(tpl);
@@ -916,7 +1063,7 @@ function getPackageThumbFromTemplate(tpl){
 }
 
 /***********************
- * ✅ APPLY FILTERS + GENERATE (LIVE PACKAGE GENERATOR)
+ * ✅ APPLY FILTERS + GENERATE
  ***********************/
 function applyFilters(){
   const start = normalizeStartInput();
@@ -938,12 +1085,11 @@ function applyFilters(){
   let list = ACTIVE_TEMPLATES.filter(t => String(t.start_point||"").trim().toUpperCase() === String(start).trim().toUpperCase());
   if(daysF) list = list.filter(t => Number(t.days||0) === Number(daysF));
 
-  // one endKey(from column G) = one best package
   const bestByEnd = new Map();
   const scByEnd = new Map();
 
   for(const t of list){
-    const endKey = endKeyFromColumnG(t); // ✅ from Column G
+    const endKey = endKeyFromColumnG(t);
     const sc = packageScore(t);
 
     if(!bestByEnd.has(endKey)){
@@ -984,10 +1130,9 @@ function renderPackagesGrid(list, start){
 
   list.forEach(t=>{
     const key = t.key;
-    const endKey = endKeyFromColumnG(t);  // ✅ end derived from Column G
+    const endKey = endKeyFromColumnG(t);
     const days = Number(t.days || 0) || 0;
     const tempoOk = (t.tempo_ok === true || safeLower(t.tempo_ok)==="true");
-
     const thumb = getPackageThumbFromTemplate(t);
 
     const card = document.createElement("div");
