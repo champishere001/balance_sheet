@@ -487,6 +487,46 @@
       .quote{ display:none; }
       .actions{ min-width:unset; }
     }
+       /* ===========================
+   ✅ Package Finder BG image
+   =========================== */
+.pane.pkgPane{
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(10,14,24,.76), rgba(10,14,24,.88)),
+    var(--pkgBg) center/cover no-repeat;
+}
+
+/* extra dark layer so text stays readable */
+.pane.pkgPane::before{
+  content:"";
+  position:absolute; inset:0;
+  background:
+    radial-gradient(900px 520px at 30% 20%, rgba(124,58,237,.22), transparent 60%),
+    radial-gradient(900px 520px at 80% 30%, rgba(34,197,94,.16), transparent 62%),
+    linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.55));
+  pointer-events:none;
+}
+
+/* bring inner content above overlay */
+.pane.pkgPane > *{
+  position: relative;
+  z-index: 2;
+}
+
+/* make cards inside more “glass” */
+.pane.pkgPane .filters,
+.pane.pkgPane .metaPills,
+.pane.pkgPane .pkgList{
+  background: rgba(0,0,0,.18);
+  backdrop-filter: blur(10px);
+}
+
+/* header also glass */
+.pane.pkgPane .paneHdr{
+  background: rgba(0,0,0,.20);
+  backdrop-filter: blur(12px);
+}
 
     /* ===========================
        ✅ Place Modal styles
