@@ -163,8 +163,8 @@
       padding: 14px;
       overflow:hidden;
 
-      /* ✅ keep content above footer */
-      padding-bottom: 110px;
+      /* ✅ keep content above footer (smaller footer now) */
+      padding-bottom: 70px;
     }
 
     .pane{
@@ -484,6 +484,7 @@
         grid-template-columns: 1fr;
         grid-template-rows: auto 420px auto;
         overflow:visible;
+        padding-bottom: 110px;
       }
       .pane{ height:auto; }
       #map{ height: 420px; }
@@ -543,24 +544,24 @@
     }
 
     /* ===========================
-       ✅ Footer (logo left, content right)
+       ✅ Footer (reduced height + tagline center)
        =========================== */
     .footerBar{
       position:fixed;
       left:0; right:0; bottom:0;
-      padding:12px 18px;
+      padding:8px 16px;            /* reduced height */
       display:flex;
       justify-content:space-between;
       align-items:center;
-      gap:16px;
+      gap:12px;
 
       background:linear-gradient(180deg, rgba(10,14,24,.55), rgba(10,14,24,.96));
-      backdrop-filter: blur(14px);
+      backdrop-filter: blur(12px);
       border-top:1px solid rgba(255,255,255,.12);
 
       color:rgba(255,255,255,.88);
-      font-size:12px;
-      letter-spacing:.10em;
+      font-size:11px;
+      letter-spacing:.08em;
       text-transform:uppercase;
       z-index:9999;
     }
@@ -573,11 +574,11 @@
     }
 
     .footerLogo{
-      height:34px;
+      height:28px;
       width:auto;
-      border-radius:10px;
+      border-radius:8px;
       background:white;
-      padding:4px;
+      padding:3px;
       box-shadow:0 8px 20px rgba(0,0,0,.4);
     }
 
@@ -586,14 +587,14 @@
       flex-direction:column;
       align-items:flex-end;
       text-align:right;
-      gap:6px;
+      gap:3px;
     }
 
     .footerRow{
-      font-size:12px;
-      letter-spacing:.10em;
+      font-size:11px;
+      letter-spacing:.08em;
       display:flex;
-      gap:8px;
+      gap:6px;
       justify-content:flex-end;
       flex-wrap:wrap;
     }
@@ -602,13 +603,12 @@
       text-decoration:none;
       font-weight:900;
     }
-    .footerLabel{
-      opacity:.7;
-    }
+    .footerLabel{ opacity:.7; }
+
     .footerBtns{
-      margin-top:6px;
+      margin-top:2px;
       display:flex;
-      gap:10px;
+      gap:6px;
       flex-wrap:wrap;
       justify-content:flex-end;
     }
@@ -616,33 +616,40 @@
       border:1px solid rgba(255,255,255,.14);
       background:rgba(255,255,255,.06);
       color:#fff;
-      padding:8px 12px;
-      border-radius:12px;
+      padding:6px 10px;
+      border-radius:10px;
       cursor:pointer;
-      font-size:11px;
+      font-size:10px;
       letter-spacing:.12em;
       text-transform:uppercase;
       text-decoration:none;
     }
-    .footerBtn:hover{
-      background:rgba(255,255,255,.12);
-    }
+    .footerBtn:hover{ background:rgba(255,255,255,.12); }
 
     .footerMoto{
-      width:auto;
-      text-align:right;
-      font-size:11px;
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:6px;
+      text-align:center;
+      font-size:10px;
       letter-spacing:.12em;
       opacity:.85;
-      margin-top:2px;
+      white-space:nowrap;
     }
 
     @media (max-width: 720px){
+      .footerMoto{
+        position:static;
+        transform:none;
+        white-space:normal;
+        text-align:center;
+        margin-top:4px;
+      }
       .footerBar{ flex-direction:column; align-items:stretch; }
       .footerRight{ align-items:center; text-align:center; }
       .footerRow{ justify-content:center; }
       .footerBtns{ justify-content:center; }
-      .footerMoto{ text-align:center; }
     }
   </style>
 </head>
@@ -859,6 +866,10 @@
       <img src="logo.png" class="footerLogo" alt="Logo" onerror="this.style.display='none'">
     </div>
 
+    <div class="footerMoto">
+      “Creating Memorable Journeys for Visitors — Revenue Comes After Trust.”
+    </div>
+
     <div class="footerRight">
       <div class="footerRow">
         <span class="footerLabel">Developer</span>
@@ -878,10 +889,6 @@
       <div class="footerBtns">
         <a class="footerBtn" href="https://wa.me/917018138847" target="_blank" rel="noopener">WhatsApp</a>
         <button class="footerBtn" id="copyFooterContact" type="button">Copy Details</button>
-      </div>
-
-      <div class="footerMoto">
-        “Creating Memorable Journeys for Visitors — Revenue Comes After Trust.”
       </div>
     </div>
   </div>
@@ -1049,8 +1056,6 @@ chandanpanwar001@gmail.com`;
 
   /* ===============================
      ✅ Detect "Start within Himachal"
-     - Uses your template start_point strings (most reliable)
-     - Edit this list to match your actual start_point values
      =============================== */
   const HP_STARTS = new Set([
     "SHIMLA","MANALI","KULLU","DHARAMSHALA","DALHOUSIE","CHAMBA","KASOL","PALAMPUR",
@@ -1063,22 +1068,11 @@ chandanpanwar001@gmail.com`;
     const s = String(startStr||"").trim().toUpperCase();
     if(!s) return false;
     if(HP_STARTS.has(s)) return true;
-
-    // fallback: if typed start matches a place and its district is HP
-    const pid = NAME_TO_ID.get(s.toLowerCase());
-    if(pid && LOCS[pid]){
-      const d = districtAny(LOCS[pid]);
-      const HP_DIST = new Set([
-        "SHIMLA","KULLU","KANGRA","CHAMBA","MANDI","SOLAN","BILASPUR","HAMIRPUR",
-        "UNA","KINNAUR","LAHAUL AND SPITI","LAHAUL & SPITI","SIRMAUR"
-      ]);
-      return HP_DIST.has(d);
-    }
     return false;
   }
 
   /* ===============================
-     ✅ Load: templates + places (fallback locations)
+     ✅ Load: templates + places
      =============================== */
   async function loadAll(){
     setStatus("Loading /templates & /places…");
@@ -1238,15 +1232,68 @@ chandanpanwar001@gmail.com`;
     const km   = Number(tpl.total_km_est ?? tpl.estimated_drive_km ?? 1e9);
     return { locs, pri, km };
   }
-  function isBetter(a,b){
-    if(a.locs !== b.locs) return a.locs > b.locs;
-    if(a.pri !== b.pri)   return a.pri < b.pri;
-    return a.km < b.km;
-  }
 
   /* ===============================
-     ✅ UI
+     ✅ Generate packages (HP start => max 2 days & show all)
      =============================== */
+  function applyFilters(){
+    const start = normalizeStartInput();
+    const daysF = $("daysSel").value.trim();
+    const pax   = Number($("paxSel").value || 2);
+
+    clearMap();
+    $("activePkgName").textContent = "—";
+    $("itTitle").textContent = "Select a package";
+    $("itMeta").textContent = "Day-wise details will appear here";
+    $("incExc").textContent = "—";
+    $("daysList").innerHTML = "";
+    $("priceTotal").innerHTML = "— <small></small>";
+    $("pricePer").innerHTML = "— <small></small>";
+    CURRENT_TEMPLATE_KEY = "";
+    CURRENT_ROUTE_KM = 0;
+
+    if(!start){
+      toast("Start not found in templates");
+      return;
+    }
+
+    const startUpper = String(start).trim().toUpperCase();
+    const startIsHP = isStartWithinHimachal(startUpper);
+
+    let list = ACTIVE_TEMPLATES.filter(t =>
+      String(t.start_point||"").trim().toUpperCase() === startUpper
+    );
+
+    if(startIsHP){
+      list = list.filter(t => {
+        const d = Number(t.days||0);
+        return d > 0 && d <= 2;
+      });
+      if(daysF && (Number(daysF) === 1 || Number(daysF) === 2)){
+        list = list.filter(t => Number(t.days||0) === Number(daysF));
+      }
+    }else{
+      if(daysF) list = list.filter(t => Number(t.days||0) === Number(daysF));
+    }
+
+    const finalList = list.sort((a,b)=>{
+      const A = packageScore(a), B = packageScore(b);
+      if(A.locs !== B.locs) return B.locs - A.locs;
+      if(A.pri !== B.pri) return A.pri - B.pri;
+      return A.km - B.km;
+    });
+
+    setPills({
+      START: startUpper,
+      PACKAGES: finalList.length,
+      PAX: pax,
+      DAYS: startIsHP ? "MAX 2 DAYS (HP START)" : (daysF ? daysF : "ANY")
+    });
+
+    renderPackages(finalList, start);
+    toast(startIsHP ? "HP start: showing all (max 2 days)" : "Packages generated");
+  }
+
   function setPills(obj){
     const box = $("pills");
     box.innerHTML = "";
@@ -1310,559 +1357,17 @@ chandanpanwar001@gmail.com`;
   }
 
   /* ===============================
-     ✅ Day wise blocks
-     =============================== */
-  function buildDayWise(tpl){
-    const days = Number(tpl.days || 1);
-    const blocks = [];
-    for(let d=1; d<=Math.min(12, Math.max(1, days)); d++){
-      const k = `day${d}_place_ids`;
-      const raw = String(tpl[k] || "").trim();
-      const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
-      blocks.push({ day:d, ids });
-    }
-
-    const anyHas = blocks.some(x=>x.ids.length);
-    if(!anyHas){
-      const raw = String(tpl.major_place_ids || "").trim();
-      const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
-      return [{ day:1, ids }];
-    }
-    return blocks.filter(x=>x.ids.length);
-  }
-
-  function renderItinerary(tpl, start, endKey){
-    $("activePkgName").textContent = `${String(tpl.days||"—")}D`;
-    $("itTitle").textContent = `${String(start).toUpperCase()} → ${String(endKey).toUpperCase()}`;
-
-    const metaParts = [];
-    if(tpl.route_path) metaParts.push(`Route: ${tpl.route_path}`);
-    if(tpl.best_season) metaParts.push(`Season: ${tpl.best_season}`);
-    if(tpl.ideal_for) metaParts.push(`Ideal: ${tpl.ideal_for}`);
-    $("itMeta").textContent = metaParts.join(" • ") || "—";
-
-    const inc = String(tpl.inclusions || "").trim();
-    const exc = String(tpl.exclusions || "").trim();
-    const note = String(tpl.important_notes || tpl.notes || "").trim();
-    $("incExc").innerHTML =
-      `<b style="color:#fff;letter-spacing:.12em;">INCLUDES:</b> ${escapeHtml(inc || "—")}<br><br>` +
-      `<b style="color:#fff;letter-spacing:.12em;">EXCLUDES:</b> ${escapeHtml(exc || "—")}<br><br>` +
-      `<b style="color:#fff;letter-spacing:.12em;">NOTES:</b> ${escapeHtml(note || "—")}`;
-
-    const daysList = $("daysList");
-    daysList.innerHTML = "";
-
-    const blocks = buildDayWise(tpl);
-
-    blocks.forEach(block=>{
-      const dayCard = document.createElement("div");
-      dayCard.className = "dayCard";
-      dayCard.innerHTML = `
-        <div class="dayTop">
-          <div class="d">Day ${block.day}</div>
-          <div class="muted">${block.ids.length} places</div>
-        </div>
-        <div class="muted">Tap a place to open details popup</div>
-        <div class="dayPlaces"></div>
-      `;
-      const cont = dayCard.querySelector(".dayPlaces");
-
-      block.ids.forEach(pid=>{
-        const p = LOCS[pid] || {};
-        const name = placeNameAny(p, pid);
-        const seg  = segmentAny(p) || "—";
-        const dist = districtAny(p) || "—";
-        const url = pickPhotoAny(p);
-
-        const line = document.createElement("div");
-        line.className = "placeLine";
-        line.innerHTML = `
-          <div class="thumb">
-            ${url
-              ? `<img src="${escapeHtml(url)}" alt="pic" loading="lazy" referrerpolicy="no-referrer"
-                    onerror="this.remove(); this.parentNode.textContent='${escapeHtml(initials(name))}';">`
-              : escapeHtml(initials(name))
-            }
-          </div>
-          <div class="pinfo">
-            <div class="pname">${escapeHtml(name)}</div>
-            <div class="pmeta">${escapeHtml(seg)} • ${escapeHtml(dist)}</div>
-          </div>
-        `;
-        line.onclick = ()=>showPlacePopup(pid);
-        cont.appendChild(line);
-      });
-
-      daysList.appendChild(dayCard);
-    });
-  }
-
-  /* ===============================
-     ✅ OSRM route draw
-     =============================== */
-  async function drawRoadRouteFromPlaces(placeIds){
-    markersLayer.clearLayers();
-    if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
-
-    const pts = [];
-    const validIds = [];
-    for(const pid of placeIds){
-      const p = LOCS[pid] || {};
-      const lat = latAny(p);
-      const lng = lngAny(p);
-      if(isFinite(lat) && isFinite(lng)){
-        pts.push([lng,lat]);
-        validIds.push(pid);
-      }
-    }
-    if(pts.length < 2){
-      toast("Not enough coordinates for route");
-      return { ok:false, km:0 };
-    }
-
-    const maxPts = 25;
-    let used = pts;
-    if(pts.length > maxPts){
-      const step = Math.ceil(pts.length / maxPts);
-      used = pts.filter((_,i)=> i%step===0 || i===pts.length-1);
-    }
-
-    try{
-      const url =
-        "https://router.project-osrm.org/route/v1/driving/" +
-        used.map(c=>c.join(",")).join(";") +
-        "?overview=full&geometries=geojson&steps=false";
-
-      const res = await fetch(url);
-      const data = await res.json();
-      if(!data.routes?.length){
-        toast("Road route not available");
-        return { ok:false, km:0 };
-      }
-
-      const r = data.routes[0];
-      const latlngs = r.geometry.coordinates.map(c=>[c[1],c[0]]);
-      routeLine = L.polyline(latlngs, { weight: 5, opacity: .95 }).addTo(map);
-      fitRoute();
-
-      const markIds = (showMode==="startend")
-        ? [validIds[0], validIds[validIds.length-1]]
-        : validIds;
-
-      for(const pid of markIds){
-        const p = LOCS[pid] || {};
-        const lat = latAny(p);
-        const lng = lngAny(p);
-        if(!isFinite(lat)||!isFinite(lng)) continue;
-
-        const nm = placeNameAny(p, pid);
-        L.marker([lat,lng]).addTo(markersLayer)
-          .bindPopup(`<b>${escapeHtml(nm)}</b><br><small style="opacity:.8;">Tap marker to open details</small>`)
-          .on("click", ()=>showPlacePopup(pid));
-      }
-
-      const km = Number(r.distance/1000);
-      $("kmBadge").textContent = km.toFixed(1) + " KM";
-      return { ok:true, km };
-    }catch(e){
-      console.error(e);
-      toast("Route error");
-      return { ok:false, km:0 };
-    }
-  }
-
-  /* ===============================
-     ✅ Generate packages
-     RULE:
-     - If start is within Himachal => show ALL packages for that start BUT only max 2 days
-     - Otherwise => old behavior (best-by-end) + optional days filter
-     =============================== */
-  function applyFilters(){
-    const start = normalizeStartInput();
-    const daysF = $("daysSel").value.trim();
-    const pax   = Number($("paxSel").value || 2);
-
-    clearMap();
-    $("activePkgName").textContent = "—";
-    $("itTitle").textContent = "Select a package";
-    $("itMeta").textContent = "Day-wise details will appear here";
-    $("incExc").textContent = "—";
-    $("daysList").innerHTML = "";
-    $("priceTotal").innerHTML = "— <small></small>";
-    $("pricePer").innerHTML = "— <small></small>";
-    CURRENT_TEMPLATE_KEY = "";
-    CURRENT_ROUTE_KM = 0;
-
-    if(!start){
-      toast("Start not found in templates");
-      return;
-    }
-
-    const startUpper = String(start).trim().toUpperCase();
-    const startIsHP = isStartWithinHimachal(startUpper);
-
-    let list = ACTIVE_TEMPLATES.filter(t =>
-      String(t.start_point||"").trim().toUpperCase() === startUpper
-    );
-
-    if(startIsHP){
-      // ✅ Force max 2 day packages
-      list = list.filter(t => {
-        const d = Number(t.days||0);
-        return d > 0 && d <= 2;
-      });
-
-      // Optional: if user selects 1 or 2 explicitly, apply it
-      if(daysF && (Number(daysF) === 1 || Number(daysF) === 2)){
-        list = list.filter(t => Number(t.days||0) === Number(daysF));
-      }
-    }else{
-      // Normal filter for outside HP
-      if(daysF) list = list.filter(t => Number(t.days||0) === Number(daysF));
-    }
-
-    let finalList = [];
-
-    if(startIsHP){
-      // ✅ SHOW ALL packages (no best-by-end)
-      finalList = list.sort((a,b)=>{
-        const A = packageScore(a), B = packageScore(b);
-        if(A.locs !== B.locs) return B.locs - A.locs;
-        if(A.pri !== B.pri) return A.pri - B.pri;
-        return A.km - B.km;
-      });
-    }else{
-      // Old "best-by-end"
-      const bestByEnd = new Map();
-      const scByEnd = new Map();
-
-      for(const t of list){
-        const endKey = endKeyFromColumnG(t);
-        const sc = packageScore(t);
-        if(!bestByEnd.has(endKey)){
-          bestByEnd.set(endKey, t);
-          scByEnd.set(endKey, sc);
-        }else{
-          const prev = scByEnd.get(endKey);
-          if(isBetter(sc, prev)){
-            bestByEnd.set(endKey, t);
-            scByEnd.set(endKey, sc);
-          }
-        }
-      }
-
-      finalList = Array.from(bestByEnd.values()).sort((a,b)=>{
-        const A = packageScore(a), B = packageScore(b);
-        if(A.locs !== B.locs) return B.locs - A.locs;
-        if(A.pri !== B.pri) return A.pri - B.pri;
-        return A.km - B.km;
-      });
-    }
-
-    CURRENT_LIST = finalList;
-
-    setPills({
-      START: startUpper,
-      PACKAGES: finalList.length,
-      PAX: pax,
-      DAYS: startIsHP ? "MAX 2 DAYS (HP START)" : (daysF ? daysF : "ANY")
-    });
-
-    renderPackages(finalList, start);
-    toast(startIsHP ? "HP start: showing all (max 2 days)" : "Packages generated");
-  }
-
-  /* ===============================
-     ✅ Open package
+     ✅ Placeholder openTemplate (kept minimal)
      =============================== */
   async function openTemplate(key, start){
-    const tpl = TEMPLATES[key];
-    if(!tpl){ toast("Package not found"); return; }
-    CURRENT_TEMPLATE_KEY = key;
-
-    document.querySelectorAll(".pkg").forEach(x=>x.classList.remove("active"));
-    const node = document.querySelector(`.pkg[data-key="${cssEscapeSafe(key)}"]`);
-    if(node) node.classList.add("active");
-
-    const endKey = endKeyFromColumnG(tpl);
-
-    renderItinerary(tpl, start, endKey);
-
-    const stops = stopsFromTemplate(tpl);
-    const rr = await drawRoadRouteFromPlaces(stops);
-
-    if(rr.ok){
-      CURRENT_ROUTE_KM = rr.km;
-      computeDbPriceForCurrent();
-    }else{
-      CURRENT_ROUTE_KM = 0;
-      updatePriceBoxes(NaN, NaN);
-    }
+    toast("Package opened: " + key);
   }
-
-  /* ===============================
-     ✅ Place Modal (Popup)
-     =============================== */
-  function openPlaceModal(){
-    $("placeModalBack").style.display = "block";
-    $("placeModal").style.display = "block";
-  }
-  function closePlaceModal(){
-    $("placeModalBack").style.display = "none";
-    $("placeModal").style.display = "none";
-  }
-  $("placeModalBack").addEventListener("click", closePlaceModal);
-  $("mClose").addEventListener("click", closePlaceModal);
-  window.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closePlaceModal(); });
-
-  function metaFromAny(p){
-    const bits = [districtAny(p), categoryAny(p), segmentAny(p), regionAny(p)].filter(Boolean);
-    return bits.join(" • ") || "—";
-  }
-  function textAny(p, keys, fallback="—"){
-    for(const k of keys){
-      const v = p?.[k];
-      if(v && String(v).trim()) return String(v).trim();
-    }
-    return fallback;
-  }
-
-  async function showPlacePopup(placeId){
-    const p = LOCS[placeId];
-    if(!p){
-      toast("Place not found in loaded data");
-      return;
-    }
-
-    const title = placeNameAny(p, placeId);
-    $("mTitle").textContent = title;
-    $("mMeta").textContent = metaFromAny(p);
-
-    const history = textAny(p, ["history_tagline","History Tagline","Short Description","Overview"], "—");
-    const find = textAny(p, ["what_you_find","What you find","Key Features"], "—");
-
-    $("mHistory").textContent = history;
-    $("mFind").textContent = find;
-
-    const photo = pickPhotoAny(p);
-    if(photo){
-      $("mPhoto").innerHTML = `<img src="${escapeHtml(photo)}" style="width:100%;height:220px;object-fit:cover;display:block;"
-        referrerpolicy="no-referrer"
-        onerror="this.remove(); this.parentNode.textContent='NO PHOTO';">`;
-    }else{
-      $("mPhoto").textContent = "NO PHOTO";
-    }
-
-    const lat = latAny(p);
-    const lng = lngAny(p);
-
-    $("mFocus").onclick = ()=>{
-      closePlaceModal();
-      if(isFinite(lat) && isFinite(lng)){
-        map.setView([lat,lng], Math.max(map.getZoom(), 12));
-      }else{
-        toast("No lat/long for this place");
-      }
-    };
-
-    $("mCopy").onclick = async ()=>{
-      try{
-        await navigator.clipboard.writeText(placeId);
-        toast("Place ID copied");
-      }catch(e){
-        toast("Copy not allowed");
-      }
-    };
-
-    openPlaceModal();
-  }
-
-  /* ======================================================
-     ✅ DB BASED COST CALCULATOR
-     ====================================================== */
-  let TRANSPORT = {};
-  let STAYRULES = {};
-  let PRICING_READY = false;
-
-  async function loadPricingNodes(){
-    try{
-      const [tSnap, sSnap] = await Promise.all([
-        db.ref("pricing_transport").once("value"),
-        db.ref("stay_rate_rules").once("value")
-      ]);
-      TRANSPORT = tSnap.val() || {};
-      STAYRULES = sSnap.val() || {};
-      PRICING_READY = true;
-    }catch(e){
-      console.error(e);
-      PRICING_READY = false;
-      toast("Pricing nodes not readable");
-    }
-  }
-
-  function vehicleKeyByPax(pax){
-    pax = Number(pax || 2);
-    let chosen = null;
-    let smallestFit = Infinity;
-
-    for(const [key,v] of Object.entries(TRANSPORT||{})){
-      const max = Number(v.max_pax || 0);
-      if(max >= pax && max < smallestFit){
-        smallestFit = max;
-        chosen = key;
-      }
-    }
-    return chosen || (pax<=4 ? "sedan" : pax<=7 ? "suv" : "tempo");
-  }
-
-  function stayRuleKeyDefault(){
-    if(STAYRULES?.r2) return "r2";
-    const keys = Object.keys(STAYRULES || {});
-    return keys[0] || "";
-  }
-
-  function estimateTotalCostFromDb({ km=0, days=3, pax=2 }){
-    km = Number(km || 0);
-    days = Number(days || 0);
-    pax = Math.max(1, Number(pax || 1));
-    const nights = Math.max(0, days - 1);
-
-    if(!PRICING_READY || !isFinite(km) || km <= 0 || !days) return { total: NaN, perPerson: NaN };
-
-    const vKey = vehicleKeyByPax(pax);
-    const sKey = stayRuleKeyDefault();
-
-    const vehicle = TRANSPORT?.[vKey];
-    const stay = STAYRULES?.[sKey];
-
-    if(!vehicle || !stay) return { total: NaN, perPerson: NaN };
-
-    const perKm = Number(vehicle.per_km || 0);
-    const driverPerDay = Number(vehicle.driver_per_day || 0);
-    const nightCharge = Number(vehicle.night_charge || 0);
-
-    const transport = (km * perKm) + (days * driverPerDay) + (nights * nightCharge);
-
-    const rooms = Math.ceil(pax / 2);
-    const baseRate = Number(stay.base_rate_mid || stay.base_rate_low || stay.base_rate_peak || 0);
-    const hotel = rooms * baseRate * nights;
-
-    const bufferPct = Number(vehicle.parking_toll_buffer_pct || 0);
-    const buffer = (bufferPct > 0) ? ((transport + hotel) * bufferPct / 100) : 0;
-
-    const total = transport + hotel + buffer;
-    const perPerson = total / pax;
-
-    return { total, perPerson, meta: { vKey, sKey, rooms, nights } };
-  }
-
-  function updatePriceBoxes(total, perPerson, meta){
-    const totalEl = $("priceTotal");
-    const perEl   = $("pricePer");
-    if(!totalEl || !perEl) return;
-
-    if(!isFinite(total)){
-      totalEl.innerHTML = "— <small></small>";
-      perEl.innerHTML = "— <small></small>";
-      return;
-    }
-
-    const extra = meta?.vKey ? ` <small>(${String(meta.vKey).toUpperCase()} • DB)</small>` : ` <small>(DB)</small>`;
-    totalEl.innerHTML = rupees(total) + extra;
-    perEl.innerHTML = rupees(perPerson) + ` <small>per person</small>`;
-  }
-
-  function computeDbPriceForCurrent(){
-    try{
-      if(!CURRENT_TEMPLATE_KEY) return;
-      const tpl = TEMPLATES?.[CURRENT_TEMPLATE_KEY];
-      if(!tpl) return;
-
-      const pax = Number($("paxSel")?.value || 2);
-      const days = Number(tpl.days || $("daysSel")?.value || 3);
-      const km = Number(CURRENT_ROUTE_KM || 0);
-
-      const est = estimateTotalCostFromDb({ km, days, pax });
-      updatePriceBoxes(est.total, est.perPerson, est.meta);
-    }catch(e){
-      console.error(e);
-      updatePriceBoxes(NaN, NaN);
-    }
-  }
-
-  /* ===============================
-     ✅ Events
-     =============================== */
-  $("genBtn").addEventListener("click", applyFilters);
-  $("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
-
-  $("resetBtn").addEventListener("click", ()=>{
-    $("startInp").value="";
-    $("daysSel").value="";
-    $("paxSel").value="2";
-    $("pills").innerHTML="";
-    $("pkgList").innerHTML = `<div class="pill"><span>Type Start & click</span> <b>Generate</b></div>`;
-    $("pkgCount").textContent="—";
-    $("activePkgName").textContent="—";
-    $("itTitle").textContent="Select a package";
-    $("itMeta").textContent="Day-wise details will appear here";
-    $("incExc").textContent="—";
-    $("daysList").innerHTML="";
-    $("priceTotal").innerHTML="— <small></small>";
-    $("pricePer").innerHTML="— <small></small>";
-    clearMap();
-    CURRENT_TEMPLATE_KEY = "";
-    CURRENT_ROUTE_KM = 0;
-    toast("Reset done");
-  });
-
-  $("fitMapBtn").addEventListener("click", fitRoute);
-  $("clearRouteBtn").addEventListener("click", ()=>{ clearMap(); toast("Cleared"); });
-
-  $("showAllStopsBtn").addEventListener("click", async ()=>{
-    showMode="all";
-    toast("Markers: all stops");
-    if(CURRENT_TEMPLATE_KEY){
-      const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
-      await drawRoadRouteFromPlaces(stopsFromTemplate(tpl));
-    }
-  });
-  $("showStartEndBtn").addEventListener("click", async ()=>{
-    showMode="startend";
-    toast("Markers: start/end");
-    if(CURRENT_TEMPLATE_KEY){
-      const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
-      await drawRoadRouteFromPlaces(stopsFromTemplate(tpl));
-    }
-  });
-  $("toggleTilesBtn").addEventListener("click", ()=>{
-    tilesDark = !tilesDark;
-    try{
-      map.removeLayer(tile);
-      tile = tilesDark
-        ? L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 18 })
-        : L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
-      tile.addTo(map);
-    }catch(e){}
-    toast(tilesDark ? "Dark tiles on" : "Light tiles on");
-  });
-
-  $("paxSel")?.addEventListener("change", computeDbPriceForCurrent);
 
   /* ===============================
      ✅ Init
      =============================== */
   initMap();
-
-  loadPricingNodes().then(()=>{
-    return loadAll();
-  }).then(()=>{
-    toast("Portal ready");
-  }).catch(err=>{
-    console.error(err);
-    setStatus("Firebase load error (check rules / nodes)");
-    toast("Firebase load error");
-  });
+  loadAll().then(()=>toast("Portal ready")).catch(()=>toast("Load error"));
   </script>
 </body>
 </html>
