@@ -11,7 +11,9 @@
 
   <!-- Firebase (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics-compat.js"></script>
 
   <style>
     :root{
@@ -717,16 +719,21 @@
    ✅ Firebase Config (PUT YOURS)
    =============================== */
 const firebaseConfig = {
-  apiKey: "REPLACE_ME",
+  apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
   authDomain: "revnue-records.firebaseapp.com",
   databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "revnue-records",
-  storageBucket: "revnue-records.appspot.com",
-  messagingSenderId: "REPLACE_ME",
-  appId: "REPLACE_ME"
+  storageBucket: "revnue-records.firebasestorage.app",
+  messagingSenderId: "182348503564",
+  appId: "1:182348503564:web:480085405b09177245ac29",
+  measurementId: "G-MGTDBCG896"
 };
+
 firebase.initializeApp(firebaseConfig);
+
 const db = firebase.database();
+const storage = firebase.storage();
+const analytics = firebase.analytics();
 
 /* ===============================
    ✅ Helpers
