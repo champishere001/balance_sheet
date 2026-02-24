@@ -11,11 +11,12 @@
   <meta name="author" content="Himachal Explorer" />
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
 
-  <!-- ✅ SEO: Canonical (change ONLY if you use www) -->
+  <!-- ✅ SEO: Canonical -->
   <link rel="canonical" href="https://himachalexplorer.in/" />
 
   <!-- ✅ Open Graph (Facebook/WhatsApp) -->
   <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_IN" />
   <meta property="og:title" content="Himachal Tour Packages | Himachal Explorer Portal" />
   <meta property="og:description" content="Live route map + packages + day-wise plans across Himachal. Find best routes, stops, and itineraries." />
   <meta property="og:url" content="https://himachalexplorer.in/" />
@@ -38,19 +39,24 @@
   <link rel="preconnect" href="https://www.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://unpkg.com" crossorigin>
   <link rel="preconnect" href="https://router.project-osrm.org" crossorigin>
-  <link rel="preconnect" href="https://{s}.tile.openstreetmap.org" crossorigin>
+
+  <!-- ✅ FIXED: OSM tile hosts (cannot preconnect to https://{s}.tile...) -->
+  <link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin>
+  <link rel="preconnect" href="https://a.tile.openstreetmap.org" crossorigin>
+  <link rel="preconnect" href="https://b.tile.openstreetmap.org" crossorigin>
+  <link rel="preconnect" href="https://c.tile.openstreetmap.org" crossorigin>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <!-- Firebase (Compat) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics-compat.js"></script>
 
-  <!-- ✅ Structured Data (JSON-LD) for better Google understanding -->
+  <!-- ✅ Structured Data (JSON-LD) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -64,6 +70,15 @@
         "inLanguage": "en-IN"
       },
       {
+        "@type": "WebPage",
+        "@id": "https://himachalexplorer.in/#webpage",
+        "url": "https://himachalexplorer.in/",
+        "name": "Himachal Tour Packages | Himachal Explorer Portal (Routes, Maps, Day-wise Plans)",
+        "isPartOf": { "@id": "https://himachalexplorer.in/#website" },
+        "about": { "@id": "https://himachalexplorer.in/#travelagency" },
+        "inLanguage": "en-IN"
+      },
+      {
         "@type": "TravelAgency",
         "@id": "https://himachalexplorer.in/#travelagency",
         "name": "Himachal Explorer",
@@ -74,6 +89,7 @@
         "areaServed": "IN-HP",
         "priceRange": "₹₹",
         "image": "https://himachalexplorer.in/og-cover.jpg",
+        "logo": "https://himachalexplorer.in/logo.png",
         "sameAs": [],
         "address": {
           "@type": "PostalAddress",
@@ -107,7 +123,7 @@
   }
   </script>
 
-  <!-- ✅ Optional: Sitemap hint (Google finds it automatically too) -->
+  <!-- ✅ Optional: Sitemap -->
   <link rel="sitemap" type="application/xml" title="Sitemap" href="https://himachalexplorer.in/sitemap.xml" />
 
   <style>
@@ -307,6 +323,11 @@
       letter-spacing:.12em;
       margin:0 0 6px 2px;
     }
+
+    /* ✅ FIX: don't force uppercase on INPUT typing (mobile UX) */
+    select{ text-transform: uppercase; }
+    input{ text-transform: none; }
+
     input, select{
       width:100%;
       padding: 11px 12px;
@@ -315,7 +336,6 @@
       background: rgba(0,0,0,.25);
       color: rgba(255,255,255,.92);
       outline:none;
-      text-transform: uppercase;
     }
     input:focus, select:focus{
       border-color: rgba(124,58,237,.55);
@@ -705,6 +725,13 @@
   <!-- ✅ Real H1 for SEO (hidden visually) -->
   <h1 class="sr-only">Himachal Tour Packages - Himachal Explorer Portal</h1>
 
+  <!-- ✅ No-JS fallback -->
+  <noscript>
+    <div style="padding:14px; margin:14px; border:1px solid rgba(255,255,255,.2); border-radius:14px; background:rgba(0,0,0,.35); color:#fff;">
+      This portal needs JavaScript to load packages, maps, and itinerary details.
+    </div>
+  </noscript>
+
   <div class="aurora"></div>
   <div class="noise"></div>
 
@@ -746,7 +773,7 @@
         <div class="filters">
           <div class="field">
             <label>Start (Templates)</label>
-            <input id="startInp" list="startList" placeholder="E.g. AMRITSAR / DELHI / CHANDIGARH">
+            <input id="startInp" list="startList" placeholder="E.g. AMRITSAR / DELHI / CHANDIGARH" autocomplete="off">
             <datalist id="startList"></datalist>
           </div>
 
@@ -918,6 +945,7 @@
     </div>
   </div>
 
+  <!-- ✅ IMPORTANT: With defer scripts, run app after DOM is ready -->
   <script>
   /* ===============================
      ✅ Firebase Config
@@ -932,11 +960,6 @@
     appId: "1:182348503564:web:480085405b09177245ac29",
     measurementId: "G-MGTDBCG896"
   };
-
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-  const storage = firebase.storage();
-  const analytics = firebase.analytics();
 
   /* ===============================
      ✅ Helpers
@@ -976,18 +999,6 @@
     return String(sel).replace(/["\\]/g,"\\$&");
   }
 
-  // ✅ Copy contact
-  $("copyContactBtn")?.addEventListener("click", async ()=>{
-    const txt =
-`Himachal Explorer Portal
-Chandan Panwar
-+91 7018138847
-chandanpanwar001@gmail.com
-https://himachalexplorer.in/`;
-    try{ await navigator.clipboard.writeText(txt); toast("Contact copied"); }
-    catch(e){ toast("Copy not allowed"); }
-  });
-
   /* ===============================
      ✅ Quotes
      =============================== */
@@ -999,10 +1010,6 @@ https://himachalexplorer.in/`;
     "Snow, cedar, rivers — welcome to <b>Himachal</b>."
   ];
   let qIndex=0;
-  setInterval(()=>{
-    qIndex=(qIndex+1)%QUOTES.length;
-    $("quoteText").innerHTML = "“" + QUOTES[qIndex] + "”";
-  }, 5000);
 
   /* ===============================
      ✅ Map
@@ -1029,6 +1036,7 @@ https://himachalexplorer.in/`;
   /* ===============================
      ✅ Data
      =============================== */
+  let db, storage, analytics;
   let LOCS = {};
   let TEMPLATES = {};
   let ACTIVE_TEMPLATES = [];
@@ -1641,9 +1649,6 @@ https://himachalexplorer.in/`;
     $("placeModalBack").style.display = "none";
     $("placeModal").style.display = "none";
   }
-  $("placeModalBack").addEventListener("click", closePlaceModal);
-  $("mClose").addEventListener("click", closePlaceModal);
-  window.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closePlaceModal(); });
 
   function metaFromAny(p){
     const bits = [districtAny(p), categoryAny(p), segmentAny(p), regionAny(p)].filter(Boolean);
@@ -1816,77 +1821,116 @@ https://himachalexplorer.in/`;
     }
   }
 
-  $("genBtn").addEventListener("click", applyFilters);
-  $("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
+  /* ===============================
+     ✅ Boot after DOM ready (prevents race with deferred libs)
+     =============================== */
+  window.addEventListener("DOMContentLoaded", () => {
+    // Init Firebase
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+    storage = firebase.storage();
+    analytics = firebase.analytics();
 
-  $("resetBtn").addEventListener("click", ()=>{
-    $("startInp").value="";
-    $("daysSel").value="";
-    $("paxSel").value="2";
-    $("pills").innerHTML="";
-    $("pkgList").innerHTML = `<div class="pill"><span>Type Start & click</span> <b>Generate</b></div>`;
-    $("pkgCount").textContent="—";
-    $("activePkgName").textContent="—";
-    $("itTitle").textContent="Select a package";
-    $("itMeta").textContent="Day-wise details will appear here";
-    $("itSanityNote").style.display = "none";
-    $("itSanityNote").textContent = "";
-    $("incExc").textContent="—";
-    $("daysList").innerHTML="";
-    $("priceTotal").innerHTML="— <small></small>";
-    $("pricePer").innerHTML="— <small></small>";
-    clearMap();
-    CURRENT_TEMPLATE_KEY = "";
-    CURRENT_ROUTE_KM = 0;
-    toast("Reset done");
-  });
+    // Quotes rotation
+    setInterval(()=>{
+      qIndex=(qIndex+1)%QUOTES.length;
+      $("quoteText").innerHTML = "“" + QUOTES[qIndex] + "”";
+    }, 5000);
 
-  $("fitMapBtn").addEventListener("click", fitRoute);
-  $("clearRouteBtn").addEventListener("click", ()=>{ clearMap(); toast("Cleared"); });
+    // Copy contact
+    $("copyContactBtn")?.addEventListener("click", async ()=>{
+      const txt =
+`Himachal Explorer Portal
+Chandan Panwar
++91 7018138847
+chandanpanwar001@gmail.com
+https://himachalexplorer.in/`;
+      try{ await navigator.clipboard.writeText(txt); toast("Contact copied"); }
+      catch(e){ toast("Copy not allowed"); }
+    });
 
-  $("showAllStopsBtn").addEventListener("click", async ()=>{
-    showMode="all";
-    toast("Markers: all stops");
-    if(CURRENT_TEMPLATE_KEY){
-      const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
-      const endKey = endKeyFromColumnG(tpl);
-      const routeIdsRaw = routeIdsFromTemplateIncludingStart(tpl);
-      const sanity = sanitizeStopsForTemplate(tpl, routeIdsRaw, endKey);
-      await drawRoadRouteFromPlaces(sanity.ids);
-    }
-  });
-  $("showStartEndBtn").addEventListener("click", async ()=>{
-    showMode="startend";
-    toast("Markers: start/end");
-    if(CURRENT_TEMPLATE_KEY){
-      const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
-      const endKey = endKeyFromColumnG(tpl);
-      const routeIdsRaw = routeIdsFromTemplateIncludingStart(tpl);
-      const sanity = sanitizeStopsForTemplate(tpl, routeIdsRaw, endKey);
-      await drawRoadRouteFromPlaces(sanity.ids);
-    }
-  });
-  $("toggleTilesBtn").addEventListener("click", ()=>{
-    tilesDark = !tilesDark;
-    try{
-      map.removeLayer(tile);
-      tile = tilesDark
-        ? L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 18 })
-        : L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
-      tile.addTo(map);
-    }catch(e){}
-    toast(tilesDark ? "Dark tiles on" : "Light tiles on");
-  });
+    // Modal events
+    $("placeModalBack").addEventListener("click", closePlaceModal);
+    $("mClose").addEventListener("click", closePlaceModal);
+    window.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closePlaceModal(); });
 
-  $("paxSel")?.addEventListener("change", computeDbPriceForCurrent);
+    // UI events
+    $("genBtn").addEventListener("click", applyFilters);
+    $("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
 
-  initMap();
-  loadPricingNodes().then(()=> loadAll()).then(()=>{
-    toast("Portal ready");
-  }).catch(err=>{
-    console.error(err);
-    setStatus("Firebase load error (check rules / nodes)");
-    toast("Firebase load error");
+    $("resetBtn").addEventListener("click", ()=>{
+      $("startInp").value="";
+      $("daysSel").value="";
+      $("paxSel").value="2";
+      $("pills").innerHTML="";
+      $("pkgList").innerHTML = `<div class="pill"><span>Type Start & click</span> <b>Generate</b></div>`;
+      $("pkgCount").textContent="—";
+      $("activePkgName").textContent="—";
+      $("itTitle").textContent="Select a package";
+      $("itMeta").textContent="Day-wise details will appear here";
+      $("itSanityNote").style.display = "none";
+      $("itSanityNote").textContent = "";
+      $("incExc").textContent="—";
+      $("daysList").innerHTML="";
+      $("priceTotal").innerHTML="— <small></small>";
+      $("pricePer").innerHTML="— <small></small>";
+      clearMap();
+      CURRENT_TEMPLATE_KEY = "";
+      CURRENT_ROUTE_KM = 0;
+      toast("Reset done");
+    });
+
+    $("fitMapBtn").addEventListener("click", fitRoute);
+    $("clearRouteBtn").addEventListener("click", ()=>{ clearMap(); toast("Cleared"); });
+
+    $("showAllStopsBtn").addEventListener("click", async ()=>{
+      showMode="all";
+      toast("Markers: all stops");
+      if(CURRENT_TEMPLATE_KEY){
+        const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
+        const endKey = endKeyFromColumnG(tpl);
+        const routeIdsRaw = routeIdsFromTemplateIncludingStart(tpl);
+        const sanity = sanitizeStopsForTemplate(tpl, routeIdsRaw, endKey);
+        await drawRoadRouteFromPlaces(sanity.ids);
+      }
+    });
+
+    $("showStartEndBtn").addEventListener("click", async ()=>{
+      showMode="startend";
+      toast("Markers: start/end");
+      if(CURRENT_TEMPLATE_KEY){
+        const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
+        const endKey = endKeyFromColumnG(tpl);
+        const routeIdsRaw = routeIdsFromTemplateIncludingStart(tpl);
+        const sanity = sanitizeStopsForTemplate(tpl, routeIdsRaw, endKey);
+        await drawRoadRouteFromPlaces(sanity.ids);
+      }
+    });
+
+    $("toggleTilesBtn").addEventListener("click", ()=>{
+      tilesDark = !tilesDark;
+      try{
+        map.removeLayer(tile);
+        tile = tilesDark
+          ? L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 18 })
+          : L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
+        tile.addTo(map);
+      }catch(e){}
+      toast(tilesDark ? "Dark tiles on" : "Light tiles on");
+    });
+
+    $("paxSel")?.addEventListener("change", computeDbPriceForCurrent);
+
+    // Init map + load DB nodes
+    initMap();
+    loadPricingNodes()
+      .then(()=> loadAll())
+      .then(()=> toast("Portal ready"))
+      .catch(err=>{
+        console.error(err);
+        setStatus("Firebase load error (check rules / nodes)");
+        toast("Firebase load error");
+      });
   });
   </script>
 </body>
