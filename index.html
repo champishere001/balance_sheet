@@ -4,17 +4,14 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
-  <!-- ✅ SEO: Title + Description -->
   <title>Himachal Tour Packages | Himachal Explorer Portal (Routes, Maps, Day-wise Plans)</title>
   <meta name="description" content="Explore Himachal tour packages with live road route maps, day-wise itineraries, places, and package planner. Start from Delhi/Chandigarh/Amritsar or Himachal cities. Himachal Explorer Portal by Chandan Panwar." />
   <meta name="keywords" content="Himachal tour packages, Himachal itinerary, Himachal trip planner, Himachal explorer, Shimla Manali package, Spiti tour, Dharamshala Dalhousie, Kullu Kasol, road route map, Himachal travel" />
   <meta name="author" content="Himachal Explorer" />
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
 
-  <!-- ✅ SEO: Canonical -->
   <link rel="canonical" href="https://himachalexplorer.in/" />
 
-  <!-- ✅ Open Graph (Facebook/WhatsApp) -->
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="en_IN" />
   <meta property="og:title" content="Himachal Tour Packages | Himachal Explorer Portal" />
@@ -23,40 +20,33 @@
   <meta property="og:image" content="https://himachalexplorer.in/og-cover.jpg" />
   <meta property="og:site_name" content="Himachal Explorer" />
 
-  <!-- ✅ Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Himachal Tour Packages | Himachal Explorer Portal" />
   <meta name="twitter:description" content="Live route map + packages + day-wise plans across Himachal." />
   <meta name="twitter:image" content="https://himachalexplorer.in/og-cover.jpg" />
 
-  <!-- ✅ Theme / Icons -->
   <meta name="theme-color" content="#070A12" />
   <link rel="icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-  <!-- ✅ Performance: preconnect -->
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://www.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://unpkg.com" crossorigin>
   <link rel="preconnect" href="https://router.project-osrm.org" crossorigin>
 
-  <!-- ✅ FIXED: OSM tile hosts (cannot preconnect to https://{s}.tile...) -->
   <link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin>
   <link rel="preconnect" href="https://a.tile.openstreetmap.org" crossorigin>
   <link rel="preconnect" href="https://b.tile.openstreetmap.org" crossorigin>
   <link rel="preconnect" href="https://c.tile.openstreetmap.org" crossorigin>
 
-  <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- Firebase (Compat) -->
   <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics-compat.js"></script>
 
-  <!-- ✅ Structured Data (JSON-LD) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -123,7 +113,6 @@
   }
   </script>
 
-  <!-- ✅ Optional: Sitemap -->
   <link rel="sitemap" type="application/xml" title="Sitemap" href="https://himachalexplorer.in/sitemap.xml" />
 
   <style>
@@ -146,7 +135,6 @@
       --topH: 92px;
       --gap: 14px;
 
-      /* ✅ WIDTHS */
       --leftPct: 36%;
       --mapPct: 24%;
       --rightPct: 40%;
@@ -324,7 +312,6 @@
       margin:0 0 6px 2px;
     }
 
-    /* ✅ FIX: don't force uppercase on INPUT typing (mobile UX) */
     select{ text-transform: uppercase; }
     input{ text-transform: none; }
 
@@ -713,7 +700,6 @@
       z-index:100000;
     }
 
-    /* ✅ Accessibility helper */
     .sr-only{
       position:absolute; width:1px; height:1px; padding:0; margin:-1px;
       overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
@@ -722,10 +708,8 @@
 </head>
 
 <body>
-  <!-- ✅ Real H1 for SEO (hidden visually) -->
   <h1 class="sr-only">Himachal Tour Packages - Himachal Explorer Portal</h1>
 
-  <!-- ✅ No-JS fallback -->
   <noscript>
     <div style="padding:14px; margin:14px; border:1px solid rgba(255,255,255,.2); border-radius:14px; background:rgba(0,0,0,.35); color:#fff;">
       This portal needs JavaScript to load packages, maps, and itinerary details.
@@ -792,6 +776,16 @@
             <select id="paxSel">
               <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
               <option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+            </select>
+          </div>
+
+          <!-- ✅ NEW: Visit Type dropdown (Budget / Premium / Luxury) -->
+          <div class="field">
+            <label>Visit Type</label>
+            <select id="visitType">
+              <option value="budget">BUDGET</option>
+              <option value="premium">PREMIUM</option>
+              <option value="luxury">LUXURY</option>
             </select>
           </div>
 
@@ -945,11 +939,7 @@
     </div>
   </div>
 
-  <!-- ✅ IMPORTANT: With defer scripts, run app after DOM is ready -->
   <script>
-  /* ===============================
-     ✅ Firebase Config
-     =============================== */
   const firebaseConfig = {
     apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
     authDomain: "revnue-records.firebaseapp.com",
@@ -961,9 +951,6 @@
     measurementId: "G-MGTDBCG896"
   };
 
-  /* ===============================
-     ✅ Helpers
-     =============================== */
   const $ = (id)=>document.getElementById(id);
 
   function toast(msg){
@@ -999,9 +986,6 @@
     return String(sel).replace(/["\\]/g,"\\$&");
   }
 
-  /* ===============================
-     ✅ Quotes
-     =============================== */
   const QUOTES = [
     "Himachal is not a destination — it’s a <b>feeling</b>.",
     "Every turn in the mountains is a new <b>story</b>.",
@@ -1011,9 +995,6 @@
   ];
   let qIndex=0;
 
-  /* ===============================
-     ✅ Map
-     =============================== */
   let map, tile, markersLayer, routeLine;
   let showMode = "all";
   let tilesDark = false;
@@ -1033,9 +1014,6 @@
     if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] });
   }
 
-  /* ===============================
-     ✅ Data
-     =============================== */
   let db, storage, analytics;
   let LOCS = {};
   let TEMPLATES = {};
@@ -1607,7 +1585,8 @@
       START: startUpper,
       PACKAGES: finalList.length,
       PAX: pax,
-      DAYS: startIsHP ? "MAX 2 (HP START)" : (daysF ? daysF : "ANY")
+      DAYS: startIsHP ? "MAX 2 (HP START)" : (daysF ? daysF : "ANY"),
+      TYPE: String($("visitType")?.value || "budget").toUpperCase()
     });
 
     renderPackages(finalList, start);
@@ -1709,26 +1688,34 @@
   }
 
   /* ======================================================
-     ✅ DB BASED COST CALCULATOR
+     ✅ DB BASED COST CALCULATOR (Budget / Premium / Luxury)
      ====================================================== */
   let TRANSPORT = {};
   let STAYRULES = {};
+  let RATES = null;              // optional: /rates node (if you made it)
   let PRICING_READY = false;
 
   async function loadPricingNodes(){
     try{
-      const [tSnap, sSnap] = await Promise.all([
+      const [tSnap, sSnap, ratesSnap] = await Promise.all([
         db.ref("pricing_transport").once("value"),
-        db.ref("stay_rate_rules").once("value")
+        db.ref("stay_rate_rules").once("value"),
+        db.ref("rates").once("value").catch(()=>({ val:()=>null }))
       ]);
       TRANSPORT = tSnap.val() || {};
       STAYRULES = sSnap.val() || {};
+      RATES = (ratesSnap && typeof ratesSnap.val==="function") ? (ratesSnap.val() || null) : null;
       PRICING_READY = true;
     }catch(e){
       console.error(e);
       PRICING_READY = false;
       toast("Pricing nodes not readable");
     }
+  }
+
+  function getTier(){
+    const t = String($("visitType")?.value || "budget").toLowerCase();
+    return (t === "premium" || t === "luxury") ? t : "budget";
   }
 
   function vehicleKeyByPax(pax){
@@ -1752,39 +1739,96 @@
     return keys[0] || "";
   }
 
-  function estimateTotalCostFromDb({ km=0, days=3, pax=2 }){
+  function pickTierField(obj, baseKey, tier){
+    // tries: per_km_budget / per_km_premium / per_km_luxury
+    // then: budget_per_km / premium_per_km / luxury_per_km
+    // then: per_km (fallback)
+    if(!obj) return 0;
+    const t = String(tier || "budget").toLowerCase();
+    const k1 = `${baseKey}_${t}`;
+    const k2 = `${t}_${baseKey}`;
+    if(isFinite(Number(obj[k1]))) return Number(obj[k1]);
+    if(isFinite(Number(obj[k2]))) return Number(obj[k2]);
+    if(isFinite(Number(obj[baseKey]))) return Number(obj[baseKey]);
+    return 0;
+  }
+
+  function estimateTotalCostFromDb({ km=0, days=3, pax=2, tier="budget" }){
     km = Number(km || 0);
     days = Number(days || 0);
     pax = Math.max(1, Number(pax || 1));
-    const nights = Math.max(0, days - 1);
+    tier = (tier === "premium" || tier === "luxury") ? tier : "budget";
 
+    const nights = Math.max(0, days - 1);
     if(!PRICING_READY || !isFinite(km) || km <= 0 || !days) return { total: NaN, perPerson: NaN };
 
+    // If you have /rates node (preferred), use it
+    // rates/travel/{vehicleType}/{tier} and rates/hotels/{tier} and rates/breakfast
     const vKey = vehicleKeyByPax(pax);
     const sKey = stayRuleKeyDefault();
 
-    const vehicle = TRANSPORT?.[vKey];
-    const stay = STAYRULES?.[sKey];
+    let perKm=0, driverPerDay=0, nightCharge=0, bufferPct=0;
+    let roomRate=0, roomCap=2;
+    let breakfastPPPD=0;
+    let wantBreakfast = (tier !== "budget");
 
-    if(!vehicle || !stay) return { total: NaN, perPerson: NaN };
+    if(RATES && RATES.travel && RATES.hotels){
+      const tr = (((RATES.travel||{})[vKey]||{})[tier]) || {};
+      const hr = ((RATES.hotels||{})[tier]) || {};
+      const br = (RATES.breakfast||{}) || {};
+      perKm = Number(tr.per_km || 0);
+      driverPerDay = Number(tr.driver_per_day || 0);
+      nightCharge = Number(tr.night_charge || 0);
+      bufferPct = Number(tr.parking_toll_buffer_pct || 0);
+      roomRate = Number(hr.per_room_per_night || 0);
+      roomCap = Number(hr.room_capacity || 2);
+      breakfastPPPD = Number(br.per_person_per_day || 0);
+      if(typeof hr.breakfast_included === "boolean") wantBreakfast = hr.breakfast_included;
+    } else {
+      // Fallback to your existing nodes with tier-fields (if you added)
+      const vehicle = TRANSPORT?.[vKey];
+      const stay = STAYRULES?.[sKey];
 
-    const perKm = Number(vehicle.per_km || 0);
-    const driverPerDay = Number(vehicle.driver_per_day || 0);
-    const nightCharge = Number(vehicle.night_charge || 0);
+      if(!vehicle || !stay) return { total: NaN, perPerson: NaN };
 
+      perKm = pickTierField(vehicle, "per_km", tier);
+      driverPerDay = pickTierField(vehicle, "driver_per_day", tier) || Number(vehicle.driver_per_day || 0);
+      nightCharge = pickTierField(vehicle, "night_charge", tier) || Number(vehicle.night_charge || 0);
+      bufferPct = pickTierField(vehicle, "parking_toll_buffer_pct", tier) || Number(vehicle.parking_toll_buffer_pct || 0);
+
+      // hotel stay rate tier mapping
+      // tries base_rate_budget/base_rate_premium/base_rate_luxury, else your old base_rate_mid
+      roomRate =
+        pickTierField(stay, "base_rate", tier) ||
+        Number(stay.base_rate_mid || stay.base_rate_low || stay.base_rate_peak || 0);
+
+      roomCap = Number(stay.room_capacity || 2);
+
+      // breakfast rate if you stored it in stay rule
+      breakfastPPPD = pickTierField(stay, "breakfast_pp", tier) || Number(stay.breakfast_pp || 0);
+    }
+
+    if(!(perKm > 0) || !(roomRate > 0)) return { total: NaN, perPerson: NaN };
+
+    const rooms = Math.ceil(pax / Math.max(1, roomCap || 2));
     const transport = (km * perKm) + (days * driverPerDay) + (nights * nightCharge);
+    const hotel = rooms * roomRate * nights;
 
-    const rooms = Math.ceil(pax / 2);
-    const baseRate = Number(stay.base_rate_mid || stay.base_rate_low || stay.base_rate_peak || 0);
-    const hotel = rooms * baseRate * nights;
+    let breakfast = 0;
+    if(wantBreakfast && breakfastPPPD > 0){
+      breakfast = breakfastPPPD * pax * days;
+    }
 
-    const bufferPct = Number(vehicle.parking_toll_buffer_pct || 0);
-    const buffer = (bufferPct > 0) ? ((transport + hotel) * bufferPct / 100) : 0;
+    const buffer = (bufferPct > 0) ? ((transport + hotel + breakfast) * bufferPct / 100) : 0;
 
-    const total = transport + hotel + buffer;
+    const total = transport + hotel + breakfast + buffer;
     const perPerson = total / pax;
 
-    return { total, perPerson, meta: { vKey, sKey, rooms, nights } };
+    return {
+      total,
+      perPerson,
+      meta: { vKey, sKey, rooms, nights, tier, wantBreakfast }
+    };
   }
 
   function updatePriceBoxes(total, perPerson, meta){
@@ -1798,7 +1842,11 @@
       return;
     }
 
-    const extra = meta?.vKey ? ` <small>(${String(meta.vKey).toUpperCase()} • DB)</small>` : ` <small>(DB)</small>`;
+    const tierTxt = meta?.tier ? String(meta.tier).toUpperCase() : "";
+    const extra = meta?.vKey
+      ? ` <small>(${tierTxt} • ${String(meta.vKey).toUpperCase()} • DB)</small>`
+      : ` <small>(${tierTxt} • DB)</small>`;
+
     totalEl.innerHTML = rupees(total) + extra;
     perEl.innerHTML = rupees(perPerson) + ` <small>per person</small>`;
   }
@@ -1812,8 +1860,9 @@
       const pax = Number($("paxSel")?.value || 2);
       const days = Number(tpl.days || $("daysSel")?.value || 3);
       const km = Number(CURRENT_ROUTE_KM || 0);
+      const tier = getTier();
 
-      const est = estimateTotalCostFromDb({ km, days, pax });
+      const est = estimateTotalCostFromDb({ km, days, pax, tier });
       updatePriceBoxes(est.total, est.perPerson, est.meta);
     }catch(e){
       console.error(e);
@@ -1821,23 +1870,17 @@
     }
   }
 
-  /* ===============================
-     ✅ Boot after DOM ready (prevents race with deferred libs)
-     =============================== */
   window.addEventListener("DOMContentLoaded", () => {
-    // Init Firebase
     firebase.initializeApp(firebaseConfig);
     db = firebase.database();
     storage = firebase.storage();
     analytics = firebase.analytics();
 
-    // Quotes rotation
     setInterval(()=>{
       qIndex=(qIndex+1)%QUOTES.length;
       $("quoteText").innerHTML = "“" + QUOTES[qIndex] + "”";
     }, 5000);
 
-    // Copy contact
     $("copyContactBtn")?.addEventListener("click", async ()=>{
       const txt =
 `Himachal Explorer Portal
@@ -1849,12 +1892,10 @@ https://himachalexplorer.in/`;
       catch(e){ toast("Copy not allowed"); }
     });
 
-    // Modal events
     $("placeModalBack").addEventListener("click", closePlaceModal);
     $("mClose").addEventListener("click", closePlaceModal);
     window.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closePlaceModal(); });
 
-    // UI events
     $("genBtn").addEventListener("click", applyFilters);
     $("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
 
@@ -1862,6 +1903,7 @@ https://himachalexplorer.in/`;
       $("startInp").value="";
       $("daysSel").value="";
       $("paxSel").value="2";
+      $("visitType").value="budget";
       $("pills").innerHTML="";
       $("pkgList").innerHTML = `<div class="pill"><span>Type Start & click</span> <b>Generate</b></div>`;
       $("pkgCount").textContent="—";
@@ -1919,9 +1961,13 @@ https://himachalexplorer.in/`;
       toast(tilesDark ? "Dark tiles on" : "Light tiles on");
     });
 
+    // ✅ Recalculate price when pax or visit type changes
     $("paxSel")?.addEventListener("change", computeDbPriceForCurrent);
+    $("visitType")?.addEventListener("change", ()=>{
+      computeDbPriceForCurrent();
+      if($("startInp")?.value) applyFilters(); // refresh pills "TYPE"
+    });
 
-    // Init map + load DB nodes
     initMap();
     loadPricingNodes()
       .then(()=> loadAll())
