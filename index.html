@@ -127,14 +127,17 @@
     }
     .chip:hover{ background: rgba(255,255,255,.08); color: rgba(255,255,255,.82); }
 
+    /* ✅ FIX #1: LOCK GRID HEIGHT (no panel expands other panels) */
     .main{
-      height:100%;
+      height: calc(100vh - var(--topH));
       display:grid;
       grid-template-columns: var(--leftPct) var(--mapPct) var(--rightPct);
       gap: var(--gap);
       padding: 14px;
+      overflow: hidden; /* important */
     }
 
+    /* ✅ FIX #1: Pane fixed height + internal scroll only */
     .pane{
       border: 1px solid var(--stroke);
       border-radius: var(--radius);
@@ -142,9 +145,12 @@
       box-shadow: var(--shadow);
       backdrop-filter: blur(14px);
       overflow:hidden;
+
       display:flex;
       flex-direction:column;
-      min-width:0;
+
+      height:100%;
+      min-height:0;
     }
 
     .paneHdr{
@@ -154,6 +160,7 @@
       align-items:flex-end;
       justify-content:space-between;
       gap:10px;
+      flex:0 0 auto;
     }
     .paneHdr .t{
       font-size:12px;
@@ -176,6 +183,7 @@
       gap:10px;
       background: rgba(0,0,0,.18);
       backdrop-filter: blur(10px);
+      flex:0 0 auto;
     }
     .field label{
       display:block;
@@ -223,6 +231,7 @@
       background: rgba(0,0,0,.18);
       backdrop-filter: blur(10px);
       border-bottom:1px solid var(--stroke);
+      flex:0 0 auto;
     }
     .pill{
       border:1px solid rgba(255,255,255,.14);
@@ -242,12 +251,14 @@
       display:grid;
       grid-template-columns: 160px 1fr;
       min-height:0;
+      overflow:hidden; /* internal scroll only */
     }
     .districtBar{
       border-right:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.18);
       overflow:auto;
       padding:10px;
+      min-height:0;
     }
     .distItem{
       border:1px solid rgba(255,255,255,.12);
@@ -347,18 +358,25 @@
     .diffLine{
       margin-top:6px;
       font-size: 11px;
-      color: rgba(255,255,255,.86);
-      letter-spacing:.06em;
+      color: rgba(255,255,255,.88);
+      letter-spacing:.04em;
       text-transform:none;
       line-height:1.35;
-      opacity:.95;
+      opacity:.98;
     }
 
-    #map{ width:100%; height:100%; background: rgba(255,255,255,.04); }
+    /* ✅ FIX #1: MAP doesn't resize due to other content */
+    #map{
+      width:100%;
+      height:100%;
+      min-height:0;
+      background: rgba(255,255,255,.04);
+    }
     .mapTools{
       padding: 10px 12px;
       border-top:1px solid var(--stroke);
       display:flex; gap:10px; flex-wrap:wrap;
+      flex:0 0 auto;
     }
     .toolBtn{
       border:1px solid rgba(255,255,255,.14);
@@ -377,12 +395,15 @@
     }
     .toolBtn:hover{ background: rgba(255,255,255,.08); }
 
+    /* ✅ FIX #1: Right side scroll only */
     .itWrap{
       padding: 12px;
       overflow:auto;
       display:flex;
       flex-direction:column;
       gap:12px;
+      min-height:0;
+      flex:1;
     }
     .heroCard{
       border:1px solid rgba(255,255,255,.12);
@@ -415,6 +436,7 @@
     .mini .v small{ font-size: 11px; color: rgba(255,255,255,.72); font-weight: 800; }
 
     .daysList{ display:flex; flex-direction:column; gap:10px; }
+
     .dayCard{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.22);
@@ -474,6 +496,83 @@
       text-overflow: ellipsis;
     }
 
+    /* ✅ FIX #2: Place popup is inside itinerary "Location" tab (not on map) */
+    .tabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .tabBtn{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      color: rgba(255,255,255,.82);
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-size: 11px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      cursor:pointer;
+      user-select:none;
+    }
+    .tabBtn.active{
+      border-color: rgba(124,58,237,.70);
+      background: rgba(124,58,237,.14);
+      color:#fff;
+      box-shadow: 0 0 0 3px rgba(124,58,237,.14);
+    }
+    .tabPanel{ display:none; }
+    .tabPanel.active{ display:block; }
+
+    .placeDetail{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      border-radius: 16px;
+      padding: 12px;
+      overflow:hidden;
+    }
+    .placeHero{
+      width:100%;
+      height:160px;
+      border-radius: 14px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      position:relative;
+    }
+    .placeHero img{
+      width:100%; height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .galBtn{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.45);
+      color:#fff;
+      border-radius: 12px;
+      padding: 6px 10px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .galBtn.left{ left:8px; }
+    .galBtn.right{ right:8px; }
+    .dots{
+      display:flex;
+      gap:6px;
+      justify-content:center;
+      margin-top:8px;
+    }
+    .dot{
+      width:7px; height:7px;
+      border-radius:50%;
+      background: rgba(255,255,255,.35);
+      cursor:pointer;
+    }
+    .dot.active{ background:#fff; }
+
     .toast{
       position:fixed;
       left: 14px;
@@ -493,22 +592,12 @@
     }
     .toast.show{ display:block; }
 
-    /* ✅ Popup skin */
-    .leaflet-popup-pane{ z-index: 900 !important; }
-    .placePopup .leaflet-popup-content-wrapper{
-      background: rgba(9,12,22,.96);
-      color:#fff;
-      border:1px solid rgba(255,255,255,.12);
-      border-radius: 14px;
-      box-shadow: 0 16px 40px rgba(0,0,0,.55);
-    }
-    .placePopup .leaflet-popup-tip{ background: rgba(9,12,22,.96); }
-    .placePopup img{ max-width:100%; height:auto; display:block; border-radius:12px; }
-
     @media (max-width: 1200px){
       .main{
         grid-template-columns: 1fr;
         grid-template-rows: auto 420px auto;
+        height:auto;
+        overflow:visible;
       }
       #map{ height: 420px; }
       .pkgLayout{ grid-template-columns: 1fr; }
@@ -595,8 +684,8 @@
 
         <div class="metaPills" id="pills"></div>
 
+        <!-- ✅ NO ALL TAB -->
         <div class="pkgLayout">
-          <!-- ✅ NO ALL tab -->
           <div class="districtBar" id="districtBar"></div>
           <div class="pkgList" id="pkgList">
             <div class="pill"><span>Type Start & click</span> <b>Generate</b></div>
@@ -609,7 +698,7 @@
         <div class="paneHdr">
           <div>
             <p class="t">Live Route Map</p>
-            <div class="s">OSRM road polyline + markers</div>
+            <div class="s">OSRM road polyline + markers (no popups)</div>
           </div>
           <div class="s" id="kmBadge">—</div>
         </div>
@@ -628,7 +717,7 @@
         <div class="paneHdr">
           <div>
             <p class="t">Itinerary</p>
-            <div class="s">Tap a place → popup + gallery</div>
+            <div class="s">Place popup shown here (Location tab)</div>
           </div>
           <div class="s" id="activePkgName">—</div>
         </div>
@@ -638,6 +727,12 @@
             <h3 class="bigTitle" id="itTitle">Select a package</h3>
             <div class="muted" id="itMeta">Day-wise details will appear here</div>
             <div class="muted" id="priceDebug" style="margin-top:8px; text-transform:none; white-space:pre-wrap;"></div>
+
+            <!-- ✅ Tabs -->
+            <div class="tabs">
+              <div class="tabBtn active" id="tabItinBtn">Itinerary</div>
+              <div class="tabBtn" id="tabLocBtn">Location</div>
+            </div>
           </div>
 
           <div class="row2">
@@ -656,7 +751,17 @@
             <div class="muted" id="incExc">—</div>
           </div>
 
-          <div class="daysList" id="daysList"></div>
+          <!-- ✅ Panels -->
+          <div class="tabPanel active" id="itinPanel">
+            <div class="daysList" id="daysList"></div>
+          </div>
+
+          <div class="tabPanel" id="locPanel">
+            <div class="placeDetail" id="placeDetail">
+              <div class="muted">Tap any place from itinerary to see History + What you can find + Photos here.</div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -737,15 +842,15 @@
 
   function toBullets(val){
     if(!val) return [];
-    if(Array.isArray(val)) return val.filter(Boolean).slice(0,10);
+    if(Array.isArray(val)) return val.filter(Boolean).slice(0,12);
     return String(val)
       .split(/\n|\||,/g)
       .map(x=>x.trim())
       .filter(Boolean)
-      .slice(0,10);
+      .slice(0,12);
   }
 
-  /* ✅ MULTI PHOTO SUPPORT */
+  /* ✅ MULTI PHOTO SUPPORT (only accepts https URLs) */
   function pickAllPhotos(p){
     const isValid = (u)=> typeof u==="string" && /^https?:\/\//i.test(u.trim());
     let arr = [];
@@ -760,75 +865,117 @@
       arr.push(...Object.values(p.images).filter(isValid).map(x=>x.trim()));
     }
 
-    // dedupe
-    arr = [...new Set(arr)];
-    return arr;
+    return [...new Set(arr)];
+  }
+  function pickPhotoAny(p){ return pickAllPhotos(p)[0] || ""; }
+
+  /* ===============================
+     ✅ Tabs
+     =============================== */
+  function setActiveTab(which){
+    const itinBtn = $("tabItinBtn");
+    const locBtn  = $("tabLocBtn");
+    const itinP   = $("itinPanel");
+    const locP    = $("locPanel");
+    if(which === "loc"){
+      itinBtn.classList.remove("active");
+      locBtn.classList.add("active");
+      itinP.classList.remove("active");
+      locP.classList.add("active");
+    }else{
+      locBtn.classList.remove("active");
+      itinBtn.classList.add("active");
+      locP.classList.remove("active");
+      itinP.classList.add("active");
+    }
   }
 
-  function pickPhotoAny(p){
-    const all = pickAllPhotos(p);
-    return all[0] || "";
-  }
+  /* ===============================
+     ✅ Place Details (shown in Location tab)
+     =============================== */
+  let ACTIVE_PLACE_GALLERY = { pid:"", idx:0, imgs:[] };
 
-  /* ✅ Popup HTML with Gallery (Next/Prev + dots) */
-  function placePopupHTML(pid){
+  function renderPlaceDetails(pid){
     const p = PLACES[pid] || {};
     const name = placeNameAny(p, pid);
     const dist = districtAny(p) || "";
     const hist = String(p.history_tagline || p.history || "").trim();
     const bullets = toBullets(p.what_you_find || p.whatYouFind);
-
     const imgs = pickAllPhotos(p);
-    const uid = "g_" + pid.replace(/[^a-z0-9]/gi,"_");
-    const imgsJson = escapeHtml(JSON.stringify(imgs));
 
-    const imgBlock = imgs.length ? `
-      <div style="position:relative; margin-bottom:8px;">
-        <img id="${uid}_img"
-             src="${escapeHtml(imgs[0])}"
-             style="width:100%; height:140px; object-fit:cover; border-radius:12px; display:block;"
-             loading="lazy" referrerpolicy="no-referrer"
+    ACTIVE_PLACE_GALLERY = { pid, idx:0, imgs };
+
+    const hero = imgs.length ? `
+      <div class="placeHero">
+        <img id="placeHeroImg" src="${escapeHtml(imgs[0])}" alt="${escapeHtml(name)}" loading="lazy" referrerpolicy="no-referrer"
              onerror="this.remove();">
         ${imgs.length>1 ? `
-          <button id="${uid}_prev"
-            style="position:absolute; left:8px; top:50%; transform:translateY(-50%);
-                   border:1px solid rgba(255,255,255,.18); background:rgba(0,0,0,.45);
-                   color:#fff; border-radius:12px; padding:6px 10px; cursor:pointer;">‹</button>
-          <button id="${uid}_next"
-            style="position:absolute; right:8px; top:50%; transform:translateY(-50%);
-                   border:1px solid rgba(255,255,255,.18); background:rgba(0,0,0,.45);
-                   color:#fff; border-radius:12px; padding:6px 10px; cursor:pointer;">›</button>
-
-          <div id="${uid}_dots"
-            style="display:flex; gap:6px; justify-content:center; margin-top:6px;">
-            ${imgs.map((_,i)=>`<span data-i="${i}"
-              style="width:7px;height:7px;border-radius:50%;
-                     background:${i===0?'#fff':'rgba(255,255,255,.35)'}; display:inline-block; cursor:pointer;"></span>`).join("")}
-          </div>
+          <div class="galBtn left" id="galPrev">‹</div>
+          <div class="galBtn right" id="galNext">›</div>
         `:""}
       </div>
-    ` : "";
-
-    return `
-      <div style="min-width:240px; max-width:340px;" data-imgs='${imgsJson}' data-uid="${uid}">
-        ${imgBlock}
-
-        <div style="font-weight:950; font-size:14px;">${escapeHtml(name)}</div>
-        ${dist ? `<div style="opacity:.8; font-size:12px; margin-top:2px;">${escapeHtml(dist)}</div>` : ""}
-
-        ${hist ? `
-          <div style="margin-top:10px; font-weight:900; font-size:12px; opacity:.95;">History</div>
-          <div style="margin-top:4px; font-size:12px; opacity:.9; line-height:1.45;">${escapeHtml(hist)}</div>
-        ` : ""}
-
-        ${bullets.length ? `
-          <div style="margin-top:10px; font-weight:900; font-size:12px; opacity:.95;">What you can find</div>
-          <ul style="margin:6px 0 0 16px; padding:0;">
-            ${bullets.map(b=>`<li style="margin:4px 0; font-size:12px; opacity:.92;">${escapeHtml(b)}</li>`).join("")}
-          </ul>
-        ` : ""}
+      ${imgs.length>1 ? `
+        <div class="dots" id="galDots">
+          ${imgs.map((_,i)=>`<div class="dot ${i===0?'active':''}" data-i="${i}"></div>`).join("")}
+        </div>
+      `:""}
+    ` : `
+      <div class="placeHero" style="display:grid;place-items:center;">
+        <div class="muted">No photo available</div>
       </div>
     `;
+
+    $("placeDetail").innerHTML = `
+      ${hero}
+      <div style="margin-top:10px;">
+        <div style="font-weight:950; font-size:14px;">${escapeHtml(name)}</div>
+        ${dist ? `<div style="opacity:.8; font-size:12px; margin-top:2px;">${escapeHtml(dist)}</div>` : ``}
+      </div>
+
+      ${hist ? `
+        <div style="margin-top:12px; font-weight:950; letter-spacing:.10em; text-transform:uppercase; font-size:11px; opacity:.95;">History</div>
+        <div style="margin-top:6px; font-size:12px; opacity:.9; line-height:1.5;">${escapeHtml(hist)}</div>
+      ` : ``}
+
+      ${bullets.length ? `
+        <div style="margin-top:12px; font-weight:950; letter-spacing:.10em; text-transform:uppercase; font-size:11px; opacity:.95;">What you can find</div>
+        <ul style="margin:8px 0 0 18px; padding:0;">
+          ${bullets.map(b=>`<li style="margin:5px 0; font-size:12px; opacity:.92;">${escapeHtml(b)}</li>`).join("")}
+        </ul>
+      ` : ``}
+    `;
+
+    // bind gallery controls
+    if(imgs.length > 1){
+      $("galPrev").onclick = ()=>galleryStep(-1);
+      $("galNext").onclick = ()=>galleryStep(1);
+      $("galDots").querySelectorAll(".dot").forEach(dot=>{
+        dot.onclick = ()=>{
+          const i = Number(dot.dataset.i || 0);
+          galleryGo(i);
+        };
+      });
+    }
+
+    // switch to Location tab automatically
+    setActiveTab("loc");
+  }
+
+  function galleryGo(i){
+    const g = ACTIVE_PLACE_GALLERY;
+    if(!g.imgs.length) return;
+    g.idx = (i + g.imgs.length) % g.imgs.length;
+    const img = $("placeHeroImg");
+    if(img) img.src = g.imgs[g.idx];
+
+    const dots = $("galDots");
+    if(dots){
+      dots.querySelectorAll(".dot").forEach((d,ix)=>d.classList.toggle("active", ix===g.idx));
+    }
+  }
+  function galleryStep(delta){
+    const g = ACTIVE_PLACE_GALLERY;
+    galleryGo(g.idx + delta);
   }
 
   /* ===============================
@@ -838,9 +985,6 @@
   let showMode = "all";
   let tilesDark = false;
 
-  // marker refs so itinerary click opens popup
-  const MARKERS_BY_ID = new Map();
-
   function initMap(){
     map = L.map('map', { zoomControl:true }).setView([31.1048, 77.1734], 8);
     tile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
@@ -849,30 +993,11 @@
   }
   function clearMap(){
     markersLayer.clearLayers();
-    MARKERS_BY_ID.clear();
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
     $("kmBadge").textContent = "—";
   }
   function fitRoute(){
     if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] });
-  }
-
-  function openPlaceOnMap(pid){
-    const m = MARKERS_BY_ID.get(pid);
-    const p = PLACES[pid] || {};
-    const lat = latAny(p), lng = lngAny(p);
-    if(m){
-      map.setView(m.getLatLng(), Math.max(map.getZoom(), 12), { animate:true });
-      m.openPopup();
-      return;
-    }
-    if(isFinite(lat) && isFinite(lng)){
-      map.setView([lat,lng], 12, { animate:true });
-      const mk = L.marker([lat,lng]).addTo(markersLayer);
-      mk.bindPopup(placePopupHTML(pid), { className:"placePopup", maxWidth: 360, autoPan:true });
-      MARKERS_BY_ID.set(pid, mk);
-      mk.openPopup();
-    }
   }
 
   /* ===============================
@@ -901,7 +1026,7 @@
   /* ===============================
      ✅ Cache
      =============================== */
-  const CACHE_KEY = "hp_portal_cache_v8";
+  const CACHE_KEY = "hp_portal_cache_v10";
   const CACHE_TTL_MS = 1000 * 60 * 30;
 
   function loadCache(){
@@ -1148,7 +1273,7 @@
   }
 
   /* ===============================
-     ✅ Group duplicates + show difference
+     ✅ Show difference when same start/end appears multiple times
      =============================== */
   function routeText(t){ return String(t.route_path || "").trim(); }
 
@@ -1311,6 +1436,9 @@
     const daysList = $("daysList");
     daysList.innerHTML = "";
 
+    // reset location panel text
+    $("placeDetail").innerHTML = `<div class="muted">Tap any place from itinerary to see History + What you can find + Photos here.</div>`;
+
     const blocks = buildDayWise(tpl);
     blocks.forEach(block=>{
       const dayCard = document.createElement("div");
@@ -1346,7 +1474,17 @@
             <div class="pmeta">${escapeHtml(dist)}</div>
           </div>
         `;
-        line.onclick = ()=>openPlaceOnMap(pid);
+
+        // ✅ FIX #2: click -> show details in Location tab (NOT on map)
+        line.onclick = ()=>{
+          renderPlaceDetails(pid);
+          // Also pan map (optional, no popup)
+          const lat = latAny(p), lng = lngAny(p);
+          if(isFinite(lat) && isFinite(lng)){
+            map.setView([lat,lng], Math.max(map.getZoom(), 12), { animate:true });
+          }
+        };
+
         cont.appendChild(line);
       });
 
@@ -1355,59 +1493,10 @@
   }
 
   /* ===============================
-     ✅ Route draw (OSRM) + popup gallery bind
+     ✅ Route draw (OSRM)
      =============================== */
-  function bindPopupGallery(popup){
-    const root = popup?.getElement()?.querySelector("[data-uid]");
-    if(!root) return;
-
-    const uid = root.getAttribute("data-uid");
-    let imgs = [];
-    try{ imgs = JSON.parse(root.getAttribute("data-imgs") || "[]"); }catch(_){ imgs=[]; }
-    if(!imgs.length) return;
-
-    let idx = 0;
-    const imgEl = document.getElementById(uid+"_img");
-    const dotsWrap = document.getElementById(uid+"_dots");
-
-    const paintDots = ()=>{
-      if(!dotsWrap) return;
-      [...dotsWrap.querySelectorAll("span")].forEach(s=>{
-        const i = Number(s.getAttribute("data-i"));
-        s.style.background = (i===idx) ? "#fff" : "rgba(255,255,255,.35)";
-      });
-    };
-
-    const show = ()=>{
-      if(imgEl) imgEl.src = imgs[idx];
-      paintDots();
-    };
-
-    const prevBtn = document.getElementById(uid+"_prev");
-    const nextBtn = document.getElementById(uid+"_next");
-
-    if(prevBtn) prevBtn.onclick = ()=>{
-      idx = (idx - 1 + imgs.length) % imgs.length;
-      show();
-    };
-    if(nextBtn) nextBtn.onclick = ()=>{
-      idx = (idx + 1) % imgs.length;
-      show();
-    };
-
-    if(dotsWrap){
-      dotsWrap.querySelectorAll("span").forEach(s=>{
-        s.onclick = ()=>{
-          idx = Number(s.getAttribute("data-i")) || 0;
-          show();
-        };
-      });
-    }
-  }
-
   async function drawRoadRouteFromPlaces(placeIds){
     markersLayer.clearLayers();
-    MARKERS_BY_ID.clear();
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
 
     const pts = [];
@@ -1451,6 +1540,7 @@
       routeLine = L.polyline(latlngs, { weight: 5, opacity: .95 }).addTo(map);
       fitRoute();
 
+      // markers without popups; click marker -> open details in Location tab
       const markIds = (showMode==="startend")
         ? [validIds[0], validIds[validIds.length-1]]
         : validIds;
@@ -1463,11 +1553,9 @@
         if(!isFinite(lat)||!isFinite(lng)) continue;
 
         const mk = L.marker([lat,lng], { riseOnHover:true }).addTo(markersLayer);
-        mk.bindPopup(placePopupHTML(pid), { className:"placePopup", maxWidth: 360, autoPan:true });
-
-        mk.on("popupopen", (e)=>bindPopupGallery(e.popup));
-
-        MARKERS_BY_ID.set(pid, mk);
+        mk.on("click", ()=>{
+          renderPlaceDetails(pid);
+        });
       }
 
       const km = Number(r.distance/1000);
@@ -1481,7 +1569,7 @@
   }
 
   /* ===============================
-     ✅ Pricing (AUTO-SEASON) (kept same)
+     ✅ Pricing (AUTO-SEASON) (same logic)
      =============================== */
   function pickStayRule(tier){
     const t = String(tier||"budget").toLowerCase();
@@ -1642,11 +1730,14 @@
     $("itMeta").textContent = "Day-wise details will appear here";
     $("incExc").textContent = "—";
     $("daysList").innerHTML = "";
+    $("placeDetail").innerHTML = `<div class="muted">Tap any place from itinerary to see History + What you can find + Photos here.</div>`;
     $("priceTotal").innerHTML = "— <small></small>";
     $("pricePer").innerHTML = "— <small></small>";
     $("priceDebug").textContent = "";
     CURRENT_TEMPLATE_KEY = "";
     CURRENT_ROUTE_KM = 0;
+
+    setActiveTab("itin");
 
     if(!start){
       toast("Start not found in templates");
@@ -1670,7 +1761,6 @@
 
     CURRENT_LIST = list;
     CURRENT_BY_DISTRICT = buildDistrictBuckets(list);
-
     ACTIVE_DISTRICT = "";
 
     setPills({
@@ -1774,6 +1864,10 @@
     storage = firebase.storage();
     analytics = firebase.analytics();
 
+    // tabs
+    $("tabItinBtn").addEventListener("click", ()=>setActiveTab("itin"));
+    $("tabLocBtn").addEventListener("click", ()=>setActiveTab("loc"));
+
     $("genBtn").addEventListener("click", applyFilters);
     $("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
 
@@ -1791,6 +1885,7 @@
       $("itMeta").textContent="Day-wise details will appear here";
       $("incExc").textContent="—";
       $("daysList").innerHTML="";
+      $("placeDetail").innerHTML = `<div class="muted">Tap any place from itinerary to see History + What you can find + Photos here.</div>`;
       $("priceTotal").innerHTML="— <small></small>";
       $("pricePer").innerHTML="— <small></small>";
       $("priceDebug").textContent="";
@@ -1800,6 +1895,7 @@
       CURRENT_LIST = [];
       CURRENT_BY_DISTRICT = {};
       ACTIVE_DISTRICT="";
+      setActiveTab("itin");
       toast("Reset done");
     });
 
