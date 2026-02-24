@@ -253,6 +253,17 @@
       min-height:0;
       overflow:hidden; /* internal scroll only */
     }
+    .pill.pillHint{
+  text-transform:none;        /* no ALL CAPS */
+  letter-spacing:.02em;       /* tighter */
+  font-size:12px;             /* stable size */
+  padding:8px 10px;           /* smaller */
+  line-height:1.2;
+  justify-content:center;
+}
+.pill.pillHint span{ opacity:.85; }
+.pill.pillHint b{ letter-spacing:0; }
+    
     .districtBar{
       border-right:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.18);
@@ -688,7 +699,7 @@
         <div class="pkgLayout">
           <div class="districtBar" id="districtBar"></div>
           <div class="pkgList" id="pkgList">
-            <div class="pill"><span>Type Start & click</span> <b>Generate</b></div>
+            <div class="pill pillHint"><span>Type Start & click</span> <b>Generate</b></div>
           </div>
         </div>
       </div>
