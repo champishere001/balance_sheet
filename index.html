@@ -6,7 +6,7 @@
 
   <title>Himachal Tour Packages | Himachal Explorer Portal</title>
   <meta name="description" content="Explore Himachal tour packages with live road route maps, day-wise itineraries, and price estimate." />
-  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet=-1,max-video-preview=-1" />
   <link rel="canonical" href="https://champishere001.github.io/" />
   <meta name="theme-color" content="#070A12" />
   <link rel="icon" href="./favicon.ico" />
@@ -237,7 +237,6 @@
     }
     .pill b{ color:#fff; letter-spacing:.06em; }
 
-    /* ✅ District Sidebar Layout */
     .pkgLayout{
       flex:1;
       display:grid;
@@ -282,6 +281,27 @@
       backdrop-filter: blur(10px);
     }
 
+    .pkgGroupHdr{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      border-radius: 16px;
+      padding: 10px;
+    }
+    .pkgGroupHdr .h1{
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+    }
+    .pkgGroupHdr .h2{
+      margin-top:6px;
+      font-size: 11px;
+      color: rgba(255,255,255,.75);
+      letter-spacing:.08em;
+      text-transform: uppercase;
+      line-height: 1.35;
+    }
+
     .pkg{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.22);
@@ -324,8 +344,15 @@
       text-transform: uppercase;
       line-height: 1.35;
     }
-
-    /* ✅ REMOVED: tempo tag styles (no .tag) */
+    .diffLine{
+      margin-top:6px;
+      font-size: 11px;
+      color: rgba(255,255,255,.86);
+      letter-spacing:.06em;
+      text-transform:none;
+      line-height:1.35;
+      opacity:.95;
+    }
 
     #map{ width:100%; height:100%; background: rgba(255,255,255,.04); }
     .mapTools{
@@ -466,6 +493,18 @@
     }
     .toast.show{ display:block; }
 
+    /* ✅ Popup skin */
+    .leaflet-popup-pane{ z-index: 900 !important; }
+    .placePopup .leaflet-popup-content-wrapper{
+      background: rgba(9,12,22,.96);
+      color:#fff;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      box-shadow: 0 16px 40px rgba(0,0,0,.55);
+    }
+    .placePopup .leaflet-popup-tip{ background: rgba(9,12,22,.96); }
+    .placePopup img{ max-width:100%; height:auto; display:block; border-radius:12px; }
+
     @media (max-width: 1200px){
       .main{
         grid-template-columns: 1fr;
@@ -556,11 +595,9 @@
 
         <div class="metaPills" id="pills"></div>
 
-        <!-- ✅ District Sidebar + Package list -->
         <div class="pkgLayout">
-          <div class="districtBar" id="districtBar">
-            <div class="distItem active" data-d="__ALL__"><b>ALL</b> (0)</div>
-          </div>
+          <!-- ✅ NO ALL tab -->
+          <div class="districtBar" id="districtBar"></div>
           <div class="pkgList" id="pkgList">
             <div class="pill"><span>Type Start & click</span> <b>Generate</b></div>
           </div>
@@ -591,7 +628,7 @@
         <div class="paneHdr">
           <div>
             <p class="t">Itinerary</p>
-            <div class="s">Tap a place → details</div>
+            <div class="s">Tap a place → popup + gallery</div>
           </div>
           <div class="s" id="activePkgName">—</div>
         </div>
@@ -600,7 +637,7 @@
           <div class="heroCard">
             <h3 class="bigTitle" id="itTitle">Select a package</h3>
             <div class="muted" id="itMeta">Day-wise details will appear here</div>
-            <div class="muted" id="priceDebug" style="margin-top:8px; text-transform:none; display:none;"></div>
+            <div class="muted" id="priceDebug" style="margin-top:8px; text-transform:none; white-space:pre-wrap;"></div>
           </div>
 
           <div class="row2">
@@ -643,7 +680,7 @@
   };
 
   /* ===============================
-     ✅ Node Mapping (Your DB)
+     ✅ Node Mapping
      =============================== */
   const NODE_TEMPLATES = "templates";
   const NODE_PLACES    = "places_in_packages";
@@ -688,7 +725,7 @@
   function setStatus(msg){ $("statusLine").textContent = msg; }
 
   /* ===============================
-     ✅ Place field mapping (your /places_in_packages)
+     ✅ Place mapping
      =============================== */
   function placeIdAny(p, key){ return String(p?.place_id || p?.id || key || "").trim(); }
   function placeNameAny(p, key){
@@ -697,32 +734,101 @@
   function latAny(p){ return Number(p?.latitude ?? p?.lat ?? p?.Latitude); }
   function lngAny(p){ return Number(p?.longitude ?? p?.lng ?? p?.Longitude); }
   function districtAny(p){ return String(p?.district || p?.District || "").trim().toUpperCase(); }
-  function categoryAny(p){ return String(p?.category || "").trim().toUpperCase(); }
-  function segmentAny(p){ return String(p?.segment || "").trim().toUpperCase(); }
-  function regionAny(p){ return String(p?.region || "").trim().toUpperCase(); }
+
+  function toBullets(val){
+    if(!val) return [];
+    if(Array.isArray(val)) return val.filter(Boolean).slice(0,10);
+    return String(val)
+      .split(/\n|\||,/g)
+      .map(x=>x.trim())
+      .filter(Boolean)
+      .slice(0,10);
+  }
+
+  /* ✅ MULTI PHOTO SUPPORT */
+  function pickAllPhotos(p){
+    const isValid = (u)=> typeof u==="string" && /^https?:\/\//i.test(u.trim());
+    let arr = [];
+
+    if(isValid(p?.imageUrl)) arr.push(p.imageUrl.trim());
+    if(isValid(p?.image)) arr.push(p.image.trim());
+    if(isValid(p?.img)) arr.push(p.img.trim());
+
+    if(Array.isArray(p?.images)){
+      arr.push(...p.images.filter(isValid).map(x=>x.trim()));
+    }else if(p?.images && typeof p.images === "object"){
+      arr.push(...Object.values(p.images).filter(isValid).map(x=>x.trim()));
+    }
+
+    // dedupe
+    arr = [...new Set(arr)];
+    return arr;
+  }
 
   function pickPhotoAny(p){
-    const direct = p?.imageUrl || p?.image || p?.img || "";
-    if(direct && String(direct).trim()) return String(direct).trim();
-    if(Array.isArray(p?.images) && p.images[0]) return String(p.images[0]).trim();
-    if(p?.images && typeof p.images==="object"){
-      const vals = Object.values(p.images).filter(Boolean).map(x=>String(x).trim()).filter(Boolean);
-      if(vals[0]) return vals[0];
-    }
-    return "";
+    const all = pickAllPhotos(p);
+    return all[0] || "";
   }
 
-  function metaFromAny(p){
-    const bits = [districtAny(p), categoryAny(p), segmentAny(p), regionAny(p)].filter(Boolean);
-    return bits.join(" • ") || "—";
-  }
+  /* ✅ Popup HTML with Gallery (Next/Prev + dots) */
+  function placePopupHTML(pid){
+    const p = PLACES[pid] || {};
+    const name = placeNameAny(p, pid);
+    const dist = districtAny(p) || "";
+    const hist = String(p.history_tagline || p.history || "").trim();
+    const bullets = toBullets(p.what_you_find || p.whatYouFind);
 
-  function textAny(obj, keys, fallback="—"){
-    for(const k of keys){
-      const v = obj?.[k];
-      if(v && String(v).trim()) return String(v).trim();
-    }
-    return fallback;
+    const imgs = pickAllPhotos(p);
+    const uid = "g_" + pid.replace(/[^a-z0-9]/gi,"_");
+    const imgsJson = escapeHtml(JSON.stringify(imgs));
+
+    const imgBlock = imgs.length ? `
+      <div style="position:relative; margin-bottom:8px;">
+        <img id="${uid}_img"
+             src="${escapeHtml(imgs[0])}"
+             style="width:100%; height:140px; object-fit:cover; border-radius:12px; display:block;"
+             loading="lazy" referrerpolicy="no-referrer"
+             onerror="this.remove();">
+        ${imgs.length>1 ? `
+          <button id="${uid}_prev"
+            style="position:absolute; left:8px; top:50%; transform:translateY(-50%);
+                   border:1px solid rgba(255,255,255,.18); background:rgba(0,0,0,.45);
+                   color:#fff; border-radius:12px; padding:6px 10px; cursor:pointer;">‹</button>
+          <button id="${uid}_next"
+            style="position:absolute; right:8px; top:50%; transform:translateY(-50%);
+                   border:1px solid rgba(255,255,255,.18); background:rgba(0,0,0,.45);
+                   color:#fff; border-radius:12px; padding:6px 10px; cursor:pointer;">›</button>
+
+          <div id="${uid}_dots"
+            style="display:flex; gap:6px; justify-content:center; margin-top:6px;">
+            ${imgs.map((_,i)=>`<span data-i="${i}"
+              style="width:7px;height:7px;border-radius:50%;
+                     background:${i===0?'#fff':'rgba(255,255,255,.35)'}; display:inline-block; cursor:pointer;"></span>`).join("")}
+          </div>
+        `:""}
+      </div>
+    ` : "";
+
+    return `
+      <div style="min-width:240px; max-width:340px;" data-imgs='${imgsJson}' data-uid="${uid}">
+        ${imgBlock}
+
+        <div style="font-weight:950; font-size:14px;">${escapeHtml(name)}</div>
+        ${dist ? `<div style="opacity:.8; font-size:12px; margin-top:2px;">${escapeHtml(dist)}</div>` : ""}
+
+        ${hist ? `
+          <div style="margin-top:10px; font-weight:900; font-size:12px; opacity:.95;">History</div>
+          <div style="margin-top:4px; font-size:12px; opacity:.9; line-height:1.45;">${escapeHtml(hist)}</div>
+        ` : ""}
+
+        ${bullets.length ? `
+          <div style="margin-top:10px; font-weight:900; font-size:12px; opacity:.95;">What you can find</div>
+          <ul style="margin:6px 0 0 16px; padding:0;">
+            ${bullets.map(b=>`<li style="margin:4px 0; font-size:12px; opacity:.92;">${escapeHtml(b)}</li>`).join("")}
+          </ul>
+        ` : ""}
+      </div>
+    `;
   }
 
   /* ===============================
@@ -732,6 +838,9 @@
   let showMode = "all";
   let tilesDark = false;
 
+  // marker refs so itinerary click opens popup
+  const MARKERS_BY_ID = new Map();
+
   function initMap(){
     map = L.map('map', { zoomControl:true }).setView([31.1048, 77.1734], 8);
     tile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
@@ -740,11 +849,30 @@
   }
   function clearMap(){
     markersLayer.clearLayers();
+    MARKERS_BY_ID.clear();
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
     $("kmBadge").textContent = "—";
   }
   function fitRoute(){
     if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] });
+  }
+
+  function openPlaceOnMap(pid){
+    const m = MARKERS_BY_ID.get(pid);
+    const p = PLACES[pid] || {};
+    const lat = latAny(p), lng = lngAny(p);
+    if(m){
+      map.setView(m.getLatLng(), Math.max(map.getZoom(), 12), { animate:true });
+      m.openPopup();
+      return;
+    }
+    if(isFinite(lat) && isFinite(lng)){
+      map.setView([lat,lng], 12, { animate:true });
+      const mk = L.marker([lat,lng]).addTo(markersLayer);
+      mk.bindPopup(placePopupHTML(pid), { className:"placePopup", maxWidth: 360, autoPan:true });
+      MARKERS_BY_ID.set(pid, mk);
+      mk.openPopup();
+    }
   }
 
   /* ===============================
@@ -758,23 +886,22 @@
   let NAME_TO_ID = new Map();
   let STARTS = [];
 
-  let CURRENT_LIST = [];               // filtered templates after generate
-  let CURRENT_BY_DISTRICT = {};        // district -> templates[]
-  let ACTIVE_DISTRICT = "__ALL__";     // sidebar selection
+  let CURRENT_LIST = [];
+  let CURRENT_BY_DISTRICT = {};
+  let ACTIVE_DISTRICT = "";
 
   let CURRENT_TEMPLATE_KEY = "";
   let CURRENT_ROUTE_KM = 0;
 
-  // pricing nodes (from your Firebase)
   let pricing_transport = {};
   let rate_hotel = {};
   let stay_rate_rules = {};
   let PRICING_READY = false;
 
   /* ===============================
-     ✅ Cache (fast load)
+     ✅ Cache
      =============================== */
-  const CACHE_KEY = "hp_portal_cache_v4";
+  const CACHE_KEY = "hp_portal_cache_v8";
   const CACHE_TTL_MS = 1000 * 60 * 30;
 
   function loadCache(){
@@ -962,7 +1089,7 @@
   }
 
   /* ===============================
-     ✅ District Sidebar
+     ✅ District sidebar (NO ALL)
      =============================== */
   function buildDistrictBuckets(list){
     const buckets = {};
@@ -986,8 +1113,17 @@
     const bar = $("districtBar");
     const keys = Object.keys(CURRENT_BY_DISTRICT).sort((a,b)=>a.localeCompare(b));
 
-    const allCount = CURRENT_LIST.length;
-    let html = `<div class="distItem ${ACTIVE_DISTRICT==="__ALL__" ? "active":""}" data-d="__ALL__"><b>ALL</b> (${allCount})</div>`;
+    if(!keys.length){
+      bar.innerHTML = `<div class="pill"><b>No district</b></div>`;
+      ACTIVE_DISTRICT = "";
+      return;
+    }
+
+    if(!ACTIVE_DISTRICT || !CURRENT_BY_DISTRICT[ACTIVE_DISTRICT]){
+      ACTIVE_DISTRICT = keys[0];
+    }
+
+    let html = "";
     for(const d of keys){
       html += `<div class="distItem ${ACTIVE_DISTRICT===d ? "active":""}" data-d="${escapeHtml(d)}"><b>${escapeHtml(d)}</b> (${CURRENT_BY_DISTRICT[d].length})</div>`;
     }
@@ -1005,11 +1141,49 @@
 
   function renderPackagesForActiveDistrict(){
     const start = normalizeStartInput() || "";
-    const list = (ACTIVE_DISTRICT==="__ALL__")
-      ? CURRENT_LIST
-      : (CURRENT_BY_DISTRICT[ACTIVE_DISTRICT] || []);
-
+    const list = (ACTIVE_DISTRICT && CURRENT_BY_DISTRICT[ACTIVE_DISTRICT])
+      ? (CURRENT_BY_DISTRICT[ACTIVE_DISTRICT] || [])
+      : [];
     renderPackagesList(list, start);
+  }
+
+  /* ===============================
+     ✅ Group duplicates + show difference
+     =============================== */
+  function routeText(t){ return String(t.route_path || "").trim(); }
+
+  function placeNameSetFromTpl(t){
+    const ids = stopsFromTemplate(t);
+    const set = new Set();
+    ids.forEach(pid=>{
+      const p = PLACES[pid] || {};
+      set.add(placeNameAny(p, pid));
+    });
+    return set;
+  }
+
+  function diffText(base, other){
+    const a = placeNameSetFromTpl(base);
+    const b = placeNameSetFromTpl(other);
+
+    const added = [...b].filter(x=>!a.has(x)).slice(0,6);
+    const removed = [...a].filter(x=>!b.has(x)).slice(0,6);
+
+    const daysA = Number(base.days||0), daysB = Number(other.days||0);
+    const rA = routeText(base), rB = routeText(other);
+
+    const bits = [];
+    if(daysA && daysB && daysA !== daysB) bits.push(`Days ${daysA}→${daysB}`);
+    if(rA && rB && rA !== rB) bits.push(`Route changed`);
+    if(added.length) bits.push(`Adds: ${added.join(", ")}`);
+    if(removed.length) bits.push(`Skips: ${removed.join(", ")}`);
+
+    return bits.join(" • ");
+  }
+
+  function groupKey(start, t){
+    const end = endKeyFromRoutePath(t);
+    return `${String(start).toUpperCase()}__${String(end).toUpperCase()}`;
   }
 
   function renderPackagesList(list, start){
@@ -1018,50 +1192,85 @@
     $("pkgCount").textContent = `${list.length} Results`;
 
     if(!list.length){
-      box.innerHTML = `<div class="pill">No packages</div>`;
+      box.innerHTML = `<div class="pill">No packages in this district</div>`;
       return;
     }
 
+    const groups = new Map();
     list.forEach(t=>{
-      const endKey = endKeyFromRoutePath(t);
-      const days = Number(t.days || 0) || 0;
+      const k = groupKey(start, t);
+      if(!groups.has(k)) groups.set(k, []);
+      groups.get(k).push(t);
+    });
 
-      const routeIds = routeIdsFromTemplateIncludingStart(t);
-      let thumbUrl="", ini="HP";
-      if(routeIds[0]){
-        const p = PLACES[routeIds[0]] || {};
-        const nm = placeNameAny(p, routeIds[0]);
-        ini = initials(nm);
-        thumbUrl = pickPhotoAny(p);
-      }
+    const ordered = [...groups.entries()].sort((A,B)=>{
+      const a0 = A[1][0], b0 = B[1][0];
+      const sa = packageScore(a0), sb = packageScore(b0);
+      if(sa.locs !== sb.locs) return sb.locs - sa.locs;
+      if(sa.pri !== sb.pri) return sa.pri - sb.pri;
+      return sa.km - sb.km;
+    });
 
-      const el = document.createElement("div");
-      el.className = "pkg";
-      el.dataset.key = t.key;
+    ordered.forEach(([gk, arr])=>{
+      arr.sort((x,y)=> (Number(x.days)||0) - (Number(y.days)||0));
 
-      el.innerHTML = `
-        <div class="pkgPic">
-          ${thumbUrl
-            ? `<img src="${escapeHtml(thumbUrl)}" alt="Package thumbnail" loading="lazy" referrerpolicy="no-referrer"
-                  onerror="this.remove(); this.parentNode.textContent='${escapeHtml(ini)}';">`
-            : escapeHtml(ini)
-          }
-        </div>
-        <div class="pkgBody">
-          <div class="pkgName">${escapeHtml(String(start).toUpperCase())} → ${escapeHtml(String(endKey).toUpperCase())}</div>
-          <div class="pkgMeta">
-            LOCATIONS: ${stopsFromTemplate(t).length} • DAYS: ${days || "—"}<br/>
-            ID: ${escapeHtml(String(t.key||"—").toUpperCase())}
-          </div>
-        </div>
+      const base = arr[0];
+      const endKey = endKeyFromRoutePath(base);
+      const basePlaces = [...placeNameSetFromTpl(base)].slice(0,4).join(", ");
+      const baseRoute = routeText(base);
+      const versions = arr.length;
+
+      const hdr = document.createElement("div");
+      hdr.className = "pkgGroupHdr";
+      hdr.innerHTML = `
+        <div class="h1">${escapeHtml(String(start).toUpperCase())} → ${escapeHtml(String(endKey).toUpperCase())}</div>
+        <div class="h2">Covers: ${escapeHtml(basePlaces || "—")} ${versions>1 ? `• ${versions} versions` : ""}</div>
+        ${baseRoute ? `<div class="h2">Route: ${escapeHtml(baseRoute)}</div>` : ``}
       `;
-      el.onclick = ()=>openTemplate(t.key, start);
-      box.appendChild(el);
+      box.appendChild(hdr);
+
+      arr.forEach((t,i)=>{
+        const days = Number(t.days||0) || 0;
+
+        const routeIds = routeIdsFromTemplateIncludingStart(t);
+        let thumbUrl="", ini="HP";
+        if(routeIds[0]){
+          const p = PLACES[routeIds[0]] || {};
+          const nm = placeNameAny(p, routeIds[0]);
+          ini = initials(nm);
+          thumbUrl = pickPhotoAny(p);
+        }
+
+        const diff = (i===0 || arr.length===1) ? "" : diffText(base, t);
+
+        const el = document.createElement("div");
+        el.className = "pkg";
+        el.dataset.key = t.key;
+
+        el.innerHTML = `
+          <div class="pkgPic">
+            ${thumbUrl
+              ? `<img src="${escapeHtml(thumbUrl)}" alt="Package thumbnail" loading="lazy" referrerpolicy="no-referrer"
+                  onerror="this.remove(); this.parentNode.textContent='${escapeHtml(ini)}';">`
+              : escapeHtml(ini)
+            }
+          </div>
+          <div class="pkgBody">
+            <div class="pkgName">${escapeHtml(String(start).toUpperCase())} → ${escapeHtml(String(endKey).toUpperCase())} • ${days ? `${days}D` : ""}</div>
+            <div class="pkgMeta">
+              LOCATIONS: ${stopsFromTemplate(t).length} • ID: ${escapeHtml(String(t.key||"—").toUpperCase())}
+            </div>
+            ${diff ? `<div class="diffLine">${escapeHtml(diff)}</div>` : ``}
+          </div>
+        `;
+        el.onclick = ()=>openTemplate(t.key, start);
+        box.appendChild(el);
+      });
     });
   }
 
   /* ===============================
-     ✅ Itinerary rendering
+     ✅ Itinerary
      =============================== */
   function buildDayWise(tpl){
     const days = Number(tpl.days || 1);
@@ -1137,7 +1346,7 @@
             <div class="pmeta">${escapeHtml(dist)}</div>
           </div>
         `;
-        line.onclick = ()=>toast(`Place: ${name}`);
+        line.onclick = ()=>openPlaceOnMap(pid);
         cont.appendChild(line);
       });
 
@@ -1146,10 +1355,59 @@
   }
 
   /* ===============================
-     ✅ Route draw (OSRM)
+     ✅ Route draw (OSRM) + popup gallery bind
      =============================== */
+  function bindPopupGallery(popup){
+    const root = popup?.getElement()?.querySelector("[data-uid]");
+    if(!root) return;
+
+    const uid = root.getAttribute("data-uid");
+    let imgs = [];
+    try{ imgs = JSON.parse(root.getAttribute("data-imgs") || "[]"); }catch(_){ imgs=[]; }
+    if(!imgs.length) return;
+
+    let idx = 0;
+    const imgEl = document.getElementById(uid+"_img");
+    const dotsWrap = document.getElementById(uid+"_dots");
+
+    const paintDots = ()=>{
+      if(!dotsWrap) return;
+      [...dotsWrap.querySelectorAll("span")].forEach(s=>{
+        const i = Number(s.getAttribute("data-i"));
+        s.style.background = (i===idx) ? "#fff" : "rgba(255,255,255,.35)";
+      });
+    };
+
+    const show = ()=>{
+      if(imgEl) imgEl.src = imgs[idx];
+      paintDots();
+    };
+
+    const prevBtn = document.getElementById(uid+"_prev");
+    const nextBtn = document.getElementById(uid+"_next");
+
+    if(prevBtn) prevBtn.onclick = ()=>{
+      idx = (idx - 1 + imgs.length) % imgs.length;
+      show();
+    };
+    if(nextBtn) nextBtn.onclick = ()=>{
+      idx = (idx + 1) % imgs.length;
+      show();
+    };
+
+    if(dotsWrap){
+      dotsWrap.querySelectorAll("span").forEach(s=>{
+        s.onclick = ()=>{
+          idx = Number(s.getAttribute("data-i")) || 0;
+          show();
+        };
+      });
+    }
+  }
+
   async function drawRoadRouteFromPlaces(placeIds){
     markersLayer.clearLayers();
+    MARKERS_BY_ID.clear();
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
 
     const pts = [];
@@ -1204,13 +1462,12 @@
         const lng = lngAny(p);
         if(!isFinite(lat)||!isFinite(lng)) continue;
 
-        const nm = placeNameAny(p, pid);
-        const isFirst = (i===0);
-        L.marker([lat,lng]).addTo(markersLayer)
-          .bindPopup(
-            `<b>${escapeHtml(nm)}</b>` +
-            (isFirst ? `<br><small style="opacity:.85;">START OF PACKAGE</small>` : ``)
-          );
+        const mk = L.marker([lat,lng], { riseOnHover:true }).addTo(markersLayer);
+        mk.bindPopup(placePopupHTML(pid), { className:"placePopup", maxWidth: 360, autoPan:true });
+
+        mk.on("popupopen", (e)=>bindPopupGallery(e.popup));
+
+        MARKERS_BY_ID.set(pid, mk);
       }
 
       const km = Number(r.distance/1000);
@@ -1224,27 +1481,57 @@
   }
 
   /* ===============================
-     ✅ Pricing (REAL DB LOGIC)
-     - Uses /pricing_transport (hatchback/innova/luxury_suv)
-     - Uses /stay_rate_rules (r1/r2/r3)
-     - Removes tempo traveller logic completely
+     ✅ Pricing (AUTO-SEASON) (kept same)
      =============================== */
-
   function pickStayRule(tier){
     const t = String(tier||"budget").toLowerCase();
-    // budget -> r1, premium -> r2, luxury -> r3
     const key = (t==="premium") ? "r2" : (t==="luxury") ? "r3" : "r1";
     return stay_rate_rules?.[key] || {};
   }
-
   function pickVehicleByPax(pax){
     pax = Number(pax||2);
     if(pax <= 4) return "hatchback";
     if(pax <= 7) return "innova";
     return "luxury_suv";
   }
+  function autoSeason(tpl){
+    const text = String(tpl?.best_season || "").toLowerCase();
+    if(/monsoon|rain|jul|aug/.test(text)) return "low";
+    if(/winter|snow|snowfall|dec|jan/.test(text)) return "peak";
+    if(/peak/.test(text)) return "peak";
+    if(/low/.test(text)) return "low";
+    if(/mid/.test(text)) return "mid";
+    const m = new Date().getMonth() + 1;
+    if([1,5,6,10,12].includes(m)) return "peak";
+    if([2,7,8].includes(m)) return "low";
+    return "mid";
+  }
+  function pickBaseRoomBySeason(rule, season){
+    const s = String(season||"mid").toLowerCase();
+    if(s === "low")  return Number(rule.base_rate_low || rule.base_rate_mid || rule.base_rate_peak || 0);
+    if(s === "peak") return Number(rule.base_rate_peak || rule.base_rate_mid || rule.base_rate_low || 0);
+    return Number(rule.base_rate_mid || rule.base_rate_low || rule.base_rate_peak || 0);
+  }
+  function computeSnowMultiplier(tpl, vehicle){
+    const sr = String(tpl?.snow_risk || "").toLowerCase();
+    const base = Number(vehicle?.snow_multiplier || 1);
+    if(!isFinite(base) || base <= 0) return 1;
+    if(sr.includes("high")) return base;
+    if(sr.includes("medium")) return 1 + (base - 1) * 0.5;
+    return 1;
+  }
+  function computeRoadMultiplier(tpl, vehicle){
+    const rt = String(tpl?.road_type || "").toLowerCase();
+    const dl = String(tpl?.drive_level || "").toLowerCase();
+    const bad = Number(vehicle?.bad_road_multiplier || 1);
+    const hill = Number(vehicle?.hill_multiplier || 1);
+    let m = 1;
+    if(rt.includes("bad") || rt.includes("mix")) m *= (isFinite(bad) && bad>0 ? bad : 1);
+    if(dl.includes("high") || rt.includes("hill")) m *= (isFinite(hill) && hill>0 ? hill : 1);
+    return m;
+  }
 
-  function estimateTotalCost({ km=0, days=3, pax=2 }){
+  function estimateTotalCost({ km=0, days=3, pax=2, tpl=null }){
     km = Number(km||0);
     days = Number(days||0);
     pax = Math.max(1, Number(pax||1));
@@ -1254,37 +1541,49 @@
       return { total:NaN, perPerson:NaN, debug:"Pricing not ready OR km/days missing" };
     }
 
-    const tier = String($("visitType")?.value || "budget").toLowerCase();
+    const tier   = String($("visitType")?.value || "budget").toLowerCase();
+    const season = autoSeason(tpl);
 
-    // Transport
     const vehicleKey = pickVehicleByPax(pax);
     const v = pricing_transport?.[vehicleKey] || {};
+
     const perKm = Number(v.per_km || 0);
     const driverPerDay = Number(v.driver_per_day || 0);
+    const minKmPerDay = Number(v.min_km_per_day || 0);
+    const nightCharge = Number(v.night_charge || 0);
+    const tollPct = Number(v.parking_toll_buffer_pct || 0);
 
-    // Stay rule
+    const minBillKm = (isFinite(minKmPerDay) && minKmPerDay > 0) ? (days * minKmPerDay) : 0;
+    const billedKm = Math.max(km, minBillKm);
+
+    const roadMul = computeRoadMultiplier(tpl, v);
+    const snowMul = computeSnowMultiplier(tpl, v);
+    const bufferMul = 1 + (isFinite(tollPct) ? tollPct : 0) / 100;
+
+    const transportKmCost = billedKm * perKm * roadMul * snowMul * bufferMul;
+    const driverCost = days * driverPerDay;
+    const nightCost = nights * nightCharge;
+
+    const transport = transportKmCost + driverCost + nightCost;
+
     const rule = pickStayRule(tier);
-    const baseRoom = Number(rule.base_rate_mid || rule.base_rate_low || rule.base_rate_peak || 0);
-    const extraRate = Number(rule.extra_person_rate || 0);
+    const baseRoom = pickBaseRoomBySeason(rule, season);
     const weekendMul = Number(rule.weekend_multiplier || 1);
 
-    // Simple weekend factor (optional): apply if trip >= 2 nights
-    const wkFactor = (nights >= 2) ? weekendMul : 1;
+    const rooms = Math.max(1, Math.ceil(pax / 2));
+    const wkFactor = (nights >= 2) ? (isFinite(weekendMul) && weekendMul>0 ? weekendMul : 1) : 1;
+    const hotel = nights * baseRoom * rooms * wkFactor;
 
-    const extraPersons = Math.max(0, pax - 2);
-
-    const transport = (km * perKm) + (days * driverPerDay);
-    const hotel = (nights * baseRoom * wkFactor);
-    const extra = (extraPersons * extraRate * nights);
-
-    const total = transport + hotel + extra;
+    const total = transport + hotel;
 
     const debug =
-      `tier=${tier} | vehicle=${vehicleKey}\n` +
-      `km=${km.toFixed(1)} days=${days} pax=${pax} nights=${nights}\n` +
-      `transport: perKm=${perKm} driverDay=${driverPerDay} => ${Math.round(transport)}\n` +
-      `hotel: baseRoom=${baseRoom} weekendMul=${wkFactor} => ${Math.round(hotel)}\n` +
-      `extra: extraPersons=${extraPersons} extraRate=${extraRate} => ${Math.round(extra)}`;
+      `tier=${tier} season(AUTO)=${season}\n` +
+      `vehicle=${vehicleKey} pax=${pax} rooms=${rooms}\n` +
+      `routeKm=${km.toFixed(1)} billedKm=${billedKm.toFixed(1)} days=${days} nights=${nights}\n` +
+      `transport: perKm=${perKm}, driver/day=${driverPerDay}, night_charge=${nightCharge}\n` +
+      `multipliers: road=${roadMul.toFixed(2)} snow=${snowMul.toFixed(2)} buffer=${bufferMul.toFixed(2)}\n` +
+      `hotel: baseRoom=${baseRoom} wkFactor=${wkFactor.toFixed(2)} => ${Math.round(hotel)}\n` +
+      `TOTAL => ${Math.round(total)}`;
 
     return { total, perPerson: total/pax, debug };
   }
@@ -1297,14 +1596,12 @@
     if(!isFinite(total)){
       totalEl.innerHTML = "— <small></small>";
       perEl.innerHTML = "— <small></small>";
-      dbg.style.display = "block";
       dbg.textContent = debugText || "Price not computed (missing rates OR km)";
       return;
     }
 
     totalEl.innerHTML = rupees(total) + ` <small>(${String($("visitType").value).toUpperCase()})</small>`;
     perEl.innerHTML = rupees(perPerson) + ` <small>per person</small>`;
-    dbg.style.display = "block";
     dbg.textContent = debugText || "";
   }
 
@@ -1322,7 +1619,7 @@
         km = Number(tpl.total_km_est || tpl.estimated_drive_km || tpl.total_km || 0);
       }
 
-      const est = estimateTotalCost({ km, days, pax });
+      const est = estimateTotalCost({ km, days, pax, tpl });
       updatePriceBoxes(est.total, est.perPerson, est.debug);
     }catch(e){
       console.error(e);
@@ -1331,7 +1628,7 @@
   }
 
   /* ===============================
-     ✅ Generate + District grouping
+     ✅ Generate
      =============================== */
   function applyFilters(){
     const start = normalizeStartInput();
@@ -1347,7 +1644,7 @@
     $("daysList").innerHTML = "";
     $("priceTotal").innerHTML = "— <small></small>";
     $("pricePer").innerHTML = "— <small></small>";
-    $("priceDebug").style.display="none";
+    $("priceDebug").textContent = "";
     CURRENT_TEMPLATE_KEY = "";
     CURRENT_ROUTE_KM = 0;
 
@@ -1373,7 +1670,8 @@
 
     CURRENT_LIST = list;
     CURRENT_BY_DISTRICT = buildDistrictBuckets(list);
-    ACTIVE_DISTRICT = "__ALL__";
+
+    ACTIVE_DISTRICT = "";
 
     setPills({
       START: startUpper,
@@ -1486,7 +1784,7 @@
       $("paxSel").value="2";
       $("pills").innerHTML="";
       $("pkgList").innerHTML = `<div class="pill"><span>Type Start & click</span> <b>Generate</b></div>`;
-      $("districtBar").innerHTML = `<div class="distItem active" data-d="__ALL__"><b>ALL</b> (0)</div>`;
+      $("districtBar").innerHTML = "";
       $("pkgCount").textContent="—";
       $("activePkgName").textContent="—";
       $("itTitle").textContent="Select a package";
@@ -1495,13 +1793,13 @@
       $("daysList").innerHTML="";
       $("priceTotal").innerHTML="— <small></small>";
       $("pricePer").innerHTML="— <small></small>";
-      $("priceDebug").style.display="none";
+      $("priceDebug").textContent="";
       clearMap();
       CURRENT_TEMPLATE_KEY = "";
       CURRENT_ROUTE_KM = 0;
       CURRENT_LIST = [];
       CURRENT_BY_DISTRICT = {};
-      ACTIVE_DISTRICT="__ALL__";
+      ACTIVE_DISTRICT="";
       toast("Reset done");
     });
 
