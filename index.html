@@ -4,19 +4,13 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
-  <title>Himachal Tour Packages | Himachal Explorer Portal (Routes, Maps, Day-wise Plans)</title>
-  <meta name="description" content="Explore Himachal tour packages with live road route maps, day-wise itineraries, places, and package planner." />
-  <meta name="keywords" content="Himachal tour packages, Himachal itinerary, Himachal trip planner, Himachal explorer, road route map, Himachal travel" />
-  <meta name="author" content="Himachal Explorer" />
+  <title>Himachal Tour Packages | Himachal Explorer Portal</title>
+  <meta name="description" content="Explore Himachal tour packages with live road route maps, day-wise itineraries, and price estimate." />
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
-
-  <!-- ✅ Canonical (match your live URL) -->
   <link rel="canonical" href="https://champishere001.github.io/" />
-
   <meta name="theme-color" content="#070A12" />
   <link rel="icon" href="./favicon.ico" />
 
-  <!-- ✅ Performance -->
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://unpkg.com" crossorigin>
   <link rel="preconnect" href="https://router.project-osrm.org" crossorigin>
@@ -42,8 +36,6 @@
       --shadow: 0 24px 90px rgba(0,0,0,.55);
       --radius: 18px;
       --acc:#7C3AED;
-      --acc2:#22C55E;
-      --acc3:#06B6D4;
 
       --topH: 92px;
       --gap: 14px;
@@ -112,33 +104,6 @@
     .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
     .brand p{ margin:4px 0 0; font-size:12px; color:var(--muted); line-height:1.25; }
 
-    .quote{ flex:1; display:flex; justify-content:center; align-items:center; padding: 0 6px; min-width: 0; }
-    .quoteBox{
-      width:min(760px, 100%);
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,.05);
-      border-radius: 999px;
-      padding: 10px 14px;
-      display:flex; align-items:center; gap:10px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.35);
-      backdrop-filter: blur(12px);
-      overflow:hidden;
-    }
-    .spark{
-      width:30px; height:30px; border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(124,58,237,.55));
-      box-shadow: 0 0 0 6px rgba(124,58,237,.14);
-      flex:0 0 auto;
-    }
-    .quoteText{
-      font-size: 12.5px;
-      color: rgba(255,255,255,.86);
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
-    }
-    .quoteText b{ color:#fff; }
-
     .actions{
       display:flex; gap:10px; align-items:center;
       min-width: 260px;
@@ -168,7 +133,6 @@
       grid-template-columns: var(--leftPct) var(--mapPct) var(--rightPct);
       gap: var(--gap);
       padding: 14px;
-      padding-bottom:14px;
     }
 
     .pane{
@@ -221,9 +185,6 @@
       letter-spacing:.12em;
       margin:0 0 6px 2px;
     }
-    select{ text-transform: uppercase; }
-    input{ text-transform: none; }
-
     input, select{
       width:100%;
       padding: 11px 12px;
@@ -254,7 +215,15 @@
     .btn:hover{ filter: brightness(1.05); transform: translateY(-1px); }
     .btn:active{ transform: translateY(0px); }
 
-    .metaPills{ padding: 0 12px 12px; display:flex; flex-wrap:wrap; gap:8px; background: rgba(0,0,0,.18); backdrop-filter: blur(10px); }
+    .metaPills{
+      padding: 0 12px 12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      background: rgba(0,0,0,.18);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--stroke);
+    }
     .pill{
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.05);
@@ -268,15 +237,51 @@
     }
     .pill b{ color:#fff; letter-spacing:.06em; }
 
+    /* ✅ District Sidebar Layout */
+    .pkgLayout{
+      flex:1;
+      display:grid;
+      grid-template-columns: 160px 1fr;
+      min-height:0;
+    }
+    .districtBar{
+      border-right:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      overflow:auto;
+      padding:10px;
+    }
+    .distItem{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color: rgba(255,255,255,.86);
+      border-radius: 14px;
+      padding:10px 10px;
+      font-size: 11px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      margin-bottom:10px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .distItem:hover{ background: rgba(255,255,255,.08); }
+    .distItem.active{
+      border-color: rgba(124,58,237,.70);
+      box-shadow: 0 0 0 3px rgba(124,58,237,.16);
+      background: rgba(124,58,237,.12);
+    }
+    .distItem b{ color:#fff; }
+
     .pkgList{
       padding: 12px;
       overflow:auto;
       display:grid;
       grid-template-columns: 1fr;
       gap:10px;
+      min-height:0;
       background: rgba(0,0,0,.18);
       backdrop-filter: blur(10px);
     }
+
     .pkg{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.22);
@@ -301,7 +306,6 @@
       color: rgba(255,255,255,.85);
     }
     .pkgPic img{ width:100%; height:100%; object-fit:cover; display:block; }
-
     .pkgBody{ min-width:0; flex:1; }
     .pkgName{
       font-size: 12.5px;
@@ -320,21 +324,8 @@
       text-transform: uppercase;
       line-height: 1.35;
     }
-    .tag{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 5px 9px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      font-size: 10.5px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.78);
-      margin-top: 8px;
-      width:fit-content;
-    }
-    .tag.ok{ border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.10); color: rgba(34,197,94,.98); }
-    .tag.warn{ border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.10); color: rgba(245,158,11,.98); }
+
+    /* ✅ REMOVED: tempo tag styles (no .tag) */
 
     #map{ width:100%; height:100%; background: rgba(255,255,255,.04); }
     .mapTools{
@@ -366,6 +357,12 @@
       flex-direction:column;
       gap:12px;
     }
+    .heroCard{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      border-radius: 16px;
+      padding: 12px;
+    }
     .bigTitle{
       margin:0;
       font-size: 13px;
@@ -375,12 +372,6 @@
     }
     .muted{ color: var(--muted); font-size: 11.5px; letter-spacing:.08em; text-transform: uppercase; line-height:1.35; }
 
-    .heroCard{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-      border-radius: 16px;
-      padding: 12px;
-    }
     .row2{
       display:grid;
       grid-template-columns: 1fr 1fr;
@@ -404,17 +395,11 @@
       padding: 12px;
     }
     .dayTop{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
       margin-bottom: 8px;
     }
     .dayTop .d{
-      font-size: 12px;
-      font-weight: 950;
-      letter-spacing:.18em;
-      text-transform: uppercase;
+      font-size: 12px; font-weight: 950; letter-spacing:.18em; text-transform: uppercase;
     }
 
     .placeLine{
@@ -487,54 +472,15 @@
         grid-template-rows: auto 420px auto;
       }
       #map{ height: 420px; }
-      .quote{ display:none; }
+      .pkgLayout{ grid-template-columns: 1fr; }
+      .districtBar{ display:flex; gap:10px; flex-wrap:wrap; border-right:none; border-bottom:1px solid rgba(255,255,255,.10); }
+      .distItem{ margin-bottom:0; }
       .actions{ min-width:unset; }
     }
-
-    /* Modal */
-    #placeModalBack{
-      display:none; position:fixed; inset:0;
-      background:rgba(0,0,0,.60);
-      backdrop-filter:blur(10px);
-      z-index:99999;
-    }
-    #placeModal{
-      display:none; position:fixed; left:50%; top:7%;
-      transform:translateX(-50%);
-      width:min(900px, calc(100% - 24px));
-      max-height:86vh; overflow:auto;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(10,14,24,.92);
-      box-shadow:0 40px 120px rgba(0,0,0,.75);
-      z-index:100000;
-    }
-
-    .sr-only{
-      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
-      overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
-    }
-
-    .smallNote{
-      font-size:11px;
-      color:rgba(255,255,255,.70);
-      letter-spacing:.08em;
-      line-height:1.35;
-      text-transform:none;
-    }
-    .hr{ height:1px; background:rgba(255,255,255,.10); margin:10px 0; }
   </style>
 </head>
 
 <body>
-  <h1 class="sr-only">Himachal Tour Packages - Himachal Explorer Portal</h1>
-
-  <noscript>
-    <div style="padding:14px; margin:14px; border:1px solid rgba(255,255,255,.2); border-radius:14px; background:rgba(0,0,0,.35); color:#fff;">
-      This portal needs JavaScript to load packages, maps, and itinerary details.
-    </div>
-  </noscript>
-
   <div class="aurora"></div>
   <div class="noise"></div>
 
@@ -547,13 +493,6 @@
         <div>
           <div style="margin:0;font-size:14px;letter-spacing:.18em;text-transform:uppercase;font-weight:900;">Himachal Explorer Portal</div>
           <p id="statusLine">Loading…</p>
-        </div>
-      </div>
-
-      <div class="quote">
-        <div class="quoteBox">
-          <div class="spark"></div>
-          <div class="quoteText" id="quoteText">“The mountains are calling…”</div>
         </div>
       </div>
 
@@ -577,7 +516,7 @@
 
         <div class="filters">
           <div class="field">
-            <label>Start (Templates)</label>
+            <label>Start</label>
             <input id="startInp" list="startList" placeholder="E.g. AMRITSAR / DELHI / CHANDIGARH" autocomplete="off">
             <datalist id="startList"></datalist>
           </div>
@@ -613,16 +552,18 @@
             <button class="btn secondary" id="resetBtn" type="button">Reset</button>
             <button class="btn" id="genBtn" type="button">Generate</button>
           </div>
-
-          <div class="smallNote" id="dataKey">
-            Data Key: —
-          </div>
         </div>
 
         <div class="metaPills" id="pills"></div>
 
-        <div class="pkgList" id="pkgList">
-          <div class="pill"><span>Type Start & click</span> <b>Generate</b></div>
+        <!-- ✅ District Sidebar + Package list -->
+        <div class="pkgLayout">
+          <div class="districtBar" id="districtBar">
+            <div class="distItem active" data-d="__ALL__"><b>ALL</b> (0)</div>
+          </div>
+          <div class="pkgList" id="pkgList">
+            <div class="pill"><span>Type Start & click</span> <b>Generate</b></div>
+          </div>
         </div>
       </div>
 
@@ -650,7 +591,7 @@
         <div class="paneHdr">
           <div>
             <p class="t">Itinerary</p>
-            <div class="s">Tap a place → popup details + upload</div>
+            <div class="s">Tap a place → details</div>
           </div>
           <div class="s" id="activePkgName">—</div>
         </div>
@@ -659,11 +600,12 @@
           <div class="heroCard">
             <h3 class="bigTitle" id="itTitle">Select a package</h3>
             <div class="muted" id="itMeta">Day-wise details will appear here</div>
+            <div class="muted" id="priceDebug" style="margin-top:8px; text-transform:none; display:none;"></div>
           </div>
 
           <div class="row2">
             <div class="mini">
-              <div class="k">Our Price (est.)</div>
+              <div class="k">Total (est.)</div>
               <div class="v" id="priceTotal">— <small></small></div>
             </div>
             <div class="mini">
@@ -685,83 +627,9 @@
 
   <div class="toast" id="toast"></div>
 
-  <!-- PLACE MODAL -->
-  <div id="placeModalBack"></div>
-  <div id="placeModal">
-    <div style="padding:14px 14px 10px; border-bottom:1px solid rgba(255,255,255,.12);
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;">
-      <div style="min-width:0;">
-        <div id="mTitle" style="font-weight:950; letter-spacing:.12em; text-transform:uppercase; font-size:14px; color:#fff;">
-          PLACE
-        </div>
-        <div id="mMeta" style="margin-top:6px; color:rgba(255,255,255,.72); font-size:11px; letter-spacing:.10em; text-transform:uppercase;">
-          —
-        </div>
-      </div>
-      <button id="mClose" type="button" style="border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06);
-        color:rgba(255,255,255,.85); border-radius:14px; padding:10px 12px; cursor:pointer;
-        font-weight:900; letter-spacing:.10em; text-transform:uppercase;">Close</button>
-    </div>
-
-    <div style="padding:14px; display:grid; grid-template-columns: 240px 1fr; gap:14px; align-items:start;">
-      <div style="border:1px solid rgba(255,255,255,.12); background:rgba(0,0,0,.25);
-        border-radius:16px; overflow:hidden;">
-        <div id="mPhoto" style="height:240px; display:grid; place-items:center; color:rgba(255,255,255,.75);
-          font-weight:950; letter-spacing:.12em; text-transform:uppercase;">
-          No Photo
-        </div>
-      </div>
-
-      <div style="display:flex; flex-direction:column; gap:12px;">
-        <div style="border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.05);
-          border-radius:16px; padding:12px;">
-          <div style="color:rgba(255,255,255,.70); font-size:11px; letter-spacing:.12em; text-transform:uppercase;">Overview / History</div>
-          <div id="mHistory" style="margin-top:8px; color:rgba(255,255,255,.92); line-height:1.45;">—</div>
-        </div>
-
-        <div style="border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.05);
-          border-radius:16px; padding:12px;">
-          <div style="color:rgba(255,255,255,.70); font-size:11px; letter-spacing:.12em; text-transform:uppercase;">What you find</div>
-          <div id="mFind" style="margin-top:8px; color:rgba(255,255,255,.92); line-height:1.45;">—</div>
-        </div>
-
-        <div class="hr"></div>
-
-        <div style="border:1px solid rgba(255,255,255,.12); background:rgba(0,0,0,.22);
-          border-radius:16px; padding:12px;">
-          <div style="color:rgba(255,255,255,.70); font-size:11px; letter-spacing:.12em; text-transform:uppercase;">Upload Photo to this place</div>
-          <div class="smallNote" style="margin-top:6px;">Uploads to Firebase Storage and saves URL under <b>/places_in_packages/&lt;place_id&gt;/images</b></div>
-
-          <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
-            <input id="mFile" type="file" accept="image/*" style="flex:1; min-width:220px;">
-            <button id="mUpload" type="button" class="toolBtn" style="padding:10px 12px;">Upload</button>
-          </div>
-
-          <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
-            <input id="mUrl" placeholder="Or paste image URL and Save" style="flex:1; min-width:220px;">
-            <button id="mSaveUrl" type="button" class="toolBtn" style="padding:10px 12px;">Save URL</button>
-          </div>
-
-          <div class="smallNote" id="mUploadStatus" style="margin-top:8px;">—</div>
-        </div>
-
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button id="mFocus" type="button" style="border:1px solid rgba(255,255,255,.14); background:linear-gradient(135deg, rgba(124,58,237,.95), rgba(6,182,212,.65));
-            color:#fff; border-radius:14px; padding:10px 12px; cursor:pointer; font-weight:900; letter-spacing:.10em; text-transform:uppercase;">
-            Focus on Map
-          </button>
-          <button id="mCopy" type="button" style="border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06);
-            color:rgba(255,255,255,.85); border-radius:14px; padding:10px 12px; cursor:pointer; font-weight:900; letter-spacing:.10em; text-transform:uppercase;">
-            Copy Place ID
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script>
   /* ===============================
-     ✅ Firebase Config (YOUR PROJECT)
+     ✅ Firebase Config
      =============================== */
   const firebaseConfig = {
     apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
@@ -775,17 +643,14 @@
   };
 
   /* ===============================
-     ✅ Node Mapping (NEW DB)
+     ✅ Node Mapping (Your DB)
      =============================== */
   const NODE_TEMPLATES = "templates";
-  const NODE_PLACES    = "places_in_packages"; // ✅ your new header / sheet
+  const NODE_PLACES    = "places_in_packages";
   const NODE_TRANSPORT = "pricing_transport";
   const NODE_HOTEL     = "rate_hotel";
   const NODE_STAYRULES = "stay_rate_rules";
 
-  /* ===============================
-     ✅ Helpers
-     =============================== */
   const $ = (id)=>document.getElementById(id);
 
   function toast(msg){
@@ -822,19 +687,8 @@
   }
   function setStatus(msg){ $("statusLine").textContent = msg; }
 
-  function textAny(obj, keys, fallback="—"){
-    for(const k of keys){
-      const v = obj?.[k];
-      if(v && String(v).trim()) return String(v).trim();
-    }
-    return fallback;
-  }
-
   /* ===============================
-     ✅ Column Mapping (Places_in_packages)
-     Based on your screenshot fields:
-       category, district, history_tagline, latitude, longitude,
-       name, place_id, region, segment, what_you_find, images
+     ✅ Place field mapping (your /places_in_packages)
      =============================== */
   function placeIdAny(p, key){ return String(p?.place_id || p?.id || key || "").trim(); }
   function placeNameAny(p, key){
@@ -843,29 +697,18 @@
   function latAny(p){ return Number(p?.latitude ?? p?.lat ?? p?.Latitude); }
   function lngAny(p){ return Number(p?.longitude ?? p?.lng ?? p?.Longitude); }
   function districtAny(p){ return String(p?.district || p?.District || "").trim().toUpperCase(); }
-  function categoryAny(p){ return String(p?.category || p?.["Location Type"] || "").trim().toUpperCase(); }
-  function segmentAny(p){ return String(p?.segment || p?.["Segment Type"] || "").trim().toUpperCase(); }
-  function regionAny(p){ return String(p?.region || p?.Region || "").trim().toUpperCase(); }
+  function categoryAny(p){ return String(p?.category || "").trim().toUpperCase(); }
+  function segmentAny(p){ return String(p?.segment || "").trim().toUpperCase(); }
+  function regionAny(p){ return String(p?.region || "").trim().toUpperCase(); }
 
   function pickPhotoAny(p){
     const direct = p?.imageUrl || p?.image || p?.img || "";
     if(direct && String(direct).trim()) return String(direct).trim();
-
-    // new DB: images can be array OR object (push keys)
     if(Array.isArray(p?.images) && p.images[0]) return String(p.images[0]).trim();
     if(p?.images && typeof p.images==="object"){
       const vals = Object.values(p.images).filter(Boolean).map(x=>String(x).trim()).filter(Boolean);
       if(vals[0]) return vals[0];
     }
-
-    if(Array.isArray(p?.photos) && p.photos[0]) return String(p.photos[0]).trim();
-    if(p?.photos && typeof p.photos==="object"){
-      const vals = Object.values(p.photos).filter(Boolean).map(x=>String(x).trim()).filter(Boolean);
-      if(vals[0]) return vals[0];
-    }
-
-    const p1 = p?.["photo 1"] || p?.photo1 || p?.photo || "";
-    if(p1 && String(p1).trim()) return String(p1).trim();
     return "";
   }
 
@@ -874,17 +717,13 @@
     return bits.join(" • ") || "—";
   }
 
-  /* ===============================
-     ✅ Quotes
-     =============================== */
-  const QUOTES = [
-    "Himachal is not a destination — it’s a <b>feeling</b>.",
-    "Every turn in the mountains is a new <b>story</b>.",
-    "Let your route be scenic, your pace be <b>human</b>.",
-    "Collect moments, not things — especially in the <b>hills</b>.",
-    "Snow, cedar, rivers — welcome to <b>Himachal</b>."
-  ];
-  let qIndex=0;
+  function textAny(obj, keys, fallback="—"){
+    for(const k of keys){
+      const v = obj?.[k];
+      if(v && String(v).trim()) return String(v).trim();
+    }
+    return fallback;
+  }
 
   /* ===============================
      ✅ Map
@@ -907,40 +746,79 @@
   function fitRoute(){
     if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] });
   }
-  function refreshMapSize(){
-    try{ map.invalidateSize(true); }catch(e){}
-  }
 
   /* ===============================
-     ✅ Firebase + Data
+     ✅ Data
      =============================== */
   let db, storage, analytics;
 
-  let PLACES = {};          // from /places_in_packages
-  let TEMPLATES = {};       // from /templates
+  let PLACES = {};
+  let TEMPLATES = {};
   let ACTIVE_TEMPLATES = [];
   let NAME_TO_ID = new Map();
   let STARTS = [];
-  let CURRENT_LIST = [];
+
+  let CURRENT_LIST = [];               // filtered templates after generate
+  let CURRENT_BY_DISTRICT = {};        // district -> templates[]
+  let ACTIVE_DISTRICT = "__ALL__";     // sidebar selection
+
   let CURRENT_TEMPLATE_KEY = "";
   let CURRENT_ROUTE_KM = 0;
 
-  // pricing
+  // pricing nodes (from your Firebase)
   let pricing_transport = {};
   let rate_hotel = {};
   let stay_rate_rules = {};
   let PRICING_READY = false;
 
-  // cache
-  const CACHE_KEY = "hp_portal_cache_v3";
-  const CACHE_TTL_MS = 1000 * 60 * 30; // 30 min
+  /* ===============================
+     ✅ Cache (fast load)
+     =============================== */
+  const CACHE_KEY = "hp_portal_cache_v4";
+  const CACHE_TTL_MS = 1000 * 60 * 30;
 
-  function setDataKeyUI(src){
-    $("dataKey").innerHTML =
-      `Data Key: ` +
-      `<b style="color:#fff;">${escapeHtml(src)}</b> ` +
-      `• Places: <b style="color:#fff;">${Object.keys(PLACES||{}).length}</b> ` +
-      `• Templates: <b style="color:#fff;">${Object.keys(TEMPLATES||{}).length}</b>`;
+  function loadCache(){
+    try{
+      const raw = localStorage.getItem(CACHE_KEY);
+      if(!raw) return false;
+      const parsed = JSON.parse(raw);
+      if(!parsed?.ts) return false;
+      if(Date.now() - parsed.ts > CACHE_TTL_MS) return false;
+
+      PLACES = parsed.places || {};
+      TEMPLATES = parsed.templates || {};
+      pricing_transport = parsed.pricing_transport || {};
+      rate_hotel = parsed.rate_hotel || {};
+      stay_rate_rules = parsed.stay_rate_rules || {};
+      PRICING_READY = true;
+
+      ACTIVE_TEMPLATES = Object.entries(TEMPLATES)
+        .map(([key,obj])=>({key, ...(obj||{})}))
+        .filter(t=>{
+          const st = safeLower(t.status || "active");
+          return st==="active" || st==="enabled" || st==="true";
+        });
+
+      buildNameIndex();
+      buildStartList(ACTIVE_TEMPLATES);
+
+      setStatus(`Loaded from cache • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places`);
+      return true;
+    }catch(e){
+      return false;
+    }
+  }
+  function saveCache(){
+    try{
+      localStorage.setItem(CACHE_KEY, JSON.stringify({
+        ts: Date.now(),
+        places: PLACES,
+        templates: TEMPLATES,
+        pricing_transport,
+        rate_hotel,
+        stay_rate_rules
+      }));
+    }catch(e){}
   }
 
   function buildNameIndex(){
@@ -972,13 +850,10 @@
   function normalizeStartInput(){
     const typed = String($("startInp").value || "").trim().toUpperCase();
     if(!typed) return "";
-
     const exact = STARTS.find(s => String(s).trim().toUpperCase() === typed);
     if(exact) return exact;
-
     const partial = STARTS.find(s => String(s).trim().toUpperCase().startsWith(typed));
     if(partial) return partial;
-
     return "";
   }
 
@@ -987,7 +862,6 @@
     if(!nm) return "";
     const direct = NAME_TO_ID.get(nm.toLowerCase());
     if(direct && PLACES[direct]) return direct;
-
     const slug = slugifyName(nm);
     if(slug && PLACES[slug]) return slug;
     return "";
@@ -1015,16 +889,25 @@
     }
     return out;
   }
-  function stopsCount(tpl){ return stopsFromTemplate(tpl).length; }
+
+  function routeIdsFromTemplateIncludingStart(tpl){
+    const baseStops = stopsFromTemplate(tpl);
+    const startName = String(tpl?.start_point || tpl?.start || "").trim();
+    const startPid = getPlaceIdByNameAny(startName);
+    if(startPid){
+      const filtered = baseStops.filter(x => x !== startPid);
+      return [startPid, ...filtered];
+    }
+    return baseStops;
+  }
 
   function getEndNameFromRoutePath(tpl){
-    const start = String(tpl.start_point || "").trim().toLowerCase();
+    const start = String(tpl.start_point || tpl.start || "").trim().toLowerCase();
     const rpRaw = String(tpl.route_path || "").trim();
     if(!rpRaw) return String(tpl.end_point || tpl.end || "").trim() || "UNKNOWN";
 
     const tokens = rpRaw
-      .replace(/->/g,"|")
-      .replace(/>/g,"|")
+      .replace(/->/g,"|").replace(/>/g,"|")
       .split("|")
       .map(x=>String(x||"").trim())
       .filter(Boolean);
@@ -1038,6 +921,18 @@
     return end || "UNKNOWN";
   }
 
+  function endDistrictFromTemplate(tpl){
+    const endName = getEndNameFromRoutePath(tpl);
+    const pid = getPlaceIdByNameAny(endName);
+    if(pid && PLACES[pid]){
+      const d = districtAny(PLACES[pid]);
+      if(d) return d;
+    }
+    const td = String(tpl.district || tpl.end_district || "").trim().toUpperCase();
+    if(td) return td;
+    return normCaps(endName || "UNKNOWN");
+  }
+
   function endKeyFromRoutePath(tpl){
     const endName = getEndNameFromRoutePath(tpl);
     const pid = getPlaceIdByNameAny(endName);
@@ -1048,22 +943,10 @@
     return normCaps(endName);
   }
 
-  function routeIdsFromTemplateIncludingStart(tpl){
-    const baseStops = stopsFromTemplate(tpl);
-    const startName = String(tpl?.start_point || "").trim();
-    const startPid = getPlaceIdByNameAny(startName);
-
-    if(startPid){
-      const filtered = baseStops.filter(x => x !== startPid);
-      return [startPid, ...filtered];
-    }
-    return baseStops;
-  }
-
   function packageScore(tpl){
-    const locs = stopsCount(tpl);
+    const locs = stopsFromTemplate(tpl).length;
     const pri  = Number(tpl.priority ?? 999);
-    const km   = Number(tpl.total_km_est ?? tpl.estimated_drive_km ?? 1e9);
+    const km   = Number(tpl.total_km_est ?? tpl.estimated_drive_km ?? tpl.total_km ?? 1e9);
     return { locs, pri, km };
   }
 
@@ -1078,13 +961,64 @@
     }
   }
 
-  function renderPackages(list, start){
+  /* ===============================
+     ✅ District Sidebar
+     =============================== */
+  function buildDistrictBuckets(list){
+    const buckets = {};
+    for(const t of list){
+      const d = endDistrictFromTemplate(t);
+      if(!buckets[d]) buckets[d] = [];
+      buckets[d].push(t);
+    }
+    for(const d of Object.keys(buckets)){
+      buckets[d].sort((a,b)=>{
+        const A = packageScore(a), B = packageScore(b);
+        if(A.locs !== B.locs) return B.locs - A.locs;
+        if(A.pri !== B.pri) return A.pri - B.pri;
+        return A.km - B.km;
+      });
+    }
+    return buckets;
+  }
+
+  function renderDistrictBar(){
+    const bar = $("districtBar");
+    const keys = Object.keys(CURRENT_BY_DISTRICT).sort((a,b)=>a.localeCompare(b));
+
+    const allCount = CURRENT_LIST.length;
+    let html = `<div class="distItem ${ACTIVE_DISTRICT==="__ALL__" ? "active":""}" data-d="__ALL__"><b>ALL</b> (${allCount})</div>`;
+    for(const d of keys){
+      html += `<div class="distItem ${ACTIVE_DISTRICT===d ? "active":""}" data-d="${escapeHtml(d)}"><b>${escapeHtml(d)}</b> (${CURRENT_BY_DISTRICT[d].length})</div>`;
+    }
+    bar.innerHTML = html;
+
+    bar.querySelectorAll(".distItem").forEach(el=>{
+      el.onclick = ()=>{
+        ACTIVE_DISTRICT = el.dataset.d;
+        bar.querySelectorAll(".distItem").forEach(x=>x.classList.remove("active"));
+        el.classList.add("active");
+        renderPackagesForActiveDistrict();
+      };
+    });
+  }
+
+  function renderPackagesForActiveDistrict(){
+    const start = normalizeStartInput() || "";
+    const list = (ACTIVE_DISTRICT==="__ALL__")
+      ? CURRENT_LIST
+      : (CURRENT_BY_DISTRICT[ACTIVE_DISTRICT] || []);
+
+    renderPackagesList(list, start);
+  }
+
+  function renderPackagesList(list, start){
     const box = $("pkgList");
     box.innerHTML = "";
     $("pkgCount").textContent = `${list.length} Results`;
 
     if(!list.length){
-      box.innerHTML = `<div class="pill">No packages for <b>${escapeHtml(String(start).toUpperCase())}</b></div>`;
+      box.innerHTML = `<div class="pill">No packages</div>`;
       return;
     }
 
@@ -1101,9 +1035,6 @@
         thumbUrl = pickPhotoAny(p);
       }
 
-      // optional: tempo note if present
-      const tempoOk = (t.tempo_ok === true || safeLower(t.tempo_ok)==="true");
-
       const el = document.createElement("div");
       el.className = "pkg";
       el.dataset.key = t.key;
@@ -1119,10 +1050,9 @@
         <div class="pkgBody">
           <div class="pkgName">${escapeHtml(String(start).toUpperCase())} → ${escapeHtml(String(endKey).toUpperCase())}</div>
           <div class="pkgMeta">
-            LOCATIONS: ${stopsCount(t)} • DAYS: ${days || "—"}<br/>
+            LOCATIONS: ${stopsFromTemplate(t).length} • DAYS: ${days || "—"}<br/>
             ID: ${escapeHtml(String(t.key||"—").toUpperCase())}
           </div>
-          <div class="tag ${tempoOk ? "ok" : "warn"}">${tempoOk ? "TEMPO OK" : "TEMPO RISK"}</div>
         </div>
       `;
       el.onclick = ()=>openTemplate(t.key, start);
@@ -1130,6 +1060,9 @@
     });
   }
 
+  /* ===============================
+     ✅ Itinerary rendering
+     =============================== */
   function buildDayWise(tpl){
     const days = Number(tpl.days || 1);
     const blocks = [];
@@ -1178,7 +1111,7 @@
           <div class="d">Day ${block.day}</div>
           <div class="muted">${block.ids.length} places</div>
         </div>
-        <div class="muted">Tap a place to open details popup</div>
+        <div class="muted">Places</div>
         <div class="dayPlaces"></div>
       `;
       const cont = dayCard.querySelector(".dayPlaces");
@@ -1204,7 +1137,7 @@
             <div class="pmeta">${escapeHtml(dist)}</div>
           </div>
         `;
-        line.onclick = ()=>showPlacePopup(pid);
+        line.onclick = ()=>toast(`Place: ${name}`);
         cont.appendChild(line);
       });
 
@@ -1212,6 +1145,9 @@
     });
   }
 
+  /* ===============================
+     ✅ Route draw (OSRM)
+     =============================== */
   async function drawRoadRouteFromPlaces(placeIds){
     markersLayer.clearLayers();
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
@@ -1273,9 +1209,8 @@
         L.marker([lat,lng]).addTo(markersLayer)
           .bindPopup(
             `<b>${escapeHtml(nm)}</b>` +
-            (isFirst ? `<br><small style="opacity:.85;">START OF PACKAGE</small>` : `<br><small style="opacity:.8;">Tap marker to open details</small>`)
-          )
-          .on("click", ()=>showPlacePopup(pid));
+            (isFirst ? `<br><small style="opacity:.85;">START OF PACKAGE</small>` : ``)
+          );
       }
 
       const km = Number(r.distance/1000);
@@ -1288,6 +1223,116 @@
     }
   }
 
+  /* ===============================
+     ✅ Pricing (REAL DB LOGIC)
+     - Uses /pricing_transport (hatchback/innova/luxury_suv)
+     - Uses /stay_rate_rules (r1/r2/r3)
+     - Removes tempo traveller logic completely
+     =============================== */
+
+  function pickStayRule(tier){
+    const t = String(tier||"budget").toLowerCase();
+    // budget -> r1, premium -> r2, luxury -> r3
+    const key = (t==="premium") ? "r2" : (t==="luxury") ? "r3" : "r1";
+    return stay_rate_rules?.[key] || {};
+  }
+
+  function pickVehicleByPax(pax){
+    pax = Number(pax||2);
+    if(pax <= 4) return "hatchback";
+    if(pax <= 7) return "innova";
+    return "luxury_suv";
+  }
+
+  function estimateTotalCost({ km=0, days=3, pax=2 }){
+    km = Number(km||0);
+    days = Number(days||0);
+    pax = Math.max(1, Number(pax||1));
+    const nights = Math.max(0, days-1);
+
+    if(!PRICING_READY || !isFinite(km) || km<=0 || !days){
+      return { total:NaN, perPerson:NaN, debug:"Pricing not ready OR km/days missing" };
+    }
+
+    const tier = String($("visitType")?.value || "budget").toLowerCase();
+
+    // Transport
+    const vehicleKey = pickVehicleByPax(pax);
+    const v = pricing_transport?.[vehicleKey] || {};
+    const perKm = Number(v.per_km || 0);
+    const driverPerDay = Number(v.driver_per_day || 0);
+
+    // Stay rule
+    const rule = pickStayRule(tier);
+    const baseRoom = Number(rule.base_rate_mid || rule.base_rate_low || rule.base_rate_peak || 0);
+    const extraRate = Number(rule.extra_person_rate || 0);
+    const weekendMul = Number(rule.weekend_multiplier || 1);
+
+    // Simple weekend factor (optional): apply if trip >= 2 nights
+    const wkFactor = (nights >= 2) ? weekendMul : 1;
+
+    const extraPersons = Math.max(0, pax - 2);
+
+    const transport = (km * perKm) + (days * driverPerDay);
+    const hotel = (nights * baseRoom * wkFactor);
+    const extra = (extraPersons * extraRate * nights);
+
+    const total = transport + hotel + extra;
+
+    const debug =
+      `tier=${tier} | vehicle=${vehicleKey}\n` +
+      `km=${km.toFixed(1)} days=${days} pax=${pax} nights=${nights}\n` +
+      `transport: perKm=${perKm} driverDay=${driverPerDay} => ${Math.round(transport)}\n` +
+      `hotel: baseRoom=${baseRoom} weekendMul=${wkFactor} => ${Math.round(hotel)}\n` +
+      `extra: extraPersons=${extraPersons} extraRate=${extraRate} => ${Math.round(extra)}`;
+
+    return { total, perPerson: total/pax, debug };
+  }
+
+  function updatePriceBoxes(total, perPerson, debugText){
+    const totalEl = $("priceTotal");
+    const perEl   = $("pricePer");
+    const dbg = $("priceDebug");
+
+    if(!isFinite(total)){
+      totalEl.innerHTML = "— <small></small>";
+      perEl.innerHTML = "— <small></small>";
+      dbg.style.display = "block";
+      dbg.textContent = debugText || "Price not computed (missing rates OR km)";
+      return;
+    }
+
+    totalEl.innerHTML = rupees(total) + ` <small>(${String($("visitType").value).toUpperCase()})</small>`;
+    perEl.innerHTML = rupees(perPerson) + ` <small>per person</small>`;
+    dbg.style.display = "block";
+    dbg.textContent = debugText || "";
+  }
+
+  function computePriceForCurrent(){
+    try{
+      if(!CURRENT_TEMPLATE_KEY) return;
+      const tpl = TEMPLATES?.[CURRENT_TEMPLATE_KEY];
+      if(!tpl) return;
+
+      const pax = Number($("paxSel")?.value || 2);
+      const days = Number(tpl.days || $("daysSel")?.value || 3);
+
+      let km = Number(CURRENT_ROUTE_KM || 0);
+      if(!isFinite(km) || km <= 0){
+        km = Number(tpl.total_km_est || tpl.estimated_drive_km || tpl.total_km || 0);
+      }
+
+      const est = estimateTotalCost({ km, days, pax });
+      updatePriceBoxes(est.total, est.perPerson, est.debug);
+    }catch(e){
+      console.error(e);
+      updatePriceBoxes(NaN, NaN, "Price compute error");
+    }
+  }
+
+  /* ===============================
+     ✅ Generate + District grouping
+     =============================== */
   function applyFilters(){
     const start = normalizeStartInput();
     const daysF = $("daysSel").value.trim();
@@ -1302,6 +1347,7 @@
     $("daysList").innerHTML = "";
     $("priceTotal").innerHTML = "— <small></small>";
     $("pricePer").innerHTML = "— <small></small>";
+    $("priceDebug").style.display="none";
     CURRENT_TEMPLATE_KEY = "";
     CURRENT_ROUTE_KM = 0;
 
@@ -1318,25 +1364,28 @@
 
     if(daysF) list = list.filter(t => Number(t.days||0) === Number(daysF));
 
-    const finalList = list.sort((a,b)=>{
+    list.sort((a,b)=>{
       const A = packageScore(a), B = packageScore(b);
       if(A.locs !== B.locs) return B.locs - A.locs;
       if(A.pri !== B.pri) return A.pri - B.pri;
       return A.km - B.km;
     });
 
-    CURRENT_LIST = finalList;
+    CURRENT_LIST = list;
+    CURRENT_BY_DISTRICT = buildDistrictBuckets(list);
+    ACTIVE_DISTRICT = "__ALL__";
 
     setPills({
       START: startUpper,
       TYPE: tier,
-      PACKAGES: finalList.length,
+      PACKAGES: list.length,
       PAX: pax,
       DAYS: (daysF ? daysF : "ANY")
     });
 
-    renderPackages(finalList, start);
-    toast("Packages generated");
+    renderDistrictBar();
+    renderPackagesForActiveDistrict();
+    toast("Packages generated (district grouped)");
   }
 
   async function openTemplate(key, start){
@@ -1355,232 +1404,13 @@
 
     const rr = await drawRoadRouteFromPlaces(routeIds);
     CURRENT_ROUTE_KM = rr.ok ? rr.km : 0;
+
     computePriceForCurrent();
   }
 
   /* ===============================
-     ✅ Place Modal + Upload
+     ✅ Load Live
      =============================== */
-  let MODAL_PLACE_ID = "";
-
-  function openPlaceModal(){
-    $("placeModalBack").style.display = "block";
-    $("placeModal").style.display = "block";
-  }
-  function closePlaceModal(){
-    $("placeModalBack").style.display = "none";
-    $("placeModal").style.display = "none";
-  }
-
-  async function showPlacePopup(placeId){
-    const p = PLACES[placeId];
-    if(!p){ toast("Place not found"); return; }
-    MODAL_PLACE_ID = placeId;
-
-    const title = placeNameAny(p, placeId);
-    $("mTitle").textContent = title;
-    $("mMeta").textContent = metaFromAny(p);
-
-    const history = textAny(p, ["history_tagline","overview","History Tagline","Short Description","Overview"], "—");
-    const find = textAny(p, ["what_you_find","What you find","Key Features"], "—");
-
-    $("mHistory").textContent = history;
-    $("mFind").textContent = find;
-
-    const photo = pickPhotoAny(p);
-    if(photo){
-      $("mPhoto").innerHTML = `<img src="${escapeHtml(photo)}" style="width:100%;height:240px;object-fit:cover;display:block;"
-        referrerpolicy="no-referrer"
-        onerror="this.remove(); this.parentNode.textContent='NO PHOTO';">`;
-    }else{
-      $("mPhoto").textContent = "NO PHOTO";
-    }
-
-    const lat = latAny(p);
-    const lng = lngAny(p);
-
-    $("mFocus").onclick = ()=>{
-      closePlaceModal();
-      if(isFinite(lat) && isFinite(lng)){
-        map.setView([lat,lng], Math.max(map.getZoom(), 12));
-      }else{
-        toast("No lat/long for this place");
-      }
-    };
-
-    $("mCopy").onclick = async ()=>{
-      try{ await navigator.clipboard.writeText(placeId); toast("Place ID copied"); }
-      catch(e){ toast("Copy not allowed"); }
-    };
-
-    $("mUploadStatus").textContent = `Selected place_id: ${placeId}`;
-    $("mFile").value = "";
-    $("mUrl").value = "";
-
-    openPlaceModal();
-  }
-
-  async function saveImageUrlToPlace(placeId, url){
-    const clean = String(url||"").trim();
-    if(!clean) throw new Error("Empty URL");
-    const ref = db.ref(`${NODE_PLACES}/${placeId}/images`).push();
-    await ref.set(clean);
-    // update local state
-    if(!PLACES[placeId]) PLACES[placeId] = {};
-    if(!PLACES[placeId].images) PLACES[placeId].images = {};
-    if(typeof PLACES[placeId].images !== "object") PLACES[placeId].images = {};
-    PLACES[placeId].images[ref.key] = clean;
-  }
-
-  async function uploadFileToPlace(placeId, file){
-    if(!file) throw new Error("No file selected");
-    const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
-    const path = `places/${placeId}/${Date.now()}.${ext}`;
-    const sref = storage.ref().child(path);
-    await sref.put(file);
-    const url = await sref.getDownloadURL();
-    await saveImageUrlToPlace(placeId, url);
-    return url;
-  }
-
-  /* ===============================
-     ✅ Pricing (Flexible)
-     Nodes:
-       /pricing_transport
-       /rate_hotel
-       /stay_rate_rules
-     We read tier keys: budget/premium/luxury if present.
-     If structure is different, we try common keys.
-     =============================== */
-  function numAny(obj, keys, fallback=0){
-    for(const k of keys){
-      const v = obj?.[k];
-      const n = Number(v);
-      if(isFinite(n) && n>0) return n;
-    }
-    return fallback;
-  }
-
-  function pickTierObj(node, tier){
-    if(!node || typeof node!=="object") return {};
-    const t = String(tier||"budget").toLowerCase();
-    return node[t] || node[t.toUpperCase()] || node[t.charAt(0).toUpperCase()+t.slice(1)] || node || {};
-  }
-
-  function estimateTotalCost({ km=0, days=3, pax=2 }){
-    km = Number(km||0);
-    days = Number(days||0);
-    pax = Math.max(1, Number(pax||1));
-    const nights = Math.max(0, days-1);
-
-    if(!PRICING_READY || !isFinite(km) || km<=0 || !days) return { total:NaN, perPerson:NaN, meta:{} };
-
-    const tier = String($("visitType")?.value || "budget").toLowerCase();
-
-    const tTran = pickTierObj(pricing_transport, tier);
-    const tHotel = pickTierObj(rate_hotel, tier);
-
-    // Try common key names (your sheets may differ)
-    const travelPerKm = numAny(tTran, ["travelPerKm","per_km","rate_per_km","km_rate","price_per_km"], 0);
-    const fixedPerDay = numAny(tTran, ["fixedPerDay","fixed_per_day","driver_per_day","daily_fixed"], 0);
-
-    const hotelPerNight = numAny(tHotel, ["hotelPerNight","per_night","rate_per_night","night_rate","hotel_rate"], 0);
-    const breakfastPerPersonPerDay = numAny(tHotel, ["breakfastPerPersonPerDay","breakfast_pp_day","breakfast_rate","meal_per_person_day"], 0);
-
-    const total =
-      (km * travelPerKm) +
-      (days * fixedPerDay) +
-      (nights * hotelPerNight) +
-      (pax * days * breakfastPerPersonPerDay);
-
-    return { total, perPerson: total / pax, meta:{ tier, travelPerKm, fixedPerDay, hotelPerNight, breakfastPerPersonPerDay } };
-  }
-
-  function updatePriceBoxes(total, perPerson, meta){
-    const totalEl = $("priceTotal");
-    const perEl   = $("pricePer");
-    if(!totalEl || !perEl) return;
-
-    if(!isFinite(total)){
-      totalEl.innerHTML = "— <small></small>";
-      perEl.innerHTML = "— <small></small>";
-      return;
-    }
-    const tier = String(meta?.tier || "").toUpperCase();
-    totalEl.innerHTML = rupees(total) + ` <small>(${tier})</small>`;
-    perEl.innerHTML = rupees(perPerson) + ` <small>per person</small>`;
-  }
-
-  function computePriceForCurrent(){
-    try{
-      if(!CURRENT_TEMPLATE_KEY) return;
-      const tpl = TEMPLATES?.[CURRENT_TEMPLATE_KEY];
-      if(!tpl) return;
-
-      const pax = Number($("paxSel")?.value || 2);
-      const days = Number(tpl.days || $("daysSel")?.value || 3);
-
-      let km = Number(CURRENT_ROUTE_KM || 0);
-      if(!isFinite(km) || km <= 0) km = Number(tpl.total_km_est || tpl.estimated_drive_km || 0);
-
-      const est = estimateTotalCost({ km, days, pax });
-      updatePriceBoxes(est.total, est.perPerson, est.meta);
-    }catch(e){
-      console.error(e);
-      updatePriceBoxes(NaN, NaN);
-    }
-  }
-
-  /* ===============================
-     ✅ Load (Cache-first + Live)
-     =============================== */
-  function loadCache(){
-    try{
-      const raw = localStorage.getItem(CACHE_KEY);
-      if(!raw) return false;
-      const parsed = JSON.parse(raw);
-      if(!parsed || !parsed.ts) return false;
-      if(Date.now() - parsed.ts > CACHE_TTL_MS) return false;
-
-      PLACES = parsed.places || {};
-      TEMPLATES = parsed.templates || {};
-      pricing_transport = parsed.pricing_transport || {};
-      rate_hotel = parsed.rate_hotel || {};
-      stay_rate_rules = parsed.stay_rate_rules || {};
-      PRICING_READY = true;
-
-      ACTIVE_TEMPLATES = Object.entries(TEMPLATES)
-        .map(([key, obj]) => ({ key, ...(obj||{}) }))
-        .filter(t => {
-          const st = safeLower(t.status || "active");
-          return st === "active" || st === "enabled" || st === "true";
-        });
-
-      buildNameIndex();
-      buildStartList(ACTIVE_TEMPLATES);
-
-      setStatus(`Loaded from cache • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places`);
-      setDataKeyUI("CACHE ✅");
-      return true;
-    }catch(e){
-      return false;
-    }
-  }
-
-  function saveCache(){
-    try{
-      const payload = {
-        ts: Date.now(),
-        places: PLACES,
-        templates: TEMPLATES,
-        pricing_transport,
-        rate_hotel,
-        stay_rate_rules
-      };
-      localStorage.setItem(CACHE_KEY, JSON.stringify(payload));
-    }catch(e){}
-  }
-
   async function loadLive(){
     setStatus("Loading live from Firebase…");
 
@@ -1595,7 +1425,6 @@
     TEMPLATES = tplSnap.val() || {};
     const rawPlaces = placesSnap.val() || {};
 
-    // normalize places: ensure key = place_id if possible
     PLACES = {};
     for(const [k,v] of Object.entries(rawPlaces)){
       if(v && typeof v === "object"){
@@ -1621,15 +1450,13 @@
 
     saveCache();
 
-    setStatus(`Loaded LIVE • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places`);
-    setDataKeyUI(`LIVE ✅  (${NODE_TEMPLATES}, ${NODE_PLACES})`);
+    setStatus(`Loaded LIVE • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places • pricing OK`);
   }
 
   async function refreshAll(){
     try{
       await loadLive();
       toast("Refreshed from Firebase");
-      // if user already had list generated, keep it valid
       if($("pills").children.length){
         applyFilters();
       }
@@ -1637,7 +1464,6 @@
       console.error(err);
       setStatus("Firebase load error (check rules / node names)");
       toast("Firebase load error");
-      setDataKeyUI("ERROR ❌");
     }
   }
 
@@ -1650,22 +1476,9 @@
     storage = firebase.storage();
     analytics = firebase.analytics();
 
-    // quotes
-    setInterval(()=>{
-      qIndex=(qIndex+1)%QUOTES.length;
-      $("quoteText").innerHTML = "“" + QUOTES[qIndex] + "”";
-    }, 5000);
-
-    // modal close
-    $("placeModalBack").addEventListener("click", closePlaceModal);
-    $("mClose").addEventListener("click", closePlaceModal);
-    window.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closePlaceModal(); });
-
-    // filters
     $("genBtn").addEventListener("click", applyFilters);
     $("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
 
-    // reset
     $("resetBtn").addEventListener("click", ()=>{
       $("startInp").value="";
       $("visitType").value="budget";
@@ -1673,6 +1486,7 @@
       $("paxSel").value="2";
       $("pills").innerHTML="";
       $("pkgList").innerHTML = `<div class="pill"><span>Type Start & click</span> <b>Generate</b></div>`;
+      $("districtBar").innerHTML = `<div class="distItem active" data-d="__ALL__"><b>ALL</b> (0)</div>`;
       $("pkgCount").textContent="—";
       $("activePkgName").textContent="—";
       $("itTitle").textContent="Select a package";
@@ -1681,15 +1495,19 @@
       $("daysList").innerHTML="";
       $("priceTotal").innerHTML="— <small></small>";
       $("pricePer").innerHTML="— <small></small>";
+      $("priceDebug").style.display="none";
       clearMap();
       CURRENT_TEMPLATE_KEY = "";
       CURRENT_ROUTE_KM = 0;
+      CURRENT_LIST = [];
+      CURRENT_BY_DISTRICT = {};
+      ACTIVE_DISTRICT="__ALL__";
       toast("Reset done");
     });
 
-    // map tools
     $("fitMapBtn").addEventListener("click", fitRoute);
     $("clearRouteBtn").addEventListener("click", ()=>{ clearMap(); toast("Cleared"); });
+    $("refreshBtn").addEventListener("click", refreshAll);
 
     $("showAllStopsBtn").addEventListener("click", async ()=>{
       showMode="all";
@@ -1697,7 +1515,9 @@
       if(CURRENT_TEMPLATE_KEY){
         const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
         const routeIds = routeIdsFromTemplateIncludingStart(tpl);
-        await drawRoadRouteFromPlaces(routeIds);
+        const rr = await drawRoadRouteFromPlaces(routeIds);
+        CURRENT_ROUTE_KM = rr.ok ? rr.km : CURRENT_ROUTE_KM;
+        computePriceForCurrent();
       }
     });
 
@@ -1707,7 +1527,9 @@
       if(CURRENT_TEMPLATE_KEY){
         const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
         const routeIds = routeIdsFromTemplateIncludingStart(tpl);
-        await drawRoadRouteFromPlaces(routeIds);
+        const rr = await drawRoadRouteFromPlaces(routeIds);
+        CURRENT_ROUTE_KM = rr.ok ? rr.km : CURRENT_ROUTE_KM;
+        computePriceForCurrent();
       }
     });
 
@@ -1723,64 +1545,16 @@
       toast(tilesDark ? "Dark tiles on" : "Light tiles on");
     });
 
-    // pricing recalc
     $("paxSel")?.addEventListener("change", computePriceForCurrent);
     $("visitType")?.addEventListener("change", ()=>{
       computePriceForCurrent();
       if($("pills").children.length) applyFilters();
     });
 
-    // refresh
-    $("refreshBtn").addEventListener("click", refreshAll);
-
-    // upload handlers
-    $("mUpload").addEventListener("click", async ()=>{
-      if(!MODAL_PLACE_ID) return;
-      const file = $("mFile").files?.[0];
-      $("mUploadStatus").textContent = "Uploading…";
-      try{
-        const url = await uploadFileToPlace(MODAL_PLACE_ID, file);
-        $("mUploadStatus").textContent = "Uploaded ✅ Saved to place images";
-        toast("Photo uploaded");
-        // update photo in modal
-        $("mPhoto").innerHTML = `<img src="${escapeHtml(url)}" style="width:100%;height:240px;object-fit:cover;display:block;" referrerpolicy="no-referrer">`;
-      }catch(e){
-        console.error(e);
-        $("mUploadStatus").textContent = "Upload failed ❌ (check Storage rules)";
-        toast("Upload failed");
-      }
-    });
-
-    $("mSaveUrl").addEventListener("click", async ()=>{
-      if(!MODAL_PLACE_ID) return;
-      const url = String($("mUrl").value||"").trim();
-      $("mUploadStatus").textContent = "Saving URL…";
-      try{
-        await saveImageUrlToPlace(MODAL_PLACE_ID, url);
-        $("mUploadStatus").textContent = "Saved ✅ URL added to images";
-        toast("URL saved");
-        $("mPhoto").innerHTML = `<img src="${escapeHtml(url)}" style="width:100%;height:240px;object-fit:cover;display:block;" referrerpolicy="no-referrer"
-          onerror="this.remove(); this.parentNode.textContent='INVALID URL';">`;
-      }catch(e){
-        console.error(e);
-        $("mUploadStatus").textContent = "Save failed ❌ (check DB rules)";
-        toast("Save failed");
-      }
-    });
-
     initMap();
-    setTimeout(refreshMapSize, 250);
-    window.addEventListener("resize", refreshMapSize);
 
-    // ✅ cache-first then live
     const hadCache = loadCache();
-    if(!hadCache){
-      setStatus("No cache • loading live…");
-      setDataKeyUI("LIVE pending…");
-    }else{
-      toast("Loaded fast from cache");
-    }
-
+    if(hadCache) toast("Loaded fast from cache");
     refreshAll();
   });
   </script>
