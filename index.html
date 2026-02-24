@@ -3,7 +3,42 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Himachal Explorer — The Portal</title>
+
+  <!-- ✅ SEO: Title + Description -->
+  <title>Himachal Tour Packages | Himachal Explorer Portal (Routes, Maps, Day-wise Plans)</title>
+  <meta name="description" content="Explore Himachal tour packages with live road route maps, day-wise itineraries, places, and package planner. Start from Delhi/Chandigarh/Amritsar or Himachal cities. Himachal Explorer Portal by Chandan Panwar." />
+  <meta name="keywords" content="Himachal tour packages, Himachal itinerary, Himachal trip planner, Himachal explorer, Shimla Manali package, Spiti tour, Dharamshala Dalhousie, Kullu Kasol, road route map, Himachal travel" />
+  <meta name="author" content="Himachal Explorer" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+
+  <!-- ✅ SEO: Canonical (change ONLY if you use www) -->
+  <link rel="canonical" href="https://himachalexplorer.in/" />
+
+  <!-- ✅ Open Graph (Facebook/WhatsApp) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Himachal Tour Packages | Himachal Explorer Portal" />
+  <meta property="og:description" content="Live route map + packages + day-wise plans across Himachal. Find best routes, stops, and itineraries." />
+  <meta property="og:url" content="https://himachalexplorer.in/" />
+  <meta property="og:image" content="https://himachalexplorer.in/og-cover.jpg" />
+  <meta property="og:site_name" content="Himachal Explorer" />
+
+  <!-- ✅ Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Himachal Tour Packages | Himachal Explorer Portal" />
+  <meta name="twitter:description" content="Live route map + packages + day-wise plans across Himachal." />
+  <meta name="twitter:image" content="https://himachalexplorer.in/og-cover.jpg" />
+
+  <!-- ✅ Theme / Icons -->
+  <meta name="theme-color" content="#070A12" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <!-- ✅ Performance: preconnect -->
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://www.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="preconnect" href="https://router.project-osrm.org" crossorigin>
+  <link rel="preconnect" href="https://{s}.tile.openstreetmap.org" crossorigin>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -14,6 +49,66 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics-compat.js"></script>
+
+  <!-- ✅ Structured Data (JSON-LD) for better Google understanding -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://himachalexplorer.in/#website",
+        "url": "https://himachalexplorer.in/",
+        "name": "Himachal Explorer Portal",
+        "description": "Himachal tour packages portal with live routes, itineraries, and places.",
+        "inLanguage": "en-IN"
+      },
+      {
+        "@type": "TravelAgency",
+        "@id": "https://himachalexplorer.in/#travelagency",
+        "name": "Himachal Explorer",
+        "url": "https://himachalexplorer.in/",
+        "telephone": "+91-7018138847",
+        "email": "chandanpanwar001@gmail.com",
+        "founder": "Chandan Panwar",
+        "areaServed": "IN-HP",
+        "priceRange": "₹₹",
+        "image": "https://himachalexplorer.in/og-cover.jpg",
+        "sameAs": [],
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "IN",
+          "addressRegion": "Himachal Pradesh"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://himachalexplorer.in/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How do I find tour packages on Himachal Explorer?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Type your start city (e.g. Delhi/Chandigarh/Amritsar) and press Generate. Choose a package to see day-wise itinerary and live road route map."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do packages show real road distance?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The portal draws routes using OSRM road routing (not aerial distance) and displays total road kilometers."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <!-- ✅ Optional: Sitemap hint (Google finds it automatically too) -->
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="https://himachalexplorer.in/sitemap.xml" />
 
   <style>
     :root{
@@ -154,7 +249,6 @@
     }
     .chip:hover{ background: rgba(255,255,255,.08); color: rgba(255,255,255,.82); }
 
-    /* ✅ MAIN 3-pane layout */
     .main{
       height:100%;
       display:grid;
@@ -198,7 +292,6 @@
       text-transform: uppercase;
     }
 
-    /* Left */
     .filters{
       padding: 12px;
       border-bottom:1px solid var(--stroke);
@@ -325,7 +418,6 @@
     .tag.ok{ border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.10); color: rgba(34,197,94,.98); }
     .tag.warn{ border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.10); color: rgba(245,158,11,.98); }
 
-    /* Center - map */
     #map{ width:100%; height:100%; background: rgba(255,255,255,.04); }
     .mapTools{
       padding: 10px 12px;
@@ -349,7 +441,6 @@
     }
     .toolBtn:hover{ background: rgba(255,255,255,.08); }
 
-    /* Right - itinerary */
     .itWrap{
       padding: 12px;
       overflow:auto;
@@ -387,7 +478,6 @@
     .mini .v{ margin-top:6px; font-size: 14px; font-weight: 950; letter-spacing:.06em; color:#fff; }
     .mini .v small{ font-size: 11px; color: rgba(255,255,255,.72); font-weight: 800; }
 
-    /* ✅ Contact Card (top of itinerary pane) */
     .contactCard{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.22);
@@ -558,7 +648,6 @@
       .actions{ min-width:unset; }
     }
 
-    /* ✅ Package Finder BG image */
     .pane.pkgPane{
       position: relative;
       background:
@@ -586,7 +675,6 @@
       backdrop-filter: blur(12px);
     }
 
-    /* ✅ Place Modal styles */
     #placeModalBack{
       display:none; position:fixed; inset:0;
       background:rgba(0,0,0,.60);
@@ -604,22 +692,30 @@
       box-shadow:0 40px 120px rgba(0,0,0,.75);
       z-index:100000;
     }
+
+    /* ✅ Accessibility helper */
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+    }
   </style>
 </head>
 
 <body>
+  <!-- ✅ Real H1 for SEO (hidden visually) -->
+  <h1 class="sr-only">Himachal Tour Packages - Himachal Explorer Portal</h1>
+
   <div class="aurora"></div>
   <div class="noise"></div>
 
   <div class="app">
-    <!-- TOP -->
     <div class="top">
       <div class="brand">
         <div class="logo">
-          <img src="logo.png" alt="Logo" onerror="this.remove(); this.parentNode.textContent='HP';">
+          <img src="logo.png" alt="Himachal Explorer Logo" onerror="this.remove(); this.parentNode.textContent='HP';">
         </div>
         <div>
-          <h1>Himachal Explorer Portal</h1>
+          <div style="margin:0;font-size:14px;letter-spacing:.18em;text-transform:uppercase;font-weight:900;">Himachal Explorer Portal</div>
           <p id="statusLine">Loading templates & places…</p>
         </div>
       </div>
@@ -637,9 +733,7 @@
       </div>
     </div>
 
-    <!-- MAIN -->
     <div class="main">
-      <!-- LEFT -->
       <div class="pane pkgPane">
         <div class="paneHdr">
           <div>
@@ -687,7 +781,6 @@
         </div>
       </div>
 
-      <!-- CENTER -->
       <div class="pane">
         <div class="paneHdr">
           <div>
@@ -706,7 +799,6 @@
         </div>
       </div>
 
-      <!-- RIGHT -->
       <div class="pane">
         <div class="paneHdr">
           <div>
@@ -717,12 +809,11 @@
         </div>
 
         <div class="itWrap">
-          <!-- ✅ CONTACT DETAILS -->
           <div class="contactCard">
             <div class="contactTop">
               <div class="contactLeft">
                 <div class="contactAvatar">
-                  <img src="logo.png" alt="Logo" onerror="this.remove(); this.parentNode.textContent='CP';">
+                  <img src="logo.png" alt="Himachal Explorer Logo" onerror="this.remove(); this.parentNode.textContent='CP';">
                 </div>
                 <div style="min-width:0;">
                   <div class="contactName">Chandan Panwar</div>
@@ -772,12 +863,9 @@
     </div>
   </div>
 
-  <!-- Toast -->
   <div class="toast" id="toast"></div>
 
-  <!-- ✅ Place Popup Modal -->
   <div id="placeModalBack"></div>
-
   <div id="placeModal">
     <div style="padding:14px 14px 10px; border-bottom:1px solid rgba(255,255,255,.12);
       display:flex; align-items:flex-start; justify-content:space-between; gap:10px;">
@@ -846,7 +934,6 @@
   };
 
   firebase.initializeApp(firebaseConfig);
-
   const db = firebase.database();
   const storage = firebase.storage();
   const analytics = firebase.analytics();
@@ -895,7 +982,8 @@
 `Himachal Explorer Portal
 Chandan Panwar
 +91 7018138847
-chandanpanwar001@gmail.com`;
+chandanpanwar001@gmail.com
+https://himachalexplorer.in/`;
     try{ await navigator.clipboard.writeText(txt); toast("Contact copied"); }
     catch(e){ toast("Copy not allowed"); }
   });
@@ -920,7 +1008,7 @@ chandanpanwar001@gmail.com`;
      ✅ Map
      =============================== */
   let map, tile, markersLayer, routeLine;
-  let showMode = "all";  // all | startend
+  let showMode = "all";
   let tilesDark = false;
 
   function initMap(){
@@ -971,7 +1059,6 @@ chandanpanwar001@gmail.com`;
   function categoryAny(p){ return String(p?.["Location Type"] || p?.category || "").toUpperCase(); }
   function regionAny(p){ return String(p?.region || "").toUpperCase(); }
 
-  /* ✅ Detect if start is within Himachal */
   function isStartWithinHimachal(startStr){
     const s = String(startStr||"").trim().toUpperCase();
     if(!s) return false;
@@ -994,13 +1081,9 @@ chandanpanwar001@gmail.com`;
       ]);
       return HP_DIST.has(d);
     }
-
     return false;
   }
 
-  /* ===============================
-     ✅ Load: templates + places (fallback locations)
-     =============================== */
   async function loadAll(){
     setStatus("Loading /templates & /places…");
 
@@ -1073,9 +1156,6 @@ chandanpanwar001@gmail.com`;
     });
   }
 
-  /* ===============================
-     ✅ Stops + End from Column G
-     =============================== */
   function stopsFromTemplate(tpl){
     const days = Number(tpl.days || 1);
     const out = [];
@@ -1150,9 +1230,6 @@ chandanpanwar001@gmail.com`;
     return "";
   }
 
-  /* ===============================
-     ✅ START MUST BE INCLUDED IN ROUTE + SANITY FILTER
-     =============================== */
   function getPlaceIdByNameAny(name){
     const nm = String(name || "").trim();
     if(!nm) return "";
@@ -1175,7 +1252,6 @@ chandanpanwar001@gmail.com`;
     return baseStops;
   }
 
-  // ✅ Smart remove wrong-district places for local packages (fixes CHAMBA showing SHIMLA "MALL ROAD")
   function sanitizeStopsForTemplate(tpl, ids, endDistrictKey){
     const out = [];
     const removed = [];
@@ -1183,9 +1259,6 @@ chandanpanwar001@gmail.com`;
     const days = Number(tpl?.days || 0);
     const endD = String(endDistrictKey || "").trim().toUpperCase();
 
-    // We only apply strict filtering to "local" packages:
-    // - End is a HP district name, AND
-    // - days <= 4 (local trip), OR template region/region_style strongly indicates local.
     const regionHint = String(tpl?.region_style || tpl?.region || tpl?.route_name || "").toUpperCase();
     const localHint = (regionHint.includes(endD) || regionHint.includes("LOCAL") || regionHint.includes("CORE"));
     const shouldStrict = (!!endD && (days > 0 && days <= 4 || localHint));
@@ -1195,25 +1268,14 @@ chandanpanwar001@gmail.com`;
     for(const pid of (ids || [])){
       const p = LOCS[pid];
       if(!p){ out.push(pid); continue; }
-
       const d = districtAny(p);
       if(!d){ out.push(pid); continue; }
-
-      // Keep if same district as end district
-      if(d === endD){
-        out.push(pid);
-      }else{
-        // Remove obvious wrong-district item (example: SHIMLA place inside CHAMBA local package)
-        removed.push({ pid, name: placeNameAny(p, pid), district: d });
-      }
+      if(d === endD) out.push(pid);
+      else removed.push({ pid, name: placeNameAny(p, pid), district: d });
     }
-
     return { ids: out, removed };
   }
 
-  /* ===============================
-     ✅ Scoring
-     =============================== */
   function packageScore(tpl){
     const locs = stopsCount(tpl);
     const pri  = Number(tpl.priority ?? 999);
@@ -1226,9 +1288,6 @@ chandanpanwar001@gmail.com`;
     return a.km < b.km;
   }
 
-  /* ===============================
-     ✅ UI
-     =============================== */
   function setPills(obj){
     const box = $("pills");
     box.innerHTML = "";
@@ -1255,7 +1314,6 @@ chandanpanwar001@gmail.com`;
       const days = Number(t.days || 0) || 0;
       const tempoOk = (t.tempo_ok === true || safeLower(t.tempo_ok)==="true");
 
-      // ✅ thumbnail from START of route
       const routeIds = routeIdsFromTemplateIncludingStart(t);
       let thumbUrl="", ini="HP";
       if(routeIds[0]){
@@ -1272,7 +1330,7 @@ chandanpanwar001@gmail.com`;
       el.innerHTML = `
         <div class="pkgPic">
           ${thumbUrl
-            ? `<img src="${escapeHtml(thumbUrl)}" alt="thumb" loading="lazy" referrerpolicy="no-referrer"
+            ? `<img src="${escapeHtml(thumbUrl)}" alt="Package thumbnail" loading="lazy" referrerpolicy="no-referrer"
                   onerror="this.remove(); this.parentNode.textContent='${escapeHtml(ini)}';">`
             : escapeHtml(ini)
           }
@@ -1286,7 +1344,6 @@ chandanpanwar001@gmail.com`;
           <div class="tag ${tempoOk ? "ok" : "warn"}">${tempoOk ? "TEMPO OK" : "TEMPO RISK"}</div>
         </div>
       `;
-
       el.onclick = ()=>openTemplate(t.key, start);
       box.appendChild(el);
     });
@@ -1301,7 +1358,6 @@ chandanpanwar001@gmail.com`;
       const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
       blocks.push({ day:d, ids });
     }
-
     const anyHas = blocks.some(x=>x.ids.length);
     if(!anyHas){
       const raw = String(tpl.major_place_ids || "").trim();
@@ -1341,7 +1397,6 @@ chandanpanwar001@gmail.com`;
     const daysList = $("daysList");
     daysList.innerHTML = "";
 
-    // Build day blocks, but remove any "sanityRemoved" IDs inside them too
     const removedSet = new Set((sanityRemoved || []).map(x=>x.pid));
     const blocks = buildDayWise(tpl).map(b=>({
       day: b.day,
@@ -1373,7 +1428,7 @@ chandanpanwar001@gmail.com`;
         line.innerHTML = `
           <div class="thumb">
             ${url
-              ? `<img src="${escapeHtml(url)}" alt="pic" loading="lazy" referrerpolicy="no-referrer"
+              ? `<img src="${escapeHtml(url)}" alt="${escapeHtml(name)} photo" loading="lazy" referrerpolicy="no-referrer"
                     onerror="this.remove(); this.parentNode.textContent='${escapeHtml(initials(name))}';">`
               : escapeHtml(initials(name))
             }
@@ -1391,9 +1446,6 @@ chandanpanwar001@gmail.com`;
     });
   }
 
-  /* ===============================
-     ✅ OSRM route draw
-     =============================== */
   async function drawRoadRouteFromPlaces(placeIds){
     markersLayer.clearLayers();
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
@@ -1470,9 +1522,6 @@ chandanpanwar001@gmail.com`;
     }
   }
 
-  /* ===============================
-     ✅ Generate packages
-     =============================== */
   function applyFilters(){
     const start = normalizeStartInput();
     const daysF = $("daysSel").value.trim();
@@ -1557,9 +1606,6 @@ chandanpanwar001@gmail.com`;
     toast(startIsHP ? "HP start: showing all packages (max 2 days)" : "Packages generated");
   }
 
-  /* ===============================
-     ✅ Open package
-     =============================== */
   async function openTemplate(key, start){
     const tpl = TEMPLATES[key];
     if(!tpl){ toast("Package not found"); return; }
@@ -1570,33 +1616,23 @@ chandanpanwar001@gmail.com`;
     if(node) node.classList.add("active");
 
     const endKey = endKeyFromColumnG(tpl);
-
-    // ✅ route includes START (if exists in DB)
     const routeIdsRaw = routeIdsFromTemplateIncludingStart(tpl);
-
-    // ✅ remove wrong district places for local packages (fixes CHAMBA + SHIMLA mall-road)
     const sanity = sanitizeStopsForTemplate(tpl, routeIdsRaw, endKey);
     const routeIds = sanity.ids;
 
     renderItinerary(tpl, start, endKey, sanity.removed);
 
     const rr = await drawRoadRouteFromPlaces(routeIds);
-
     if(rr.ok){
       CURRENT_ROUTE_KM = rr.km;
       computeDbPriceForCurrent();
-      if(sanity.removed?.length){
-        toast("Wrong-district place removed from this package");
-      }
+      if(sanity.removed?.length) toast("Wrong-district place removed from this package");
     }else{
       CURRENT_ROUTE_KM = 0;
       updatePriceBoxes(NaN, NaN);
     }
   }
 
-  /* ===============================
-     ✅ Place Modal
-     =============================== */
   function openPlaceModal(){
     $("placeModalBack").style.display = "block";
     $("placeModal").style.display = "block";
@@ -1780,9 +1816,6 @@ chandanpanwar001@gmail.com`;
     }
   }
 
-  /* ===============================
-     ✅ Events
-     =============================== */
   $("genBtn").addEventListener("click", applyFilters);
   $("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
 
@@ -1847,14 +1880,8 @@ chandanpanwar001@gmail.com`;
 
   $("paxSel")?.addEventListener("change", computeDbPriceForCurrent);
 
-  /* ===============================
-     ✅ Init
-     =============================== */
   initMap();
-
-  loadPricingNodes().then(()=>{
-    return loadAll();
-  }).then(()=>{
+  loadPricingNodes().then(()=> loadAll()).then(()=>{
     toast("Portal ready");
   }).catch(err=>{
     console.error(err);
