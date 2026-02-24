@@ -11,9 +11,6 @@
       When your custom domain is actually connected, replace BASE_URL below.
   -->
   <meta name="x-base-url" content="https://champishere001.github.io/" />
-  <!-- Change this later when domain connected:
-       https://himachalexplorer.in/
-  -->
 
   <!-- ✅ SEO: Title + Description -->
   <title>Himachal Tour Packages | Himachal Explorer Portal (Routes, Maps, Day-wise Plans)</title>
@@ -25,7 +22,7 @@
   <!-- ✅ Canonical (MUST match current live URL) -->
   <link rel="canonical" href="https://champishere001.github.io/" />
 
-  <!-- ✅ Open Graph (Facebook/WhatsApp) -->
+  <!-- ✅ Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="en_IN" />
   <meta property="og:title" content="Himachal Tour Packages | Himachal Explorer Portal" />
@@ -61,7 +58,7 @@
   <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics-compat.js"></script>
 
-  <!-- ✅ Structured Data (JSON-LD) — URLs must match GitHub Pages until domain is connected -->
+  <!-- ✅ Structured Data (JSON-LD) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -80,56 +77,11 @@
         "url": "https://champishere001.github.io/",
         "name": "Himachal Tour Packages | Himachal Explorer Portal (Routes, Maps, Day-wise Plans)",
         "isPartOf": { "@id": "https://champishere001.github.io/#website" },
-        "about": { "@id": "https://champishere001.github.io/#travelagency" },
         "inLanguage": "en-IN"
-      },
-      {
-        "@type": "TravelAgency",
-        "@id": "https://champishere001.github.io/#travelagency",
-        "name": "Himachal Explorer",
-        "url": "https://champishere001.github.io/",
-        "telephone": "+91-7018138847",
-        "email": "chandanpanwar001@gmail.com",
-        "founder": "Chandan Panwar",
-        "areaServed": "IN-HP",
-        "priceRange": "₹₹",
-        "image": "https://champishere001.github.io/og-cover.jpg",
-        "logo": "https://champishere001.github.io/logo.png",
-        "sameAs": [],
-        "address": {
-          "@type": "PostalAddress",
-          "addressCountry": "IN",
-          "addressRegion": "Himachal Pradesh"
-        }
-      },
-      {
-        "@type": "FAQPage",
-        "@id": "https://champishere001.github.io/#faq",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "How do I find tour packages on Himachal Explorer?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Type your start city (e.g. Delhi/Chandigarh/Amritsar) and press Generate. Choose a package to see day-wise itinerary and live road route map."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Do packages show real road distance?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. The portal draws routes using OSRM road routing (not aerial distance) and displays total road kilometers."
-            }
-          }
-        ]
       }
     ]
   }
   </script>
-
-  <!-- ✅ NOTE: remove sitemap link until you actually create sitemap.xml in repo -->
-  <!-- <link rel="sitemap" type="application/xml" title="Sitemap" href="https://champishere001.github.io/sitemap.xml" /> -->
 
   <style>
     :root{
@@ -146,7 +98,6 @@
       --acc:#7C3AED;
       --acc2:#22C55E;
       --acc3:#06B6D4;
-      --warn:#F59E0B;
 
       --topH: 92px;
       --gap: 14px;
@@ -159,7 +110,6 @@
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
 
-    /* ✅ FIX #1: allow scrolling on mobile (was overflow:hidden) */
     body{
       margin:0;
       color:var(--text);
@@ -323,7 +273,6 @@
       letter-spacing:.12em;
       margin:0 0 6px 2px;
     }
-
     select{ text-transform: uppercase; }
     input{ text-transform: none; }
 
@@ -653,7 +602,6 @@
     }
     .toast.show{ display:block; }
 
-    /* ✅ FIX #2: better mobile/tablet breakpoint (was 980px) */
     @media (max-width: 1200px){
       .app{ height:auto; min-height:100%; }
       .main{
@@ -738,7 +686,7 @@
         </div>
         <div>
           <div style="margin:0;font-size:14px;letter-spacing:.18em;text-transform:uppercase;font-weight:900;">Himachal Explorer Portal</div>
-          <p id="statusLine">Loading templates & places…</p>
+          <p id="statusLine">Loading packages & places…</p>
         </div>
       </div>
 
@@ -760,7 +708,7 @@
         <div class="paneHdr">
           <div>
             <p class="t">Package Finder</p>
-            <div class="s">End derived from route_path (Column G)</div>
+            <div class="s">Packages loaded from Firebase: <b>/packages</b></div>
           </div>
           <div class="s" id="pkgCount">—</div>
         </div>
@@ -925,7 +873,7 @@
       <div style="display:flex; flex-direction:column; gap:12px;">
         <div style="border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.05);
           border-radius:16px; padding:12px;">
-          <div style="color:rgba(255,255,255,.70); font-size:11px; letter-spacing:.12em; text-transform:uppercase;">History / Tagline</div>
+          <div style="color:rgba(255,255,255,.70); font-size:11px; letter-spacing:.12em; text-transform:uppercase;">Overview / History</div>
           <div id="mHistory" style="margin-top:8px; color:rgba(255,255,255,.92); line-height:1.45;">—</div>
         </div>
 
@@ -951,7 +899,7 @@
 
   <script>
   /* ===============================
-     ✅ Firebase Config
+     ✅ Firebase Config (YOUR PROJECT)
      =============================== */
   const firebaseConfig = {
     apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
@@ -968,8 +916,6 @@
      ✅ Helpers
      =============================== */
   const $ = (id)=>document.getElementById(id);
-
-  // ✅ Base URL used in copy/share (matches current hosting)
   const BASE_URL = "https://champishere001.github.io/";
 
   function toast(msg){
@@ -1039,13 +985,19 @@
   function fitRoute(){
     if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] });
   }
+  function refreshMapSize(){
+    try{ map.invalidateSize(true); }catch(e){}
+  }
 
   /* ===============================
-     ✅ Data
+     ✅ Data (FIXED TO MATCH YOUR ADMIN)
+     - packages are in /packages
+     - places are in /places
+     - pricing is in /rates
      =============================== */
   let db, storage, analytics;
   let LOCS = {};
-  let TEMPLATES = {};
+  let TEMPLATES = {};         // ✅ will store /packages
   let ACTIVE_TEMPLATES = [];
   let NAME_TO_ID = new Map();
   let STARTS = [];
@@ -1056,21 +1008,29 @@
   function placeNameAny(p, id){
     return String(p?.["Location Name"] || p?.name || id || "PLACE").toUpperCase();
   }
+
+  // ✅ FIX: supports admin field imageUrl too
   function pickPhotoAny(p){
+    const direct = p?.imageUrl || p?.image || p?.img || "";
+    if(direct && String(direct).trim()) return String(direct).trim();
+
     const p1 = p?.["photo 1"] || p?.photo1 || p?.photo_1 || p?.photo || "";
     if(p1 && String(p1).trim()) return String(p1).trim();
+
     if(Array.isArray(p?.photos) && p.photos[0]) return String(p.photos[0]).trim();
     if(Array.isArray(p?.images) && p.images[0]) return String(p.images[0]).trim();
+
     const p2 = p?.["photo 2"] || p?.photo2 || "";
     if(p2 && String(p2).trim()) return String(p2).trim();
     return "";
   }
+
   function latAny(p){ return Number(p?.Latitude ?? p?.latitude ?? p?.lat); }
   function lngAny(p){ return Number(p?.Longitude ?? p?.longitude ?? p?.lng); }
   function districtAny(p){ return String(p?.District || p?.district || "").toUpperCase(); }
   function segmentAny(p){ return String(p?.["Segment Type"] || p?.segment || "").toUpperCase(); }
   function categoryAny(p){ return String(p?.["Location Type"] || p?.category || "").toUpperCase(); }
-  function regionAny(p){ return String(p?.region || "").toUpperCase(); }
+  function regionAny(p){ return String(p?.region || p?.Region || "").toUpperCase(); }
 
   function isStartWithinHimachal(startStr){
     const s = String(startStr||"").trim().toUpperCase();
@@ -1098,37 +1058,23 @@
   }
 
   async function loadAll(){
-    setStatus("Loading /templates & /places…");
+    setStatus("Loading /packages, /places, /rates…");
 
-    const [tplSnap, placesSnap, locSnap] = await Promise.all([
-      db.ref("templates").once("value"),
+    const [pkgSnap, placesSnap, ratesSnap] = await Promise.all([
+      db.ref("packages").once("value"),   // ✅ FIX
       db.ref("places").once("value"),
-      db.ref("locations").once("value").catch(()=>({ val:()=>null }))
+      db.ref("rates").once("value").catch(()=>({ val:()=>null }))
     ]);
 
-    TEMPLATES = tplSnap.val() || {};
+    TEMPLATES = pkgSnap.val() || {};
     const places = placesSnap.val() || {};
-    const locations = (locSnap && typeof locSnap.val==="function") ? (locSnap.val() || {}) : {};
+    RATES = (ratesSnap && typeof ratesSnap.val==="function") ? (ratesSnap.val() || {}) : {};
 
+    // normalize places node
     LOCS = {};
-    function ingestPlace(id, obj){
-      if(!id || !obj) return;
-      LOCS[id] = { ...obj, place_id: obj.place_id || id };
-    }
-
     for(const [k,v] of Object.entries(places)){
-      if(v && typeof v === "object" && (v.name || v.place_id || v.latitude || v.longitude || v.Latitude || v.Longitude)){
-        ingestPlace(k, v);
-      }else if(v && typeof v === "object"){
-        for(const [k2,v2] of Object.entries(v)){
-          if(v2 && typeof v2 === "object") ingestPlace(k2, v2);
-        }
-      }
-    }
-
-    if(Object.keys(LOCS).length === 0){
-      for(const [k,v] of Object.entries(locations)){
-        ingestPlace(k, v);
+      if(v && typeof v === "object"){
+        LOCS[k] = { ...v, place_id: v.place_id || k };
       }
     }
 
@@ -1142,7 +1088,7 @@
     buildNameIndex();
     buildStartList(ACTIVE_TEMPLATES);
 
-    setStatus(`Loaded ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(LOCS).length} places`);
+    setStatus(`Loaded ${ACTIVE_TEMPLATES.length} packages • ${Object.keys(LOCS).length} places • rates: ${Object.keys(RATES||{}).length ? "OK" : "missing"}`);
   }
 
   function buildNameIndex(){
@@ -1152,6 +1098,7 @@
       if(nm) NAME_TO_ID.set(nm.toLowerCase(), pid);
     }
   }
+
   function buildStartList(templates){
     const set = new Set();
     templates.forEach(t=>{
@@ -1192,13 +1139,18 @@
   }
   function stopsCount(tpl){ return stopsFromTemplate(tpl).length; }
 
-  function getEndNameFromColumnG(tpl){
+  // ✅ FIX: supports route_path like "A | B | C" or "A > B > C" or "A -> B -> C"
+  function getEndNameFromRoutePath(tpl){
     const start = String(tpl.start_point || "").trim().toLowerCase();
     const rpRaw = String(tpl.route_path || "").trim();
     if(!rpRaw) return String(tpl.end_point || "").trim() || "UNKNOWN";
 
-    const tokens = rpRaw.replace(/->/g,">").split(">")
-      .map(x=>String(x||"").trim()).filter(Boolean);
+    const tokens = rpRaw
+      .replace(/->/g,"|")
+      .replace(/>/g,"|")
+      .split("|")
+      .map(x=>String(x||"").trim())
+      .filter(Boolean);
 
     if(!tokens.length) return String(tpl.end_point || "").trim() || "UNKNOWN";
 
@@ -1209,8 +1161,8 @@
     return end || "UNKNOWN";
   }
 
-  function endKeyFromColumnG(tpl){
-    const endName = getEndNameFromColumnG(tpl);
+  function endKeyFromRoutePath(tpl){
+    const endName = getEndNameFromRoutePath(tpl);
     const pidByName = NAME_TO_ID.get(String(endName).toLowerCase());
 
     if(pidByName){
@@ -1218,14 +1170,6 @@
       const d = districtAny(p);
       return d || normCaps(endName);
     }
-
-    const slug = slugifyName(endName);
-    if(LOCS[slug]){
-      const p = LOCS[slug] || {};
-      const d = districtAny(p);
-      return d || normCaps(endName);
-    }
-
     return normCaps(endName);
   }
 
@@ -1264,30 +1208,6 @@
     return baseStops;
   }
 
-  function sanitizeStopsForTemplate(tpl, ids, endDistrictKey){
-    const out = [];
-    const removed = [];
-
-    const days = Number(tpl?.days || 0);
-    const endD = String(endDistrictKey || "").trim().toUpperCase();
-
-    const regionHint = String(tpl?.region_style || tpl?.region || tpl?.route_name || "").toUpperCase();
-    const localHint = (regionHint.includes(endD) || regionHint.includes("LOCAL") || regionHint.includes("CORE"));
-    const shouldStrict = (!!endD && (days > 0 && days <= 4 || localHint));
-
-    if(!shouldStrict) return { ids, removed };
-
-    for(const pid of (ids || [])){
-      const p = LOCS[pid];
-      if(!p){ out.push(pid); continue; }
-      const d = districtAny(p);
-      if(!d){ out.push(pid); continue; }
-      if(d === endD) out.push(pid);
-      else removed.push({ pid, name: placeNameAny(p, pid), district: d });
-    }
-    return { ids: out, removed };
-  }
-
   function packageScore(tpl){
     const locs = stopsCount(tpl);
     const pri  = Number(tpl.priority ?? 999);
@@ -1317,7 +1237,7 @@
     }
 
     list.forEach(t=>{
-      const endKey = endKeyFromColumnG(t);
+      const endKey = endKeyFromRoutePath(t);
       const days = Number(t.days || 0) || 0;
       const tempoOk = (t.tempo_ok === true || safeLower(t.tempo_ok)==="true");
 
@@ -1346,7 +1266,7 @@
           <div class="pkgName">${escapeHtml(String(start).toUpperCase())} → ${escapeHtml(String(endKey).toUpperCase())}</div>
           <div class="pkgMeta">
             LOCATIONS: ${stopsCount(t)} • DAYS: ${days || "—"}<br/>
-            ROUTE ID: ${escapeHtml(String(t.route_id||"—").toUpperCase())}
+            ID: ${escapeHtml(String(t.key||"—").toUpperCase())}
           </div>
           <div class="tag ${tempoOk ? "ok" : "warn"}">${tempoOk ? "TEMPO OK" : "TEMPO RISK"}</div>
         </div>
@@ -1374,7 +1294,7 @@
     return blocks.filter(x=>x.ids.length);
   }
 
-  function renderItinerary(tpl, start, endKey, sanityRemoved){
+  function renderItinerary(tpl, start, endKey){
     $("activePkgName").textContent = `${String(tpl.days||"—")}D`;
     $("itTitle").textContent = `${String(start).toUpperCase()} → ${String(endKey).toUpperCase()}`;
 
@@ -1384,17 +1304,9 @@
     if(tpl.ideal_for) metaParts.push(`Ideal: ${tpl.ideal_for}`);
     $("itMeta").textContent = metaParts.join(" • ") || "—";
 
-    const noteEl = $("itSanityNote");
-    if(sanityRemoved?.length){
-      noteEl.style.display = "block";
-      noteEl.innerHTML = `Auto-removed wrong-district places: <b style="color:#fff;">${sanityRemoved.map(x=>escapeHtml(x.name)).join(", ")}</b>`;
-    }else{
-      noteEl.style.display = "none";
-      noteEl.textContent = "";
-    }
-
-    const inc = String(tpl.inclusions || "").trim();
-    const exc = String(tpl.exclusions || "").trim();
+    // ✅ FIX: admin uses includes/excludes (not inclusions/exclusions)
+    const inc = String(tpl.includes || tpl.inclusions || "").trim();
+    const exc = String(tpl.excludes || tpl.exclusions || "").trim();
     const note = String(tpl.important_notes || tpl.notes || "").trim();
     $("incExc").innerHTML =
       `<b style="color:#fff;letter-spacing:.12em;">INCLUDES:</b> ${escapeHtml(inc || "—")}<br><br>` +
@@ -1404,11 +1316,7 @@
     const daysList = $("daysList");
     daysList.innerHTML = "";
 
-    const removedSet = new Set((sanityRemoved || []).map(x=>x.pid));
-    const blocks = buildDayWise(tpl).map(b=>({
-      day: b.day,
-      ids: (b.ids || []).filter(pid => !removedSet.has(pid))
-    })).filter(b=>b.ids.length);
+    const blocks = buildDayWise(tpl);
 
     blocks.forEach(block=>{
       const dayCard = document.createElement("div");
@@ -1426,7 +1334,6 @@
       block.ids.forEach(pid=>{
         const p = LOCS[pid] || {};
         const name = placeNameAny(p, pid);
-        const seg  = segmentAny(p) || "—";
         const dist = districtAny(p) || "—";
         const url = pickPhotoAny(p);
 
@@ -1442,7 +1349,7 @@
           </div>
           <div class="pinfo">
             <div class="pname">${escapeHtml(name)}</div>
-            <div class="pmeta">${escapeHtml(seg)} • ${escapeHtml(dist)}</div>
+            <div class="pmeta">${escapeHtml(dist)}</div>
           </div>
         `;
         line.onclick = ()=>showPlacePopup(pid);
@@ -1539,8 +1446,6 @@
     $("activePkgName").textContent = "—";
     $("itTitle").textContent = "Select a package";
     $("itMeta").textContent = "Day-wise details will appear here";
-    $("itSanityNote").style.display = "none";
-    $("itSanityNote").textContent = "";
     $("incExc").textContent = "—";
     $("daysList").innerHTML = "";
     $("priceTotal").innerHTML = "— <small></small>";
@@ -1549,7 +1454,7 @@
     CURRENT_ROUTE_KM = 0;
 
     if(!start){
-      toast("Start not found in templates");
+      toast("Start not found in packages");
       return;
     }
 
@@ -1566,46 +1471,12 @@
       if(daysF) list = list.filter(t => Number(t.days||0) === Number(daysF));
     }
 
-    let finalList = [];
-    if(startIsHP){
-      finalList = list.sort((a,b)=>{
-        const A = packageScore(a), B = packageScore(b);
-        if(A.locs !== B.locs) return B.locs - A.locs;
-        if(A.pri !== B.pri) return A.pri - B.pri;
-        return A.km - B.km;
-      });
-    }else{
-      const bestByEnd = new Map();
-      const scByEnd = new Map();
-
-      function isBetter(A,B){
-        if(A.locs !== B.locs) return A.locs > B.locs;
-        if(A.pri !== B.pri)   return A.pri < B.pri;
-        return A.km < B.km;
-      }
-
-      for(const t of list){
-        const endKey = endKeyFromColumnG(t);
-        const sc = packageScore(t);
-        if(!bestByEnd.has(endKey)){
-          bestByEnd.set(endKey, t);
-          scByEnd.set(endKey, sc);
-        }else{
-          const prev = scByEnd.get(endKey);
-          if(isBetter(sc, prev)){
-            bestByEnd.set(endKey, t);
-            scByEnd.set(endKey, sc);
-          }
-        }
-      }
-
-      finalList = Array.from(bestByEnd.values()).sort((a,b)=>{
-        const A = packageScore(a), B = packageScore(b);
-        if(A.locs !== B.locs) return B.locs - A.locs;
-        if(A.pri !== B.pri) return A.pri - B.pri;
-        return A.km - B.km;
-      });
-    }
+    const finalList = list.sort((a,b)=>{
+      const A = packageScore(a), B = packageScore(b);
+      if(A.locs !== B.locs) return B.locs - A.locs;
+      if(A.pri !== B.pri) return A.pri - B.pri;
+      return A.km - B.km;
+    });
 
     CURRENT_LIST = finalList;
 
@@ -1630,22 +1501,14 @@
     const node = document.querySelector(`.pkg[data-key="${cssEscapeSafe(key)}"]`);
     if(node) node.classList.add("active");
 
-    const endKey = endKeyFromColumnG(tpl);
-    const routeIdsRaw = routeIdsFromTemplateIncludingStart(tpl);
-    const sanity = sanitizeStopsForTemplate(tpl, routeIdsRaw, endKey);
-    const routeIds = sanity.ids;
+    const endKey = endKeyFromRoutePath(tpl);
+    const routeIds = routeIdsFromTemplateIncludingStart(tpl);
 
-    renderItinerary(tpl, start, endKey, sanity.removed);
+    renderItinerary(tpl, start, endKey);
 
     const rr = await drawRoadRouteFromPlaces(routeIds);
-    if(rr.ok){
-      CURRENT_ROUTE_KM = rr.km;
-      computeDbPriceForCurrent();
-      if(sanity.removed?.length) toast("Wrong-district place removed from this package");
-    }else{
-      CURRENT_ROUTE_KM = 0;
-      computeDbPriceForCurrent();
-    }
+    CURRENT_ROUTE_KM = rr.ok ? rr.km : 0;
+    computePriceForCurrent();
   }
 
   function openPlaceModal(){
@@ -1671,17 +1534,19 @@
 
   async function showPlacePopup(placeId){
     const p = LOCS[placeId];
-    if(!p){
-      toast("Place not found in loaded data");
-      return;
-    }
+    if(!p){ toast("Place not found"); return; }
 
     const title = placeNameAny(p, placeId);
     $("mTitle").textContent = title;
     $("mMeta").textContent = metaFromAny(p);
 
-    const history = textAny(p, ["history_tagline","History Tagline","Short Description","Overview"], "—");
-    const find = textAny(p, ["what_you_find","What you find","Key Features"], "—");
+    // ✅ FIX: supports admin overview + tags
+    const history = textAny(p, ["history_tagline","overview","History Tagline","Short Description","Overview"], "—");
+    let find = textAny(p, ["what_you_find","What you find","Key Features"], "");
+    if(!find || find==="—"){
+      const tags = Array.isArray(p.tags) ? p.tags.join(", ") : String(p.tags||"").trim();
+      find = tags ? tags : "—";
+    }
 
     $("mHistory").textContent = history;
     $("mFind").textContent = find;
@@ -1716,123 +1581,49 @@
   }
 
   /* ======================================================
-     ✅ DB BASED COST CALCULATOR (MATCHES YOUR DB NODES)
-     Nodes:
-       pricing_transport/{vehicleKey}
-       stay_rate_rules/{ruleKey}
+     ✅ PRICING (FIXED TO MATCH YOUR ADMIN /rates)
+     rates node:
+       /rates/budget, /rates/premium, /rates/luxury
+       hotelPerNight, breakfastPerPersonPerDay, travelPerKm, fixedPerDay
      ====================================================== */
-  let TRANSPORT = {};
-  let STAYRULES = {};
+  let RATES = {};
   let PRICING_READY = false;
 
-  async function loadPricingNodes(){
+  async function loadRates(){
     try{
-      const [tSnap, sSnap] = await Promise.all([
-        db.ref("pricing_transport").once("value"),
-        db.ref("stay_rate_rules").once("value")
-      ]);
-      TRANSPORT = tSnap.val() || {};
-      STAYRULES = sSnap.val() || {};
+      const snap = await db.ref("rates").once("value");
+      RATES = snap.val() || {};
       PRICING_READY = true;
     }catch(e){
       console.error(e);
       PRICING_READY = false;
-      toast("Pricing nodes not readable");
+      toast("Rates not readable");
     }
   }
 
-  function getTier(){
-    return String($("visitType")?.value || "budget").toLowerCase();
-  }
-
-  function vehicleKeyByPax(pax){
-    pax = Number(pax || 2);
-    let best=null;
-    let smallest=999;
-    for(const [k,v] of Object.entries(TRANSPORT||{})){
-      if(String(v.status||"active").toLowerCase() !== "active") continue;
-      const max=Number(v.max_pax||0);
-      if(max>=pax && max<smallest){
-        smallest=max;
-        best=k;
-      }
-    }
-    return best || Object.keys(TRANSPORT||{})[0] || "";
-  }
-
-  function stayRuleKeyDefault(){
-    const tier = getTier();
-    const map = {
-      budget: ["budget"],
-      premium:["midrange","family","superior"],
-      luxury:["boutique","deluxe","premium","luxury"]
-    };
-    const wantCats = map[tier] || ["budget"];
-
-    for(const [key,v] of Object.entries(STAYRULES||{})){
-      if(String(v.status||"active").toLowerCase() !== "active") continue;
-      const cat = String(v.category||"").toLowerCase();
-      if(wantCats.includes(cat)) return key;
-    }
-    return Object.keys(STAYRULES||{})[0] || "";
-  }
-
-  function estimateTotalCostFromDb({ km=0, days=3, pax=2 }){
+  function estimateTotalCostFromRates({ km=0, days=3, pax=2 }){
     km = Number(km||0);
     days = Number(days||0);
-    pax = Math.max(1,Number(pax||1));
-    const nights=Math.max(0,days-1);
+    pax = Math.max(1, Number(pax||1));
+    const nights = Math.max(0, days-1);
 
-    if(!PRICING_READY || !km || !days){
-      return { total:NaN, perPerson:NaN };
-    }
+    if(!PRICING_READY || !km || !days) return { total:NaN, perPerson:NaN };
 
-    const vKey=vehicleKeyByPax(pax);
-    const vehicle=TRANSPORT?.[vKey];
-    if(!vehicle) return { total:NaN, perPerson:NaN };
+    const tier = String($("visitType")?.value || "budget").toLowerCase();
+    const rate = RATES[tier] || RATES.budget || {};
 
-    const perKm=Number(vehicle.per_km||0);
-    const driver=Number(vehicle.driver_per_day||0);
-    const nightCharge=Number(vehicle.night_charge||0);
-    const bufferPct=Number(vehicle.parking_toll_buffer_pct||0);
+    const hotel = Number(rate.hotelPerNight || 0);
+    const breakfast = Number(rate.breakfastPerPersonPerDay || 0);
+    const perKm = Number(rate.travelPerKm || 0);
+    const fixedDay = Number(rate.fixedPerDay || 0);
 
-    const sKey=stayRuleKeyDefault();
-    const stay=STAYRULES?.[sKey];
-    if(!stay) return { total:NaN, perPerson:NaN };
+    const total =
+      (km * perKm) +
+      (nights * hotel) +
+      (pax * days * breakfast) +
+      (days * fixedDay);
 
-    const roomRate = Number(stay.base_rate_mid || stay.base_rate_low || stay.base_rate_peak || 0);
-
-    const roomCap = Math.max(1, Number(stay.room_capacity || 2));
-    const rooms = Math.ceil(pax / roomCap);
-
-    const transport =
-      (km*perKm)+
-      (days*driver)+
-      (nights*nightCharge);
-
-    const hotel =
-      rooms*roomRate*nights;
-
-    const buffer =
-      (bufferPct>0)
-        ? ((transport+hotel)*bufferPct/100)
-        : 0;
-
-    const total=transport+hotel+buffer;
-    const perPerson=total/pax;
-
-    return {
-      total,
-      perPerson,
-      meta:{
-        tier: getTier(),
-        vehicle:vKey,
-        stay:sKey,
-        rooms,
-        nights,
-        kmUsed: km
-      }
-    };
+    return { total, perPerson: total / pax, meta:{ tier } };
   }
 
   function updatePriceBoxes(total, perPerson, meta){
@@ -1847,13 +1638,11 @@
     }
 
     const tier = String(meta?.tier || "").toUpperCase();
-    const vKey  = String(meta?.vehicle || "").toUpperCase();
-    const sKey  = String(meta?.stay || "").toUpperCase();
-    totalEl.innerHTML = rupees(total) + ` <small>(${tier} • ${vKey} • ${sKey})</small>`;
+    totalEl.innerHTML = rupees(total) + ` <small>(${tier})</small>`;
     perEl.innerHTML = rupees(perPerson) + ` <small>per person</small>`;
   }
 
-  function computeDbPriceForCurrent(){
+  function computePriceForCurrent(){
     try{
       if(!CURRENT_TEMPLATE_KEY) return;
       const tpl = TEMPLATES?.[CURRENT_TEMPLATE_KEY];
@@ -1863,13 +1652,10 @@
       const days = Number(tpl.days || $("daysSel")?.value || 3);
 
       let km = Number(CURRENT_ROUTE_KM || 0);
-      if(!isFinite(km) || km <= 0){
-        km = Number(tpl.total_km_est || tpl.estimated_drive_km || 0);
-      }
+      if(!isFinite(km) || km <= 0) km = Number(tpl.total_km_est || 0);
 
-      const est = estimateTotalCostFromDb({ km, days, pax });
+      const est = estimateTotalCostFromRates({ km, days, pax });
       updatePriceBoxes(est.total, est.perPerson, est.meta);
-
     }catch(e){
       console.error(e);
       updatePriceBoxes(NaN, NaN);
@@ -1919,8 +1705,6 @@ ${BASE_URL}`;
       $("activePkgName").textContent="—";
       $("itTitle").textContent="Select a package";
       $("itMeta").textContent="Day-wise details will appear here";
-      $("itSanityNote").style.display = "none";
-      $("itSanityNote").textContent = "";
       $("incExc").textContent="—";
       $("daysList").innerHTML="";
       $("priceTotal").innerHTML="— <small></small>";
@@ -1939,10 +1723,8 @@ ${BASE_URL}`;
       toast("Markers: all stops");
       if(CURRENT_TEMPLATE_KEY){
         const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
-        const endKey = endKeyFromColumnG(tpl);
-        const routeIdsRaw = routeIdsFromTemplateIncludingStart(tpl);
-        const sanity = sanitizeStopsForTemplate(tpl, routeIdsRaw, endKey);
-        await drawRoadRouteFromPlaces(sanity.ids);
+        const routeIds = routeIdsFromTemplateIncludingStart(tpl);
+        await drawRoadRouteFromPlaces(routeIds);
       }
     });
 
@@ -1951,10 +1733,8 @@ ${BASE_URL}`;
       toast("Markers: start/end");
       if(CURRENT_TEMPLATE_KEY){
         const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
-        const endKey = endKeyFromColumnG(tpl);
-        const routeIdsRaw = routeIdsFromTemplateIncludingStart(tpl);
-        const sanity = sanitizeStopsForTemplate(tpl, routeIdsRaw, endKey);
-        await drawRoadRouteFromPlaces(sanity.ids);
+        const routeIds = routeIdsFromTemplateIncludingStart(tpl);
+        await drawRoadRouteFromPlaces(routeIds);
       }
     });
 
@@ -1970,17 +1750,20 @@ ${BASE_URL}`;
       toast(tilesDark ? "Dark tiles on" : "Light tiles on");
     });
 
-    $("paxSel")?.addEventListener("change", computeDbPriceForCurrent);
+    $("paxSel")?.addEventListener("change", computePriceForCurrent);
     $("visitType")?.addEventListener("change", ()=>{
-      computeDbPriceForCurrent();
-      if($("pills").children.length){
-        applyFilters();
-      }
+      computePriceForCurrent();
+      if($("pills").children.length) applyFilters();
     });
 
     initMap();
-    loadPricingNodes()
-      .then(()=> loadAll())
+
+    // ✅ FIX: Leaflet size issues in grid/blur layouts
+    setTimeout(refreshMapSize, 250);
+    window.addEventListener("resize", refreshMapSize);
+
+    // ✅ Load rates + data
+    Promise.all([loadRates(), loadAll()])
       .then(()=> toast("Portal ready"))
       .catch(err=>{
         console.error(err);
