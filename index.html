@@ -705,6 +705,66 @@
       .itWrap{ padding:10px !important; }
       .heroCard{ padding:10px !important; }
     }
+  
+/* =========================
+   ✅ MOBILE SCROLL + HEADER FIX (paste at END)
+   ========================= */
+@media (max-width: 1200px){
+
+  /* ✅ allow full page scroll */
+  html, body{
+    height: auto !important;
+    overflow: auto !important;
+    overscroll-behavior: auto !important;
+  }
+
+  /* ✅ do NOT lock app height on mobile */
+  .app{
+    min-height: 100vh !important;
+    height: auto !important;
+  }
+
+  /* ✅ remove sticky header on mobile (this is your issue) */
+  .top{
+    position: relative !important;
+    top: auto !important;
+    z-index: 1 !important;
+  }
+
+  /* ✅ main should NOT be height-locked / hidden overflow on mobile */
+  .main{
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* panes should grow naturally on mobile */
+  .pane{
+    height: auto !important;
+    min-height: unset !important;
+  }
+
+  /* let inner lists scroll naturally (no trapped scroll areas) */
+  .pkgList, .districtBar, .itWrap{
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* ✅ make action chips smaller + 1 line wrap properly */
+  .actions{
+    width: 100% !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+  }
+  .chip{
+    padding: 7px 10px !important;
+    font-size: 10px !important;
+    letter-spacing: .06em !important;
+  }
+
+  /* map height ok */
+  #map{ height: 300px !important; }
+}
+
   </style>
 </head>
 
