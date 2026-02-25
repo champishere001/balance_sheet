@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Cost Calculator | Himachal Explorer</title>
+
+<script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+
+<style>
+:root{
+  --bg0:#070A12; --bg1:#0B1220; --stroke:rgba(255,255,255,.12);
+  --muted:rgba(255,255,255,.7); --text:rgba(255,255,255,.92); --acc:#7C3AED;
+  --r:16px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background: radial-gradient(1000px 520px at 20% 0%, rgba(124,58,237,.18), transparent 60%),
+              radial-gradient(900px 520px at 85% 10%, rgba(34,197,94,.14), transparent 60%),
+              linear-gradient(180deg,var(--bg0),var(--bg1));
+  min-height:100vh;
+}
+.wrap{max-width:720px;margin:auto;padding:16px}
+.card{
+  border:1px solid var(--stroke);
+  background: rgba(255,255,255,.05);
+  border-radius:18px;
+  padding:14px;
+}
+.hdr{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+}
+.hdr h1{
+  margin:0;font-size:14px;letter-spacing:.18em;text-transform:uppercase;
+}
+.badge{
+  border:1px solid var(--stroke);
+  border-radius:999px;
+  padding:8px 10px;
+  font-size:11px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  background: rgba(0,0,0,.25);
+  color: rgba(255,255,255,.85);
+}
+.grid{
+  margin-top:12px;
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+}
+@media (max-width:560px){ .grid{grid-template-columns:1fr} }
+
+label{
+  display:block;
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin:0 0 6px 2px;
+}
+input, select{
+  width:100%;
+  padding:12px 12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.18);
+  background: rgba(0,0,0,.25);
+  color: rgba(255,255,255,.92);
+  outline:none;
+}
+input:focus, select:focus{
+  border-color: rgba(124,58,237,.65);
+  box-shadow: 0 0 0 3px rgba(124,58,237,.16);
+}
+.row{
+  display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;
+}
+.btn{
+  flex:1;
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.14);
+  background: linear-gradient(135deg, rgba(124,58,237,.95), rgba(6,182,212,.65));
+  color:#fff;
+  font-weight:900;
+  letter-spacing:.10em;
+  text-transform:uppercase;
+  cursor:pointer;
+}
+.btn.secondary{
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.88);
+}
+.small{
+  margin-top:10px;
+  font-size:12px;
+  color: rgba(255,255,255,.75);
+  line-height:1.45;
+  white-space:pre-wrap;
+}
+.kpi{
+  margin-top:12px;
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+}
+.kpi .box{
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.22);
+  border-radius:16px;
+  padding:12px;
+}
+.kpi .k{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.kpi .v{margin-top:6px;font-size:16px;font-weight:950}
+.note{
+  margin-top:10px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.18);
+  border-radius:16px;
+  padding:12px;
+  font-size:12px;
+  color: rgba(255,255,255,.78);
+  line-height:1.5;
+}
+a{color:#fff}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="hdr">
+      <h1>Cost Calculator</h1>
+      <div class="badge" id="pkgBadge">No package selected</div>
+    </div>
+
+    <div class="grid">
+      <div>
+        <label>Selected Package Key</label>
+        <input id="tplKey" readonly>
+      </div>
+
+      <div>
+        <label>Visit Type (Tier)</label>
+        <select id="tier">
+          <option value="budget">BUDGET</option>
+          <option value="premium">PREMIUM</option>
+          <option value="luxury">LUXURY</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Pax (Persons)</label>
+        <select id="pax">
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+          <option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Days (from package, editable)</label>
+        <input id="days" type="number" min="1" max="20" value="3">
+      </div>
+
+      <div>
+        <label>Route KM (auto, editable)</label>
+        <input id="km" type="number" min="1" step="0.1" value="300">
+      </div>
+
+      <div>
+        <label>Season (Auto)</label>
+        <input id="season" readonly value="AUTO">
+      </div>
+    </div>
+
+    <div class="kpi">
+      <div class="box">
+        <div class="k">Total Estimate</div>
+        <div class="v" id="kTotal">—</div>
+      </div>
+      <div class="box">
+        <div class="k">Per Person</div>
+        <div class="v" id="kPer">—</div>
+      </div>
+    </div>
+
+    <div class="note" id="breakdownText">Loading pricing…</div>
+
+    <div class="row">
+      <button class="btn secondary" id="backBtn" type="button">Back to Index</button>
+      <button class="btn" id="calcBtn" type="button">Calculate & Send</button>
+    </div>
+
+    <div class="small" id="dbg"></div>
+  </div>
+</div>
+
+<script>
+/* ====== SAME FIREBASE CONFIG AS INDEX ====== */
+const firebaseConfig = {
+  apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
+  authDomain: "revnue-records.firebaseapp.com",
+  databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "revnue-records",
+  storageBucket: "revnue-records.firebasestorage.app",
+  messagingSenderId: "182348503564",
+  appId: "1:182348503564:web:480085405b09177245ac29",
+  measurementId: "G-MGTDBCG896"
+};
+
+const NODE_TEMPLATES = "templates";
+const NODE_TRANSPORT = "pricing_transport";
+const NODE_STAYRULES = "stay_rate_rules";
+
+const $ = (id)=>document.getElementById(id);
+const rupees = (n)=> "₹" + Math.round(Number(n)||0).toLocaleString("en-IN");
+
+/* ========= State ========= */
+let db;
+let TEMPLATES = {};
+let pricing_transport = {};
+let stay_rate_rules = {};
+let PRICING_READY = false;
+
+function autoSeason(tpl){
+  const text = String(tpl?.best_season || "").toLowerCase();
+  if(/monsoon|rain|jul|aug/.test(text)) return "low";
+  if(/winter|snow|snowfall|dec|jan/.test(text)) return "peak";
+  if(/peak/.test(text)) return "peak";
+  if(/low/.test(text)) return "low";
+  if(/mid/.test(text)) return "mid";
+  const m = new Date().getMonth()+1;
+  if([1,5,6,10,12].includes(m)) return "peak";
+  if([2,7,8].includes(m)) return "low";
+  return "mid";
+}
+function pickStayRule(tier){
+  const t = String(tier||"budget").toLowerCase();
+  const key = (t==="premium") ? "r2" : (t==="luxury") ? "r3" : "r1";
+  return stay_rate_rules?.[key] || {};
+}
+function pickVehicleByPax(pax){
+  pax = Number(pax||2);
+  if(pax <= 4) return "hatchback";
+  if(pax <= 7) return "innova";
+  return "luxury_suv";
+}
+function pickBaseRoomBySeason(rule, season){
+  const s = String(season||"mid").toLowerCase();
+  if(s === "low")  return Number(rule.base_rate_low || rule.base_rate_mid || rule.base_rate_peak || 0);
+  if(s === "peak") return Number(rule.base_rate_peak || rule.base_rate_mid || rule.base_rate_low || 0);
+  return Number(rule.base_rate_mid || rule.base_rate_low || rule.base_rate_peak || 0);
+}
+function computeSnowMultiplier(tpl, vehicle){
+  const sr = String(tpl?.snow_risk || "").toLowerCase();
+  const base = Number(vehicle?.snow_multiplier || 1);
+  if(!isFinite(base) || base <= 0) return 1;
+  if(sr.includes("high")) return base;
+  if(sr.includes("medium")) return 1 + (base - 1) * 0.5;
+  return 1;
+}
+function computeRoadMultiplier(tpl, vehicle){
+  const rt = String(tpl?.road_type || "").toLowerCase();
+  const dl = String(tpl?.drive_level || "").toLowerCase();
+  const bad = Number(vehicle?.bad_road_multiplier || 1);
+  const hill = Number(vehicle?.hill_multiplier || 1);
+  let m = 1;
+  if(rt.includes("bad") || rt.includes("mix")) m *= (isFinite(bad) && bad>0 ? bad : 1);
+  if(dl.includes("high") || rt.includes("hill")) m *= (isFinite(hill) && hill>0 ? hill : 1);
+  return m;
+}
+
+function estimateTotalCost({ km=0, days=3, pax=2, tpl=null, tier="budget" }){
+  km = Number(km||0);
+  days = Number(days||0);
+  pax = Math.max(1, Number(pax||1));
+  const nights = Math.max(0, days-1);
+
+  if(!PRICING_READY || !isFinite(km) || km<=0 || !days){
+    return { total:NaN, perPerson:NaN, breakdown:null };
+  }
+
+  const season = autoSeason(tpl);
+  const vehicleKey = pickVehicleByPax(pax);
+  const v = pricing_transport?.[vehicleKey] || {};
+
+  const perKm = Number(v.per_km || 0);
+  const driverPerDay = Number(v.driver_per_day || 0);
+  const minKmPerDay = Number(v.min_km_per_day || 0);
+  const nightCharge = Number(v.night_charge || 0);
+  const tollPct = Number(v.parking_toll_buffer_pct || 0);
+
+  const minBillKm = (isFinite(minKmPerDay) && minKmPerDay > 0) ? (days * minKmPerDay) : 0;
+  const billedKm = Math.max(km, minBillKm);
+
+  const roadMul = computeRoadMultiplier(tpl, v);
+  const snowMul = computeSnowMultiplier(tpl, v);
+  const bufferMul = 1 + (isFinite(tollPct) ? tollPct : 0) / 100;
+
+  const transportKmCost = billedKm * perKm * roadMul * snowMul * bufferMul;
+  const driverCost = days * driverPerDay;
+  const nightCost = nights * nightCharge;
+  const transport = transportKmCost + driverCost + nightCost;
+
+  const rule = pickStayRule(tier);
+  const baseRoom = pickBaseRoomBySeason(rule, season);
+  const weekendMul = Number(rule.weekend_multiplier || 1);
+  const rooms = Math.max(1, Math.ceil(pax / 2));
+  const wkFactor = (nights >= 2) ? (isFinite(weekendMul) && weekendMul>0 ? weekendMul : 1) : 1;
+  const hotel = nights * baseRoom * rooms * wkFactor;
+
+  const total = transport + hotel;
+
+  const breakdown = {
+    tier, season, vehicleKey,
+    routeKm: km, billedKm,
+    perKm, driverPerDay, minKmPerDay, nightCharge, tollPct,
+    roadMul, snowMul, bufferMul,
+    days, nights, rooms, baseRoom, wkFactor,
+    transportKmCost, driverCost, nightCost,
+    transport, hotel, total
+  };
+
+  return { total, perPerson: total/pax, breakdown };
+}
+
+function render(){
+  const tplKey = $("tplKey").value.trim();
+  const tier = $("tier").value;
+  const pax = Number($("pax").value||2);
+  const days = Number($("days").value||3);
+  const km = Number($("km").value||0);
+
+  const tpl = TEMPLATES?.[tplKey] || null;
+  const season = autoSeason(tpl);
+  $("season").value = "AUTO → " + season.toUpperCase();
+
+  const est = estimateTotalCost({ km, days, pax, tpl, tier });
+
+  if(!isFinite(est.total)){
+    $("kTotal").textContent = "—";
+    $("kPer").textContent = "—";
+    $("breakdownText").textContent = "Pricing not ready OR KM/DAYS missing.";
+    return;
+  }
+
+  $("kTotal").textContent = rupees(est.total);
+  $("kPer").textContent = rupees(est.perPerson);
+
+  const bd = est.breakdown;
+  $("breakdownText").textContent =
+`TIER=${bd.tier.toUpperCase()}  SEASON=${bd.season.toUpperCase()}  VEHICLE=${bd.vehicleKey}
+DAYS=${bd.days}  NIGHTS=${bd.nights}  ROOMS=${bd.rooms}
+ROUTE_KM=${bd.routeKm.toFixed(1)}  BILLED_KM=${bd.billedKm.toFixed(1)}
+
+TRANSPORT:
+  km_cost=${Math.round(bd.transportKmCost)}
+  driver=${Math.round(bd.driverCost)}
+  night=${Math.round(bd.nightCost)}
+  transport_total=${Math.round(bd.transport)}
+
+HOTEL:
+  baseRoom=${bd.baseRoom}  wkFactor=${bd.wkFactor.toFixed(2)}
+  hotel_total=${Math.round(bd.hotel)}
+
+TOTAL=${Math.round(bd.total)}  PER_PERSON=${Math.round(bd.total/pax)}`;
+}
+
+function sendToIndex(){
+  const tplKey = $("tplKey").value.trim();
+  const tier = $("tier").value;
+  const pax = Number($("pax").value||2);
+  const days = Number($("days").value||3);
+  const km = Number($("km").value||0);
+  const tpl = TEMPLATES?.[tplKey] || null;
+
+  const est = estimateTotalCost({ km, days, pax, tpl, tier });
+  if(!isFinite(est.total)){ alert("Pricing not ready / invalid km/days"); return; }
+
+  const payload = {
+    v: 1,
+    ts: Date.now(),
+    tplKey,
+    tier,
+    pax,
+    days,
+    km,
+    total: Math.round(est.total),
+    perPerson: Math.round(est.total/pax),
+    breakdown: est.breakdown
+  };
+
+  localStorage.setItem("hp_calc_result_v1", JSON.stringify(payload));
+  // also sync pax/tier for index UI
+  localStorage.setItem("hp_calc_pax", String(pax));
+  localStorage.setItem("hp_calc_tier", String(tier));
+
+  window.location.href = "index.html";
+}
+
+async function loadLive(){
+  $("dbg").textContent = "Loading from Firebase…";
+  const [tplSnap, tranSnap, staySnap] = await Promise.all([
+    db.ref(NODE_TEMPLATES).once("value"),
+    db.ref(NODE_TRANSPORT).once("value").catch(()=>({ val:()=>({}) })),
+    db.ref(NODE_STAYRULES).once("value").catch(()=>({ val:()=>({}) }))
+  ]);
+
+  TEMPLATES = tplSnap.val() || {};
+  pricing_transport = (tranSnap && typeof tranSnap.val==="function") ? (tranSnap.val() || {}) : {};
+  stay_rate_rules = (staySnap && typeof staySnap.val==="function") ? (staySnap.val() || {}) : {};
+  PRICING_READY = true;
+  $("dbg").textContent = "Loaded pricing OK.";
+}
+
+function hydrateFromSelection(){
+  const key = localStorage.getItem("hp_selected_template_key") || "";
+  $("tplKey").value = key;
+
+  const tier = localStorage.getItem("hp_calc_tier") || localStorage.getItem("hp_selected_tier") || "budget";
+  $("tier").value = tier;
+
+  const pax = localStorage.getItem("hp_calc_pax") || localStorage.getItem("hp_selected_pax") || "2";
+  $("pax").value = pax;
+
+  const days = localStorage.getItem("hp_selected_days") || "3";
+  $("days").value = days;
+
+  const km = localStorage.getItem("hp_selected_km") || "300";
+  $("km").value = km;
+
+  if(key){
+    $("pkgBadge").textContent = "Selected: " + key.toUpperCase();
+  }else{
+    $("pkgBadge").textContent = "No package selected (open from index)";
+  }
+}
+
+window.addEventListener("DOMContentLoaded", async ()=>{
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database();
+
+  hydrateFromSelection();
+
+  $("backBtn").onclick = ()=> window.location.href="index.html";
+  $("calcBtn").onclick = sendToIndex;
+
+  ["tier","pax","days","km"].forEach(id=>{
+    $(id).addEventListener("change", render);
+    $(id).addEventListener("input", render);
+  });
+
+  try{
+    await loadLive();
+    // If template exists, auto set km/days from it if user didn’t have selection
+    const key = $("tplKey").value.trim();
+    if(key && TEMPLATES[key]){
+      const tpl = TEMPLATES[key];
+      const d = Number(tpl.days||0);
+      if(d && !localStorage.getItem("hp_selected_days")) $("days").value = String(d);
+
+      // km fallback from tpl fields
+      const kmTpl = Number(tpl.total_km_est || tpl.estimated_drive_km || tpl.total_km || 0);
+      if(kmTpl && (!localStorage.getItem("hp_selected_km") || Number($("km").value||0)===300)){
+        $("km").value = String(Math.round(kmTpl*10)/10);
+      }
+    }
+    render();
+  }catch(e){
+    console.error(e);
+    $("dbg").textContent = "Firebase load error.";
+    render();
+  }
+});
+</script>
+</body>
+</html>
