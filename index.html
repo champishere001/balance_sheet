@@ -47,6 +47,13 @@
 
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
+
+    /* ✅ MOBILE COMPAT: lock full page scroll */
+    html, body{
+      height:100%;
+      overflow:hidden;
+    }
+
     body{
       margin:0;
       color:var(--text);
@@ -56,7 +63,6 @@
         radial-gradient(900px 520px at 85% 10%, rgba(34,197,94,.14), transparent 60%),
         radial-gradient(900px 520px at 50% 90%, rgba(6,182,212,.12), transparent 60%),
         linear-gradient(180deg, var(--bg0), var(--bg1));
-      overflow:auto;
     }
 
     .aurora{
@@ -80,7 +86,11 @@
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
     }
 
-    .app{ min-height:100%; display:grid; grid-template-rows: var(--topH) 1fr; }
+    .app{
+      height:100dvh; /* ✅ mobile safe viewport */
+      display:grid;
+      grid-template-rows: var(--topH) 1fr;
+    }
 
     .top{
       display:flex; align-items:center; justify-content:space-between;
@@ -89,6 +99,11 @@
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       backdrop-filter: blur(14px);
       gap: 12px;
+
+      /* optional: keep top sticky within app */
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
 
     .brand{ display:flex; align-items:center; gap:12px; min-width: 260px; }
@@ -127,17 +142,18 @@
     }
     .chip:hover{ background: rgba(255,255,255,.08); color: rgba(255,255,255,.82); }
 
-    /* ✅ FIX #1: LOCK GRID HEIGHT (no panel expands other panels) */
+    /* ✅ LOCK GRID HEIGHT (no panel expands other panels) */
     .main{
-      height: calc(100vh - var(--topH));
+      height: calc(100dvh - var(--topH));
       display:grid;
       grid-template-columns: var(--leftPct) var(--mapPct) var(--rightPct);
       gap: var(--gap);
       padding: 14px;
-      overflow: hidden; /* important */
+      overflow: hidden;
+      min-height:0;
     }
 
-    /* ✅ FIX #1: Pane fixed height + internal scroll only */
+    /* Pane fixed height + internal scroll only */
     .pane{
       border: 1px solid var(--stroke);
       border-radius: var(--radius);
@@ -251,19 +267,19 @@
       display:grid;
       grid-template-columns: 160px 1fr;
       min-height:0;
-      overflow:hidden; /* internal scroll only */
+      overflow:hidden;
     }
     .pill.pillHint{
-  text-transform:none;        /* no ALL CAPS */
-  letter-spacing:.02em;       /* tighter */
-  font-size:12px;             /* stable size */
-  padding:8px 10px;           /* smaller */
-  line-height:1.2;
-  justify-content:center;
-}
-.pill.pillHint span{ opacity:.85; }
-.pill.pillHint b{ letter-spacing:0; }
-    
+      text-transform:none;
+      letter-spacing:.02em;
+      font-size:12px;
+      padding:8px 10px;
+      line-height:1.2;
+      justify-content:center;
+    }
+    .pill.pillHint span{ opacity:.85; }
+    .pill.pillHint b{ letter-spacing:0; }
+
     .districtBar{
       border-right:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.18);
@@ -376,7 +392,6 @@
       opacity:.98;
     }
 
-    /* ✅ FIX #1: MAP doesn't resize due to other content */
     #map{
       width:100%;
       height:100%;
@@ -406,7 +421,6 @@
     }
     .toolBtn:hover{ background: rgba(255,255,255,.08); }
 
-    /* ✅ FIX #1: Right side scroll only */
     .itWrap{
       padding: 12px;
       overflow:auto;
@@ -430,6 +444,9 @@
       color:#fff;
     }
     .muted{ color: var(--muted); font-size: 11.5px; letter-spacing:.08em; text-transform: uppercase; line-height:1.35; }
+
+    /* ✅ hide debug text completely */
+    #priceDebug{ display:none !important; }
 
     .row2{
       display:grid;
@@ -507,7 +524,6 @@
       text-overflow: ellipsis;
     }
 
-    /* ✅ FIX #2: Place popup is inside itinerary "Location" tab (not on map) */
     .tabs{
       display:flex;
       gap:8px;
@@ -603,16 +619,22 @@
     }
     .toast.show{ display:block; }
 
+    /* ✅ MOBILE LAYOUT: fixed height, internal scroll only */
     @media (max-width: 1200px){
       .main{
         grid-template-columns: 1fr;
-        grid-template-rows: auto 420px auto;
-        height:auto;
-        overflow:visible;
+        grid-template-rows: 1fr 420px 1fr;
+        height: calc(100dvh - var(--topH));
+        overflow: hidden;
       }
-      #map{ height: 420px; }
+      .pane{ height:100%; min-height:0; }
+      #map{ height:100%; min-height:420px; }
       .pkgLayout{ grid-template-columns: 1fr; }
-      .districtBar{ display:flex; gap:10px; flex-wrap:wrap; border-right:none; border-bottom:1px solid rgba(255,255,255,.10); }
+      .districtBar{
+        display:flex; gap:10px; flex-wrap:wrap;
+        border-right:none;
+        border-bottom:1px solid rgba(255,255,255,.10);
+      }
       .distItem{ margin-bottom:0; }
       .actions{ min-width:unset; }
     }
@@ -695,7 +717,7 @@
 
         <div class="metaPills" id="pills"></div>
 
-        <!-- ✅ NO ALL TAB -->
+        <!-- NO ALL TAB -->
         <div class="pkgLayout">
           <div class="districtBar" id="districtBar"></div>
           <div class="pkgList" id="pkgList">
@@ -739,8 +761,9 @@
             <div class="muted" id="itMeta">Day-wise details will appear here</div>
             <div class="muted" id="priceDebug" style="margin-top:8px; text-transform:none; white-space:pre-wrap;"></div>
 
-            <!-- ✅ Tabs -->
+            <!-- ✅ Tabs + Back button -->
             <div class="tabs">
+              <div class="tabBtn" id="tabBackBtn" style="display:none;">Back</div>
               <div class="tabBtn active" id="tabItinBtn">Itinerary</div>
               <div class="tabBtn" id="tabLocBtn">Location</div>
             </div>
@@ -762,7 +785,6 @@
             <div class="muted" id="incExc">—</div>
           </div>
 
-          <!-- ✅ Panels -->
           <div class="tabPanel active" id="itinPanel">
             <div class="daysList" id="daysList"></div>
           </div>
@@ -881,23 +903,27 @@
   function pickPhotoAny(p){ return pickAllPhotos(p)[0] || ""; }
 
   /* ===============================
-     ✅ Tabs
+     ✅ Tabs + Back button
      =============================== */
   function setActiveTab(which){
     const itinBtn = $("tabItinBtn");
     const locBtn  = $("tabLocBtn");
+    const backBtn = $("tabBackBtn");
     const itinP   = $("itinPanel");
     const locP    = $("locPanel");
+
     if(which === "loc"){
       itinBtn.classList.remove("active");
       locBtn.classList.add("active");
       itinP.classList.remove("active");
       locP.classList.add("active");
+      backBtn.style.display = "inline-flex";
     }else{
       locBtn.classList.remove("active");
       itinBtn.classList.add("active");
       locP.classList.remove("active");
       itinP.classList.add("active");
+      backBtn.style.display = "none";
     }
   }
 
@@ -956,7 +982,6 @@
       ` : ``}
     `;
 
-    // bind gallery controls
     if(imgs.length > 1){
       $("galPrev").onclick = ()=>galleryStep(-1);
       $("galNext").onclick = ()=>galleryStep(1);
@@ -968,7 +993,6 @@
       });
     }
 
-    // switch to Location tab automatically
     setActiveTab("loc");
   }
 
@@ -1273,6 +1297,9 @@
         renderPackagesForActiveDistrict();
       };
     });
+
+    // ✅ reset internal scroll (no page scroll)
+    bar.scrollTop = 0;
   }
 
   function renderPackagesForActiveDistrict(){
@@ -1329,6 +1356,7 @@
 
     if(!list.length){
       box.innerHTML = `<div class="pill">No packages in this district</div>`;
+      box.scrollTop = 0;
       return;
     }
 
@@ -1403,6 +1431,9 @@
         box.appendChild(el);
       });
     });
+
+    // ✅ list render -> scroll to top inside panel (no page scroll)
+    box.scrollTop = 0;
   }
 
   /* ===============================
@@ -1447,7 +1478,6 @@
     const daysList = $("daysList");
     daysList.innerHTML = "";
 
-    // reset location panel text
     $("placeDetail").innerHTML = `<div class="muted">Tap any place from itinerary to see History + What you can find + Photos here.</div>`;
 
     const blocks = buildDayWise(tpl);
@@ -1486,10 +1516,8 @@
           </div>
         `;
 
-        // ✅ FIX #2: click -> show details in Location tab (NOT on map)
         line.onclick = ()=>{
           renderPlaceDetails(pid);
-          // Also pan map (optional, no popup)
           const lat = latAny(p), lng = lngAny(p);
           if(isFinite(lat) && isFinite(lng)){
             map.setView([lat,lng], Math.max(map.getZoom(), 12), { animate:true });
@@ -1551,7 +1579,6 @@
       routeLine = L.polyline(latlngs, { weight: 5, opacity: .95 }).addTo(map);
       fitRoute();
 
-      // markers without popups; click marker -> open details in Location tab
       const markIds = (showMode==="startend")
         ? [validIds[0], validIds[validIds.length-1]]
         : validIds;
@@ -1564,9 +1591,7 @@
         if(!isFinite(lat)||!isFinite(lng)) continue;
 
         const mk = L.marker([lat,lng], { riseOnHover:true }).addTo(markersLayer);
-        mk.on("click", ()=>{
-          renderPlaceDetails(pid);
-        });
+        mk.on("click", ()=>{ renderPlaceDetails(pid); });
       }
 
       const km = Number(r.distance/1000);
@@ -1580,7 +1605,7 @@
   }
 
   /* ===============================
-     ✅ Pricing (AUTO-SEASON) (same logic)
+     ✅ Pricing (AUTO-SEASON)
      =============================== */
   function pickStayRule(tier){
     const t = String(tier||"budget").toLowerCase();
@@ -1637,7 +1662,7 @@
     const nights = Math.max(0, days-1);
 
     if(!PRICING_READY || !isFinite(km) || km<=0 || !days){
-      return { total:NaN, perPerson:NaN, debug:"Pricing not ready OR km/days missing" };
+      return { total:NaN, perPerson:NaN, debug:"" };
     }
 
     const tier   = String($("visitType")?.value || "budget").toLowerCase();
@@ -1674,34 +1699,21 @@
     const hotel = nights * baseRoom * rooms * wkFactor;
 
     const total = transport + hotel;
-
-    const debug =
-      `tier=${tier} season(AUTO)=${season}\n` +
-      `vehicle=${vehicleKey} pax=${pax} rooms=${rooms}\n` +
-      `routeKm=${km.toFixed(1)} billedKm=${billedKm.toFixed(1)} days=${days} nights=${nights}\n` +
-      `transport: perKm=${perKm}, driver/day=${driverPerDay}, night_charge=${nightCharge}\n` +
-      `multipliers: road=${roadMul.toFixed(2)} snow=${snowMul.toFixed(2)} buffer=${bufferMul.toFixed(2)}\n` +
-      `hotel: baseRoom=${baseRoom} wkFactor=${wkFactor.toFixed(2)} => ${Math.round(hotel)}\n` +
-      `TOTAL => ${Math.round(total)}`;
-
-    return { total, perPerson: total/pax, debug };
+    return { total, perPerson: total/pax, debug:"" };
   }
 
-  function updatePriceBoxes(total, perPerson, debugText){
+  function updatePriceBoxes(total, perPerson){
     const totalEl = $("priceTotal");
     const perEl   = $("pricePer");
-    const dbg = $("priceDebug");
 
     if(!isFinite(total)){
       totalEl.innerHTML = "— <small></small>";
       perEl.innerHTML = "— <small></small>";
-      dbg.textContent = debugText || "Price not computed (missing rates OR km)";
       return;
     }
 
     totalEl.innerHTML = rupees(total) + ` <small>(${String($("visitType").value).toUpperCase()})</small>`;
     perEl.innerHTML = rupees(perPerson) + ` <small>per person</small>`;
-    dbg.textContent = debugText || "";
   }
 
   function computePriceForCurrent(){
@@ -1719,10 +1731,10 @@
       }
 
       const est = estimateTotalCost({ km, days, pax, tpl });
-      updatePriceBoxes(est.total, est.perPerson, est.debug);
+      updatePriceBoxes(est.total, est.perPerson);
     }catch(e){
       console.error(e);
-      updatePriceBoxes(NaN, NaN, "Price compute error");
+      updatePriceBoxes(NaN, NaN);
     }
   }
 
@@ -1744,7 +1756,6 @@
     $("placeDetail").innerHTML = `<div class="muted">Tap any place from itinerary to see History + What you can find + Photos here.</div>`;
     $("priceTotal").innerHTML = "— <small></small>";
     $("pricePer").innerHTML = "— <small></small>";
-    $("priceDebug").textContent = "";
     CURRENT_TEMPLATE_KEY = "";
     CURRENT_ROUTE_KM = 0;
 
@@ -1784,6 +1795,11 @@
 
     renderDistrictBar();
     renderPackagesForActiveDistrict();
+
+    // ✅ make sure left panel starts at top (no body scroll)
+    $("pkgList").scrollTop = 0;
+    $("districtBar").scrollTop = 0;
+
     toast("Packages generated (district grouped)");
   }
 
@@ -1875,9 +1891,9 @@
     storage = firebase.storage();
     analytics = firebase.analytics();
 
-    // tabs
     $("tabItinBtn").addEventListener("click", ()=>setActiveTab("itin"));
     $("tabLocBtn").addEventListener("click", ()=>setActiveTab("loc"));
+    $("tabBackBtn").addEventListener("click", ()=>setActiveTab("itin"));
 
     $("genBtn").addEventListener("click", applyFilters);
     $("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
@@ -1899,7 +1915,6 @@
       $("placeDetail").innerHTML = `<div class="muted">Tap any place from itinerary to see History + What you can find + Photos here.</div>`;
       $("priceTotal").innerHTML="— <small></small>";
       $("pricePer").innerHTML="— <small></small>";
-      $("priceDebug").textContent="";
       clearMap();
       CURRENT_TEMPLATE_KEY = "";
       CURRENT_ROUTE_KM = 0;
