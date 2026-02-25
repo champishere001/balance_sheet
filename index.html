@@ -658,10 +658,7 @@
     #priceDebug{ display:none !important; }
 
     /* =========================
-       ✅ MOBILE FIX:
-       - District bar horizontal scroll
-       - Packages list vertical scroll (small panel)
-       - Whole page still scrolls
+       ✅ MOBILE FIX
        ========================= */
     @media (max-width: 1200px){
       html, body{
@@ -710,7 +707,6 @@
 
       .pkgLayout{ grid-template-columns: 1fr !important; }
 
-      /* ✅ District bar: horizontal scroll */
       .districtBar{
         display:flex !important;
         flex-wrap:nowrap !important;
@@ -724,14 +720,12 @@
       }
       .distItem{ margin-bottom:0 !important; flex:0 0 auto !important; }
 
-      /* ✅ Packages list: scroll area on mobile */
       .pkgList{
         overflow:auto !important;
         max-height: 56vh !important;
         -webkit-overflow-scrolling: touch;
       }
 
-      /* ✅ Right pane flows normally (no trapped scroll) */
       .itWrap{
         overflow: visible !important;
         max-height: none !important;
@@ -877,7 +871,6 @@
             <div class="muted" id="itMeta">Day-wise details will appear here</div>
             <div class="muted" id="priceDebug" style="margin-top:8px; text-transform:none; white-space:pre-wrap;"></div>
 
-            <!-- ✅ Tabs + Home button (Back to Itinerary / top) -->
             <div class="tabs">
               <div class="tabBtn active" id="tabItinBtn">Itinerary</div>
               <div class="tabBtn" id="tabLocBtn">Location</div>
@@ -999,10 +992,6 @@
       .replace(/[^a-z0-9]+/g,"-")
       .replace(/-+/g,"-")
       .replace(/^-|-$/g,"");
-  }
-  function cssEscapeSafe(sel){
-    if(window.CSS && typeof CSS.escape === "function") return CSS.escape(sel);
-    return String(sel).replace(/["\\]/g,"\\$&");
   }
   function setStatus(msg){ $("statusLine").textContent = msg; }
 
@@ -1183,12 +1172,13 @@
   let NAME_TO_ID = new Map();
   let STARTS = [];
 
-  // District view
+  // District view (interstate)
   let INTER_BY_DISTRICT = {};
-  let LOCAL_BY_DISTRICT = {};
-  let DISTRICT_KEYS = [];
-  let ACTIVE_DISTRICT = "";
 
+  // ✅ Local packages (computed) grouped by route_id (location code)
+  let LOCAL_BY_CODE = {};
+  let LOCAL_CODES = [];
+  let ACTIVE_DISTRICT = "";
   let CURRENT_TEMPLATE_KEY = "";
   let CURRENT_ROUTE_KM = 0;
 
@@ -1200,7 +1190,7 @@
   /* ===============================
      ✅ Cache
      =============================== */
-  const CACHE_KEY = "hp_portal_cache_v12";
+  const CACHE_KEY = "hp_portal_cache_v13_localcode";
   const CACHE_TTL_MS = 1000 * 60 * 30;
 
   function loadCache(){
@@ -1227,7 +1217,7 @@
 
       buildNameIndex();
       buildStartList(ACTIVE_TEMPLATES);
-      rebuildDistrictIndex($("daysSel")?.value?.trim() || "");
+      rebuildLocalIndex($("daysSel")?.value?.trim() || "");
 
       setStatus(`Loaded from cache • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places`);
       return true;
@@ -1370,28 +1360,6 @@
     return normCaps(endName);
   }
 
-  function startDistrictFromTemplate(tpl){
-    const startName = String(tpl.start_point || tpl.start || "").trim();
-    if(!startName) return "";
-
-    const sCap = normCaps(startName);
-    if(DISTRICT_KEYS.includes(sCap)) return sCap;
-
-    const pid = getPlaceIdByNameAny(startName);
-    if(pid && PLACES[pid]){
-      const d = districtAny(PLACES[pid]);
-      if(d) return d;
-    }
-
-    const stops = stopsFromTemplate(tpl);
-    if(stops.length){
-      const p = PLACES[stops[0]] || {};
-      const d = districtAny(p);
-      if(d) return d;
-    }
-    return "";
-  }
-
   function packageScore(tpl){
     const locs = stopsFromTemplate(tpl).length;
     const pri  = Number(tpl.priority ?? 999);
@@ -1410,11 +1378,24 @@
     return arr[0];
   }
 
-  function isLocalTemplate(tpl){
-    const sd = startDistrictFromTemplate(tpl);
-    const ed = endDistrictFromTemplate(tpl);
-    return !!sd && !!ed && sd === ed;
+  /* ===============================
+     ✅ NEW LOCAL RULE (Computed)
+     - region_style = local OR
+     - route_id ends with -LCL OR
+     - package_id contains -local
+     AND days <= 3
+     =============================== */
+  function isLocalComputed(tpl){
+    const routeId = String(tpl.route_id || "").toUpperCase().trim();
+    const regionStyle = String(tpl.region_style || "").toLowerCase().trim();
+    const pkgId = String(tpl.package_id || tpl.key || "").toLowerCase();
+    return regionStyle === "local" || routeId.endsWith("-LCL") || pkgId.includes("-local");
   }
+  function isLocalComputedMax3(tpl){
+    const d = Number(tpl.days || 0);
+    return isLocalComputed(tpl) && d > 0 && d <= 3;
+  }
+
   function matchesStart(tpl, startUpper){
     return String(tpl.start_point||tpl.start||"").trim().toUpperCase() === startUpper;
   }
@@ -1423,20 +1404,32 @@
     return Number(tpl.days||0) === Number(daysFilter);
   }
 
-  function rebuildDistrictIndex(daysFilter=""){
-    const allDistricts = new Set();
-    ACTIVE_TEMPLATES.forEach(t=> allDistricts.add(endDistrictFromTemplate(t)));
-    DISTRICT_KEYS = Array.from(allDistricts).sort((a,b)=>a.localeCompare(b));
-
-    LOCAL_BY_DISTRICT = {};
+  // ✅ Local grouped by location code (route_id)
+  function rebuildLocalIndex(daysFilter=""){
+    LOCAL_BY_CODE = {};
     ACTIVE_TEMPLATES.forEach(t=>{
       if(!matchesDaysOptional(t, daysFilter)) return;
-      if(!isLocalTemplate(t)) return;
-      const d = endDistrictFromTemplate(t);
-      (LOCAL_BY_DISTRICT[d] ||= []).push(t);
+      if(!isLocalComputedMax3(t)) return;
+
+      const code = String(t.route_id || "").trim();
+      const key = code ? code.toUpperCase() : "LOCAL";
+      (LOCAL_BY_CODE[key] ||= []).push(t);
     });
 
-    INTER_BY_DISTRICT = INTER_BY_DISTRICT || {};
+    LOCAL_CODES = Object.keys(LOCAL_BY_CODE).sort((a,b)=>a.localeCompare(b));
+  }
+
+  /* ===============================
+     ✅ LEFT BAR (districts from interstate packages)
+     =============================== */
+  let DISTRICT_KEYS = [];
+  function rebuildDistrictKeysFromInter(){
+    const allDistricts = new Set();
+    Object.keys(INTER_BY_DISTRICT || {}).forEach(d=>allDistricts.add(d));
+    DISTRICT_KEYS = Array.from(allDistricts).sort((a,b)=>a.localeCompare(b));
+    if(!ACTIVE_DISTRICT || !DISTRICT_KEYS.includes(ACTIVE_DISTRICT)){
+      ACTIVE_DISTRICT = DISTRICT_KEYS[0] || "";
+    }
   }
 
   function renderDistrictBar(){
@@ -1446,19 +1439,13 @@
       ACTIVE_DISTRICT = "";
       return;
     }
-    if(!ACTIVE_DISTRICT || !DISTRICT_KEYS.includes(ACTIVE_DISTRICT)){
-      ACTIVE_DISTRICT = DISTRICT_KEYS[0];
-    }
 
     let html = "";
     for(const d of DISTRICT_KEYS){
       const interCount = (INTER_BY_DISTRICT[d] || []).length;
-      const localCount = (LOCAL_BY_DISTRICT[d] || []).length;
-      const shown = (interCount ? 1 : 0) + localCount;
-
       html += `
         <div class="distItem ${ACTIVE_DISTRICT===d ? "active":""}" data-d="${escapeHtml(d)}">
-          <b>${escapeHtml(d)}</b> (${shown})
+          <b>${escapeHtml(d)}</b> (${interCount})
         </div>`;
     }
     bar.innerHTML = html;
@@ -1513,22 +1500,15 @@
     return el;
   }
 
-  // ✅ Local packages: show Ending point (headline) + Route details
+  // ✅ Local packages card heading = ROUTE_PATH (root/route)
   function renderLocalCard(t){
     const days = Number(t.days||0) || 0;
+    const heading = String(t.route_path || t.route_name || t.package_id || t.key || "Local Package").trim();
 
-    const endName = getEndNameFromRoutePath(t);
-    const endShow = normCaps(endName || t.end_point || t.end || endKeyFromRoutePath(t) || "END");
-
-    const routeDetail = String(t.route_path || "").trim();
-
+    // thumbnail from first stop (or fallback)
     const routeIds = stopsFromTemplate(t);
     let thumbUrl="", ini="HP";
     let pickId = routeIds[0] || "";
-    if(!pickId){
-      const endPid = getPlaceIdByNameAny(endName);
-      pickId = endPid || "";
-    }
     if(pickId){
       const p = PLACES[pickId] || {};
       const nm = placeNameAny(p, pickId);
@@ -1549,9 +1529,8 @@
         }
       </div>
       <div class="pkgBody">
-        <div class="pkgName">${escapeHtml(endShow)} ${days ? `• ${days}D` : ""}</div>
-        <div class="pkgMeta">ID: ${escapeHtml(String(t.key||"—").toUpperCase())}</div>
-        ${routeDetail ? `<div class="diffLine">Route: ${escapeHtml(routeDetail)}</div>` : ``}
+        <div class="pkgName">${escapeHtml(heading)} ${days ? `• ${days}D` : ""}</div>
+        <div class="pkgMeta">CODE: ${escapeHtml(String((t.route_id||"LOCAL")).toUpperCase())} • ID: ${escapeHtml(String(t.key||"—").toUpperCase())}</div>
       </div>
     `;
     el.onclick = ()=>openTemplate(t.key, normalizeStartInput() || "");
@@ -1566,26 +1545,26 @@
     const box = $("pkgList");
     box.innerHTML = "";
 
-    const interBest = pickBestOne(INTER_BY_DISTRICT[district] || []);
+    const interBest = (district && INTER_BY_DISTRICT[district])
+      ? pickBestOne(INTER_BY_DISTRICT[district] || [])
+      : null;
 
-    const localsRaw = (LOCAL_BY_DISTRICT[district] || []);
-    const localsAll = localsRaw.filter(t => !interBest || t.key !== interBest.key);
+    // ✅ Local computed packages (≤ 3 days) grouped by location code
+    // If district selected, show ALL local codes (computed) — because requirement is "with respect to location code"
+    // (This keeps interstate logic unchanged.)
+    const localCodes = LOCAL_CODES || [];
+    let localTotal = 0;
+    localCodes.forEach(c => localTotal += (LOCAL_BY_CODE[c] || []).length);
 
-    // ✅ REQUIREMENT: Local packages display ONLY 1-day and 2-day
-    const locals = localsAll.filter(t=>{
-      const d = Number(t.days || 0);
-      return d === 1 || d === 2;
-    });
-
-    const totalShown = (interBest ? 1 : 0) + locals.length;
+    const totalShown = (interBest ? 1 : 0) + localTotal;
     $("pkgCount").textContent = `${totalShown} Results`;
 
-    // Section 1: Start -> District (one best)
+    // Section 1: Start -> District (one best) (UNCHANGED)
     const hdr1 = document.createElement("div");
     hdr1.className = "pkgGroupHdr";
     hdr1.innerHTML = `
-      <div class="h1">${escapeHtml(startUpper || "START")} → ${escapeHtml(district)}</div>
-      <div class="h2">Showing 1 best package for selected start → district</div>
+      <div class="h1">${escapeHtml(startUpper || "START")} → ${escapeHtml(district || "DISTRICT")}</div>
+      <div class="h2">Showing 1 best package for selected start → district (unchanged)</div>
     `;
     box.appendChild(hdr1);
 
@@ -1594,6 +1573,11 @@
       warn.className = "pill";
       warn.innerHTML = `<b>Type Start</b> (top) then Generate`;
       box.appendChild(warn);
+    }else if(!district){
+      const none = document.createElement("div");
+      none.className = "pill";
+      none.innerHTML = `<b>Select a district</b>`;
+      box.appendChild(none);
     }else if(!interBest){
       const none = document.createElement("div");
       none.className = "pill";
@@ -1603,25 +1587,42 @@
       box.appendChild(renderInterCard(interBest, startUpper, district));
     }
 
-    // Section 2: Local packages (1D / 2D only)
+    // Section 2: Local packages (computed ≤ 3 days) grouped by LOCATION CODE (route_id)
     const hdr2 = document.createElement("div");
     hdr2.className = "pkgGroupHdr";
     hdr2.style.marginTop = "8px";
     hdr2.innerHTML = `
-      <div class="h1">Local packages in ${escapeHtml(district)}</div>
-      <div class="h2">Only 1D / 2D • Headline = ending point • Route details shown</div>
+      <div class="h1">Local packages (≤ 3 Days) • Grouped by Location Code</div>
+      <div class="h2">Heading = ROUTE PATH (root) • Codes from route_id</div>
     `;
     box.appendChild(hdr2);
 
-    if(!locals.length){
+    if(!localCodes.length){
       const none2 = document.createElement("div");
       none2.className = "pill";
-      none2.innerHTML = `<b>No 1D / 2D local packages found</b>`;
+      none2.innerHTML = `<b>No local packages found</b>`;
       box.appendChild(none2);
     }else{
-      locals
-        .sort((a,b)=> (Number(a.days)||0) - (Number(b.days)||0))
-        .forEach(t => box.appendChild(renderLocalCard(t)));
+      // Render groups
+      localCodes.forEach(code=>{
+        const list = (LOCAL_BY_CODE[code] || []).slice().sort((a,b)=>(Number(a.days)||0)-(Number(b.days)||0));
+        if(!list.length) return;
+
+        const gh = document.createElement("div");
+        gh.className = "pkgGroupHdr";
+        gh.style.marginTop = "6px";
+        gh.innerHTML = `
+          <div class="h1">${escapeHtml(code)}</div>
+          <div class="h2">${list.length} package(s) • 1D / 2D / 3D</div>
+        `;
+        box.appendChild(gh);
+
+        list.forEach(t=>{
+          // avoid duplicate if same key as interBest
+          if(interBest && t.key === interBest.key) return;
+          box.appendChild(renderLocalCard(t));
+        });
+      });
     }
 
     highlightActiveCard();
@@ -1651,10 +1652,18 @@
   function renderItinerary(tpl, start, endKey){
     $("activePkgName").textContent = `${String(tpl.days||"—")}D`;
 
-    const titleStart = start ? String(start).toUpperCase() : (startDistrictFromTemplate(tpl) || "LOCAL");
-    $("itTitle").textContent = `${titleStart} → ${String(endKey).toUpperCase()}`;
+    // Local heading behavior: show route_path if local computed
+    const isLocalNow = isLocalComputedMax3(tpl) || isLocalComputed(tpl);
+    if(isLocalNow){
+      const head = String(tpl.route_path || tpl.route_name || tpl.package_id || "LOCAL").trim();
+      $("itTitle").textContent = head;
+    }else{
+      const titleStart = start ? String(start).toUpperCase() : "START";
+      $("itTitle").textContent = `${titleStart} → ${String(endKey).toUpperCase()}`;
+    }
 
     const metaParts = [];
+    if(tpl.route_id) metaParts.push(`Code: ${tpl.route_id}`);
     if(tpl.route_path) metaParts.push(`Route: ${tpl.route_path}`);
     if(tpl.best_season) metaParts.push(`Season: ${tpl.best_season}`);
     if(tpl.ideal_for) metaParts.push(`Ideal: ${tpl.ideal_for}`);
@@ -1798,7 +1807,7 @@
   }
 
   /* ===============================
-     ✅ Pricing
+     ✅ Pricing (UNCHANGED)
      =============================== */
   function pickStayRule(tier){
     const t = String(tier||"budget").toLowerCase();
@@ -2028,9 +2037,12 @@
 
     const startUpper = String(start).trim().toUpperCase();
 
+    // Interstate list (UNCHANGED)
     const interList = ACTIVE_TEMPLATES
       .filter(t => matchesStart(t, startUpper))
-      .filter(t => matchesDaysOptional(t, daysF));
+      .filter(t => matchesDaysOptional(t, daysF))
+      // IMPORTANT: keep only NON-local computed subset here, so district list is purely interstate
+      .filter(t => !isLocalComputedMax3(t));
 
     INTER_BY_DISTRICT = {};
     interList.forEach(t=>{
@@ -2038,10 +2050,14 @@
       (INTER_BY_DISTRICT[d] ||= []).push(t);
     });
 
-    rebuildDistrictIndex(daysF);
+    rebuildDistrictKeysFromInter();
+    renderDistrictBar();
+
+    // Local computed index (≤3 days) grouped by route_id
+    rebuildLocalIndex(daysF);
 
     const interCount = interList.length;
-    const localCount = Object.values(LOCAL_BY_DISTRICT).reduce((a,arr)=>a + (arr?.length||0), 0);
+    const localCount = Object.values(LOCAL_BY_CODE).reduce((a,arr)=>a + (arr?.length||0), 0);
 
     $("pills").innerHTML = "";
     const pillData = {
@@ -2059,11 +2075,9 @@
       $("pills").appendChild(div);
     }
 
-    ACTIVE_DISTRICT = "";
-    renderDistrictBar();
     renderPackagesForActiveDistrict();
 
-    toast("Select district: 1 start→district + local 1D/2D tours");
+    toast("District shows interstate • Local shown by location code (route_id)");
   }
 
   async function openTemplate(key, start){
@@ -2122,7 +2136,7 @@
 
     buildNameIndex();
     buildStartList(ACTIVE_TEMPLATES);
-    rebuildDistrictIndex($("daysSel")?.value?.trim() || "");
+    rebuildLocalIndex($("daysSel")?.value?.trim() || "");
 
     saveCache();
     setStatus(`Loaded LIVE • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places • pricing OK`);
@@ -2135,7 +2149,8 @@
       if($("pills").children.length){
         applyFilters();
       }else{
-        renderDistrictBar();
+        // before generate, show empty district bar
+        $("districtBar").innerHTML = `<div class="pill"><b>Type Start → Generate</b></div>`;
       }
     }catch(err){
       console.error(err);
@@ -2156,7 +2171,6 @@
     $("tabItinBtn").addEventListener("click", ()=>setActiveTab("itin"));
     $("tabLocBtn").addEventListener("click", ()=>setActiveTab("loc"));
 
-    // ✅ Home button: back to Itinerary + scroll top of right pane
     $("tabHomeBtn").addEventListener("click", ()=>{
       setActiveTab("itin");
       document.querySelector(".itWrap")?.scrollTo?.({ top: 0, behavior: "smooth" });
@@ -2187,9 +2201,11 @@
       clearMap();
       CURRENT_TEMPLATE_KEY = "";
       CURRENT_ROUTE_KM = 0;
+
       ACTIVE_DISTRICT="";
       INTER_BY_DISTRICT = {};
-      LOCAL_BY_DISTRICT = {};
+      LOCAL_BY_CODE = {};
+      LOCAL_CODES = [];
       DISTRICT_KEYS = [];
       setActiveTab("itin");
       toast("Reset done");
@@ -2252,7 +2268,8 @@
     });
 
     $("daysSel")?.addEventListener("change", ()=>{
-      rebuildDistrictIndex($("daysSel").value.trim());
+      // Local index depends on days filter
+      rebuildLocalIndex($("daysSel").value.trim());
       if($("pills").children.length) applyFilters();
     });
 
