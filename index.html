@@ -164,21 +164,15 @@
     }
     .chip.primary:hover{ filter: brightness(1.05); }
 
+    /* ✅ FIXED: single valid .main block (your code had a broken duplicate) */
     .main{
-  display:grid;
-  grid-template-columns: var(--leftPct) var(--mapPct) var(--rightPct);
-  gap: var(--gap);
-  padding:14px;
-  min-height:0;
-  align-items:stretch;
-}
       display:grid;
       grid-template-columns: var(--leftPct) var(--mapPct) var(--rightPct);
       gap: var(--gap);
-      padding: 14px;
-      overflow: visible;     /* ✅ was hidden */
-      min-height: 0;
-      align-items: stretch;
+      padding:14px;
+      min-height:0;
+      align-items:stretch;
+      overflow: visible;     /* ✅ keep */
     }
 
     .pane{
@@ -304,7 +298,6 @@
 
     /* =========================
        ✅ PREMIUM RESULTS LAYOUT
-       (district chips + scroll list)
        ========================= */
     .pkgLayout{
       flex:1;
@@ -770,95 +763,56 @@
       .row2{ grid-template-columns: 1fr !important; }
       .bdGrid{ grid-template-columns: 1fr !important; }
     }
+
     /* =========================
-   ✅ DESKTOP FIX (Premium, stable)
-   - No body scroll
-   - No calc(100vh - topH) dependency
-   - Scroll only inside panes (pkgList + itWrap)
-   ========================= */
-   /* =========================
-   ✅ DESKTOP SCROLL ENABLED
-   Premium layout + full PC scroll
-   ========================= */
+       ✅ DESKTOP: left+right scroll, page scroll enabled,
+       ✅ map moves with screen (NOT locked)
+       ========================= */
+    @media (min-width:1201px){
 
-/* =========================
-   ✅ DESKTOP: 3 INDEPENDENT SCROLL PANES
-   Left = packages scroll
-   Middle = map fixed
-   Right = itinerary scroll
-   Page itself does NOT scroll
-   ========================= */
+      html, body{
+        height:auto;
+        overflow:auto;   /* ✅ page scroll */
+      }
 
-@media (min-width:1201px){
+      .app{
+        min-height:100vh;
+        height:auto;
+        display:grid;
+        grid-template-rows: var(--topH) auto;
+      }
 
-  html,body{
-    height:100%;
-    overflow:hidden;        /* page locked */
-  }
+      .main{
+        height:auto;
+        overflow:visible;
+      }
 
-  .app{
-    height:100vh;
-    display:grid;
-    grid-template-rows:auto 1fr;
-  }
+      .pane{
+        height:auto;
+        min-height:0;
+        overflow:hidden;
+        display:flex;
+        flex-direction:column;
+      }
 
-  .main{
-    height:100%;
-    overflow:hidden;
-  }
+      /* ✅ Left scroll */
+      .pkgList{
+        max-height: 70vh;  /* adjust 70/75/80 if you want */
+        overflow-y:auto;
+      }
 
-  /* each column container */
-  .pane{
-    height:100%;
-    min-height:0;
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
-  }
+      /* ✅ Center map moves with page scroll */
+      #map{
+        height: 70vh;
+        min-height: 520px;
+      }
 
-  /* ---------- LEFT SCROLL (PACKAGES) ---------- */
-
-  .pkgLayout{
-    flex:1;
-    min-height:0;
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
-  }
-
-  .pkgListWrap{
-    flex:1;
-    min-height:0;
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
-  }
-
-  .pkgList{
-    flex:1;
-    min-height:0;
-    overflow-y:auto;              /* ✅ LEFT SCROLL */
-    -webkit-overflow-scrolling:touch;
-  }
-
-  /* ---------- MAP ---------- */
-
-  #map{
-    flex:1;
-    min-height:0;
-    height:100%;
-  }
-
-  /* ---------- RIGHT SCROLL (ITINERARY) ---------- */
-
-  .itWrap{
-    flex:1;
-    min-height:0;
-    overflow-y:auto;              /* ✅ RIGHT SCROLL */
-    -webkit-overflow-scrolling:touch;
-  }
-
-}
+      /* ✅ Right scroll */
+      .itWrap{
+        max-height: 70vh;
+        overflow-y:auto;
+      }
+    }
   </style>
 </head>
 
@@ -1271,7 +1225,11 @@
     tile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
     tile.addTo(map);
     markersLayer = L.layerGroup().addTo(map);
+
+    // ✅ IMPORTANT: page scroll should work even when mouse is on map
+    map.scrollWheelZoom.disable();
   }
+
   function clearMap(){
     markersLayer.clearLayers();
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
@@ -1291,9 +1249,7 @@
   let NAME_TO_ID = new Map();
   let STARTS = [];
 
-  // ✅ Inter packages list after filters (Start + Days)
   let INTER_ALL = [];
-  // chips filter: ALL or district
   let DISTRICT_KEYS = [];
   let ACTIVE_DISTRICT = "ALL";
 
@@ -1608,13 +1564,11 @@
 
     box.innerHTML = "";
 
-    // filter by chip
     let shownInter = INTER_ALL.slice();
     if(ACTIVE_DISTRICT && ACTIVE_DISTRICT !== "ALL"){
       shownInter = shownInter.filter(t => endDistrictFromTemplate(t) === ACTIVE_DISTRICT);
     }
 
-    // locals: start + days must match, and max 3 days local
     const locals = ACTIVE_TEMPLATES
       .filter(t => isLocalComputed(t))
       .filter(t => matchesStart(t, startUpper))
@@ -1624,7 +1578,6 @@
 
     $("pkgCount").textContent = `${shownInter.length + locals.length} Results`;
 
-    // Header: inter
     const hdr1 = document.createElement("div");
     hdr1.className = "pkgGroupHdr";
     hdr1.innerHTML = `
@@ -1650,7 +1603,6 @@
       shownInter.forEach(t => box.appendChild(renderInterCard(t, startUpper)));
     }
 
-    // Header: local
     const hdr2 = document.createElement("div");
     hdr2.className = "pkgGroupHdr";
     hdr2.style.marginTop = "8px";
@@ -2083,7 +2035,6 @@
 
     const startUpper = String(start).trim().toUpperCase();
 
-    // ✅ Interstate packages matched by Start + Days
     INTER_ALL = ACTIVE_TEMPLATES
       .filter(t => matchesStart(t, startUpper))
       .filter(t => matchesDaysOptional(t, daysF))
@@ -2096,14 +2047,12 @@
         return kmA - kmB;
       });
 
-    // build district chips from matching list
     const set = new Set();
     INTER_ALL.forEach(t => set.add(endDistrictFromTemplate(t)));
     DISTRICT_KEYS = Array.from(set).sort((a,b)=>a.localeCompare(b));
     ACTIVE_DISTRICT = "ALL";
     renderDistrictChips();
 
-    // pills
     $("pills").innerHTML = "";
     const pillData = {
       START: startUpper,
