@@ -168,15 +168,16 @@
 
     /* DESKTOP LOCKED GRID */
     .main{
-      height: calc(100vh - var(--topH));
-      display:grid;
-      grid-template-columns: var(--leftPct) var(--mapPct) var(--rightPct);
-      gap: var(--gap);
-      padding: 14px;
-      overflow: hidden;
-      align-items: stretch;
-    }
+  height: calc(100vh - var(--topH));
+  display:grid;
+  grid-template-columns: var(--leftPct) var(--mapPct) var(--rightPct);
+  gap: var(--gap);
+  padding: 14px;
 
+  overflow: visible;   /* ✅ was hidden (THIS was blocking display/scroll) */
+  min-height: 0;       /* ✅ important for grid children scrolling */
+  align-items: stretch;
+}
     .pane{
       border: 1px solid var(--stroke);
       border-radius: var(--radius);
@@ -758,6 +759,21 @@
       .bdGrid{ grid-template-columns: 1fr !important; }
       .pkgList{ max-height: 52vh !important; }
     }
+    /* ===== FIX PACKAGE SCROLL ISSUE ===== */
+.main{
+  overflow: visible !important;
+  min-height:0;
+}
+
+.pane{ min-height:0; overflow:hidden; }
+
+.pkgLayout{ flex:1; min-height:0; overflow:hidden; }
+
+.pkgList{
+  min-height:0;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
   </style>
 </head>
 
