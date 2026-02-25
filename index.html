@@ -166,7 +166,11 @@
 
     /* ✅ Desktop grid – DO NOT CLIP (fix packages scroll) */
     .main{
-      height: calc(100vh - var(--topH));
+      .main{
+  height: auto;          /* ✅ desktop fixed */
+  min-height: 0;
+  ...
+}
       display:grid;
       grid-template-columns: var(--leftPct) var(--mapPct) var(--rightPct);
       gap: var(--gap);
@@ -765,6 +769,73 @@
       .row2{ grid-template-columns: 1fr !important; }
       .bdGrid{ grid-template-columns: 1fr !important; }
     }
+    /* =========================
+   ✅ DESKTOP FIX (Premium, stable)
+   - No body scroll
+   - No calc(100vh - topH) dependency
+   - Scroll only inside panes (pkgList + itWrap)
+   ========================= */
+
+@media (min-width: 1201px){
+
+  html, body{
+    height: 100%;
+    overflow: hidden;             /* ✅ stop page scroll on desktop */
+  }
+
+  .app{
+    height: 100vh;                /* ✅ lock app to viewport */
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr; /* ✅ top auto height, main takes rest */
+  }
+
+  .top{
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: auto;                 /* ✅ allow wrap without breaking layout */
+  }
+
+  /* ✅ remove the hard calc height dependency */
+  .main{
+    height: auto !important;
+    min-height: 0;
+    overflow: hidden;             /* ✅ important */
+  }
+
+  /* ✅ each pane must be allowed to shrink and contain scroll */
+  .pane{
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;             /* ✅ scroll stays inside children */
+  }
+
+  /* ✅ LEFT column list must scroll properly */
+  .pkgLayout,
+  .pkgListWrap,
+  .pkgList{
+    min-height: 0;
+  }
+
+  .pkgList{
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ✅ RIGHT itinerary scroll must work */
+  .itWrap{
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ✅ Map must fill the pane */
+  #map{
+    min-height: 0;
+    height: 100%;
+  }
+}
   </style>
 </head>
 
