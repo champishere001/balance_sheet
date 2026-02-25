@@ -7,7 +7,10 @@
   <title>Himachal Tour Packages | Himachal Explorer Portal</title>
   <meta name="description" content="Explore Himachal tour packages with live road route maps, day-wise itineraries, and price estimate." />
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet=-1,max-video-preview=-1" />
-  <link rel="canonical" href="https://champishere001.github.io/" />
+
+  <!-- ✅ IMPORTANT: canonical should be your domain (not github) -->
+  <link rel="canonical" href="https://himachalexplorer.in/" />
+
   <meta name="theme-color" content="#070A12" />
   <link rel="icon" href="./favicon.ico" />
 
@@ -47,13 +50,6 @@
 
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
-
-    /* ✅ MOBILE COMPAT: lock full page scroll */
-    html, body{
-      height:100%;
-      overflow:hidden;
-    }
-
     body{
       margin:0;
       color:var(--text);
@@ -63,6 +59,7 @@
         radial-gradient(900px 520px at 85% 10%, rgba(34,197,94,.14), transparent 60%),
         radial-gradient(900px 520px at 50% 90%, rgba(6,182,212,.12), transparent 60%),
         linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow:auto; /* ✅ default: allow scroll */
     }
 
     .aurora{
@@ -86,11 +83,7 @@
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
     }
 
-    .app{
-      height:100dvh; /* ✅ mobile safe viewport */
-      display:grid;
-      grid-template-rows: var(--topH) 1fr;
-    }
+    .app{ min-height:100%; display:grid; grid-template-rows: var(--topH) 1fr; }
 
     .top{
       display:flex; align-items:center; justify-content:space-between;
@@ -99,11 +92,7 @@
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       backdrop-filter: blur(14px);
       gap: 12px;
-
-      /* optional: keep top sticky within app */
-      position: sticky;
-      top: 0;
-      z-index: 50;
+      position: sticky; top:0; z-index: 50; /* ✅ works for both desktop & mobile */
     }
 
     .brand{ display:flex; align-items:center; gap:12px; min-width: 260px; }
@@ -142,18 +131,24 @@
     }
     .chip:hover{ background: rgba(255,255,255,.08); color: rgba(255,255,255,.82); }
 
-    /* ✅ LOCK GRID HEIGHT (no panel expands other panels) */
+    /* ✅ DESKTOP: fixed viewport grid (no full page scroll) */
+    @media (min-width: 1201px){
+      html, body{ height:100%; overflow:hidden; } /* desktop locked */
+      .app{ height:100vh; }
+      .main{
+        height: calc(100vh - var(--topH));
+        overflow: hidden;
+      }
+    }
+
     .main{
-      height: calc(100dvh - var(--topH));
       display:grid;
       grid-template-columns: var(--leftPct) var(--mapPct) var(--rightPct);
       gap: var(--gap);
       padding: 14px;
-      overflow: hidden;
-      min-height:0;
+      min-height: 0;
     }
 
-    /* Pane fixed height + internal scroll only */
     .pane{
       border: 1px solid var(--stroke);
       border-radius: var(--radius);
@@ -445,7 +440,7 @@
     }
     .muted{ color: var(--muted); font-size: 11.5px; letter-spacing:.08em; text-transform: uppercase; line-height:1.35; }
 
-    /* ✅ hide debug text completely */
+    /* ✅ hide debug always */
     #priceDebug{ display:none !important; }
 
     .row2{
@@ -619,24 +614,38 @@
     }
     .toast.show{ display:block; }
 
-    /* ✅ MOBILE LAYOUT: fixed height, internal scroll only */
+    /* ✅ MOBILE: stacked + page scroll + map height fixed */
     @media (max-width: 1200px){
+      :root{ --topH: 84px; } /* slightly smaller on phone */
+
       .main{
         grid-template-columns: 1fr;
-        grid-template-rows: 1fr 420px 1fr;
-        height: calc(100dvh - var(--topH));
-        overflow: hidden;
+        grid-template-rows: auto auto auto;
       }
-      .pane{ height:100%; min-height:0; }
-      #map{ height:100%; min-height:420px; }
-      .pkgLayout{ grid-template-columns: 1fr; }
+
+      .pane{
+        height:auto;
+        min-height: unset;
+      }
+
+      /* make internal lists not infinite on mobile */
+      .pkgList{ max-height: 360px; }
       .districtBar{
-        display:flex; gap:10px; flex-wrap:wrap;
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
         border-right:none;
         border-bottom:1px solid rgba(255,255,255,.10);
+        max-height: 120px;
       }
       .distItem{ margin-bottom:0; }
-      .actions{ min-width:unset; }
+
+      #map{ height: 320px; }
+
+      .actions{ min-width: unset; }
+      .brand{ min-width: unset; }
+      .chip{ padding: 8px 10px; font-size: 11px; }
+      .logo{ width:46px; height:46px; border-radius:14px; }
     }
   </style>
 </head>
@@ -717,7 +726,6 @@
 
         <div class="metaPills" id="pills"></div>
 
-        <!-- NO ALL TAB -->
         <div class="pkgLayout">
           <div class="districtBar" id="districtBar"></div>
           <div class="pkgList" id="pkgList">
@@ -761,9 +769,7 @@
             <div class="muted" id="itMeta">Day-wise details will appear here</div>
             <div class="muted" id="priceDebug" style="margin-top:8px; text-transform:none; white-space:pre-wrap;"></div>
 
-            <!-- ✅ Tabs + Back button -->
             <div class="tabs">
-              <div class="tabBtn" id="tabBackBtn" style="display:none;">Back</div>
               <div class="tabBtn active" id="tabItinBtn">Itinerary</div>
               <div class="tabBtn" id="tabLocBtn">Location</div>
             </div>
@@ -790,6 +796,11 @@
           </div>
 
           <div class="tabPanel" id="locPanel">
+            <!-- ✅ Small back chip inside Location panel -->
+            <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
+              <div class="toolBtn" id="tabBackBtn" style="padding:8px 10px; border-radius:999px; display:none;">← Back</div>
+            </div>
+
             <div class="placeDetail" id="placeDetail">
               <div class="muted">Tap any place from itinerary to see History + What you can find + Photos here.</div>
             </div>
@@ -897,13 +908,12 @@
     }else if(p?.images && typeof p.images === "object"){
       arr.push(...Object.values(p.images).filter(isValid).map(x=>x.trim()));
     }
-
     return [...new Set(arr)];
   }
   function pickPhotoAny(p){ return pickAllPhotos(p)[0] || ""; }
 
   /* ===============================
-     ✅ Tabs + Back button
+     ✅ Tabs + Back chip
      =============================== */
   function setActiveTab(which){
     const itinBtn = $("tabItinBtn");
@@ -917,13 +927,13 @@
       locBtn.classList.add("active");
       itinP.classList.remove("active");
       locP.classList.add("active");
-      backBtn.style.display = "inline-flex";
+      if(backBtn) backBtn.style.display = "inline-flex";
     }else{
       locBtn.classList.remove("active");
       itinBtn.classList.add("active");
       locP.classList.remove("active");
       itinP.classList.add("active");
-      backBtn.style.display = "none";
+      if(backBtn) backBtn.style.display = "none";
     }
   }
 
@@ -1061,7 +1071,7 @@
   /* ===============================
      ✅ Cache
      =============================== */
-  const CACHE_KEY = "hp_portal_cache_v10";
+  const CACHE_KEY = "hp_portal_cache_v11";
   const CACHE_TTL_MS = 1000 * 60 * 30;
 
   function loadCache(){
@@ -1249,7 +1259,7 @@
   }
 
   /* ===============================
-     ✅ District sidebar (NO ALL)
+     ✅ District sidebar
      =============================== */
   function buildDistrictBuckets(list){
     const buckets = {};
@@ -1298,7 +1308,6 @@
       };
     });
 
-    // ✅ reset internal scroll (no page scroll)
     bar.scrollTop = 0;
   }
 
@@ -1311,7 +1320,7 @@
   }
 
   /* ===============================
-     ✅ Show difference when same start/end appears multiple times
+     ✅ Difference text
      =============================== */
   function routeText(t){ return String(t.route_path || "").trim(); }
 
@@ -1432,8 +1441,7 @@
       });
     });
 
-    // ✅ list render -> scroll to top inside panel (no page scroll)
-    box.scrollTop = 0;
+    box.scrollTop = 0; /* ✅ after generate -> list top */
   }
 
   /* ===============================
@@ -1529,6 +1537,9 @@
 
       daysList.appendChild(dayCard);
     });
+
+    // always return to itinerary on package open
+    setActiveTab("itin");
   }
 
   /* ===============================
@@ -1605,7 +1616,7 @@
   }
 
   /* ===============================
-     ✅ Pricing (AUTO-SEASON)
+     ✅ Pricing (AUTO-SEASON) (debug removed)
      =============================== */
   function pickStayRule(tier){
     const t = String(tier||"budget").toLowerCase();
@@ -1662,7 +1673,7 @@
     const nights = Math.max(0, days-1);
 
     if(!PRICING_READY || !isFinite(km) || km<=0 || !days){
-      return { total:NaN, perPerson:NaN, debug:"" };
+      return { total:NaN, perPerson:NaN };
     }
 
     const tier   = String($("visitType")?.value || "budget").toLowerCase();
@@ -1699,7 +1710,7 @@
     const hotel = nights * baseRoom * rooms * wkFactor;
 
     const total = transport + hotel;
-    return { total, perPerson: total/pax, debug:"" };
+    return { total, perPerson: total/pax };
   }
 
   function updatePriceBoxes(total, perPerson){
@@ -1796,11 +1807,10 @@
     renderDistrictBar();
     renderPackagesForActiveDistrict();
 
-    // ✅ make sure left panel starts at top (no body scroll)
     $("pkgList").scrollTop = 0;
     $("districtBar").scrollTop = 0;
 
-    toast("Packages generated (district grouped)");
+    toast("Packages generated");
   }
 
   async function openTemplate(key, start){
