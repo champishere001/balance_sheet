@@ -4,27 +4,30 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 
+  <!-- ✅ SEO CORE -->
   <title>Himachal Tour Packages | Himachal Explorer Portal</title>
-  <meta name="description" content="Explore Himachal tour packages with live road route maps, day-wise itineraries, and instant price estimates." />
+  <meta name="description" content="Explore Himachal tour packages with live road route maps, day-wise itineraries, places, and instant price estimates. Book packages with Chandan Panwar." />
+  <meta name="keywords" content="Himachal tour packages, Himachal itinerary, Shimla Manali package, Dharamshala Dalhousie tour, Spiti Valley tour, Kullu Kasol trip, Himachal cab package, Himachal travel planner, Himachal road trip, Himachal Explorer Portal, Chandan Panwar, Himachal booking, tour packages from Delhi, tour packages from Chandigarh, tour packages from Amritsar" />
+  <meta name="author" content="Chandan Panwar" />
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet=-1,max-video-preview=-1" />
   <link rel="canonical" href="https://himachalexplorer.in/" />
   <meta name="theme-color" content="#070A12" />
   <link rel="icon" href="./favicon.ico" />
 
-  <!-- Open Graph -->
+  <!-- ✅ OPEN GRAPH -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Himachal Explorer Portal – Tour Packages">
   <meta property="og:description" content="Live route map, day-wise itinerary, and price estimate for Himachal tour packages.">
   <meta property="og:url" content="https://himachalexplorer.in/">
   <meta property="og:image" content="https://himachalexplorer.in/og.jpg">
 
-  <!-- Twitter -->
+  <!-- ✅ TWITTER -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Himachal Explorer Portal – Tour Packages">
   <meta name="twitter:description" content="Live route map, itinerary and price estimate for Himachal tour packages.">
   <meta name="twitter:image" content="https://himachalexplorer.in/og.jpg">
 
-  <!-- Structured data -->
+  <!-- ✅ STRUCTURED DATA: Website -->
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
@@ -36,6 +39,30 @@
       "target":"https://himachalexplorer.in/?q={search_term_string}",
       "query-input":"required name=search_term_string"
     }
+  }
+  </script>
+
+  <!-- ✅ STRUCTURED DATA: Organization / Person -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"Himachal Explorer Portal",
+    "url":"https://himachalexplorer.in/",
+    "logo":"https://himachalexplorer.in/og.jpg",
+    "founder":{
+      "@type":"Person",
+      "name":"Chandan Panwar",
+      "email":"chandanpanwar001@gmail.com",
+      "telephone":"+91-7018138847"
+    },
+    "contactPoint":[{
+      "@type":"ContactPoint",
+      "contactType":"customer support",
+      "telephone":"+91-7018138847",
+      "email":"chandanpanwar001@gmail.com",
+      "availableLanguage":["en","hi"]
+    }]
   }
   </script>
 
@@ -76,6 +103,7 @@
 
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
+
     body{
       margin:0;
       color:var(--text);
@@ -133,6 +161,40 @@
     .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
     .brand p{ margin:4px 0 0; font-size:12px; color:var(--muted); line-height:1.25; }
 
+    /* ✅ CONTACT STRIP (Top Center) */
+    .topContact{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
+      padding: 0 8px;
+      min-width: 280px;
+    }
+    .contactChip{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-size: 11px;
+      letter-spacing:.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.82);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      white-space: nowrap;
+      user-select:none;
+    }
+    .contactChip b{ color:#fff; letter-spacing:.06em; }
+    .contactChip a{
+      color:#fff;
+      text-decoration:none;
+      font-weight:900;
+      letter-spacing:.06em;
+    }
+    .contactChip a:hover{ text-decoration:underline; }
+
     .actions{
       display:flex; gap:10px; align-items:center;
       min-width: 260px;
@@ -164,7 +226,7 @@
     }
     .chip.primary:hover{ filter: brightness(1.05); }
 
-    /* ✅ FIXED: single valid .main block (your code had a broken duplicate) */
+    /* ✅ MAIN GRID (fixed, map moves with screen, scroll inside panes) */
     .main{
       display:grid;
       grid-template-columns: var(--leftPct) var(--mapPct) var(--rightPct);
@@ -172,7 +234,7 @@
       padding:14px;
       min-height:0;
       align-items:stretch;
-      overflow: visible;     /* ✅ keep */
+      overflow:hidden;
     }
 
     .pane{
@@ -187,7 +249,7 @@
 
       height:100%;
       min-height:0;
-      overflow:hidden; /* ✅ keep scroll inside */
+      overflow:hidden;
     }
 
     .paneHdr{
@@ -296,9 +358,6 @@
       opacity:.9;
     }
 
-    /* =========================
-       ✅ PREMIUM RESULTS LAYOUT
-       ========================= */
     .pkgLayout{
       flex:1;
       min-height:0;
@@ -387,6 +446,7 @@
       gap:10px;
       min-height:0;
       background: rgba(0,0,0,.10);
+      flex:1;
     }
 
     .pkgGroupHdr{
@@ -471,6 +531,7 @@
       background: rgba(255,255,255,.04);
       border-radius: var(--radius);
       overflow:hidden;
+      flex:1;
     }
     .mapTools{
       padding: 10px 12px;
@@ -497,12 +558,13 @@
 
     .itWrap{
       padding: 12px;
-      overflow:auto;
+      overflow-y:auto;
       display:flex;
       flex-direction:column;
       gap:12px;
       min-height:0;
       flex:1;
+      -webkit-overflow-scrolling: touch;
     }
     .heroCard{
       border:1px solid rgba(255,255,255,.12);
@@ -675,7 +737,6 @@
     }
     .toast.show{ display:block; }
 
-    /* Cost breakdown */
     .breakdown{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.22);
@@ -709,12 +770,94 @@
       text-transform:none;
       white-space:pre-wrap;
     }
-
     #priceDebug{ display:none !important; }
 
-    /* =========================
-       ✅ MOBILE FIX
-       ========================= */
+    /* ✅ FOOTER CONTACT */
+    .footer{
+      border-top:1px solid rgba(255,255,255,.10);
+      padding: 10px 14px 14px;
+      color: rgba(255,255,255,.70);
+      font-size: 11px;
+      letter-spacing:.06em;
+      text-transform: uppercase;
+      display:flex;
+      gap:10px;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .footer a{ color:#fff; text-decoration:none; font-weight:900; }
+    .footer a:hover{ text-decoration:underline; }
+
+    /* ✅ FLOATING WHATSAPP BUTTON */
+    .waFloat{
+      position:fixed;
+      right: 14px;
+      bottom: 14px;
+      z-index: 10000;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 12px 14px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 28px 90px rgba(0,0,0,.65);
+      color:#fff;
+      text-decoration:none;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .waFloat:hover{ filter: brightness(1.06); transform: translateY(-1px); }
+    .waIcon{
+      width:40px; height:40px;
+      border-radius: 999px;
+      display:grid; place-items:center;
+      background: rgba(34,197,94,.22);
+      border:1px solid rgba(34,197,94,.35);
+      flex:0 0 auto;
+    }
+    .waText{
+      display:flex;
+      flex-direction:column;
+      line-height:1.1;
+      min-width:0;
+    }
+    .waText .t1{
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      white-space:nowrap;
+    }
+    .waText .t2{
+      margin-top:4px;
+      font-size: 11px;
+      color: rgba(255,255,255,.80);
+      letter-spacing:.04em;
+      white-space:nowrap;
+    }
+    .waClose{
+      width:34px; height:34px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.9);
+      display:grid; place-items:center;
+      cursor:pointer;
+      flex:0 0 auto;
+      user-select:none;
+    }
+    .waClose:hover{ background: rgba(255,255,255,.10); }
+
+    /* On small phones, show only icon */
+    @media (max-width: 420px){
+      .waText{ display:none; }
+      .waFloat{ padding: 10px; }
+      .waClose{ display:none; }
+    }
+
+    /* ✅ MOBILE */
     @media (max-width: 1200px){
       html, body{
         height:auto !important;
@@ -729,13 +872,17 @@
       .top{
         position: relative !important;
         padding: 10px 12px !important;
+        flex-wrap:wrap;
       }
       .logo{ width:44px; height:44px; border-radius:14px; }
       .brand{ min-width: unset !important; }
       .brand p{ font-size:11px; }
+      .topContact{ width:100%; justify-content:flex-start; }
       .actions{
         min-width:unset !important;
         gap:8px !important;
+        justify-content:flex-start;
+        width:100%;
       }
       .chip{
         padding:7px 10px !important;
@@ -753,7 +900,7 @@
         height:auto !important;
         min-height:unset !important;
       }
-      #map{ height: 300px !important; }
+      #map{ height: 320px !important; }
       .mapTools{
         display:grid !important;
         grid-template-columns: 1fr 1fr !important;
@@ -762,56 +909,35 @@
       .toolBtn{ justify-content:center !important; }
       .row2{ grid-template-columns: 1fr !important; }
       .bdGrid{ grid-template-columns: 1fr !important; }
+      .itWrap{ overflow:visible !important; }
+      .pkgList{ max-height: 520px; }
     }
 
-    /* =========================
-       ✅ DESKTOP: left+right scroll, page scroll enabled,
-       ✅ map moves with screen (NOT locked)
-       ========================= */
+    /* ✅ DESKTOP: lock page scroll, scroll inside left+right panes */
     @media (min-width:1201px){
-
-      html, body{
-        height:auto;
-        overflow:auto;   /* ✅ page scroll */
+      html,body{
+        height:100%;
+        overflow:hidden;
       }
-
       .app{
-        min-height:100vh;
-        height:auto;
+        height:100vh;
         display:grid;
-        grid-template-rows: var(--topH) auto;
+        grid-template-rows:auto 1fr;
       }
-
       .main{
-        height:auto;
-        overflow:visible;
+        height:100%;
+        overflow:hidden;
       }
-
       .pane{
-        height:auto;
+        height:100%;
         min-height:0;
         overflow:hidden;
         display:flex;
         flex-direction:column;
       }
-
-      /* ✅ Left scroll */
-      .pkgList{
-        max-height: 70vh;  /* adjust 70/75/80 if you want */
-        overflow-y:auto;
-      }
-
-      /* ✅ Center map moves with page scroll */
-      #map{
-        height: 70vh;
-        min-height: 520px;
-      }
-
-      /* ✅ Right scroll */
-      .itWrap{
-        max-height: 70vh;
-        overflow-y:auto;
-      }
+      .pkgList{ overflow-y:auto; }
+      .itWrap{ overflow-y:auto; }
+      #map{ height:100%; }
     }
   </style>
 </head>
@@ -819,6 +945,29 @@
 <body>
   <div class="aurora"></div>
   <div class="noise"></div>
+
+  <!-- ✅ Floating WhatsApp CTA (global) -->
+  <a
+    class="waFloat"
+    id="waFloat"
+    href="https://wa.me/917018138847?text=Hi%20Chandan%2C%20I%20want%20to%20book%20a%20Himachal%20tour%20package."
+    target="_blank" rel="noopener"
+    aria-label="Chat on WhatsApp with Chandan Panwar"
+  >
+    <div class="waIcon" aria-hidden="true">
+      <!-- WhatsApp SVG -->
+      <svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M16 3C9.1 3 3.5 8.3 3.5 14.9c0 2.5.8 4.8 2.2 6.7L4 29l7.6-1.9c1.8 1 3.9 1.6 6.4 1.6 6.9 0 12.5-5.3 12.5-11.9S22.9 3 16 3z" fill="rgba(255,255,255,.18)"/>
+        <path d="M16.1 6.1c-5.1 0-9.2 3.9-9.2 8.8 0 1.9.6 3.6 1.7 5.1l-1.1 4 4.2-1.1c1.4.8 3.1 1.3 4.9 1.3 5.1 0 9.2-3.9 9.2-8.8s-4.1-8.8-9.2-8.8z" fill="rgba(255,255,255,.22)"/>
+        <path d="M23 19.1c-.3.8-1.6 1.5-2.2 1.6-.6.1-1.3.2-2.2-.1-.5-.2-1.2-.4-2-.8-3.5-1.9-5.7-5-5.9-5.3-.2-.3-1.4-1.8-1.4-3.5 0-1.7.9-2.5 1.2-2.9.3-.3.7-.4.9-.4h.7c.2 0 .5-.1.7.5.2.6.9 2.1 1 2.3.1.2.1.5 0 .7-.1.2-.2.4-.4.6-.2.2-.3.3-.5.5-.2.2-.4.4-.2.8.2.4.8 1.3 1.7 2.1 1.2 1.1 2.2 1.4 2.6 1.6.3.2.6.1.8-.1.2-.2 1-1.1 1.2-1.5.2-.4.5-.3.8-.2.3.1 2 .9 2.3 1 .3.1.5.2.6.4.1.1.1.8-.2 1.6z" fill="white" opacity=".92"/>
+      </svg>
+    </div>
+    <div class="waText">
+      <div class="t1">WhatsApp</div>
+      <div class="t2">Chat for booking</div>
+    </div>
+    <div class="waClose" id="waClose" title="Hide" aria-label="Hide WhatsApp button">✕</div>
+  </a>
 
   <div class="app">
     <div class="top">
@@ -829,6 +978,30 @@
         <div>
           <div style="margin:0;font-size:14px;letter-spacing:.18em;text-transform:uppercase;font-weight:900;">Himachal Explorer Portal</div>
           <p id="statusLine">Loading…</p>
+        </div>
+      </div>
+
+      <!-- ✅ YOUR DETAILS + WHATSAPP -->
+      <div class="topContact">
+        <div class="contactChip">FIT: <b>Chandan Panwar</b></div>
+
+        <div class="contactChip">
+          CALL:
+          <a href="tel:+917018138847" aria-label="Call Chandan Panwar">7018138847</a>
+        </div>
+
+        <div class="contactChip">
+          EMAIL:
+          <a href="mailto:chandanpanwar001@gmail.com" aria-label="Email Chandan Panwar">chandanpanwar001@gmail.com</a>
+        </div>
+
+        <div class="contactChip">
+          WHATSAPP:
+          <a
+            href="https://wa.me/917018138847?text=Hi%20Chandan%2C%20I%20want%20to%20book%20a%20Himachal%20tour%20package."
+            target="_blank" rel="noopener"
+            aria-label="Open WhatsApp chat with Chandan Panwar"
+          >Go to WhatsApp</a>
         </div>
       </div>
 
@@ -893,7 +1066,6 @@
 
         <div class="metaPills" id="pills"></div>
 
-        <!-- ✅ Premium results area -->
         <div class="pkgLayout">
           <div class="districtBar" id="districtBar"></div>
 
@@ -1013,9 +1185,54 @@
         </div>
       </div>
     </div>
+
+    <!-- ✅ FOOTER (also helps trust + SEO) -->
+    <div class="footer">
+      <div>© <span id="yr"></span> Himachal Explorer Portal</div>
+      <div>
+        FIT: <b>Chandan Panwar</b> •
+        <a href="tel:+917018138847">7018138847</a> •
+        <a href="mailto:chandanpanwar001@gmail.com">chandanpanwar001@gmail.com</a> •
+        <a href="https://wa.me/917018138847?text=Hi%20Chandan%2C%20I%20want%20to%20book%20a%20Himachal%20tour%20package." target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
   </div>
 
   <div class="toast" id="toast"></div>
+
+  <script>
+  /* ===============================
+     ✅ Floating WhatsApp: hide/show preference
+     =============================== */
+  (function(){
+    const KEY = "wa_float_hidden_v1";
+    function apply(){
+      const hidden = localStorage.getItem(KEY) === "1";
+      const el = document.getElementById("waFloat");
+      if(el) el.style.display = hidden ? "none" : "flex";
+    }
+    window.addEventListener("DOMContentLoaded", ()=>{
+      const el = document.getElementById("waFloat");
+      const close = document.getElementById("waClose");
+      if(close){
+        close.addEventListener("click", (e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+          localStorage.setItem(KEY, "1");
+          apply();
+        });
+      }
+      // long press / double tap to re-show (simple)
+      document.addEventListener("keydown",(e)=>{
+        if(e.key.toLowerCase()==="w"){
+          localStorage.removeItem(KEY);
+          apply();
+        }
+      });
+      apply();
+    });
+  })();
+  </script>
 
   <script>
   /* ===============================
@@ -1225,11 +1442,7 @@
     tile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
     tile.addTo(map);
     markersLayer = L.layerGroup().addTo(map);
-
-    // ✅ IMPORTANT: page scroll should work even when mouse is on map
-    map.scrollWheelZoom.disable();
   }
-
   function clearMap(){
     markersLayer.clearLayers();
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
@@ -1433,9 +1646,6 @@
     return normCaps(endName);
   }
 
-  /* ===============================
-     ✅ Local detection
-     =============================== */
   function isLocalComputed(tpl){
     const routeId = String(tpl.route_id || "").toUpperCase().trim();
     const regionStyle = String(tpl.region_style || "").toLowerCase().trim();
@@ -1451,9 +1661,6 @@
     return Number(tpl.days||0) === Number(daysFilter);
   }
 
-  /* ===============================
-     ✅ Premium chips render
-     =============================== */
   function renderDistrictChips(){
     const bar = $("districtBar");
     if(!bar) return;
@@ -1624,9 +1831,6 @@
     highlightActiveCard();
   }
 
-  /* ===============================
-     ✅ Itinerary
-     =============================== */
   function buildDayWise(tpl){
     const days = Number(tpl.days || 1);
     const blocks = [];
@@ -1728,9 +1932,6 @@
     });
   }
 
-  /* ===============================
-     ✅ Route draw (OSRM)
-     =============================== */
   async function drawRoadRouteFromPlaces(placeIds){
     markersLayer.clearLayers();
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
@@ -1802,7 +2003,7 @@
   }
 
   /* ===============================
-     ✅ Pricing (UNCHANGED)
+     ✅ Pricing (unchanged)
      =============================== */
   function pickStayRule(tier){
     const t = String(tier||"budget").toLowerCase();
@@ -2001,9 +2202,6 @@
     el.style.display = showing ? "none" : "block";
   }
 
-  /* ===============================
-     ✅ Generate (Start + Days based selection)
-     =============================== */
   function applyFilters(){
     const start = normalizeStartInput();
     const daysF = $("daysSel").value.trim();
@@ -2089,9 +2287,6 @@
     computePriceForCurrent();
   }
 
-  /* ===============================
-     ✅ Load Live
-     =============================== */
   async function loadLive(){
     setStatus("Loading live from Firebase…");
 
@@ -2150,9 +2345,6 @@
     }
   }
 
-  /* ===============================
-     ✅ Mint Login (Firebase Auth)
-     =============================== */
   async function mintLogin(){
     try{
       const u = auth.currentUser;
@@ -2177,10 +2369,9 @@
     }
   }
 
-  /* ===============================
-     ✅ Boot
-     =============================== */
   window.addEventListener("DOMContentLoaded", () => {
+    $("yr").textContent = String(new Date().getFullYear());
+
     firebase.initializeApp(firebaseConfig);
     db = firebase.database();
     storage = firebase.storage();
