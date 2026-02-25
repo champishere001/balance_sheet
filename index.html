@@ -163,7 +163,7 @@
       gap: var(--gap);
       padding: 14px;
       overflow: hidden;
-      align-items: stretch; /* keep panes independent, no mutual expansion */
+      align-items: stretch;
     }
 
     .pane{
@@ -274,7 +274,7 @@
     }
     .pill b{ color:#fff; letter-spacing:.06em; }
 
-    /* ✅ Smaller hint (fix big "Type Start & Generate") */
+    /* ✅ Smaller hint */
     .pill.pillHint{
       text-transform:none;
       letter-spacing:.02em;
@@ -440,7 +440,7 @@
 
     .itWrap{
       padding: 12px;
-      overflow:auto; /* right pane scrolls inside; others won't expand */
+      overflow:auto;
       display:flex;
       flex-direction:column;
       gap:12px;
@@ -658,7 +658,10 @@
     #priceDebug{ display:none !important; }
 
     /* =========================
-       ✅ MOBILE FIX: FULL PAGE SCROLL + COMPACT UI
+       ✅ MOBILE FIX:
+       - District bar horizontal scroll
+       - Packages list vertical scroll (small panel)
+       - Whole page still scrolls
        ========================= */
     @media (max-width: 1200px){
       html, body{
@@ -666,15 +669,18 @@
         overflow:auto !important;
         overscroll-behavior:auto !important;
       }
+
       .app{
         min-height: 100vh !important;
         height:auto !important;
         grid-template-rows: auto 1fr !important;
       }
+
       .top{
         position: relative !important;
         padding: 10px 12px !important;
       }
+
       .logo{ width:44px; height:44px; border-radius:14px; }
       .brand{ min-width: unset !important; }
       .brand p{ font-size:11px; }
@@ -702,20 +708,34 @@
         min-height:unset !important;
       }
 
-      /* Let containers flow naturally on mobile (no trapped scroll) */
-      .pkgList, .districtBar, .itWrap{
-        overflow: visible !important;
-        max-height: none !important;
-      }
       .pkgLayout{ grid-template-columns: 1fr !important; }
+
+      /* ✅ District bar: horizontal scroll */
       .districtBar{
         display:flex !important;
-        flex-wrap:wrap !important;
+        flex-wrap:nowrap !important;
         gap:10px !important;
         border-right:none !important;
         border-bottom:1px solid rgba(255,255,255,.10) !important;
+        overflow-x:auto !important;
+        overflow-y:hidden !important;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 10px !important;
       }
-      .distItem{ margin-bottom:0 !important; }
+      .distItem{ margin-bottom:0 !important; flex:0 0 auto !important; }
+
+      /* ✅ Packages list: scroll area on mobile */
+      .pkgList{
+        overflow:auto !important;
+        max-height: 56vh !important;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* ✅ Right pane flows normally (no trapped scroll) */
+      .itWrap{
+        overflow: visible !important;
+        max-height: none !important;
+      }
 
       #map{ height: 300px !important; }
 
@@ -731,6 +751,7 @@
       #map{ height: 280px !important; }
       .row2{ grid-template-columns: 1fr !important; }
       .bdGrid{ grid-template-columns: 1fr !important; }
+      .pkgList{ max-height: 52vh !important; }
     }
   </style>
 </head>
@@ -856,9 +877,11 @@
             <div class="muted" id="itMeta">Day-wise details will appear here</div>
             <div class="muted" id="priceDebug" style="margin-top:8px; text-transform:none; white-space:pre-wrap;"></div>
 
+            <!-- ✅ Tabs + Home button (Back to Itinerary / top) -->
             <div class="tabs">
               <div class="tabBtn active" id="tabItinBtn">Itinerary</div>
               <div class="tabBtn" id="tabLocBtn">Location</div>
+              <div class="tabBtn" id="tabHomeBtn">Home</div>
             </div>
           </div>
 
@@ -1413,7 +1436,6 @@
       (LOCAL_BY_DISTRICT[d] ||= []).push(t);
     });
 
-    // INTER_BY_DISTRICT set on Generate
     INTER_BY_DISTRICT = INTER_BY_DISTRICT || {};
   }
 
@@ -1491,7 +1513,7 @@
     return el;
   }
 
-  // ✅ Local packages: show Ending point + Route details (no start / no covers list)
+  // ✅ Local packages: show Ending point (headline) + Route details
   function renderLocalCard(t){
     const days = Number(t.days||0) || 0;
 
@@ -1545,8 +1567,15 @@
     box.innerHTML = "";
 
     const interBest = pickBestOne(INTER_BY_DISTRICT[district] || []);
+
     const localsRaw = (LOCAL_BY_DISTRICT[district] || []);
-    const locals = localsRaw.filter(t => !interBest || t.key !== interBest.key);
+    const localsAll = localsRaw.filter(t => !interBest || t.key !== interBest.key);
+
+    // ✅ REQUIREMENT: Local packages display ONLY 1-day and 2-day
+    const locals = localsAll.filter(t=>{
+      const d = Number(t.days || 0);
+      return d === 1 || d === 2;
+    });
 
     const totalShown = (interBest ? 1 : 0) + locals.length;
     $("pkgCount").textContent = `${totalShown} Results`;
@@ -1574,20 +1603,20 @@
       box.appendChild(renderInterCard(interBest, startUpper, district));
     }
 
-    // Section 2: Local packages
+    // Section 2: Local packages (1D / 2D only)
     const hdr2 = document.createElement("div");
     hdr2.className = "pkgGroupHdr";
     hdr2.style.marginTop = "8px";
     hdr2.innerHTML = `
       <div class="h1">Local packages in ${escapeHtml(district)}</div>
-      <div class="h2">Ending point + route details</div>
+      <div class="h2">Only 1D / 2D • Headline = ending point • Route details shown</div>
     `;
     box.appendChild(hdr2);
 
     if(!locals.length){
       const none2 = document.createElement("div");
       none2.className = "pill";
-      none2.innerHTML = `<b>No local packages found</b>`;
+      none2.innerHTML = `<b>No 1D / 2D local packages found</b>`;
       box.appendChild(none2);
     }else{
       locals
@@ -1769,7 +1798,7 @@
   }
 
   /* ===============================
-     ✅ Pricing (same as your page)
+     ✅ Pricing
      =============================== */
   function pickStayRule(tier){
     const t = String(tier||"budget").toLowerCase();
@@ -1999,7 +2028,6 @@
 
     const startUpper = String(start).trim().toUpperCase();
 
-    // INTER: only templates that match typed start
     const interList = ACTIVE_TEMPLATES
       .filter(t => matchesStart(t, startUpper))
       .filter(t => matchesDaysOptional(t, daysF));
@@ -2010,10 +2038,8 @@
       (INTER_BY_DISTRICT[d] ||= []).push(t);
     });
 
-    // rebuild locals with days filter (locals independent of start)
     rebuildDistrictIndex(daysF);
 
-    // pills
     const interCount = interList.length;
     const localCount = Object.values(LOCAL_BY_DISTRICT).reduce((a,arr)=>a + (arr?.length||0), 0);
 
@@ -2033,12 +2059,11 @@
       $("pills").appendChild(div);
     }
 
-    // district bar + default
     ACTIVE_DISTRICT = "";
     renderDistrictBar();
     renderPackagesForActiveDistrict();
 
-    toast("Select district: 1 start→district + all local tours");
+    toast("Select district: 1 start→district + local 1D/2D tours");
   }
 
   async function openTemplate(key, start){
@@ -2130,6 +2155,12 @@
 
     $("tabItinBtn").addEventListener("click", ()=>setActiveTab("itin"));
     $("tabLocBtn").addEventListener("click", ()=>setActiveTab("loc"));
+
+    // ✅ Home button: back to Itinerary + scroll top of right pane
+    $("tabHomeBtn").addEventListener("click", ()=>{
+      setActiveTab("itin");
+      document.querySelector(".itWrap")?.scrollTo?.({ top: 0, behavior: "smooth" });
+    });
 
     $("genBtn").addEventListener("click", applyFilters);
     $("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
