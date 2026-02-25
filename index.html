@@ -405,6 +405,8 @@
       text-transform:none;
       line-height:1.35;
       opacity:.98;
+      white-space: normal;
+      word-break: break-word;
     }
 
     #map{
@@ -750,7 +752,6 @@
       </div>
 
       <div class="actions">
-        <!-- ✅ NEW -->
         <div class="chip" id="openCalcBtn">Calculator</div>
         <div class="chip" id="fitMapBtn">Fit Route</div>
         <div class="chip" id="clearRouteBtn">Clear</div>
@@ -940,9 +941,6 @@
     measurementId: "G-MGTDBCG896"
   };
 
-  /* ===============================
-     ✅ Node Mapping
-     =============================== */
   const NODE_TEMPLATES = "templates";
   const NODE_PLACES    = "places_in_packages";
   const NODE_TRANSPORT = "pricing_transport";
@@ -1006,11 +1004,9 @@
       .slice(0,12);
   }
 
-  /* ✅ MULTI PHOTO SUPPORT (only accepts https URLs) */
   function pickAllPhotos(p){
     const isValid = (u)=> typeof u==="string" && /^https?:\/\//i.test(u.trim());
     let arr = [];
-
     if(isValid(p?.imageUrl)) arr.push(p.imageUrl.trim());
     if(isValid(p?.image)) arr.push(p.image.trim());
     if(isValid(p?.img)) arr.push(p.img.trim());
@@ -1020,7 +1016,6 @@
     }else if(p?.images && typeof p.images === "object"){
       arr.push(...Object.values(p.images).filter(isValid).map(x=>x.trim()));
     }
-
     return [...new Set(arr)];
   }
   function pickPhotoAny(p){ return pickAllPhotos(p)[0] || ""; }
@@ -1047,7 +1042,7 @@
   }
 
   /* ===============================
-     ✅ Place Details (Location tab)
+     ✅ Place Details
      =============================== */
   let ACTIVE_PLACE_GALLERY = { pid:"", idx:0, imgs:[] };
 
@@ -1112,7 +1107,6 @@
       });
     }
 
-    // ✅ IMPORTANT: popup is shown here (Location tab), NOT on map
     setActiveTab("loc");
   }
 
@@ -1134,7 +1128,7 @@
   }
 
   /* ===============================
-     ✅ Map (NO popups)
+     ✅ Map
      =============================== */
   let map, tile, markersLayer, routeLine;
   let showMode = "all";
@@ -1166,8 +1160,10 @@
   let NAME_TO_ID = new Map();
   let STARTS = [];
 
-  let CURRENT_LIST = [];
-  let CURRENT_BY_DISTRICT = {};
+  // District view
+  let INTER_BY_DISTRICT = {};
+  let LOCAL_BY_DISTRICT = {};
+  let DISTRICT_KEYS = [];
   let ACTIVE_DISTRICT = "";
 
   let CURRENT_TEMPLATE_KEY = "";
@@ -1181,7 +1177,7 @@
   /* ===============================
      ✅ Cache
      =============================== */
-  const CACHE_KEY = "hp_portal_cache_v11";
+  const CACHE_KEY = "hp_portal_cache_v12";
   const CACHE_TTL_MS = 1000 * 60 * 30;
 
   function loadCache(){
@@ -1208,6 +1204,7 @@
 
       buildNameIndex();
       buildStartList(ACTIVE_TEMPLATES);
+      rebuildDistrictIndex($("daysSel")?.value?.trim() || "");
 
       setStatus(`Loaded from cache • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places`);
       return true;
@@ -1350,62 +1347,97 @@
     return normCaps(endName);
   }
 
+  function startDistrictFromTemplate(tpl){
+    const startName = String(tpl.start_point || tpl.start || "").trim();
+    if(!startName) return "";
+
+    const sCap = normCaps(startName);
+    if(DISTRICT_KEYS.includes(sCap)) return sCap;
+
+    const pid = getPlaceIdByNameAny(startName);
+    if(pid && PLACES[pid]){
+      const d = districtAny(PLACES[pid]);
+      if(d) return d;
+    }
+
+    const stops = stopsFromTemplate(tpl);
+    if(stops.length){
+      const p = PLACES[stops[0]] || {};
+      const d = districtAny(p);
+      if(d) return d;
+    }
+    return "";
+  }
+
   function packageScore(tpl){
     const locs = stopsFromTemplate(tpl).length;
     const pri  = Number(tpl.priority ?? 999);
     const km   = Number(tpl.total_km_est ?? tpl.estimated_drive_km ?? tpl.total_km ?? 1e9);
     return { locs, pri, km };
   }
-
-  function setPills(obj){
-    const box = $("pills");
-    box.innerHTML = "";
-    for(const [k,v] of Object.entries(obj)){
-      const div = document.createElement("div");
-      div.className = "pill";
-      div.innerHTML = `${escapeHtml(k)} <b>${escapeHtml(String(v))}</b>`;
-      box.appendChild(div);
-    }
+  function pickBestOne(list){
+    if(!list || !list.length) return null;
+    const arr = [...list];
+    arr.sort((a,b)=>{
+      const A = packageScore(a), B = packageScore(b);
+      if(A.locs !== B.locs) return B.locs - A.locs;
+      if(A.pri !== B.pri) return A.pri - B.pri;
+      return A.km - B.km;
+    });
+    return arr[0];
   }
 
-  /* ===============================
-     ✅ District sidebar (NO ALL)
-     =============================== */
-  function buildDistrictBuckets(list){
-    const buckets = {};
-    for(const t of list){
+  function isLocalTemplate(tpl){
+    const sd = startDistrictFromTemplate(tpl);
+    const ed = endDistrictFromTemplate(tpl);
+    return !!sd && !!ed && sd === ed;
+  }
+  function matchesStart(tpl, startUpper){
+    return String(tpl.start_point||tpl.start||"").trim().toUpperCase() === startUpper;
+  }
+  function matchesDaysOptional(tpl, daysFilter){
+    if(!daysFilter) return true;
+    return Number(tpl.days||0) === Number(daysFilter);
+  }
+
+  function rebuildDistrictIndex(daysFilter=""){
+    const allDistricts = new Set();
+    ACTIVE_TEMPLATES.forEach(t=> allDistricts.add(endDistrictFromTemplate(t)));
+    DISTRICT_KEYS = Array.from(allDistricts).sort((a,b)=>a.localeCompare(b));
+
+    LOCAL_BY_DISTRICT = {};
+    ACTIVE_TEMPLATES.forEach(t=>{
+      if(!matchesDaysOptional(t, daysFilter)) return;
+      if(!isLocalTemplate(t)) return;
       const d = endDistrictFromTemplate(t);
-      if(!buckets[d]) buckets[d] = [];
-      buckets[d].push(t);
-    }
-    for(const d of Object.keys(buckets)){
-      buckets[d].sort((a,b)=>{
-        const A = packageScore(a), B = packageScore(b);
-        if(A.locs !== B.locs) return B.locs - A.locs;
-        if(A.pri !== B.pri) return A.pri - B.pri;
-        return A.km - B.km;
-      });
-    }
-    return buckets;
+      (LOCAL_BY_DISTRICT[d] ||= []).push(t);
+    });
+
+    // INTER_BY_DISTRICT set on Generate
+    INTER_BY_DISTRICT = INTER_BY_DISTRICT || {};
   }
 
   function renderDistrictBar(){
     const bar = $("districtBar");
-    const keys = Object.keys(CURRENT_BY_DISTRICT).sort((a,b)=>a.localeCompare(b));
-
-    if(!keys.length){
+    if(!DISTRICT_KEYS.length){
       bar.innerHTML = `<div class="pill"><b>No district</b></div>`;
       ACTIVE_DISTRICT = "";
       return;
     }
-
-    if(!ACTIVE_DISTRICT || !CURRENT_BY_DISTRICT[ACTIVE_DISTRICT]){
-      ACTIVE_DISTRICT = keys[0];
+    if(!ACTIVE_DISTRICT || !DISTRICT_KEYS.includes(ACTIVE_DISTRICT)){
+      ACTIVE_DISTRICT = DISTRICT_KEYS[0];
     }
 
     let html = "";
-    for(const d of keys){
-      html += `<div class="distItem ${ACTIVE_DISTRICT===d ? "active":""}" data-d="${escapeHtml(d)}"><b>${escapeHtml(d)}</b> (${CURRENT_BY_DISTRICT[d].length})</div>`;
+    for(const d of DISTRICT_KEYS){
+      const interCount = (INTER_BY_DISTRICT[d] || []).length;
+      const localCount = (LOCAL_BY_DISTRICT[d] || []).length;
+      const shown = (interCount ? 1 : 0) + localCount;
+
+      html += `
+        <div class="distItem ${ACTIVE_DISTRICT===d ? "active":""}" data-d="${escapeHtml(d)}">
+          <b>${escapeHtml(d)}</b> (${shown})
+        </div>`;
     }
     bar.innerHTML = html;
 
@@ -1419,134 +1451,151 @@
     });
   }
 
-  function renderPackagesForActiveDistrict(){
-    const start = normalizeStartInput() || "";
-    const list = (ACTIVE_DISTRICT && CURRENT_BY_DISTRICT[ACTIVE_DISTRICT])
-      ? (CURRENT_BY_DISTRICT[ACTIVE_DISTRICT] || [])
-      : [];
-    renderPackagesList(list, start);
+  function highlightActiveCard(){
+    document.querySelectorAll(".pkg").forEach(x=>x.classList.toggle("active", x.dataset.key === CURRENT_TEMPLATE_KEY));
   }
 
-  /* ===============================
-     ✅ Show difference when same start/end appears multiple times
-     =============================== */
-  function routeText(t){ return String(t.route_path || "").trim(); }
+  function renderInterCard(t, startUpper, district){
+    const days = Number(t.days||0) || 0;
+    const endKey = endKeyFromRoutePath(t);
 
-  function placeNameSetFromTpl(t){
-    const ids = stopsFromTemplate(t);
-    const set = new Set();
-    ids.forEach(pid=>{
-      const p = PLACES[pid] || {};
-      set.add(placeNameAny(p, pid));
-    });
-    return set;
-  }
-
-  function diffText(base, other){
-    const a = placeNameSetFromTpl(base);
-    const b = placeNameSetFromTpl(other);
-
-    const added = [...b].filter(x=>!a.has(x)).slice(0,6);
-    const removed = [...a].filter(x=>!b.has(x)).slice(0,6);
-
-    const daysA = Number(base.days||0), daysB = Number(other.days||0);
-    const rA = routeText(base), rB = routeText(other);
-
-    const bits = [];
-    if(daysA && daysB && daysA !== daysB) bits.push(`Days ${daysA}→${daysB}`);
-    if(rA && rB && rA !== rB) bits.push(`Route changed`);
-    if(added.length) bits.push(`Adds: ${added.join(", ")}`);
-    if(removed.length) bits.push(`Skips: ${removed.join(", ")}`);
-
-    return bits.join(" • ");
-  }
-
-  function groupKey(start, t){
-    const end = endKeyFromRoutePath(t);
-    return `${String(start).toUpperCase()}__${String(end).toUpperCase()}`;
-  }
-
-  function renderPackagesList(list, start){
-    const box = $("pkgList");
-    box.innerHTML = "";
-    $("pkgCount").textContent = `${list.length} Results`;
-
-    if(!list.length){
-      box.innerHTML = `<div class="pill">No packages in this district</div>`;
-      return;
+    const routeIds = routeIdsFromTemplateIncludingStart(t);
+    let thumbUrl="", ini="HP";
+    if(routeIds[0]){
+      const p = PLACES[routeIds[0]] || {};
+      const nm = placeNameAny(p, routeIds[0]);
+      ini = initials(nm);
+      thumbUrl = pickPhotoAny(p);
     }
 
-    const groups = new Map();
-    list.forEach(t=>{
-      const k = groupKey(start, t);
-      if(!groups.has(k)) groups.set(k, []);
-      groups.get(k).push(t);
-    });
+    const el = document.createElement("div");
+    el.className = "pkg";
+    el.dataset.key = t.key;
 
-    const ordered = [...groups.entries()].sort((A,B)=>{
-      const a0 = A[1][0], b0 = B[1][0];
-      const sa = packageScore(a0), sb = packageScore(b0);
-      if(sa.locs !== sb.locs) return sb.locs - sa.locs;
-      if(sa.pri !== sb.pri) return sa.pri - sb.pri;
-      return sa.km - sb.km;
-    });
-
-    ordered.forEach(([gk, arr])=>{
-      arr.sort((x,y)=> (Number(x.days)||0) - (Number(y.days)||0));
-
-      const base = arr[0];
-      const endKey = endKeyFromRoutePath(base);
-      const basePlaces = [...placeNameSetFromTpl(base)].slice(0,4).join(", ");
-      const baseRoute = routeText(base);
-      const versions = arr.length;
-
-      const hdr = document.createElement("div");
-      hdr.className = "pkgGroupHdr";
-      hdr.innerHTML = `
-        <div class="h1">${escapeHtml(String(start).toUpperCase())} → ${escapeHtml(String(endKey).toUpperCase())}</div>
-        <div class="h2">Covers: ${escapeHtml(basePlaces || "—")} ${versions>1 ? `• ${versions} versions` : ""}</div>
-        ${baseRoute ? `<div class="h2">Route: ${escapeHtml(baseRoute)}</div>` : ``}
-      `;
-      box.appendChild(hdr);
-
-      arr.forEach((t,i)=>{
-        const days = Number(t.days||0) || 0;
-
-        const routeIds = routeIdsFromTemplateIncludingStart(t);
-        let thumbUrl="", ini="HP";
-        if(routeIds[0]){
-          const p = PLACES[routeIds[0]] || {};
-          const nm = placeNameAny(p, routeIds[0]);
-          ini = initials(nm);
-          thumbUrl = pickPhotoAny(p);
+    el.innerHTML = `
+      <div class="pkgPic">
+        ${thumbUrl
+          ? `<img src="${escapeHtml(thumbUrl)}" alt="Package thumbnail" loading="lazy" referrerpolicy="no-referrer"
+              onerror="this.remove(); this.parentNode.textContent='${escapeHtml(ini)}';">`
+          : escapeHtml(ini)
         }
+      </div>
+      <div class="pkgBody">
+        <div class="pkgName">${escapeHtml(startUpper)} → ${escapeHtml(district)} • ${days ? `${days}D` : ""}</div>
+        <div class="pkgMeta">
+          END: ${escapeHtml(String(endKey||"—").toUpperCase())} • ID: ${escapeHtml(String(t.key||"—").toUpperCase())}
+        </div>
+      </div>
+    `;
+    el.onclick = ()=>openTemplate(t.key, startUpper);
+    return el;
+  }
 
-        const diff = (i===0 || arr.length===1) ? "" : diffText(base, t);
+  // ✅ Local packages: show Ending point + Route details (no start / no covers list)
+  function renderLocalCard(t){
+    const days = Number(t.days||0) || 0;
 
-        const el = document.createElement("div");
-        el.className = "pkg";
-        el.dataset.key = t.key;
+    const endName = getEndNameFromRoutePath(t);
+    const endShow = normCaps(endName || t.end_point || t.end || endKeyFromRoutePath(t) || "END");
 
-        el.innerHTML = `
-          <div class="pkgPic">
-            ${thumbUrl
-              ? `<img src="${escapeHtml(thumbUrl)}" alt="Package thumbnail" loading="lazy" referrerpolicy="no-referrer"
-                  onerror="this.remove(); this.parentNode.textContent='${escapeHtml(ini)}';">`
-              : escapeHtml(ini)
-            }
-          </div>
-          <div class="pkgBody">
-            <div class="pkgName">${escapeHtml(String(start).toUpperCase())} → ${escapeHtml(String(endKey).toUpperCase())} • ${days ? `${days}D` : ""}</div>
-            <div class="pkgMeta">
-              LOCATIONS: ${stopsFromTemplate(t).length} • ID: ${escapeHtml(String(t.key||"—").toUpperCase())}
-            </div>
-            ${diff ? `<div class="diffLine">${escapeHtml(diff)}</div>` : ``}
-          </div>
-        `;
-        el.onclick = ()=>openTemplate(t.key, start);
-        box.appendChild(el);
-      });
-    });
+    const routeDetail = String(t.route_path || "").trim();
+
+    const routeIds = stopsFromTemplate(t);
+    let thumbUrl="", ini="HP";
+    let pickId = routeIds[0] || "";
+    if(!pickId){
+      const endPid = getPlaceIdByNameAny(endName);
+      pickId = endPid || "";
+    }
+    if(pickId){
+      const p = PLACES[pickId] || {};
+      const nm = placeNameAny(p, pickId);
+      ini = initials(nm);
+      thumbUrl = pickPhotoAny(p);
+    }
+
+    const el = document.createElement("div");
+    el.className = "pkg";
+    el.dataset.key = t.key;
+
+    el.innerHTML = `
+      <div class="pkgPic">
+        ${thumbUrl
+          ? `<img src="${escapeHtml(thumbUrl)}" alt="Local package thumbnail" loading="lazy" referrerpolicy="no-referrer"
+              onerror="this.remove(); this.parentNode.textContent='${escapeHtml(ini)}';">`
+          : escapeHtml(ini)
+        }
+      </div>
+      <div class="pkgBody">
+        <div class="pkgName">${escapeHtml(endShow)} ${days ? `• ${days}D` : ""}</div>
+        <div class="pkgMeta">ID: ${escapeHtml(String(t.key||"—").toUpperCase())}</div>
+        ${routeDetail ? `<div class="diffLine">Route: ${escapeHtml(routeDetail)}</div>` : ``}
+      </div>
+    `;
+    el.onclick = ()=>openTemplate(t.key, normalizeStartInput() || "");
+    return el;
+  }
+
+  function renderPackagesForActiveDistrict(){
+    const start = normalizeStartInput() || "";
+    const startUpper = String(start).trim().toUpperCase();
+    const district = ACTIVE_DISTRICT;
+
+    const box = $("pkgList");
+    box.innerHTML = "";
+
+    const interBest = pickBestOne(INTER_BY_DISTRICT[district] || []);
+    const localsRaw = (LOCAL_BY_DISTRICT[district] || []);
+    const locals = localsRaw.filter(t => !interBest || t.key !== interBest.key);
+
+    const totalShown = (interBest ? 1 : 0) + locals.length;
+    $("pkgCount").textContent = `${totalShown} Results`;
+
+    // Section 1: Start -> District (one best)
+    const hdr1 = document.createElement("div");
+    hdr1.className = "pkgGroupHdr";
+    hdr1.innerHTML = `
+      <div class="h1">${escapeHtml(startUpper || "START")} → ${escapeHtml(district)}</div>
+      <div class="h2">Showing 1 best package for selected start → district</div>
+    `;
+    box.appendChild(hdr1);
+
+    if(!startUpper){
+      const warn = document.createElement("div");
+      warn.className = "pill";
+      warn.innerHTML = `<b>Type Start</b> (top) then Generate`;
+      box.appendChild(warn);
+    }else if(!interBest){
+      const none = document.createElement("div");
+      none.className = "pill";
+      none.innerHTML = `<b>No Start → District package found</b>`;
+      box.appendChild(none);
+    }else{
+      box.appendChild(renderInterCard(interBest, startUpper, district));
+    }
+
+    // Section 2: Local packages
+    const hdr2 = document.createElement("div");
+    hdr2.className = "pkgGroupHdr";
+    hdr2.style.marginTop = "8px";
+    hdr2.innerHTML = `
+      <div class="h1">Local packages in ${escapeHtml(district)}</div>
+      <div class="h2">Ending point + route details</div>
+    `;
+    box.appendChild(hdr2);
+
+    if(!locals.length){
+      const none2 = document.createElement("div");
+      none2.className = "pill";
+      none2.innerHTML = `<b>No local packages found</b>`;
+      box.appendChild(none2);
+    }else{
+      locals
+        .sort((a,b)=> (Number(a.days)||0) - (Number(b.days)||0))
+        .forEach(t => box.appendChild(renderLocalCard(t)));
+    }
+
+    highlightActiveCard();
   }
 
   /* ===============================
@@ -1572,7 +1621,9 @@
 
   function renderItinerary(tpl, start, endKey){
     $("activePkgName").textContent = `${String(tpl.days||"—")}D`;
-    $("itTitle").textContent = `${String(start).toUpperCase()} → ${String(endKey).toUpperCase()}`;
+
+    const titleStart = start ? String(start).toUpperCase() : (startDistrictFromTemplate(tpl) || "LOCAL");
+    $("itTitle").textContent = `${titleStart} → ${String(endKey).toUpperCase()}`;
 
     const metaParts = [];
     if(tpl.route_path) metaParts.push(`Route: ${tpl.route_path}`);
@@ -1704,7 +1755,6 @@
         if(!isFinite(lat)||!isFinite(lng)) continue;
 
         const mk = L.marker([lat,lng], { riseOnHover:true }).addTo(markersLayer);
-        // ✅ no map popup, click opens Location tab details
         mk.on("click", ()=> renderPlaceDetails(pid));
       }
 
@@ -1719,7 +1769,7 @@
   }
 
   /* ===============================
-     ✅ Pricing (AUTO-SEASON)
+     ✅ Pricing (same as your page)
      =============================== */
   function pickStayRule(tier){
     const t = String(tier||"budget").toLowerCase();
@@ -1883,40 +1933,6 @@
     return (isFinite(v) && v > 0) ? v : 2;
   }
 
-  function getSelectedDays(){
-    if(CURRENT_TEMPLATE_KEY && TEMPLATES?.[CURRENT_TEMPLATE_KEY]?.days){
-      return Number(TEMPLATES[CURRENT_TEMPLATE_KEY].days) || 3;
-    }
-    const d = Number($("daysSel")?.value || 0);
-    return d || 3;
-  }
-
-  /* ✅ NEW: Apply calculator result (same package only) */
-  function applyCalculatorResultIfAny(){
-    try{
-      const raw = localStorage.getItem("hp_calc_result_v1");
-      if(!raw) return false;
-
-      const obj = JSON.parse(raw);
-      if(!obj?.tplKey) return false;
-
-      if(!CURRENT_TEMPLATE_KEY || obj.tplKey !== CURRENT_TEMPLATE_KEY) return false;
-
-      $("paxSel").value = String(obj.pax || $("paxSel").value);
-      $("visitType").value = String(obj.tier || $("visitType").value);
-
-      $("paxUsed").innerHTML = `${obj.pax} <small>from calculator</small>`;
-      $("priceTotal").innerHTML = rupees(obj.total) + ` <small>(CALCULATOR)</small>`;
-      $("pricePer").innerHTML = rupees(obj.perPerson) + ` <small>per person</small>`;
-
-      $("breakdownCard").style.display = "block";
-      updateBreakdownUI(obj.breakdown, obj.pax);
-      return true;
-    }catch(e){
-      return false;
-    }
-  }
-
   function computePriceForCurrent(){
     try{
       if(!CURRENT_TEMPLATE_KEY) return;
@@ -1924,7 +1940,7 @@
       if(!tpl) return;
 
       const pax = getSelectedPax();
-      const days = Number(tpl.days || getSelectedDays() || 3);
+      const days = Number(tpl.days || 3);
 
       let km = Number(CURRENT_ROUTE_KM || 0);
       if(!isFinite(km) || km <= 0){
@@ -1932,16 +1948,12 @@
       }
 
       const est = estimateTotalCost({ km, days, pax, tpl });
-
       const total = est.total;
       const perPerson = isFinite(total) ? (total / pax) : NaN;
 
       $("paxUsed").innerHTML = `${pax} <small>selected</small>`;
       updatePriceBoxes(total, perPerson);
       updateBreakdownUI(est.breakdown, pax);
-
-      // ✅ override if calculator sent a result for same package
-      applyCalculatorResultIfAny();
     }catch(e){
       console.error(e);
       $("paxUsed").innerHTML = "— <small></small>";
@@ -1978,7 +1990,6 @@
     $("breakdownCard").style.display = "none";
     CURRENT_TEMPLATE_KEY = "";
     CURRENT_ROUTE_KM = 0;
-
     setActiveTab("itin");
 
     if(!start){
@@ -1988,51 +1999,53 @@
 
     const startUpper = String(start).trim().toUpperCase();
 
-    let list = ACTIVE_TEMPLATES.filter(t =>
-      String(t.start_point||t.start||"").trim().toUpperCase() === startUpper
-    );
+    // INTER: only templates that match typed start
+    const interList = ACTIVE_TEMPLATES
+      .filter(t => matchesStart(t, startUpper))
+      .filter(t => matchesDaysOptional(t, daysF));
 
-    if(daysF) list = list.filter(t => Number(t.days||0) === Number(daysF));
-
-    list.sort((a,b)=>{
-      const A = packageScore(a), B = packageScore(b);
-      if(A.locs !== B.locs) return B.locs - A.locs;
-      if(A.pri !== B.pri) return A.pri - B.pri;
-      return A.km - B.km;
+    INTER_BY_DISTRICT = {};
+    interList.forEach(t=>{
+      const d = endDistrictFromTemplate(t);
+      (INTER_BY_DISTRICT[d] ||= []).push(t);
     });
 
-    CURRENT_LIST = list;
-    CURRENT_BY_DISTRICT = buildDistrictBuckets(list);
-    ACTIVE_DISTRICT = "";
+    // rebuild locals with days filter (locals independent of start)
+    rebuildDistrictIndex(daysF);
 
-    setPills({
+    // pills
+    const interCount = interList.length;
+    const localCount = Object.values(LOCAL_BY_DISTRICT).reduce((a,arr)=>a + (arr?.length||0), 0);
+
+    $("pills").innerHTML = "";
+    const pillData = {
       START: startUpper,
       TYPE: tier,
-      PACKAGES: list.length,
+      INTER_PACKAGES: interCount,
+      LOCAL_PACKAGES: localCount,
       PAX: pax,
       DAYS: (daysF ? daysF : "ANY")
-    });
+    };
+    for(const [k,v] of Object.entries(pillData)){
+      const div = document.createElement("div");
+      div.className = "pill";
+      div.innerHTML = `${escapeHtml(k)} <b>${escapeHtml(String(v))}</b>`;
+      $("pills").appendChild(div);
+    }
 
+    // district bar + default
+    ACTIVE_DISTRICT = "";
     renderDistrictBar();
     renderPackagesForActiveDistrict();
-    toast("Packages generated (district grouped)");
+
+    toast("Select district: 1 start→district + all local tours");
   }
 
   async function openTemplate(key, start){
     const tpl = TEMPLATES[key];
     if(!tpl){ toast("Template not found"); return; }
     CURRENT_TEMPLATE_KEY = key;
-
-    // ✅ store selection for calculator page
-    localStorage.setItem("hp_selected_template_key", String(key));
-    localStorage.setItem("hp_selected_start", String(start||""));
-    localStorage.setItem("hp_selected_pax", String(getSelectedPax()));
-    localStorage.setItem("hp_selected_tier", String($("visitType")?.value || "budget"));
-    localStorage.setItem("hp_selected_days", String(Number(tpl.days||getSelectedDays()||3)));
-
-    document.querySelectorAll(".pkg").forEach(x=>x.classList.remove("active"));
-    const node = document.querySelector(`.pkg[data-key="${cssEscapeSafe(key)}"]`);
-    if(node) node.classList.add("active");
+    highlightActiveCard();
 
     const endKey = endKeyFromRoutePath(tpl);
     const routeIds = routeIdsFromTemplateIncludingStart(tpl);
@@ -2041,9 +2054,6 @@
 
     const rr = await drawRoadRouteFromPlaces(routeIds);
     CURRENT_ROUTE_KM = rr.ok ? rr.km : 0;
-
-    // ✅ store km for calculator page
-    localStorage.setItem("hp_selected_km", String((CURRENT_ROUTE_KM || 0).toFixed(1)));
 
     computePriceForCurrent();
   }
@@ -2087,9 +2097,9 @@
 
     buildNameIndex();
     buildStartList(ACTIVE_TEMPLATES);
+    rebuildDistrictIndex($("daysSel")?.value?.trim() || "");
 
     saveCache();
-
     setStatus(`Loaded LIVE • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places • pricing OK`);
   }
 
@@ -2099,6 +2109,8 @@
       toast("Refreshed from Firebase");
       if($("pills").children.length){
         applyFilters();
+      }else{
+        renderDistrictBar();
       }
     }catch(err){
       console.error(err);
@@ -2144,9 +2156,10 @@
       clearMap();
       CURRENT_TEMPLATE_KEY = "";
       CURRENT_ROUTE_KM = 0;
-      CURRENT_LIST = [];
-      CURRENT_BY_DISTRICT = {};
       ACTIVE_DISTRICT="";
+      INTER_BY_DISTRICT = {};
+      LOCAL_BY_DISTRICT = {};
+      DISTRICT_KEYS = [];
       setActiveTab("itin");
       toast("Reset done");
     });
@@ -2155,10 +2168,7 @@
     $("clearRouteBtn").addEventListener("click", ()=>{ clearMap(); toast("Cleared"); });
     $("refreshBtn").addEventListener("click", refreshAll);
 
-    // ✅ NEW: open calculator page
     $("openCalcBtn")?.addEventListener("click", ()=>{
-      localStorage.setItem("hp_selected_pax", String(getSelectedPax()));
-      localStorage.setItem("hp_selected_tier", String($("visitType")?.value || "budget"));
       window.location.href = "calculator.html";
     });
 
@@ -2170,7 +2180,6 @@
         const routeIds = routeIdsFromTemplateIncludingStart(tpl);
         const rr = await drawRoadRouteFromPlaces(routeIds);
         CURRENT_ROUTE_KM = rr.ok ? rr.km : CURRENT_ROUTE_KM;
-        localStorage.setItem("hp_selected_km", String((CURRENT_ROUTE_KM || 0).toFixed(1)));
         computePriceForCurrent();
       }
     });
@@ -2183,7 +2192,6 @@
         const routeIds = routeIdsFromTemplateIncludingStart(tpl);
         const rr = await drawRoadRouteFromPlaces(routeIds);
         CURRENT_ROUTE_KM = rr.ok ? rr.km : CURRENT_ROUTE_KM;
-        localStorage.setItem("hp_selected_km", String((CURRENT_ROUTE_KM || 0).toFixed(1)));
         computePriceForCurrent();
       }
     });
@@ -2202,7 +2210,6 @@
 
     $("toggleBreakdownBtn").addEventListener("click", toggleBreakdown);
 
-    // ✅ FIX: pax/type changes always recalc
     $("paxSel")?.addEventListener("change", ()=>{
       computePriceForCurrent();
       if($("pills").children.length) applyFilters();
@@ -2214,6 +2221,7 @@
     });
 
     $("daysSel")?.addEventListener("change", ()=>{
+      rebuildDistrictIndex($("daysSel").value.trim());
       if($("pills").children.length) applyFilters();
     });
 
