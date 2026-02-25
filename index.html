@@ -4,65 +4,33 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 
-  <!-- ✅ SEO CORE -->
   <title>Himachal Tour Packages | Himachal Explorer Portal</title>
-  <meta name="description" content="Explore Himachal tour packages with live road route maps, day-wise itineraries, places, and instant price estimates. Book packages with Chandan Panwar." />
-  <meta name="keywords" content="Himachal tour packages, Himachal itinerary, Shimla Manali package, Dharamshala Dalhousie tour, Spiti Valley tour, Kullu Kasol trip, Himachal cab package, Himachal travel planner, Himachal road trip, Himachal Explorer Portal, Chandan Panwar, Himachal booking, tour packages from Delhi, tour packages from Chandigarh, tour packages from Amritsar" />
-  <meta name="author" content="Chandan Panwar" />
+  <meta name="description" content="Explore Himachal tour packages with live road route maps, day-wise itineraries, places, and instant price estimates." />
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet=-1,max-video-preview=-1" />
   <link rel="canonical" href="https://himachalexplorer.in/" />
   <meta name="theme-color" content="#070A12" />
   <link rel="icon" href="./favicon.ico" />
 
-  <!-- ✅ OPEN GRAPH -->
+  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Himachal Explorer Portal – Tour Packages">
   <meta property="og:description" content="Live route map, day-wise itinerary, and price estimate for Himachal tour packages.">
   <meta property="og:url" content="https://himachalexplorer.in/">
   <meta property="og:image" content="https://himachalexplorer.in/og.jpg">
 
-  <!-- ✅ TWITTER -->
+  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Himachal Explorer Portal – Tour Packages">
   <meta name="twitter:description" content="Live route map, itinerary and price estimate for Himachal tour packages.">
   <meta name="twitter:image" content="https://himachalexplorer.in/og.jpg">
 
-  <!-- ✅ STRUCTURED DATA: Website -->
+  <!-- Structured data -->
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
     "@type":"WebSite",
     "name":"Himachal Explorer Portal",
-    "url":"https://himachalexplorer.in/",
-    "potentialAction":{
-      "@type":"SearchAction",
-      "target":"https://himachalexplorer.in/?q={search_term_string}",
-      "query-input":"required name=search_term_string"
-    }
-  }
-  </script>
-
-  <!-- ✅ STRUCTURED DATA: Organization / Person -->
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"Organization",
-    "name":"Himachal Explorer Portal",
-    "url":"https://himachalexplorer.in/",
-    "logo":"https://himachalexplorer.in/og.jpg",
-    "founder":{
-      "@type":"Person",
-      "name":"Chandan Panwar",
-      "email":"chandanpanwar001@gmail.com",
-      "telephone":"+91-7018138847"
-    },
-    "contactPoint":[{
-      "@type":"ContactPoint",
-      "contactType":"customer support",
-      "telephone":"+91-7018138847",
-      "email":"chandanpanwar001@gmail.com",
-      "availableLanguage":["en","hi"]
-    }]
+    "url":"https://himachalexplorer.in/"
   }
   </script>
 
@@ -89,25 +57,24 @@
       --stroke:rgba(255,255,255,.10);
       --muted:rgba(255,255,255,.65);
       --text:rgba(255,255,255,.92);
-      --shadow: 0 24px 90px rgba(0,0,0,.55);
-      --radius: 18px;
+      --shadow: 0 18px 70px rgba(0,0,0,.55);
+      --radius: 16px;
       --acc:#7C3AED;
 
-      --topH: 92px;
-      --gap: 14px;
+      --gap: 10px;
 
-      --leftPct: 36%;
-      --mapPct: 24%;
-      --rightPct: 40%;
+      /* ✅ 92% screen shell */
+      --shellW: min(92vw, 1500px);
     }
 
     *{ box-sizing:border-box; }
-    html,body{ height:100%; }
+    html,body{ height:auto; }
 
     body{
       margin:0;
       color:var(--text);
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-size: 13px;
       background:
         radial-gradient(1200px 600px at 20% 0%, rgba(124,58,237,.18), transparent 60%),
         radial-gradient(900px 520px at 85% 10%, rgba(34,197,94,.14), transparent 60%),
@@ -137,67 +104,45 @@
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
     }
 
-    .app{ min-height:100%; display:grid; grid-template-rows: var(--topH) 1fr; }
+    .shell{
+      width: var(--shellW);
+      margin: 0 auto;
+      padding: 12px 10px 18px;
+    }
+
+    .app{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      gap: var(--gap);
+    }
 
     .top{
       display:flex; align-items:center; justify-content:space-between;
-      padding: 14px 14px 12px;
-      border-bottom: 1px solid var(--stroke);
+      padding: 10px 10px;
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       backdrop-filter: blur(14px);
-      gap: 12px;
+      gap: 10px;
+      flex-wrap:wrap;
     }
 
-    .brand{ display:flex; align-items:center; gap:12px; min-width: 260px; }
+    .brand{ display:flex; align-items:center; gap:10px; min-width: 240px; }
     .logo{
-      width:54px; height:54px; border-radius:16px;
+      width:44px; height:44px; border-radius:14px;
       background: rgba(255,255,255,.10);
       border:1px solid var(--stroke);
       display:grid; place-items:center;
       overflow:hidden;
-      box-shadow: 0 18px 40px rgba(0,0,0,.35);
+      box-shadow: 0 14px 30px rgba(0,0,0,.35);
       flex:0 0 auto;
     }
     .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .brand p{ margin:4px 0 0; font-size:12px; color:var(--muted); line-height:1.25; }
-
-    /* ✅ CONTACT STRIP (Top Center) */
-    .topContact{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      flex-wrap:wrap;
-      padding: 0 8px;
-      min-width: 280px;
-    }
-    .contactChip{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.05);
-      border-radius: 999px;
-      padding: 8px 10px;
-      font-size: 11px;
-      letter-spacing:.08em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.82);
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      white-space: nowrap;
-      user-select:none;
-    }
-    .contactChip b{ color:#fff; letter-spacing:.06em; }
-    .contactChip a{
-      color:#fff;
-      text-decoration:none;
-      font-weight:900;
-      letter-spacing:.06em;
-    }
-    .contactChip a:hover{ text-decoration:underline; }
+    .brand p{ margin:3px 0 0; font-size:11px; color:var(--muted); line-height:1.25; }
 
     .actions{
-      display:flex; gap:10px; align-items:center;
-      min-width: 260px;
+      display:flex; gap:8px; align-items:center;
       justify-content:flex-end;
       flex-wrap:wrap;
     }
@@ -206,8 +151,8 @@
       background: rgba(255,255,255,.05);
       color: var(--muted);
       border-radius: 999px;
-      padding: 9px 12px;
-      font-size: 12px;
+      padding: 7px 10px;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing:.08em;
       display:inline-flex; align-items:center; gap:10px;
@@ -224,17 +169,15 @@
       color:#fff;
       font-weight:900;
     }
-    .chip.primary:hover{ filter: brightness(1.05); }
 
-    /* ✅ MAIN GRID (fixed, map moves with screen, scroll inside panes) */
+    /* ✅ MAIN GRID
+       IMPORTANT: map should not stretch with left/right.
+       We keep grid items aligned to start, and the MAP pane has its own fixed/viewport height (sticky). */
     .main{
       display:grid;
-      grid-template-columns: var(--leftPct) var(--mapPct) var(--rightPct);
+      grid-template-columns: 0.34fr 0.30fr 0.36fr;
       gap: var(--gap);
-      padding:14px;
-      min-height:0;
-      align-items:stretch;
-      overflow:hidden;
+      align-items:start; /* ✅ prevents column height stretch */
     }
 
     .pane{
@@ -246,14 +189,22 @@
 
       display:flex;
       flex-direction:column;
-
-      height:100%;
-      min-height:0;
       overflow:hidden;
+      height: auto;          /* ✅ natural height for left/right */
+      min-height: 540px;
+    }
+
+    /* ✅ Map pane: fixed position/height behavior */
+    .pane.mapPane{
+      position: sticky;
+      top: 12px;
+      height: calc(100vh - 120px); /* ✅ keeps map in its position */
+      min-height: 560px;
+      max-height: 860px;
     }
 
     .paneHdr{
-      padding: 12px 12px 10px;
+      padding: 10px 10px 8px;
       border-bottom:1px solid var(--stroke);
       display:flex;
       align-items:flex-end;
@@ -262,24 +213,24 @@
       flex:0 0 auto;
     }
     .paneHdr .t{
-      font-size:12px;
+      font-size:11px;
       letter-spacing:.18em;
       text-transform: uppercase;
       margin:0;
     }
     .paneHdr .s{
-      font-size:11px;
+      font-size:10.5px;
       color:var(--muted);
       letter-spacing:.08em;
       text-transform: uppercase;
     }
 
     .filters{
-      padding: 12px;
+      padding: 10px;
       border-bottom:1px solid var(--stroke);
       display:grid;
       grid-template-columns: 1fr;
-      gap:10px;
+      gap:8px;
       background: rgba(0,0,0,.18);
       backdrop-filter: blur(10px);
       flex:0 0 auto;
@@ -288,7 +239,7 @@
     }
     .field label{
       display:block;
-      font-size: 11px;
+      font-size: 10.5px;
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing:.12em;
@@ -296,24 +247,26 @@
     }
     input, select{
       width:100%;
-      padding: 11px 12px;
-      border-radius: 14px;
+      padding: 10px 10px;
+      border-radius: 12px;
       border: 1px solid rgba(255,255,255,.14);
       background: rgba(0,0,0,.25);
       color: rgba(255,255,255,.92);
       outline:none;
       position:relative;
       z-index:30;
+      font-size: 13px;
     }
     input:focus, select:focus{
       border-color: rgba(124,58,237,.55);
       box-shadow: 0 0 0 3px rgba(124,58,237,.16);
     }
-    .btnRow{ display:flex; gap:10px; }
+
+    .btnRow{ display:flex; gap:8px; }
     .btn{
       flex:1;
-      padding: 11px 12px;
-      border-radius: 14px;
+      padding: 10px 10px;
+      border-radius: 12px;
       border: 1px solid rgba(255,255,255,.14);
       background: linear-gradient(135deg, rgba(124,58,237,.95), rgba(6,182,212,.65));
       color:#fff;
@@ -321,16 +274,15 @@
       letter-spacing:.10em;
       text-transform: uppercase;
       cursor:pointer;
+      font-size: 11px;
     }
     .btn.secondary{ background: rgba(255,255,255,.06); color: rgba(255,255,255,.85); }
-    .btn:hover{ filter: brightness(1.05); transform: translateY(-1px); }
-    .btn:active{ transform: translateY(0px); }
 
     .metaPills{
-      padding: 0 12px 12px;
+      padding: 0 10px 10px;
       display:flex;
       flex-wrap:wrap;
-      gap:8px;
+      gap:7px;
       background: rgba(0,0,0,.18);
       backdrop-filter: blur(10px);
       border-bottom:1px solid var(--stroke);
@@ -340,8 +292,8 @@
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.05);
       border-radius: 999px;
-      padding: 7px 10px;
-      font-size: 11px;
+      padding: 6px 9px;
+      font-size: 10.5px;
       letter-spacing:.10em;
       text-transform: uppercase;
       color: rgba(255,255,255,.78);
@@ -351,7 +303,7 @@
     .pill.pillHint{
       text-transform:none;
       letter-spacing:.02em;
-      font-size:11px;
+      font-size:10.5px;
       padding:6px 10px;
       line-height:1.2;
       justify-content:center;
@@ -370,27 +322,21 @@
     .districtBar{
       display:flex;
       flex-wrap:nowrap;
-      gap:10px;
-      padding:10px 12px;
+      gap:8px;
+      padding:9px 10px;
       border-top:1px solid rgba(255,255,255,.08);
       border-bottom:1px solid rgba(255,255,255,.08);
       overflow-x:auto;
-      overflow-y:hidden;
       -webkit-overflow-scrolling: touch;
       background: rgba(0,0,0,.12);
-    }
-    .districtBar::-webkit-scrollbar{ height:10px; }
-    .districtBar::-webkit-scrollbar-thumb{
-      background: rgba(255,255,255,.10);
-      border-radius: 999px;
     }
     .distItem{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.05);
       color: rgba(255,255,255,.86);
       border-radius: 999px;
-      padding:9px 12px;
-      font-size: 11px;
+      padding:8px 10px;
+      font-size: 10.5px;
       letter-spacing:.10em;
       text-transform: uppercase;
       cursor:pointer;
@@ -398,52 +344,34 @@
       flex:0 0 auto;
       white-space:nowrap;
     }
-    .distItem:hover{ background: rgba(255,255,255,.08); }
     .distItem.active{
       border-color: rgba(124,58,237,.70);
       box-shadow: 0 0 0 3px rgba(124,58,237,.16);
       background: rgba(124,58,237,.12);
     }
 
-    .pkgListWrap{
-      flex:1;
-      min-height:0;
-      display:flex;
-      flex-direction:column;
-      overflow:hidden;
-    }
-
+    .pkgListWrap{ flex:1; min-height:0; display:flex; flex-direction:column; overflow:hidden; }
     .pkgListHdr{
       flex:0 0 auto;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      padding:10px 12px;
+      padding:9px 10px;
       border-bottom:1px solid rgba(255,255,255,.08);
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
       backdrop-filter: blur(10px);
     }
-    .pkgListTitle{
-      font-weight:950;
-      letter-spacing:.16em;
-      text-transform: uppercase;
-      font-size: 11px;
-    }
-    .pkgListMeta{
-      font-size:11px;
-      color: rgba(255,255,255,.70);
-      letter-spacing:.10em;
-      text-transform: uppercase;
-    }
+    .pkgListTitle{ font-weight:950; letter-spacing:.16em; text-transform: uppercase; font-size: 10.5px; }
+    .pkgListMeta{ font-size:10.5px; color: rgba(255,255,255,.70); letter-spacing:.10em; text-transform: uppercase; }
 
     .pkgList{
-      padding: 12px;
+      padding: 10px;
       overflow-y:auto;
       -webkit-overflow-scrolling: touch;
       display:grid;
       grid-template-columns: 1fr;
-      gap:10px;
+      gap:9px;
       min-height:0;
       background: rgba(0,0,0,.10);
       flex:1;
@@ -452,39 +380,27 @@
     .pkgGroupHdr{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.05);
-      border-radius: 16px;
-      padding: 10px;
+      border-radius: 14px;
+      padding: 9px;
     }
-    .pkgGroupHdr .h1{
-      font-size: 12px;
-      font-weight: 950;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-    }
-    .pkgGroupHdr .h2{
-      margin-top:6px;
-      font-size: 11px;
-      color: rgba(255,255,255,.75);
-      letter-spacing:.08em;
-      text-transform: uppercase;
-      line-height: 1.35;
-    }
+    .pkgGroupHdr .h1{ font-size: 11px; font-weight: 950; letter-spacing:.12em; text-transform: uppercase; }
+    .pkgGroupHdr .h2{ margin-top:5px; font-size: 10.5px; color: rgba(255,255,255,.75); letter-spacing:.08em; text-transform: uppercase; line-height: 1.35; }
 
     .pkg{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.22);
-      border-radius: 16px;
-      padding: 10px;
+      border-radius: 14px;
+      padding: 9px;
       cursor:pointer;
       transition: transform .12s ease, border-color .12s ease, background .12s ease;
-      display:flex; gap:10px;
+      display:flex; gap:9px;
       min-width:0;
     }
     .pkg:hover{ transform: translateY(-1px); border-color: rgba(124,58,237,.35); background: rgba(0,0,0,.28); }
     .pkg.active{ border-color: rgba(124,58,237,.70); box-shadow: 0 0 0 3px rgba(124,58,237,.18); }
 
     .pkgPic{
-      width:58px; height:58px; border-radius: 14px;
+      width:50px; height:50px; border-radius: 12px;
       border:1px solid rgba(255,255,255,.12);
       background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.14), rgba(124,58,237,.18));
       overflow:hidden;
@@ -492,31 +408,32 @@
       display:grid; place-items:center;
       font-weight: 950;
       color: rgba(255,255,255,.85);
+      font-size: 12px;
     }
     .pkgPic img{ width:100%; height:100%; object-fit:cover; display:block; }
     .pkgBody{ min-width:0; flex:1; }
     .pkgName{
-      font-size: 12.5px;
+      font-size: 11.5px;
       font-weight: 950;
       letter-spacing:.10em;
       text-transform: uppercase;
       white-space: nowrap;
       overflow:hidden;
       text-overflow: ellipsis;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
     .pkgMeta{
-      font-size: 11px;
+      font-size: 10.5px;
       color: rgba(255,255,255,.72);
       letter-spacing:.08em;
       text-transform: uppercase;
       line-height: 1.35;
     }
     .diffLine{
-      margin-top:6px;
-      font-size: 11px;
+      margin-top:5px;
+      font-size: 10.8px;
       color: rgba(255,255,255,.88);
-      letter-spacing:.04em;
+      letter-spacing:.03em;
       text-transform:none;
       line-height:1.35;
       opacity:.98;
@@ -524,28 +441,29 @@
       word-break: break-word;
     }
 
+    /* ✅ MAP AREA: fixed height inside mapPane (no stretching from other columns) */
     #map{
       width:100%;
-      height:100%;
-      min-height:0;
+      flex:1;
+      min-height: 360px;
       background: rgba(255,255,255,.04);
       border-radius: var(--radius);
       overflow:hidden;
-      flex:1;
     }
     .mapTools{
-      padding: 10px 12px;
+      padding: 9px 10px;
       border-top:1px solid var(--stroke);
-      display:flex; gap:10px; flex-wrap:wrap;
+      display:flex; gap:8px; flex-wrap:wrap;
       flex:0 0 auto;
+      background: rgba(0,0,0,.14);
     }
     .toolBtn{
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.05);
       color: rgba(255,255,255,.88);
-      border-radius: 14px;
-      padding: 10px 12px;
-      font-size: 11px;
+      border-radius: 12px;
+      padding: 9px 10px;
+      font-size: 10.5px;
       letter-spacing:.12em;
       text-transform: uppercase;
       cursor:pointer;
@@ -554,77 +472,67 @@
       white-space: nowrap;
       text-decoration:none;
     }
-    .toolBtn:hover{ background: rgba(255,255,255,.08); }
 
     .itWrap{
-      padding: 12px;
+      padding: 10px;
       overflow-y:auto;
       display:flex;
       flex-direction:column;
-      gap:12px;
+      gap:10px;
       min-height:0;
       flex:1;
       -webkit-overflow-scrolling: touch;
+      background: rgba(0,0,0,.18);
     }
     .heroCard{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.22);
-      border-radius: 16px;
-      padding: 12px;
+      border-radius: 14px;
+      padding: 10px;
     }
     .bigTitle{
       margin:0;
-      font-size: 13px;
+      font-size: 12px;
       letter-spacing:.18em;
       text-transform: uppercase;
       color:#fff;
     }
-    .muted{ color: var(--muted); font-size: 11.5px; letter-spacing:.08em; text-transform: uppercase; line-height:1.35; }
+    .muted{ color: var(--muted); font-size: 10.8px; letter-spacing:.08em; text-transform: uppercase; line-height:1.35; }
 
-    .row2{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
+    .row2{ display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
     .mini{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.05);
-      border-radius: 16px;
-      padding: 10px;
+      border-radius: 14px;
+      padding: 9px;
     }
-    .mini .k{ font-size: 10.5px; letter-spacing:.16em; text-transform: uppercase; color: rgba(255,255,255,.70); }
-    .mini .v{ margin-top:6px; font-size: 14px; font-weight: 950; letter-spacing:.06em; color:#fff; }
-    .mini .v small{ font-size: 11px; color: rgba(255,255,255,.72); font-weight: 800; }
+    .mini .k{ font-size: 10px; letter-spacing:.16em; text-transform: uppercase; color: rgba(255,255,255,.70); }
+    .mini .v{ margin-top:5px; font-size: 13px; font-weight: 950; letter-spacing:.06em; color:#fff; }
+    .mini .v small{ font-size: 10.5px; color: rgba(255,255,255,.72); font-weight: 800; }
 
-    .daysList{ display:flex; flex-direction:column; gap:10px; }
+    .daysList{ display:flex; flex-direction:column; gap:9px; }
     .dayCard{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.22);
-      border-radius: 16px;
-      padding: 12px;
+      border-radius: 14px;
+      padding: 10px;
     }
-    .dayTop{
-      display:flex; justify-content:space-between; align-items:center; gap:10px;
-      margin-bottom: 8px;
-    }
-    .dayTop .d{
-      font-size: 12px; font-weight: 950; letter-spacing:.18em; text-transform: uppercase;
-    }
+    .dayTop{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom: 7px; }
+    .dayTop .d{ font-size: 11px; font-weight: 950; letter-spacing:.18em; text-transform: uppercase; }
 
     .placeLine{
-      display:flex; align-items:center; gap:10px;
-      padding: 8px 10px;
+      display:flex; align-items:center; gap:9px;
+      padding: 7px 9px;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.05);
-      border-radius: 14px;
-      margin-top: 8px;
+      border-radius: 12px;
+      margin-top: 7px;
       cursor:pointer;
     }
-    .placeLine:hover{ background: rgba(255,255,255,.08); }
 
     .thumb{
-      width:40px; height:40px;
-      border-radius: 12px;
+      width:36px; height:36px;
+      border-radius: 11px;
       border:1px solid rgba(255,255,255,.10);
       overflow:hidden;
       background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.14), rgba(6,182,212,.18));
@@ -632,12 +540,13 @@
       display:grid; place-items:center;
       font-weight:950;
       color: rgba(255,255,255,.9);
+      font-size: 11px;
     }
     .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
 
     .pinfo{ min-width:0; flex:1; }
     .pname{
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 950;
       letter-spacing:.10em;
       text-transform: uppercase;
@@ -647,7 +556,7 @@
     }
     .pmeta{
       margin-top:3px;
-      font-size: 10.5px;
+      font-size: 10px;
       letter-spacing:.12em;
       text-transform: uppercase;
       color: rgba(255,255,255,.68);
@@ -656,19 +565,14 @@
       text-overflow: ellipsis;
     }
 
-    .tabs{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
+    .tabs{ display:flex; gap:8px; flex-wrap:wrap; margin-top:9px; }
     .tabBtn{
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.05);
       color: rgba(255,255,255,.82);
       border-radius: 999px;
-      padding: 8px 10px;
-      font-size: 11px;
+      padding: 7px 9px;
+      font-size: 10.5px;
       letter-spacing:.12em;
       text-transform: uppercase;
       cursor:pointer;
@@ -686,14 +590,14 @@
     .placeDetail{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.22);
-      border-radius: 16px;
-      padding: 12px;
+      border-radius: 14px;
+      padding: 10px;
       overflow:hidden;
     }
     .placeHero{
       width:100%;
-      height:160px;
-      border-radius: 14px;
+      height:150px;
+      border-radius: 12px;
       overflow:hidden;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.04);
@@ -707,8 +611,8 @@
       border:1px solid rgba(255,255,255,.18);
       background: rgba(0,0,0,.45);
       color:#fff;
-      border-radius: 12px;
-      padding: 6px 10px;
+      border-radius: 10px;
+      padding: 6px 9px;
       cursor:pointer;
       user-select:none;
     }
@@ -725,10 +629,10 @@
       z-index: 9999;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(10,14,24,.88);
-      border-radius: 16px;
-      padding: 10px 12px;
+      border-radius: 14px;
+      padding: 9px 10px;
       color: rgba(255,255,255,.82);
-      font-size: 11px;
+      font-size: 10.5px;
       letter-spacing:.12em;
       text-transform: uppercase;
       box-shadow: 0 30px 90px rgba(0,0,0,.65);
@@ -740,30 +644,30 @@
     .breakdown{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.22);
-      border-radius: 16px;
-      padding: 12px;
+      border-radius: 14px;
+      padding: 10px;
     }
     .bdTitle{
       display:flex; align-items:center; justify-content:space-between; gap:10px;
-      font-weight:950; letter-spacing:.12em; text-transform: uppercase; font-size:11px;
+      font-weight:950; letter-spacing:.12em; text-transform: uppercase; font-size:10.5px;
     }
     .bdGrid{
-      margin-top:10px;
+      margin-top:9px;
       display:grid;
       grid-template-columns: 1fr 1fr;
-      gap:10px;
+      gap:8px;
     }
     .bdRow{
       border:1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.04);
-      border-radius: 14px;
-      padding: 10px;
+      border-radius: 12px;
+      padding: 9px;
     }
     .bdRow .k{ font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.72); }
-    .bdRow .v{ margin-top:6px; font-size:13px; font-weight:950; }
+    .bdRow .v{ margin-top:5px; font-size:12.5px; font-weight:950; }
     .bdSmall{
-      margin-top:10px;
-      font-size:11px;
+      margin-top:9px;
+      font-size:10.8px;
       color: rgba(255,255,255,.74);
       line-height:1.45;
       letter-spacing:.02em;
@@ -772,23 +676,104 @@
     }
     #priceDebug{ display:none !important; }
 
-    /* ✅ FOOTER CONTACT */
-    .footer{
-      border-top:1px solid rgba(255,255,255,.10);
-      padding: 10px 14px 14px;
+    /* ✅ Nearby options grid (one row, square cards) */
+    .nearWrap{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      border-radius: 14px;
+      padding: 10px;
+    }
+    .nearHdr{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .nearHdr .ttl{
+      font-weight:950;
+      letter-spacing:.16em;
+      text-transform: uppercase;
+      font-size:10.5px;
+      color:#fff;
+    }
+    .nearHdr .sub{
+      font-size:10px;
       color: rgba(255,255,255,.70);
-      font-size: 11px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      white-space:nowrap;
+    }
+    .nearGrid{
+      display:flex;
+      gap:10px;
+      overflow-x:auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom:4px;
+    }
+    .nearCard{
+      width: 112px;
+      flex: 0 0 auto;
+      cursor:pointer;
+      user-select:none;
+    }
+    .nearSquare{
+      width:112px;
+      height:112px;
+      border-radius: 14px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      display:grid;
+      place-items:center;
+      position:relative;
+    }
+    .nearSquare img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .nearName{
+      margin-top:8px;
+      font-size:10.5px;
+      font-weight:950;
+      letter-spacing:.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.90);
+      line-height:1.2;
+      text-align:center;
+      max-width:112px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .nearMeta{
+      margin-top:4px;
+      font-size:10px;
+      color: rgba(255,255,255,.65);
+      letter-spacing:.08em;
+      text-transform: uppercase;
+      text-align:center;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      max-width:112px;
+    }
+
+    .footer{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      color: rgba(255,255,255,.70);
+      font-size: 10.5px;
       letter-spacing:.06em;
       text-transform: uppercase;
       display:flex;
       gap:10px;
       justify-content:space-between;
       flex-wrap:wrap;
+      background: rgba(0,0,0,.18);
+      backdrop-filter: blur(10px);
     }
     .footer a{ color:#fff; text-decoration:none; font-weight:900; }
     .footer a:hover{ text-decoration:underline; }
 
-    /* ✅ FLOATING WHATSAPP BUTTON */
     .waFloat{
       position:fixed;
       right: 14px;
@@ -817,26 +802,9 @@
       border:1px solid rgba(34,197,94,.35);
       flex:0 0 auto;
     }
-    .waText{
-      display:flex;
-      flex-direction:column;
-      line-height:1.1;
-      min-width:0;
-    }
-    .waText .t1{
-      font-size: 12px;
-      font-weight: 950;
-      letter-spacing:.10em;
-      text-transform: uppercase;
-      white-space:nowrap;
-    }
-    .waText .t2{
-      margin-top:4px;
-      font-size: 11px;
-      color: rgba(255,255,255,.80);
-      letter-spacing:.04em;
-      white-space:nowrap;
-    }
+    .waText{ display:flex; flex-direction:column; line-height:1.1; min-width:0; }
+    .waText .t1{ font-size: 12px; font-weight: 950; letter-spacing:.10em; text-transform: uppercase; white-space:nowrap; }
+    .waText .t2{ margin-top:4px; font-size: 11px; color: rgba(255,255,255,.80); letter-spacing:.04em; white-space:nowrap; }
     .waClose{
       width:34px; height:34px;
       border-radius: 999px;
@@ -848,9 +816,6 @@
       flex:0 0 auto;
       user-select:none;
     }
-    .waClose:hover{ background: rgba(255,255,255,.10); }
-
-    /* On small phones, show only icon */
     @media (max-width: 420px){
       .waText{ display:none; }
       .waFloat{ padding: 10px; }
@@ -858,86 +823,22 @@
     }
 
     /* ✅ MOBILE */
-    @media (max-width: 1200px){
-      html, body{
-        height:auto !important;
-        overflow:auto !important;
-        overscroll-behavior:auto !important;
-      }
-      .app{
-        min-height: 100vh !important;
-        height:auto !important;
-        grid-template-rows: auto 1fr !important;
-      }
-      .top{
-        position: relative !important;
-        padding: 10px 12px !important;
-        flex-wrap:wrap;
-      }
-      .logo{ width:44px; height:44px; border-radius:14px; }
-      .brand{ min-width: unset !important; }
-      .brand p{ font-size:11px; }
-      .topContact{ width:100%; justify-content:flex-start; }
-      .actions{
-        min-width:unset !important;
-        gap:8px !important;
-        justify-content:flex-start;
-        width:100%;
-      }
-      .chip{
-        padding:7px 10px !important;
-        font-size:10px !important;
-        letter-spacing:.06em !important;
-      }
+    @media (max-width: 1100px){
+      .shell{ width: 100%; padding: 10px 10px 16px; }
       .main{
-        height:auto !important;
-        overflow:visible !important;
-        grid-template-columns: 1fr !important;
-        grid-template-rows: auto auto auto !important;
-        padding: 12px !important;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
       }
-      .pane{
-        height:auto !important;
-        min-height:unset !important;
+      .pane{ min-height: unset; }
+      .pane.mapPane{
+        position: relative;
+        top: auto;
+        height: 520px;
+        max-height: none;
       }
-      #map{ height: 320px !important; }
-      .mapTools{
-        display:grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap:10px !important;
-      }
-      .toolBtn{ justify-content:center !important; }
-      .row2{ grid-template-columns: 1fr !important; }
-      .bdGrid{ grid-template-columns: 1fr !important; }
-      .itWrap{ overflow:visible !important; }
-      .pkgList{ max-height: 520px; }
-    }
-
-    /* ✅ DESKTOP: lock page scroll, scroll inside left+right panes */
-    @media (min-width:1201px){
-      html,body{
-        height:100%;
-        overflow:hidden;
-      }
-      .app{
-        height:100vh;
-        display:grid;
-        grid-template-rows:auto 1fr;
-      }
-      .main{
-        height:100%;
-        overflow:hidden;
-      }
-      .pane{
-        height:100%;
-        min-height:0;
-        overflow:hidden;
-        display:flex;
-        flex-direction:column;
-      }
-      .pkgList{ overflow-y:auto; }
-      .itWrap{ overflow-y:auto; }
-      #map{ height:100%; }
+      #map{ min-height: 320px; }
+      .row2{ grid-template-columns: 1fr; }
+      .bdGrid{ grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -946,7 +847,7 @@
   <div class="aurora"></div>
   <div class="noise"></div>
 
-  <!-- ✅ Floating WhatsApp CTA (global) -->
+  <!-- WhatsApp CTA -->
   <a
     class="waFloat"
     id="waFloat"
@@ -955,7 +856,6 @@
     aria-label="Chat on WhatsApp with Chandan Panwar"
   >
     <div class="waIcon" aria-hidden="true">
-      <!-- WhatsApp SVG -->
       <svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <path d="M16 3C9.1 3 3.5 8.3 3.5 14.9c0 2.5.8 4.8 2.2 6.7L4 29l7.6-1.9c1.8 1 3.9 1.6 6.4 1.6 6.9 0 12.5-5.3 12.5-11.9S22.9 3 16 3z" fill="rgba(255,255,255,.18)"/>
         <path d="M16.1 6.1c-5.1 0-9.2 3.9-9.2 8.8 0 1.9.6 3.6 1.7 5.1l-1.1 4 4.2-1.1c1.4.8 3.1 1.3 4.9 1.3 5.1 0 9.2-3.9 9.2-8.8s-4.1-8.8-9.2-8.8z" fill="rgba(255,255,255,.22)"/>
@@ -969,217 +869,226 @@
     <div class="waClose" id="waClose" title="Hide" aria-label="Hide WhatsApp button">✕</div>
   </a>
 
-  <div class="app">
-    <div class="top">
-      <div class="brand">
-        <div class="logo">
-          <img src="logo.png" alt="Himachal Explorer Logo" onerror="this.remove(); this.parentNode.textContent='HP';">
+  <div class="shell">
+    <div class="app">
+
+      <div class="top">
+        <div class="brand">
+          <div class="logo">
+            <img src="logo.png" alt="Himachal Explorer Logo" onerror="this.remove(); this.parentNode.textContent='HP';">
+          </div>
+          <div>
+            <div style="margin:0;font-size:13px;letter-spacing:.18em;text-transform:uppercase;font-weight:900;">Himachal Explorer Portal</div>
+            <p id="statusLine">Loading…</p>
+          </div>
         </div>
+
+        <div class="actions">
+          <div class="chip primary" id="mintLoginBtn">Mint Login</div>
+          <div class="chip" id="fitMapBtn">Fit Route</div>
+          <div class="chip" id="clearRouteBtn">Clear</div>
+          <div class="chip" id="refreshBtn">Refresh</div>
+        </div>
+      </div>
+
+      <div class="main">
+        <!-- LEFT -->
+        <div class="pane">
+          <div class="paneHdr">
+            <div>
+              <p class="t">Package Finder</p>
+              <div class="s">Templates: <b>/templates</b> • Places: <b>/places_in_packages</b></div>
+            </div>
+            <div class="s" id="leftHint">Start + Days based selection</div>
+          </div>
+
+          <div class="filters">
+            <div class="field">
+              <label>Start</label>
+              <input id="startInp" list="startList" placeholder="E.g. AMRITSAR / DELHI / CHANDIGARH" autocomplete="off">
+              <datalist id="startList"></datalist>
+            </div>
+
+            <div class="field">
+              <label>Visit Type</label>
+              <select id="visitType">
+                <option value="budget">BUDGET</option>
+                <option value="premium">PREMIUM</option>
+                <option value="luxury">LUXURY</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Days (Required for match)</label>
+              <select id="daysSel">
+                <option value="">ANY</option>
+                <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+                <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+                <option>11</option><option>12</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Pax</label>
+              <select id="paxSel">
+                <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+                <option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+              </select>
+            </div>
+
+            <div class="btnRow">
+              <button class="btn secondary" id="resetBtn" type="button">Reset</button>
+              <button class="btn" id="genBtn" type="button">Generate</button>
+            </div>
+          </div>
+
+          <div class="metaPills" id="pills"></div>
+
+          <div class="pkgLayout">
+            <div class="districtBar" id="districtBar"></div>
+
+            <div class="pkgListWrap">
+              <div class="pkgListHdr">
+                <div class="pkgListTitle">Packages</div>
+                <div class="pkgListMeta" id="pkgCount">—</div>
+              </div>
+
+              <div class="pkgList" id="pkgList">
+                <div class="pill pillHint"><span>Type Start & click</span> <b>Generate</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MID (MAP) -->
+        <div class="pane mapPane">
+          <div class="paneHdr">
+            <div>
+              <p class="t">Live Route Map</p>
+              <div class="s">OSRM road polyline + markers</div>
+            </div>
+            <div class="s" id="kmBadge">—</div>
+          </div>
+
+          <div id="map"></div>
+
+          <div class="mapTools">
+            <div class="toolBtn" id="showAllStopsBtn">Show Stops</div>
+            <div class="toolBtn" id="showStartEndBtn">Start/End Only</div>
+            <div class="toolBtn" id="toggleTilesBtn">Toggle Tiles</div>
+            <div class="toolBtn" id="toggleBreakdownBtn">Cost Breakdown</div>
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="pane">
+          <div class="paneHdr">
+            <div>
+              <p class="t">Itinerary</p>
+              <div class="s">Nearby options shown below (grid)</div>
+            </div>
+            <div class="s" id="activePkgName">—</div>
+          </div>
+
+          <div class="itWrap">
+            <div class="heroCard">
+              <h3 class="bigTitle" id="itTitle">Select a package</h3>
+              <div class="muted" id="itMeta">Day-wise details will appear here</div>
+              <div class="muted" id="priceDebug" style="margin-top:8px; text-transform:none; white-space:pre-wrap;"></div>
+
+              <div class="tabs">
+                <div class="tabBtn active" id="tabItinBtn">Itinerary</div>
+                <div class="tabBtn" id="tabLocBtn">Location</div>
+                <div class="tabBtn" id="tabHomeBtn">Home</div>
+              </div>
+            </div>
+
+            <div class="row2">
+              <div class="mini">
+                <div class="k">Total (est.)</div>
+                <div class="v" id="priceTotal">— <small></small></div>
+              </div>
+              <div class="mini">
+                <div class="k">Per Person</div>
+                <div class="v" id="pricePer">— <small></small></div>
+              </div>
+            </div>
+
+            <div class="mini">
+              <div class="k">Pax used in price</div>
+              <div class="v" id="paxUsed">— <small></small></div>
+            </div>
+
+            <div class="breakdown" id="breakdownCard" style="display:none;">
+              <div class="bdTitle">
+                <div>Cost Breakdown</div>
+                <div class="muted" id="bdMeta" style="text-transform:none;letter-spacing:.02em;">—</div>
+              </div>
+              <div class="bdGrid">
+                <div class="bdRow">
+                  <div class="k">Transport</div>
+                  <div class="v" id="bdTransport">—</div>
+                </div>
+                <div class="bdRow">
+                  <div class="k">Hotel</div>
+                  <div class="v" id="bdHotel">—</div>
+                </div>
+                <div class="bdRow">
+                  <div class="k">Route KM (used)</div>
+                  <div class="v" id="bdKm">—</div>
+                </div>
+                <div class="bdRow">
+                  <div class="k">Rooms / Nights</div>
+                  <div class="v" id="bdRoomsNights">—</div>
+                </div>
+              </div>
+              <div class="bdSmall" id="bdText">—</div>
+            </div>
+
+            <!-- ✅ Nearby Options (one row grid) -->
+            <div class="nearWrap" id="nearWrap" style="display:none;">
+              <div class="nearHdr">
+                <div class="ttl">Nearby Options</div>
+                <div class="sub" id="nearMeta">—</div>
+              </div>
+              <div class="nearGrid" id="nearGrid"></div>
+            </div>
+
+            <div class="heroCard">
+              <div class="muted" style="margin-bottom:8px;">Package includes / excludes</div>
+              <div class="muted" id="incExc">—</div>
+            </div>
+
+            <div class="tabPanel active" id="itinPanel">
+              <div class="daysList" id="daysList"></div>
+            </div>
+
+            <div class="tabPanel" id="locPanel">
+              <div class="placeDetail" id="placeDetail">
+                <div class="muted">Tap any place from itinerary to see History + What you can find + Photos here.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div>© <span id="yr"></span> Himachal Explorer Portal</div>
         <div>
-          <div style="margin:0;font-size:14px;letter-spacing:.18em;text-transform:uppercase;font-weight:900;">Himachal Explorer Portal</div>
-          <p id="statusLine">Loading…</p>
+          FIT: <b>Chandan Panwar</b> •
+          <a href="tel:+917018138847">7018138847</a> •
+          <a href="mailto:chandanpanwar001@gmail.com">chandanpanwar001@gmail.com</a> •
+          <a href="https://wa.me/917018138847?text=Hi%20Chandan%2C%20I%20want%20to%20book%20a%20Himachal%20tour%20package." target="_blank" rel="noopener">WhatsApp</a>
         </div>
       </div>
 
-      <div class="actions">
-        <div class="chip primary" id="mintLoginBtn">Mint Login</div>
-        <div class="chip" id="fitMapBtn">Fit Route</div>
-        <div class="chip" id="clearRouteBtn">Clear</div>
-        <div class="chip" id="refreshBtn">Refresh</div>
-      </div>
-    </div>
-
-    <div class="main">
-      <!-- LEFT -->
-      <div class="pane">
-        <div class="paneHdr">
-          <div>
-            <p class="t">Package Finder</p>
-            <div class="s">Templates: <b>/templates</b> • Places: <b>/places_in_packages</b></div>
-          </div>
-          <div class="s" id="leftHint">Start + Days based selection</div>
-        </div>
-
-        <div class="filters">
-          <div class="field">
-            <label>Start</label>
-            <input id="startInp" list="startList" placeholder="E.g. AMRITSAR / DELHI / CHANDIGARH" autocomplete="off">
-            <datalist id="startList"></datalist>
-          </div>
-
-          <div class="field">
-            <label>Visit Type</label>
-            <select id="visitType">
-              <option value="budget">BUDGET</option>
-              <option value="premium">PREMIUM</option>
-              <option value="luxury">LUXURY</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label>Days (Required for match)</label>
-            <select id="daysSel">
-              <option value="">ANY</option>
-              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-              <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
-              <option>11</option><option>12</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label>Pax</label>
-            <select id="paxSel">
-              <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
-              <option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
-            </select>
-          </div>
-
-          <div class="btnRow">
-            <button class="btn secondary" id="resetBtn" type="button">Reset</button>
-            <button class="btn" id="genBtn" type="button">Generate</button>
-          </div>
-        </div>
-
-        <div class="metaPills" id="pills"></div>
-
-        <div class="pkgLayout">
-          <div class="districtBar" id="districtBar"></div>
-
-          <div class="pkgListWrap">
-            <div class="pkgListHdr">
-              <div class="pkgListTitle">Packages</div>
-              <div class="pkgListMeta" id="pkgCount">—</div>
-            </div>
-
-            <div class="pkgList" id="pkgList">
-              <div class="pill pillHint"><span>Type Start & click</span> <b>Generate</b></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- MID -->
-      <div class="pane">
-        <div class="paneHdr">
-          <div>
-            <p class="t">Live Route Map</p>
-            <div class="s">OSRM road polyline + markers (no popups)</div>
-          </div>
-          <div class="s" id="kmBadge">—</div>
-        </div>
-
-        <div id="map"></div>
-
-        <div class="mapTools">
-          <div class="toolBtn" id="showAllStopsBtn">Show Stops</div>
-          <div class="toolBtn" id="showStartEndBtn">Start/End Only</div>
-          <div class="toolBtn" id="toggleTilesBtn">Toggle Tiles</div>
-          <div class="toolBtn" id="toggleBreakdownBtn">Cost Breakdown</div>
-        </div>
-      </div>
-
-      <!-- RIGHT -->
-      <div class="pane">
-        <div class="paneHdr">
-          <div>
-            <p class="t">Itinerary</p>
-            <div class="s">Place popup shown here (Location tab)</div>
-          </div>
-          <div class="s" id="activePkgName">—</div>
-        </div>
-
-        <div class="itWrap">
-          <div class="heroCard">
-            <h3 class="bigTitle" id="itTitle">Select a package</h3>
-            <div class="muted" id="itMeta">Day-wise details will appear here</div>
-            <div class="muted" id="priceDebug" style="margin-top:8px; text-transform:none; white-space:pre-wrap;"></div>
-
-            <div class="tabs">
-              <div class="tabBtn active" id="tabItinBtn">Itinerary</div>
-              <div class="tabBtn" id="tabLocBtn">Location</div>
-              <div class="tabBtn" id="tabHomeBtn">Home</div>
-            </div>
-          </div>
-
-          <div class="row2">
-            <div class="mini">
-              <div class="k">Total (est.)</div>
-              <div class="v" id="priceTotal">— <small></small></div>
-            </div>
-            <div class="mini">
-              <div class="k">Per Person</div>
-              <div class="v" id="pricePer">— <small></small></div>
-            </div>
-          </div>
-
-          <div class="mini">
-            <div class="k">Pax used in price</div>
-            <div class="v" id="paxUsed">— <small></small></div>
-          </div>
-
-          <div class="breakdown" id="breakdownCard" style="display:none;">
-            <div class="bdTitle">
-              <div>Cost Breakdown</div>
-              <div class="muted" id="bdMeta" style="text-transform:none;letter-spacing:.02em;">—</div>
-            </div>
-            <div class="bdGrid">
-              <div class="bdRow">
-                <div class="k">Transport</div>
-                <div class="v" id="bdTransport">—</div>
-              </div>
-              <div class="bdRow">
-                <div class="k">Hotel</div>
-                <div class="v" id="bdHotel">—</div>
-              </div>
-              <div class="bdRow">
-                <div class="k">Route KM (used)</div>
-                <div class="v" id="bdKm">—</div>
-              </div>
-              <div class="bdRow">
-                <div class="k">Rooms / Nights</div>
-                <div class="v" id="bdRoomsNights">—</div>
-              </div>
-            </div>
-            <div class="bdSmall" id="bdText">—</div>
-          </div>
-
-          <div class="heroCard">
-            <div class="muted" style="margin-bottom:8px;">Package includes / excludes</div>
-            <div class="muted" id="incExc">—</div>
-          </div>
-
-          <div class="tabPanel active" id="itinPanel">
-            <div class="daysList" id="daysList"></div>
-          </div>
-
-          <div class="tabPanel" id="locPanel">
-            <div class="placeDetail" id="placeDetail">
-              <div class="muted">Tap any place from itinerary to see History + What you can find + Photos here.</div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- ✅ FOOTER (also helps trust + SEO) -->
-    <div class="footer">
-      <div>© <span id="yr"></span> Himachal Explorer Portal</div>
-      <div>
-        FIT: <b>Chandan Panwar</b> •
-        <a href="tel:+917018138847">7018138847</a> •
-        <a href="mailto:chandanpanwar001@gmail.com">chandanpanwar001@gmail.com</a> •
-        <a href="https://wa.me/917018138847?text=Hi%20Chandan%2C%20I%20want%20to%20book%20a%20Himachal%20tour%20package." target="_blank" rel="noopener">WhatsApp</a>
-      </div>
+      <div class="toast" id="toast"></div>
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
-
   <script>
-  /* ===============================
-     ✅ Floating WhatsApp: hide/show preference
-     =============================== */
+  /* Floating WhatsApp: hide/show preference */
   (function(){
     const KEY = "wa_float_hidden_v1";
     function apply(){
@@ -1188,7 +1097,6 @@
       if(el) el.style.display = hidden ? "none" : "flex";
     }
     window.addEventListener("DOMContentLoaded", ()=>{
-      const el = document.getElementById("waFloat");
       const close = document.getElementById("waClose");
       if(close){
         close.addEventListener("click", (e)=>{
@@ -1198,13 +1106,6 @@
           apply();
         });
       }
-      // long press / double tap to re-show (simple)
-      document.addEventListener("keydown",(e)=>{
-        if(e.key.toLowerCase()==="w"){
-          localStorage.removeItem(KEY);
-          apply();
-        }
-      });
       apply();
     });
   })();
@@ -1212,7 +1113,7 @@
 
   <script>
   /* ===============================
-     ✅ Firebase Config
+     Firebase Config
      =============================== */
   const firebaseConfig = {
     apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
@@ -1263,9 +1164,7 @@
   }
   function setStatus(msg){ $("statusLine").textContent = msg; }
 
-  /* ===============================
-     ✅ Place mapping
-     =============================== */
+  /* Place mapping */
   function placeIdAny(p, key){ return String(p?.place_id || p?.id || key || "").trim(); }
   function placeNameAny(p, key){
     return String(p?.name || p?.["Location Name"] || p?.title || key || "PLACE").trim();
@@ -1300,9 +1199,7 @@
   }
   function pickPhotoAny(p){ return pickAllPhotos(p)[0] || ""; }
 
-  /* ===============================
-     ✅ Tabs
-     =============================== */
+  /* Tabs */
   function setActiveTab(which){
     const itinBtn = $("tabItinBtn");
     const locBtn  = $("tabLocBtn");
@@ -1321,9 +1218,7 @@
     }
   }
 
-  /* ===============================
-     ✅ Place Details
-     =============================== */
+  /* Place Details */
   let ACTIVE_PLACE_GALLERY = { pid:"", idx:0, imgs:[] };
   let PLACES = {};
 
@@ -1360,17 +1255,17 @@
     $("placeDetail").innerHTML = `
       ${hero}
       <div style="margin-top:10px;">
-        <div style="font-weight:950; font-size:14px;">${escapeHtml(name)}</div>
-        ${dist ? `<div style="opacity:.8; font-size:12px; margin-top:2px;">${escapeHtml(dist)}</div>` : ``}
+        <div style="font-weight:950; font-size:13px;">${escapeHtml(name)}</div>
+        ${dist ? `<div style="opacity:.8; font-size:11px; margin-top:2px;">${escapeHtml(dist)}</div>` : ``}
       </div>
 
       ${hist ? `
-        <div style="margin-top:12px; font-weight:950; letter-spacing:.10em; text-transform:uppercase; font-size:11px; opacity:.95;">History</div>
+        <div style="margin-top:12px; font-weight:950; letter-spacing:.10em; text-transform:uppercase; font-size:10.5px; opacity:.95;">History</div>
         <div style="margin-top:6px; font-size:12px; opacity:.9; line-height:1.5;">${escapeHtml(hist)}</div>
       ` : ``}
 
       ${bullets.length ? `
-        <div style="margin-top:12px; font-weight:950; letter-spacing:.10em; text-transform:uppercase; font-size:11px; opacity:.95;">What you can find</div>
+        <div style="margin-top:12px; font-weight:950; letter-spacing:.10em; text-transform:uppercase; font-size:10.5px; opacity:.95;">What you can find</div>
         <ul style="margin:8px 0 0 18px; padding:0;">
           ${bullets.map(b=>`<li style="margin:5px 0; font-size:12px; opacity:.92;">${escapeHtml(b)}</li>`).join("")}
         </ul>
@@ -1406,32 +1301,144 @@
     galleryGo(g.idx + delta);
   }
 
-  /* ===============================
-     ✅ Map
-     =============================== */
+  /* ✅ Nearby Options logic (distance-based) */
+  function haversineKm(aLat,aLng,bLat,bLng){
+    const R = 6371;
+    const toRad = (x)=> x * Math.PI/180;
+    const dLat = toRad(bLat-aLat);
+    const dLng = toRad(bLng-aLng);
+    const s1 = Math.sin(dLat/2);
+    const s2 = Math.sin(dLng/2);
+    const q = s1*s1 + Math.cos(toRad(aLat))*Math.cos(toRad(bLat))*s2*s2;
+    return 2 * R * Math.asin(Math.min(1, Math.sqrt(q)));
+  }
+
+  function getNearbyPlaces(routePlaceIds, limit=10){
+    const used = new Set(routePlaceIds.filter(Boolean));
+    const anchors = routePlaceIds
+      .map(id => ({ id, p: PLACES[id] }))
+      .filter(x => x.p && isFinite(latAny(x.p)) && isFinite(lngAny(x.p)));
+
+    if(!anchors.length) return [];
+
+    // Candidate set: same district as any anchor OR within radius (fallback)
+    const anchorDistricts = new Set(anchors.map(x => districtAny(x.p)).filter(Boolean));
+
+    const candidates = [];
+    for(const [pid, p] of Object.entries(PLACES)){
+      if(used.has(pid)) continue;
+      const lat = latAny(p), lng = lngAny(p);
+      if(!isFinite(lat) || !isFinite(lng)) continue;
+
+      // Prefer same district; else still allow but will rank lower
+      const dist = districtAny(p);
+      const districtBonus = anchorDistricts.has(dist) ? -3 : 0; // lower score = better
+
+      // Score by nearest anchor distance
+      let best = Infinity;
+      for(const a of anchors){
+        const al = latAny(a.p), ag = lngAny(a.p);
+        const d = haversineKm(al, ag, lat, lng);
+        if(d < best) best = d;
+      }
+
+      // Practical filter: keep within ~80km, but if too few, allow wider later
+      candidates.push({ pid, bestKm: best, score: best + districtBonus });
+    }
+
+    candidates.sort((x,y)=> x.score - y.score);
+
+    // Pick those within 80km first
+    const within80 = candidates.filter(c=>c.bestKm <= 80).slice(0, limit);
+    if(within80.length >= Math.min(6, limit)) return within80;
+
+    // Fallback: fill remaining from closest overall
+    const need = limit - within80.length;
+    const fill = candidates.filter(c=>c.bestKm > 80).slice(0, need);
+    return within80.concat(fill);
+  }
+
+  function renderNearby(routeIds){
+    const wrap = $("nearWrap");
+    const grid = $("nearGrid");
+    const meta = $("nearMeta");
+
+    grid.innerHTML = "";
+    wrap.style.display = "none";
+    meta.textContent = "—";
+
+    if(!routeIds || routeIds.length < 1) return;
+
+    const near = getNearbyPlaces(routeIds, 12);
+    if(!near.length) return;
+
+    wrap.style.display = "block";
+    meta.textContent = `${near.length} suggestions`;
+
+    near.forEach(({pid, bestKm})=>{
+      const p = PLACES[pid] || {};
+      const nm = placeNameAny(p, pid);
+      const dist = districtAny(p) || "";
+      const url = pickPhotoAny(p);
+
+      const card = document.createElement("div");
+      card.className = "nearCard";
+      card.innerHTML = `
+        <div class="nearSquare">
+          ${
+            url
+              ? `<img src="${escapeHtml(url)}" alt="${escapeHtml(nm)}" loading="lazy" referrerpolicy="no-referrer"
+                   onerror="this.remove(); this.parentNode.textContent='${escapeHtml(initials(nm))}';">`
+              : `<div style="font-weight:950;opacity:.9;">${escapeHtml(initials(nm))}</div>`
+          }
+        </div>
+        <div class="nearName" title="${escapeHtml(nm)}">${escapeHtml(nm)}</div>
+        <div class="nearMeta" title="${escapeHtml(dist)}">${escapeHtml(dist || (bestKm ? bestKm.toFixed(0)+' km' : ''))}</div>
+      `;
+      card.onclick = ()=>{
+        renderPlaceDetails(pid);
+        const lat = latAny(p), lng = lngAny(p);
+        if(isFinite(lat) && isFinite(lng) && window.map){
+          map.setView([lat,lng], Math.max(map.getZoom(), 12), { animate:true });
+          invalidateMapSoon();
+        }
+      };
+      grid.appendChild(card);
+    });
+  }
+
+  /* Map */
   let map, tile, markersLayer, routeLine;
   let showMode = "all";
   let tilesDark = false;
+
+  function invalidateMapSoon(){
+    try{
+      setTimeout(()=>{ map && map.invalidateSize && map.invalidateSize(true); }, 60);
+      setTimeout(()=>{ map && map.invalidateSize && map.invalidateSize(true); }, 260);
+    }catch(e){}
+  }
 
   function initMap(){
     map = L.map('map', { zoomControl:true }).setView([31.1048, 77.1734], 8);
     tile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
     tile.addTo(map);
     markersLayer = L.layerGroup().addTo(map);
+    invalidateMapSoon();
+    window.addEventListener("resize", invalidateMapSoon);
   }
   function clearMap(){
     markersLayer.clearLayers();
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
     $("kmBadge").textContent = "—";
+    invalidateMapSoon();
   }
   function fitRoute(){
     if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] });
   }
 
-  /* ===============================
-     ✅ Data
-     =============================== */
-  let db, storage, analytics, auth;
+  /* Data */
+  let db, analytics, auth;
 
   let TEMPLATES = {};
   let ACTIVE_TEMPLATES = [];
@@ -1450,10 +1457,7 @@
   let stay_rate_rules = {};
   let PRICING_READY = false;
 
-  /* ===============================
-     ✅ Cache
-     =============================== */
-  const CACHE_KEY = "hp_portal_cache_v15_premium_results";
+  const CACHE_KEY = "hp_portal_cache_v16_nearby_grid";
   const CACHE_TTL_MS = 1000 * 60 * 30;
 
   function loadCache(){
@@ -1483,9 +1487,7 @@
 
       setStatus(`Loaded from cache • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places`);
       return true;
-    }catch(e){
-      return false;
-    }
+    }catch(e){ return false; }
   }
   function saveCache(){
     try{
@@ -1898,6 +1900,7 @@
           const lat = latAny(p), lng = lngAny(p);
           if(isFinite(lat) && isFinite(lng)){
             map.setView([lat,lng], Math.max(map.getZoom(), 12), { animate:true });
+            invalidateMapSoon();
           }
         };
 
@@ -1952,6 +1955,7 @@
       const latlngs = r.geometry.coordinates.map(c=>[c[1],c[0]]);
       routeLine = L.polyline(latlngs, { weight: 5, opacity: .95 }).addTo(map);
       fitRoute();
+      invalidateMapSoon();
 
       const markIds = (showMode==="startend")
         ? [validIds[0], validIds[validIds.length-1]]
@@ -1978,9 +1982,7 @@
     }
   }
 
-  /* ===============================
-     ✅ Pricing (unchanged)
-     =============================== */
+  /* Pricing (same as your previous setup) */
   function pickStayRule(tier){
     const t = String(tier||"budget").toLowerCase();
     const key = (t==="premium") ? "r2" : (t==="luxury") ? "r3" : "r1";
@@ -2076,8 +2078,7 @@
 
     const breakdown = {
       tier, season, vehicleKey,
-      routeKm: km,
-      billedKm,
+      routeKm: km, billedKm,
       perKm, driverPerDay, minKmPerDay, nightCharge, tollPct,
       roadMul, snowMul, bufferMul,
       nights, rooms, baseRoom, wkFactor,
@@ -2108,15 +2109,8 @@
     const lines =
       `PAX=${pax} DAYS=${bd.nights+1} NIGHTS=${bd.nights}\n` +
       `ROUTE_KM=${bd.routeKm.toFixed(1)}  MIN_KM/DAY=${bd.minKmPerDay || 0}  BILLED_KM=${bd.billedKm.toFixed(1)}\n\n` +
-      `TRANSPORT:\n` +
-      `  KM_COST = billedKm(${bd.billedKm.toFixed(1)}) * per_km(${bd.perKm}) * road(${bd.roadMul.toFixed(2)}) * snow(${bd.snowMul.toFixed(2)}) * buffer(${bd.bufferMul.toFixed(2)})\n` +
-      `         = ${Math.round(bd.transportKmCost)}\n` +
-      `  DRIVER  = days * driver/day = ${Math.round(bd.driverCost)}\n` +
-      `  NIGHT   = nights * night_charge = ${Math.round(bd.nightCost)}\n` +
-      `  TRANSPORT_TOTAL = ${Math.round(bd.transport)}\n\n` +
-      `HOTEL:\n` +
-      `  baseRoom(${bd.baseRoom}) * nights(${bd.nights}) * rooms(${bd.rooms}) * wkFactor(${bd.wkFactor.toFixed(2)})\n` +
-      `  HOTEL_TOTAL = ${Math.round(bd.hotel)}\n\n` +
+      `TRANSPORT_TOTAL = ${Math.round(bd.transport)}\n` +
+      `HOTEL_TOTAL = ${Math.round(bd.hotel)}\n` +
       `TOTAL = ${Math.round(bd.total)}  |  PER_PERSON = ${Math.round(bd.total/pax)}`;
 
     $("bdText").textContent = lines;
@@ -2176,6 +2170,7 @@
     const el = $("breakdownCard");
     const showing = el.style.display !== "none";
     el.style.display = showing ? "none" : "block";
+    invalidateMapSoon();
   }
 
   function applyFilters(){
@@ -2195,6 +2190,9 @@
     $("pricePer").innerHTML = "— <small></small>";
     $("paxUsed").innerHTML = "— <small></small>";
     $("breakdownCard").style.display = "none";
+    $("nearWrap").style.display = "none";
+    $("nearGrid").innerHTML = "";
+    $("nearMeta").textContent = "—";
     CURRENT_TEMPLATE_KEY = "";
     CURRENT_ROUTE_KM = 0;
     setActiveTab("itin");
@@ -2260,6 +2258,9 @@
     const rr = await drawRoadRouteFromPlaces(routeIds);
     CURRENT_ROUTE_KM = rr.ok ? rr.km : 0;
 
+    // ✅ Show Nearby Options grid after selection
+    renderNearby(routeIds);
+
     computePriceForCurrent();
   }
 
@@ -2308,6 +2309,7 @@
     try{
       await loadLive();
       toast("Refreshed from Firebase");
+      invalidateMapSoon();
       if($("pills").children.length){
         applyFilters();
       }else{
@@ -2350,7 +2352,6 @@
 
     firebase.initializeApp(firebaseConfig);
     db = firebase.database();
-    storage = firebase.storage();
     analytics = firebase.analytics();
     auth = firebase.auth();
 
@@ -2391,6 +2392,9 @@
       $("pricePer").innerHTML="— <small></small>";
       $("paxUsed").innerHTML="— <small></small>";
       $("breakdownCard").style.display="none";
+      $("nearWrap").style.display="none";
+      $("nearGrid").innerHTML="";
+      $("nearMeta").textContent="—";
       clearMap();
       CURRENT_TEMPLATE_KEY = "";
       CURRENT_ROUTE_KM = 0;
@@ -2400,9 +2404,10 @@
       ACTIVE_DISTRICT = "ALL";
       setActiveTab("itin");
       toast("Reset done");
+      invalidateMapSoon();
     });
 
-    $("fitMapBtn").addEventListener("click", fitRoute);
+    $("fitMapBtn").addEventListener("click", ()=>{ fitRoute(); invalidateMapSoon(); });
     $("clearRouteBtn").addEventListener("click", ()=>{ clearMap(); toast("Cleared"); });
     $("refreshBtn").addEventListener("click", refreshAll);
 
@@ -2416,6 +2421,7 @@
         const routeIds = routeIdsFromTemplateIncludingStart(tpl);
         const rr = await drawRoadRouteFromPlaces(routeIds);
         CURRENT_ROUTE_KM = rr.ok ? rr.km : CURRENT_ROUTE_KM;
+        renderNearby(routeIds);
         computePriceForCurrent();
       }
     });
@@ -2428,6 +2434,7 @@
         const routeIds = routeIdsFromTemplateIncludingStart(tpl);
         const rr = await drawRoadRouteFromPlaces(routeIds);
         CURRENT_ROUTE_KM = rr.ok ? rr.km : CURRENT_ROUTE_KM;
+        renderNearby(routeIds);
         computePriceForCurrent();
       }
     });
@@ -2442,6 +2449,7 @@
         tile.addTo(map);
       }catch(e){}
       toast(tilesDark ? "Dark tiles on" : "Light tiles on");
+      invalidateMapSoon();
     });
 
     $("toggleBreakdownBtn").addEventListener("click", toggleBreakdown);
