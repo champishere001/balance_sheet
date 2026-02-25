@@ -163,6 +163,7 @@
       gap: var(--gap);
       padding: 14px;
       overflow: hidden;
+      align-items: stretch; /* keep panes independent, no mutual expansion */
     }
 
     .pane{
@@ -272,13 +273,16 @@
       display:inline-flex; align-items:center; gap:8px;
     }
     .pill b{ color:#fff; letter-spacing:.06em; }
+
+    /* ✅ Smaller hint (fix big "Type Start & Generate") */
     .pill.pillHint{
       text-transform:none;
       letter-spacing:.02em;
-      font-size:12px;
-      padding:8px 10px;
+      font-size:11px;
+      padding:6px 10px;
       line-height:1.2;
       justify-content:center;
+      opacity:.9;
     }
     .pill.pillHint span{ opacity:.85; }
     .pill.pillHint b{ letter-spacing:0; }
@@ -434,7 +438,7 @@
 
     .itWrap{
       padding: 12px;
-      overflow:auto;
+      overflow:auto; /* right pane scrolls inside; others won't expand */
       display:flex;
       flex-direction:column;
       gap:12px;
@@ -575,11 +579,7 @@
       background: rgba(255,255,255,.04);
       position:relative;
     }
-    .placeHero img{
-      width:100%; height:100%;
-      object-fit:cover;
-      display:block;
-    }
+    .placeHero img{ width:100%; height:100%; object-fit:cover; display:block; }
     .galBtn{
       position:absolute;
       top:50%;
@@ -594,18 +594,8 @@
     }
     .galBtn.left{ left:8px; }
     .galBtn.right{ right:8px; }
-    .dots{
-      display:flex;
-      gap:6px;
-      justify-content:center;
-      margin-top:8px;
-    }
-    .dot{
-      width:7px; height:7px;
-      border-radius:50%;
-      background: rgba(255,255,255,.35);
-      cursor:pointer;
-    }
+    .dots{ display:flex; gap:6px; justify-content:center; margin-top:8px; }
+    .dot{ width:7px; height:7px; border-radius:50%; background: rgba(255,255,255,.35); cursor:pointer; }
     .dot.active{ background:#fff; }
 
     .toast{
@@ -715,9 +705,7 @@
         overflow: visible !important;
         max-height: none !important;
       }
-      .pkgLayout{
-        grid-template-columns: 1fr !important;
-      }
+      .pkgLayout{ grid-template-columns: 1fr !important; }
       .districtBar{
         display:flex !important;
         flex-wrap:wrap !important;
@@ -734,9 +722,7 @@
         grid-template-columns: 1fr 1fr !important;
         gap:10px !important;
       }
-      .toolBtn{
-        justify-content:center !important;
-      }
+      .toolBtn{ justify-content:center !important; }
     }
 
     @media (max-width: 420px){
@@ -764,6 +750,8 @@
       </div>
 
       <div class="actions">
+        <!-- ✅ NEW -->
+        <div class="chip" id="openCalcBtn">Calculator</div>
         <div class="chip" id="fitMapBtn">Fit Route</div>
         <div class="chip" id="clearRouteBtn">Clear</div>
         <div class="chip" id="refreshBtn">Refresh</div>
@@ -1124,6 +1112,7 @@
       });
     }
 
+    // ✅ IMPORTANT: popup is shown here (Location tab), NOT on map
     setActiveTab("loc");
   }
 
@@ -1145,7 +1134,7 @@
   }
 
   /* ===============================
-     ✅ Map
+     ✅ Map (NO popups)
      =============================== */
   let map, tile, markersLayer, routeLine;
   let showMode = "all";
@@ -1715,6 +1704,7 @@
         if(!isFinite(lat)||!isFinite(lng)) continue;
 
         const mk = L.marker([lat,lng], { riseOnHover:true }).addTo(markersLayer);
+        // ✅ no map popup, click opens Location tab details
         mk.on("click", ()=> renderPlaceDetails(pid));
       }
 
@@ -1901,6 +1891,32 @@
     return d || 3;
   }
 
+  /* ✅ NEW: Apply calculator result (same package only) */
+  function applyCalculatorResultIfAny(){
+    try{
+      const raw = localStorage.getItem("hp_calc_result_v1");
+      if(!raw) return false;
+
+      const obj = JSON.parse(raw);
+      if(!obj?.tplKey) return false;
+
+      if(!CURRENT_TEMPLATE_KEY || obj.tplKey !== CURRENT_TEMPLATE_KEY) return false;
+
+      $("paxSel").value = String(obj.pax || $("paxSel").value);
+      $("visitType").value = String(obj.tier || $("visitType").value);
+
+      $("paxUsed").innerHTML = `${obj.pax} <small>from calculator</small>`;
+      $("priceTotal").innerHTML = rupees(obj.total) + ` <small>(CALCULATOR)</small>`;
+      $("pricePer").innerHTML = rupees(obj.perPerson) + ` <small>per person</small>`;
+
+      $("breakdownCard").style.display = "block";
+      updateBreakdownUI(obj.breakdown, obj.pax);
+      return true;
+    }catch(e){
+      return false;
+    }
+  }
+
   function computePriceForCurrent(){
     try{
       if(!CURRENT_TEMPLATE_KEY) return;
@@ -1922,8 +1938,10 @@
 
       $("paxUsed").innerHTML = `${pax} <small>selected</small>`;
       updatePriceBoxes(total, perPerson);
-
       updateBreakdownUI(est.breakdown, pax);
+
+      // ✅ override if calculator sent a result for same package
+      applyCalculatorResultIfAny();
     }catch(e){
       console.error(e);
       $("paxUsed").innerHTML = "— <small></small>";
@@ -2005,6 +2023,13 @@
     if(!tpl){ toast("Template not found"); return; }
     CURRENT_TEMPLATE_KEY = key;
 
+    // ✅ store selection for calculator page
+    localStorage.setItem("hp_selected_template_key", String(key));
+    localStorage.setItem("hp_selected_start", String(start||""));
+    localStorage.setItem("hp_selected_pax", String(getSelectedPax()));
+    localStorage.setItem("hp_selected_tier", String($("visitType")?.value || "budget"));
+    localStorage.setItem("hp_selected_days", String(Number(tpl.days||getSelectedDays()||3)));
+
     document.querySelectorAll(".pkg").forEach(x=>x.classList.remove("active"));
     const node = document.querySelector(`.pkg[data-key="${cssEscapeSafe(key)}"]`);
     if(node) node.classList.add("active");
@@ -2016,6 +2041,9 @@
 
     const rr = await drawRoadRouteFromPlaces(routeIds);
     CURRENT_ROUTE_KM = rr.ok ? rr.km : 0;
+
+    // ✅ store km for calculator page
+    localStorage.setItem("hp_selected_km", String((CURRENT_ROUTE_KM || 0).toFixed(1)));
 
     computePriceForCurrent();
   }
@@ -2100,7 +2128,7 @@
       $("daysSel").value="";
       $("paxSel").value="2";
       $("pills").innerHTML="";
-      $("pkgList").innerHTML = `<div class="pill"><span>Type Start & click</span> <b>Generate</b></div>`;
+      $("pkgList").innerHTML = `<div class="pill pillHint"><span>Type Start & click</span> <b>Generate</b></div>`;
       $("districtBar").innerHTML = "";
       $("pkgCount").textContent="—";
       $("activePkgName").textContent="—";
@@ -2127,6 +2155,13 @@
     $("clearRouteBtn").addEventListener("click", ()=>{ clearMap(); toast("Cleared"); });
     $("refreshBtn").addEventListener("click", refreshAll);
 
+    // ✅ NEW: open calculator page
+    $("openCalcBtn")?.addEventListener("click", ()=>{
+      localStorage.setItem("hp_selected_pax", String(getSelectedPax()));
+      localStorage.setItem("hp_selected_tier", String($("visitType")?.value || "budget"));
+      window.location.href = "calculator.html";
+    });
+
     $("showAllStopsBtn").addEventListener("click", async ()=>{
       showMode="all";
       toast("Markers: all stops");
@@ -2135,6 +2170,7 @@
         const routeIds = routeIdsFromTemplateIncludingStart(tpl);
         const rr = await drawRoadRouteFromPlaces(routeIds);
         CURRENT_ROUTE_KM = rr.ok ? rr.km : CURRENT_ROUTE_KM;
+        localStorage.setItem("hp_selected_km", String((CURRENT_ROUTE_KM || 0).toFixed(1)));
         computePriceForCurrent();
       }
     });
@@ -2147,6 +2183,7 @@
         const routeIds = routeIdsFromTemplateIncludingStart(tpl);
         const rr = await drawRoadRouteFromPlaces(routeIds);
         CURRENT_ROUTE_KM = rr.ok ? rr.km : CURRENT_ROUTE_KM;
+        localStorage.setItem("hp_selected_km", String((CURRENT_ROUTE_KM || 0).toFixed(1)));
         computePriceForCurrent();
       }
     });
@@ -2165,7 +2202,7 @@
 
     $("toggleBreakdownBtn").addEventListener("click", toggleBreakdown);
 
-    // ✅ FIX: pax/type changes always recalc (NO stale per-person)
+    // ✅ FIX: pax/type changes always recalc
     $("paxSel")?.addEventListener("change", ()=>{
       computePriceForCurrent();
       if($("pills").children.length) applyFilters();
