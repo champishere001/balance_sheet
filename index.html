@@ -53,7 +53,6 @@
   <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics-compat.js"></script>
-  <!-- ✅ Add Auth (for login) -->
   <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 
   <style>
@@ -157,7 +156,6 @@
     }
     .chip:hover{ background: rgba(255,255,255,.08); color: rgba(255,255,255,.82); }
 
-    /* ✅ Make login chip a bit more "primary" */
     .chip.primary{
       border-color: rgba(124,58,237,.55);
       background: rgba(124,58,237,.14);
@@ -166,31 +164,31 @@
     }
     .chip.primary:hover{ filter: brightness(1.05); }
 
-    /* DESKTOP LOCKED GRID */
+    /* ✅ Desktop grid – DO NOT CLIP (fix packages scroll) */
     .main{
-  height: calc(100vh - var(--topH));
-  display:grid;
-  grid-template-columns: var(--leftPct) var(--mapPct) var(--rightPct);
-  gap: var(--gap);
-  padding: 14px;
+      height: calc(100vh - var(--topH));
+      display:grid;
+      grid-template-columns: var(--leftPct) var(--mapPct) var(--rightPct);
+      gap: var(--gap);
+      padding: 14px;
+      overflow: visible;     /* ✅ was hidden */
+      min-height: 0;
+      align-items: stretch;
+    }
 
-  overflow: visible;   /* ✅ was hidden (THIS was blocking display/scroll) */
-  min-height: 0;       /* ✅ important for grid children scrolling */
-  align-items: stretch;
-}
     .pane{
       border: 1px solid var(--stroke);
       border-radius: var(--radius);
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
       box-shadow: var(--shadow);
       backdrop-filter: blur(14px);
-      overflow:hidden;
 
       display:flex;
       flex-direction:column;
 
       height:100%;
       min-height:0;
+      overflow:hidden; /* ✅ keep scroll inside */
     }
 
     .paneHdr{
@@ -224,6 +222,8 @@
       background: rgba(0,0,0,.18);
       backdrop-filter: blur(10px);
       flex:0 0 auto;
+      position:relative;
+      z-index:20;
     }
     .field label{
       display:block;
@@ -241,6 +241,8 @@
       background: rgba(0,0,0,.25);
       color: rgba(255,255,255,.92);
       outline:none;
+      position:relative;
+      z-index:30;
     }
     input:focus, select:focus{
       border-color: rgba(124,58,237,.55);
@@ -285,8 +287,6 @@
       display:inline-flex; align-items:center; gap:8px;
     }
     .pill b{ color:#fff; letter-spacing:.06em; }
-
-    /* ✅ Smaller hint */
     .pill.pillHint{
       text-transform:none;
       letter-spacing:.02em;
@@ -296,36 +296,50 @@
       justify-content:center;
       opacity:.9;
     }
-    .pill.pillHint span{ opacity:.85; }
-    .pill.pillHint b{ letter-spacing:0; }
 
+    /* =========================
+       ✅ PREMIUM RESULTS LAYOUT
+       (district chips + scroll list)
+       ========================= */
     .pkgLayout{
       flex:1;
-      display:grid;
-      grid-template-columns: 160px 1fr;
       min-height:0;
+      display:flex;
+      flex-direction:column;
       overflow:hidden;
+      background: rgba(0,0,0,.18);
     }
 
     .districtBar{
-      border-right:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.18);
-      overflow:auto;
-      padding:10px;
-      min-height:0;
+      display:flex;
+      flex-wrap:nowrap;
+      gap:10px;
+      padding:10px 12px;
+      border-top:1px solid rgba(255,255,255,.08);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      overflow-x:auto;
+      overflow-y:hidden;
+      -webkit-overflow-scrolling: touch;
+      background: rgba(0,0,0,.12);
+    }
+    .districtBar::-webkit-scrollbar{ height:10px; }
+    .districtBar::-webkit-scrollbar-thumb{
+      background: rgba(255,255,255,.10);
+      border-radius: 999px;
     }
     .distItem{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.05);
       color: rgba(255,255,255,.86);
-      border-radius: 14px;
-      padding:10px 10px;
+      border-radius: 999px;
+      padding:9px 12px;
       font-size: 11px;
       letter-spacing:.10em;
       text-transform: uppercase;
-      margin-bottom:10px;
       cursor:pointer;
       user-select:none;
+      flex:0 0 auto;
+      white-space:nowrap;
     }
     .distItem:hover{ background: rgba(255,255,255,.08); }
     .distItem.active{
@@ -333,17 +347,48 @@
       box-shadow: 0 0 0 3px rgba(124,58,237,.16);
       background: rgba(124,58,237,.12);
     }
-    .distItem b{ color:#fff; }
+
+    .pkgListWrap{
+      flex:1;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+    }
+
+    .pkgListHdr{
+      flex:0 0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 12px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      backdrop-filter: blur(10px);
+    }
+    .pkgListTitle{
+      font-weight:950;
+      letter-spacing:.16em;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+    .pkgListMeta{
+      font-size:11px;
+      color: rgba(255,255,255,.70);
+      letter-spacing:.10em;
+      text-transform: uppercase;
+    }
 
     .pkgList{
       padding: 12px;
-      overflow:auto;
+      overflow-y:auto;
+      -webkit-overflow-scrolling: touch;
       display:grid;
       grid-template-columns: 1fr;
       gap:10px;
       min-height:0;
-      background: rgba(0,0,0,.18);
-      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,.10);
     }
 
     .pkgGroupHdr{
@@ -426,6 +471,8 @@
       height:100%;
       min-height:0;
       background: rgba(255,255,255,.04);
+      border-radius: var(--radius);
+      overflow:hidden;
     }
     .mapTools{
       padding: 10px 12px;
@@ -490,7 +537,6 @@
     .mini .v small{ font-size: 11px; color: rgba(255,255,255,.72); font-weight: 800; }
 
     .daysList{ display:flex; flex-direction:column; gap:10px; }
-
     .dayCard{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.22);
@@ -666,7 +712,6 @@
       white-space:pre-wrap;
     }
 
-    /* hide debug */
     #priceDebug{ display:none !important; }
 
     /* =========================
@@ -678,22 +723,18 @@
         overflow:auto !important;
         overscroll-behavior:auto !important;
       }
-
       .app{
         min-height: 100vh !important;
         height:auto !important;
         grid-template-rows: auto 1fr !important;
       }
-
       .top{
         position: relative !important;
         padding: 10px 12px !important;
       }
-
       .logo{ width:44px; height:44px; border-radius:14px; }
       .brand{ min-width: unset !important; }
       .brand p{ font-size:11px; }
-
       .actions{
         min-width:unset !important;
         gap:8px !important;
@@ -703,7 +744,6 @@
         font-size:10px !important;
         letter-spacing:.06em !important;
       }
-
       .main{
         height:auto !important;
         overflow:visible !important;
@@ -711,69 +751,20 @@
         grid-template-rows: auto auto auto !important;
         padding: 12px !important;
       }
-
       .pane{
         height:auto !important;
         min-height:unset !important;
       }
-
-      .pkgLayout{ grid-template-columns: 1fr !important; }
-
-      .districtBar{
-        display:flex !important;
-        flex-wrap:nowrap !important;
-        gap:10px !important;
-        border-right:none !important;
-        border-bottom:1px solid rgba(255,255,255,.10) !important;
-        overflow-x:auto !important;
-        overflow-y:hidden !important;
-        -webkit-overflow-scrolling: touch;
-        padding-bottom: 10px !important;
-      }
-      .distItem{ margin-bottom:0 !important; flex:0 0 auto !important; }
-
-      .pkgList{
-        overflow:auto !important;
-        max-height: 56vh !important;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .itWrap{
-        overflow: visible !important;
-        max-height: none !important;
-      }
-
       #map{ height: 300px !important; }
-
       .mapTools{
         display:grid !important;
         grid-template-columns: 1fr 1fr !important;
         gap:10px !important;
       }
       .toolBtn{ justify-content:center !important; }
-    }
-
-    @media (max-width: 420px){
-      #map{ height: 280px !important; }
       .row2{ grid-template-columns: 1fr !important; }
       .bdGrid{ grid-template-columns: 1fr !important; }
-      .pkgList{ max-height: 52vh !important; }
     }
-    /* ===== FIX PACKAGE SCROLL ISSUE ===== */
-.main{
-  overflow: visible !important;
-  min-height:0;
-}
-
-.pane{ min-height:0; overflow:hidden; }
-
-.pkgLayout{ flex:1; min-height:0; overflow:hidden; }
-
-.pkgList{
-  min-height:0;
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-}
   </style>
 </head>
 
@@ -794,10 +785,7 @@
       </div>
 
       <div class="actions">
-        <!-- ✅ Removed Calculator button -->
-        <!-- ✅ Added Mint Login button -->
         <div class="chip primary" id="mintLoginBtn">Mint Login</div>
-
         <div class="chip" id="fitMapBtn">Fit Route</div>
         <div class="chip" id="clearRouteBtn">Clear</div>
         <div class="chip" id="refreshBtn">Refresh</div>
@@ -812,7 +800,7 @@
             <p class="t">Package Finder</p>
             <div class="s">Templates: <b>/templates</b> • Places: <b>/places_in_packages</b></div>
           </div>
-          <div class="s" id="pkgCount">—</div>
+          <div class="s" id="leftHint">Start + Days based selection</div>
         </div>
 
         <div class="filters">
@@ -832,7 +820,7 @@
           </div>
 
           <div class="field">
-            <label>Days (Optional)</label>
+            <label>Days (Required for match)</label>
             <select id="daysSel">
               <option value="">ANY</option>
               <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
@@ -857,10 +845,19 @@
 
         <div class="metaPills" id="pills"></div>
 
+        <!-- ✅ Premium results area -->
         <div class="pkgLayout">
           <div class="districtBar" id="districtBar"></div>
-          <div class="pkgList" id="pkgList">
-            <div class="pill pillHint"><span>Type Start & click</span> <b>Generate</b></div>
+
+          <div class="pkgListWrap">
+            <div class="pkgListHdr">
+              <div class="pkgListTitle">Packages</div>
+              <div class="pkgListMeta" id="pkgCount">—</div>
+            </div>
+
+            <div class="pkgList" id="pkgList">
+              <div class="pill pillHint"><span>Type Start & click</span> <b>Generate</b></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1087,6 +1084,7 @@
      ✅ Place Details
      =============================== */
   let ACTIVE_PLACE_GALLERY = { pid:"", idx:0, imgs:[] };
+  let PLACES = {};
 
   function renderPlaceDetails(pid){
     const p = PLACES[pid] || {};
@@ -1148,7 +1146,6 @@
         };
       });
     }
-
     setActiveTab("loc");
   }
 
@@ -1158,7 +1155,6 @@
     g.idx = (i + g.imgs.length) % g.imgs.length;
     const img = $("placeHeroImg");
     if(img) img.src = g.imgs[g.idx];
-
     const dots = $("galDots");
     if(dots){
       dots.querySelectorAll(".dot").forEach((d,ix)=>d.classList.toggle("active", ix===g.idx));
@@ -1196,19 +1192,17 @@
      =============================== */
   let db, storage, analytics, auth;
 
-  let PLACES = {};
   let TEMPLATES = {};
   let ACTIVE_TEMPLATES = [];
   let NAME_TO_ID = new Map();
   let STARTS = [];
 
-  // District view (interstate)
-  let INTER_BY_DISTRICT = {};
+  // ✅ Inter packages list after filters (Start + Days)
+  let INTER_ALL = [];
+  // chips filter: ALL or district
+  let DISTRICT_KEYS = [];
+  let ACTIVE_DISTRICT = "ALL";
 
-  // ✅ Local packages (computed) grouped by route_id (location code)
-  let LOCAL_BY_CODE = {};
-  let LOCAL_CODES = [];
-  let ACTIVE_DISTRICT = "";
   let CURRENT_TEMPLATE_KEY = "";
   let CURRENT_ROUTE_KM = 0;
 
@@ -1220,7 +1214,7 @@
   /* ===============================
      ✅ Cache
      =============================== */
-  const CACHE_KEY = "hp_portal_cache_v13_localcode";
+  const CACHE_KEY = "hp_portal_cache_v15_premium_results";
   const CACHE_TTL_MS = 1000 * 60 * 30;
 
   function loadCache(){
@@ -1247,7 +1241,6 @@
 
       buildNameIndex();
       buildStartList(ACTIVE_TEMPLATES);
-      rebuildLocalIndex($("daysSel")?.value?.trim() || "");
 
       setStatus(`Loaded from cache • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places`);
       return true;
@@ -1390,36 +1383,14 @@
     return normCaps(endName);
   }
 
-  function packageScore(tpl){
-    const locs = stopsFromTemplate(tpl).length;
-    const pri  = Number(tpl.priority ?? 999);
-    const km   = Number(tpl.total_km_est ?? tpl.estimated_drive_km ?? tpl.total_km ?? 1e9);
-    return { locs, pri, km };
-  }
-  function pickBestOne(list){
-    if(!list || !list.length) return null;
-    const arr = [...list];
-    arr.sort((a,b)=>{
-      const A = packageScore(a), B = packageScore(b);
-      if(A.locs !== B.locs) return B.locs - A.locs;
-      if(A.pri !== B.pri) return A.pri - B.pri;
-      return A.km - B.km;
-    });
-    return arr[0];
-  }
-
   /* ===============================
-     ✅ NEW LOCAL RULE (Computed)
+     ✅ Local detection
      =============================== */
   function isLocalComputed(tpl){
     const routeId = String(tpl.route_id || "").toUpperCase().trim();
     const regionStyle = String(tpl.region_style || "").toLowerCase().trim();
     const pkgId = String(tpl.package_id || tpl.key || "").toLowerCase();
     return regionStyle === "local" || routeId.endsWith("-LCL") || pkgId.includes("-local");
-  }
-  function isLocalComputedMax3(tpl){
-    const d = Number(tpl.days || 0);
-    return isLocalComputed(tpl) && d > 0 && d <= 3;
   }
 
   function matchesStart(tpl, startUpper){
@@ -1430,57 +1401,27 @@
     return Number(tpl.days||0) === Number(daysFilter);
   }
 
-  function rebuildLocalIndex(daysFilter=""){
-    LOCAL_BY_CODE = {};
-    ACTIVE_TEMPLATES.forEach(t=>{
-      if(!matchesDaysOptional(t, daysFilter)) return;
-      if(!isLocalComputedMax3(t)) return;
-
-      const code = String(t.route_id || "").trim();
-      const key = code ? code.toUpperCase() : "LOCAL";
-      (LOCAL_BY_CODE[key] ||= []).push(t);
-    });
-
-    LOCAL_CODES = Object.keys(LOCAL_BY_CODE).sort((a,b)=>a.localeCompare(b));
-  }
-
   /* ===============================
-     ✅ LEFT BAR (districts from interstate packages)
+     ✅ Premium chips render
      =============================== */
-  let DISTRICT_KEYS = [];
-  function rebuildDistrictKeysFromInter(){
-    const allDistricts = new Set();
-    Object.keys(INTER_BY_DISTRICT || {}).forEach(d=>allDistricts.add(d));
-    DISTRICT_KEYS = Array.from(allDistricts).sort((a,b)=>a.localeCompare(b));
-    if(!ACTIVE_DISTRICT || !DISTRICT_KEYS.includes(ACTIVE_DISTRICT)){
-      ACTIVE_DISTRICT = DISTRICT_KEYS[0] || "";
-    }
-  }
-
-  function renderDistrictBar(){
+  function renderDistrictChips(){
     const bar = $("districtBar");
-    if(!DISTRICT_KEYS.length){
-      bar.innerHTML = `<div class="pill"><b>No district</b></div>`;
-      ACTIVE_DISTRICT = "";
-      return;
-    }
+    if(!bar) return;
 
-    let html = "";
-    for(const d of DISTRICT_KEYS){
-      const interCount = (INTER_BY_DISTRICT[d] || []).length;
-      html += `
-        <div class="distItem ${ACTIVE_DISTRICT===d ? "active":""}" data-d="${escapeHtml(d)}">
-          <b>${escapeHtml(d)}</b> (${interCount})
-        </div>`;
-    }
-    bar.innerHTML = html;
+    const chips = ["ALL", ...DISTRICT_KEYS];
+    if(!ACTIVE_DISTRICT || !chips.includes(ACTIVE_DISTRICT)) ACTIVE_DISTRICT = "ALL";
+
+    bar.innerHTML = chips.map(d=>{
+      const active = (d===ACTIVE_DISTRICT) ? "active" : "";
+      const label = (d==="ALL") ? "ALL DESTINATIONS" : d;
+      const count = (d==="ALL") ? INTER_ALL.length : INTER_ALL.filter(t=>endDistrictFromTemplate(t)===d).length;
+      return `<div class="distItem ${active}" data-d="${escapeHtml(d)}">${escapeHtml(label)} (${count})</div>`;
+    }).join("");
 
     bar.querySelectorAll(".distItem").forEach(el=>{
       el.onclick = ()=>{
-        ACTIVE_DISTRICT = el.dataset.d;
-        bar.querySelectorAll(".distItem").forEach(x=>x.classList.remove("active"));
-        el.classList.add("active");
-        renderPackagesForActiveDistrict();
+        ACTIVE_DISTRICT = el.dataset.d || "ALL";
+        renderPackagesList();
       };
     });
   }
@@ -1489,9 +1430,11 @@
     document.querySelectorAll(".pkg").forEach(x=>x.classList.toggle("active", x.dataset.key === CURRENT_TEMPLATE_KEY));
   }
 
-  function renderInterCard(t, startUpper, district){
+  function renderInterCard(t, startUpper){
     const days = Number(t.days||0) || 0;
     const endKey = endKeyFromRoutePath(t);
+    const district = endDistrictFromTemplate(t);
+    const code = String(t.route_id || "—").toUpperCase();
 
     const routeIds = routeIdsFromTemplateIncludingStart(t);
     let thumbUrl="", ini="HP";
@@ -1515,10 +1458,11 @@
         }
       </div>
       <div class="pkgBody">
-        <div class="pkgName">${escapeHtml(startUpper)} → ${escapeHtml(district)} • ${days ? `${days}D` : ""}</div>
+        <div class="pkgName">${escapeHtml(startUpper)} → ${escapeHtml(district)} • ${days}D</div>
         <div class="pkgMeta">
-          END: ${escapeHtml(String(endKey||"—").toUpperCase())} • ID: ${escapeHtml(String(t.key||"—").toUpperCase())}
+          END: ${escapeHtml(String(endKey||"—").toUpperCase())} • CODE: ${escapeHtml(code)} • ID: ${escapeHtml(String(t.key||"—").toUpperCase())}
         </div>
+        <div class="diffLine">Days matched to route: <b>${days} Days</b></div>
       </div>
     `;
     el.onclick = ()=>openTemplate(t.key, startUpper);
@@ -1528,6 +1472,7 @@
   function renderLocalCard(t){
     const days = Number(t.days||0) || 0;
     const heading = String(t.route_path || t.route_name || t.package_id || t.key || "Local Package").trim();
+    const code = String(t.route_id || "LOCAL").toUpperCase();
 
     const routeIds = stopsFromTemplate(t);
     let thumbUrl="", ini="HP";
@@ -1552,93 +1497,82 @@
         }
       </div>
       <div class="pkgBody">
-        <div class="pkgName">${escapeHtml(heading)} ${days ? `• ${days}D` : ""}</div>
-        <div class="pkgMeta">CODE: ${escapeHtml(String((t.route_id||"LOCAL")).toUpperCase())} • ID: ${escapeHtml(String(t.key||"—").toUpperCase())}</div>
+        <div class="pkgName">${escapeHtml(heading)} • ${days}D</div>
+        <div class="pkgMeta">LOCAL • CODE: ${escapeHtml(code)} • ID: ${escapeHtml(String(t.key||"—").toUpperCase())}</div>
+        <div class="diffLine">Days matched: <b>${days} Days</b></div>
       </div>
     `;
     el.onclick = ()=>openTemplate(t.key, normalizeStartInput() || "");
     return el;
   }
 
-  function renderPackagesForActiveDistrict(){
+  function renderPackagesList(){
+    const box = $("pkgList");
     const start = normalizeStartInput() || "";
     const startUpper = String(start).trim().toUpperCase();
-    const district = ACTIVE_DISTRICT;
+    const daysF = $("daysSel").value.trim();
 
-    const box = $("pkgList");
     box.innerHTML = "";
 
-    const interBest = (district && INTER_BY_DISTRICT[district])
-      ? pickBestOne(INTER_BY_DISTRICT[district] || [])
-      : null;
+    // filter by chip
+    let shownInter = INTER_ALL.slice();
+    if(ACTIVE_DISTRICT && ACTIVE_DISTRICT !== "ALL"){
+      shownInter = shownInter.filter(t => endDistrictFromTemplate(t) === ACTIVE_DISTRICT);
+    }
 
-    const localCodes = LOCAL_CODES || [];
-    let localTotal = 0;
-    localCodes.forEach(c => localTotal += (LOCAL_BY_CODE[c] || []).length);
+    // locals: start + days must match, and max 3 days local
+    const locals = ACTIVE_TEMPLATES
+      .filter(t => isLocalComputed(t))
+      .filter(t => matchesStart(t, startUpper))
+      .filter(t => matchesDaysOptional(t, daysF))
+      .filter(t => Number(t.days||0) > 0 && Number(t.days||0) <= 3)
+      .sort((a,b)=>(Number(a.days)||0)-(Number(b.days)||0));
 
-    const totalShown = (interBest ? 1 : 0) + localTotal;
-    $("pkgCount").textContent = `${totalShown} Results`;
+    $("pkgCount").textContent = `${shownInter.length + locals.length} Results`;
 
+    // Header: inter
     const hdr1 = document.createElement("div");
     hdr1.className = "pkgGroupHdr";
     hdr1.innerHTML = `
-      <div class="h1">${escapeHtml(startUpper || "START")} → ${escapeHtml(district || "DISTRICT")}</div>
-      <div class="h2">Showing 1 best package for selected start → district (unchanged)</div>
+      <div class="h1">${escapeHtml(startUpper || "START")} • ${escapeHtml(daysF || "ANY")} DAYS</div>
+      <div class="h2">Selection is based on Start + Days. Use chips to filter destination district.</div>
     `;
     box.appendChild(hdr1);
 
     if(!startUpper){
       const warn = document.createElement("div");
       warn.className = "pill";
-      warn.innerHTML = `<b>Type Start</b> (top) then Generate`;
+      warn.innerHTML = `<b>Type Start</b> then Generate`;
       box.appendChild(warn);
-    }else if(!district){
-      const none = document.createElement("div");
-      none.className = "pill";
-      none.innerHTML = `<b>Select a district</b>`;
-      box.appendChild(none);
-    }else if(!interBest){
-      const none = document.createElement("div");
-      none.className = "pill";
-      none.innerHTML = `<b>No Start → District package found</b>`;
-      box.appendChild(none);
-    }else{
-      box.appendChild(renderInterCard(interBest, startUpper, district));
+      return;
     }
 
+    if(!shownInter.length){
+      const none = document.createElement("div");
+      none.className = "pill";
+      none.innerHTML = `<b>No interstate package found for this Start + Days</b>`;
+      box.appendChild(none);
+    }else{
+      shownInter.forEach(t => box.appendChild(renderInterCard(t, startUpper)));
+    }
+
+    // Header: local
     const hdr2 = document.createElement("div");
     hdr2.className = "pkgGroupHdr";
     hdr2.style.marginTop = "8px";
     hdr2.innerHTML = `
-      <div class="h1">Local packages (≤ 3 Days) • Grouped by Location Code</div>
-      <div class="h2">Heading = ROUTE PATH (root) • Codes from route_id</div>
+      <div class="h1">Local packages (≤ 3 Days)</div>
+      <div class="h2">Also matched by Start + Days</div>
     `;
     box.appendChild(hdr2);
 
-    if(!localCodes.length){
+    if(!locals.length){
       const none2 = document.createElement("div");
       none2.className = "pill";
-      none2.innerHTML = `<b>No local packages found</b>`;
+      none2.innerHTML = `<b>No local package found for this Start + Days</b>`;
       box.appendChild(none2);
     }else{
-      localCodes.forEach(code=>{
-        const list = (LOCAL_BY_CODE[code] || []).slice().sort((a,b)=>(Number(a.days)||0)-(Number(b.days)||0));
-        if(!list.length) return;
-
-        const gh = document.createElement("div");
-        gh.className = "pkgGroupHdr";
-        gh.style.marginTop = "6px";
-        gh.innerHTML = `
-          <div class="h1">${escapeHtml(code)}</div>
-          <div class="h2">${list.length} package(s) • 1D / 2D / 3D</div>
-        `;
-        box.appendChild(gh);
-
-        list.forEach(t=>{
-          if(interBest && t.key === interBest.key) return;
-          box.appendChild(renderLocalCard(t));
-        });
-      });
+      locals.forEach(t => box.appendChild(renderLocalCard(t)));
     }
 
     highlightActiveCard();
@@ -1668,7 +1602,7 @@
   function renderItinerary(tpl, start, endKey){
     $("activePkgName").textContent = `${String(tpl.days||"—")}D`;
 
-    const isLocalNow = isLocalComputedMax3(tpl) || isLocalComputed(tpl);
+    const isLocalNow = isLocalComputed(tpl);
     if(isLocalNow){
       const head = String(tpl.route_path || tpl.route_name || tpl.package_id || "LOCAL").trim();
       $("itTitle").textContent = head;
@@ -2022,7 +1956,7 @@
   }
 
   /* ===============================
-     ✅ Generate
+     ✅ Generate (Start + Days based selection)
      =============================== */
   function applyFilters(){
     const start = normalizeStartInput();
@@ -2047,38 +1981,42 @@
 
     if(!start){
       toast("Start not found in templates");
+      $("districtBar").innerHTML = "";
+      $("pkgList").innerHTML = `<div class="pill"><b>Start not found</b></div>`;
+      $("pkgCount").textContent = "0 Results";
       return;
     }
 
     const startUpper = String(start).trim().toUpperCase();
 
-    const interList = ACTIVE_TEMPLATES
+    // ✅ Interstate packages matched by Start + Days
+    INTER_ALL = ACTIVE_TEMPLATES
       .filter(t => matchesStart(t, startUpper))
       .filter(t => matchesDaysOptional(t, daysF))
-      .filter(t => !isLocalComputedMax3(t));
+      .filter(t => !isLocalComputed(t))
+      .sort((a,b)=>{
+        const da = Number(a.days||0), db = Number(b.days||0);
+        if(da !== db) return da - db;
+        const kmA = Number(a.total_km_est || a.estimated_drive_km || a.total_km || 1e9);
+        const kmB = Number(b.total_km_est || b.estimated_drive_km || b.total_km || 1e9);
+        return kmA - kmB;
+      });
 
-    INTER_BY_DISTRICT = {};
-    interList.forEach(t=>{
-      const d = endDistrictFromTemplate(t);
-      (INTER_BY_DISTRICT[d] ||= []).push(t);
-    });
+    // build district chips from matching list
+    const set = new Set();
+    INTER_ALL.forEach(t => set.add(endDistrictFromTemplate(t)));
+    DISTRICT_KEYS = Array.from(set).sort((a,b)=>a.localeCompare(b));
+    ACTIVE_DISTRICT = "ALL";
+    renderDistrictChips();
 
-    rebuildDistrictKeysFromInter();
-    renderDistrictBar();
-
-    rebuildLocalIndex(daysF);
-
-    const interCount = interList.length;
-    const localCount = Object.values(LOCAL_BY_CODE).reduce((a,arr)=>a + (arr?.length||0), 0);
-
+    // pills
     $("pills").innerHTML = "";
     const pillData = {
       START: startUpper,
+      DAYS: (daysF ? daysF : "ANY"),
       TYPE: tier,
-      INTER_PACKAGES: interCount,
-      LOCAL_PACKAGES: localCount,
-      PAX: pax,
-      DAYS: (daysF ? daysF : "ANY")
+      INTER_MATCHED: INTER_ALL.length,
+      PAX: pax
     };
     for(const [k,v] of Object.entries(pillData)){
       const div = document.createElement("div");
@@ -2087,9 +2025,8 @@
       $("pills").appendChild(div);
     }
 
-    renderPackagesForActiveDistrict();
-
-    toast("District shows interstate • Local shown by location code (route_id)");
+    renderPackagesList();
+    toast("Selection based on Start + Days. Use chips for destination filter.");
   }
 
   async function openTemplate(key, start){
@@ -2148,7 +2085,6 @@
 
     buildNameIndex();
     buildStartList(ACTIVE_TEMPLATES);
-    rebuildLocalIndex($("daysSel")?.value?.trim() || "");
 
     saveCache();
     setStatus(`Loaded LIVE • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places • pricing OK`);
@@ -2161,7 +2097,8 @@
       if($("pills").children.length){
         applyFilters();
       }else{
-        $("districtBar").innerHTML = `<div class="pill"><b>Type Start → Generate</b></div>`;
+        $("districtBar").innerHTML = `<div class="distItem active">ALL DESTINATIONS (0)</div>`;
+        $("pkgCount").textContent = "—";
       }
     }catch(err){
       console.error(err);
@@ -2175,7 +2112,6 @@
      =============================== */
   async function mintLogin(){
     try{
-      // If user is already logged in, log them out (toggle behavior)
       const u = auth.currentUser;
       if(u){
         await auth.signOut();
@@ -2183,8 +2119,6 @@
         toast("Logged out");
         return;
       }
-
-      // Simple email/password prompt login
       const email = prompt("Mint Login - Enter Email:");
       if(!email) return toast("Login cancelled");
       const pass = prompt("Enter Password:");
@@ -2208,9 +2142,8 @@
     db = firebase.database();
     storage = firebase.storage();
     analytics = firebase.analytics();
-    auth = firebase.auth(); // ✅ init auth
+    auth = firebase.auth();
 
-    // ✅ keep button label in sync
     auth.onAuthStateChanged((user)=>{
       $("mintLoginBtn").textContent = user ? "Logout" : "Mint Login";
       if(user){
@@ -2252,11 +2185,9 @@
       CURRENT_TEMPLATE_KEY = "";
       CURRENT_ROUTE_KM = 0;
 
-      ACTIVE_DISTRICT="";
-      INTER_BY_DISTRICT = {};
-      LOCAL_BY_CODE = {};
-      LOCAL_CODES = [];
+      INTER_ALL = [];
       DISTRICT_KEYS = [];
+      ACTIVE_DISTRICT = "ALL";
       setActiveTab("itin");
       toast("Reset done");
     });
@@ -2265,7 +2196,6 @@
     $("clearRouteBtn").addEventListener("click", ()=>{ clearMap(); toast("Cleared"); });
     $("refreshBtn").addEventListener("click", refreshAll);
 
-    // ✅ Mint Login button handler
     $("mintLoginBtn").addEventListener("click", mintLogin);
 
     $("showAllStopsBtn").addEventListener("click", async ()=>{
@@ -2317,7 +2247,6 @@
     });
 
     $("daysSel")?.addEventListener("change", ()=>{
-      rebuildLocalIndex($("daysSel").value.trim());
       if($("pills").children.length) applyFilters();
     });
 
