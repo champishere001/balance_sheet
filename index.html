@@ -53,6 +53,8 @@
   <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics-compat.js"></script>
+  <!-- ✅ Add Auth (for login) -->
+  <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 
   <style>
     :root{
@@ -154,6 +156,15 @@
       white-space: nowrap;
     }
     .chip:hover{ background: rgba(255,255,255,.08); color: rgba(255,255,255,.82); }
+
+    /* ✅ Make login chip a bit more "primary" */
+    .chip.primary{
+      border-color: rgba(124,58,237,.55);
+      background: rgba(124,58,237,.14);
+      color:#fff;
+      font-weight:900;
+    }
+    .chip.primary:hover{ filter: brightness(1.05); }
 
     /* DESKTOP LOCKED GRID */
     .main{
@@ -767,7 +778,10 @@
       </div>
 
       <div class="actions">
-        <div class="chip" id="openCalcBtn">Calculator</div>
+        <!-- ✅ Removed Calculator button -->
+        <!-- ✅ Added Mint Login button -->
+        <div class="chip primary" id="mintLoginBtn">Mint Login</div>
+
         <div class="chip" id="fitMapBtn">Fit Route</div>
         <div class="chip" id="clearRouteBtn">Clear</div>
         <div class="chip" id="refreshBtn">Refresh</div>
@@ -1164,7 +1178,7 @@
   /* ===============================
      ✅ Data
      =============================== */
-  let db, storage, analytics;
+  let db, storage, analytics, auth;
 
   let PLACES = {};
   let TEMPLATES = {};
@@ -1380,10 +1394,6 @@
 
   /* ===============================
      ✅ NEW LOCAL RULE (Computed)
-     - region_style = local OR
-     - route_id ends with -LCL OR
-     - package_id contains -local
-     AND days <= 3
      =============================== */
   function isLocalComputed(tpl){
     const routeId = String(tpl.route_id || "").toUpperCase().trim();
@@ -1404,7 +1414,6 @@
     return Number(tpl.days||0) === Number(daysFilter);
   }
 
-  // ✅ Local grouped by location code (route_id)
   function rebuildLocalIndex(daysFilter=""){
     LOCAL_BY_CODE = {};
     ACTIVE_TEMPLATES.forEach(t=>{
@@ -1500,12 +1509,10 @@
     return el;
   }
 
-  // ✅ Local packages card heading = ROUTE_PATH (root/route)
   function renderLocalCard(t){
     const days = Number(t.days||0) || 0;
     const heading = String(t.route_path || t.route_name || t.package_id || t.key || "Local Package").trim();
 
-    // thumbnail from first stop (or fallback)
     const routeIds = stopsFromTemplate(t);
     let thumbUrl="", ini="HP";
     let pickId = routeIds[0] || "";
@@ -1549,9 +1556,6 @@
       ? pickBestOne(INTER_BY_DISTRICT[district] || [])
       : null;
 
-    // ✅ Local computed packages (≤ 3 days) grouped by location code
-    // If district selected, show ALL local codes (computed) — because requirement is "with respect to location code"
-    // (This keeps interstate logic unchanged.)
     const localCodes = LOCAL_CODES || [];
     let localTotal = 0;
     localCodes.forEach(c => localTotal += (LOCAL_BY_CODE[c] || []).length);
@@ -1559,7 +1563,6 @@
     const totalShown = (interBest ? 1 : 0) + localTotal;
     $("pkgCount").textContent = `${totalShown} Results`;
 
-    // Section 1: Start -> District (one best) (UNCHANGED)
     const hdr1 = document.createElement("div");
     hdr1.className = "pkgGroupHdr";
     hdr1.innerHTML = `
@@ -1587,7 +1590,6 @@
       box.appendChild(renderInterCard(interBest, startUpper, district));
     }
 
-    // Section 2: Local packages (computed ≤ 3 days) grouped by LOCATION CODE (route_id)
     const hdr2 = document.createElement("div");
     hdr2.className = "pkgGroupHdr";
     hdr2.style.marginTop = "8px";
@@ -1603,7 +1605,6 @@
       none2.innerHTML = `<b>No local packages found</b>`;
       box.appendChild(none2);
     }else{
-      // Render groups
       localCodes.forEach(code=>{
         const list = (LOCAL_BY_CODE[code] || []).slice().sort((a,b)=>(Number(a.days)||0)-(Number(b.days)||0));
         if(!list.length) return;
@@ -1618,7 +1619,6 @@
         box.appendChild(gh);
 
         list.forEach(t=>{
-          // avoid duplicate if same key as interBest
           if(interBest && t.key === interBest.key) return;
           box.appendChild(renderLocalCard(t));
         });
@@ -1652,7 +1652,6 @@
   function renderItinerary(tpl, start, endKey){
     $("activePkgName").textContent = `${String(tpl.days||"—")}D`;
 
-    // Local heading behavior: show route_path if local computed
     const isLocalNow = isLocalComputedMax3(tpl) || isLocalComputed(tpl);
     if(isLocalNow){
       const head = String(tpl.route_path || tpl.route_name || tpl.package_id || "LOCAL").trim();
@@ -2037,11 +2036,9 @@
 
     const startUpper = String(start).trim().toUpperCase();
 
-    // Interstate list (UNCHANGED)
     const interList = ACTIVE_TEMPLATES
       .filter(t => matchesStart(t, startUpper))
       .filter(t => matchesDaysOptional(t, daysF))
-      // IMPORTANT: keep only NON-local computed subset here, so district list is purely interstate
       .filter(t => !isLocalComputedMax3(t));
 
     INTER_BY_DISTRICT = {};
@@ -2053,7 +2050,6 @@
     rebuildDistrictKeysFromInter();
     renderDistrictBar();
 
-    // Local computed index (≤3 days) grouped by route_id
     rebuildLocalIndex(daysF);
 
     const interCount = interList.length;
@@ -2149,13 +2145,42 @@
       if($("pills").children.length){
         applyFilters();
       }else{
-        // before generate, show empty district bar
         $("districtBar").innerHTML = `<div class="pill"><b>Type Start → Generate</b></div>`;
       }
     }catch(err){
       console.error(err);
       setStatus("Firebase load error (check rules / node names)");
       toast("Firebase load error");
+    }
+  }
+
+  /* ===============================
+     ✅ Mint Login (Firebase Auth)
+     =============================== */
+  async function mintLogin(){
+    try{
+      // If user is already logged in, log them out (toggle behavior)
+      const u = auth.currentUser;
+      if(u){
+        await auth.signOut();
+        $("mintLoginBtn").textContent = "Mint Login";
+        toast("Logged out");
+        return;
+      }
+
+      // Simple email/password prompt login
+      const email = prompt("Mint Login - Enter Email:");
+      if(!email) return toast("Login cancelled");
+      const pass = prompt("Enter Password:");
+      if(!pass) return toast("Login cancelled");
+
+      await auth.signInWithEmailAndPassword(email.trim(), pass);
+      const user = auth.currentUser;
+      $("mintLoginBtn").textContent = user ? "Logout" : "Mint Login";
+      toast(user ? "Login successful" : "Logged in");
+    }catch(e){
+      console.error(e);
+      toast(e?.message || "Login failed");
     }
   }
 
@@ -2167,6 +2192,15 @@
     db = firebase.database();
     storage = firebase.storage();
     analytics = firebase.analytics();
+    auth = firebase.auth(); // ✅ init auth
+
+    // ✅ keep button label in sync
+    auth.onAuthStateChanged((user)=>{
+      $("mintLoginBtn").textContent = user ? "Logout" : "Mint Login";
+      if(user){
+        setStatus(`Logged in: ${user.email} • Loading…`);
+      }
+    });
 
     $("tabItinBtn").addEventListener("click", ()=>setActiveTab("itin"));
     $("tabLocBtn").addEventListener("click", ()=>setActiveTab("loc"));
@@ -2215,9 +2249,8 @@
     $("clearRouteBtn").addEventListener("click", ()=>{ clearMap(); toast("Cleared"); });
     $("refreshBtn").addEventListener("click", refreshAll);
 
-    $("openCalcBtn")?.addEventListener("click", ()=>{
-      window.location.href = "calculator.html";
-    });
+    // ✅ Mint Login button handler
+    $("mintLoginBtn").addEventListener("click", mintLogin);
 
     $("showAllStopsBtn").addEventListener("click", async ()=>{
       showMode="all";
@@ -2268,7 +2301,6 @@
     });
 
     $("daysSel")?.addEventListener("change", ()=>{
-      // Local index depends on days filter
       rebuildLocalIndex($("daysSel").value.trim());
       if($("pills").children.length) applyFilters();
     });
