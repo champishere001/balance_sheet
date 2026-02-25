@@ -775,67 +775,62 @@
    - No calc(100vh - topH) dependency
    - Scroll only inside panes (pkgList + itWrap)
    ========================= */
+   /* =========================
+   ✅ DESKTOP SCROLL ENABLED
+   Premium layout + full PC scroll
+   ========================= */
 
 @media (min-width: 1201px){
 
   html, body{
-    height: 100%;
-    overflow: hidden;             /* ✅ stop page scroll on desktop */
+    height: auto;              /* ✅ allow page height to grow */
+    overflow-y: auto;          /* ✅ enable scroll */
   }
 
   .app{
-    height: 100vh;                /* ✅ lock app to viewport */
-    min-height: 100vh;
+    min-height: 100vh;         /* full screen minimum */
+    height: auto;              /* not locked */
     display: grid;
-    grid-template-rows: auto 1fr; /* ✅ top auto height, main takes rest */
+    grid-template-rows: auto 1fr;
   }
 
   .top{
     position: sticky;
     top: 0;
     z-index: 50;
-    height: auto;                 /* ✅ allow wrap without breaking layout */
+    backdrop-filter: blur(14px);
   }
 
-  /* ✅ remove the hard calc height dependency */
+  /* allow content to expand naturally */
   .main{
     height: auto !important;
     min-height: 0;
-    overflow: hidden;             /* ✅ important */
+    overflow: visible;         /* ✅ allow page scroll */
   }
 
-  /* ✅ each pane must be allowed to shrink and contain scroll */
+  /* panes no longer lock content */
   .pane{
-    min-height: 0;
-    height: 100%;
-    overflow: hidden;             /* ✅ scroll stays inside children */
+    min-height: auto;
+    height: auto;
+    overflow: visible;
   }
 
-  /* ✅ LEFT column list must scroll properly */
-  .pkgLayout,
-  .pkgListWrap,
+  /* internal scroll still smooth */
   .pkgList{
-    min-height: 0;
-  }
-
-  .pkgList{
+    max-height: 600px;
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
   }
 
-  /* ✅ RIGHT itinerary scroll must work */
   .itWrap{
-    min-height: 0;
+    max-height: 700px;
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
   }
 
-  /* ✅ Map must fill the pane */
   #map{
-    min-height: 0;
-    height: 100%;
+    height: 500px;   /* fixed professional height */
   }
 }
+
   </style>
 </head>
 
