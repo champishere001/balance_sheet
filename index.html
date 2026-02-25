@@ -164,12 +164,13 @@
     }
     .chip.primary:hover{ filter: brightness(1.05); }
 
-    /* ✅ Desktop grid – DO NOT CLIP (fix packages scroll) */
     .main{
-      .main{
-  height: auto;          /* ✅ desktop fixed */
-  min-height: 0;
-  ...
+  display:grid;
+  grid-template-columns: var(--leftPct) var(--mapPct) var(--rightPct);
+  gap: var(--gap);
+  padding:14px;
+  min-height:0;
+  align-items:stretch;
 }
       display:grid;
       grid-template-columns: var(--leftPct) var(--mapPct) var(--rightPct);
@@ -780,57 +781,84 @@
    Premium layout + full PC scroll
    ========================= */
 
-@media (min-width: 1201px){
+/* =========================
+   ✅ DESKTOP: 3 INDEPENDENT SCROLL PANES
+   Left = packages scroll
+   Middle = map fixed
+   Right = itinerary scroll
+   Page itself does NOT scroll
+   ========================= */
 
-  html, body{
-    height: auto;              /* ✅ allow page height to grow */
-    overflow-y: auto;          /* ✅ enable scroll */
+@media (min-width:1201px){
+
+  html,body{
+    height:100%;
+    overflow:hidden;        /* page locked */
   }
 
   .app{
-    min-height: 100vh;         /* full screen minimum */
-    height: auto;              /* not locked */
-    display: grid;
-    grid-template-rows: auto 1fr;
+    height:100vh;
+    display:grid;
+    grid-template-rows:auto 1fr;
   }
 
-  .top{
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    backdrop-filter: blur(14px);
-  }
-
-  /* allow content to expand naturally */
   .main{
-    height: auto !important;
-    min-height: 0;
-    overflow: visible;         /* ✅ allow page scroll */
+    height:100%;
+    overflow:hidden;
   }
 
-  /* panes no longer lock content */
+  /* each column container */
   .pane{
-    min-height: auto;
-    height: auto;
-    overflow: visible;
+    height:100%;
+    min-height:0;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
   }
 
-  /* internal scroll still smooth */
+  /* ---------- LEFT SCROLL (PACKAGES) ---------- */
+
+  .pkgLayout{
+    flex:1;
+    min-height:0;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .pkgListWrap{
+    flex:1;
+    min-height:0;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+
   .pkgList{
-    max-height: 600px;
-    overflow-y: auto;
+    flex:1;
+    min-height:0;
+    overflow-y:auto;              /* ✅ LEFT SCROLL */
+    -webkit-overflow-scrolling:touch;
   }
 
-  .itWrap{
-    max-height: 700px;
-    overflow-y: auto;
-  }
+  /* ---------- MAP ---------- */
 
   #map{
-    height: 500px;   /* fixed professional height */
+    flex:1;
+    min-height:0;
+    height:100%;
   }
-}
 
+  /* ---------- RIGHT SCROLL (ITINERARY) ---------- */
+
+  .itWrap{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;              /* ✅ RIGHT SCROLL */
+    -webkit-overflow-scrolling:touch;
+  }
+
+}
   </style>
 </head>
 
