@@ -671,7 +671,7 @@
     }
     #priceDebug{ display:none !important; }
 
-    /* ✅ Nearby cards (reused for package-level + day-level) */
+    /* ✅ Nearby cards */
     .nearWrap{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.22);
@@ -1101,6 +1101,8 @@
   /* ===============================
      Firebase Config
      =============================== */
+
+  /* ✅ MAIN DB (revnue-records) - templates, places, pricing */
   const firebaseConfig = {
     apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
     authDomain: "revnue-records.firebaseapp.com",
@@ -1112,11 +1114,25 @@
     measurementId: "G-MGTDBCG896"
   };
 
-  const NODE_TEMPLATES = "templates";
-  const NODE_PLACES    = "places_in_packages";
-  const NODE_TRANSPORT = "pricing_transport";
-  const NODE_HOTEL     = "rate_hotel";
-  const NODE_STAYRULES = "stay_rate_rules";
+  /* ✅ IMAGES DB (garg-enterprise) - place_images/{place_id}/{n}/url */
+  const firebaseConfigImages = {
+    apiKey: "AIzaSyBmJDsXvokR8kYs_yoLPau1DqANPBBORJY",
+    authDomain: "garg-enterprise.firebaseapp.com",
+    databaseURL: "https://garg-enterprise-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "garg-enterprise",
+    storageBucket: "garg-enterprise.firebasestorage.app",
+    messagingSenderId: "1097408452571",
+    appId: "1:1097408452571:web:4e6806326b47ebb0b5b9fe",
+    measurementId: "G-S2S0MYT39W"
+  };
+
+  const NODE_TEMPLATES    = "templates";
+  const NODE_PLACES       = "places_in_packages";
+  const NODE_TRANSPORT    = "pricing_transport";
+  const NODE_HOTEL        = "rate_hotel";
+  const NODE_STAYRULES    = "stay_rate_rules";
+
+  const NODE_PLACE_IMAGES = "place_images"; // ✅ garg DB node
 
   const $ = (id)=>document.getElementById(id);
 
@@ -1169,9 +1185,62 @@
       .slice(0,12);
   }
 
-  function pickAllPhotos(p){
+  /* ===============================
+     ✅ PLACE IMAGES FROM GARG DB
+     place_images/{placeId}/{n}/url
+     =============================== */
+  let PLACE_IMAGES = {}; // { placeId: [url1,url2...] }
+  let imagesDb = null;
+
+  function normalizePlaceImages(raw){
+    const out = {};
+    if(!raw || typeof raw !== "object") return out;
+
+    for(const [placeId, node] of Object.entries(raw)){
+      const urls = [];
+      const pushUrl = (u)=>{
+        if(typeof u === "string" && /^https?:\/\//i.test(u.trim())) urls.push(u.trim());
+      };
+
+      if(typeof node === "string"){
+        pushUrl(node);
+      }else if(Array.isArray(node)){
+        node.forEach(v=>{
+          if(typeof v === "string") pushUrl(v);
+          else if(v?.url) pushUrl(String(v.url));
+        });
+      }else if(node && typeof node === "object"){
+        Object.values(node).forEach(v=>{
+          if(typeof v === "string") pushUrl(v);
+          else if(v?.url) pushUrl(String(v.url));
+        });
+      }
+
+      out[String(placeId).trim()] = [...new Set(urls)];
+    }
+
+    return out;
+  }
+
+  async function loadPlaceImagesFromGarg(){
+    if(!imagesDb) return {};
+    try{
+      const snap = await imagesDb.ref(NODE_PLACE_IMAGES).once("value");
+      PLACE_IMAGES = normalizePlaceImages(snap.val() || {});
+      return PLACE_IMAGES;
+    }catch(e){
+      console.error("garg place_images load error:", e);
+      PLACE_IMAGES = {};
+      return {};
+    }
+  }
+
+  /* ✅ Photos: now also uses PLACE_IMAGES */
+  function pickAllPhotos(p, pid){
     const isValid = (u)=> typeof u==="string" && /^https?:\/\//i.test(u.trim());
     let arr = [];
+
+    // 1) existing fields inside PLACES
     if(isValid(p?.imageUrl)) arr.push(p.imageUrl.trim());
     if(isValid(p?.image)) arr.push(p.image.trim());
     if(isValid(p?.img)) arr.push(p.img.trim());
@@ -1181,9 +1250,21 @@
     }else if(p?.images && typeof p.images === "object"){
       arr.push(...Object.values(p.images).filter(isValid).map(x=>x.trim()));
     }
+
+    // 2) ✅ from garg DB by place_id key
+    const id = String(pid || p?.place_id || p?.id || "").trim();
+    if(id && PLACE_IMAGES[id]?.length) arr.push(...PLACE_IMAGES[id]);
+
+    // 3) ✅ fallback by slug of name (if your garg keys are slugs)
+    if(id && (!PLACE_IMAGES[id] || !PLACE_IMAGES[id].length)){
+      const nm = placeNameAny(p, id);
+      const slug = slugifyName(nm);
+      if(slug && PLACE_IMAGES[slug]?.length) arr.push(...PLACE_IMAGES[slug]);
+    }
+
     return [...new Set(arr)];
   }
-  function pickPhotoAny(p){ return pickAllPhotos(p)[0] || ""; }
+  function pickPhotoAny(p, pid){ return pickAllPhotos(p, pid)[0] || ""; }
 
   /* Tabs */
   function setActiveTab(which){
@@ -1214,7 +1295,7 @@
     const dist = districtAny(p) || "";
     const hist = String(p.history_tagline || p.history || "").trim();
     const bullets = toBullets(p.what_you_find || p.whatYouFind);
-    const imgs = pickAllPhotos(p);
+    const imgs = pickAllPhotos(p, pid); // ✅ includes garg DB images
 
     ACTIVE_PLACE_GALLERY = { pid, idx:0, imgs };
 
@@ -1299,10 +1380,7 @@
     return 2 * R * Math.asin(Math.min(1, Math.sqrt(q)));
   }
 
-  /* ✅ Day-wise Nearby (NO DUPS)
-     - excludes: day places + whole route + already suggested earlier days
-     - prefers: same district as anchors
-     - radius: 15km (change if you want) */
+  /* ✅ Day-wise Nearby (NO DUPS) */
   function getNearbyForDay(dayPlaceIds, opts){
     const {
       limit = 6,
@@ -1381,7 +1459,7 @@
       const p = PLACES[pid] || {};
       const nm = placeNameAny(p, pid);
       const dist = districtAny(p) || "";
-      const url = pickPhotoAny(p);
+      const url = pickPhotoAny(p, pid); // ✅
 
       const card = document.createElement("div");
       card.className = "nearCard";
@@ -1410,8 +1488,7 @@
 
     containerEl.appendChild(wrap);
 
-    // ✅ add to exclude set so next days don't repeat
-    near.forEach(n=>excludeSet.add(n.pid));
+    near.forEach(n=>excludeSet.add(n.pid)); // ✅ no duplicates across days
   }
 
   /* Map */
@@ -1464,7 +1541,7 @@
   let stay_rate_rules = {};
   let PRICING_READY = false;
 
-  const CACHE_KEY = "hp_portal_cache_v16_daywise_nearby_nodups";
+  const CACHE_KEY = "hp_portal_cache_v17_images_garg";
   const CACHE_TTL_MS = 1000 * 60 * 30;
 
   function loadCache(){
@@ -1480,6 +1557,7 @@
       pricing_transport = parsed.pricing_transport || {};
       rate_hotel = parsed.rate_hotel || {};
       stay_rate_rules = parsed.stay_rate_rules || {};
+      PLACE_IMAGES = parsed.place_images || {}; // ✅
       PRICING_READY = true;
 
       ACTIVE_TEMPLATES = Object.entries(TEMPLATES)
@@ -1492,7 +1570,7 @@
       buildNameIndex();
       buildStartList(ACTIVE_TEMPLATES);
 
-      setStatus(`Loaded from cache • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places`);
+      setStatus(`Loaded from cache • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places • ${Object.keys(PLACE_IMAGES).length} image-keys`);
       return true;
     }catch(e){ return false; }
   }
@@ -1504,7 +1582,8 @@
         templates: TEMPLATES,
         pricing_transport,
         rate_hotel,
-        stay_rate_rules
+        stay_rate_rules,
+        place_images: PLACE_IMAGES // ✅
       }));
     }catch(e){}
   }
@@ -1684,7 +1763,7 @@
       const p = PLACES[routeIds[0]] || {};
       const nm = placeNameAny(p, routeIds[0]);
       ini = initials(nm);
-      thumbUrl = pickPhotoAny(p);
+      thumbUrl = pickPhotoAny(p, routeIds[0]); // ✅
     }
 
     const el = document.createElement("div");
@@ -1723,7 +1802,7 @@
       const p = PLACES[pickId] || {};
       const nm = placeNameAny(p, pickId);
       ini = initials(nm);
-      thumbUrl = pickPhotoAny(p);
+      thumbUrl = pickPhotoAny(p, pickId); // ✅
     }
 
     const el = document.createElement("div");
@@ -1834,7 +1913,6 @@
     return blocks.filter(x=>x.ids.length);
   }
 
-  /* ✅ Render itinerary + day-wise nearby (no dups) */
   function renderItinerary(tpl, start, endKey){
     $("activePkgName").textContent = `${String(tpl.days||"—")}D`;
 
@@ -1867,9 +1945,8 @@
 
     $("placeDetail").innerHTML = `<div class="muted">Tap any place from itinerary to see History + What you can find + Photos here.</div>`;
 
-    // ✅ Exclude set for NO DUPS across days
     const routeAll = routeIdsFromTemplateIncludingStart(tpl);
-    const excludeSet = new Set(routeAll.filter(Boolean)); // don't suggest route places again
+    const excludeSet = new Set(routeAll.filter(Boolean));
 
     const blocks = buildDayWise(tpl);
     blocks.forEach(block=>{
@@ -1889,7 +1966,7 @@
         const p = PLACES[pid] || {};
         const name = placeNameAny(p, pid);
         const dist = districtAny(p) || "—";
-        const url = pickPhotoAny(p);
+        const url = pickPhotoAny(p, pid); // ✅
 
         const line = document.createElement("div");
         line.className = "placeLine";
@@ -1919,9 +1996,7 @@
         cont.appendChild(line);
       });
 
-      // ✅ Day-wise nearby: close to today's places, no duplicates
       renderNearbyRow(cont, block.ids, excludeSet);
-
       daysList.appendChild(dayCard);
     });
   }
@@ -2314,16 +2389,23 @@
 
     buildNameIndex();
     buildStartList(ACTIVE_TEMPLATES);
-
-    saveCache();
-    setStatus(`Loaded LIVE • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places • pricing OK`);
   }
 
   async function refreshAll(){
     try{
-      await loadLive();
+      setStatus("Loading live from Firebase…");
+      await Promise.all([
+        loadLive(),
+        loadPlaceImagesFromGarg() // ✅ load images from garg-enterprise
+      ]);
+
+      saveCache();
+
+      setStatus(`Loaded LIVE • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places • ${Object.keys(PLACE_IMAGES).length} image-keys`);
+
       toast("Refreshed from Firebase");
       invalidateMapSoon();
+
       if($("pills").children.length){
         applyFilters();
       }else{
@@ -2364,10 +2446,17 @@
   window.addEventListener("DOMContentLoaded", () => {
     $("yr").textContent = String(new Date().getFullYear());
 
+    // ✅ init main firebase app (revnue)
     firebase.initializeApp(firebaseConfig);
     db = firebase.database();
     analytics = firebase.analytics();
     auth = firebase.auth();
+
+    // ✅ init second firebase app (garg) for place_images
+    const imagesApp = firebase.apps.find(a => a.name === "imagesApp")
+      ? firebase.app("imagesApp")
+      : firebase.initializeApp(firebaseConfigImages, "imagesApp");
+    imagesDb = firebase.database(imagesApp);
 
     auth.onAuthStateChanged((user)=>{
       $("mintLoginBtn").textContent = user ? "Logout" : "Mint Login";
@@ -2481,6 +2570,7 @@
 
     const hadCache = loadCache();
     if(hadCache) toast("Loaded fast from cache");
+
     refreshAll();
   });
   </script>
