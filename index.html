@@ -26,12 +26,7 @@
 
   <!-- Structured data -->
   <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"WebSite",
-    "name":"Himachal Explorer Portal",
-    "url":"https://himachalexplorer.in/"
-  }
+  {"@context":"https://schema.org","@type":"WebSite","name":"Himachal Explorer Portal","url":"https://himachalexplorer.in/"}
   </script>
 
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
@@ -52,22 +47,15 @@
 
   <style>
     :root{
-      --bg0:#070A12;
-      --bg1:#0B1220;
-      --stroke:rgba(255,255,255,.10);
-      --muted:rgba(255,255,255,.65);
-      --text:rgba(255,255,255,.92);
-      --shadow: 0 18px 70px rgba(0,0,0,.55);
-      --radius: 16px;
-      --acc:#7C3AED;
-      --gap: 10px;
-      --shellW: min(92vw, 1500px);
+      --bg0:#070A12; --bg1:#0B1220; --stroke:rgba(255,255,255,.10);
+      --muted:rgba(255,255,255,.65); --text:rgba(255,255,255,.92);
+      --shadow: 0 18px 70px rgba(0,0,0,.55); --radius: 16px; --acc:#7C3AED;
+      --gap: 10px; --shellW: min(92vw, 1500px);
     }
     *{ box-sizing:border-box; }
     html,body{ height:auto; }
     body{
-      margin:0;
-      color:var(--text);
+      margin:0; color:var(--text);
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       font-size: 13px;
       background:
@@ -77,24 +65,16 @@
         linear-gradient(180deg, var(--bg0), var(--bg1));
       overflow:auto;
     }
-    .aurora{
-      position:fixed; inset:-30%;
+    .aurora{ position:fixed; inset:-30%;
       background:
         radial-gradient(900px 500px at 25% 30%, rgba(124,58,237,.22), transparent 65%),
         radial-gradient(900px 520px at 75% 25%, rgba(34,197,94,.18), transparent 66%),
         radial-gradient(860px 540px at 55% 75%, rgba(6,182,212,.14), transparent 66%);
-      filter: blur(45px);
-      opacity:.9;
-      animation: drift 14s ease-in-out infinite;
-      pointer-events:none;
-      z-index:-3;
+      filter: blur(45px); opacity:.9; animation: drift 14s ease-in-out infinite;
+      pointer-events:none; z-index:-3;
     }
-    @keyframes drift{
-      0%,100%{ transform: translate3d(0,0,0) scale(1); }
-      50%{ transform: translate3d(3%, -2%, 0) scale(1.06); }
-    }
-    .noise{
-      position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.12; mix-blend-mode:overlay;
+    @keyframes drift{0%,100%{transform:translate3d(0,0,0) scale(1);}50%{transform:translate3d(3%,-2%,0) scale(1.06);}}
+    .noise{ position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.12; mix-blend-mode:overlay;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
     }
     .shell{ width: var(--shellW); margin: 0 auto; padding: 12px 10px 18px; }
@@ -102,21 +82,17 @@
 
     .top{
       display:flex; align-items:center; justify-content:space-between;
-      padding: 10px 10px;
-      border: 1px solid var(--stroke);
+      padding: 10px 10px; border: 1px solid var(--stroke);
       border-radius: var(--radius);
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      backdrop-filter: blur(14px);
-      gap: 10px;
-      flex-wrap:wrap;
+      backdrop-filter: blur(14px); gap: 10px; flex-wrap:wrap;
     }
     .brand{ display:flex; align-items:center; gap:10px; min-width: 240px; }
     .logo{
       width:44px; height:44px; border-radius:14px;
       background: rgba(255,255,255,.10);
       border:1px solid var(--stroke);
-      display:grid; place-items:center;
-      overflow:hidden;
+      display:grid; place-items:center; overflow:hidden;
       box-shadow: 0 14px 30px rgba(0,0,0,.35);
       flex:0 0 auto;
     }
@@ -134,117 +110,68 @@
       text-transform: uppercase;
       letter-spacing:.08em;
       display:inline-flex; align-items:center; gap:10px;
-      cursor:pointer;
-      user-select:none;
-      backdrop-filter: blur(12px);
-      white-space: nowrap;
+      cursor:pointer; user-select:none; backdrop-filter: blur(12px); white-space: nowrap;
     }
     .chip:hover{ background: rgba(255,255,255,.08); color: rgba(255,255,255,.82); }
     .chip.primary{
       border-color: rgba(124,58,237,.55);
       background: rgba(124,58,237,.14);
-      color:#fff;
-      font-weight:900;
+      color:#fff; font-weight:900;
     }
 
-    .main{
-      display:grid;
-      grid-template-columns: 0.34fr 0.30fr 0.36fr;
-      gap: var(--gap);
-      align-items:start;
-    }
+    .main{ display:grid; grid-template-columns: 0.34fr 0.30fr 0.36fr; gap: var(--gap); align-items:start; }
+
     .pane{
       border: 1px solid var(--stroke);
       border-radius: var(--radius);
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
       box-shadow: var(--shadow);
       backdrop-filter: blur(14px);
-      display:flex;
-      flex-direction:column;
-      overflow:hidden;
-      height: auto;
-      min-height: 540px;
+      display:flex; flex-direction:column; overflow:hidden;
+      height: auto; min-height: 540px;
     }
-    .pane.mapPane{
-      position: sticky;
-      top: 12px;
-      height: calc(100vh - 120px);
-      min-height: 560px;
-      max-height: 860px;
-    }
+    .pane.mapPane{ position: sticky; top: 12px; height: calc(100vh - 120px); min-height: 560px; max-height: 860px; }
+
     .paneHdr{
       padding: 10px 10px 8px;
       border-bottom:1px solid var(--stroke);
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:10px;
-      flex:0 0 auto;
+      display:flex; align-items:flex-end; justify-content:space-between; gap:10px; flex:0 0 auto;
     }
     .paneHdr .t{ font-size:11px; letter-spacing:.18em; text-transform: uppercase; margin:0; }
     .paneHdr .s{ font-size:10.5px; color:var(--muted); letter-spacing:.08em; text-transform: uppercase; }
 
     .filters{
-      padding: 10px;
-      border-bottom:1px solid var(--stroke);
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:8px;
-      background: rgba(0,0,0,.18);
-      backdrop-filter: blur(10px);
-      flex:0 0 auto;
-      position:relative;
-      z-index:20;
+      padding: 10px; border-bottom:1px solid var(--stroke);
+      display:grid; grid-template-columns: 1fr; gap:8px;
+      background: rgba(0,0,0,.18); backdrop-filter: blur(10px);
+      flex:0 0 auto; position:relative; z-index:20;
     }
     .field label{
-      display:block;
-      font-size: 10.5px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing:.12em;
-      margin:0 0 6px 2px;
+      display:block; font-size: 10.5px; color: var(--muted);
+      text-transform: uppercase; letter-spacing:.12em; margin:0 0 6px 2px;
     }
     input, select{
-      width:100%;
-      padding: 10px 10px;
-      border-radius: 12px;
+      width:100%; padding: 10px 10px; border-radius: 12px;
       border: 1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.25);
-      color: rgba(255,255,255,.92);
-      outline:none;
-      position:relative;
-      z-index:30;
-      font-size: 13px;
+      background: rgba(0,0,0,.25); color: rgba(255,255,255,.92);
+      outline:none; position:relative; z-index:30; font-size: 13px;
     }
-    input:focus, select:focus{
-      border-color: rgba(124,58,237,.55);
-      box-shadow: 0 0 0 3px rgba(124,58,237,.16);
-    }
+    input:focus, select:focus{ border-color: rgba(124,58,237,.55); box-shadow: 0 0 0 3px rgba(124,58,237,.16); }
+
     .btnRow{ display:flex; gap:8px; }
     .btn{
-      flex:1;
-      padding: 10px 10px;
-      border-radius: 12px;
+      flex:1; padding: 10px 10px; border-radius: 12px;
       border: 1px solid rgba(255,255,255,.14);
       background: linear-gradient(135deg, rgba(124,58,237,.95), rgba(6,182,212,.65));
-      color:#fff;
-      font-weight: 900;
-      letter-spacing:.10em;
-      text-transform: uppercase;
-      cursor:pointer;
-      font-size: 11px;
+      color:#fff; font-weight: 900; letter-spacing:.10em; text-transform: uppercase;
+      cursor:pointer; font-size: 11px;
     }
     .btn.secondary{ background: rgba(255,255,255,.06); color: rgba(255,255,255,.85); }
 
     .metaPills{
-      padding: 0 10px 10px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:7px;
-      background: rgba(0,0,0,.18);
-      backdrop-filter: blur(10px);
-      border-bottom:1px solid var(--stroke);
-      flex:0 0 auto;
+      padding: 0 10px 10px; display:flex; flex-wrap:wrap; gap:7px;
+      background: rgba(0,0,0,.18); backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--stroke); flex:0 0 auto;
     }
     .pill{
       border:1px solid rgba(255,255,255,.14);
@@ -258,15 +185,7 @@
       display:inline-flex; align-items:center; gap:8px;
     }
     .pill b{ color:#fff; letter-spacing:.06em; }
-    .pill.pillHint{
-      text-transform:none;
-      letter-spacing:.02em;
-      font-size:10.5px;
-      padding:6px 10px;
-      line-height:1.2;
-      justify-content:center;
-      opacity:.9;
-    }
+    .pill.pillHint{ text-transform:none; letter-spacing:.02em; font-size:10.5px; padding:6px 10px; line-height:1.2; justify-content:center; opacity:.9; }
 
     .pkgLayout{ flex:1; min-height:0; display:flex; flex-direction:column; overflow:hidden; background: rgba(0,0,0,.18); }
 
@@ -274,8 +193,7 @@
       display:flex; flex-wrap:nowrap; gap:8px; padding:9px 10px;
       border-top:1px solid rgba(255,255,255,.08);
       border-bottom:1px solid rgba(255,255,255,.08);
-      overflow-x:auto;
-      -webkit-overflow-scrolling: touch;
+      overflow-x:auto; -webkit-overflow-scrolling: touch;
       background: rgba(0,0,0,.12);
     }
     .distItem{
@@ -292,21 +210,12 @@
       flex:0 0 auto;
       white-space:nowrap;
     }
-    .distItem.active{
-      border-color: rgba(124,58,237,.70);
-      box-shadow: 0 0 0 3px rgba(124,58,237,.16);
-      background: rgba(124,58,237,.12);
-    }
+    .distItem.active{ border-color: rgba(124,58,237,.70); box-shadow: 0 0 0 3px rgba(124,58,237,.16); background: rgba(124,58,237,.12); }
 
     .pkgListWrap{ flex:1; min-height:0; display:flex; flex-direction:column; overflow:hidden; }
     .pkgListHdr{
-      flex:0 0 auto;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:9px 10px;
-      border-bottom:1px solid rgba(255,255,255,.08);
+      flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:9px 10px; border-bottom:1px solid rgba(255,255,255,.08);
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
       backdrop-filter: blur(10px);
     }
@@ -314,23 +223,12 @@
     .pkgListMeta{ font-size:10.5px; color: rgba(255,255,255,.70); letter-spacing:.10em; text-transform: uppercase; }
 
     .pkgList{
-      padding: 10px;
-      overflow-y:auto;
-      -webkit-overflow-scrolling: touch;
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:9px;
-      min-height:0;
-      background: rgba(0,0,0,.10);
-      flex:1;
+      padding: 10px; overflow-y:auto; -webkit-overflow-scrolling: touch;
+      display:grid; grid-template-columns: 1fr; gap:9px; min-height:0;
+      background: rgba(0,0,0,.10); flex:1;
     }
 
-    .pkgGroupHdr{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      border-radius: 14px;
-      padding: 9px;
-    }
+    .pkgGroupHdr{ border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); border-radius: 14px; padding: 9px; }
     .pkgGroupHdr .h1{ font-size: 11px; font-weight: 950; letter-spacing:.12em; text-transform: uppercase; }
     .pkgGroupHdr .h2{ margin-top:5px; font-size: 10.5px; color: rgba(255,255,255,.75); letter-spacing:.08em; text-transform: uppercase; line-height: 1.35; }
 
@@ -341,8 +239,7 @@
       padding: 9px;
       cursor:pointer;
       transition: transform .12s ease, border-color .12s ease, background .12s ease;
-      display:flex; gap:9px;
-      min-width:0;
+      display:flex; gap:9px; min-width:0;
     }
     .pkg:hover{ transform: translateY(-1px); border-color: rgba(124,58,237,.35); background: rgba(0,0,0,.28); }
     .pkg.active{ border-color: rgba(124,58,237,.70); box-shadow: 0 0 0 3px rgba(124,58,237,.18); }
@@ -351,58 +248,29 @@
       width:50px; height:50px; border-radius: 12px;
       border:1px solid rgba(255,255,255,.12);
       background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.14), rgba(124,58,237,.18));
-      overflow:hidden;
-      flex:0 0 auto;
-      display:grid; place-items:center;
-      font-weight: 950;
-      color: rgba(255,255,255,.85);
-      font-size: 12px;
+      overflow:hidden; flex:0 0 auto; display:grid; place-items:center;
+      font-weight: 950; color: rgba(255,255,255,.85); font-size: 12px;
     }
     .pkgPic img{ width:100%; height:100%; object-fit:cover; display:block; }
     .pkgBody{ min-width:0; flex:1; }
     .pkgName{
-      font-size: 11.5px;
-      font-weight: 950;
-      letter-spacing:.10em;
-      text-transform: uppercase;
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
-      margin-bottom: 5px;
+      font-size: 11.5px; font-weight: 950; letter-spacing:.10em; text-transform: uppercase;
+      white-space: nowrap; overflow:hidden; text-overflow: ellipsis; margin-bottom: 5px;
     }
     .pkgMeta{
-      font-size: 10.5px;
-      color: rgba(255,255,255,.72);
-      letter-spacing:.08em;
-      text-transform: uppercase;
-      line-height: 1.35;
+      font-size: 10.5px; color: rgba(255,255,255,.72);
+      letter-spacing:.08em; text-transform: uppercase; line-height: 1.35;
     }
     .diffLine{
-      margin-top:5px;
-      font-size: 10.8px;
-      color: rgba(255,255,255,.88);
-      letter-spacing:.03em;
-      text-transform:none;
-      line-height:1.35;
-      opacity:.98;
-      white-space: normal;
-      word-break: break-word;
+      margin-top:5px; font-size: 10.8px; color: rgba(255,255,255,.88);
+      letter-spacing:.03em; text-transform:none; line-height:1.35;
+      opacity:.98; white-space: normal; word-break: break-word;
     }
 
-    #map{
-      width:100%;
-      flex:1;
-      min-height: 360px;
-      background: rgba(255,255,255,.04);
-      border-radius: var(--radius);
-      overflow:hidden;
-    }
+    #map{ width:100%; flex:1; min-height: 360px; background: rgba(255,255,255,.04); border-radius: var(--radius); overflow:hidden; }
     .mapTools{
-      padding: 9px 10px;
-      border-top:1px solid var(--stroke);
-      display:flex; gap:8px; flex-wrap:wrap;
-      flex:0 0 auto;
-      background: rgba(0,0,0,.14);
+      padding: 9px 10px; border-top:1px solid var(--stroke);
+      display:flex; gap:8px; flex-wrap:wrap; flex:0 0 auto; background: rgba(0,0,0,.14);
     }
     .toolBtn{
       border:1px solid rgba(255,255,255,.14);
@@ -415,80 +283,16 @@
       text-transform: uppercase;
       cursor:pointer;
       display:inline-flex; align-items:center; gap:10px;
-      user-select:none;
-      white-space: nowrap;
-      text-decoration:none;
+      user-select:none; white-space: nowrap; text-decoration:none;
     }
 
     .itWrap{
-      padding: 10px;
-      overflow-y:auto;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      min-height:0;
-      flex:1;
-      -webkit-overflow-scrolling: touch;
-      background: rgba(0,0,0,.18);
+      padding: 10px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;
+      min-height:0; flex:1; -webkit-overflow-scrolling: touch; background: rgba(0,0,0,.18);
     }
     .heroCard{ border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.22); border-radius: 14px; padding: 10px; }
     .bigTitle{ margin:0; font-size: 12px; letter-spacing:.18em; text-transform: uppercase; color:#fff; }
     .muted{ color: var(--muted); font-size: 10.8px; letter-spacing:.08em; text-transform: uppercase; line-height:1.35; }
-
-    .row2{ display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
-    .mini{ border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); border-radius: 14px; padding: 9px; }
-    .mini .k{ font-size: 10px; letter-spacing:.16em; text-transform: uppercase; color: rgba(255,255,255,.70); }
-    .mini .v{ margin-top:5px; font-size: 13px; font-weight: 950; letter-spacing:.06em; color:#fff; }
-    .mini .v small{ font-size: 10.5px; color: rgba(255,255,255,.72); font-weight: 800; }
-
-    .daysList{ display:flex; flex-direction:column; gap:9px; }
-    .dayCard{ border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.22); border-radius: 14px; padding: 10px; }
-    .dayTop{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom: 7px; }
-    .dayTop .d{ font-size: 11px; font-weight: 950; letter-spacing:.18em; text-transform: uppercase; }
-
-    .placeLine{
-      display:flex; align-items:center; gap:9px;
-      padding: 7px 9px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      border-radius: 12px;
-      margin-top: 7px;
-      cursor:pointer;
-    }
-    .thumb{
-      width:36px; height:36px;
-      border-radius: 11px;
-      border:1px solid rgba(255,255,255,.10);
-      overflow:hidden;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.14), rgba(6,182,212,.18));
-      flex:0 0 auto;
-      display:grid; place-items:center;
-      font-weight:950;
-      color: rgba(255,255,255,.9);
-      font-size: 11px;
-    }
-    .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
-
-    .pinfo{ min-width:0; flex:1; }
-    .pname{
-      font-size: 11px;
-      font-weight: 950;
-      letter-spacing:.10em;
-      text-transform: uppercase;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
-    }
-    .pmeta{
-      margin-top:3px;
-      font-size: 10px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.68);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
-    }
 
     .tabs{ display:flex; gap:8px; flex-wrap:wrap; margin-top:9px; }
     .tabBtn{
@@ -503,60 +307,85 @@
       cursor:pointer;
       user-select:none;
     }
-    .tabBtn.active{
-      border-color: rgba(124,58,237,.70);
-      background: rgba(124,58,237,.14);
-      color:#fff;
-      box-shadow: 0 0 0 3px rgba(124,58,237,.14);
-    }
+    .tabBtn.active{ border-color: rgba(124,58,237,.70); background: rgba(124,58,237,.14); color:#fff; box-shadow: 0 0 0 3px rgba(124,58,237,.14); }
     .tabPanel{ display:none; }
     .tabPanel.active{ display:block; }
 
+    .row2{ display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
+    .mini{ border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); border-radius: 14px; padding: 9px; }
+    .mini .k{ font-size: 10px; letter-spacing:.16em; text-transform: uppercase; color: rgba(255,255,255,.70); }
+    .mini .v{ margin-top:5px; font-size: 13px; font-weight: 950; letter-spacing:.06em; color:#fff; }
+    .mini .v small{ font-size: 10.5px; color: rgba(255,255,255,.72); font-weight: 800; }
+
+    .enqRow{ margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; }
+    .enqBtn{
+      flex:1;
+      border:1px solid rgba(34,197,94,.35);
+      background: rgba(34,197,94,.18);
+      color:#fff;
+      border-radius: 14px;
+      padding: 10px 10px;
+      text-decoration:none;
+      text-transform: uppercase;
+      letter-spacing:.10em;
+      font-weight: 950;
+      font-size: 11px;
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      user-select:none;
+    }
+    .enqBtn.disabled{
+      opacity:.45;
+      pointer-events:none;
+      border-color: rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+    }
+
+    .daysList{ display:flex; flex-direction:column; gap:9px; }
+    .dayCard{ border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.22); border-radius: 14px; padding: 10px; }
+    .dayTop{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom: 7px; }
+    .dayTop .d{ font-size: 11px; font-weight: 950; letter-spacing:.18em; text-transform: uppercase; }
+
+    .placeLine{
+      display:flex; align-items:center; gap:9px;
+      padding: 7px 9px; border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      border-radius: 12px; margin-top: 7px; cursor:pointer;
+    }
+    .thumb{
+      width:36px; height:36px; border-radius: 11px;
+      border:1px solid rgba(255,255,255,.10);
+      overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.14), rgba(6,182,212,.18));
+      flex:0 0 auto; display:grid; place-items:center; font-weight:950; color: rgba(255,255,255,.9); font-size: 11px;
+    }
+    .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .pinfo{ min-width:0; flex:1; }
+    .pname{ font-size: 11px; font-weight: 950; letter-spacing:.10em; text-transform: uppercase; white-space:nowrap; overflow:hidden; text-overflow: ellipsis; }
+    .pmeta{ margin-top:3px; font-size: 10px; letter-spacing:.12em; text-transform: uppercase; color: rgba(255,255,255,.68); white-space:nowrap; overflow:hidden; text-overflow: ellipsis; }
+
     .placeDetail{ border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.22); border-radius: 14px; padding: 10px; overflow:hidden; }
     .placeHero{
-      width:100%;
-      height:150px;
-      border-radius: 12px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      position:relative;
+      width:100%; height:150px; border-radius: 12px; overflow:hidden;
+      border:1px solid rgba(255,255,255,.10); background: rgba(255,255,255,.04); position:relative;
     }
     .placeHero img{ width:100%; height:100%; object-fit:cover; display:block; }
     .galBtn{
-      position:absolute;
-      top:50%;
-      transform:translateY(-50%);
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.45);
-      color:#fff;
-      border-radius: 10px;
-      padding: 6px 9px;
-      cursor:pointer;
-      user-select:none;
+      position:absolute; top:50%; transform:translateY(-50%);
+      border:1px solid rgba(255,255,255,.18); background: rgba(0,0,0,.45); color:#fff;
+      border-radius: 10px; padding: 6px 9px; cursor:pointer; user-select:none;
     }
-    .galBtn.left{ left:8px; }
-    .galBtn.right{ right:8px; }
+    .galBtn.left{ left:8px; } .galBtn.right{ right:8px; }
     .dots{ display:flex; gap:6px; justify-content:center; margin-top:8px; }
     .dot{ width:7px; height:7px; border-radius:50%; background: rgba(255,255,255,.35); cursor:pointer; }
     .dot.active{ background:#fff; }
 
     .toast{
-      position:fixed;
-      left: 14px;
-      bottom: 14px;
-      z-index: 9999;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(10,14,24,.88);
-      border-radius: 14px;
-      padding: 9px 10px;
-      color: rgba(255,255,255,.82);
-      font-size: 10.5px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
+      position:fixed; left: 14px; bottom: 14px; z-index: 9999;
+      border:1px solid rgba(255,255,255,.14); background: rgba(10,14,24,.88);
+      border-radius: 14px; padding: 9px 10px;
+      color: rgba(255,255,255,.82); font-size: 10.5px;
+      letter-spacing:.12em; text-transform: uppercase;
       box-shadow: 0 30px 90px rgba(0,0,0,.65);
-      display:none;
-      max-width: 560px;
+      display:none; max-width: 560px;
     }
     .toast.show{ display:block; }
 
@@ -570,43 +399,22 @@
     #priceDebug{ display:none !important; }
 
     .nearWrap{ border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.22); border-radius: 14px; padding: 10px; }
-    .nearGrid{
-      display:flex; gap:10px; overflow-x:auto; -webkit-overflow-scrolling: touch; padding-bottom:4px;
-    }
+    .nearGrid{ display:flex; gap:10px; overflow-x:auto; -webkit-overflow-scrolling: touch; padding-bottom:4px; }
     .nearCard{ width: 112px; flex: 0 0 auto; cursor:pointer; user-select:none; }
     .nearSquare{
       width:112px; height:112px; border-radius: 14px; overflow:hidden;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      display:grid; place-items:center;
-      position:relative;
+      border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05);
+      display:grid; place-items:center; position:relative;
     }
     .nearSquare img{ width:100%; height:100%; object-fit:cover; display:block; }
     .nearName{
-      margin-top:8px;
-      font-size:10.5px;
-      font-weight:950;
-      letter-spacing:.06em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.90);
-      line-height:1.2;
-      text-align:center;
-      max-width:112px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
+      margin-top:8px; font-size:10.5px; font-weight:950; letter-spacing:.06em; text-transform: uppercase;
+      color: rgba(255,255,255,.90); line-height:1.2; text-align:center; max-width:112px;
+      white-space:nowrap; overflow:hidden; text-overflow: ellipsis;
     }
     .nearMeta{
-      margin-top:4px;
-      font-size:10px;
-      color: rgba(255,255,255,.65);
-      letter-spacing:.08em;
-      text-transform: uppercase;
-      text-align:center;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
-      max-width:112px;
+      margin-top:4px; font-size:10px; color: rgba(255,255,255,.65); letter-spacing:.08em; text-transform: uppercase;
+      text-align:center; white-space:nowrap; overflow:hidden; text-overflow: ellipsis; max-width:112px;
     }
 
     .footer{
@@ -628,53 +436,30 @@
     .footer a:hover{ text-decoration:underline; }
 
     .waFloat{
-      position:fixed;
-      right: 14px;
-      bottom: 14px;
-      z-index: 10000;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding: 12px 14px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.55);
-      backdrop-filter: blur(14px);
+      position:fixed; right: 14px; bottom: 14px; z-index: 10000;
+      display:flex; align-items:center; gap:10px; padding: 12px 14px;
+      border-radius: 999px; border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.55); backdrop-filter: blur(14px);
       box-shadow: 0 28px 90px rgba(0,0,0,.65);
-      color:#fff;
-      text-decoration:none;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
+      color:#fff; text-decoration:none; user-select:none; -webkit-tap-highlight-color: transparent;
     }
     .waFloat:hover{ filter: brightness(1.06); transform: translateY(-1px); }
     .waIcon{
-      width:40px; height:40px;
-      border-radius: 999px;
-      display:grid; place-items:center;
-      background: rgba(34,197,94,.22);
-      border:1px solid rgba(34,197,94,.35);
-      flex:0 0 auto;
+      width:40px; height:40px; border-radius: 999px; display:grid; place-items:center;
+      background: rgba(34,197,94,.22); border:1px solid rgba(34,197,94,.35); flex:0 0 auto;
     }
     .waText{ display:flex; flex-direction:column; line-height:1.1; min-width:0; }
     .waText .t1{ font-size: 12px; font-weight: 950; letter-spacing:.10em; text-transform: uppercase; white-space:nowrap; }
     .waText .t2{ margin-top:4px; font-size: 11px; color: rgba(255,255,255,.80); letter-spacing:.04em; white-space:nowrap; }
     .waClose{
-      width:34px; height:34px;
-      border-radius: 999px;
+      width:34px; height:34px; border-radius: 999px;
       border:1px solid rgba(255,255,255,.16);
       background: rgba(255,255,255,.06);
       color: rgba(255,255,255,.9);
       display:grid; place-items:center;
-      cursor:pointer;
-      flex:0 0 auto;
-      user-select:none;
+      cursor:pointer; flex:0 0 auto; user-select:none;
     }
-    @media (max-width: 420px){
-      .waText{ display:none; }
-      .waFloat{ padding: 10px; }
-      .waClose{ display:none; }
-    }
-
+    @media (max-width: 420px){ .waText{ display:none; } .waFloat{ padding: 10px; } .waClose{ display:none; } }
     @media (max-width: 1100px){
       .shell{ width: 100%; padding: 10px 10px 16px; }
       .main{ grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
@@ -691,7 +476,7 @@
   <div class="aurora"></div>
   <div class="noise"></div>
 
-  <!-- WhatsApp CTA -->
+  <!-- WhatsApp Floating CTA -->
   <a
     class="waFloat"
     id="waFloat"
@@ -840,6 +625,13 @@
               <div class="muted" id="itMeta">Day-wise details will appear here</div>
               <div class="muted" id="priceDebug" style="margin-top:8px; text-transform:none; white-space:pre-wrap;"></div>
 
+              <!-- ✅ NEW: Finalize + WhatsApp Enquiry Button -->
+              <div class="enqRow">
+                <a id="waEnquiryBtn" class="enqBtn disabled" href="#" target="_blank" rel="noopener">
+                  Send Query on WhatsApp
+                </a>
+              </div>
+
               <div class="tabs">
                 <div class="tabBtn active" id="tabItinBtn">Itinerary</div>
                 <div class="tabBtn" id="tabLocBtn">Location</div>
@@ -869,22 +661,10 @@
                 <div class="muted" id="bdMeta" style="text-transform:none;letter-spacing:.02em;">—</div>
               </div>
               <div class="bdGrid">
-                <div class="bdRow">
-                  <div class="k">Transport</div>
-                  <div class="v" id="bdTransport">—</div>
-                </div>
-                <div class="bdRow">
-                  <div class="k">Hotel</div>
-                  <div class="v" id="bdHotel">—</div>
-                </div>
-                <div class="bdRow">
-                  <div class="k">Route KM (used)</div>
-                  <div class="v" id="bdKm">—</div>
-                </div>
-                <div class="bdRow">
-                  <div class="k">Rooms / Nights</div>
-                  <div class="v" id="bdRoomsNights">—</div>
-                </div>
+                <div class="bdRow"><div class="k">Transport</div><div class="v" id="bdTransport">—</div></div>
+                <div class="bdRow"><div class="k">Hotel</div><div class="v" id="bdHotel">—</div></div>
+                <div class="bdRow"><div class="k">Route KM (used)</div><div class="v" id="bdKm">—</div></div>
+                <div class="bdRow"><div class="k">Rooms / Nights</div><div class="v" id="bdRoomsNights">—</div></div>
               </div>
               <div class="bdSmall" id="bdText">—</div>
             </div>
@@ -923,27 +703,26 @@
   </div>
 
   <script>
-  /* Floating WhatsApp: hide/show preference */
-  (function(){
-    const KEY = "wa_float_hidden_v1";
-    function apply(){
-      const hidden = localStorage.getItem(KEY) === "1";
-      const el = document.getElementById("waFloat");
-      if(el) el.style.display = hidden ? "none" : "flex";
-    }
-    window.addEventListener("DOMContentLoaded", ()=>{
-      const close = document.getElementById("waClose");
-      if(close){
-        close.addEventListener("click", (e)=>{
-          e.preventDefault();
-          e.stopPropagation();
-          localStorage.setItem(KEY, "1");
-          apply();
-        });
+    /* Floating WhatsApp: hide/show preference */
+    (function(){
+      const KEY = "wa_float_hidden_v1";
+      function apply(){
+        const hidden = localStorage.getItem(KEY) === "1";
+        const el = document.getElementById("waFloat");
+        if(el) el.style.display = hidden ? "none" : "flex";
       }
-      apply();
-    });
-  })();
+      window.addEventListener("DOMContentLoaded", ()=>{
+        const close = document.getElementById("waClose");
+        if(close){
+          close.addEventListener("click", (e)=>{
+            e.preventDefault(); e.stopPropagation();
+            localStorage.setItem(KEY, "1");
+            apply();
+          });
+        }
+        apply();
+      });
+    })();
   </script>
 
   <script>
@@ -1052,10 +831,6 @@
         if(/^https?:\/\//i.test(s)) urls.push(s);
       };
 
-      // Allow these shapes:
-      // 1) placeId: "https://..."
-      // 2) placeId: [ "https://...", {url:"https://..."} ]
-      // 3) placeId: { "1": {url:"..."}, "2": {url:"..."}, "3":"..." }
       if(typeof node === "string"){
         pushUrl(node);
       }else if(Array.isArray(node)){
@@ -1080,7 +855,6 @@
 
       out[String(placeId).trim()] = [...new Set(urls)];
     }
-
     return out;
   }
 
@@ -1097,11 +871,66 @@
     }
   }
 
+  /* ===============================
+     ✅ GITHUB / SITE IMAGE FETCH (place_id wise)
+     Your repo: https://github.com/champishere001/Himachal_Explorer
+     Folder: /images/<place_id>/1.jpg..4.jpg
+     =============================== */
+
+  // If your hosting also serves /images/... (best)
+  const SITE_IMAGES_BASE = "/images";
+
+  // GitHub details (already set)
+  const GITHUB_USER = "champishere001";
+  const GITHUB_REPO = "Himachal_Explorer";
+  const GITHUB_BRANCH = "main";
+
+  const GITHUB_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/images`;
+  const JSDELIVR_BASE   = `https://cdn.jsdelivr.net/gh/${GITHUB_USER}/${GITHUB_REPO}@${GITHUB_BRANCH}/images`;
+
+  function imageBasesInOrder(){
+    // Try site first (fast), then jsDelivr (CDN), then raw
+    return [SITE_IMAGES_BASE, JSDELIVR_BASE, GITHUB_RAW_BASE].filter(Boolean);
+  }
+
+  function githubFolderCandidates(placeId){
+    const id = String(placeId || "").trim();
+    if(!id) return [];
+
+    const nums = [1,2,3,4];
+    const exts = ["jpg","jpeg","png","webp"];
+    const urls = [];
+    const bases = imageBasesInOrder();
+
+    for(const base of bases){
+      for(const n of nums){
+        for(const ext of exts){
+          urls.push(`${base}/${id}/${n}.${ext}`);
+        }
+      }
+    }
+    return [...new Set(urls)];
+  }
+
+  // Auto-try multiple URLs until one loads
+  function setImgWithFallback(imgEl, urls, fallbackText){
+    let i = 0;
+    function tryNext(){
+      if(i >= urls.length){
+        imgEl.remove();
+        return;
+      }
+      imgEl.src = urls[i++];
+    }
+    imgEl.onerror = tryNext;
+    tryNext();
+  }
+
   function pickAllPhotos(p, pid){
     const isValid = (u)=> typeof u==="string" && /^https?:\/\//i.test(u.trim());
     let arr = [];
 
-    // 1) fields inside PLACES
+    // 1) direct URLs in PLACES
     if(isValid(p?.imageUrl)) arr.push(p.imageUrl.trim());
     if(isValid(p?.image)) arr.push(p.image.trim());
     if(isValid(p?.img)) arr.push(p.img.trim());
@@ -1112,16 +941,19 @@
       arr.push(...Object.values(p.images).filter(isValid).map(x=>x.trim()));
     }
 
-    // 2) ✅ from garg DB by place_id key
+    // 2) from garg DB node place_images
     const id = String(pid || p?.place_id || p?.id || "").trim();
     if(id && PLACE_IMAGES[id]?.length) arr.push(...PLACE_IMAGES[id]);
 
-    // 3) ✅ fallback by slug of name
+    // 3) fallback by slug of name for garg DB
     if(id && (!PLACE_IMAGES[id] || !PLACE_IMAGES[id].length)){
       const nm = placeNameAny(p, id);
       const slug = slugifyName(nm);
       if(slug && PLACE_IMAGES[slug]?.length) arr.push(...PLACE_IMAGES[slug]);
     }
+
+    // 4) ✅ folder-based images by place_id (GitHub/site)
+    if(id) arr.push(...githubFolderCandidates(id));
 
     return [...new Set(arr)];
   }
@@ -1162,12 +994,8 @@
 
     const hero = imgs.length ? `
       <div class="placeHero">
-        <img id="placeHeroImg" src="${escapeHtml(imgs[0])}" alt="${escapeHtml(name)}" loading="lazy" referrerpolicy="no-referrer"
-             onerror="this.remove();">
-        ${imgs.length>1 ? `
-          <div class="galBtn left" id="galPrev">‹</div>
-          <div class="galBtn right" id="galNext">›</div>
-        `:""}
+        <img id="placeHeroImg" alt="${escapeHtml(name)}" loading="lazy" referrerpolicy="no-referrer">
+        ${imgs.length>1 ? `<div class="galBtn left" id="galPrev">‹</div><div class="galBtn right" id="galNext">›</div>`:""}
       </div>
       ${imgs.length>1 ? `
         <div class="dots" id="galDots">
@@ -1200,14 +1028,15 @@
       ` : ``}
     `;
 
+    // ✅ hero image fallback loader
+    const heroImg = document.getElementById("placeHeroImg");
+    if(heroImg && imgs.length) setImgWithFallback(heroImg, imgs, initials(name));
+
     if(imgs.length > 1){
       $("galPrev").onclick = ()=>galleryStep(-1);
       $("galNext").onclick = ()=>galleryStep(1);
       $("galDots").querySelectorAll(".dot").forEach(dot=>{
-        dot.onclick = ()=>{
-          const i = Number(dot.dataset.i || 0);
-          galleryGo(i);
-        };
+        dot.onclick = ()=>{ const i = Number(dot.dataset.i || 0); galleryGo(i); };
       });
     }
     setActiveTab("loc");
@@ -1218,16 +1047,17 @@
     if(!g.imgs.length) return;
     g.idx = (i + g.imgs.length) % g.imgs.length;
     const img = $("placeHeroImg");
-    if(img) img.src = g.imgs[g.idx];
+    if(img){
+      // load exact index (but still fallback if that one fails)
+      const rotated = g.imgs.slice(g.idx).concat(g.imgs.slice(0,g.idx));
+      setImgWithFallback(img, rotated, "HP");
+    }
     const dots = $("galDots");
     if(dots){
       dots.querySelectorAll(".dot").forEach((d,ix)=>d.classList.toggle("active", ix===g.idx));
     }
   }
-  function galleryStep(delta){
-    const g = ACTIVE_PLACE_GALLERY;
-    galleryGo(g.idx + delta);
-  }
+  function galleryStep(delta){ const g = ACTIVE_PLACE_GALLERY; galleryGo(g.idx + delta); }
 
   /* Distance */
   function haversineKm(aLat,aLng,bLat,bLng){
@@ -1241,7 +1071,7 @@
     return 2 * R * Math.asin(Math.min(1, Math.sqrt(q)));
   }
 
-  /* Day-wise Nearby (NO DUPS) */
+  /* Day-wise Nearby */
   function getNearbyForDay(dayPlaceIds, opts){
     const { limit=6, radiusKm=15, excludeSet=new Set(), preferSameDistrict=true } = (opts||{});
     const used = new Set([...(dayPlaceIds||[]).filter(Boolean)]);
@@ -1253,7 +1083,6 @@
     if(!anchors.length) return [];
 
     const anchorDistricts = new Set(anchors.map(a=>districtAny(a.p)).filter(Boolean));
-
     const candidatesSame = [];
     const candidatesAny  = [];
 
@@ -1302,22 +1131,21 @@
       const p = PLACES[pid] || {};
       const nm = placeNameAny(p, pid);
       const dist = districtAny(p) || "";
-      const url = pickPhotoAny(p, pid);
+      const urls = pickAllPhotos(p, pid);
 
       const card = document.createElement("div");
       card.className = "nearCard";
       card.innerHTML = `
         <div class="nearSquare">
-          ${
-            url
-              ? `<img src="${escapeHtml(url)}" alt="${escapeHtml(nm)}" loading="lazy" referrerpolicy="no-referrer"
-                   onerror="this.remove(); this.parentNode.textContent='${escapeHtml(initials(nm))}';">`
-              : `<div style="font-weight:950;opacity:.9;">${escapeHtml(initials(nm))}</div>`
-          }
+          ${urls.length ? `<img data-npid="${escapeHtml(pid)}" alt="${escapeHtml(nm)}" loading="lazy" referrerpolicy="no-referrer">`
+                        : `<div style="font-weight:950;opacity:.9;">${escapeHtml(initials(nm))}</div>`}
         </div>
         <div class="nearName" title="${escapeHtml(nm)}">${escapeHtml(nm)}</div>
         <div class="nearMeta" title="${escapeHtml(dist)}">${escapeHtml(dist || (bestKm?bestKm.toFixed(1)+" km":""))}</div>
       `;
+      const img = card.querySelector("img[data-npid]");
+      if(img) setImgWithFallback(img, urls, initials(nm));
+
       card.onclick = ()=>{
         renderPlaceDetails(pid);
         const lat = latAny(p), lng = lngAny(p);
@@ -1359,9 +1187,7 @@
     $("kmBadge").textContent = "—";
     invalidateMapSoon();
   }
-  function fitRoute(){
-    if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] });
-  }
+  function fitRoute(){ if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] }); }
 
   /* Data */
   let db, analytics, auth;
@@ -1382,8 +1208,72 @@
   let stay_rate_rules = {};
   let PRICING_READY = false;
 
-  const CACHE_KEY = "hp_portal_cache_v17_images_garg";
+  const CACHE_KEY = "hp_portal_cache_v18_github_images";
   const CACHE_TTL_MS = 1000 * 60 * 30;
+
+  /* ✅ WhatsApp Finalize (package enquiry) */
+  const WHATSAPP_NUMBER = "917018138847"; // change if needed
+  function setWhatsAppEnquiryEnabled(enabled, url){
+    const btn = $("waEnquiryBtn");
+    if(!btn) return;
+    if(enabled){
+      btn.classList.remove("disabled");
+      btn.href = url || "#";
+    }else{
+      btn.classList.add("disabled");
+      btn.href = "#";
+    }
+  }
+  function buildWhatsAppMessage({tpl, startName, endKey, pax, tier, km, total, perPerson}){
+    const days = Number(tpl?.days || 0) || 0;
+    const code = String(tpl?.route_id || "—");
+    const route = String(tpl?.route_path || "").trim();
+    const includes = String(tpl?.includes || tpl?.inclusions || "").trim();
+
+    const lines = [
+      "Hi Chandan, I want to finalize this package:",
+      "",
+      `Start: ${String(startName||"").toUpperCase()}`,
+      `Destination: ${String(endKey||"").toUpperCase()}`,
+      `Days: ${days}`,
+      `Type: ${String(tier||"").toUpperCase()}`,
+      `Pax: ${pax}`,
+      `Route KM (est.): ${isFinite(km)?Number(km).toFixed(1):"—"}`,
+      `Total (est.): ${isFinite(total)?rupees(total):"—"}`,
+      `Per Person (est.): ${isFinite(perPerson)?rupees(perPerson):"—"}`,
+      `Code: ${code}`,
+      route ? `Route: ${route}` : "",
+      includes ? `Includes: ${includes}` : "",
+      "",
+      "Please confirm final price and availability."
+    ].filter(Boolean);
+
+    return lines.join("\n");
+  }
+  function updateWhatsAppForCurrent(){
+    try{
+      if(!CURRENT_TEMPLATE_KEY){ setWhatsAppEnquiryEnabled(false); return; }
+      const tpl = TEMPLATES?.[CURRENT_TEMPLATE_KEY];
+      if(!tpl){ setWhatsAppEnquiryEnabled(false); return; }
+
+      const start = normalizeStartInput() || (tpl.start_point || tpl.start || "");
+      const endKey = endKeyFromRoutePath(tpl);
+      const pax = getSelectedPax();
+      const tier = String($("visitType")?.value || "budget");
+      const km = Number(CURRENT_ROUTE_KM || 0) || Number(tpl.total_km_est || tpl.estimated_drive_km || tpl.total_km || 0);
+
+      const est = estimateTotalCost({ km, days: Number(tpl.days||3), pax, tpl });
+      const total = est.total;
+      const perPerson = isFinite(total) ? (total/pax) : NaN;
+
+      const msg = buildWhatsAppMessage({tpl, startName:start, endKey, pax, tier, km, total, perPerson});
+      const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+      setWhatsAppEnquiryEnabled(true, url);
+    }catch(e){
+      console.error(e);
+      setWhatsAppEnquiryEnabled(false);
+    }
+  }
 
   function loadCache(){
     try{
@@ -1403,10 +1293,7 @@
 
       ACTIVE_TEMPLATES = Object.entries(TEMPLATES)
         .map(([key,obj])=>({key, ...(obj||{})}))
-        .filter(t=>{
-          const st = safeLower(t.status || "active");
-          return st==="active" || st==="enabled" || st==="true";
-        });
+        .filter(t=>{ const st = safeLower(t.status || "active"); return st==="active" || st==="enabled" || st==="true"; });
 
       buildNameIndex();
       buildStartList(ACTIVE_TEMPLATES);
@@ -1514,18 +1401,12 @@
     const rpRaw = String(tpl.route_path || "").trim();
     if(!rpRaw) return String(tpl.end_point || tpl.end || "").trim() || "UNKNOWN";
 
-    const tokens = rpRaw
-      .replace(/->/g,"|").replace(/>/g,"|")
-      .split("|")
-      .map(x=>String(x||"").trim())
-      .filter(Boolean);
-
+    const tokens = rpRaw.replace(/->/g,"|").replace(/>/g,"|")
+      .split("|").map(x=>String(x||"").trim()).filter(Boolean);
     if(!tokens.length) return String(tpl.end_point || tpl.end || "").trim() || "UNKNOWN";
 
     let end = tokens[tokens.length - 1];
-    if(end && start && end.toLowerCase() === start && tokens.length >= 2){
-      end = tokens[tokens.length - 2];
-    }
+    if(end && start && end.toLowerCase() === start && tokens.length >= 2) end = tokens[tokens.length - 2];
     return end || "UNKNOWN";
   }
 
@@ -1581,10 +1462,7 @@
     }).join("");
 
     bar.querySelectorAll(".distItem").forEach(el=>{
-      el.onclick = ()=>{
-        ACTIVE_DISTRICT = el.dataset.d || "ALL";
-        renderPackagesList();
-      };
+      el.onclick = ()=>{ ACTIVE_DISTRICT = el.dataset.d || "ALL"; renderPackagesList(); };
     });
   }
 
@@ -1599,13 +1477,12 @@
     const code = String(t.route_id || "—").toUpperCase();
 
     const routeIds = routeIdsFromTemplateIncludingStart(t);
-    let thumbUrl="", ini="HP";
-    if(routeIds[0]){
-      const p = PLACES[routeIds[0]] || {};
-      const nm = placeNameAny(p, routeIds[0]);
-      ini = initials(nm);
-      thumbUrl = pickPhotoAny(p, routeIds[0]);
-    }
+    let ini="HP";
+    const p0 = PLACES[routeIds[0]] || {};
+    const nm0 = placeNameAny(p0, routeIds[0]);
+    ini = initials(nm0);
+
+    const urls = pickAllPhotos(p0, routeIds[0]);
 
     const el = document.createElement("div");
     el.className = "pkg";
@@ -1613,11 +1490,8 @@
 
     el.innerHTML = `
       <div class="pkgPic">
-        ${thumbUrl
-          ? `<img src="${escapeHtml(thumbUrl)}" alt="Package thumbnail" loading="lazy" referrerpolicy="no-referrer"
-              onerror="this.remove(); this.parentNode.textContent='${escapeHtml(ini)}';">`
-          : escapeHtml(ini)
-        }
+        ${urls.length ? `<img data-pthumb="${escapeHtml(routeIds[0]||"")}" alt="Package thumbnail" loading="lazy" referrerpolicy="no-referrer">`
+                      : escapeHtml(ini)}
       </div>
       <div class="pkgBody">
         <div class="pkgName">${escapeHtml(startUpper)} → ${escapeHtml(district)} • ${days}D</div>
@@ -1627,6 +1501,9 @@
         <div class="diffLine">Days matched to route: <b>${days} Days</b></div>
       </div>
     `;
+    const img = el.querySelector("img[data-pthumb]");
+    if(img) setImgWithFallback(img, urls, ini);
+
     el.onclick = ()=>openTemplate(t.key, startUpper);
     return el;
   }
@@ -1637,14 +1514,12 @@
     const code = String(t.route_id || "LOCAL").toUpperCase();
 
     const routeIds = stopsFromTemplate(t);
-    let thumbUrl="", ini="HP";
-    let pickId = routeIds[0] || "";
-    if(pickId){
-      const p = PLACES[pickId] || {};
-      const nm = placeNameAny(p, pickId);
-      ini = initials(nm);
-      thumbUrl = pickPhotoAny(p, pickId);
-    }
+    let ini="HP";
+    const pickId = routeIds[0] || "";
+    const p0 = PLACES[pickId] || {};
+    const nm0 = placeNameAny(p0, pickId);
+    ini = initials(nm0);
+    const urls = pickAllPhotos(p0, pickId);
 
     const el = document.createElement("div");
     el.className = "pkg";
@@ -1652,11 +1527,8 @@
 
     el.innerHTML = `
       <div class="pkgPic">
-        ${thumbUrl
-          ? `<img src="${escapeHtml(thumbUrl)}" alt="Local package thumbnail" loading="lazy" referrerpolicy="no-referrer"
-              onerror="this.remove(); this.parentNode.textContent='${escapeHtml(ini)}';">`
-          : escapeHtml(ini)
-        }
+        ${urls.length ? `<img data-lthumb="${escapeHtml(pickId)}" alt="Local package thumbnail" loading="lazy" referrerpolicy="no-referrer">`
+                      : escapeHtml(ini)}
       </div>
       <div class="pkgBody">
         <div class="pkgName">${escapeHtml(heading)} • ${days}D</div>
@@ -1664,6 +1536,9 @@
         <div class="diffLine">Days matched: <b>${days} Days</b></div>
       </div>
     `;
+    const img = el.querySelector("img[data-lthumb]");
+    if(img) setImgWithFallback(img, urls, ini);
+
     el.onclick = ()=>openTemplate(t.key, normalizeStartInput() || "");
     return el;
   }
@@ -1783,7 +1658,6 @@
 
     const daysList = $("daysList");
     daysList.innerHTML = "";
-
     $("placeDetail").innerHTML = `<div class="muted">Tap any place from itinerary to see History + What you can find + Photos here.</div>`;
 
     const routeAll = routeIdsFromTemplateIncludingStart(tpl);
@@ -1807,23 +1681,22 @@
         const p = PLACES[pid] || {};
         const name = placeNameAny(p, pid);
         const dist = districtAny(p) || "—";
-        const url = pickPhotoAny(p, pid);
+        const urls = pickAllPhotos(p, pid);
 
         const line = document.createElement("div");
         line.className = "placeLine";
         line.innerHTML = `
           <div class="thumb">
-            ${url
-              ? `<img src="${escapeHtml(url)}" alt="${escapeHtml(name)} photo" loading="lazy" referrerpolicy="no-referrer"
-                    onerror="this.remove(); this.parentNode.textContent='${escapeHtml(initials(name))}';">`
-              : escapeHtml(initials(name))
-            }
+            ${urls.length ? `<img data-plthumb="${escapeHtml(pid)}" alt="${escapeHtml(name)} photo" loading="lazy" referrerpolicy="no-referrer">`
+                          : escapeHtml(initials(name))}
           </div>
           <div class="pinfo">
             <div class="pname">${escapeHtml(name)}</div>
             <div class="pmeta">${escapeHtml(dist)}</div>
           </div>
         `;
+        const img = line.querySelector("img[data-plthumb]");
+        if(img) setImgWithFallback(img, urls, initials(name));
 
         line.onclick = ()=>{
           renderPlaceDetails(pid);
@@ -1833,7 +1706,6 @@
             invalidateMapSoon();
           }
         };
-
         cont.appendChild(line);
       });
 
@@ -1898,7 +1770,6 @@
         const lat = latAny(p);
         const lng = lngAny(p);
         if(!isFinite(lat)||!isFinite(lng)) continue;
-
         const mk = L.marker([lat,lng], { riseOnHover:true }).addTo(markersLayer);
         mk.on("click", ()=> renderPlaceDetails(pid));
       }
@@ -1913,7 +1784,7 @@
     }
   }
 
-  /* Pricing (as-is from your file) */
+  /* Pricing (unchanged logic) */
   function pickStayRule(tier){
     const t = String(tier||"budget").toLowerCase();
     const key = (t==="premium") ? "r2" : (t==="luxury") ? "r3" : "r1";
@@ -2089,11 +1960,15 @@
       $("paxUsed").innerHTML = `${pax} <small>selected</small>`;
       updatePriceBoxes(total, perPerson);
       updateBreakdownUI(est.breakdown, pax);
+
+      // ✅ update WhatsApp finalize button
+      updateWhatsAppForCurrent();
     }catch(e){
       console.error(e);
       $("paxUsed").innerHTML = "— <small></small>";
       updatePriceBoxes(NaN, NaN);
       updateBreakdownUI(null, 0);
+      setWhatsAppEnquiryEnabled(false);
     }
   }
 
@@ -2130,6 +2005,9 @@
     CURRENT_ROUTE_KM = 0;
     setActiveTab("itin");
 
+    // ✅ disable finalize button until user selects package
+    setWhatsAppEnquiryEnabled(false);
+
     if(!start){
       toast("Start not found in templates");
       renderDistrictChipsReset();
@@ -2159,13 +2037,7 @@
     renderDistrictChips();
 
     $("pills").innerHTML = "";
-    const pillData = {
-      START: startUpper,
-      DAYS: (daysF ? daysF : "ANY"),
-      TYPE: tier,
-      INTER_MATCHED: INTER_ALL.length,
-      PAX: pax
-    };
+    const pillData = { START: startUpper, DAYS: (daysF ? daysF : "ANY"), TYPE: tier, INTER_MATCHED: INTER_ALL.length, PAX: pax };
     for(const [k,v] of Object.entries(pillData)){
       const div = document.createElement("div");
       div.className = "pill";
@@ -2192,6 +2064,7 @@
     CURRENT_ROUTE_KM = rr.ok ? rr.km : 0;
 
     computePriceForCurrent();
+    updateWhatsAppForCurrent(); // ✅ ensure button updates
   }
 
   async function loadLive(){
@@ -2236,7 +2109,6 @@
     try{
       setStatus("Loading live from Firebase…");
 
-      // ✅ ensure both data sources load
       await loadLive();
       await loadPlaceImagesFromGarg();
 
@@ -2286,11 +2158,9 @@
   window.addEventListener("DOMContentLoaded", () => {
     $("yr").textContent = String(new Date().getFullYear());
 
-    // ✅ MAIN firebase app (revnue) MUST be default
     if(!firebase.apps.length){
       firebase.initializeApp(firebaseConfig);
     }else{
-      // if already init by some other script, reuse default
       try{ firebase.app(); }catch(_){ firebase.initializeApp(firebaseConfig); }
     }
 
@@ -2298,25 +2168,18 @@
     analytics = firebase.analytics();
     auth = firebase.auth();
 
-    // ✅ SECOND firebase app (garg) as NAMED app to avoid conflict
     let imagesApp;
-    try{
-      imagesApp = firebase.app("imagesApp");
-    }catch(e){
-      imagesApp = firebase.initializeApp(firebaseConfigImages, "imagesApp");
-    }
+    try{ imagesApp = firebase.app("imagesApp"); }
+    catch(e){ imagesApp = firebase.initializeApp(firebaseConfigImages, "imagesApp"); }
     imagesDb = firebase.database(imagesApp);
 
     auth.onAuthStateChanged((user)=>{
       $("mintLoginBtn").textContent = user ? "Logout" : "Mint Login";
-      if(user){
-        setStatus(`Logged in: ${user.email} • Loading…`);
-      }
+      if(user) setStatus(`Logged in: ${user.email} • Loading…`);
     });
 
     $("tabItinBtn").addEventListener("click", ()=>setActiveTab("itin"));
     $("tabLocBtn").addEventListener("click", ()=>setActiveTab("loc"));
-
     $("tabHomeBtn").addEventListener("click", ()=>{
       setActiveTab("itin");
       document.querySelector(".itWrap")?.scrollTo?.({ top: 0, behavior: "smooth" });
@@ -2352,6 +2215,10 @@
       DISTRICT_KEYS = [];
       ACTIVE_DISTRICT = "ALL";
       setActiveTab("itin");
+
+      // ✅ disable finalize button
+      setWhatsAppEnquiryEnabled(false);
+
       toast("Reset done");
       invalidateMapSoon();
     });
@@ -2420,7 +2287,9 @@
     const hadCache = loadCache();
     if(hadCache) toast("Loaded fast from cache");
 
-    // ✅ now load LIVE (both DBs)
+    // ✅ disable initially until package is chosen
+    setWhatsAppEnquiryEnabled(false);
+
     refreshAll();
   });
   </script>
