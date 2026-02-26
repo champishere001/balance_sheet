@@ -60,16 +60,11 @@
       --shadow: 0 18px 70px rgba(0,0,0,.55);
       --radius: 16px;
       --acc:#7C3AED;
-
       --gap: 10px;
-
-      /* ✅ 92% screen shell */
       --shellW: min(92vw, 1500px);
     }
-
     *{ box-sizing:border-box; }
     html,body{ height:auto; }
-
     body{
       margin:0;
       color:var(--text);
@@ -82,7 +77,6 @@
         linear-gradient(180deg, var(--bg0), var(--bg1));
       overflow:auto;
     }
-
     .aurora{
       position:fixed; inset:-30%;
       background:
@@ -103,19 +97,8 @@
       position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.12; mix-blend-mode:overlay;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
     }
-
-    .shell{
-      width: var(--shellW);
-      margin: 0 auto;
-      padding: 12px 10px 18px;
-    }
-
-    .app{
-      width:100%;
-      display:flex;
-      flex-direction:column;
-      gap: var(--gap);
-    }
+    .shell{ width: var(--shellW); margin: 0 auto; padding: 12px 10px 18px; }
+    .app{ width:100%; display:flex; flex-direction:column; gap: var(--gap); }
 
     .top{
       display:flex; align-items:center; justify-content:space-between;
@@ -127,7 +110,6 @@
       gap: 10px;
       flex-wrap:wrap;
     }
-
     .brand{ display:flex; align-items:center; gap:10px; min-width: 240px; }
     .logo{
       width:44px; height:44px; border-radius:14px;
@@ -141,11 +123,7 @@
     .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
     .brand p{ margin:3px 0 0; font-size:11px; color:var(--muted); line-height:1.25; }
 
-    .actions{
-      display:flex; gap:8px; align-items:center;
-      justify-content:flex-end;
-      flex-wrap:wrap;
-    }
+    .actions{ display:flex; gap:8px; align-items:center; justify-content:flex-end; flex-wrap:wrap; }
     .chip{
       border:1px solid var(--stroke);
       background: rgba(255,255,255,.05);
@@ -162,7 +140,6 @@
       white-space: nowrap;
     }
     .chip:hover{ background: rgba(255,255,255,.08); color: rgba(255,255,255,.82); }
-
     .chip.primary{
       border-color: rgba(124,58,237,.55);
       background: rgba(124,58,237,.14);
@@ -176,21 +153,18 @@
       gap: var(--gap);
       align-items:start;
     }
-
     .pane{
       border: 1px solid var(--stroke);
       border-radius: var(--radius);
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
       box-shadow: var(--shadow);
       backdrop-filter: blur(14px);
-
       display:flex;
       flex-direction:column;
       overflow:hidden;
       height: auto;
       min-height: 540px;
     }
-
     .pane.mapPane{
       position: sticky;
       top: 12px;
@@ -198,7 +172,6 @@
       min-height: 560px;
       max-height: 860px;
     }
-
     .paneHdr{
       padding: 10px 10px 8px;
       border-bottom:1px solid var(--stroke);
@@ -208,18 +181,8 @@
       gap:10px;
       flex:0 0 auto;
     }
-    .paneHdr .t{
-      font-size:11px;
-      letter-spacing:.18em;
-      text-transform: uppercase;
-      margin:0;
-    }
-    .paneHdr .s{
-      font-size:10.5px;
-      color:var(--muted);
-      letter-spacing:.08em;
-      text-transform: uppercase;
-    }
+    .paneHdr .t{ font-size:11px; letter-spacing:.18em; text-transform: uppercase; margin:0; }
+    .paneHdr .s{ font-size:10.5px; color:var(--muted); letter-spacing:.08em; text-transform: uppercase; }
 
     .filters{
       padding: 10px;
@@ -257,7 +220,6 @@
       border-color: rgba(124,58,237,.55);
       box-shadow: 0 0 0 3px rgba(124,58,237,.16);
     }
-
     .btnRow{ display:flex; gap:8px; }
     .btn{
       flex:1;
@@ -306,20 +268,10 @@
       opacity:.9;
     }
 
-    .pkgLayout{
-      flex:1;
-      min-height:0;
-      display:flex;
-      flex-direction:column;
-      overflow:hidden;
-      background: rgba(0,0,0,.18);
-    }
+    .pkgLayout{ flex:1; min-height:0; display:flex; flex-direction:column; overflow:hidden; background: rgba(0,0,0,.18); }
 
     .districtBar{
-      display:flex;
-      flex-wrap:nowrap;
-      gap:8px;
-      padding:9px 10px;
+      display:flex; flex-wrap:nowrap; gap:8px; padding:9px 10px;
       border-top:1px solid rgba(255,255,255,.08);
       border-bottom:1px solid rgba(255,255,255,.08);
       overflow-x:auto;
@@ -479,39 +431,18 @@
       -webkit-overflow-scrolling: touch;
       background: rgba(0,0,0,.18);
     }
-    .heroCard{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-      border-radius: 14px;
-      padding: 10px;
-    }
-    .bigTitle{
-      margin:0;
-      font-size: 12px;
-      letter-spacing:.18em;
-      text-transform: uppercase;
-      color:#fff;
-    }
+    .heroCard{ border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.22); border-radius: 14px; padding: 10px; }
+    .bigTitle{ margin:0; font-size: 12px; letter-spacing:.18em; text-transform: uppercase; color:#fff; }
     .muted{ color: var(--muted); font-size: 10.8px; letter-spacing:.08em; text-transform: uppercase; line-height:1.35; }
 
     .row2{ display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
-    .mini{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      border-radius: 14px;
-      padding: 9px;
-    }
+    .mini{ border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); border-radius: 14px; padding: 9px; }
     .mini .k{ font-size: 10px; letter-spacing:.16em; text-transform: uppercase; color: rgba(255,255,255,.70); }
     .mini .v{ margin-top:5px; font-size: 13px; font-weight: 950; letter-spacing:.06em; color:#fff; }
     .mini .v small{ font-size: 10.5px; color: rgba(255,255,255,.72); font-weight: 800; }
 
     .daysList{ display:flex; flex-direction:column; gap:9px; }
-    .dayCard{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-      border-radius: 14px;
-      padding: 10px;
-    }
+    .dayCard{ border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.22); border-radius: 14px; padding: 10px; }
     .dayTop{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom: 7px; }
     .dayTop .d{ font-size: 11px; font-weight: 950; letter-spacing:.18em; text-transform: uppercase; }
 
@@ -524,7 +455,6 @@
       margin-top: 7px;
       cursor:pointer;
     }
-
     .thumb{
       width:36px; height:36px;
       border-radius: 11px;
@@ -582,13 +512,7 @@
     .tabPanel{ display:none; }
     .tabPanel.active{ display:block; }
 
-    .placeDetail{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-      border-radius: 14px;
-      padding: 10px;
-      overflow:hidden;
-    }
+    .placeDetail{ border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.22); border-radius: 14px; padding: 10px; overflow:hidden; }
     .placeHero{
       width:100%;
       height:150px;
@@ -636,91 +560,25 @@
     }
     .toast.show{ display:block; }
 
-    .breakdown{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-      border-radius: 14px;
-      padding: 10px;
-    }
-    .bdTitle{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      font-weight:950; letter-spacing:.12em; text-transform: uppercase; font-size:10.5px;
-    }
-    .bdGrid{
-      margin-top:9px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:8px;
-    }
-    .bdRow{
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      border-radius: 12px;
-      padding: 9px;
-    }
+    .breakdown{ border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.22); border-radius: 14px; padding: 10px; }
+    .bdTitle{ display:flex; align-items:center; justify-content:space-between; gap:10px; font-weight:950; letter-spacing:.12em; text-transform: uppercase; font-size:10.5px; }
+    .bdGrid{ margin-top:9px; display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
+    .bdRow{ border:1px solid rgba(255,255,255,.10); background: rgba(255,255,255,.04); border-radius: 12px; padding: 9px; }
     .bdRow .k{ font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.72); }
     .bdRow .v{ margin-top:5px; font-size:12.5px; font-weight:950; }
-    .bdSmall{
-      margin-top:9px;
-      font-size:10.8px;
-      color: rgba(255,255,255,.74);
-      line-height:1.45;
-      letter-spacing:.02em;
-      text-transform:none;
-      white-space:pre-wrap;
-    }
+    .bdSmall{ margin-top:9px; font-size:10.8px; color: rgba(255,255,255,.74); line-height:1.45; letter-spacing:.02em; text-transform:none; white-space:pre-wrap; }
     #priceDebug{ display:none !important; }
 
-    /* ✅ Nearby cards */
-    .nearWrap{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-      border-radius: 14px;
-      padding: 10px;
-    }
-    .nearHdr{
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:8px;
-    }
-    .nearHdr .ttl{
-      font-weight:950;
-      letter-spacing:.16em;
-      text-transform: uppercase;
-      font-size:10.5px;
-      color:#fff;
-    }
-    .nearHdr .sub{
-      font-size:10px;
-      color: rgba(255,255,255,.70);
-      letter-spacing:.10em;
-      text-transform: uppercase;
-      white-space:nowrap;
-    }
+    .nearWrap{ border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.22); border-radius: 14px; padding: 10px; }
     .nearGrid{
-      display:flex;
-      gap:10px;
-      overflow-x:auto;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom:4px;
+      display:flex; gap:10px; overflow-x:auto; -webkit-overflow-scrolling: touch; padding-bottom:4px;
     }
-    .nearCard{
-      width: 112px;
-      flex: 0 0 auto;
-      cursor:pointer;
-      user-select:none;
-    }
+    .nearCard{ width: 112px; flex: 0 0 auto; cursor:pointer; user-select:none; }
     .nearSquare{
-      width:112px;
-      height:112px;
-      border-radius: 14px;
-      overflow:hidden;
+      width:112px; height:112px; border-radius: 14px; overflow:hidden;
       border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.05);
-      display:grid;
-      place-items:center;
+      display:grid; place-items:center;
       position:relative;
     }
     .nearSquare img{ width:100%; height:100%; object-fit:cover; display:block; }
@@ -817,20 +675,11 @@
       .waClose{ display:none; }
     }
 
-    /* ✅ MOBILE */
     @media (max-width: 1100px){
       .shell{ width: 100%; padding: 10px 10px 16px; }
-      .main{
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto;
-      }
+      .main{ grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
       .pane{ min-height: unset; }
-      .pane.mapPane{
-        position: relative;
-        top: auto;
-        height: 520px;
-        max-height: none;
-      }
+      .pane.mapPane{ position: relative; top: auto; height: 520px; max-height: none; }
       #map{ min-height: 320px; }
       .row2{ grid-template-columns: 1fr; }
       .bdGrid{ grid-template-columns: 1fr; }
@@ -1099,10 +948,10 @@
 
   <script>
   /* ===============================
-     Firebase Config
+     Firebase Config (FIXED 2 APPs)
      =============================== */
 
-  /* ✅ MAIN DB (revnue-records) - templates, places, pricing */
+  // ✅ MAIN DB (revnue-records) - templates, places, pricing
   const firebaseConfig = {
     apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
     authDomain: "revnue-records.firebaseapp.com",
@@ -1114,7 +963,7 @@
     measurementId: "G-MGTDBCG896"
   };
 
-  /* ✅ IMAGES DB (garg-enterprise) - place_images/{place_id}/{n}/url */
+  // ✅ IMAGES DB (garg-enterprise) - place_images/{place_id}/{n}/url
   const firebaseConfigImages = {
     apiKey: "AIzaSyBmJDsXvokR8kYs_yoLPau1DqANPBBORJY",
     authDomain: "garg-enterprise.firebaseapp.com",
@@ -1199,20 +1048,33 @@
     for(const [placeId, node] of Object.entries(raw)){
       const urls = [];
       const pushUrl = (u)=>{
-        if(typeof u === "string" && /^https?:\/\//i.test(u.trim())) urls.push(u.trim());
+        const s = String(u||"").trim();
+        if(/^https?:\/\//i.test(s)) urls.push(s);
       };
 
+      // Allow these shapes:
+      // 1) placeId: "https://..."
+      // 2) placeId: [ "https://...", {url:"https://..."} ]
+      // 3) placeId: { "1": {url:"..."}, "2": {url:"..."}, "3":"..." }
       if(typeof node === "string"){
         pushUrl(node);
       }else if(Array.isArray(node)){
         node.forEach(v=>{
           if(typeof v === "string") pushUrl(v);
-          else if(v?.url) pushUrl(String(v.url));
+          else if(v && typeof v === "object"){
+            if(v.url) pushUrl(v.url);
+            if(v.imageUrl) pushUrl(v.imageUrl);
+            if(v.image) pushUrl(v.image);
+          }
         });
       }else if(node && typeof node === "object"){
         Object.values(node).forEach(v=>{
           if(typeof v === "string") pushUrl(v);
-          else if(v?.url) pushUrl(String(v.url));
+          else if(v && typeof v === "object"){
+            if(v.url) pushUrl(v.url);
+            if(v.imageUrl) pushUrl(v.imageUrl);
+            if(v.image) pushUrl(v.image);
+          }
         });
       }
 
@@ -1235,12 +1097,11 @@
     }
   }
 
-  /* ✅ Photos: now also uses PLACE_IMAGES */
   function pickAllPhotos(p, pid){
     const isValid = (u)=> typeof u==="string" && /^https?:\/\//i.test(u.trim());
     let arr = [];
 
-    // 1) existing fields inside PLACES
+    // 1) fields inside PLACES
     if(isValid(p?.imageUrl)) arr.push(p.imageUrl.trim());
     if(isValid(p?.image)) arr.push(p.image.trim());
     if(isValid(p?.img)) arr.push(p.img.trim());
@@ -1255,7 +1116,7 @@
     const id = String(pid || p?.place_id || p?.id || "").trim();
     if(id && PLACE_IMAGES[id]?.length) arr.push(...PLACE_IMAGES[id]);
 
-    // 3) ✅ fallback by slug of name (if your garg keys are slugs)
+    // 3) ✅ fallback by slug of name
     if(id && (!PLACE_IMAGES[id] || !PLACE_IMAGES[id].length)){
       const nm = placeNameAny(p, id);
       const slug = slugifyName(nm);
@@ -1295,7 +1156,7 @@
     const dist = districtAny(p) || "";
     const hist = String(p.history_tagline || p.history || "").trim();
     const bullets = toBullets(p.what_you_find || p.whatYouFind);
-    const imgs = pickAllPhotos(p, pid); // ✅ includes garg DB images
+    const imgs = pickAllPhotos(p, pid);
 
     ACTIVE_PLACE_GALLERY = { pid, idx:0, imgs };
 
@@ -1368,7 +1229,7 @@
     galleryGo(g.idx + delta);
   }
 
-  /* ✅ Distance */
+  /* Distance */
   function haversineKm(aLat,aLng,bLat,bLng){
     const R = 6371;
     const toRad = (x)=> x * Math.PI/180;
@@ -1380,22 +1241,15 @@
     return 2 * R * Math.asin(Math.min(1, Math.sqrt(q)));
   }
 
-  /* ✅ Day-wise Nearby (NO DUPS) */
+  /* Day-wise Nearby (NO DUPS) */
   function getNearbyForDay(dayPlaceIds, opts){
-    const {
-      limit = 6,
-      radiusKm = 15,
-      excludeSet = new Set(),
-      preferSameDistrict = true
-    } = (opts||{});
-
+    const { limit=6, radiusKm=15, excludeSet=new Set(), preferSameDistrict=true } = (opts||{});
     const used = new Set([...(dayPlaceIds||[]).filter(Boolean)]);
     for(const x of excludeSet) used.add(x);
 
     const anchors = (dayPlaceIds||[])
       .map(id => ({ id, p: PLACES[id] }))
       .filter(x => x.p && isFinite(latAny(x.p)) && isFinite(lngAny(x.p)));
-
     if(!anchors.length) return [];
 
     const anchorDistricts = new Set(anchors.map(a=>districtAny(a.p)).filter(Boolean));
@@ -1405,22 +1259,18 @@
 
     for(const [pid, p] of Object.entries(PLACES)){
       if(used.has(pid)) continue;
-
       const lat = latAny(p), lng = lngAny(p);
       if(!isFinite(lat) || !isFinite(lng)) continue;
 
       let best = Infinity;
       for(const a of anchors){
-        const al = latAny(a.p), ag = lngAny(a.p);
-        const d = haversineKm(al, ag, lat, lng);
+        const d = haversineKm(latAny(a.p), lngAny(a.p), lat, lng);
         if(d < best) best = d;
       }
-
       if(best > radiusKm) continue;
 
       const dist = districtAny(p);
       const item = { pid, bestKm: best };
-
       if(preferSameDistrict && dist && anchorDistricts.has(dist)) candidatesSame.push(item);
       else candidatesAny.push(item);
     }
@@ -1429,15 +1279,9 @@
     candidatesAny.sort((a,b)=>a.bestKm-b.bestKm);
 
     const out = [];
-    for(const it of candidatesSame){
-      out.push(it);
-      if(out.length >= limit) break;
-    }
-    if(out.length < limit){
-      for(const it of candidatesAny){
-        out.push(it);
-        if(out.length >= limit) break;
-      }
+    for(const it of candidatesSame){ out.push(it); if(out.length>=limit) break; }
+    if(out.length<limit){
+      for(const it of candidatesAny){ out.push(it); if(out.length>=limit) break; }
     }
     return out;
   }
@@ -1448,7 +1292,6 @@
 
     const wrap = document.createElement("div");
     wrap.style.marginTop = "10px";
-
     wrap.innerHTML = `
       <div class="muted" style="margin-top:10px; margin-bottom:8px;">Nearby (close to today’s location)</div>
       <div class="nearGrid"></div>
@@ -1459,7 +1302,7 @@
       const p = PLACES[pid] || {};
       const nm = placeNameAny(p, pid);
       const dist = districtAny(p) || "";
-      const url = pickPhotoAny(p, pid); // ✅
+      const url = pickPhotoAny(p, pid);
 
       const card = document.createElement("div");
       card.className = "nearCard";
@@ -1487,8 +1330,7 @@
     });
 
     containerEl.appendChild(wrap);
-
-    near.forEach(n=>excludeSet.add(n.pid)); // ✅ no duplicates across days
+    near.forEach(n=>excludeSet.add(n.pid));
   }
 
   /* Map */
@@ -1523,7 +1365,6 @@
 
   /* Data */
   let db, analytics, auth;
-
   let TEMPLATES = {};
   let ACTIVE_TEMPLATES = [];
   let NAME_TO_ID = new Map();
@@ -1557,7 +1398,7 @@
       pricing_transport = parsed.pricing_transport || {};
       rate_hotel = parsed.rate_hotel || {};
       stay_rate_rules = parsed.stay_rate_rules || {};
-      PLACE_IMAGES = parsed.place_images || {}; // ✅
+      PLACE_IMAGES = parsed.place_images || {};
       PRICING_READY = true;
 
       ACTIVE_TEMPLATES = Object.entries(TEMPLATES)
@@ -1583,7 +1424,7 @@
         pricing_transport,
         rate_hotel,
         stay_rate_rules,
-        place_images: PLACE_IMAGES // ✅
+        place_images: PLACE_IMAGES
       }));
     }catch(e){}
   }
@@ -1763,7 +1604,7 @@
       const p = PLACES[routeIds[0]] || {};
       const nm = placeNameAny(p, routeIds[0]);
       ini = initials(nm);
-      thumbUrl = pickPhotoAny(p, routeIds[0]); // ✅
+      thumbUrl = pickPhotoAny(p, routeIds[0]);
     }
 
     const el = document.createElement("div");
@@ -1802,7 +1643,7 @@
       const p = PLACES[pickId] || {};
       const nm = placeNameAny(p, pickId);
       ini = initials(nm);
-      thumbUrl = pickPhotoAny(p, pickId); // ✅
+      thumbUrl = pickPhotoAny(p, pickId);
     }
 
     const el = document.createElement("div");
@@ -1966,7 +1807,7 @@
         const p = PLACES[pid] || {};
         const name = placeNameAny(p, pid);
         const dist = districtAny(p) || "—";
-        const url = pickPhotoAny(p, pid); // ✅
+        const url = pickPhotoAny(p, pid);
 
         const line = document.createElement("div");
         line.className = "placeLine";
@@ -2072,7 +1913,7 @@
     }
   }
 
-  /* Pricing (unchanged) */
+  /* Pricing (as-is from your file) */
   function pickStayRule(tier){
     const t = String(tier||"budget").toLowerCase();
     const key = (t==="premium") ? "r2" : (t==="luxury") ? "r3" : "r1";
@@ -2394,15 +2235,14 @@
   async function refreshAll(){
     try{
       setStatus("Loading live from Firebase…");
-      await Promise.all([
-        loadLive(),
-        loadPlaceImagesFromGarg() // ✅ load images from garg-enterprise
-      ]);
+
+      // ✅ ensure both data sources load
+      await loadLive();
+      await loadPlaceImagesFromGarg();
 
       saveCache();
 
       setStatus(`Loaded LIVE • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places • ${Object.keys(PLACE_IMAGES).length} image-keys`);
-
       toast("Refreshed from Firebase");
       invalidateMapSoon();
 
@@ -2446,16 +2286,25 @@
   window.addEventListener("DOMContentLoaded", () => {
     $("yr").textContent = String(new Date().getFullYear());
 
-    // ✅ init main firebase app (revnue)
-    firebase.initializeApp(firebaseConfig);
+    // ✅ MAIN firebase app (revnue) MUST be default
+    if(!firebase.apps.length){
+      firebase.initializeApp(firebaseConfig);
+    }else{
+      // if already init by some other script, reuse default
+      try{ firebase.app(); }catch(_){ firebase.initializeApp(firebaseConfig); }
+    }
+
     db = firebase.database();
     analytics = firebase.analytics();
     auth = firebase.auth();
 
-    // ✅ init second firebase app (garg) for place_images
-    const imagesApp = firebase.apps.find(a => a.name === "imagesApp")
-      ? firebase.app("imagesApp")
-      : firebase.initializeApp(firebaseConfigImages, "imagesApp");
+    // ✅ SECOND firebase app (garg) as NAMED app to avoid conflict
+    let imagesApp;
+    try{
+      imagesApp = firebase.app("imagesApp");
+    }catch(e){
+      imagesApp = firebase.initializeApp(firebaseConfigImages, "imagesApp");
+    }
     imagesDb = firebase.database(imagesApp);
 
     auth.onAuthStateChanged((user)=>{
@@ -2571,6 +2420,7 @@
     const hadCache = loadCache();
     if(hadCache) toast("Loaded fast from cache");
 
+    // ✅ now load LIVE (both DBs)
     refreshAll();
   });
   </script>
