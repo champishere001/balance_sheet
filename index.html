@@ -232,41 +232,6 @@
     .pkgGroupHdr .h1{ font-size: 11px; font-weight: 950; letter-spacing:.12em; text-transform: uppercase; }
     .pkgGroupHdr .h2{ margin-top:5px; font-size: 10.5px; color: rgba(255,255,255,.75); letter-spacing:.08em; text-transform: uppercase; line-height: 1.35; }
 
-    .pkg{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-      border-radius: 14px;
-      padding: 9px;
-      cursor:pointer;
-      transition: transform .12s ease, border-color .12s ease, background .12s ease;
-      display:flex; gap:9px; min-width:0;
-    }
-    .pkg:hover{ transform: translateY(-1px); border-color: rgba(124,58,237,.35); background: rgba(0,0,0,.28); }
-    .pkg.active{ border-color: rgba(124,58,237,.70); box-shadow: 0 0 0 3px rgba(124,58,237,.18); }
-
-    .pkgPic{
-      width:50px; height:50px; border-radius: 12px;
-      border:1px solid rgba(255,255,255,.12);
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.14), rgba(124,58,237,.18));
-      overflow:hidden; flex:0 0 auto; display:grid; place-items:center;
-      font-weight: 950; color: rgba(255,255,255,.85); font-size: 12px;
-    }
-    .pkgPic img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .pkgBody{ min-width:0; flex:1; }
-    .pkgName{
-      font-size: 11.5px; font-weight: 950; letter-spacing:.10em; text-transform: uppercase;
-      white-space: nowrap; overflow:hidden; text-overflow: ellipsis; margin-bottom: 5px;
-    }
-    .pkgMeta{
-      font-size: 10.5px; color: rgba(255,255,255,.72);
-      letter-spacing:.08em; text-transform: uppercase; line-height: 1.35;
-    }
-    .diffLine{
-      margin-top:5px; font-size: 10.8px; color: rgba(255,255,255,.88);
-      letter-spacing:.03em; text-transform:none; line-height:1.35;
-      opacity:.98; white-space: normal; word-break: break-word;
-    }
-
     #map{ width:100%; flex:1; min-height: 360px; background: rgba(255,255,255,.04); border-radius: var(--radius); overflow:hidden; }
     .mapTools{
       padding: 9px 10px; border-top:1px solid var(--stroke);
@@ -459,6 +424,224 @@
       display:grid; place-items:center;
       cursor:pointer; flex:0 0 auto; user-select:none;
     }
+
+    /* ===============================
+       WORLDCLASS PACKAGE LIBRARY UI
+       =============================== */
+    .sepDot{ opacity:.7; padding:0 8px; }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
+    .pkgControls{
+      padding: 10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      background: rgba(0,0,0,.10);
+      backdrop-filter: blur(10px);
+    }
+    .pkgSearch{
+      flex: 1;
+      min-width: 160px;
+      padding: 10px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.25);
+      color: rgba(255,255,255,.92);
+      outline:none;
+    }
+    .pkgSearch:focus{ border-color: rgba(124,58,237,.55); box-shadow: 0 0 0 3px rgba(124,58,237,.16); }
+
+    .pkgSelect{
+      min-width: 150px;
+      padding: 10px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.25);
+      color: rgba(255,255,255,.92);
+      outline:none;
+    }
+    .viewToggle{
+      display:flex; gap:6px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 12px;
+      padding: 4px;
+      background: rgba(255,255,255,.04);
+    }
+    .viewBtn{
+      border:1px solid transparent;
+      border-radius: 10px;
+      padding: 8px 10px;
+      cursor:pointer;
+      user-select:none;
+      font-size: 10px;
+      letter-spacing:.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.75);
+      background: transparent;
+    }
+    .viewBtn.active{
+      color:#fff;
+      border-color: rgba(124,58,237,.55);
+      background: rgba(124,58,237,.18);
+      box-shadow: 0 0 0 3px rgba(124,58,237,.10);
+    }
+
+    .pkgList.worldGrid{
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 10px;
+    }
+    @media (max-width: 520px){
+      .pkgList.worldGrid{ grid-template-columns: 1fr; }
+    }
+
+    .pkgW{
+      position:relative;
+      border:1px solid rgba(255,255,255,.12);
+      background:
+        radial-gradient(900px 420px at 10% 0%, rgba(124,58,237,.12), transparent 58%),
+        linear-gradient(180deg, rgba(0,0,0,.30), rgba(0,0,0,.16));
+      border-radius: 16px;
+      overflow:hidden;
+      cursor:pointer;
+      transition: transform .14s ease, border-color .14s ease, filter .14s ease;
+      box-shadow: 0 18px 60px rgba(0,0,0,.42);
+      min-height: 118px;
+    }
+    .pkgW:hover{
+      transform: translateY(-2px);
+      border-color: rgba(124,58,237,.35);
+      filter: brightness(1.03);
+    }
+    .pkgW.active{
+      border-color: rgba(124,58,237,.75);
+      box-shadow: 0 0 0 3px rgba(124,58,237,.16), 0 22px 70px rgba(0,0,0,.48);
+    }
+    .pkgW::after{
+      content:"";
+      position:absolute; inset:-40% -60%;
+      background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,.10) 50%, transparent 60%);
+      transform: translateX(-30%);
+      opacity: 0;
+      transition: opacity .15s ease, transform .35s ease;
+      pointer-events:none;
+    }
+    .pkgW:hover::after{ opacity:.65; transform: translateX(30%); }
+
+    .pkgWTop{
+      display:flex;
+      gap: 10px;
+      padding: 10px;
+      align-items: stretch;
+    }
+    .pkgThumb{
+      width: 78px;
+      height: 78px;
+      border-radius: 14px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.12);
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.14), rgba(6,182,212,.14)),
+        rgba(0,0,0,.25);
+      flex: 0 0 auto;
+      display:grid;
+      place-items:center;
+      box-shadow: 0 18px 40px rgba(0,0,0,.35);
+    }
+    .pkgThumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .pkgThumb .ini{ font-weight: 950; font-size: 14px; letter-spacing:.10em; opacity:.9; }
+
+    .pkgWBody{ min-width:0; flex:1; display:flex; flex-direction:column; justify-content:center; }
+    .pkgWTitle{
+      display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+      margin: 0;
+    }
+    .pkgWTitle .mainT{
+      font-size: 11.5px;
+      font-weight: 950;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .pkgBadge{
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      padding: 6px 8px;
+      border-radius: 999px;
+      font-size: 9.5px;
+      letter-spacing:.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.86);
+    }
+    .pkgBadge.purple{ border-color: rgba(124,58,237,.45); background: rgba(124,58,237,.14); }
+    .pkgBadge.green{ border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.14); }
+
+    .pkgWMeta{
+      margin-top: 7px;
+      display:flex;
+      flex-wrap:wrap;
+      gap: 6px;
+      align-items:center;
+    }
+    .pkgChip{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      border-radius: 999px;
+      padding: 6px 8px;
+      font-size: 10px;
+      letter-spacing:.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.76);
+      display:inline-flex;
+      align-items:center;
+      gap: 7px;
+    }
+    .pkgChip b{ color:#fff; letter-spacing:.06em; }
+    .pkgChip.km{ border-color: rgba(6,182,212,.30); background: rgba(6,182,212,.10); }
+    .pkgChip.code{ border-color: rgba(255,255,255,.16); }
+    .pkgChip.days{ border-color: rgba(124,58,237,.30); background: rgba(124,58,237,.10); }
+
+    .pkgWBottom{
+      padding: 10px;
+      border-top:1px solid rgba(255,255,255,.08);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      background: rgba(0,0,0,.14);
+    }
+    .pkgHint{
+      font-size: 10px;
+      color: rgba(255,255,255,.70);
+      letter-spacing:.08em;
+      text-transform: uppercase;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .pkgCTA{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:#fff;
+      border-radius: 12px;
+      padding: 8px 10px;
+      font-size: 10px;
+      letter-spacing:.14em;
+      text-transform: uppercase;
+      user-select:none;
+    }
+    .pkgW:hover .pkgCTA{
+      border-color: rgba(124,58,237,.35);
+      background: rgba(124,58,237,.16);
+    }
+
+    .pkgList.worldList{ grid-template-columns: 1fr; }
+    .pkgList.worldList .pkgW{ min-height: 104px; }
+    .pkgList.worldList .pkgThumb{ width:64px; height:64px; }
+
     @media (max-width: 420px){ .waText{ display:none; } .waFloat{ padding: 10px; } .waClose{ display:none; } }
     @media (max-width: 1100px){
       .shell{ width: 100%; padding: 10px 10px 16px; }
@@ -582,7 +765,23 @@
                 <div class="pkgListMeta" id="pkgCount">—</div>
               </div>
 
-              <div class="pkgList" id="pkgList">
+              <!-- ✅ WORLDCLASS CONTROLS -->
+              <div class="pkgControls">
+                <input id="pkgSearch" class="pkgSearch" placeholder="Search packages (district / code / route)..." autocomplete="off">
+                <select id="pkgSort" class="pkgSelect">
+                  <option value="days_asc">Sort: Days (Low → High)</option>
+                  <option value="days_desc">Sort: Days (High → Low)</option>
+                  <option value="km_asc">Sort: KM (Low → High)</option>
+                  <option value="km_desc">Sort: KM (High → Low)</option>
+                </select>
+
+                <div class="viewToggle">
+                  <button class="viewBtn active" id="viewGridBtn" type="button">Grid</button>
+                  <button class="viewBtn" id="viewListBtn" type="button">List</button>
+                </div>
+              </div>
+
+              <div class="pkgList worldGrid" id="pkgList">
                 <div class="pill pillHint"><span>Type Start & click</span> <b>Generate</b></div>
               </div>
             </div>
@@ -625,7 +824,7 @@
               <div class="muted" id="itMeta">Day-wise details will appear here</div>
               <div class="muted" id="priceDebug" style="margin-top:8px; text-transform:none; white-space:pre-wrap;"></div>
 
-              <!-- ✅ NEW: Finalize + WhatsApp Enquiry Button -->
+              <!-- ✅ Finalize + WhatsApp Enquiry Button -->
               <div class="enqRow">
                 <a id="waEnquiryBtn" class="enqBtn disabled" href="#" target="_blank" rel="noopener">
                   Send Query on WhatsApp
@@ -877,10 +1076,7 @@
      Folder: /images/<place_id>/1.jpg..4.jpg
      =============================== */
 
-  // If your hosting also serves /images/... (best)
   const SITE_IMAGES_BASE = "/images";
-
-  // GitHub details (already set)
   const GITHUB_USER = "champishere001";
   const GITHUB_REPO = "Himachal_Explorer";
   const GITHUB_BRANCH = "main";
@@ -889,7 +1085,6 @@
   const JSDELIVR_BASE   = `https://cdn.jsdelivr.net/gh/${GITHUB_USER}/${GITHUB_REPO}@${GITHUB_BRANCH}/images`;
 
   function imageBasesInOrder(){
-    // Try site first (fast), then jsDelivr (CDN), then raw
     return [SITE_IMAGES_BASE, JSDELIVR_BASE, GITHUB_RAW_BASE].filter(Boolean);
   }
 
@@ -912,8 +1107,7 @@
     return [...new Set(urls)];
   }
 
-  // Auto-try multiple URLs until one loads
-  function setImgWithFallback(imgEl, urls, fallbackText){
+  function setImgWithFallback(imgEl, urls){
     let i = 0;
     function tryNext(){
       if(i >= urls.length){
@@ -930,7 +1124,6 @@
     const isValid = (u)=> typeof u==="string" && /^https?:\/\//i.test(u.trim());
     let arr = [];
 
-    // 1) direct URLs in PLACES
     if(isValid(p?.imageUrl)) arr.push(p.imageUrl.trim());
     if(isValid(p?.image)) arr.push(p.image.trim());
     if(isValid(p?.img)) arr.push(p.img.trim());
@@ -941,23 +1134,19 @@
       arr.push(...Object.values(p.images).filter(isValid).map(x=>x.trim()));
     }
 
-    // 2) from garg DB node place_images
     const id = String(pid || p?.place_id || p?.id || "").trim();
     if(id && PLACE_IMAGES[id]?.length) arr.push(...PLACE_IMAGES[id]);
 
-    // 3) fallback by slug of name for garg DB
     if(id && (!PLACE_IMAGES[id] || !PLACE_IMAGES[id].length)){
       const nm = placeNameAny(p, id);
       const slug = slugifyName(nm);
       if(slug && PLACE_IMAGES[slug]?.length) arr.push(...PLACE_IMAGES[slug]);
     }
 
-    // 4) ✅ folder-based images by place_id (GitHub/site)
     if(id) arr.push(...githubFolderCandidates(id));
 
     return [...new Set(arr)];
   }
-  function pickPhotoAny(p, pid){ return pickAllPhotos(p, pid)[0] || ""; }
 
   /* Tabs */
   function setActiveTab(which){
@@ -1028,9 +1217,8 @@
       ` : ``}
     `;
 
-    // ✅ hero image fallback loader
     const heroImg = document.getElementById("placeHeroImg");
-    if(heroImg && imgs.length) setImgWithFallback(heroImg, imgs, initials(name));
+    if(heroImg && imgs.length) setImgWithFallback(heroImg, imgs);
 
     if(imgs.length > 1){
       $("galPrev").onclick = ()=>galleryStep(-1);
@@ -1048,9 +1236,8 @@
     g.idx = (i + g.imgs.length) % g.imgs.length;
     const img = $("placeHeroImg");
     if(img){
-      // load exact index (but still fallback if that one fails)
       const rotated = g.imgs.slice(g.idx).concat(g.imgs.slice(0,g.idx));
-      setImgWithFallback(img, rotated, "HP");
+      setImgWithFallback(img, rotated);
     }
     const dots = $("galDots");
     if(dots){
@@ -1144,7 +1331,7 @@
         <div class="nearMeta" title="${escapeHtml(dist)}">${escapeHtml(dist || (bestKm?bestKm.toFixed(1)+" km":""))}</div>
       `;
       const img = card.querySelector("img[data-npid]");
-      if(img) setImgWithFallback(img, urls, initials(nm));
+      if(img) setImgWithFallback(img, urls);
 
       card.onclick = ()=>{
         renderPlaceDetails(pid);
@@ -1211,8 +1398,11 @@
   const CACHE_KEY = "hp_portal_cache_v18_github_images";
   const CACHE_TTL_MS = 1000 * 60 * 30;
 
+  /* ✅ Package view mode (grid/list) */
+  let PKG_VIEW_MODE = "grid";
+
   /* ✅ WhatsApp Finalize (package enquiry) */
-  const WHATSAPP_NUMBER = "917018138847"; // change if needed
+  const WHATSAPP_NUMBER = "917018138847";
   function setWhatsAppEnquiryEnabled(enabled, url){
     const btn = $("waEnquiryBtn");
     if(!btn) return;
@@ -1467,7 +1657,13 @@
   }
 
   function highlightActiveCard(){
-    document.querySelectorAll(".pkg").forEach(x=>x.classList.toggle("active", x.dataset.key === CURRENT_TEMPLATE_KEY));
+    document.querySelectorAll(".pkgW").forEach(x=>x.classList.toggle("active", x.dataset.key === CURRENT_TEMPLATE_KEY));
+  }
+
+  /* ✅ WORLDCLASS CARD RENDERING */
+  function approxKmFromTpl(t){
+    const km = Number(t.total_km_est || t.estimated_drive_km || t.total_km || 0);
+    return (isFinite(km) && km>0) ? km : 0;
   }
 
   function renderInterCard(t, startUpper){
@@ -1475,34 +1671,52 @@
     const endKey = endKeyFromRoutePath(t);
     const district = endDistrictFromTemplate(t);
     const code = String(t.route_id || "—").toUpperCase();
+    const km = approxKmFromTpl(t);
 
     const routeIds = routeIdsFromTemplateIncludingStart(t);
-    let ini="HP";
     const p0 = PLACES[routeIds[0]] || {};
     const nm0 = placeNameAny(p0, routeIds[0]);
-    ini = initials(nm0);
-
+    const ini = initials(nm0);
     const urls = pickAllPhotos(p0, routeIds[0]);
 
     const el = document.createElement("div");
-    el.className = "pkg";
+    el.className = "pkgW";
     el.dataset.key = t.key;
 
     el.innerHTML = `
-      <div class="pkgPic">
-        ${urls.length ? `<img data-pthumb="${escapeHtml(routeIds[0]||"")}" alt="Package thumbnail" loading="lazy" referrerpolicy="no-referrer">`
-                      : escapeHtml(ini)}
-      </div>
-      <div class="pkgBody">
-        <div class="pkgName">${escapeHtml(startUpper)} → ${escapeHtml(district)} • ${days}D</div>
-        <div class="pkgMeta">
-          END: ${escapeHtml(String(endKey||"—").toUpperCase())} • CODE: ${escapeHtml(code)} • ID: ${escapeHtml(String(t.key||"—").toUpperCase())}
+      <div class="pkgWTop">
+        <div class="pkgThumb">
+          ${urls.length
+            ? `<img data-pthumb="${escapeHtml(routeIds[0]||"")}" alt="Package thumbnail" loading="lazy" referrerpolicy="no-referrer">`
+            : `<div class="ini">${escapeHtml(ini)}</div>`
+          }
         </div>
-        <div class="diffLine">Days matched to route: <b>${days} Days</b></div>
+
+        <div class="pkgWBody">
+          <div class="pkgWTitle">
+            <div class="mainT">${escapeHtml(startUpper)} → ${escapeHtml(district)}</div>
+            <div class="pkgBadge purple">${days}D</div>
+            <div class="pkgBadge">${escapeHtml(String(endKey||"").toUpperCase())}</div>
+          </div>
+
+          <div class="pkgWMeta">
+            <div class="pkgChip days">Days <b>${days}</b></div>
+            <div class="pkgChip km">KM <b>${km ? km.toFixed(0) : "—"}</b></div>
+            <div class="pkgChip code">Code <b class="mono">${escapeHtml(code)}</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pkgWBottom">
+        <div class="pkgHint" title="${escapeHtml(String(t.route_path || ""))}">
+          ${escapeHtml(String(t.route_path || "Tap to open itinerary").slice(0, 74))}
+        </div>
+        <div class="pkgCTA">Open</div>
       </div>
     `;
+
     const img = el.querySelector("img[data-pthumb]");
-    if(img) setImgWithFallback(img, urls, ini);
+    if(img) setImgWithFallback(img, urls);
 
     el.onclick = ()=>openTemplate(t.key, startUpper);
     return el;
@@ -1512,32 +1726,53 @@
     const days = Number(t.days||0) || 0;
     const heading = String(t.route_path || t.route_name || t.package_id || t.key || "Local Package").trim();
     const code = String(t.route_id || "LOCAL").toUpperCase();
+    const km = approxKmFromTpl(t);
 
     const routeIds = stopsFromTemplate(t);
-    let ini="HP";
     const pickId = routeIds[0] || "";
     const p0 = PLACES[pickId] || {};
     const nm0 = placeNameAny(p0, pickId);
-    ini = initials(nm0);
+    const ini = initials(nm0);
     const urls = pickAllPhotos(p0, pickId);
 
     const el = document.createElement("div");
-    el.className = "pkg";
+    el.className = "pkgW";
     el.dataset.key = t.key;
 
     el.innerHTML = `
-      <div class="pkgPic">
-        ${urls.length ? `<img data-lthumb="${escapeHtml(pickId)}" alt="Local package thumbnail" loading="lazy" referrerpolicy="no-referrer">`
-                      : escapeHtml(ini)}
+      <div class="pkgWTop">
+        <div class="pkgThumb">
+          ${urls.length
+            ? `<img data-lthumb="${escapeHtml(pickId)}" alt="Local package thumbnail" loading="lazy" referrerpolicy="no-referrer">`
+            : `<div class="ini">${escapeHtml(ini)}</div>`
+          }
+        </div>
+
+        <div class="pkgWBody">
+          <div class="pkgWTitle">
+            <div class="mainT">${escapeHtml(heading)}</div>
+            <div class="pkgBadge green">LOCAL</div>
+            <div class="pkgBadge purple">${days}D</div>
+          </div>
+
+          <div class="pkgWMeta">
+            <div class="pkgChip days">Days <b>${days}</b></div>
+            <div class="pkgChip km">KM <b>${km ? km.toFixed(0) : "—"}</b></div>
+            <div class="pkgChip code">Code <b class="mono">${escapeHtml(code)}</b></div>
+          </div>
+        </div>
       </div>
-      <div class="pkgBody">
-        <div class="pkgName">${escapeHtml(heading)} • ${days}D</div>
-        <div class="pkgMeta">LOCAL • CODE: ${escapeHtml(code)} • ID: ${escapeHtml(String(t.key||"—").toUpperCase())}</div>
-        <div class="diffLine">Days matched: <b>${days} Days</b></div>
+
+      <div class="pkgWBottom">
+        <div class="pkgHint" title="${escapeHtml(String(t.route_path || ""))}">
+          ${escapeHtml(String(t.route_path || "Tap to open itinerary").slice(0, 74))}
+        </div>
+        <div class="pkgCTA">Open</div>
       </div>
     `;
+
     const img = el.querySelector("img[data-lthumb]");
-    if(img) setImgWithFallback(img, urls, ini);
+    if(img) setImgWithFallback(img, urls);
 
     el.onclick = ()=>openTemplate(t.key, normalizeStartInput() || "");
     return el;
@@ -1551,17 +1786,42 @@
 
     box.innerHTML = "";
 
+    // ✅ search + sort controls
+    const q = String($("pkgSearch")?.value || "").trim().toLowerCase();
+    const sort = String($("pkgSort")?.value || "days_asc");
+
+    function matchQuery(t){
+      if(!q) return true;
+      const district = String(endDistrictFromTemplate(t)||"").toLowerCase();
+      const code = String(t.route_id||"").toLowerCase();
+      const route = String(t.route_path||"").toLowerCase();
+      const endk = String(endKeyFromRoutePath(t)||"").toLowerCase();
+      return district.includes(q) || code.includes(q) || route.includes(q) || endk.includes(q);
+    }
+    function sortFn(a,b){
+      const da = Number(a.days||0), db = Number(b.days||0);
+      const ka = approxKmFromTpl(a), kb = approxKmFromTpl(b);
+      switch(sort){
+        case "days_desc": return db-da || (kb-ka);
+        case "km_asc": return ka-kb || (da-db);
+        case "km_desc": return kb-ka || (db-da);
+        default: return da-db || (ka-kb);
+      }
+    }
+
     let shownInter = INTER_ALL.slice();
     if(ACTIVE_DISTRICT && ACTIVE_DISTRICT !== "ALL"){
       shownInter = shownInter.filter(t => endDistrictFromTemplate(t) === ACTIVE_DISTRICT);
     }
+    shownInter = shownInter.filter(matchQuery).sort(sortFn);
 
     const locals = ACTIVE_TEMPLATES
       .filter(t => isLocalComputed(t))
       .filter(t => matchesStart(t, startUpper))
       .filter(t => matchesDaysOptional(t, daysF))
       .filter(t => Number(t.days||0) > 0 && Number(t.days||0) <= 3)
-      .sort((a,b)=>(Number(a.days)||0)-(Number(b.days)||0));
+      .filter(matchQuery)
+      .sort(sortFn);
 
     $("pkgCount").textContent = `${shownInter.length + locals.length} Results`;
 
@@ -1569,7 +1829,7 @@
     hdr1.className = "pkgGroupHdr";
     hdr1.innerHTML = `
       <div class="h1">${escapeHtml(startUpper || "START")} • ${escapeHtml(daysF || "ANY")} DAYS</div>
-      <div class="h2">Selection is based on Start + Days. Use chips to filter destination district.</div>
+      <div class="h2">Search + sort like a premium library. Use chips for destination filter.</div>
     `;
     box.appendChild(hdr1);
 
@@ -1595,7 +1855,7 @@
     hdr2.style.marginTop = "8px";
     hdr2.innerHTML = `
       <div class="h1">Local packages (≤ 3 Days)</div>
-      <div class="h2">Also matched by Start + Days</div>
+      <div class="h2">Also matched by Start + Days • searchable</div>
     `;
     box.appendChild(hdr2);
 
@@ -1696,7 +1956,7 @@
           </div>
         `;
         const img = line.querySelector("img[data-plthumb]");
-        if(img) setImgWithFallback(img, urls, initials(name));
+        if(img) setImgWithFallback(img, urls);
 
         line.onclick = ()=>{
           renderPlaceDetails(pid);
@@ -1961,7 +2221,6 @@
       updatePriceBoxes(total, perPerson);
       updateBreakdownUI(est.breakdown, pax);
 
-      // ✅ update WhatsApp finalize button
       updateWhatsAppForCurrent();
     }catch(e){
       console.error(e);
@@ -2004,8 +2263,6 @@
     CURRENT_TEMPLATE_KEY = "";
     CURRENT_ROUTE_KM = 0;
     setActiveTab("itin");
-
-    // ✅ disable finalize button until user selects package
     setWhatsAppEnquiryEnabled(false);
 
     if(!start){
@@ -2064,7 +2321,7 @@
     CURRENT_ROUTE_KM = rr.ok ? rr.km : 0;
 
     computePriceForCurrent();
-    updateWhatsAppForCurrent(); // ✅ ensure button updates
+    updateWhatsAppForCurrent();
   }
 
   async function loadLive(){
@@ -2188,6 +2445,29 @@
     $("genBtn").addEventListener("click", applyFilters);
     $("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
 
+    // ✅ library controls: search + sort + view modes
+    $("pkgSearch")?.addEventListener("input", ()=>{
+      if($("pills").children.length) renderPackagesList();
+    });
+    $("pkgSort")?.addEventListener("change", ()=>{
+      if($("pills").children.length) renderPackagesList();
+    });
+
+    $("viewGridBtn")?.addEventListener("click", ()=>{
+      PKG_VIEW_MODE = "grid";
+      $("viewGridBtn").classList.add("active");
+      $("viewListBtn").classList.remove("active");
+      $("pkgList").classList.add("worldGrid");
+      $("pkgList").classList.remove("worldList");
+    });
+    $("viewListBtn")?.addEventListener("click", ()=>{
+      PKG_VIEW_MODE = "list";
+      $("viewListBtn").classList.add("active");
+      $("viewGridBtn").classList.remove("active");
+      $("pkgList").classList.add("worldList");
+      $("pkgList").classList.remove("worldGrid");
+    });
+
     $("resetBtn").addEventListener("click", ()=>{
       $("startInp").value="";
       $("visitType").value="budget";
@@ -2216,9 +2496,12 @@
       ACTIVE_DISTRICT = "ALL";
       setActiveTab("itin");
 
-      // ✅ disable finalize button
-      setWhatsAppEnquiryEnabled(false);
+      // reset library filters
+      $("pkgSearch").value = "";
+      $("pkgSort").value = "days_asc";
+      $("viewGridBtn").click();
 
+      setWhatsAppEnquiryEnabled(false);
       toast("Reset done");
       invalidateMapSoon();
     });
@@ -2226,7 +2509,6 @@
     $("fitMapBtn").addEventListener("click", ()=>{ fitRoute(); invalidateMapSoon(); });
     $("clearRouteBtn").addEventListener("click", ()=>{ clearMap(); toast("Cleared"); });
     $("refreshBtn").addEventListener("click", refreshAll);
-
     $("mintLoginBtn").addEventListener("click", mintLogin);
 
     $("showAllStopsBtn").addEventListener("click", async ()=>{
@@ -2287,9 +2569,7 @@
     const hadCache = loadCache();
     if(hadCache) toast("Loaded fast from cache");
 
-    // ✅ disable initially until package is chosen
     setWhatsAppEnquiryEnabled(false);
-
     refreshAll();
   });
   </script>
