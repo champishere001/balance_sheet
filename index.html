@@ -34,7 +34,6 @@
       --acc:#7C3AED;
       --gap: 12px;
 
-      /* layout */
       --shellW: min(96vw, 1700px);
       --heroH: 230px;
     }
@@ -61,7 +60,6 @@
     .noise{ position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.12; mix-blend-mode:overlay;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
     }
-
     .shell{ width: var(--shellW); margin: 0 auto; padding: 12px 10px 18px; }
 
     /* HERO */
@@ -91,10 +89,7 @@
       padding: 14px 16px;
       gap:12px;
     }
-    .heroBrand{
-      display:flex; align-items:center; gap:12px;
-      min-width: 280px;
-    }
+    .heroBrand{ display:flex; align-items:center; gap:12px; min-width: 280px; }
     .logo{
       width:52px; height:52px; border-radius:16px;
       background: rgba(255,255,255,.10);
@@ -105,23 +100,15 @@
     }
     .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
     .heroTitle{
-      margin:0;
-      font-size: 16px;
-      letter-spacing:.18em;
-      text-transform: uppercase;
-      font-weight: 950;
-      color:#fff;
+      margin:0; font-size: 16px; letter-spacing:.18em;
+      text-transform: uppercase; font-weight: 950; color:#fff;
     }
     .heroSub{
-      margin:6px 0 0;
-      font-size: 12px;
+      margin:6px 0 0; font-size: 12px;
       color: rgba(255,255,255,.82);
-      letter-spacing:.06em;
-      text-transform: uppercase;
+      letter-spacing:.06em; text-transform: uppercase;
     }
-    .heroRight{
-      display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:flex-end;
-    }
+    .heroRight{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:flex-end; }
     .chip{
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
@@ -171,7 +158,7 @@
     .paneHdr .s{ font-size:10.5px; color:var(--muted); letter-spacing:.10em; text-transform: uppercase; }
 
     /* LEFT SIDEBAR */
-    .sideInner{ padding: 12px; display:flex; flex-direction:column; gap:10px; }
+    .sideInner{ padding: 12px; display:flex; flex-direction:column; gap:10px; min-height:0; }
     .sideCard{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.18);
@@ -198,7 +185,6 @@
       cursor:pointer; font-size: 11px;
     }
     .btn.secondary{ background: rgba(255,255,255,.06); color: rgba(255,255,255,.85); }
-
     .pills{ display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
     .pill{
       border:1px solid rgba(255,255,255,.14);
@@ -212,6 +198,59 @@
       display:inline-flex; align-items:center; gap:8px;
     }
     .pill b{ color:#fff; letter-spacing:.06em; }
+
+    /* ✅ NEW: Other packages list (left highlighted area) */
+    .otherWrap{
+      flex:1;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .otherHdr{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.16);
+      border-radius: 14px;
+      padding: 10px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .otherHdr .h{
+      font-size: 11px; font-weight: 950;
+      letter-spacing:.14em; text-transform: uppercase;
+    }
+    .otherHdr .xBtn{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.9);
+      border-radius: 12px;
+      padding: 7px 10px;
+      font-size: 10px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      cursor:pointer;
+      user-select:none;
+      white-space: nowrap;
+    }
+    .otherList{
+      flex:1;
+      min-height:0;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 2px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .otherHint{
+      border:1px dashed rgba(255,255,255,.16);
+      background: rgba(255,255,255,.04);
+      border-radius: 14px;
+      padding: 10px;
+      color: rgba(255,255,255,.70);
+      font-size: 11px;
+      letter-spacing:.02em;
+      line-height: 1.35;
+    }
 
     /* CENTER */
     .centerInner{
@@ -309,7 +348,7 @@
       backdrop-filter: blur(12px);
     }
 
-    /* Package list (row cards) */
+    /* Package list */
     .pkgList{
       padding: 12px;
       overflow-y:auto;
@@ -568,7 +607,6 @@
     /* MAP (right) */
     .mapPane{ position: sticky; top: 12px; height: calc(100vh - 24px); min-height: 620px; max-height: 920px; }
     #map{ width:100%; flex:1; min-height: 520px; background: rgba(255,255,255,.04); }
-
     .mapTools{
       padding: 10px 12px;
       border-top:1px solid rgba(255,255,255,.10);
@@ -692,10 +730,10 @@
       </div>
     </div>
 
-    <!-- MAIN: 20 / 55 / 25 -->
+    <!-- MAIN -->
     <div class="main">
 
-      <!-- LEFT 20%: Sidebar Filters -->
+      <!-- LEFT -->
       <div class="pane">
         <div class="paneHdr">
           <div>
@@ -748,21 +786,35 @@
             <div class="pills" id="pills"></div>
           </div>
 
+          <!-- ✅ NEW: Other packages will appear here after selecting any package -->
+          <div class="otherWrap">
+            <div class="otherHdr">
+              <div class="h">Other Packages</div>
+              <div class="xBtn" id="closeSelectedBtn" title="Close selected package">Close</div>
+            </div>
+            <div class="otherList" id="otherPkgList">
+              <div class="otherHint">
+                Select a package in the center. <br>
+                After selection, all remaining packages will appear here (clickable).
+              </div>
+            </div>
+          </div>
+
           <div class="sideCard">
             <div class="muted" style="text-transform:none;letter-spacing:.02em;">
               Tip: Select <b>Start</b>, optionally <b>Days</b>, then click <b>Generate</b>.
-              Inter-district packages show first, local packages (≤3 days) show below.
+              Inter-district packages show first. Local packages (≤3 days) show only when available.
             </div>
           </div>
         </div>
       </div>
 
-      <!-- CENTER 55% -->
+      <!-- CENTER -->
       <div class="pane">
         <div class="paneHdr">
           <div>
             <p class="t">Packages</p>
-            <div class="s">Click a card → details open under it</div>
+            <div class="s" id="centerHint">Click a card → details open under it</div>
           </div>
           <div class="s" id="pkgCount">—</div>
         </div>
@@ -770,7 +822,7 @@
         <div class="centerInner">
           <div class="districtBar" id="districtBar"></div>
 
-          <!-- ✅ Shown until package is selected -->
+          <!-- Shown until package selected -->
           <div class="centreHero" id="centreHero">
             <img id="centreHeroImg" src="./kinnaur-kailash.webp" alt="Himachal Pradesh" onerror="this.src='./n1.jpg'">
             <div class="centreHeroContent">
@@ -781,13 +833,14 @@
             </div>
           </div>
 
+          <!-- ✅ Center list now becomes: (a) full list when not selected, (b) ONLY selected package when selected -->
           <div class="pkgList" id="pkgList">
             <div class="pill"><b>Type Start</b> then click <b>Generate</b></div>
           </div>
         </div>
       </div>
 
-      <!-- RIGHT 25%: Map -->
+      <!-- RIGHT -->
       <div class="pane mapPane">
         <div class="paneHdr">
           <div>
@@ -840,7 +893,7 @@
      Firebase Config (2 Apps)
      =============================== */
 
-  // ✅ MAIN DB (revnue-records) - templates, places, pricing
+  // ✅ MAIN DB (revnue-records)
   const firebaseConfig = {
     apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
     authDomain: "revnue-records.firebaseapp.com",
@@ -852,7 +905,7 @@
     measurementId: "G-MGTDBCG896"
   };
 
-  // ✅ IMAGES DB (garg-enterprise) - place_images/{place_id}/{n}/url
+  // ✅ IMAGES DB (garg-enterprise)
   const firebaseConfigImages = {
     apiKey: "AIzaSyBmJDsXvokR8kYs_yoLPau1DqANPBBORJY",
     authDomain: "garg-enterprise.firebaseapp.com",
@@ -870,7 +923,7 @@
   const NODE_HOTEL        = "rate_hotel";
   const NODE_STAYRULES    = "stay_rate_rules";
 
-  const NODE_PLACE_IMAGES = "place_images"; // ✅ garg DB node
+  const NODE_PLACE_IMAGES = "place_images"; // garg DB node
 
   const $ = (id)=>document.getElementById(id);
 
@@ -898,7 +951,7 @@
       .replace(/^-|-$/g,"");
   }
 
-  /* ====== BOT (auto hide 4 sec) ====== */
+  /* BOT */
   function showBot(msg){
     const el = $("botToast");
     if(!el) return;
@@ -907,10 +960,7 @@
     setTimeout(()=> el.classList.remove("show"), 4000);
   }
 
-  /* ===============================
-     ✅ Centre hero auto slideshow (uses available local pics)
-     If you also want GitHub base, keep these files in repo root too.
-     =============================== */
+  /* Centre hero slideshow */
   const CENTRE_HERO_IMAGES = [
     "./kinnaur-kailash.webp",
     "./n1.jpg",
@@ -940,11 +990,8 @@
   function lngAny(p){ return Number(p?.longitude ?? p?.lng ?? p?.Longitude); }
   function districtAny(p){ return String(p?.district || p?.District || "").trim().toUpperCase(); }
 
-  /* ===============================
-     ✅ PLACE IMAGES FROM GARG DB
-     place_images/{placeId}/{n}/url
-     =============================== */
-  let PLACE_IMAGES = {}; // { placeId: [url1,url2...] }
+  /* PLACE IMAGES FROM GARG DB */
+  let PLACE_IMAGES = {};
   let imagesDb = null;
 
   function normalizePlaceImages(raw){
@@ -998,10 +1045,7 @@
     }
   }
 
-  /* ===============================
-     ✅ GITHUB / SITE IMAGE FETCH (place_id wise)
-     Folder: /created1/<place_id>/1.jpg..4.jpg
-     =============================== */
+  /* GITHUB / SITE IMAGE FETCH */
   const IMG_ROOT_FOLDER = "created1";
   const SITE_IMAGES_BASE = `/${IMG_ROOT_FOLDER}`;
   const GITHUB_USER = "champishere001";
@@ -1031,7 +1075,6 @@
     return [...new Set(urls)];
   }
 
-  // Auto-try multiple URLs until one loads
   function setImgWithFallback(imgEl, urls){
     let i = 0;
     const list = (urls||[]).filter(Boolean);
@@ -1046,6 +1089,7 @@
     tryNext();
   }
 
+  let PLACES = {};
   function pickAllPhotos(p, pid){
     const isValid = (u)=> typeof u==="string" && /^https?:\/\//i.test(u.trim());
     let arr = [];
@@ -1073,8 +1117,6 @@
     return [...new Set(arr)];
   }
 
-  /* ✅ Package photo picking */
-  let PLACES = {};
   function pickThumbPlaceId(routeIds){
     for(const pid of (routeIds||[])){
       if(pid && PLACES[pid]) return pid;
@@ -1098,7 +1140,7 @@
     return out;
   }
 
-  /* Distance */
+  /* Distance / Nearby */
   function haversineKm(aLat,aLng,bLat,bLng){
     const R = 6371;
     const toRad = (x)=> x * Math.PI/180;
@@ -1109,8 +1151,6 @@
     const q = s1*s1 + Math.cos(toRad(aLat))*Math.cos(toRad(bLat))*s2*s2;
     return 2 * R * Math.asin(Math.min(1, Math.sqrt(q)));
   }
-
-  /* Day-wise Nearby */
   function getNearbyForDay(dayPlaceIds, opts){
     const { limit=6, radiusKm=15, excludeSet=new Set(), preferSameDistrict=true } = (opts||{});
     const used = new Set([...(dayPlaceIds||[]).filter(Boolean)]);
@@ -1250,7 +1290,6 @@
   const CACHE_KEY = "hp_portal_cache_inlineDetails_v1";
   const CACHE_TTL_MS = 1000 * 60 * 30;
 
-  /* ✅ WhatsApp Finalize */
   const WHATSAPP_NUMBER = "917018138847";
 
   function setCentreHeroVisible(on){
@@ -1450,7 +1489,7 @@
     }).join("");
 
     bar.querySelectorAll(".distItem").forEach(el=>{
-      el.onclick = ()=>{ ACTIVE_DISTRICT = el.dataset.d || "ALL"; renderPackagesList(); };
+      el.onclick = ()=>{ ACTIVE_DISTRICT = el.dataset.d || "ALL"; renderPanels(); };
     });
   }
 
@@ -1463,7 +1502,7 @@
     return isFinite(km) && km>0 ? km : 0;
   }
 
-  /* ===== Inline details renderer (under clicked card) ===== */
+  /* WhatsApp */
   function buildWhatsAppMessage({tpl, startName, endKey, pax, tier, km, total, perPerson}){
     const days = Number(tpl?.days || 0) || 0;
     const code = String(tpl?.route_id || "—");
@@ -1581,22 +1620,11 @@
       <div class="daysList" id="days_${tpl.key}" style="margin-top:10px;"></div>
     `;
 
-    // WhatsApp link
     const startName = normalizeStartInput() || (tpl.start_point || tpl.start || startUpper || "");
-    const msg = buildWhatsAppMessage({
-      tpl,
-      startName,
-      endKey,
-      pax,
-      tier,
-      km,
-      total,
-      perPerson
-    });
+    const msg = buildWhatsAppMessage({ tpl, startName, endKey, pax, tier, km, total, perPerson });
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
     setWhatsAppInline(document.getElementById(waBtnId), true, url);
 
-    // Day wise render
     const daysWrap = document.getElementById(`days_${tpl.key}`);
     if(!daysWrap) return;
 
@@ -1750,9 +1778,7 @@
     return { total };
   }
 
-  /* ===============================
-     ✅ Package card render (with inline details container)
-     =============================== */
+  /* Cards */
   function renderInterCard(t, startUpper){
     const days = Number(t.days||0) || 0;
     const endKey = endKeyFromRoutePath(t);
@@ -1828,7 +1854,7 @@
       }
     });
 
-    el.onclick = ()=>toggleOpenTemplate(t.key, startUpper);
+    el.onclick = ()=>toggleOpenTemplate(t.key);
     return el;
   }
 
@@ -1906,23 +1932,23 @@
       }
     });
 
-    el.onclick = ()=>toggleOpenTemplate(t.key, startUpper);
+    el.onclick = ()=>toggleOpenTemplate(t.key);
     return el;
   }
 
-  function renderPackagesList(){
-    const box = $("pkgList");
+  /* ✅ NEW: Build the current filtered list once */
+  function getFilteredLists(){
     const start = normalizeStartInput() || "";
     const startUpper = String(start).trim().toUpperCase();
     const daysF = $("daysSel").value.trim();
 
-    box.innerHTML = "";
-
+    // Inter list from cached INTER_ALL (already matches start/days)
     let shownInter = INTER_ALL.slice();
     if(ACTIVE_DISTRICT && ACTIVE_DISTRICT !== "ALL"){
       shownInter = shownInter.filter(t => endDistrictFromTemplate(t) === ACTIVE_DISTRICT);
     }
 
+    // Locals only if exist
     const locals = ACTIVE_TEMPLATES
       .filter(t => isLocalComputed(t))
       .filter(t => matchesStart(t, startUpper))
@@ -1930,54 +1956,139 @@
       .filter(t => Number(t.days||0) > 0 && Number(t.days||0) <= 3)
       .sort((a,b)=>(Number(a.days)||0)-(Number(b.days)||0));
 
-    $("pkgCount").textContent = `${shownInter.length + locals.length} Results`;
+    return { startUpper, daysF, shownInter, locals };
+  }
 
-    const hdr1 = document.createElement("div");
-    hdr1.className = "pkgGroupHdr";
-    hdr1.innerHTML = `
-      <div class="h1">${escapeHtml(startUpper || "START")} • ${escapeHtml(daysF || "ANY")} DAYS</div>
-      <div class="h2">Click a package → cost + itinerary opens right under it.</div>
-    `;
-    box.appendChild(hdr1);
+  /* ✅ NEW: Render center+left depending on selection */
+  function renderPanels(){
+    const center = $("pkgList");
+    const other = $("otherPkgList");
 
+    const { startUpper, daysF, shownInter, locals } = getFilteredLists();
+
+    // Count
+    const totalCount = shownInter.length + locals.length;
+    $("pkgCount").textContent = `${totalCount} Results`;
+
+    // If start not selected yet
     if(!startUpper){
-      const warn = document.createElement("div");
-      warn.className = "pill";
-      warn.innerHTML = `<b>Type Start</b> then Generate`;
-      box.appendChild(warn);
+      setCentreHeroVisible(true);
+      CURRENT_TEMPLATE_KEY = "";
+      center.innerHTML = `<div class="pill"><b>Type Start</b> then click <b>Generate</b></div>`;
+      other.innerHTML = `
+        <div class="otherHint">
+          Select a package in the center. <br>
+          After selection, all remaining packages will appear here (clickable).
+        </div>`;
       return;
     }
 
-    if(!shownInter.length){
-      const none = document.createElement("div");
-      none.className = "pill";
-      none.innerHTML = `<b>No inter-district package found for this Start + Days</b>`;
-      box.appendChild(none);
-    }else{
-      shownInter.forEach(t => box.appendChild(renderInterCard(t, startUpper)));
+    // Helper: build “all cards” array
+    const allCards = [];
+    shownInter.forEach(t => allCards.push({ t, kind:"inter" }));
+    locals.forEach(t => allCards.push({ t, kind:"local" }));
+
+    // No selection -> show normal list in center; left shows hint
+    if(!CURRENT_TEMPLATE_KEY){
+      setCentreHeroVisible(true);
+
+      other.innerHTML = `
+        <div class="otherHint">
+          After you open a package, the remaining packages will move here.
+        </div>`;
+
+      center.innerHTML = "";
+      const hdr1 = document.createElement("div");
+      hdr1.className = "pkgGroupHdr";
+      hdr1.innerHTML = `
+        <div class="h1">${escapeHtml(startUpper)} • ${escapeHtml(daysF || "ANY")} DAYS</div>
+        <div class="h2">Click a package → cost + itinerary opens right under it.</div>
+      `;
+      center.appendChild(hdr1);
+
+      if(!shownInter.length){
+        const none = document.createElement("div");
+        none.className = "pill";
+        none.innerHTML = `<b>No inter-district package found for this Start + Days</b>`;
+        center.appendChild(none);
+      }else{
+        shownInter.forEach(t => center.appendChild(renderInterCard(t, startUpper)));
+      }
+
+      // ✅ Local header only if locals exist
+      if(locals.length){
+        const hdr2 = document.createElement("div");
+        hdr2.className = "pkgGroupHdr";
+        hdr2.style.marginTop = "8px";
+        hdr2.innerHTML = `
+          <div class="h1">Local packages (≤ 3 Days)</div>
+          <div class="h2">Short tours within district / nearby area</div>
+        `;
+        center.appendChild(hdr2);
+        locals.forEach(t => center.appendChild(renderLocalCard(t, startUpper)));
+      }
+
+      highlightActiveCard();
+      return;
     }
 
-    const hdr2 = document.createElement("div");
-    hdr2.className = "pkgGroupHdr";
-    hdr2.style.marginTop = "8px";
-    hdr2.innerHTML = `
-      <div class="h1">Local packages (≤ 3 Days)</div>
-      <div class="h2">Short tours within district / nearby area</div>
+    // Selection exists -> show selected in CENTER only, rest in LEFT
+    setCentreHeroVisible(false);
+
+    const selectedObj = allCards.find(x => x.t.key === CURRENT_TEMPLATE_KEY);
+    const rest = allCards.filter(x => x.t.key !== CURRENT_TEMPLATE_KEY);
+
+    // Center: selected only
+    center.innerHTML = "";
+    if(!selectedObj){
+      // selected key not in this filtered view (district change etc.)
+      CURRENT_TEMPLATE_KEY = "";
+      renderPanels();
+      return;
+    }
+
+    const selHdr = document.createElement("div");
+    selHdr.className = "pkgGroupHdr";
+    selHdr.innerHTML = `
+      <div class="h1">Selected Package</div>
+      <div class="h2">Details stay here. Other packages move to left panel.</div>
     `;
-    box.appendChild(hdr2);
+    center.appendChild(selHdr);
 
-    if(!locals.length){
-      const none2 = document.createElement("div");
-      none2.className = "pill";
-      none2.innerHTML = `<b>No local package found for this Start + Days</b>`;
-      box.appendChild(none2);
+    const selCard = (selectedObj.kind === "local")
+      ? renderLocalCard(selectedObj.t, startUpper)
+      : renderInterCard(selectedObj.t, startUpper);
+
+    // Force active style
+    selCard.classList.add("active");
+    center.appendChild(selCard);
+
+    // Left: rest list
+    other.innerHTML = "";
+    if(!rest.length){
+      other.innerHTML = `<div class="otherHint">No other packages in this filter.</div>`;
     }else{
-      locals.forEach(t => box.appendChild(renderLocalCard(t, startUpper)));
+      rest.forEach(obj=>{
+        const c = (obj.kind === "local")
+          ? renderLocalCard(obj.t, startUpper)
+          : renderInterCard(obj.t, startUpper);
+
+        // Make them compact: remove inline details open by default, but clickable works
+        // Keep consistent behavior (click replaces selected)
+        other.appendChild(c);
+      });
     }
 
+    // Keep active highlight
     highlightActiveCard();
   }
 
+  function renderDistrictChipsReset(){
+    $("districtBar").innerHTML = "";
+    $("pkgCount").textContent = "—";
+  }
+
+  /* Map route draw */
   async function drawRoadRouteFromPlaces(placeIds){
     markersLayer.clearLayers();
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
@@ -2044,28 +2155,27 @@
     }
   }
 
-  /* ✅ Toggle open/close: details must show under clicked (not after list) */
-  async function toggleOpenTemplate(key, startUpper){
-    const same = (CURRENT_TEMPLATE_KEY === key);
-    // Close all
-    document.querySelectorAll(".pkgW").forEach(card=>{
-      card.classList.remove("active");
-    });
+  /* ✅ Selection open/close */
+  async function toggleOpenTemplate(key){
+    const startUpper = String(normalizeStartInput() || "").toUpperCase();
 
+    const same = (CURRENT_TEMPLATE_KEY === key);
+
+    // Close
     if(same){
-      // Closing current -> show centre hero
       CURRENT_TEMPLATE_KEY = "";
       CURRENT_ROUTE_KM = 0;
       clearMap();
       setCentreHeroVisible(true);
+      renderPanels();
       showBot("Closed package. Select another one.");
       return;
     }
 
     // Open new
     CURRENT_TEMPLATE_KEY = key;
+    renderPanels(); // move rest to left, selected to center immediately
     highlightActiveCard();
-    setCentreHeroVisible(false);
 
     const tpl = TEMPLATES[key];
     if(!tpl) return;
@@ -2073,17 +2183,14 @@
     const endKey = endKeyFromRoutePath(tpl);
     const routeIds = routeIdsFromTemplateIncludingStart(tpl);
 
-    // Put loading content first
     const detailsEl = document.getElementById(`details_${key}`);
     if(detailsEl){
       detailsEl.innerHTML = `<div class="pill"><b>Loading…</b> fetching road route + calculating cost</div>`;
     }
 
-    // Draw route and compute km
     const rr = await drawRoadRouteFromPlaces(routeIds);
     CURRENT_ROUTE_KM = rr.ok ? rr.km : 0;
 
-    // Compute cost
     const pax = getSelectedPax();
     const days = Number(tpl.days || 3);
     let km = Number(CURRENT_ROUTE_KM || 0);
@@ -2094,21 +2201,15 @@
     const total = est.total;
     const perPerson = isFinite(total) ? (total/pax) : NaN;
 
-    // Render details inline
     if(detailsEl){
       renderInlineDetails(detailsEl, tpl, startUpper, endKey, km, total, perPerson);
     }
 
-    // Smooth scroll so user sees details immediately under clicked card
-    const card = document.querySelector(`.pkgW[data-key="${CSS.escape(key)}"]`);
-    if(card) card.scrollIntoView({ behavior:"smooth", block:"center" });
+    // Keep selected visible
+    const card = document.querySelector(`#pkgList .pkgW[data-key="${CSS.escape(key)}"]`);
+    if(card) card.scrollIntoView({ behavior:"smooth", block:"start" });
 
-    showBot("✅ Details opened under the package. WhatsApp button ready.");
-  }
-
-  function renderDistrictChipsReset(){
-    $("districtBar").innerHTML = "";
-    $("pkgCount").textContent = "—";
+    showBot("✅ Selected package pinned in center. Other packages moved to left.");
   }
 
   function applyFilters(){
@@ -2126,6 +2227,7 @@
       showBot("⚠️ Start not found. Please type a Start exactly as saved in templates.");
       renderDistrictChipsReset();
       $("pkgList").innerHTML = `<div class="pill"><b>Start not found</b></div>`;
+      $("otherPkgList").innerHTML = `<div class="otherHint">Select a valid Start and Generate.</div>`;
       $("pkgCount").textContent = "0 Results";
       return;
     }
@@ -2159,10 +2261,11 @@
       $("pills").appendChild(div);
     }
 
-    renderPackagesList();
-    showBot("✅ Packages loaded. Click any package → details open under it.");
+    renderPanels();
+    showBot("✅ Packages loaded. Click any package → it pins in center, rest move left.");
   }
 
+  /* Firebase load */
   async function loadLive(){
     setStatus("Loading live from Firebase…");
 
@@ -2213,7 +2316,6 @@
       setStatus(`Loaded LIVE • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places • ${Object.keys(PLACE_IMAGES).length} image-keys`);
       invalidateMapSoon();
 
-      // Keep filters applied
       if($("pills").children.length){
         applyFilters();
       }else{
@@ -2253,11 +2355,8 @@
 
   window.addEventListener("DOMContentLoaded", () => {
     startCentreHero();
-
-    // Bot welcome
     showBot("👋 Welcome! Select Start and click Generate.");
 
-    // Firebase init
     if(!firebase.apps.length){
       firebase.initializeApp(firebaseConfig);
     }else{
@@ -2281,6 +2380,11 @@
     $("genBtn").addEventListener("click", applyFilters);
     $("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
 
+    $("closeSelectedBtn").addEventListener("click", ()=>{
+      if(CURRENT_TEMPLATE_KEY) toggleOpenTemplate(CURRENT_TEMPLATE_KEY);
+      else showBot("No package selected.");
+    });
+
     $("resetBtn").addEventListener("click", ()=>{
       $("startInp").value="";
       $("visitType").value="budget";
@@ -2290,6 +2394,11 @@
       $("pkgList").innerHTML = `<div class="pill"><b>Type Start</b> then click <b>Generate</b></div>`;
       $("districtBar").innerHTML = "";
       $("pkgCount").textContent="—";
+      $("otherPkgList").innerHTML = `
+        <div class="otherHint">
+          Select a package in the center. <br>
+          After selection, all remaining packages will appear here (clickable).
+        </div>`;
       clearMap();
       CURRENT_TEMPLATE_KEY = "";
       CURRENT_ROUTE_KM = 0;
@@ -2343,22 +2452,23 @@
     });
 
     $("paxSel")?.addEventListener("change", ()=>{
-      // If a package is open, reopen it to refresh pricing inline
       if(CURRENT_TEMPLATE_KEY){
-        const startUpper = String(normalizeStartInput() || "").toUpperCase();
-        toggleOpenTemplate(CURRENT_TEMPLATE_KEY, startUpper); // close
-        setTimeout(()=>toggleOpenTemplate(CURRENT_TEMPLATE_KEY, startUpper), 80); // open again
+        const k = CURRENT_TEMPLATE_KEY;
+        toggleOpenTemplate(k); // close
+        setTimeout(()=>toggleOpenTemplate(k), 80); // open again
+      }else if($("pills").children.length){
+        applyFilters();
       }
-      if($("pills").children.length) applyFilters();
     });
 
     $("visitType")?.addEventListener("change", ()=>{
       if(CURRENT_TEMPLATE_KEY){
-        const startUpper = String(normalizeStartInput() || "").toUpperCase();
-        toggleOpenTemplate(CURRENT_TEMPLATE_KEY, startUpper);
-        setTimeout(()=>toggleOpenTemplate(CURRENT_TEMPLATE_KEY, startUpper), 80);
+        const k = CURRENT_TEMPLATE_KEY;
+        toggleOpenTemplate(k);
+        setTimeout(()=>toggleOpenTemplate(k), 80);
+      }else if($("pills").children.length){
+        applyFilters();
       }
-      if($("pills").children.length) applyFilters();
     });
 
     $("daysSel")?.addEventListener("change", ()=>{
