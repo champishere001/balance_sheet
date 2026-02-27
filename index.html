@@ -8,16 +8,14 @@
   <meta name="description" content="Explore Himachal tour packages with live road route maps, day-wise itineraries, places, and instant price estimates." />
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet=-1,max-video-preview=-1" />
   <link rel="canonical" href="https://himachalexplorer.in/" />
-  <meta name="theme-color" content="#070A12" />
+  <meta name="theme-color" content="#F6F1E8" />
   <link rel="icon" href="./favicon.ico" />
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <!-- ✅ FIX: remove defer so Leaflet is guaranteed available -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <!-- Firebase (Compat) -->
-  <!-- ✅ FIX: remove defer so firebase is guaranteed available -->
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics-compat.js"></script>
@@ -25,42 +23,62 @@
 
   <style>
     :root{
-      --bg0:#070A12; --bg1:#0B1220;
-      --card: rgba(255,255,255,.06);
-      --stroke: rgba(255,255,255,.10);
-      --muted: rgba(255,255,255,.65);
-      --text: rgba(255,255,255,.92);
-      --shadow: 0 18px 70px rgba(0,0,0,.55);
+      /* ✅ Creamy white aurora theme */
+      --bg0:#FBF6EE;
+      --bg1:#F3EDE2;
+      --card: rgba(255,255,255,.72);
+      --card2: rgba(255,255,255,.62);
+      --stroke: rgba(15, 23, 42, .12);
+      --muted: rgba(15, 23, 42, .62);
+      --text: rgba(15, 23, 42, .92);
+      --shadow: 0 18px 70px rgba(2,6,23,.12);
+      --shadow2: 0 16px 44px rgba(2,6,23,.10);
       --radius: 16px;
-      --acc:#7C3AED;
+      --acc:#7C3AED;    /* purple */
+      --acc2:#06B6D4;   /* cyan */
+      --acc3:#22C55E;   /* green */
       --gap: 12px;
 
       --shellW: min(96vw, 1700px);
       --heroH: 230px;
     }
     *{ box-sizing:border-box; }
+
     body{
-      margin:0; color:var(--text);
+      margin:0;
+      color:var(--text);
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background:
-        radial-gradient(1200px 600px at 20% 0%, rgba(124,58,237,.18), transparent 60%),
-        radial-gradient(900px 520px at 85% 10%, rgba(34,197,94,.14), transparent 60%),
+        radial-gradient(1200px 600px at 20% 0%, rgba(124,58,237,.16), transparent 60%),
+        radial-gradient(900px 520px at 85% 10%, rgba(34,197,94,.12), transparent 60%),
         radial-gradient(900px 520px at 50% 90%, rgba(6,182,212,.12), transparent 60%),
         linear-gradient(180deg, var(--bg0), var(--bg1));
       overflow:auto;
     }
-    .aurora{ position:fixed; inset:-30%;
+
+    .aurora{
+      position:fixed; inset:-30%;
       background:
-        radial-gradient(900px 500px at 25% 30%, rgba(124,58,237,.22), transparent 65%),
-        radial-gradient(900px 520px at 75% 25%, rgba(34,197,94,.18), transparent 66%),
-        radial-gradient(860px 540px at 55% 75%, rgba(6,182,212,.14), transparent 66%);
-      filter: blur(45px); opacity:.9; animation: drift 14s ease-in-out infinite;
-      pointer-events:none; z-index:-3;
+        radial-gradient(900px 520px at 22% 30%, rgba(124,58,237,.22), transparent 66%),
+        radial-gradient(900px 520px at 75% 22%, rgba(34,197,94,.18), transparent 66%),
+        radial-gradient(860px 560px at 55% 76%, rgba(6,182,212,.18), transparent 66%);
+      filter: blur(54px);
+      opacity:.85;
+      animation: drift 16s ease-in-out infinite;
+      pointer-events:none;
+      z-index:-3;
     }
-    @keyframes drift{0%,100%{transform:translate3d(0,0,0) scale(1);}50%{transform:translate3d(3%,-2%,0) scale(1.06);}}
-    .noise{ position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.12; mix-blend-mode:overlay;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+    @keyframes drift{
+      0%,100%{transform:translate3d(0,0,0) scale(1);}
+      50%{transform:translate3d(2.5%,-1.8%,0) scale(1.05);}
     }
+
+    .noise{
+      position:fixed; inset:0; z-index:-2; pointer-events:none;
+      opacity:.08; mix-blend-mode:multiply;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.20'/%3E%3C/svg%3E");
+    }
+
     .shell{ width: var(--shellW); margin: 0 auto; padding: 12px 10px 18px; }
 
     .hero{
@@ -70,12 +88,14 @@
       overflow:hidden;
       position:relative;
       box-shadow: var(--shadow);
-      background: rgba(0,0,0,.18);
+      background: rgba(255,255,255,.42);
     }
-    .hero img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .hero img{ width:100%; height:100%; object-fit:cover; display:block; filter:saturate(1.02) contrast(1.04); }
     .hero::after{
       content:""; position:absolute; inset:0;
-      background: linear-gradient(90deg, rgba(0,0,0,.68), rgba(0,0,0,.30), rgba(0,0,0,.55));
+      background: linear-gradient(90deg, rgba(255,255,255,.78), rgba(255,255,255,.52), rgba(255,255,255,.74));
+      mix-blend-mode:screen;
+      pointer-events:none;
     }
     .heroInner{
       position:absolute; inset:0;
@@ -85,33 +105,38 @@
     .heroBrand{ display:flex; align-items:center; gap:12px; min-width: 280px; }
     .logo{
       width:52px; height:52px; border-radius:16px;
-      background: rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.72);
+      border:1px solid var(--stroke);
       display:grid; place-items:center; overflow:hidden;
-      box-shadow: 0 14px 30px rgba(0,0,0,.35);
+      box-shadow: var(--shadow2);
       flex:0 0 auto;
     }
     .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .heroTitle{ margin:0; font-size: 16px; letter-spacing:.18em; text-transform: uppercase; font-weight: 950; color:#fff; }
-    .heroSub{ margin:6px 0 0; font-size: 12px; color: rgba(255,255,255,.82); letter-spacing:.06em; text-transform: uppercase; }
+    .heroTitle{ margin:0; font-size: 16px; letter-spacing:.18em; text-transform: uppercase; font-weight: 950; color: rgba(15,23,42,.95); }
+    .heroSub{ margin:6px 0 0; font-size: 12px; color: var(--muted); letter-spacing:.06em; text-transform: uppercase; }
+
     .heroRight{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:flex-end; }
     .chip{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.82);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.62);
+      color: rgba(15,23,42,.82);
       border-radius: 999px;
       padding: 8px 10px;
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing:.10em;
       display:inline-flex; align-items:center; gap:10px;
-      cursor:pointer; user-select:none; backdrop-filter: blur(12px); white-space: nowrap;
+      cursor:pointer; user-select:none;
+      white-space: nowrap;
+      box-shadow: 0 10px 24px rgba(2,6,23,.08);
+      backdrop-filter: blur(10px);
     }
-    .chip:hover{ background: rgba(255,255,255,.09); }
+    .chip:hover{ background: rgba(255,255,255,.78); }
     .chip.primary{
-      border-color: rgba(124,58,237,.55);
-      background: rgba(124,58,237,.14);
-      color:#fff; font-weight:900;
+      border-color: rgba(124,58,237,.35);
+      background: linear-gradient(135deg, rgba(124,58,237,.18), rgba(6,182,212,.10));
+      color: rgba(15,23,42,.92);
+      font-weight: 950;
     }
 
     .main{
@@ -125,9 +150,8 @@
     .pane{
       border: 1px solid var(--stroke);
       border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
+      background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.62));
       box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
       overflow:hidden;
       min-height: 620px;
       display:flex;
@@ -135,67 +159,83 @@
     }
     .paneHdr{
       padding: 10px 12px;
-      border-bottom:1px solid rgba(255,255,255,.10);
+      border-bottom:1px solid var(--stroke);
       display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
-      background: rgba(0,0,0,.14);
+      background: rgba(255,255,255,.60);
     }
     .paneHdr .t{ margin:0; font-size:11px; letter-spacing:.18em; text-transform: uppercase; font-weight: 950; }
     .paneHdr .s{ font-size:10.5px; color:var(--muted); letter-spacing:.10em; text-transform: uppercase; }
 
     .sideInner{ padding: 12px; display:flex; flex-direction:column; gap:10px; min-height:0; }
     .sideCard{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.60);
       border-radius: 14px;
       padding: 10px;
+      box-shadow: 0 10px 26px rgba(2,6,23,.08);
     }
+
     .field label{
       display:block; font-size: 10.5px; color: var(--muted);
       text-transform: uppercase; letter-spacing:.12em; margin:0 0 6px 2px;
     }
     input, select{
       width:100%; padding: 10px 10px; border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.25); color: rgba(255,255,255,.92);
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.85);
+      color: rgba(15,23,42,.92);
       outline:none; font-size: 13px;
     }
-    input:focus, select:focus{ border-color: rgba(124,58,237,.55); box-shadow: 0 0 0 3px rgba(124,58,237,.16); }
+    input:focus, select:focus{
+      border-color: rgba(124,58,237,.45);
+      box-shadow: 0 0 0 3px rgba(124,58,237,.12);
+    }
+
     .btnRow{ display:flex; gap:8px; margin-top:8px; }
     .btn{
       flex:1; padding: 10px 10px; border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: linear-gradient(135deg, rgba(124,58,237,.95), rgba(6,182,212,.65));
-      color:#fff; font-weight: 950; letter-spacing:.10em; text-transform: uppercase;
+      border: 1px solid rgba(124,58,237,.25);
+      background: linear-gradient(135deg, rgba(124,58,237,.20), rgba(6,182,212,.14));
+      color: rgba(15,23,42,.92);
+      font-weight: 950; letter-spacing:.10em; text-transform: uppercase;
       cursor:pointer; font-size: 11px;
+      box-shadow: 0 10px 26px rgba(2,6,23,.08);
     }
-    .btn.secondary{ background: rgba(255,255,255,.06); color: rgba(255,255,255,.85); }
+    .btn.secondary{
+      border-color: var(--stroke);
+      background: rgba(255,255,255,.70);
+      color: rgba(15,23,42,.82);
+    }
+
     .pills{ display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
     .pill{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.05);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.72);
       border-radius: 999px;
       padding: 6px 9px;
       font-size: 10.5px;
       letter-spacing:.10em;
       text-transform: uppercase;
-      color: rgba(255,255,255,.78);
+      color: rgba(15,23,42,.72);
       display:inline-flex; align-items:center; gap:8px;
+      box-shadow: 0 8px 20px rgba(2,6,23,.06);
     }
-    .pill b{ color:#fff; letter-spacing:.06em; }
+    .pill b{ color: rgba(15,23,42,.95); letter-spacing:.06em; }
 
     .otherWrap{ flex:1; min-height:0; display:flex; flex-direction:column; gap:10px; }
     .otherHdr{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.16);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.62);
       border-radius: 14px;
       padding: 10px;
       display:flex; align-items:center; justify-content:space-between; gap:10px;
+      box-shadow: 0 10px 24px rgba(2,6,23,.06);
     }
     .otherHdr .h{ font-size: 11px; font-weight: 950; letter-spacing:.14em; text-transform: uppercase; }
     .otherHdr .xBtn{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.9);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.78);
+      color: rgba(15,23,42,.90);
       border-radius: 12px;
       padding: 7px 10px;
       font-size: 10px;
@@ -212,11 +252,11 @@
       display:flex; flex-direction:column; gap:10px;
     }
     .otherHint{
-      border:1px dashed rgba(255,255,255,.16);
-      background: rgba(255,255,255,.04);
+      border:1px dashed rgba(15,23,42,.18);
+      background: rgba(255,255,255,.66);
       border-radius: 14px;
       padding: 10px;
-      color: rgba(255,255,255,.70);
+      color: rgba(15,23,42,.70);
       font-size: 11px;
       letter-spacing:.02em;
       line-height: 1.35;
@@ -226,14 +266,14 @@
     .districtBar{
       display:flex; flex-wrap:nowrap; gap:8px;
       padding:10px 12px;
-      border-bottom:1px solid rgba(255,255,255,.10);
+      border-bottom:1px solid var(--stroke);
       overflow-x:auto; -webkit-overflow-scrolling: touch;
-      background: rgba(0,0,0,.14);
+      background: rgba(255,255,255,.58);
     }
     .distItem{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      color: rgba(255,255,255,.86);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.74);
+      color: rgba(15,23,42,.86);
       border-radius: 999px;
       padding:8px 10px;
       font-size: 10.5px;
@@ -243,38 +283,56 @@
       user-select:none;
       flex:0 0 auto;
       white-space:nowrap;
+      box-shadow: 0 8px 18px rgba(2,6,23,.06);
     }
-    .distItem.active{ border-color: rgba(124,58,237,.70); box-shadow: 0 0 0 3px rgba(124,58,237,.16); background: rgba(124,58,237,.12); }
+    .distItem.active{
+      border-color: rgba(124,58,237,.35);
+      box-shadow: 0 0 0 3px rgba(124,58,237,.10), 0 10px 22px rgba(2,6,23,.06);
+      background: rgba(124,58,237,.10);
+    }
 
     .centreHero{
       margin: 12px;
-      border:1px solid rgba(255,255,255,.12);
+      border:1px solid var(--stroke);
       border-radius: 18px;
       overflow:hidden;
       position:relative;
       height: 250px;
-      background: rgba(0,0,0,.22);
-      box-shadow: 0 24px 90px rgba(0,0,0,.55);
+      background: rgba(255,255,255,.60);
+      box-shadow: var(--shadow);
     }
-    .centreHero img{ width:100%; height:100%; object-fit:cover; display:block; filter:saturate(1.05) contrast(1.05); transition: opacity .5s ease; }
-    .centreHero:before{ content:""; position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,.62), rgba(0,0,0,.25), rgba(0,0,0,.62)); z-index:2; }
+    .centreHero img{ width:100%; height:100%; object-fit:cover; display:block; filter:saturate(1.02) contrast(1.02); transition: opacity .5s ease; }
+    .centreHero:before{
+      content:""; position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(255,255,255,.80), rgba(255,255,255,.30), rgba(255,255,255,.78));
+      z-index:2;
+    }
     .centreHeroContent{
       position:absolute; inset:0; z-index:3;
       display:flex; flex-direction:column; justify-content:center; align-items:center;
       text-align:center; padding: 14px; gap:10px;
     }
-    .centreHeroContent .h{ font-size: 20px; font-weight: 950; letter-spacing:.14em; text-transform: uppercase; color:#fff; text-shadow: 0 18px 50px rgba(0,0,0,.55); }
-    .centreHeroContent .p{ max-width: 520px; font-size: 12px; color: rgba(255,255,255,.88); letter-spacing:.08em; text-transform: uppercase; line-height: 1.5; text-shadow: 0 18px 50px rgba(0,0,0,.55); }
+    .centreHeroContent .h{
+      font-size: 20px; font-weight: 950; letter-spacing:.14em; text-transform: uppercase;
+      color: rgba(15,23,42,.95);
+      text-shadow: 0 12px 36px rgba(2,6,23,.12);
+    }
+    .centreHeroContent .p{
+      max-width: 520px; font-size: 12px;
+      color: rgba(15,23,42,.74);
+      letter-spacing:.08em; text-transform: uppercase; line-height: 1.5;
+      text-shadow: 0 12px 36px rgba(2,6,23,.10);
+    }
     .centreHeroContent .tag{
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.72);
       border-radius: 999px;
       padding: 8px 10px;
       font-size: 10.5px;
       letter-spacing:.12em;
       text-transform: uppercase;
-      color: rgba(255,255,255,.92);
-      backdrop-filter: blur(12px);
+      color: rgba(15,23,42,.92);
+      box-shadow: 0 10px 24px rgba(2,6,23,.06);
     }
 
     .pkgList{
@@ -285,15 +343,16 @@
       flex-direction:column;
       gap:10px;
       min-height:0;
-      background: rgba(0,0,0,.12);
+      background: rgba(255,255,255,.40);
       flex:1;
     }
 
     .pkgGroupHdr{
-      border:1px solid rgba(255,255,255,.12);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.72);
       border-radius: 14px;
       padding: 10px;
+      box-shadow: 0 10px 24px rgba(2,6,23,.06);
     }
     .pkgGroupHdr .h1{
       font-size: 11px;
@@ -305,31 +364,43 @@
     .pkgGroupHdr .h1:before{
       content:"";
       width:10px; height:10px; border-radius: 999px;
-      background: rgba(6,182,212,.9);
-      box-shadow: 0 0 0 4px rgba(6,182,212,.14);
+      background: rgba(6,182,212,.75);
+      box-shadow: 0 0 0 4px rgba(6,182,212,.10);
       display:inline-block;
     }
-    .pkgGroupHdr .h2{ margin-top:6px; font-size: 10.5px; color: rgba(255,255,255,.75); letter-spacing:.08em; text-transform: uppercase; line-height: 1.35; }
+    .pkgGroupHdr .h2{
+      margin-top:6px; font-size: 10.5px; color: rgba(15,23,42,.66);
+      letter-spacing:.08em; text-transform: uppercase; line-height: 1.35;
+    }
 
     .pkgW{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.72);
       border-radius: 16px;
       overflow:hidden;
       cursor:pointer;
       transition: transform .12s ease, border-color .12s ease, background .12s ease;
+      box-shadow: 0 12px 30px rgba(2,6,23,.08);
     }
-    .pkgW:hover{ transform: translateY(-1px); border-color: rgba(124,58,237,.45); background: rgba(0,0,0,.28); }
-    .pkgW.active{ border-color: rgba(124,58,237,.75); box-shadow: 0 0 0 3px rgba(124,58,237,.18); }
+    .pkgW:hover{
+      transform: translateY(-1px);
+      border-color: rgba(124,58,237,.30);
+      background: rgba(255,255,255,.82);
+    }
+    .pkgW.active{
+      border-color: rgba(124,58,237,.38);
+      box-shadow: 0 0 0 3px rgba(124,58,237,.10), 0 14px 34px rgba(2,6,23,.10);
+    }
 
     .pkgWTop{ display:flex; gap:10px; padding:10px; align-items:stretch; }
     .pkgThumb{
       width:86px; height:86px;
       border-radius: 14px; overflow:hidden;
-      border:1px solid rgba(255,255,255,.12);
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.12), rgba(124,58,237,.18));
+      border:1px solid var(--stroke);
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.95), rgba(124,58,237,.10));
       flex: 0 0 auto;
       display:grid; place-items:center;
+      color: rgba(15,23,42,.92);
     }
     .pkgThumb img{ width:100%; height:100%; object-fit:cover; display:block; }
     .pkgThumb .ini{ font-weight:950; letter-spacing:.08em; }
@@ -341,54 +412,55 @@
       letter-spacing:.10em; text-transform: uppercase;
       white-space: nowrap; overflow:hidden; text-overflow: ellipsis;
       flex:1;
+      color: rgba(15,23,42,.95);
     }
     .pkgBadge{
       flex:0 0 auto;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.78);
       border-radius: 999px;
       padding: 6px 9px;
       font-size: 10px;
       letter-spacing:.12em;
       text-transform: uppercase;
-      color: rgba(255,255,255,.86);
+      color: rgba(15,23,42,.80);
       white-space: nowrap;
     }
-    .pkgBadge.purple{ border-color: rgba(124,58,237,.45); background: rgba(124,58,237,.14); color:#fff; }
-    .pkgBadge.green{ border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.14); color:#fff; }
+    .pkgBadge.purple{ border-color: rgba(124,58,237,.28); background: rgba(124,58,237,.10); }
+    .pkgBadge.green{ border-color: rgba(34,197,94,.22); background: rgba(34,197,94,.10); }
 
     .pkgWMeta{ display:flex; gap:8px; flex-wrap:wrap; }
     .pkgChip{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.78);
       border-radius: 999px;
       padding: 6px 9px;
       font-size: 10px;
       letter-spacing:.10em;
       text-transform: uppercase;
-      color: rgba(255,255,255,.78);
+      color: rgba(15,23,42,.70);
       display:inline-flex; gap:6px; align-items:center;
     }
-    .pkgChip b{ color:#fff; letter-spacing:.06em; }
+    .pkgChip b{ color: rgba(15,23,42,.95); letter-spacing:.06em; }
     .pkgChip .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
 
     .pkgWBottom{
       display:flex; align-items:center; justify-content:space-between;
       gap:10px; padding: 9px 10px;
-      border-top:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.14);
+      border-top:1px solid var(--stroke);
+      background: rgba(255,255,255,.62);
     }
     .pkgHint{
-      font-size: 10.5px; color: rgba(255,255,255,.68);
+      font-size: 10.5px; color: rgba(15,23,42,.62);
       letter-spacing:.04em;
       white-space: nowrap; overflow:hidden; text-overflow: ellipsis;
       flex:1; min-width:0;
     }
     .pkgCTA{
       flex:0 0 auto;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color:#fff;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.78);
+      color: rgba(15,23,42,.92);
       border-radius: 12px;
       padding: 7px 10px;
       font-size: 10px;
@@ -396,31 +468,44 @@
       text-transform: uppercase;
       font-weight: 950;
       white-space: nowrap;
+      box-shadow: 0 10px 22px rgba(2,6,23,.06);
     }
 
     .pkgDetails{
       display:none;
-      border-top:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.10);
+      border-top:1px solid var(--stroke);
+      background: rgba(255,255,255,.55);
       padding: 12px;
     }
     .pkgW.active .pkgDetails{ display:block; }
 
     .detailsGrid{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
-    .detailsCard{ border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.22); border-radius: 14px; padding: 10px; }
-    .bigTitle{ margin:0; font-size: 12px; letter-spacing:.18em; text-transform: uppercase; color:#fff; }
+    .detailsCard{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.72);
+      border-radius: 14px;
+      padding: 10px;
+      box-shadow: 0 12px 28px rgba(2,6,23,.06);
+    }
+    .bigTitle{ margin:0; font-size: 12px; letter-spacing:.18em; text-transform: uppercase; color: rgba(15,23,42,.95); }
     .muted{ color: var(--muted); font-size: 10.8px; letter-spacing:.08em; text-transform: uppercase; line-height:1.35; }
-    .mini{ border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); border-radius: 14px; padding: 9px; }
-    .mini .k{ font-size: 10px; letter-spacing:.16em; text-transform: uppercase; color: rgba(255,255,255,.70); }
-    .mini .v{ margin-top:5px; font-size: 13px; font-weight: 950; letter-spacing:.06em; color:#fff; }
-    .mini .v small{ font-size: 10.5px; color: rgba(255,255,255,.72); font-weight: 800; }
+    .mini{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.78);
+      border-radius: 14px;
+      padding: 9px;
+      box-shadow: 0 10px 24px rgba(2,6,23,.05);
+    }
+    .mini .k{ font-size: 10px; letter-spacing:.16em; text-transform: uppercase; color: rgba(15,23,42,.62); }
+    .mini .v{ margin-top:5px; font-size: 13px; font-weight: 950; letter-spacing:.06em; color: rgba(15,23,42,.95); }
+    .mini .v small{ font-size: 10.5px; color: rgba(15,23,42,.64); font-weight: 800; }
 
     .enqRow{ margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; }
     .enqBtn{
       flex:1;
-      border:1px solid rgba(34,197,94,.35);
-      background: rgba(34,197,94,.18);
-      color:#fff;
+      border:1px solid rgba(34,197,94,.25);
+      background: rgba(34,197,94,.12);
+      color: rgba(15,23,42,.92);
       border-radius: 14px;
       padding: 10px 10px;
       text-decoration:none;
@@ -430,49 +515,73 @@
       font-size: 11px;
       display:flex; align-items:center; justify-content:center; gap:10px;
       user-select:none;
+      box-shadow: 0 12px 28px rgba(2,6,23,.06);
     }
     .enqBtn.disabled{
-      opacity:.45;
+      opacity:.55;
       pointer-events:none;
-      border-color: rgba(255,255,255,.18);
-      background: rgba(255,255,255,.06);
+      border-color: rgba(15,23,42,.14);
+      background: rgba(255,255,255,.60);
     }
 
     .daysList{ display:flex; flex-direction:column; gap:9px; margin-top:10px; }
-    .dayCard{ border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.22); border-radius: 14px; padding: 10px; }
+    .dayCard{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.74);
+      border-radius: 14px;
+      padding: 10px;
+      box-shadow: 0 10px 24px rgba(2,6,23,.06);
+    }
     .dayTop{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom: 7px; }
-    .dayTop .d{ font-size: 11px; font-weight: 950; letter-spacing:.18em; text-transform: uppercase; }
+    .dayTop .d{ font-size: 11px; font-weight: 950; letter-spacing:.18em; text-transform: uppercase; color: rgba(15,23,42,.95); }
 
     .placeLine{
       display:flex; align-items:center; gap:9px;
-      padding: 7px 9px; border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      border-radius: 12px; margin-top: 7px;
+      padding: 7px 9px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.82);
+      border-radius: 12px;
+      margin-top: 7px;
       cursor:pointer;
+      box-shadow: 0 10px 22px rgba(2,6,23,.05);
     }
     .thumb{
       width:36px; height:36px; border-radius: 11px;
-      border:1px solid rgba(255,255,255,.10);
-      overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.14), rgba(6,182,212,.18));
-      flex:0 0 auto; display:grid; place-items:center; font-weight:950; color: rgba(255,255,255,.9); font-size: 11px;
+      border:1px solid var(--stroke);
+      overflow:hidden;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.95), rgba(6,182,212,.10));
+      flex:0 0 auto; display:grid; place-items:center;
+      font-weight:950; color: rgba(15,23,42,.88); font-size: 11px;
     }
-    .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
     .pinfo{ min-width:0; flex:1; }
-    .pname{ font-size: 11px; font-weight: 950; letter-spacing:.10em; text-transform: uppercase; white-space:nowrap; overflow:hidden; text-overflow: ellipsis; }
-    .pmeta{ margin-top:3px; font-size: 10px; letter-spacing:.12em; text-transform: uppercase; color: rgba(255,255,255,.68); white-space:nowrap; overflow:hidden; text-overflow: ellipsis; }
+    .pname{
+      font-size: 11px; font-weight: 950; letter-spacing:.10em; text-transform: uppercase;
+      white-space:nowrap; overflow:hidden; text-overflow: ellipsis;
+      color: rgba(15,23,42,.95);
+    }
+    .pmeta{
+      margin-top:3px; font-size: 10px; letter-spacing:.12em; text-transform: uppercase;
+      color: rgba(15,23,42,.62);
+      white-space:nowrap; overflow:hidden; text-overflow: ellipsis;
+    }
 
     .mapPane{ position: sticky; top: 12px; height: calc(100vh - 24px); min-height: 620px; max-height: 920px; }
-    #map{ width:100%; flex:1; min-height: 520px; background: rgba(255,255,255,.04); }
+    #map{
+      width:100%;
+      flex:1;
+      min-height: 520px;
+      background: rgba(255,255,255,.70);
+    }
     .mapTools{
       padding: 10px 12px;
-      border-top:1px solid rgba(255,255,255,.10);
+      border-top:1px solid var(--stroke);
       display:flex; gap:8px; flex-wrap:wrap;
-      background: rgba(0,0,0,.14);
+      background: rgba(255,255,255,.60);
     }
     .toolBtn{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.05);
-      color: rgba(255,255,255,.88);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.78);
+      color: rgba(15,23,42,.86);
       border-radius: 12px;
       padding: 9px 10px;
       font-size: 10.5px;
@@ -481,43 +590,49 @@
       cursor:pointer;
       display:inline-flex; align-items:center; gap:10px;
       user-select:none; white-space: nowrap; text-decoration:none;
+      box-shadow: 0 10px 22px rgba(2,6,23,.05);
     }
 
     .botToast{
       position:fixed; left: 14px; bottom: 14px; z-index: 9999;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(10,14,24,.88);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.84);
       border-radius: 14px;
       padding: 10px 12px;
-      color: rgba(255,255,255,.86);
+      color: rgba(15,23,42,.86);
       font-size: 11px;
-      letter-spacing:.08em;
-      box-shadow: 0 30px 90px rgba(0,0,0,.65);
+      letter-spacing:.06em;
+      box-shadow: 0 22px 70px rgba(2,6,23,.12);
       display:none;
-      max-width: 520px;
+      max-width: 560px;
     }
     .botToast.show{ display:block; }
 
     .waFloat{
       position:fixed; right: 14px; bottom: 14px; z-index: 10000;
       display:flex; align-items:center; gap:10px; padding: 12px 14px;
-      border-radius: 999px; border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.55); backdrop-filter: blur(14px);
-      box-shadow: 0 28px 90px rgba(0,0,0,.65);
-      color:#fff; text-decoration:none; user-select:none; -webkit-tap-highlight-color: transparent;
+      border-radius: 999px; border:1px solid var(--stroke);
+      background: rgba(255,255,255,.86);
+      box-shadow: 0 22px 70px rgba(2,6,23,.12);
+      color: rgba(15,23,42,.92);
+      text-decoration:none;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
     }
     .waIcon{
       width:40px; height:40px; border-radius: 999px; display:grid; place-items:center;
-      background: rgba(34,197,94,.22); border:1px solid rgba(34,197,94,.35); flex:0 0 auto;
+      background: rgba(34,197,94,.14);
+      border:1px solid rgba(34,197,94,.22);
+      flex:0 0 auto;
     }
     .waText{ display:flex; flex-direction:column; line-height:1.1; min-width:0; }
-    .waText .t1{ font-size: 12px; font-weight: 950; letter-spacing:.10em; text-transform: uppercase; white-space:nowrap; }
-    .waText .t2{ margin-top:4px; font-size: 11px; color: rgba(255,255,255,.80); letter-spacing:.04em; white-space:nowrap; }
+    .waText .t1{ font-size: 12px; font-weight: 950; letter-spacing:.10em; text-transform: uppercase; white-space:nowrap; color: rgba(15,23,42,.92); }
+    .waText .t2{ margin-top:4px; font-size: 11px; color: rgba(15,23,42,.68); letter-spacing:.04em; white-space:nowrap; }
     .waClose{
       width:34px; height:34px; border-radius: 999px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.9);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.84);
+      color: rgba(15,23,42,.9);
       display:grid; place-items:center;
       cursor:pointer; flex:0 0 auto; user-select:none;
     }
@@ -546,9 +661,9 @@
   >
     <div class="waIcon" aria-hidden="true">
       <svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M16 3C9.1 3 3.5 8.3 3.5 14.9c0 2.5.8 4.8 2.2 6.7L4 29l7.6-1.9c1.8 1 3.9 1.6 6.4 1.6 6.9 0 12.5-5.3 12.5-11.9S22.9 3 16 3z" fill="rgba(255,255,255,.18)"/>
-        <path d="M16.1 6.1c-5.1 0-9.2 3.9-9.2 8.8 0 1.9.6 3.6 1.7 5.1l-1.1 4 4.2-1.1c1.4.8 3.1 1.3 4.9 1.3 5.1 0 9.2-3.9 9.2-8.8s-4.1-8.8-9.2-8.8z" fill="rgba(255,255,255,.22)"/>
-        <path d="M23 19.1c-.3.8-1.6 1.5-2.2 1.6-.6.1-1.3.2-2.2-.1-.5-.2-1.2-.4-2-.8-3.5-1.9-5.7-5-5.9-5.3-.2-.3-1.4-1.8-1.4-3.5 0-1.7.9-2.5 1.2-2.9.3-.3.7-.4.9-.4h.7c.2 0 .5-.1.7.5.2.6.9 2.1 1 2.3.1.2.1.5 0 .7-.1.2-.2.4-.4.6-.2.2-.3.3-.5.5-.2.2-.4.4-.2.8.2.4.8 1.3 1.7 2.1 1.2 1.1 2.2 1.4 2.6 1.6.3.2.6.1.8-.1.2-.2 1-1.1 1.2-1.5.2-.4.5-.3.8-.2.3.1 2 .9 2.3 1 .3.1.5.2.6.4.1.1.1.8-.2 1.6z" fill="white" opacity=".92"/>
+        <path d="M16 3C9.1 3 3.5 8.3 3.5 14.9c0 2.5.8 4.8 2.2 6.7L4 29l7.6-1.9c1.8 1 3.9 1.6 6.4 1.6 6.9 0 12.5-5.3 12.5-11.9S22.9 3 16 3z" fill="rgba(34,197,94,.15)"/>
+        <path d="M16.1 6.1c-5.1 0-9.2 3.9-9.2 8.8 0 1.9.6 3.6 1.7 5.1l-1.1 4 4.2-1.1c1.4.8 3.1 1.3 4.9 1.3 5.1 0 9.2-3.9 9.2-8.8s-4.1-8.8-9.2-8.8z" fill="rgba(34,197,94,.18)"/>
+        <path d="M23 19.1c-.3.8-1.6 1.5-2.2 1.6-.6.1-1.3.2-2.2-.1-.5-.2-1.2-.4-2-.8-3.5-1.9-5.7-5-5.9-5.3-.2-.3-1.4-1.8-1.4-3.5 0-1.7.9-2.5 1.2-2.9.3-.3.7-.4.9-.4h.7c.2 0 .5-.1.7.5.2.6.9 2.1 1 2.3.1.2.1.5 0 .7-.1.2-.2.4-.4.6-.2.2-.3.3-.5.5-.2.2-.4.4-.2.8.2.4.8 1.3 1.7 2.1 1.2 1.1 2.2 1.4 2.6 1.6.3.2.6.1.8-.1.2-.2 1-1.1 1.2-1.5.2-.4.5-.3.8-.2.3.1 2 .9 2.3 1 .3.1.5.2.6.4.1.1.1.8-.2 1.6z" fill="rgba(15,23,42,.92)"/>
       </svg>
     </div>
     <div class="waText">
@@ -748,10 +863,9 @@
     measurementId: "G-MGTDBCG896"
   };
 
-  /* ===== Nodes ===== */
   const NODE_TEMPLATES  = "templates";
   const NODE_PLACES     = "places_in_packages";
-  const NODE_COSTS      = "package_cost_breakdown"; // final per-person prices
+  const NODE_COSTS      = "package_cost_breakdown";
 
   const $ = (id)=>document.getElementById(id);
 
@@ -762,7 +876,6 @@
       .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
       .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
   }
-  function normCaps(x){ return String(x||"").trim().toUpperCase().replace(/\s+/g," "); }
   function initials(name){
     const parts = String(name||"").trim().split(/\s+/).slice(0,2);
     const ini = parts.map(x=>x[0]).join("").toUpperCase();
@@ -784,7 +897,7 @@
     if(!el) return;
     el.innerHTML = msg || "👋 Welcome!";
     el.classList.add("show");
-    setTimeout(()=> el.classList.remove("show"), 4800);
+    setTimeout(()=> el.classList.remove("show"), 5200);
   }
 
   /* Centre hero slideshow */
@@ -803,13 +916,55 @@
     }, 4200);
   }
 
-  /* Map + Utils */
+  /* Places helpers */
   function placeIdAny(p, key){ return String(p?.place_id || p?.id || key || "").trim(); }
   function placeNameAny(p, key){ return String(p?.name || p?.["Location Name"] || p?.title || key || "PLACE").trim(); }
   function latAny(p){ return Number(p?.latitude ?? p?.lat ?? p?.Latitude); }
   function lngAny(p){ return Number(p?.longitude ?? p?.lng ?? p?.Longitude); }
   function districtAny(p){ return String(p?.district || p?.District || "").trim().toUpperCase(); }
 
+  /* ✅ FIX for “Places not loading”
+     Your templates may store place IDs with different casing/spaces OR sometimes store place names.
+     We build a strong index so any of these forms will resolve. */
+  let PLACES = {};                 // canonical by place_id
+  let PLACE_INDEX = new Map();     // lower token -> canonical place_id
+
+  function idxAdd(token, pid){
+    const t = String(token||"").trim().toLowerCase();
+    if(!t) return;
+    if(!PLACE_INDEX.has(t)) PLACE_INDEX.set(t, pid);
+  }
+
+  function buildPlaceIndex(){
+    PLACE_INDEX = new Map();
+    for(const [pid, p] of Object.entries(PLACES||{})){
+      idxAdd(pid, pid);                              // exact id
+      idxAdd(pid.replace(/\s+/g,""), pid);           // id without spaces
+      idxAdd(slugifyName(pid), pid);                 // slug(id)
+      idxAdd(placeIdAny(p, pid), pid);               // place_id field
+      idxAdd(slugifyName(placeIdAny(p, pid)), pid);
+      const nm = placeNameAny(p, pid);
+      idxAdd(nm, pid);                               // name
+      idxAdd(slugifyName(nm), pid);                  // slug(name)
+      idxAdd(nm.replace(/\s+/g,""), pid);            // name without spaces
+    }
+  }
+
+  function resolvePlaceId(anyIdOrName){
+    const raw = String(anyIdOrName||"").trim();
+    if(!raw) return "";
+    const k1 = raw.toLowerCase();
+    const k2 = raw.replace(/\s+/g,"").toLowerCase();
+    const k3 = slugifyName(raw);
+    return PLACE_INDEX.get(k1) || PLACE_INDEX.get(k2) || PLACE_INDEX.get(k3) || "";
+  }
+
+  function getPlace(anyIdOrName){
+    const pid = resolvePlaceId(anyIdOrName);
+    return pid ? { pid, p: PLACES[pid] } : { pid:"", p:null };
+  }
+
+  /* Map */
   let map, tile, markersLayer, routeLine;
   let showMode = "all";
   let tilesDark = false;
@@ -821,10 +976,9 @@
     }catch(e){}
   }
   function initMap(){
-    // ✅ Guard: if Leaflet failed somehow, show clear message
     if(!window.L){
       setStatus("Leaflet not loaded (check network)");
-      showBot("❌ Leaflet not loaded. Check console/network.");
+      showBot("❌ Leaflet not loaded.");
       return;
     }
     map = L.map('map', { zoomControl:true }).setView([31.1048, 77.1734], 8);
@@ -835,7 +989,7 @@
     window.addEventListener("resize", invalidateMapSoon);
   }
   function clearMap(){
-    if(markersLayer) markersLayer.clearLayers();
+    markersLayer && markersLayer.clearLayers();
     if(routeLine && map){ map.removeLayer(routeLine); routeLine = null; }
     $("kmBadge").textContent = "—";
     invalidateMapSoon();
@@ -846,8 +1000,6 @@
   let db, analytics, auth;
   let TEMPLATES = {};
   let ACTIVE_TEMPLATES = [];
-  let PLACES = {};
-  let NAME_TO_ID = new Map();
   let STARTS = [];
 
   let COSTS = {};
@@ -863,16 +1015,6 @@
     const hero = $("centreHero");
     if(!hero) return;
     hero.style.display = on ? "block" : "none";
-  }
-
-  function buildNameIndex(){
-    NAME_TO_ID = new Map();
-    for(const [key, p] of Object.entries(PLACES||{})){
-      const id = placeIdAny(p, key);
-      const nm = placeNameAny(p, id);
-      if(id) NAME_TO_ID.set(String(id).toLowerCase(), id);
-      if(nm) NAME_TO_ID.set(String(nm).toLowerCase(), id);
-    }
   }
 
   function buildStartList(templates){
@@ -906,16 +1048,6 @@
     return (isFinite(v) && v > 0) ? v : 2;
   }
 
-  function getPlaceIdByNameAny(name){
-    const nm = String(name || "").trim();
-    if(!nm) return "";
-    const direct = NAME_TO_ID.get(nm.toLowerCase());
-    if(direct && PLACES[direct]) return direct;
-    const slug = slugifyName(nm);
-    if(slug && PLACES[slug]) return slug;
-    return "";
-  }
-
   function stopsFromTemplate(tpl){
     const days = Number(tpl.days || 1);
     const out = [];
@@ -926,22 +1058,28 @@
       const raw = String(tpl[k] || "").trim();
       if(!raw) continue;
       raw.split(",").map(x=>x.trim()).filter(Boolean).forEach(pid=>{
-        if(seen.has(pid)) return;
-        seen.add(pid);
-        out.push(pid);
+        const resolved = resolvePlaceId(pid) || pid; // ✅ resolve to canonical if possible
+        if(seen.has(resolved)) return;
+        seen.add(resolved);
+        out.push(resolved);
       });
     }
     if(!out.length){
       const raw = String(tpl.major_place_ids || tpl.place_ids || "").trim();
-      raw.split(",").map(x=>x.trim()).filter(Boolean).forEach(pid=>out.push(pid));
+      raw.split(",").map(x=>x.trim()).filter(Boolean).forEach(pid=>{
+        const resolved = resolvePlaceId(pid) || pid;
+        out.push(resolved);
+      });
     }
     return out;
   }
 
   function routeIdsFromTemplateIncludingStart(tpl){
     const baseStops = stopsFromTemplate(tpl);
+
+    // ✅ Start can be saved as city name; resolve it too
     const startName = String(tpl?.start_point || tpl?.start || "").trim();
-    const startPid = getPlaceIdByNameAny(startName);
+    const startPid = resolvePlaceId(startName);
     if(startPid){
       const filtered = baseStops.filter(x => x !== startPid);
       return [startPid, ...filtered];
@@ -965,24 +1103,24 @@
 
   function endDistrictFromTemplate(tpl){
     const endName = getEndNameFromRoutePath(tpl);
-    const pid = getPlaceIdByNameAny(endName);
-    if(pid && PLACES[pid]){
-      const d = districtAny(PLACES[pid]);
+    const { pid, p } = getPlace(endName);
+    if(pid && p){
+      const d = districtAny(p);
       if(d) return d;
     }
     const td = String(tpl.district || tpl.end_district || "").trim().toUpperCase();
     if(td) return td;
-    return normCaps(endName || "UNKNOWN");
+    return String(endName || "UNKNOWN").trim().toUpperCase();
   }
 
   function endKeyFromRoutePath(tpl){
     const endName = getEndNameFromRoutePath(tpl);
-    const pid = getPlaceIdByNameAny(endName);
-    if(pid && PLACES[pid]){
-      const d = districtAny(PLACES[pid]);
-      return d || normCaps(endName);
+    const { pid, p } = getPlace(endName);
+    if(pid && p){
+      const d = districtAny(p);
+      return d || String(endName).trim().toUpperCase();
     }
-    return normCaps(endName);
+    return String(endName).trim().toUpperCase();
   }
 
   function isLocalComputed(tpl){
@@ -1028,7 +1166,7 @@
     return isFinite(km) && km>0 ? km : 0;
   }
 
-  /* ✅ FINAL PRICE FETCH (PER PERSON) + MULTIPLY PAX */
+  /* Final price (per person) */
   function getPerPersonPrice(tpl){
     const tier = String($("visitType")?.value || "budget").toLowerCase();
     const pid = String(tpl.package_id || tpl.key || "").trim();
@@ -1152,9 +1290,9 @@
       <div class="detailsCard" style="margin-top:10px;">
         <div class="muted" style="margin-bottom:8px;">Package includes / excludes</div>
         <div class="muted" style="text-transform:none;letter-spacing:.02em;">
-          <b style="color:#fff;letter-spacing:.12em;">INCLUDES:</b> ${escapeHtml(inc || "—")}<br><br>
-          <b style="color:#fff;letter-spacing:.12em;">EXCLUDES:</b> ${escapeHtml(exc || "—")}<br><br>
-          <b style="color:#fff;letter-spacing:.12em;">NOTES:</b> ${escapeHtml(note || "—")}
+          <b style="color:rgba(15,23,42,.95);letter-spacing:.12em;">INCLUDES:</b> ${escapeHtml(inc || "—")}<br><br>
+          <b style="color:rgba(15,23,42,.95);letter-spacing:.12em;">EXCLUDES:</b> ${escapeHtml(exc || "—")}<br><br>
+          <b style="color:rgba(15,23,42,.95);letter-spacing:.12em;">NOTES:</b> ${escapeHtml(note || "—")}
         </div>
       </div>
 
@@ -1183,10 +1321,10 @@
       `;
       const cont = dayCard.querySelector(".dayPlaces");
 
-      block.ids.forEach(pid=>{
-        const p = PLACES[pid] || {};
-        const name = placeNameAny(p, pid);
-        const dist = districtAny(p) || "—";
+      block.ids.forEach(rawPid=>{
+        const { pid, p } = getPlace(rawPid); // ✅ resolve id/name variations
+        const name = p ? placeNameAny(p, pid) : String(rawPid || "Unknown").trim();
+        const dist = p ? (districtAny(p) || "—") : "NOT FOUND IN PLACES DB";
 
         const line = document.createElement("div");
         line.className = "placeLine";
@@ -1197,8 +1335,10 @@
             <div class="pmeta">${escapeHtml(dist)}</div>
           </div>
         `;
+
         line.onclick = (e)=>{
           e.stopPropagation();
+          if(!p) return showBot("⚠️ This place id/name is not found in places_in_packages. Check spelling / place_id.");
           const lat = latAny(p), lng = lngAny(p);
           if(isFinite(lat) && isFinite(lng) && map){
             map.setView([lat,lng], Math.max(map.getZoom(), 12), { animate:true });
@@ -1328,7 +1468,6 @@
     const other = $("otherPkgList");
 
     const { startUpper, daysF, shownInter, locals } = getFilteredLists();
-
     const totalCount = shownInter.length + locals.length;
     $("pkgCount").textContent = `${totalCount} Results`;
 
@@ -1427,11 +1566,6 @@
     highlightActiveCard();
   }
 
-  function renderDistrictChipsReset(){
-    $("districtBar").innerHTML = "";
-    $("pkgCount").textContent = "—";
-  }
-
   async function drawRoadRouteFromPlaces(placeIds){
     if(!markersLayer || !map) return { ok:false, km:0 };
     markersLayer.clearLayers();
@@ -1439,8 +1573,10 @@
 
     const pts = [];
     const validIds = [];
-    for(const pid of placeIds){
-      const p = PLACES[pid] || {};
+
+    for(const raw of placeIds){
+      const { pid, p } = getPlace(raw);
+      if(!pid || !p) continue;
       const lat = latAny(p);
       const lng = lngAny(p);
       if(isFinite(lat) && isFinite(lng)){
@@ -1448,6 +1584,7 @@
         validIds.push(pid);
       }
     }
+
     if(pts.length < 2) return { ok:false, km:0 };
 
     const maxPts = 25;
@@ -1478,7 +1615,7 @@
         : validIds;
 
       for(const pid of markIds){
-        const p = PLACES[pid] || {};
+        const p = PLACES[pid];
         const lat = latAny(p);
         const lng = lngAny(p);
         if(!isFinite(lat)||!isFinite(lng)) continue;
@@ -1537,7 +1674,14 @@
 
     const card = document.querySelector(`#pkgList .pkgW[data-key="${CSS.escape(key)}"]`);
     if(card) card.scrollIntoView({ behavior:"smooth", block:"start" });
-    showBot("✅ Price loaded from Firebase (per person) × Pax.");
+
+    // ✅ show diagnostics for places resolving
+    const unresolved = routeIds.filter(x => !resolvePlaceId(x));
+    if(unresolved.length){
+      showBot(`⚠️ Some place ids/names not found in <b>places_in_packages</b>:<br>${escapeHtml(unresolved.slice(0,6).join(", "))}${unresolved.length>6?"…":""}`);
+    }else{
+      showBot("✅ Places loaded + route drawn.");
+    }
   }
 
   function applyFilters(){
@@ -1553,7 +1697,6 @@
 
     if(!start){
       showBot("⚠️ Start not found. Please type a Start exactly as saved in templates.");
-      renderDistrictChipsReset();
       $("pkgList").innerHTML = `<div class="pill"><b>Start not found</b></div>`;
       $("otherPkgList").innerHTML = `<div class="otherHint">Select a valid Start and Generate.</div>`;
       $("pkgCount").textContent = "0 Results";
@@ -1590,7 +1733,7 @@
     }
 
     renderPanels();
-    showBot("✅ Packages loaded. Open any package → final price shows inside.");
+    showBot(`✅ Loaded ${INTER_ALL.length} packages. Places DB: <b>${Object.keys(PLACES).length}</b>`);
   }
 
   /* Firebase Load */
@@ -1598,7 +1741,6 @@
     try{
       setStatus("Loading live from Firebase…");
 
-      // ✅ If rules deny read, this will throw. We show message clearly.
       const [tplSnap, placesSnap, costsSnap] = await Promise.all([
         db.ref(NODE_TEMPLATES).once("value"),
         db.ref(NODE_PLACES).once("value"),
@@ -1609,13 +1751,17 @@
       const rawPlaces = placesSnap.val() || {};
       COSTS = (costsSnap && typeof costsSnap.val==="function") ? (costsSnap.val() || {}) : {};
 
+      // ✅ canonicalize places into PLACES[place_id]
       PLACES = {};
       for(const [k,v] of Object.entries(rawPlaces)){
         if(v && typeof v === "object"){
           const pid = placeIdAny(v, k) || k;
-          PLACES[pid] = { ...v, place_id: pid };
+          PLACES[String(pid).trim()] = { ...v, place_id: String(pid).trim() };
         }
       }
+
+      // ✅ critical: build lookup index (fixes “places not loading”)
+      buildPlaceIndex();
 
       ACTIVE_TEMPLATES = Object.entries(TEMPLATES)
         .map(([key, obj]) => ({ key, ...(obj||{}) }))
@@ -1624,7 +1770,6 @@
           return st === "active" || st === "enabled" || st === "true";
         });
 
-      buildNameIndex();
       buildStartList(ACTIVE_TEMPLATES);
 
       setStatus(`Loaded LIVE • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places • ${Object.keys(COSTS).length} cost items`);
@@ -1639,15 +1784,11 @@
     }catch(err){
       console.error(err);
       const msg = String(err?.message || err || "Unknown error");
-
-      // Helpful hint if permission denied
-      const hint =
-        msg.toLowerCase().includes("permission_denied") || msg.toLowerCase().includes("permission denied")
-          ? "❌ Permission denied. Fix RTDB Rules or login.\nTry opening:\n/templates.json\n/places_in_packages.json\n/package_cost_breakdown.json"
-          : "❌ Firebase load error. Check node names + internet.";
-
+      const isDenied = msg.toLowerCase().includes("permission");
       setStatus("Firebase load error (rules / node names)");
-      showBot(hint.replace(/\n/g,"<br>"));
+      showBot(isDenied
+        ? "❌ Permission denied. Fix RTDB Rules or login.<br>Try opening nodes: <b>/templates</b>, <b>/places_in_packages</b>"
+        : "❌ Firebase load error. Check node names + internet.");
     }
   }
 
@@ -1679,7 +1820,6 @@
     startCentreHero();
     showBot("👋 Welcome! Select Start and click Generate.");
 
-    // ✅ Guard: firebase scripts must be loaded
     if(!window.firebase){
       setStatus("Firebase not loaded (check network)");
       showBot("❌ Firebase not loaded. Check console/network.");
@@ -1693,10 +1833,7 @@
     }
 
     db = firebase.database();
-
-    // ✅ Analytics can fail in some setups — don’t break page
     try{ analytics = firebase.analytics(); } catch(e){ analytics = null; }
-
     auth = firebase.auth();
 
     auth.onAuthStateChanged((user)=>{
