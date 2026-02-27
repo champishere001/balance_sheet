@@ -83,10 +83,15 @@
 
     /* lighter hero overlay so image stays airy */
     .hero::after{
-      content:""; position:absolute; inset:0;
-      background: linear-gradient(90deg, rgba(255,255,255,.70), rgba(255,255,255,.38), rgba(255,255,255,.62));
-      pointer-events:none;
-    }
+  content:""; position:absolute; inset:0;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,.35),
+    rgba(255,255,255,.15),
+    rgba(255,255,255,.30)
+  );
+  pointer-events:none;
+}
     .heroInner{
       position:absolute; inset:0;
       display:flex; align-items:flex-end; justify-content:space-between;
