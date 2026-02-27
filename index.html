@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 
   <title>Himachal Tour Packages | Himachal Explorer Portal</title>
-  <meta name="description" content="Explore Himachal tour packages with live road route maps, day-wise itineraries, places, and instant WhatsApp enquiry." />
+  <meta name="description" content="Explore Himachal tour packages with live road route maps, day-wise itineraries, places, and instant price estimates." />
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet=-1,max-video-preview=-1" />
   <link rel="canonical" href="https://himachalexplorer.in/" />
   <meta name="theme-color" content="#070A12" />
@@ -14,14 +14,14 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Himachal Explorer Portal – Tour Packages">
-  <meta property="og:description" content="Live route map, day-wise itinerary, and WhatsApp enquiry for Himachal tour packages.">
+  <meta property="og:description" content="Live route map, day-wise itinerary, and price estimate for Himachal tour packages.">
   <meta property="og:url" content="https://himachalexplorer.in/">
   <meta property="og:image" content="https://himachalexplorer.in/og.jpg">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Himachal Explorer Portal – Tour Packages">
-  <meta name="twitter:description" content="Live route map, itinerary and WhatsApp enquiry for Himachal tour packages.">
+  <meta name="twitter:description" content="Live route map, itinerary and price estimate for Himachal tour packages.">
   <meta name="twitter:image" content="https://himachalexplorer.in/og.jpg">
 
   <!-- Structured data -->
@@ -51,8 +51,7 @@
       --muted:rgba(255,255,255,.65); --text:rgba(255,255,255,.92);
       --shadow: 0 18px 70px rgba(0,0,0,.55); --radius: 16px; --acc:#7C3AED;
       --gap: 10px; --shellW: min(92vw, 1500px);
-      --good: rgba(34,197,94,.18);
-      --warn: rgba(245,158,11,.16);
+      --green:#22c55e;
     }
     *{ box-sizing:border-box; }
     html,body{ height:auto; }
@@ -82,7 +81,6 @@
     .shell{ width: var(--shellW); margin: 0 auto; padding: 12px 10px 18px; }
     .app{ width:100%; display:flex; flex-direction:column; gap: var(--gap); }
 
-    /* Top */
     .top{
       display:flex; align-items:center; justify-content:space-between;
       padding: 10px 10px; border: 1px solid var(--stroke);
@@ -98,7 +96,6 @@
       display:grid; place-items:center; overflow:hidden;
       box-shadow: 0 14px 30px rgba(0,0,0,.35);
       flex:0 0 auto;
-      font-weight:950; letter-spacing:.12em;
     }
     .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
     .brand p{ margin:3px 0 0; font-size:11px; color:var(--muted); line-height:1.25; }
@@ -122,83 +119,6 @@
       background: rgba(124,58,237,.14);
       color:#fff; font-weight:900;
     }
-    .chip.good{
-      border-color: rgba(34,197,94,.40);
-      background: rgba(34,197,94,.16);
-      color:#fff; font-weight:900;
-    }
-
-    /* ✅ NEW: Visitor friendly package mode toggle */
-    .modeBar{
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.18);
-      border-radius: var(--radius);
-      padding: 10px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      backdrop-filter: blur(12px);
-    }
-    .modeLeft{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-      min-width: 260px;
-    }
-    .modeTitle{
-      font-weight: 950;
-      letter-spacing:.14em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    .modeHelp{
-      color: var(--muted);
-      font-size: 11px;
-      letter-spacing:.02em;
-      text-transform: none;
-      line-height: 1.3;
-    }
-    .seg{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:flex-end;
-    }
-    .segBtn{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.88);
-      border-radius: 999px;
-      padding: 9px 11px;
-      font-size: 11px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      cursor:pointer;
-      user-select:none;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-    }
-    .segBtn.active{
-      border-color: rgba(124,58,237,.70);
-      background: rgba(124,58,237,.16);
-      box-shadow: 0 0 0 3px rgba(124,58,237,.12);
-      color:#fff;
-      font-weight: 950;
-    }
-    .segBadge{
-      padding:4px 8px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      font-size: 10px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.82);
-    }
 
     .main{ display:grid; grid-template-columns: 0.34fr 0.30fr 0.36fr; gap: var(--gap); align-items:start; }
 
@@ -211,7 +131,7 @@
       display:flex; flex-direction:column; overflow:hidden;
       height: auto; min-height: 540px;
     }
-    .pane.mapPane{ position: sticky; top: 12px; height: calc(100vh - 170px); min-height: 560px; max-height: 860px; }
+    .pane.mapPane{ position: sticky; top: 12px; height: calc(100vh - 120px); min-height: 560px; max-height: 860px; }
 
     .paneHdr{
       padding: 10px 10px 8px;
@@ -325,7 +245,6 @@
       white-space: nowrap;
     }
 
-    /* ✅ Easy-to-understand "Visitor" list: big, simple cards */
     .pkgList{
       padding: 10px;
       overflow-y:auto;
@@ -338,17 +257,47 @@
       flex:1;
     }
 
-    .pkgExplain{
-      border:1px dashed rgba(255,255,255,.18);
-      background: rgba(255,255,255,.03);
+    /* Clear section headers inside list */
+    .pkgSection{
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border-radius: 14px;
       padding: 10px;
-      color: rgba(255,255,255,.82);
-      font-size: 12px;
-      line-height: 1.45;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
     }
-    .pkgExplain b{ color:#fff; }
+    .pkgSection .h{
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      display:flex; align-items:center; gap:10px;
+    }
+    .pkgSection .sub{
+      margin-top:6px;
+      font-size: 10.5px;
+      color: rgba(255,255,255,.75);
+      letter-spacing:.06em;
+      text-transform:none;
+      line-height: 1.35;
+    }
+    .secBadge{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 10px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.86);
+      white-space: nowrap;
+    }
+    .secBadge.inter{ border-color: rgba(124,58,237,.50); background: rgba(124,58,237,.14); color:#fff; }
+    .secBadge.local{ border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.14); color:#fff; }
 
+    /* package card */
     .pkgW{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.22);
@@ -368,12 +317,12 @@
     }
     .pkgWTop{
       display:flex;
-      gap:12px;
-      padding:12px;
+      gap:10px;
+      padding:10px;
       align-items:stretch;
     }
     .pkgThumb{
-      width:92px; height:92px;
+      width:86px; height:86px;
       border-radius: 14px;
       overflow:hidden;
       border:1px solid rgba(255,255,255,.12);
@@ -384,15 +333,15 @@
     .pkgThumb img{ width:100%; height:100%; object-fit:cover; display:block; }
     .pkgThumb .ini{ font-weight:950; letter-spacing:.08em; }
 
-    .pkgWBody{ flex:1; min-width:0; display:flex; flex-direction:column; justify-content:space-between; gap:10px; }
+    .pkgWBody{ flex:1; min-width:0; display:flex; flex-direction:column; justify-content:space-between; gap:8px; }
 
     .pkgWTitle{
-      display:flex; align-items:center; gap:10px;
+      display:flex; align-items:center; gap:8px;
       min-width:0;
       flex-wrap:wrap;
     }
     .pkgWTitle .mainT{
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 950;
       letter-spacing:.10em;
       text-transform: uppercase;
@@ -400,14 +349,14 @@
       overflow:hidden;
       text-overflow: ellipsis;
       flex:1;
-      min-width: 180px;
+      min-width:0;
     }
     .pkgBadge{
       flex:0 0 auto;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
       border-radius: 999px;
-      padding: 6px 10px;
+      padding: 6px 9px;
       font-size: 10px;
       letter-spacing:.12em;
       text-transform: uppercase;
@@ -416,7 +365,6 @@
     }
     .pkgBadge.purple{ border-color: rgba(124,58,237,.45); background: rgba(124,58,237,.14); color:#fff; }
     .pkgBadge.green{ border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.14); color:#fff; }
-    .pkgBadge.orange{ border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.14); color:#fff; }
 
     .pkgWMeta{
       display:flex;
@@ -439,20 +387,40 @@
     .pkgChip b{ color:#fff; letter-spacing:.06em; }
     .pkgChip .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
 
-    /* ✅ visitor CTA row */
+    .pkgStrip{
+      display:flex;
+      gap:7px;
+      align-items:center;
+    }
+    .stripImg{
+      width:30px;
+      height:30px;
+      border-radius: 10px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      flex: 0 0 auto;
+      display:grid;
+      place-items:center;
+      font-size:10px;
+      font-weight:900;
+      color:rgba(255,255,255,.85);
+    }
+    .stripImg img{ width:100%; height:100%; object-fit:cover; display:block; }
+
     .pkgWBottom{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      padding: 10px 12px;
+      padding: 9px 10px;
       border-top:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.14);
     }
     .pkgHint{
-      font-size: 11px;
-      color: rgba(255,255,255,.72);
-      letter-spacing:.02em;
+      font-size: 10.5px;
+      color: rgba(255,255,255,.68);
+      letter-spacing:.04em;
       white-space: nowrap;
       overflow:hidden;
       text-overflow: ellipsis;
@@ -462,20 +430,15 @@
     .pkgCTA{
       flex:0 0 auto;
       border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
+      background: rgba(34,197,94,.16);
       color:#fff;
       border-radius: 12px;
-      padding: 8px 12px;
+      padding: 7px 10px;
       font-size: 10px;
       letter-spacing:.12em;
       text-transform: uppercase;
       font-weight: 950;
       white-space: nowrap;
-      display:flex; gap:8px; align-items:center;
-    }
-    .pkgCTA.primary{
-      border-color: rgba(34,197,94,.35);
-      background: rgba(34,197,94,.18);
     }
 
     #map{ width:100%; flex:1; min-height: 360px; background: rgba(255,255,255,.04); border-radius: var(--radius); overflow:hidden; }
@@ -600,11 +563,6 @@
     }
     .toast.show{ display:block; }
 
-    /* ✅ Cost breakdown is fully hidden now (button + card) */
-    #toggleBreakdownBtn{ display:none !important; }
-    #breakdownCard{ display:none !important; }
-    #priceDebug{ display:none !important; }
-
     .nearWrap{ border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.22); border-radius: 14px; padding: 10px; }
     .nearGrid{ display:flex; gap:10px; overflow-x:auto; -webkit-overflow-scrolling: touch; padding-bottom:4px; }
     .nearCard{ width: 112px; flex: 0 0 auto; cursor:pointer; user-select:none; }
@@ -612,6 +570,8 @@
       width:112px; height:112px; border-radius: 14px; overflow:hidden;
       border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05);
       display:grid; place-items:center; position:relative;
+      font-weight:950;
+      color:rgba(255,255,255,.9);
     }
     .nearSquare img{ width:100%; height:100%; object-fit:cover; display:block; }
     .nearName{
@@ -642,7 +602,7 @@
     .footer a{ color:#fff; text-decoration:none; font-weight:900; }
     .footer a:hover{ text-decoration:underline; }
 
-    /* WhatsApp Floating CTA */
+    /* WhatsApp float */
     .waFloat{
       position:fixed; right: 14px; bottom: 14px; z-index: 10000;
       display:flex; align-items:center; gap:10px; padding: 12px 14px;
@@ -667,8 +627,116 @@
       display:grid; place-items:center;
       cursor:pointer; flex:0 0 auto; user-select:none;
     }
-    @media (max-width: 420px){ .waText{ display:none; } .waFloat{ padding: 10px; } .waClose{ display:none; } }
 
+    /* ✅ PERSONAL GUIDE BOT (overlay) */
+    .guideFab{
+      position: fixed;
+      right: 14px;
+      bottom: 86px; /* above WhatsApp */
+      z-index: 10001;
+      width: 54px;
+      height: 54px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(124,58,237,.20);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 28px 90px rgba(0,0,0,.55);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      user-select:none;
+      font-size: 18px;
+    }
+    .guideBox{
+      position: fixed;
+      right: 14px;
+      bottom: 150px;
+      z-index: 10001;
+      width: min(360px, 92vw);
+      height: 420px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(10,14,24,.88);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 28px 90px rgba(0,0,0,.65);
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+    }
+    .guideHdr{
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .guideHdr .ttl{
+      font-size: 11px;
+      letter-spacing:.16em;
+      text-transform: uppercase;
+      font-weight: 950;
+    }
+    .guideHdr .miniBtn{
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color:#fff;
+      border-radius: 12px;
+      padding: 7px 9px;
+      font-size: 10px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      cursor:pointer;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .guideBody{
+      flex:1;
+      overflow:auto;
+      padding: 10px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .gMsg{
+      max-width: 92%;
+      padding: 9px 10px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      font-size: 12px;
+      line-height: 1.45;
+      letter-spacing:.01em;
+      white-space:pre-wrap;
+    }
+    .gMsg.me{
+      align-self:flex-end;
+      background: rgba(124,58,237,.18);
+      border-color: rgba(124,58,237,.35);
+    }
+    .guideQuick{
+      padding: 10px;
+      border-top:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .qBtn{
+      flex: 0 0 auto;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:#fff;
+      border-radius: 999px;
+      padding: 7px 9px;
+      font-size: 10px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    @media (max-width: 420px){ .waText{ display:none; } .waFloat{ padding: 10px; } .waClose{ display:none; } }
     @media (max-width: 1100px){
       .shell{ width: 100%; padding: 10px 10px 16px; }
       .main{ grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
@@ -676,112 +744,9 @@
       .pane.mapPane{ position: relative; top: auto; height: 520px; max-height: none; }
       #map{ min-height: 320px; }
       .row2{ grid-template-columns: 1fr; }
-      .pkgThumb{ width:86px; height:86px; }
+      .pkgThumb{ width:78px; height:78px; }
+      .guideBox{ bottom: 160px; }
     }
-
-    /* ✅ Personal Guide Bot */
-    #guideFab{
-      position:fixed; right: 14px; bottom: 78px; z-index: 10001;
-      width:56px; height:56px; border-radius: 999px;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.55);
-      backdrop-filter: blur(14px);
-      box-shadow: 0 28px 90px rgba(0,0,0,.55);
-      display:grid; place-items:center;
-      cursor:pointer; user-select:none;
-      font-size: 22px;
-    }
-    #guideFab:hover{ transform: translateY(-1px); }
-
-    .gb{
-      position:fixed; right:14px; bottom:148px; z-index: 10002;
-      width: min(390px, calc(100vw - 28px));
-      height: 520px;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(7,10,18,.92);
-      backdrop-filter: blur(14px);
-      box-shadow: var(--shadow);
-      display:flex; flex-direction:column;
-      overflow:hidden;
-    }
-    .gb.hidden{ display:none; }
-    .gbHead{
-      padding:12px;
-      display:flex; align-items:center; justify-content:space-between;
-      border-bottom:1px solid rgba(255,255,255,.10);
-    }
-    .gbTitle{ display:flex; gap:10px; align-items:center; }
-    .gbTitle .dot2{
-      width:10px; height:10px; border-radius: 999px;
-      background:#22c55e; box-shadow: 0 0 16px rgba(34,197,94,.55);
-    }
-    .gbTitle .t1{ font-weight:950; letter-spacing:.10em; text-transform:uppercase; font-size: 11px; }
-    .gbTitle .t2{ color: rgba(255,255,255,.65); font-size: 11px; margin-top:2px; text-transform:none; letter-spacing:.02em; }
-    .gbClose{
-      width:36px; height:36px;
-      border-radius: 12px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      color:#fff;
-      cursor:pointer;
-    }
-    .gbBody{
-      padding:12px;
-      overflow:auto;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .msg{
-      max-width: 92%;
-      padding:10px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.12);
-      font-size: 13px;
-      line-height: 1.35;
-    }
-    .msg.bot{ align-self:flex-start; background: rgba(255,255,255,.06); color: rgba(255,255,255,.92); }
-    .msg.user{ align-self:flex-end; background: rgba(124,58,237,.22); border-color: rgba(124,58,237,.35); color:#fff; }
-    .gbChips{ display:flex; gap:8px; flex-wrap:wrap; }
-    .chipBtn{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.90);
-      border-radius: 999px;
-      padding: 8px 10px;
-      font-size: 12px;
-      cursor:pointer;
-    }
-    .chipBtn:hover{ background: rgba(255,255,255,.10); }
-    .gbFoot{
-      padding:10px;
-      display:flex;
-      gap:8px;
-      border-top:1px solid rgba(255,255,255,.10);
-    }
-    #gbInput{
-      flex:1;
-      border-radius: 12px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color:#fff;
-      padding: 10px 10px;
-      outline:none;
-    }
-    #gbSend{
-      width:88px;
-      border-radius: 12px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(34,197,94,.16);
-      color:#fff;
-      cursor:pointer;
-      font-weight: 950;
-      letter-spacing:.10em;
-      text-transform: uppercase;
-      font-size: 11px;
-    }
-    #gbSend:hover{ background: rgba(34,197,94,.22); }
   </style>
 </head>
 
@@ -811,23 +776,25 @@
     <div class="waClose" id="waClose" title="Hide" aria-label="Hide WhatsApp button">✕</div>
   </a>
 
-  <!-- ✅ Personal Guide Bot -->
-  <div id="guideFab" title="Need help?">💬</div>
-  <div id="guideBot" class="gb hidden" aria-live="polite">
-    <div class="gbHead">
-      <div class="gbTitle">
-        <div class="dot2"></div>
-        <div>
-          <div class="t1">Guide Bot</div>
-          <div class="t2">I’ll guide you step-by-step</div>
-        </div>
+  <!-- ✅ Guide bot -->
+  <div class="guideFab" id="guideFab" title="Guide">🤖</div>
+  <div class="guideBox" id="guideBox" aria-label="Personal Guide">
+    <div class="guideHdr">
+      <div>
+        <div class="ttl">Personal Guide</div>
+        <div class="s" style="margin-top:4px;">Step-by-step package help</div>
       </div>
-      <button class="gbClose" id="gbCloseBtn">✕</button>
+      <div style="display:flex; gap:8px;">
+        <div class="miniBtn" id="guideReset">Reset</div>
+        <div class="miniBtn" id="guideClose">Close</div>
+      </div>
     </div>
-    <div class="gbBody" id="gbBody"></div>
-    <div class="gbFoot">
-      <input id="gbInput" placeholder="Type: Delhi, 5 days, inter, Shimla..." />
-      <button id="gbSend">Send</button>
+    <div class="guideBody" id="guideBody"></div>
+    <div class="guideQuick">
+      <div class="qBtn" data-q="start">Set Start</div>
+      <div class="qBtn" data-q="days">Set Days</div>
+      <div class="qBtn" data-q="pax">Set Pax</div>
+      <div class="qBtn" data-q="go">Generate</div>
     </div>
   </div>
 
@@ -836,8 +803,8 @@
 
       <div class="top">
         <div class="brand">
-          <div class="logo" id="logoBox">
-            <img src="logo.png" alt="Himachal Explorer Logo" onerror="this.remove(); document.getElementById('logoBox').textContent='HP';">
+          <div class="logo">
+            <img src="logo.png" alt="Himachal Explorer Logo" onerror="this.remove(); this.parentNode.textContent='HP';">
           </div>
           <div>
             <div style="margin:0;font-size:13px;letter-spacing:.18em;text-transform:uppercase;font-weight:900;">Himachal Explorer Portal</div>
@@ -850,24 +817,6 @@
           <div class="chip" id="fitMapBtn">Fit Route</div>
           <div class="chip" id="clearRouteBtn">Clear</div>
           <div class="chip" id="refreshBtn">Refresh</div>
-          <div class="chip good" id="openBotBtn">Guide Bot</div>
-        </div>
-      </div>
-
-      <!-- ✅ NEW visitor friendly mode bar -->
-      <div class="modeBar">
-        <div class="modeLeft">
-          <div class="modeTitle">Choose Package Type</div>
-          <div class="modeHelp">
-            <b>Within District</b> = local trips (1–3 days).<br/>
-            <b>Inter-District</b> = complete tours across districts (3–12 days).
-          </div>
-        </div>
-
-        <div class="seg" aria-label="package type toggle">
-          <button class="segBtn active" id="modeAll" type="button">All <span class="segBadge" id="badgeAll">—</span></button>
-          <button class="segBtn" id="modeInter" type="button">Inter-District <span class="segBadge" id="badgeInter">—</span></button>
-          <button class="segBtn" id="modeLocal" type="button">Within District <span class="segBadge" id="badgeLocal">—</span></button>
         </div>
       </div>
 
@@ -877,14 +826,14 @@
           <div class="paneHdr">
             <div>
               <p class="t">Package Finder</p>
-              <div class="s">Templates: <b>/templates</b> • Places: <b>/places_in_packages</b></div>
+              <div class="s">Pick Start + Days → see Inter-District & Within-District</div>
             </div>
-            <div class="s" id="leftHint">Start + Days selection</div>
+            <div class="s" id="leftHint">Start + Days based selection</div>
           </div>
 
           <div class="filters">
             <div class="field">
-              <label>Start (Required)</label>
+              <label>Start</label>
               <input id="startInp" list="startList" placeholder="E.g. AMRITSAR / DELHI / CHANDIGARH" autocomplete="off">
               <datalist id="startList"></datalist>
             </div>
@@ -899,7 +848,7 @@
             </div>
 
             <div class="field">
-              <label>Days (Optional)</label>
+              <label>Days</label>
               <select id="daysSel">
                 <option value="">ANY</option>
                 <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
@@ -934,12 +883,6 @@
               </div>
 
               <div class="pkgList" id="pkgList">
-                <div class="pkgExplain">
-                  <b>How to book:</b><br/>
-                  1) Select <b>Start</b> → click <b>Generate</b><br/>
-                  2) Choose a package (Local / Inter-district)<br/>
-                  3) Check itinerary & map → click <b>WhatsApp</b> to finalize.
-                </div>
                 <div class="pill pillHint"><span>Type Start & click</span> <b>Generate</b></div>
               </div>
             </div>
@@ -962,6 +905,7 @@
             <div class="toolBtn" id="showAllStopsBtn">Show Stops</div>
             <div class="toolBtn" id="showStartEndBtn">Start/End Only</div>
             <div class="toolBtn" id="toggleTilesBtn">Toggle Tiles</div>
+            <!-- ✅ Cost Breakdown button removed -->
           </div>
         </div>
 
@@ -970,7 +914,7 @@
           <div class="paneHdr">
             <div>
               <p class="t">Itinerary</p>
-              <div class="s">Day-wise + nearby shown below</div>
+              <div class="s">Day-wise nearby shown below each day</div>
             </div>
             <div class="s" id="activePkgName">—</div>
           </div>
@@ -979,6 +923,7 @@
             <div class="heroCard">
               <h3 class="bigTitle" id="itTitle">Select a package</h3>
               <div class="muted" id="itMeta">Day-wise details will appear here</div>
+              <div class="muted" id="priceDebug" style="margin-top:8px; text-transform:none; white-space:pre-wrap; display:none;"></div>
 
               <div class="enqRow">
                 <a id="waEnquiryBtn" class="enqBtn disabled" href="#" target="_blank" rel="noopener">
@@ -1009,6 +954,8 @@
               <div class="v" id="paxUsed">— <small></small></div>
             </div>
 
+            <!-- ✅ Breakdown card removed (no toggle) -->
+
             <div class="heroCard">
               <div class="muted" style="margin-bottom:8px;">Package includes / excludes</div>
               <div class="muted" id="incExc">—</div>
@@ -1020,7 +967,7 @@
 
             <div class="tabPanel" id="locPanel">
               <div class="placeDetail" id="placeDetail">
-                <div class="muted">Tap any place from itinerary to see history + photos here.</div>
+                <div class="muted">Tap any place from itinerary to see History + What you can find + Photos here.</div>
               </div>
             </div>
 
@@ -1099,6 +1046,7 @@
   const NODE_TRANSPORT    = "pricing_transport";
   const NODE_HOTEL        = "rate_hotel";
   const NODE_STAYRULES    = "stay_rate_rules";
+
   const NODE_PLACE_IMAGES = "place_images"; // ✅ garg DB node
 
   const $ = (id)=>document.getElementById(id);
@@ -1133,6 +1081,7 @@
   }
   function setStatus(msg){ $("statusLine").textContent = msg; }
 
+  /* Place mapping */
   function placeIdAny(p, key){ return String(p?.place_id || p?.id || key || "").trim(); }
   function placeNameAny(p, key){
     return String(p?.name || p?.["Location Name"] || p?.title || key || "PLACE").trim();
@@ -1155,7 +1104,7 @@
      ✅ PLACE IMAGES FROM GARG DB
      place_images/{placeId}/{n}/url
      =============================== */
-  let PLACE_IMAGES = {};
+  let PLACE_IMAGES = {}; // { placeId: [url1,url2...] }
   let imagesDb = null;
 
   function normalizePlaceImages(raw){
@@ -1211,8 +1160,10 @@
 
   /* ===============================
      ✅ GITHUB / SITE IMAGE FETCH (place_id wise)
+     FIX: use ./images for subfolder hosting
      =============================== */
-  const SITE_IMAGES_BASE = "/images";
+
+  const SITE_IMAGES_BASE = "./images"; /* ✅ FIXED */
   const GITHUB_USER = "champishere001";
   const GITHUB_REPO = "Himachal_Explorer";
   const GITHUB_BRANCH = "main";
@@ -1239,22 +1190,34 @@
     }
     return [...new Set(urls)];
   }
-  function setImgWithFallback(imgEl, urls){
+
+  /* ✅ FIX: do not remove image (show initials fallback) */
+  function setImgWithFallback(imgEl, urls, fallbackText="HP"){
     let i = 0;
     const list = (urls||[]).filter(Boolean);
+    const parent = imgEl.parentElement;
+
+    function showFallback(){
+      try{
+        imgEl.remove();
+        if(parent){
+          parent.innerHTML = `<div class="ini">${escapeHtml(String(fallbackText||"HP"))}</div>`;
+        }
+      }catch(e){}
+    }
+
     function tryNext(){
       if(i >= list.length){
-        imgEl.remove();
+        showFallback();
         return;
       }
       imgEl.src = list[i++];
     }
+
     imgEl.onerror = tryNext;
     tryNext();
   }
 
-  /* ✅ NEW: package-friendly photo picking */
-  let PLACES = {};
   function pickAllPhotos(p, pid){
     const isValid = (u)=> typeof u==="string" && /^https?:\/\//i.test(u.trim());
     let arr = [];
@@ -1281,6 +1244,9 @@
     if(id) arr.push(...githubFolderCandidates(id));
     return [...new Set(arr)];
   }
+
+  /* ✅ Package photo picking */
+  let PLACES = {};
   function pickThumbPlaceId(routeIds){
     for(const pid of (routeIds||[])){
       if(pid && PLACES[pid]) return pid;
@@ -1325,6 +1291,7 @@
 
   /* Place Details */
   let ACTIVE_PLACE_GALLERY = { pid:"", idx:0, imgs:[] };
+
   function renderPlaceDetails(pid){
     const p = PLACES[pid] || {};
     const name = placeNameAny(p, pid);
@@ -1372,7 +1339,7 @@
     `;
 
     const heroImg = document.getElementById("placeHeroImg");
-    if(heroImg && imgs.length) setImgWithFallback(heroImg, imgs);
+    if(heroImg && imgs.length) setImgWithFallback(heroImg, imgs, initials(name));
 
     if(imgs.length > 1){
       $("galPrev").onclick = ()=>galleryStep(-1);
@@ -1383,6 +1350,7 @@
     }
     setActiveTab("loc");
   }
+
   function galleryGo(i){
     const g = ACTIVE_PLACE_GALLERY;
     if(!g.imgs.length) return;
@@ -1390,7 +1358,7 @@
     const img = $("placeHeroImg");
     if(img){
       const rotated = g.imgs.slice(g.idx).concat(g.imgs.slice(0,g.idx));
-      setImgWithFallback(img, rotated);
+      setImgWithFallback(img, rotated, "HP");
     }
     const dots = $("galDots");
     if(dots){
@@ -1478,13 +1446,13 @@
       card.innerHTML = `
         <div class="nearSquare">
           ${urls.length ? `<img data-npid="${escapeHtml(pid)}" alt="${escapeHtml(nm)}" loading="lazy" referrerpolicy="no-referrer">`
-                        : `<div style="font-weight:950;opacity:.9;">${escapeHtml(initials(nm))}</div>`}
+                        : `<div>${escapeHtml(initials(nm))}</div>`}
         </div>
         <div class="nearName" title="${escapeHtml(nm)}">${escapeHtml(nm)}</div>
         <div class="nearMeta" title="${escapeHtml(dist)}">${escapeHtml(dist || (bestKm?bestKm.toFixed(1)+" km":""))}</div>
       `;
       const img = card.querySelector("img[data-npid]");
-      if(img) setImgWithFallback(img, urls);
+      if(img) setImgWithFallback(img, urls, initials(nm));
 
       card.onclick = ()=>{
         renderPlaceDetails(pid);
@@ -1544,11 +1512,10 @@
   let CURRENT_ROUTE_KM = 0;
 
   let pricing_transport = {};
-  let rate_hotel = {};
   let stay_rate_rules = {};
   let PRICING_READY = false;
 
-  const CACHE_KEY = "hp_portal_cache_v19_visitor_easy";
+  const CACHE_KEY = "hp_portal_cache_v19_guide_merge";
   const CACHE_TTL_MS = 1000 * 60 * 30;
 
   /* ✅ WhatsApp Finalize */
@@ -1564,23 +1531,19 @@
       btn.href = "#";
     }
   }
-
   function buildWhatsAppMessage({tpl, startName, endKey, pax, tier, km, total, perPerson}){
     const days = Number(tpl?.days || 0) || 0;
     const code = String(tpl?.route_id || "—");
     const route = String(tpl?.route_path || "").trim();
     const includes = String(tpl?.includes || tpl?.inclusions || "").trim();
 
-    const pkgType = isLocalComputed(tpl) ? "WITHIN DISTRICT (LOCAL)" : "INTER-DISTRICT TOUR";
-
     const lines = [
       "Hi Chandan, I want to finalize this package:",
       "",
-      `Package Type: ${pkgType}`,
       `Start: ${String(startName||"").toUpperCase()}`,
       `Destination: ${String(endKey||"").toUpperCase()}`,
       `Days: ${days}`,
-      `Plan: ${String(tier||"").toUpperCase()}`,
+      `Type: ${String(tier||"").toUpperCase()}`,
       `Pax: ${pax}`,
       `Route KM (est.): ${isFinite(km)?Number(km).toFixed(1):"—"}`,
       `Total (est.): ${isFinite(total)?rupees(total):"—"}`,
@@ -1593,6 +1556,75 @@
     ].filter(Boolean);
 
     return lines.join("\n");
+  }
+
+  function getSelectedPax(){
+    const v = Number($("paxSel")?.value || 2);
+    return (isFinite(v) && v > 0) ? v : 2;
+  }
+
+  function estimateTotalCost({ km=0, days=3, pax=2, tpl=null }){
+    km = Number(km||0);
+    days = Number(days||0);
+    pax = Math.max(1, Number(pax||1));
+    const nights = Math.max(0, days-1);
+
+    if(!PRICING_READY || !isFinite(km) || km<=0 || !days){
+      return { total:NaN, perPerson:NaN };
+    }
+
+    const tier   = String($("visitType")?.value || "budget").toLowerCase();
+    const vehicleKey = (pax <= 4) ? "hatchback" : (pax <= 7) ? "innova" : "luxury_suv";
+    const v = pricing_transport?.[vehicleKey] || {};
+
+    const perKm = Number(v.per_km || 0);
+    const driverPerDay = Number(v.driver_per_day || 0);
+    const minKmPerDay = Number(v.min_km_per_day || 0);
+    const nightCharge = Number(v.night_charge || 0);
+    const tollPct = Number(v.parking_toll_buffer_pct || 0);
+
+    const minBillKm = (isFinite(minKmPerDay) && minKmPerDay > 0) ? (days * minKmPerDay) : 0;
+    const billedKm = Math.max(km, minBillKm);
+
+    const bufferMul = 1 + (isFinite(tollPct) ? tollPct : 0) / 100;
+
+    const transportKmCost = billedKm * perKm * bufferMul;
+    const driverCost = days * driverPerDay;
+    const nightCost = nights * nightCharge;
+    const transport = transportKmCost + driverCost + nightCost;
+
+    // hotel: use stay_rate_rules r1/r2/r3 base rate mid (simple)
+    const key = (tier==="premium") ? "r2" : (tier==="luxury") ? "r3" : "r1";
+    const rule = stay_rate_rules?.[key] || {};
+    const baseRoom = Number(rule.base_rate_mid || rule.base_rate_peak || rule.base_rate_low || 0);
+    const rooms = Math.max(1, Math.ceil(pax / 2));
+    const hotel = nights * baseRoom * rooms;
+
+    const total = transport + hotel;
+    return { total, perPerson: total/pax };
+  }
+
+  function updatePriceBoxes(total, perPerson){
+    const totalEl = $("priceTotal");
+    const perEl   = $("pricePer");
+
+    if(!isFinite(total)){
+      totalEl.innerHTML = "— <small></small>";
+      perEl.innerHTML = "— <small></small>";
+      $("paxUsed").innerHTML = "— <small></small>";
+      return;
+    }
+
+    totalEl.innerHTML = rupees(total) + ` <small>(${String($("visitType").value).toUpperCase()})</small>`;
+    perEl.innerHTML = rupees(perPerson) + ` <small>per person</small>`;
+  }
+
+  function endKeyFromRoutePath(tpl){
+    const rpRaw = String(tpl.route_path || "").trim();
+    if(!rpRaw) return normCaps(String(tpl.end_point || tpl.end || "UNKNOWN"));
+    const tokens = rpRaw.replace(/->/g,"|").replace(/>/g,"|")
+      .split("|").map(x=>String(x||"").trim()).filter(Boolean);
+    return normCaps(tokens[tokens.length - 1] || "UNKNOWN");
   }
 
   function updateWhatsAppForCurrent(){
@@ -1631,7 +1663,6 @@
       PLACES = parsed.places || {};
       TEMPLATES = parsed.templates || {};
       pricing_transport = parsed.pricing_transport || {};
-      rate_hotel = parsed.rate_hotel || {};
       stay_rate_rules = parsed.stay_rate_rules || {};
       PLACE_IMAGES = parsed.place_images || {};
       PRICING_READY = true;
@@ -1654,7 +1685,6 @@
         places: PLACES,
         templates: TEMPLATES,
         pricing_transport,
-        rate_hotel,
         stay_rate_rules,
         place_images: PLACE_IMAGES
       }));
@@ -1697,14 +1727,47 @@
     return "";
   }
 
-  function getPlaceIdByNameAny(name){
-    const nm = String(name || "").trim();
-    if(!nm) return "";
-    const direct = NAME_TO_ID.get(nm.toLowerCase());
-    if(direct && PLACES[direct]) return direct;
-    const slug = slugifyName(nm);
-    if(slug && PLACES[slug]) return slug;
-    return "";
+  function isLocalComputed(tpl){
+    const routeId = String(tpl.route_id || "").toUpperCase().trim();
+    const regionStyle = String(tpl.region_style || "").toLowerCase().trim();
+    const pkgId = String(tpl.package_id || tpl.key || "").toLowerCase();
+    return regionStyle === "local" || routeId.endsWith("-LCL") || pkgId.includes("-local");
+  }
+
+  function matchesStart(tpl, startUpper){
+    return String(tpl.start_point||tpl.start||"").trim().toUpperCase() === startUpper;
+  }
+  function matchesDaysOptional(tpl, daysFilter){
+    if(!daysFilter) return true;
+    return Number(tpl.days||0) === Number(daysFilter);
+  }
+
+  function renderDistrictChips(){
+    const bar = $("districtBar");
+    if(!bar) return;
+
+    const chips = ["ALL", ...DISTRICT_KEYS];
+    if(!ACTIVE_DISTRICT || !chips.includes(ACTIVE_DISTRICT)) ACTIVE_DISTRICT = "ALL";
+
+    bar.innerHTML = chips.map(d=>{
+      const active = (d===ACTIVE_DISTRICT) ? "active" : "";
+      const label = (d==="ALL") ? "ALL DESTINATIONS" : d;
+      const count = (d==="ALL") ? INTER_ALL.length : INTER_ALL.filter(t=>endKeyFromRoutePath(t)===d).length;
+      return `<div class="distItem ${active}" data-d="${escapeHtml(d)}">${escapeHtml(label)} (${count})</div>`;
+    }).join("");
+
+    bar.querySelectorAll(".distItem").forEach(el=>{
+      el.onclick = ()=>{ ACTIVE_DISTRICT = el.dataset.d || "ALL"; renderPackagesList(); };
+    });
+  }
+
+  function highlightActiveCard(){
+    document.querySelectorAll(".pkgW").forEach(x=>x.classList.toggle("active", x.dataset.key === CURRENT_TEMPLATE_KEY));
+  }
+
+  function approxKmFromTpl(t){
+    const km = Number(t.total_km_est || t.estimated_drive_km || t.total_km || 0);
+    return isFinite(km) && km>0 ? km : 0;
   }
 
   function stopsFromTemplate(tpl){
@@ -1732,104 +1795,16 @@
 
   function routeIdsFromTemplateIncludingStart(tpl){
     const baseStops = stopsFromTemplate(tpl);
-    const startName = String(tpl?.start_point || tpl?.start || "").trim();
-    const startPid = getPlaceIdByNameAny(startName);
-    if(startPid){
-      const filtered = baseStops.filter(x => x !== startPid);
-      return [startPid, ...filtered];
-    }
     return baseStops;
   }
 
-  function getEndNameFromRoutePath(tpl){
-    const start = String(tpl.start_point || tpl.start || "").trim().toLowerCase();
-    const rpRaw = String(tpl.route_path || "").trim();
-    if(!rpRaw) return String(tpl.end_point || tpl.end || "").trim() || "UNKNOWN";
+  function renderInterCard(t, startUpper){
+    const days = Number(t.days||0) || 0;
+    const endKey = endKeyFromRoutePath(t);
+    const code = String(t.route_id || "—").toUpperCase();
+    const km = approxKmFromTpl(t);
 
-    const tokens = rpRaw.replace(/->/g,"|").replace(/>/g,"|")
-      .split("|").map(x=>String(x||"").trim()).filter(Boolean);
-    if(!tokens.length) return String(tpl.end_point || tpl.end || "").trim() || "UNKNOWN";
-
-    let end = tokens[tokens.length - 1];
-    if(end && start && end.toLowerCase() === start && tokens.length >= 2) end = tokens[tokens.length - 2];
-    return end || "UNKNOWN";
-  }
-
-  function endDistrictFromTemplate(tpl){
-    const endName = getEndNameFromRoutePath(tpl);
-    const pid = getPlaceIdByNameAny(endName);
-    if(pid && PLACES[pid]){
-      const d = districtAny(PLACES[pid]);
-      if(d) return d;
-    }
-    const td = String(tpl.district || tpl.end_district || "").trim().toUpperCase();
-    if(td) return td;
-    return normCaps(endName || "UNKNOWN");
-  }
-
-  function endKeyFromRoutePath(tpl){
-    const endName = getEndNameFromRoutePath(tpl);
-    const pid = getPlaceIdByNameAny(endName);
-    if(pid && PLACES[pid]){
-      const d = districtAny(PLACES[pid]);
-      return d || normCaps(endName);
-    }
-    return normCaps(endName);
-  }
-
-  function isLocalComputed(tpl){
-    const routeId = String(tpl.route_id || "").toUpperCase().trim();
-    const regionStyle = String(tpl.region_style || "").toLowerCase().trim();
-    const pkgId = String(tpl.package_id || tpl.key || "").toLowerCase();
-    return regionStyle === "local" || routeId.endsWith("-LCL") || pkgId.includes("-local");
-  }
-
-  /* ✅ NEW: Visitor mode filter */
-  let VISITOR_MODE = "all"; // all | inter | local
-  function matchesVisitorMode(tpl){
-    const local = isLocalComputed(tpl);
-    if(VISITOR_MODE === "local") return local;
-    if(VISITOR_MODE === "inter") return !local;
-    return true;
-  }
-
-  function matchesStart(tpl, startUpper){
-    return String(tpl.start_point||tpl.start||"").trim().toUpperCase() === startUpper;
-  }
-  function matchesDaysOptional(tpl, daysFilter){
-    if(!daysFilter) return true;
-    return Number(tpl.days||0) === Number(daysFilter);
-  }
-
-  function highlightActiveCard(){
-    document.querySelectorAll(".pkgW").forEach(x=>x.classList.toggle("active", x.dataset.key === CURRENT_TEMPLATE_KEY));
-  }
-
-  function approxKmFromTpl(t){
-    const km = Number(t.total_km_est || t.estimated_drive_km || t.total_km || 0);
-    return isFinite(km) && km>0 ? km : 0;
-  }
-
-  /* ✅ VISITOR-FRIENDLY CARD LABELS */
-  function nicePackageTitle(tpl, startUpper){
-    const days = Number(tpl.days||0) || 0;
-    const local = isLocalComputed(tpl);
-    if(local){
-      const rp = String(tpl.route_path || tpl.route_name || tpl.package_id || "").trim();
-      return rp ? rp : `Local Tour (${days} Days)`;
-    }
-    const district = endDistrictFromTemplate(tpl);
-    return `${startUpper} → ${district}`;
-  }
-
-  function renderVisitorCard(tpl, startUpper){
-    const days = Number(tpl.days||0) || 0;
-    const local = isLocalComputed(tpl);
-    const km = approxKmFromTpl(tpl);
-    const code = String(tpl.route_id || (local ? "LOCAL" : "—")).toUpperCase();
-    const title = nicePackageTitle(tpl, startUpper);
-
-    const routeIds = routeIdsFromTemplateIncludingStart(tpl);
+    const routeIds = routeIdsFromTemplateIncludingStart(t);
     const thumbPid = pickThumbPlaceId(routeIds);
     const p0 = PLACES[thumbPid] || {};
     const nm0 = placeNameAny(p0, thumbPid);
@@ -1838,73 +1813,133 @@
     const pkgPhotos = pickPackagePhotosFromRoute(routeIds);
     const thumbUrls = pkgPhotos.length ? pkgPhotos : pickAllPhotos(p0, thumbPid);
 
-    const badgeType = local ? `<span class="pkgBadge green">WITHIN DISTRICT</span>` : `<span class="pkgBadge orange">INTER-DISTRICT</span>`;
-    const badgeDays = `<span class="pkgBadge purple">${days} DAYS</span>`;
-
-    const hint = String(tpl.route_path || "").trim() || (local ? "Local sightseeing & nearby spots" : "Complete tour across districts");
-
     const el = document.createElement("div");
     el.className = "pkgW";
-    el.dataset.key = tpl.key;
+    el.dataset.key = t.key;
 
     el.innerHTML = `
       <div class="pkgWTop">
         <div class="pkgThumb">
           ${thumbUrls.length
-            ? `<img data-thumb="${escapeHtml(thumbPid||"")}" alt="Package thumbnail" loading="lazy" referrerpolicy="no-referrer">`
+            ? `<img data-pthumb="${escapeHtml(thumbPid||"")}" alt="Package thumbnail" loading="lazy" referrerpolicy="no-referrer">`
             : `<div class="ini">${escapeHtml(ini)}</div>`
           }
         </div>
 
         <div class="pkgWBody">
           <div class="pkgWTitle">
-            <div class="mainT">${escapeHtml(title)}</div>
-            ${badgeType}
-            ${badgeDays}
+            <div class="mainT">${escapeHtml(startUpper)} → ${escapeHtml(endKey)}</div>
+            <div class="pkgBadge purple">${days} Days</div>
+            <div class="pkgBadge">INTER-DISTRICT</div>
           </div>
 
           <div class="pkgWMeta">
             <div class="pkgChip">KM <b>${km ? km.toFixed(0) : "—"}</b></div>
             <div class="pkgChip">Code <b class="mono">${escapeHtml(code)}</b></div>
-            <div class="pkgChip">Tap to open itinerary</div>
+          </div>
+
+          <div class="pkgStrip">
+            ${[0,1,2].map(i=>{
+              const u = pkgPhotos[i];
+              return `<div class="stripImg">${u ? `<img data-strip="${i}" alt="photo ${i+1}" loading="lazy" referrerpolicy="no-referrer">` : escapeHtml(initials(nm0))}</div>`;
+            }).join("")}
           </div>
         </div>
       </div>
 
       <div class="pkgWBottom">
-        <div class="pkgHint" title="${escapeHtml(hint)}">${escapeHtml(hint.slice(0, 110))}</div>
-        <div class="pkgCTA primary">Open →</div>
+        <div class="pkgHint" title="${escapeHtml(String(t.route_path || ""))}">
+          ${escapeHtml(String(t.route_path || "Tap to open itinerary").slice(0, 110))}
+        </div>
+        <div class="pkgCTA">Open</div>
       </div>
     `;
 
-    const img = el.querySelector("img[data-thumb]");
-    if(img) setImgWithFallback(img, thumbUrls);
+    const img = el.querySelector("img[data-pthumb]");
+    if(img) setImgWithFallback(img, thumbUrls, ini);
 
-    el.onclick = ()=>openTemplate(tpl.key, startUpper);
+    const stripImgs = el.querySelectorAll("img[data-strip]");
+    stripImgs.forEach((im, idx)=>{
+      const u = pkgPhotos[idx];
+      if(u){
+        setImgWithFallback(im, [u, ...pkgPhotos.filter(x=>x!==u)], ini);
+      }
+    });
+
+    el.onclick = ()=>openTemplate(t.key, startUpper);
     return el;
   }
 
-  function renderDistrictChips(){
-    const bar = $("districtBar");
-    if(!bar) return;
+  function renderLocalCard(t){
+    const days = Number(t.days||0) || 0;
+    const heading = String(t.route_path || t.route_name || t.package_id || "Within District Tour").trim();
+    const code = String(t.route_id || "LOCAL").toUpperCase();
+    const km = approxKmFromTpl(t);
 
-    const chips = ["ALL", ...DISTRICT_KEYS];
-    if(!ACTIVE_DISTRICT || !chips.includes(ACTIVE_DISTRICT)) ACTIVE_DISTRICT = "ALL";
+    const routeIds = stopsFromTemplate(t);
+    const thumbPid = pickThumbPlaceId(routeIds);
+    const p0 = PLACES[thumbPid] || {};
+    const nm0 = placeNameAny(p0, thumbPid);
+    const ini = initials(nm0);
 
-    bar.innerHTML = chips.map(d=>{
-      const active = (d===ACTIVE_DISTRICT) ? "active" : "";
-      const label = (d==="ALL") ? "ALL DESTINATIONS" : d;
+    const pkgPhotos = pickPackagePhotosFromRoute(routeIds);
+    const thumbUrls = pkgPhotos.length ? pkgPhotos : pickAllPhotos(p0, thumbPid);
 
-      // Inter count respects visitor mode
-      const base = INTER_ALL.filter(t=>matchesVisitorMode(t));
-      const count = (d==="ALL") ? base.length : base.filter(t=>endDistrictFromTemplate(t)===d).length;
+    const el = document.createElement("div");
+    el.className = "pkgW";
+    el.dataset.key = t.key;
 
-      return `<div class="distItem ${active}" data-d="${escapeHtml(d)}">${escapeHtml(label)} (${count})</div>`;
-    }).join("");
+    el.innerHTML = `
+      <div class="pkgWTop">
+        <div class="pkgThumb">
+          ${thumbUrls.length
+            ? `<img data-lthumb="${escapeHtml(thumbPid)}" alt="Local package thumbnail" loading="lazy" referrerpolicy="no-referrer">`
+            : `<div class="ini">${escapeHtml(ini)}</div>`
+          }
+        </div>
 
-    bar.querySelectorAll(".distItem").forEach(el=>{
-      el.onclick = ()=>{ ACTIVE_DISTRICT = el.dataset.d || "ALL"; renderPackagesList(); };
+        <div class="pkgWBody">
+          <div class="pkgWTitle">
+            <div class="mainT">${escapeHtml(heading)}</div>
+            <div class="pkgBadge green">WITHIN DISTRICT</div>
+            <div class="pkgBadge purple">${days} Days</div>
+          </div>
+
+          <div class="pkgWMeta">
+            <div class="pkgChip">KM <b>${km ? km.toFixed(0) : "—"}</b></div>
+            <div class="pkgChip">Code <b class="mono">${escapeHtml(code)}</b></div>
+          </div>
+
+          <div class="pkgStrip">
+            ${[0,1,2].map(i=>{
+              const u = pkgPhotos[i];
+              return `<div class="stripImg">${u ? `<img data-strip="${i}" alt="photo ${i+1}" loading="lazy" referrerpolicy="no-referrer">` : escapeHtml(initials(nm0))}</div>`;
+            }).join("")}
+          </div>
+        </div>
+      </div>
+
+      <div class="pkgWBottom">
+        <div class="pkgHint" title="${escapeHtml(String(t.route_path || ""))}">
+          ${escapeHtml(String(t.route_path || "Tap to open itinerary").slice(0, 110))}
+        </div>
+        <div class="pkgCTA">Open</div>
+      </div>
+    `;
+
+    const img = el.querySelector("img[data-lthumb]");
+    if(img) setImgWithFallback(img, thumbUrls, ini);
+
+    const stripImgs = el.querySelectorAll("img[data-strip]");
+    stripImgs.forEach((im, idx)=>{
+      const u = pkgPhotos[idx];
+      if(u){
+        setImgWithFallback(im, [u, ...pkgPhotos.filter(x=>x!==u)], ini);
+      }
     });
+
+    el.onclick = ()=>openTemplate(t.key, normalizeStartInput() || "");
+    return el;
   }
 
   function renderPackagesList(){
@@ -1915,84 +1950,78 @@
 
     box.innerHTML = "";
 
-    // help card always on top
-    const help = document.createElement("div");
-    help.className = "pkgExplain";
-    help.innerHTML = `
-      <b>Quick guide:</b> Select <b>Start</b> → click <b>Generate</b> → choose <b>Inter-District</b> or <b>Within District</b> → open package → click <b>WhatsApp</b>.
+    let shownInter = INTER_ALL.slice();
+    if(ACTIVE_DISTRICT && ACTIVE_DISTRICT !== "ALL"){
+      // district chips are based on endKey here
+      shownInter = shownInter.filter(t => endKeyFromRoutePath(t) === ACTIVE_DISTRICT);
+    }
+
+    const locals = ACTIVE_TEMPLATES
+      .filter(t => isLocalComputed(t))
+      .filter(t => matchesStart(t, startUpper))
+      .filter(t => matchesDaysOptional(t, daysF))
+      .sort((a,b)=>(Number(a.days)||0)-(Number(b.days)||0));
+
+    $("pkgCount").textContent = `${shownInter.length + locals.length} Results`;
+
+    const hdr = document.createElement("div");
+    hdr.className = "pkgSection";
+    hdr.innerHTML = `
+      <div>
+        <div class="h">YOUR SELECTION</div>
+        <div class="sub">Start: <b>${escapeHtml(startUpper || "—")}</b> • Days: <b>${escapeHtml(daysF || "ANY")}</b> • Use chips above to filter destination district</div>
+      </div>
+      <div class="secBadge">STEP 2: PICK A PACKAGE</div>
     `;
-    box.appendChild(help);
+    box.appendChild(hdr);
 
     if(!startUpper){
-      const pill = document.createElement("div");
-      pill.className = "pill pillHint";
-      pill.innerHTML = `<span>Type Start & click</span> <b>Generate</b>`;
-      box.appendChild(pill);
-      $("pkgCount").textContent = "—";
+      const warn = document.createElement("div");
+      warn.className = "pill";
+      warn.innerHTML = `<b>Type Start</b> then press Generate`;
+      box.appendChild(warn);
       return;
     }
 
-    let shown = ACTIVE_TEMPLATES
-      .filter(t => matchesStart(t, startUpper))
-      .filter(t => matchesDaysOptional(t, daysF))
-      .filter(t => matchesVisitorMode(t))
-      .sort((a,b)=>{
-        const la = isLocalComputed(a), lb = isLocalComputed(b);
-        if(la !== lb) return la ? 1 : -1; // inter first then local (better for visitors)
-        const da = Number(a.days||0), db = Number(b.days||0);
-        if(da !== db) return da - db;
-        const kmA = approxKmFromTpl(a) || 1e9;
-        const kmB = approxKmFromTpl(b) || 1e9;
-        return kmA - kmB;
-      });
+    const secInter = document.createElement("div");
+    secInter.className = "pkgSection";
+    secInter.innerHTML = `
+      <div>
+        <div class="h">INTER-DISTRICT PACKAGES</div>
+        <div class="sub">Tours that go to another district (best for multi-day trips)</div>
+      </div>
+      <div class="secBadge inter">${shownInter.length} Found</div>
+    `;
+    box.appendChild(secInter);
 
-    // build inter list for district chips
-    INTER_ALL = shown.filter(t => !isLocalComputed(t));
-    const set = new Set();
-    INTER_ALL.forEach(t => set.add(endDistrictFromTemplate(t)));
-    DISTRICT_KEYS = Array.from(set).sort((a,b)=>a.localeCompare(b));
-    if(!DISTRICT_KEYS.includes(ACTIVE_DISTRICT)) ACTIVE_DISTRICT = "ALL";
-    renderDistrictChips();
-
-    // Apply district filter only to inter-district packages
-    if(ACTIVE_DISTRICT && ACTIVE_DISTRICT !== "ALL"){
-      shown = shown.filter(t => {
-        if(isLocalComputed(t)) return true;
-        return endDistrictFromTemplate(t) === ACTIVE_DISTRICT;
-      });
-    }
-
-    $("pkgCount").textContent = `${shown.length} Results`;
-
-    // section headings
-    const interHdr = document.createElement("div");
-    interHdr.className = "pkgExplain";
-    interHdr.innerHTML = `<b>Inter-District Tours</b> (full tour across Himachal)`;
-    box.appendChild(interHdr);
-
-    const inters = shown.filter(t => !isLocalComputed(t));
-    if(!inters.length){
+    if(!shownInter.length){
       const none = document.createElement("div");
       none.className = "pill";
-      none.innerHTML = `<b>No inter-district package found</b>`;
+      none.innerHTML = `<b>No inter-district package found for this Start + Days</b>`;
       box.appendChild(none);
     }else{
-      inters.forEach(t => box.appendChild(renderVisitorCard(t, startUpper)));
+      shownInter.forEach(t => box.appendChild(renderInterCard(t, startUpper)));
     }
 
-    const localHdr = document.createElement("div");
-    localHdr.className = "pkgExplain";
-    localHdr.innerHTML = `<b>Within District</b> (local sightseeing, short trips)`;
-    box.appendChild(localHdr);
+    const secLocal = document.createElement("div");
+    secLocal.className = "pkgSection";
+    secLocal.style.marginTop = "6px";
+    secLocal.innerHTML = `
+      <div>
+        <div class="h">WITHIN-DISTRICT PACKAGES</div>
+        <div class="sub">Short tours/sightseeing inside one district</div>
+      </div>
+      <div class="secBadge local">${locals.length} Found</div>
+    `;
+    box.appendChild(secLocal);
 
-    const locals = shown.filter(t => isLocalComputed(t));
     if(!locals.length){
       const none2 = document.createElement("div");
       none2.className = "pill";
-      none2.innerHTML = `<b>No within-district package found</b>`;
+      none2.innerHTML = `<b>No within-district package found for this Start + Days</b>`;
       box.appendChild(none2);
     }else{
-      locals.forEach(t => box.appendChild(renderVisitorCard(t, startUpper)));
+      locals.forEach(t => box.appendChild(renderLocalCard(t)));
     }
 
     highlightActiveCard();
@@ -2018,10 +2047,12 @@
 
   function renderItinerary(tpl, start, endKey){
     $("activePkgName").textContent = `${String(tpl.days||"—")}D`;
-    $("itTitle").textContent = nicePackageTitle(tpl, (start||"START").toUpperCase());
+    const isLocalNow = isLocalComputed(tpl);
+    $("itTitle").textContent = isLocalNow
+      ? String(tpl.route_path || tpl.route_name || tpl.package_id || "WITHIN DISTRICT").trim()
+      : `${String(start||"START").toUpperCase()} → ${String(endKey).toUpperCase()}`;
 
     const metaParts = [];
-    metaParts.push(isLocalComputed(tpl) ? "Within District (Local)" : "Inter-District Tour");
     if(tpl.route_id) metaParts.push(`Code: ${tpl.route_id}`);
     if(tpl.route_path) metaParts.push(`Route: ${tpl.route_path}`);
     $("itMeta").textContent = metaParts.join(" • ") || "—";
@@ -2036,7 +2067,7 @@
 
     const daysList = $("daysList");
     daysList.innerHTML = "";
-    $("placeDetail").innerHTML = `<div class="muted">Tap any place from itinerary to see history + photos here.</div>`;
+    $("placeDetail").innerHTML = `<div class="muted">Tap any place from itinerary to see History + What you can find + Photos here.</div>`;
 
     const routeAll = routeIdsFromTemplateIncludingStart(tpl);
     const excludeSet = new Set(routeAll.filter(Boolean));
@@ -2074,7 +2105,7 @@
           </div>
         `;
         const img = line.querySelector("img[data-plthumb]");
-        if(img) setImgWithFallback(img, urls);
+        if(img) setImgWithFallback(img, urls, initials(name));
 
         line.onclick = ()=>{
           renderPlaceDetails(pid);
@@ -2162,117 +2193,6 @@
     }
   }
 
-  /* Pricing (kept same as your original; breakdown removed from UI) */
-  function pickStayRule(tier){
-    const t = String(tier||"budget").toLowerCase();
-    const key = (t==="premium") ? "r2" : (t==="luxury") ? "r3" : "r1";
-    return stay_rate_rules?.[key] || {};
-  }
-  function pickVehicleByPax(pax){
-    pax = Number(pax||2);
-    if(pax <= 4) return "hatchback";
-    if(pax <= 7) return "innova";
-    return "luxury_suv";
-  }
-  function autoSeason(tpl){
-    const text = String(tpl?.best_season || "").toLowerCase();
-    if(/monsoon|rain|jul|aug/.test(text)) return "low";
-    if(/winter|snow|snowfall|dec|jan/.test(text)) return "peak";
-    if(/peak/.test(text)) return "peak";
-    if(/low/.test(text)) return "low";
-    if(/mid/.test(text)) return "mid";
-    const m = new Date().getMonth() + 1;
-    if([1,5,6,10,12].includes(m)) return "peak";
-    if([2,7,8].includes(m)) return "low";
-    return "mid";
-  }
-  function pickBaseRoomBySeason(rule, season){
-    const s = String(season||"mid").toLowerCase();
-    if(s === "low")  return Number(rule.base_rate_low || rule.base_rate_mid || rule.base_rate_peak || 0);
-    if(s === "peak") return Number(rule.base_rate_peak || rule.base_rate_mid || rule.base_rate_low || 0);
-    return Number(rule.base_rate_mid || rule.base_rate_low || rule.base_rate_peak || 0);
-  }
-  function computeSnowMultiplier(tpl, vehicle){
-    const sr = String(tpl?.snow_risk || "").toLowerCase();
-    const base = Number(vehicle?.snow_multiplier || 1);
-    if(!isFinite(base) || base <= 0) return 1;
-    if(sr.includes("high")) return base;
-    if(sr.includes("medium")) return 1 + (base - 1) * 0.5;
-    return 1;
-  }
-  function computeRoadMultiplier(tpl, vehicle){
-    const rt = String(tpl?.road_type || "").toLowerCase();
-    const dl = String(tpl?.drive_level || "").toLowerCase();
-    const bad = Number(vehicle?.bad_road_multiplier || 1);
-    const hill = Number(vehicle?.hill_multiplier || 1);
-    let m = 1;
-    if(rt.includes("bad") || rt.includes("mix")) m *= (isFinite(bad) && bad>0 ? bad : 1);
-    if(dl.includes("high") || rt.includes("hill")) m *= (isFinite(hill) && hill>0 ? hill : 1);
-    return m;
-  }
-  function estimateTotalCost({ km=0, days=3, pax=2, tpl=null }){
-    km = Number(km||0);
-    days = Number(days||0);
-    pax = Math.max(1, Number(pax||1));
-    const nights = Math.max(0, days-1);
-
-    if(!PRICING_READY || !isFinite(km) || km<=0 || !days){
-      return { total:NaN, perPerson:NaN, breakdown:null };
-    }
-
-    const tier   = String($("visitType")?.value || "budget").toLowerCase();
-    const season = autoSeason(tpl);
-
-    const vehicleKey = pickVehicleByPax(pax);
-    const v = pricing_transport?.[vehicleKey] || {};
-
-    const perKm = Number(v.per_km || 0);
-    const driverPerDay = Number(v.driver_per_day || 0);
-    const minKmPerDay = Number(v.min_km_per_day || 0);
-    const nightCharge = Number(v.night_charge || 0);
-    const tollPct = Number(v.parking_toll_buffer_pct || 0);
-
-    const minBillKm = (isFinite(minKmPerDay) && minKmPerDay > 0) ? (days * minKmPerDay) : 0;
-    const billedKm = Math.max(km, minBillKm);
-
-    const roadMul = computeRoadMultiplier(tpl, v);
-    const snowMul = computeSnowMultiplier(tpl, v);
-    const bufferMul = 1 + (isFinite(tollPct) ? tollPct : 0) / 100;
-
-    const transportKmCost = billedKm * perKm * roadMul * snowMul * bufferMul;
-    const driverCost = days * driverPerDay;
-    const nightCost = nights * nightCharge;
-
-    const transport = transportKmCost + driverCost + nightCost;
-
-    const rule = pickStayRule(tier);
-    const baseRoom = pickBaseRoomBySeason(rule, season);
-    const weekendMul = Number(rule.weekend_multiplier || 1);
-
-    const rooms = Math.max(1, Math.ceil(pax / 2));
-    const wkFactor = (nights >= 2) ? (isFinite(weekendMul) && weekendMul>0 ? weekendMul : 1) : 1;
-    const hotel = nights * baseRoom * rooms * wkFactor;
-
-    const total = transport + hotel;
-    return { total, perPerson: total/pax };
-  }
-  function getSelectedPax(){
-    const v = Number($("paxSel")?.value || 2);
-    return (isFinite(v) && v > 0) ? v : 2;
-  }
-  function updatePriceBoxes(total, perPerson){
-    const totalEl = $("priceTotal");
-    const perEl   = $("pricePer");
-    if(!isFinite(total)){
-      totalEl.innerHTML = "— <small></small>";
-      perEl.innerHTML = "— <small></small>";
-      $("paxUsed").innerHTML = "— <small></small>";
-      return;
-    }
-    totalEl.innerHTML = rupees(total) + ` <small>(${String($("visitType").value).toUpperCase()})</small>`;
-    perEl.innerHTML = rupees(perPerson) + ` <small>per person</small>`;
-  }
-
   function computePriceForCurrent(){
     try{
       if(!CURRENT_TEMPLATE_KEY) return;
@@ -2301,21 +2221,9 @@
     }
   }
 
-  function clearRightPanel(){
-    clearMap();
-    $("activePkgName").textContent = "—";
-    $("itTitle").textContent = "Select a package";
-    $("itMeta").textContent = "Day-wise details will appear here";
-    $("incExc").textContent = "—";
-    $("daysList").innerHTML = "";
-    $("placeDetail").innerHTML = `<div class="muted">Tap any place from itinerary to see history + photos here.</div>`;
-    $("priceTotal").innerHTML = "— <small></small>";
-    $("pricePer").innerHTML = "— <small></small>";
-    $("paxUsed").innerHTML = "— <small></small>";
-    CURRENT_TEMPLATE_KEY = "";
-    CURRENT_ROUTE_KM = 0;
-    setWhatsAppEnquiryEnabled(false);
-    setActiveTab("itin");
+  function renderDistrictChipsReset(){
+    $("districtBar").innerHTML = "";
+    $("pkgCount").textContent = "—";
   }
 
   function applyFilters(){
@@ -2324,32 +2232,52 @@
     const pax   = getSelectedPax();
     const tier  = String($("visitType")?.value || "budget").toUpperCase();
 
-    clearRightPanel();
+    clearMap();
+    $("activePkgName").textContent = "—";
+    $("itTitle").textContent = "Select a package";
+    $("itMeta").textContent = "Day-wise details will appear here";
+    $("incExc").textContent = "—";
+    $("daysList").innerHTML = "";
+    $("placeDetail").innerHTML = `<div class="muted">Tap any place from itinerary to see History + What you can find + Photos here.</div>`;
+    $("priceTotal").innerHTML = "— <small></small>";
+    $("pricePer").innerHTML = "— <small></small>";
+    $("paxUsed").innerHTML = "— <small></small>";
+    CURRENT_TEMPLATE_KEY = "";
+    CURRENT_ROUTE_KM = 0;
+    setActiveTab("itin");
+
+    setWhatsAppEnquiryEnabled(false);
 
     if(!start){
       toast("Start not found in templates");
-      $("districtBar").innerHTML = "";
-      $("pkgList").innerHTML = `<div class="pkgExplain"><b>Quick guide:</b> Type Start → Generate → Choose a package → WhatsApp to book.</div><div class="pill"><b>Start not found</b></div>`;
+      renderDistrictChipsReset();
+      $("pkgList").innerHTML = `<div class="pill"><b>Start not found</b></div>`;
       $("pkgCount").textContent = "0 Results";
       return;
     }
 
     const startUpper = String(start).trim().toUpperCase();
 
-    // counts for visitor mode badges
-    const allMatch = ACTIVE_TEMPLATES
+    INTER_ALL = ACTIVE_TEMPLATES
       .filter(t => matchesStart(t, startUpper))
-      .filter(t => matchesDaysOptional(t, daysF));
+      .filter(t => matchesDaysOptional(t, daysF))
+      .filter(t => !isLocalComputed(t))
+      .sort((a,b)=>{
+        const da = Number(a.days||0), db = Number(b.days||0);
+        if(da !== db) return da - db;
+        const kmA = Number(a.total_km_est || a.estimated_drive_km || a.total_km || 1e9);
+        const kmB = Number(b.total_km_est || b.estimated_drive_km || b.total_km || 1e9);
+        return kmA - kmB;
+      });
 
-    const interCount = allMatch.filter(t => !isLocalComputed(t)).length;
-    const localCount = allMatch.filter(t => isLocalComputed(t)).length;
-
-    $("badgeAll").textContent = String(allMatch.length);
-    $("badgeInter").textContent = String(interCount);
-    $("badgeLocal").textContent = String(localCount);
+    const set = new Set();
+    INTER_ALL.forEach(t => set.add(endKeyFromRoutePath(t)));
+    DISTRICT_KEYS = Array.from(set).sort((a,b)=>a.localeCompare(b));
+    ACTIVE_DISTRICT = "ALL";
+    renderDistrictChips();
 
     $("pills").innerHTML = "";
-    const pillData = { START: startUpper, DAYS: (daysF ? daysF : "ANY"), TYPE: tier, PAX: pax };
+    const pillData = { START: startUpper, DAYS: (daysF ? daysF : "ANY"), TYPE: tier, INTER: INTER_ALL.length, PAX: pax };
     for(const [k,v] of Object.entries(pillData)){
       const div = document.createElement("div");
       div.className = "pill";
@@ -2358,10 +2286,10 @@
     }
 
     renderPackagesList();
-    toast("Packages ready. Pick Inter-District or Within District.");
+    toast("Now pick a package from Inter-District or Within-District.");
   }
 
-  async function openTemplate(key, startUpper){
+  async function openTemplate(key, start){
     const tpl = TEMPLATES[key];
     if(!tpl){ toast("Template not found"); return; }
     CURRENT_TEMPLATE_KEY = key;
@@ -2370,7 +2298,7 @@
     const endKey = endKeyFromRoutePath(tpl);
     const routeIds = routeIdsFromTemplateIncludingStart(tpl);
 
-    renderItinerary(tpl, startUpper, endKey);
+    renderItinerary(tpl, start, endKey);
 
     const rr = await drawRoadRouteFromPlaces(routeIds);
     CURRENT_ROUTE_KM = rr.ok ? rr.km : 0;
@@ -2382,11 +2310,10 @@
   async function loadLive(){
     setStatus("Loading live from Firebase…");
 
-    const [tplSnap, placesSnap, tranSnap, hotelSnap, staySnap] = await Promise.all([
+    const [tplSnap, placesSnap, tranSnap, staySnap] = await Promise.all([
       db.ref(NODE_TEMPLATES).once("value"),
       db.ref(NODE_PLACES).once("value"),
       db.ref(NODE_TRANSPORT).once("value").catch(()=>({ val:()=>({}) })),
-      db.ref(NODE_HOTEL).once("value").catch(()=>({ val:()=>({}) })),
       db.ref(NODE_STAYRULES).once("value").catch(()=>({ val:()=>({}) }))
     ]);
 
@@ -2402,7 +2329,6 @@
     }
 
     pricing_transport = (tranSnap && typeof tranSnap.val==="function") ? (tranSnap.val() || {}) : {};
-    rate_hotel = (hotelSnap && typeof hotelSnap.val==="function") ? (hotelSnap.val() || {}) : {};
     stay_rate_rules = (staySnap && typeof staySnap.val==="function") ? (staySnap.val() || {}) : {};
     PRICING_READY = true;
 
@@ -2420,25 +2346,18 @@
   async function refreshAll(){
     try{
       setStatus("Loading live from Firebase…");
-
       await loadLive();
       await loadPlaceImagesFromGarg();
-
       saveCache();
-
       setStatus(`Loaded LIVE • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places`);
       toast("Refreshed from Firebase");
       invalidateMapSoon();
 
-      // if filters already used, re-render
       if($("pills").children.length){
         applyFilters();
       }else{
         $("districtBar").innerHTML = "";
         $("pkgCount").textContent = "—";
-        $("badgeAll").textContent = "—";
-        $("badgeInter").textContent = "—";
-        $("badgeLocal").textContent = "—";
       }
     }catch(err){
       console.error(err);
@@ -2471,97 +2390,62 @@
     }
   }
 
-  /* ✅ Guide Bot */
-  const bot = {
-    fab: null, box:null, body:null, input:null, send:null, close:null
-  };
-  const botState = { step:0, start:"", days:"", mode:"" };
+  /* ✅ GUIDE BOT LOGIC */
+  const GUIDE_KEY = "hp_guide_hidden_v1";
+  const guideState = { step: 0 };
 
-  function addBotMsg(text, who="bot", chips=[]){
+  function gAdd(text, me=false){
+    const b = $("guideBody");
     const d = document.createElement("div");
-    d.className = `msg ${who}`;
-    d.innerHTML = text;
-    bot.body.appendChild(d);
-
-    if(chips && chips.length){
-      const row = document.createElement("div");
-      row.className = "gbChips";
-      chips.forEach(c=>{
-        const b = document.createElement("button");
-        b.className = "chipBtn";
-        b.type = "button";
-        b.textContent = c;
-        b.onclick = ()=>handleBot(c, true);
-        row.appendChild(b);
-      });
-      bot.body.appendChild(row);
-    }
-    bot.body.scrollTop = bot.body.scrollHeight;
+    d.className = "gMsg" + (me ? " me" : "");
+    d.textContent = text;
+    b.appendChild(d);
+    b.scrollTop = b.scrollHeight;
   }
 
-  function botStart(){
-    botState.step = 1;
-    botState.start = "";
-    botState.days = "";
-    botState.mode = "";
-    bot.body.innerHTML = "";
-    addBotMsg("Hi 👋 I’m your Himachal Guide Bot. I will help you book in 3 steps.");
-    addBotMsg("Step 1: Choose your START city:", "bot", ["DELHI","CHANDIGARH","AMRITSAR","SHIMLA"]);
+  function guideStart(){
+    $("guideBody").innerHTML = "";
+    guideState.step = 0;
+    gAdd("Hi! I’m your Himachal package guide.\n\nStep 1: Tell me your START city (Delhi / Chandigarh / Amritsar etc.)");
+    gAdd("Tip: You can also type Start in the Start box and press Generate.");
   }
 
-  function handleBot(text, fromChip=false){
-    const val = String(text || bot.input.value || "").trim();
-    if(!val) return;
-    if(!fromChip) addBotMsg(escapeHtml(val), "user");
-    bot.input.value = "";
-
-    if(/restart/i.test(val)){ botStart(); return; }
-
-    if(botState.step === 1){
-      botState.start = val.toUpperCase();
-      $("startInp").value = botState.start;
-      addBotMsg(`✅ Start set: <b>${escapeHtml(botState.start)}</b>`);
-      botState.step = 2;
-      addBotMsg("Step 2: How many days?", "bot", ["3","4","5","6","7","8","10","12"]);
+  function guideHandle(action){
+    if(action==="start"){
+      const start = normalizeStartInput() || $("startInp").value.trim();
+      if(!start){
+        gAdd("Type your START in the Start field (left). Example: CHANDIGARH");
+        return;
+      }
+      gAdd("Start set: " + String(start).toUpperCase(), true);
+      gAdd("Step 2: Choose DAYS (or keep ANY).");
+      guideState.step = 1;
       return;
     }
-
-    if(botState.step === 2){
-      botState.days = val;
-      $("daysSel").value = String(val).replace("+","");
-      addBotMsg(`✅ Days set: <b>${escapeHtml(botState.days)}</b>`);
-      botState.step = 3;
-      addBotMsg("Step 3: Choose Package Type", "bot", ["INTER-DISTRICT","WITHIN DISTRICT","ALL"]);
+    if(action==="days"){
+      const v = $("daysSel").value.trim();
+      gAdd("Days: " + (v ? v : "ANY"), true);
+      gAdd("Step 3: Select PAX (number of people).");
+      guideState.step = 2;
       return;
     }
-
-    if(botState.step === 3){
-      const up = val.toUpperCase();
-      if(up.includes("INTER")) setMode("inter");
-      else if(up.includes("WITHIN") || up.includes("LOCAL")) setMode("local");
-      else setMode("all");
-
-      addBotMsg("✅ Done! I have filtered packages for you. Now tap any package card to open itinerary, then click WhatsApp to book.");
+    if(action==="pax"){
+      const v = $("paxSel").value;
+      gAdd("Pax: " + v, true);
+      gAdd("Step 4: Press Generate. Then pick Inter-District or Within-District.");
+      guideState.step = 3;
+      return;
+    }
+    if(action==="go"){
+      if(!normalizeStartInput()){
+        gAdd("Please set START first. Type Start and click 'Set Start'.");
+        return;
+      }
+      gAdd("Generating packages…", true);
       applyFilters();
+      gAdd("Done ✅\n\nNow:\n• Inter-District = multi-day across districts\n• Within-District = short local tours\n\nTap any package card to open itinerary + map.");
       return;
     }
-
-    addBotMsg('Type "Restart" to begin again.', "bot", ["Restart"]);
-  }
-
-  function openBot(){
-    bot.box.classList.remove("hidden");
-    if(!bot.body.childElementCount) botStart();
-  }
-
-  /* ✅ Visitor mode toggle */
-  function setMode(mode){
-    VISITOR_MODE = mode;
-    $("modeAll").classList.toggle("active", mode==="all");
-    $("modeInter").classList.toggle("active", mode==="inter");
-    $("modeLocal").classList.toggle("active", mode==="local");
-    // refresh list if already generated
-    if($("pills").children.length) renderPackagesList();
   }
 
   window.addEventListener("DOMContentLoaded", () => {
@@ -2603,28 +2487,35 @@
       $("daysSel").value="";
       $("paxSel").value="2";
       $("pills").innerHTML="";
+      $("pkgList").innerHTML = `<div class="pill pillHint"><span>Type Start & click</span> <b>Generate</b></div>`;
       $("districtBar").innerHTML = "";
       $("pkgCount").textContent="—";
-      $("badgeAll").textContent = "—";
-      $("badgeInter").textContent = "—";
-      $("badgeLocal").textContent = "—";
-      clearRightPanel();
-      $("pkgList").innerHTML = `
-        <div class="pkgExplain">
-          <b>How to book:</b><br/>
-          1) Select <b>Start</b> → click <b>Generate</b><br/>
-          2) Choose a package (Local / Inter-district)<br/>
-          3) Click <b>WhatsApp</b> to finalize.
-        </div>
-        <div class="pill pillHint"><span>Type Start & click</span> <b>Generate</b></div>
-      `;
+      $("activePkgName").textContent="—";
+      $("itTitle").textContent="Select a package";
+      $("itMeta").textContent="Day-wise details will appear here";
+      $("incExc").textContent="—";
+      $("daysList").innerHTML="";
+      $("placeDetail").innerHTML = `<div class="muted">Tap any place from itinerary to see History + What you can find + Photos here.</div>`;
+      $("priceTotal").innerHTML="— <small></small>";
+      $("pricePer").innerHTML="— <small></small>";
+      $("paxUsed").innerHTML="— <small></small>";
+      clearMap();
+      CURRENT_TEMPLATE_KEY = "";
+      CURRENT_ROUTE_KM = 0;
+      INTER_ALL = [];
+      DISTRICT_KEYS = [];
+      ACTIVE_DISTRICT = "ALL";
+      setActiveTab("itin");
+      setWhatsAppEnquiryEnabled(false);
       toast("Reset done");
       invalidateMapSoon();
+      guideStart();
     });
 
     $("fitMapBtn").addEventListener("click", ()=>{ fitRoute(); invalidateMapSoon(); });
     $("clearRouteBtn").addEventListener("click", ()=>{ clearMap(); toast("Cleared"); });
     $("refreshBtn").addEventListener("click", refreshAll);
+
     $("mintLoginBtn").addEventListener("click", mintLogin);
 
     $("showAllStopsBtn").addEventListener("click", async ()=>{
@@ -2668,34 +2559,13 @@
       computePriceForCurrent();
       if($("pills").children.length) applyFilters();
     });
-
     $("visitType")?.addEventListener("change", ()=>{
       computePriceForCurrent();
       if($("pills").children.length) applyFilters();
     });
-
     $("daysSel")?.addEventListener("change", ()=>{
       if($("pills").children.length) applyFilters();
     });
-
-    /* Mode toggle buttons */
-    $("modeAll").addEventListener("click", ()=>setMode("all"));
-    $("modeInter").addEventListener("click", ()=>setMode("inter"));
-    $("modeLocal").addEventListener("click", ()=>setMode("local"));
-
-    /* Bot */
-    bot.fab = $("guideFab");
-    bot.box = $("guideBot");
-    bot.body = $("gbBody");
-    bot.input = $("gbInput");
-    bot.send = $("gbSend");
-    bot.close = $("gbCloseBtn");
-
-    bot.fab.addEventListener("click", ()=>{ openBot(); });
-    $("openBotBtn").addEventListener("click", ()=>{ openBot(); });
-    bot.close.addEventListener("click", ()=>bot.box.classList.add("hidden"));
-    bot.send.addEventListener("click", ()=>handleBot());
-    bot.input.addEventListener("keydown",(e)=>{ if(e.key==="Enter") handleBot(); });
 
     initMap();
 
@@ -2704,120 +2574,27 @@
 
     setWhatsAppEnquiryEnabled(false);
     refreshAll();
+
+    /* Guide bot UI */
+    const fab = $("guideFab");
+    const box = $("guideBox");
+    const close = $("guideClose");
+    const reset = $("guideReset");
+
+    fab.addEventListener("click", ()=>{
+      const open = box.style.display === "flex";
+      box.style.display = open ? "none" : "flex";
+      if(!open && !$("guideBody").children.length) guideStart();
+    });
+    close.addEventListener("click", ()=> box.style.display = "none");
+    reset.addEventListener("click", guideStart);
+
+    document.querySelectorAll(".qBtn").forEach(btn=>{
+      btn.addEventListener("click", ()=> guideHandle(btn.dataset.q));
+    });
+
+    guideStart();
   });
-
-  async function openTemplate(key, startUpper){
-    const tpl = TEMPLATES[key];
-    if(!tpl){ toast("Template not found"); return; }
-    CURRENT_TEMPLATE_KEY = key;
-    highlightActiveCard();
-
-    const endKey = endKeyFromRoutePath(tpl);
-    const routeIds = routeIdsFromTemplateIncludingStart(tpl);
-
-    renderItinerary(tpl, startUpper, endKey);
-
-    const rr = await drawRoadRouteFromPlaces(routeIds);
-    CURRENT_ROUTE_KM = rr.ok ? rr.km : 0;
-
-    computePriceForCurrent();
-    updateWhatsAppForCurrent();
-  }
-
-  /* ========= existing WhatsApp + Pricing support from your original ========= */
-  function pickStayRule(tier){
-    const t = String(tier||"budget").toLowerCase();
-    const key = (t==="premium") ? "r2" : (t==="luxury") ? "r3" : "r1";
-    return stay_rate_rules?.[key] || {};
-  }
-  function pickVehicleByPax(pax){
-    pax = Number(pax||2);
-    if(pax <= 4) return "hatchback";
-    if(pax <= 7) return "innova";
-    return "luxury_suv";
-  }
-  function autoSeason(tpl){
-    const text = String(tpl?.best_season || "").toLowerCase();
-    if(/monsoon|rain|jul|aug/.test(text)) return "low";
-    if(/winter|snow|snowfall|dec|jan/.test(text)) return "peak";
-    if(/peak/.test(text)) return "peak";
-    if(/low/.test(text)) return "low";
-    if(/mid/.test(text)) return "mid";
-    const m = new Date().getMonth() + 1;
-    if([1,5,6,10,12].includes(m)) return "peak";
-    if([2,7,8].includes(m)) return "low";
-    return "mid";
-  }
-  function pickBaseRoomBySeason(rule, season){
-    const s = String(season||"mid").toLowerCase();
-    if(s === "low")  return Number(rule.base_rate_low || rule.base_rate_mid || rule.base_rate_peak || 0);
-    if(s === "peak") return Number(rule.base_rate_peak || rule.base_rate_mid || rule.base_rate_low || 0);
-    return Number(rule.base_rate_mid || rule.base_rate_low || rule.base_rate_peak || 0);
-  }
-  function computeSnowMultiplier(tpl, vehicle){
-    const sr = String(tpl?.snow_risk || "").toLowerCase();
-    const base = Number(vehicle?.snow_multiplier || 1);
-    if(!isFinite(base) || base <= 0) return 1;
-    if(sr.includes("high")) return base;
-    if(sr.includes("medium")) return 1 + (base - 1) * 0.5;
-    return 1;
-  }
-  function computeRoadMultiplier(tpl, vehicle){
-    const rt = String(tpl?.road_type || "").toLowerCase();
-    const dl = String(tpl?.drive_level || "").toLowerCase();
-    const bad = Number(vehicle?.bad_road_multiplier || 1);
-    const hill = Number(vehicle?.hill_multiplier || 1);
-    let m = 1;
-    if(rt.includes("bad") || rt.includes("mix")) m *= (isFinite(bad) && bad>0 ? bad : 1);
-    if(dl.includes("high") || rt.includes("hill")) m *= (isFinite(hill) && hill>0 ? hill : 1);
-    return m;
-  }
-  function estimateTotalCost({ km=0, days=3, pax=2, tpl=null }){
-    km = Number(km||0);
-    days = Number(days||0);
-    pax = Math.max(1, Number(pax||1));
-    const nights = Math.max(0, days-1);
-
-    if(!PRICING_READY || !isFinite(km) || km<=0 || !days){
-      return { total:NaN, perPerson:NaN, breakdown:null };
-    }
-
-    const tier   = String($("visitType")?.value || "budget").toLowerCase();
-    const season = autoSeason(tpl);
-
-    const vehicleKey = pickVehicleByPax(pax);
-    const v = pricing_transport?.[vehicleKey] || {};
-
-    const perKm = Number(v.per_km || 0);
-    const driverPerDay = Number(v.driver_per_day || 0);
-    const minKmPerDay = Number(v.min_km_per_day || 0);
-    const nightCharge = Number(v.night_charge || 0);
-    const tollPct = Number(v.parking_toll_buffer_pct || 0);
-
-    const minBillKm = (isFinite(minKmPerDay) && minKmPerDay > 0) ? (days * minKmPerDay) : 0;
-    const billedKm = Math.max(km, minBillKm);
-
-    const roadMul = computeRoadMultiplier(tpl, v);
-    const snowMul = computeSnowMultiplier(tpl, v);
-    const bufferMul = 1 + (isFinite(tollPct) ? tollPct : 0) / 100;
-
-    const transportKmCost = billedKm * perKm * roadMul * snowMul * bufferMul;
-    const driverCost = days * driverPerDay;
-    const nightCost = nights * nightCharge;
-
-    const transport = transportKmCost + driverCost + nightCost;
-
-    const rule = pickStayRule(tier);
-    const baseRoom = pickBaseRoomBySeason(rule, season);
-    const weekendMul = Number(rule.weekend_multiplier || 1);
-
-    const rooms = Math.max(1, Math.ceil(pax / 2));
-    const wkFactor = (nights >= 2) ? (isFinite(weekendMul) && weekendMul>0 ? weekendMul : 1) : 1;
-    const hotel = nights * baseRoom * rooms * wkFactor;
-
-    const total = transport + hotel;
-    return { total, perPerson: total/pax };
-  }
   </script>
 </body>
 </html>
