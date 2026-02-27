@@ -13,14 +13,15 @@
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- ✅ FIX: remove defer so Leaflet is guaranteed available -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <!-- Firebase (Compat) -->
-  <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <!-- ✅ FIX: remove defer so firebase is guaranteed available -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 
   <style>
     :root{
@@ -62,7 +63,6 @@
     }
     .shell{ width: var(--shellW); margin: 0 auto; padding: 12px 10px 18px; }
 
-    /* HERO */
     .hero{
       height: var(--heroH);
       border-radius: 22px;
@@ -72,22 +72,15 @@
       box-shadow: var(--shadow);
       background: rgba(0,0,0,.18);
     }
-    .hero img{
-      width:100%; height:100%;
-      object-fit:cover;
-      filter: saturate(1.05) contrast(1.05);
-      display:block;
-    }
+    .hero img{ width:100%; height:100%; object-fit:cover; display:block; }
     .hero::after{
-      content:"";
-      position:absolute; inset:0;
+      content:""; position:absolute; inset:0;
       background: linear-gradient(90deg, rgba(0,0,0,.68), rgba(0,0,0,.30), rgba(0,0,0,.55));
     }
     .heroInner{
       position:absolute; inset:0;
       display:flex; align-items:flex-end; justify-content:space-between;
-      padding: 14px 16px;
-      gap:12px;
+      padding: 14px 16px; gap:12px;
     }
     .heroBrand{ display:flex; align-items:center; gap:12px; min-width: 280px; }
     .logo{
@@ -99,15 +92,8 @@
       flex:0 0 auto;
     }
     .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .heroTitle{
-      margin:0; font-size: 16px; letter-spacing:.18em;
-      text-transform: uppercase; font-weight: 950; color:#fff;
-    }
-    .heroSub{
-      margin:6px 0 0; font-size: 12px;
-      color: rgba(255,255,255,.82);
-      letter-spacing:.06em; text-transform: uppercase;
-    }
+    .heroTitle{ margin:0; font-size: 16px; letter-spacing:.18em; text-transform: uppercase; font-weight: 950; color:#fff; }
+    .heroSub{ margin:6px 0 0; font-size: 12px; color: rgba(255,255,255,.82); letter-spacing:.06em; text-transform: uppercase; }
     .heroRight{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:flex-end; }
     .chip{
       border:1px solid rgba(255,255,255,.14);
@@ -128,7 +114,6 @@
       color:#fff; font-weight:900;
     }
 
-    /* LAYOUT: 20% / 55% / 25% */
     .main{
       display:grid;
       grid-template-columns: 20% 55% 25%;
@@ -157,7 +142,6 @@
     .paneHdr .t{ margin:0; font-size:11px; letter-spacing:.18em; text-transform: uppercase; font-weight: 950; }
     .paneHdr .s{ font-size:10.5px; color:var(--muted); letter-spacing:.10em; text-transform: uppercase; }
 
-    /* LEFT SIDEBAR */
     .sideInner{ padding: 12px; display:flex; flex-direction:column; gap:10px; min-height:0; }
     .sideCard{
       border:1px solid rgba(255,255,255,.12);
@@ -199,14 +183,7 @@
     }
     .pill b{ color:#fff; letter-spacing:.06em; }
 
-    /* ✅ NEW: Other packages list (left highlighted area) */
-    .otherWrap{
-      flex:1;
-      min-height:0;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
+    .otherWrap{ flex:1; min-height:0; display:flex; flex-direction:column; gap:10px; }
     .otherHdr{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.16);
@@ -214,10 +191,7 @@
       padding: 10px;
       display:flex; align-items:center; justify-content:space-between; gap:10px;
     }
-    .otherHdr .h{
-      font-size: 11px; font-weight: 950;
-      letter-spacing:.14em; text-transform: uppercase;
-    }
+    .otherHdr .h{ font-size: 11px; font-weight: 950; letter-spacing:.14em; text-transform: uppercase; }
     .otherHdr .xBtn{
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
@@ -232,14 +206,10 @@
       white-space: nowrap;
     }
     .otherList{
-      flex:1;
-      min-height:0;
-      overflow:auto;
+      flex:1; min-height:0; overflow:auto;
       -webkit-overflow-scrolling: touch;
       padding: 2px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+      display:flex; flex-direction:column; gap:10px;
     }
     .otherHint{
       border:1px dashed rgba(255,255,255,.16);
@@ -252,15 +222,7 @@
       line-height: 1.35;
     }
 
-    /* CENTER */
-    .centerInner{
-      display:flex;
-      flex-direction:column;
-      min-height:0;
-      flex:1;
-    }
-
-    /* District chips row */
+    .centerInner{ display:flex; flex-direction:column; min-height:0; flex:1; }
     .districtBar{
       display:flex; flex-wrap:nowrap; gap:8px;
       padding:10px 12px;
@@ -284,7 +246,6 @@
     }
     .distItem.active{ border-color: rgba(124,58,237,.70); box-shadow: 0 0 0 3px rgba(124,58,237,.16); background: rgba(124,58,237,.12); }
 
-    /* Centre hero (shown until package selected) */
     .centreHero{
       margin: 12px;
       border:1px solid rgba(255,255,255,.12);
@@ -295,47 +256,15 @@
       background: rgba(0,0,0,.22);
       box-shadow: 0 24px 90px rgba(0,0,0,.55);
     }
-    .centreHero img{
-      width:100%; height:100%;
-      object-fit:cover;
-      display:block;
-      filter:saturate(1.05) contrast(1.05);
-      transition: opacity .5s ease;
-    }
-    .centreHero:before{
-      content:"";
-      position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,.62), rgba(0,0,0,.25), rgba(0,0,0,.62));
-      z-index:2;
-    }
+    .centreHero img{ width:100%; height:100%; object-fit:cover; display:block; filter:saturate(1.05) contrast(1.05); transition: opacity .5s ease; }
+    .centreHero:before{ content:""; position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,.62), rgba(0,0,0,.25), rgba(0,0,0,.62)); z-index:2; }
     .centreHeroContent{
-      position:absolute; inset:0;
-      z-index:3;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      text-align:center;
-      padding: 14px;
-      gap:10px;
+      position:absolute; inset:0; z-index:3;
+      display:flex; flex-direction:column; justify-content:center; align-items:center;
+      text-align:center; padding: 14px; gap:10px;
     }
-    .centreHeroContent .h{
-      font-size: 20px;
-      font-weight: 950;
-      letter-spacing:.14em;
-      text-transform: uppercase;
-      color:#fff;
-      text-shadow: 0 18px 50px rgba(0,0,0,.55);
-    }
-    .centreHeroContent .p{
-      max-width: 520px;
-      font-size: 12px;
-      color: rgba(255,255,255,.88);
-      letter-spacing:.08em;
-      text-transform: uppercase;
-      line-height: 1.5;
-      text-shadow: 0 18px 50px rgba(0,0,0,.55);
-    }
+    .centreHeroContent .h{ font-size: 20px; font-weight: 950; letter-spacing:.14em; text-transform: uppercase; color:#fff; text-shadow: 0 18px 50px rgba(0,0,0,.55); }
+    .centreHeroContent .p{ max-width: 520px; font-size: 12px; color: rgba(255,255,255,.88); letter-spacing:.08em; text-transform: uppercase; line-height: 1.5; text-shadow: 0 18px 50px rgba(0,0,0,.55); }
     .centreHeroContent .tag{
       border:1px solid rgba(255,255,255,.16);
       background: rgba(255,255,255,.06);
@@ -348,7 +277,6 @@
       backdrop-filter: blur(12px);
     }
 
-    /* Package list */
     .pkgList{
       padding: 12px;
       overflow-y:auto;
@@ -360,6 +288,7 @@
       background: rgba(0,0,0,.12);
       flex:1;
     }
+
     .pkgGroupHdr{
       border:1px solid rgba(255,255,255,.12);
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
@@ -380,14 +309,7 @@
       box-shadow: 0 0 0 4px rgba(6,182,212,.14);
       display:inline-block;
     }
-    .pkgGroupHdr .h2{
-      margin-top:6px;
-      font-size: 10.5px;
-      color: rgba(255,255,255,.75);
-      letter-spacing:.08em;
-      text-transform: uppercase;
-      line-height: 1.35;
-    }
+    .pkgGroupHdr .h2{ margin-top:6px; font-size: 10.5px; color: rgba(255,255,255,.75); letter-spacing:.08em; text-transform: uppercase; line-height: 1.35; }
 
     .pkgW{
       border:1px solid rgba(255,255,255,.12);
@@ -403,8 +325,7 @@
     .pkgWTop{ display:flex; gap:10px; padding:10px; align-items:stretch; }
     .pkgThumb{
       width:86px; height:86px;
-      border-radius: 14px;
-      overflow:hidden;
+      border-radius: 14px; overflow:hidden;
       border:1px solid rgba(255,255,255,.12);
       background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.12), rgba(124,58,237,.18));
       flex: 0 0 auto;
@@ -416,13 +337,9 @@
     .pkgWBody{ flex:1; min-width:0; display:flex; flex-direction:column; justify-content:space-between; gap:8px; }
     .pkgWTitle{ display:flex; align-items:center; gap:8px; min-width:0; }
     .pkgWTitle .mainT{
-      font-size: 12px;
-      font-weight: 950;
-      letter-spacing:.10em;
-      text-transform: uppercase;
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
+      font-size: 12px; font-weight: 950;
+      letter-spacing:.10em; text-transform: uppercase;
+      white-space: nowrap; overflow:hidden; text-overflow: ellipsis;
       flex:1;
     }
     .pkgBadge{
@@ -455,31 +372,17 @@
     .pkgChip b{ color:#fff; letter-spacing:.06em; }
     .pkgChip .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
 
-    .pkgStrip{ display:flex; gap:7px; align-items:center; }
-    .stripImg{
-      width:30px; height:30px; border-radius: 10px; overflow:hidden;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      flex: 0 0 auto;
-    }
-    .stripImg img{ width:100%; height:100%; object-fit:cover; display:block; }
-
     .pkgWBottom{
       display:flex; align-items:center; justify-content:space-between;
-      gap:10px;
-      padding: 9px 10px;
+      gap:10px; padding: 9px 10px;
       border-top:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.14);
     }
     .pkgHint{
-      font-size: 10.5px;
-      color: rgba(255,255,255,.68);
+      font-size: 10.5px; color: rgba(255,255,255,.68);
       letter-spacing:.04em;
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
-      flex:1;
-      min-width:0;
+      white-space: nowrap; overflow:hidden; text-overflow: ellipsis;
+      flex:1; min-width:0;
     }
     .pkgCTA{
       flex:0 0 auto;
@@ -495,7 +398,6 @@
       white-space: nowrap;
     }
 
-    /* Inline details (shown right under clicked package) */
     .pkgDetails{
       display:none;
       border-top:1px solid rgba(255,255,255,.10);
@@ -504,37 +406,11 @@
     }
     .pkgW.active .pkgDetails{ display:block; }
 
-    .detailsGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
-    .detailsCard{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-      border-radius: 14px;
-      padding: 10px;
-    }
-    .bigTitle{
-      margin:0;
-      font-size: 12px;
-      letter-spacing:.18em;
-      text-transform: uppercase;
-      color:#fff;
-    }
-    .muted{
-      color: var(--muted);
-      font-size: 10.8px;
-      letter-spacing:.08em;
-      text-transform: uppercase;
-      line-height:1.35;
-    }
-    .mini{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      border-radius: 14px;
-      padding: 9px;
-    }
+    .detailsGrid{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    .detailsCard{ border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.22); border-radius: 14px; padding: 10px; }
+    .bigTitle{ margin:0; font-size: 12px; letter-spacing:.18em; text-transform: uppercase; color:#fff; }
+    .muted{ color: var(--muted); font-size: 10.8px; letter-spacing:.08em; text-transform: uppercase; line-height:1.35; }
+    .mini{ border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); border-radius: 14px; padding: 9px; }
     .mini .k{ font-size: 10px; letter-spacing:.16em; text-transform: uppercase; color: rgba(255,255,255,.70); }
     .mini .v{ margin-top:5px; font-size: 13px; font-weight: 950; letter-spacing:.06em; color:#fff; }
     .mini .v small{ font-size: 10.5px; color: rgba(255,255,255,.72); font-weight: 800; }
@@ -585,26 +461,6 @@
     .pname{ font-size: 11px; font-weight: 950; letter-spacing:.10em; text-transform: uppercase; white-space:nowrap; overflow:hidden; text-overflow: ellipsis; }
     .pmeta{ margin-top:3px; font-size: 10px; letter-spacing:.12em; text-transform: uppercase; color: rgba(255,255,255,.68); white-space:nowrap; overflow:hidden; text-overflow: ellipsis; }
 
-    .nearWrap{ border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.22); border-radius: 14px; padding: 10px; margin-top:10px;}
-    .nearGrid{ display:flex; gap:10px; overflow-x:auto; -webkit-overflow-scrolling: touch; padding-bottom:4px; }
-    .nearCard{ width: 112px; flex: 0 0 auto; cursor:pointer; user-select:none; }
-    .nearSquare{
-      width:112px; height:112px; border-radius: 14px; overflow:hidden;
-      border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05);
-      display:grid; place-items:center; position:relative;
-    }
-    .nearSquare img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .nearName{
-      margin-top:8px; font-size:10.5px; font-weight:950; letter-spacing:.06em; text-transform: uppercase;
-      color: rgba(255,255,255,.90); line-height:1.2; text-align:center; max-width:112px;
-      white-space:nowrap; overflow:hidden; text-overflow: ellipsis;
-    }
-    .nearMeta{
-      margin-top:4px; font-size:10px; color: rgba(255,255,255,.65); letter-spacing:.08em; text-transform: uppercase;
-      text-align:center; white-space:nowrap; overflow:hidden; text-overflow: ellipsis; max-width:112px;
-    }
-
-    /* MAP (right) */
     .mapPane{ position: sticky; top: 12px; height: calc(100vh - 24px); min-height: 620px; max-height: 920px; }
     #map{ width:100%; flex:1; min-height: 520px; background: rgba(255,255,255,.04); }
     .mapTools{
@@ -627,7 +483,6 @@
       user-select:none; white-space: nowrap; text-decoration:none;
     }
 
-    /* BOT */
     .botToast{
       position:fixed; left: 14px; bottom: 14px; z-index: 9999;
       border:1px solid rgba(255,255,255,.14);
@@ -643,7 +498,6 @@
     }
     .botToast.show{ display:block; }
 
-    /* WhatsApp floating */
     .waFloat{
       position:fixed; right: 14px; bottom: 14px; z-index: 10000;
       display:flex; align-items:center; gap:10px; padding: 12px 14px;
@@ -669,7 +523,6 @@
     }
     @media (max-width: 460px){ .waText{ display:none; } .waFloat{ padding: 10px; } .waClose{ display:none; } }
 
-    /* Responsive stacking */
     @media (max-width: 1200px){
       .main{ grid-template-columns: 1fr; }
       .mapPane{ position:relative; top:auto; height:520px; max-height:none; }
@@ -706,7 +559,6 @@
   </a>
 
   <div class="shell">
-
     <!-- HERO -->
     <div class="hero">
       <img src="./hero.jpg" alt="Himachal Explorer Hero" onerror="this.style.display='none';">
@@ -732,7 +584,6 @@
 
     <!-- MAIN -->
     <div class="main">
-
       <!-- LEFT -->
       <div class="pane">
         <div class="paneHdr">
@@ -773,7 +624,7 @@
             <div class="field" style="margin-top:10px;">
               <label>Pax</label>
               <select id="paxSel">
-                <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+                <option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
                 <option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
               </select>
             </div>
@@ -786,7 +637,6 @@
             <div class="pills" id="pills"></div>
           </div>
 
-          <!-- ✅ NEW: Other packages will appear here after selecting any package -->
           <div class="otherWrap">
             <div class="otherHdr">
               <div class="h">Other Packages</div>
@@ -803,7 +653,7 @@
           <div class="sideCard">
             <div class="muted" style="text-transform:none;letter-spacing:.02em;">
               Tip: Select <b>Start</b>, optionally <b>Days</b>, then click <b>Generate</b>.
-              Inter-district packages show first. Local packages (≤3 days) show only when available.
+              Pricing is pulled from Firebase as per-person final amount and multiplied by Pax.
             </div>
           </div>
         </div>
@@ -822,7 +672,6 @@
         <div class="centerInner">
           <div class="districtBar" id="districtBar"></div>
 
-          <!-- Shown until package selected -->
           <div class="centreHero" id="centreHero">
             <img id="centreHeroImg" src="./kinnaur-kailash.webp" alt="Himachal Pradesh" onerror="this.src='./n1.jpg'">
             <div class="centreHeroContent">
@@ -833,7 +682,6 @@
             </div>
           </div>
 
-          <!-- ✅ Center list now becomes: (a) full list when not selected, (b) ONLY selected package when selected -->
           <div class="pkgList" id="pkgList">
             <div class="pill"><b>Type Start</b> then click <b>Generate</b></div>
           </div>
@@ -858,15 +706,12 @@
           <div class="toolBtn" id="toggleTilesBtn">Toggle Tiles</div>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- BOT welcome -->
-  <div class="botToast" id="botToast">👋 Welcome! Select your <b>Start</b> and click <b>Generate</b>. Then open any package to see details under it.</div>
+  <div class="botToast" id="botToast">👋 Welcome! Select your <b>Start</b> and click <b>Generate</b>. Then open any package to see details.</div>
 
   <script>
-    /* Floating WhatsApp: hide/show preference */
     (function(){
       const KEY = "wa_float_hidden_v1";
       function apply(){
@@ -890,10 +735,8 @@
 
   <script>
   /* ===============================
-     Firebase Config (2 Apps)
+     Firebase Config (revnue-records)
      =============================== */
-
-  // ✅ MAIN DB (revnue-records)
   const firebaseConfig = {
     apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
     authDomain: "revnue-records.firebaseapp.com",
@@ -905,25 +748,10 @@
     measurementId: "G-MGTDBCG896"
   };
 
-  // ✅ IMAGES DB (garg-enterprise)
-  const firebaseConfigImages = {
-    apiKey: "AIzaSyBmJDsXvokR8kYs_yoLPau1DqANPBBORJY",
-    authDomain: "garg-enterprise.firebaseapp.com",
-    databaseURL: "https://garg-enterprise-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "garg-enterprise",
-    storageBucket: "garg-enterprise.firebasestorage.app",
-    messagingSenderId: "1097408452571",
-    appId: "1:1097408452571:web:4e6806326b47ebb0b5b9fe",
-    measurementId: "G-S2S0MYT39W"
-  };
-
-  const NODE_TEMPLATES    = "templates";
-  const NODE_PLACES       = "places_in_packages";
-  const NODE_TRANSPORT    = "pricing_transport";
-  const NODE_HOTEL        = "rate_hotel";
-  const NODE_STAYRULES    = "stay_rate_rules";
-
-  const NODE_PLACE_IMAGES = "place_images"; // garg DB node
+  /* ===== Nodes ===== */
+  const NODE_TEMPLATES  = "templates";
+  const NODE_PLACES     = "places_in_packages";
+  const NODE_COSTS      = "package_cost_breakdown"; // final per-person prices
 
   const $ = (id)=>document.getElementById(id);
 
@@ -951,22 +779,16 @@
       .replace(/^-|-$/g,"");
   }
 
-  /* BOT */
   function showBot(msg){
     const el = $("botToast");
     if(!el) return;
     el.innerHTML = msg || "👋 Welcome!";
     el.classList.add("show");
-    setTimeout(()=> el.classList.remove("show"), 4000);
+    setTimeout(()=> el.classList.remove("show"), 4800);
   }
 
   /* Centre hero slideshow */
-  const CENTRE_HERO_IMAGES = [
-    "./kinnaur-kailash.webp",
-    "./n1.jpg",
-    "./temple.jpg",
-    "./trek.jpeg"
-  ];
+  const CENTRE_HERO_IMAGES = ["./kinnaur-kailash.webp","./n1.jpg","./temple.jpg","./trek.jpeg"];
   let heroIdx = 0;
   function startCentreHero(){
     const img = $("centreHeroImg");
@@ -981,266 +803,13 @@
     }, 4200);
   }
 
-  /* Place mapping */
+  /* Map + Utils */
   function placeIdAny(p, key){ return String(p?.place_id || p?.id || key || "").trim(); }
-  function placeNameAny(p, key){
-    return String(p?.name || p?.["Location Name"] || p?.title || key || "PLACE").trim();
-  }
+  function placeNameAny(p, key){ return String(p?.name || p?.["Location Name"] || p?.title || key || "PLACE").trim(); }
   function latAny(p){ return Number(p?.latitude ?? p?.lat ?? p?.Latitude); }
   function lngAny(p){ return Number(p?.longitude ?? p?.lng ?? p?.Longitude); }
   function districtAny(p){ return String(p?.district || p?.District || "").trim().toUpperCase(); }
 
-  /* PLACE IMAGES FROM GARG DB */
-  let PLACE_IMAGES = {};
-  let imagesDb = null;
-
-  function normalizePlaceImages(raw){
-    const out = {};
-    if(!raw || typeof raw !== "object") return out;
-
-    for(const [placeId, node] of Object.entries(raw)){
-      const urls = [];
-      const pushUrl = (u)=>{
-        const s = String(u||"").trim();
-        if(/^https?:\/\//i.test(s)) urls.push(s);
-      };
-
-      if(typeof node === "string"){
-        pushUrl(node);
-      }else if(Array.isArray(node)){
-        node.forEach(v=>{
-          if(typeof v === "string") pushUrl(v);
-          else if(v && typeof v === "object"){
-            if(v.url) pushUrl(v.url);
-            if(v.imageUrl) pushUrl(v.imageUrl);
-            if(v.image) pushUrl(v.image);
-          }
-        });
-      }else if(node && typeof node === "object"){
-        Object.values(node).forEach(v=>{
-          if(typeof v === "string") pushUrl(v);
-          else if(v && typeof v === "object"){
-            if(v.url) pushUrl(v.url);
-            if(v.imageUrl) pushUrl(v.imageUrl);
-            if(v.image) pushUrl(v.image);
-          }
-        });
-      }
-
-      out[String(placeId).trim()] = [...new Set(urls)];
-    }
-    return out;
-  }
-
-  async function loadPlaceImagesFromGarg(){
-    if(!imagesDb) return {};
-    try{
-      const snap = await imagesDb.ref(NODE_PLACE_IMAGES).once("value");
-      PLACE_IMAGES = normalizePlaceImages(snap.val() || {});
-      return PLACE_IMAGES;
-    }catch(e){
-      console.error("garg place_images load error:", e);
-      PLACE_IMAGES = {};
-      return {};
-    }
-  }
-
-  /* GITHUB / SITE IMAGE FETCH */
-  const IMG_ROOT_FOLDER = "created1";
-  const SITE_IMAGES_BASE = `/${IMG_ROOT_FOLDER}`;
-  const GITHUB_USER = "champishere001";
-  const GITHUB_REPO = "Himachal_Explorer";
-  const GITHUB_BRANCH = "main";
-
-  const GITHUB_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${IMG_ROOT_FOLDER}`;
-  const JSDELIVR_BASE   = `https://cdn.jsdelivr.net/gh/${GITHUB_USER}/${GITHUB_REPO}@${GITHUB_BRANCH}/${IMG_ROOT_FOLDER}`;
-
-  function imageBasesInOrder(){
-    return [SITE_IMAGES_BASE, JSDELIVR_BASE, GITHUB_RAW_BASE].filter(Boolean);
-  }
-  function githubFolderCandidates(placeId){
-    const id = String(placeId || "").trim();
-    if(!id) return [];
-    const nums = [1,2,3,4];
-    const exts = ["jpg","jpeg","png","webp"];
-    const urls = [];
-    const bases = imageBasesInOrder();
-    for(const base of bases){
-      for(const n of nums){
-        for(const ext of exts){
-          urls.push(`${base}/${id}/${n}.${ext}`);
-        }
-      }
-    }
-    return [...new Set(urls)];
-  }
-
-  function setImgWithFallback(imgEl, urls){
-    let i = 0;
-    const list = (urls||[]).filter(Boolean);
-    function tryNext(){
-      if(i >= list.length){
-        imgEl.remove();
-        return;
-      }
-      imgEl.src = list[i++];
-    }
-    imgEl.onerror = tryNext;
-    tryNext();
-  }
-
-  let PLACES = {};
-  function pickAllPhotos(p, pid){
-    const isValid = (u)=> typeof u==="string" && /^https?:\/\//i.test(u.trim());
-    let arr = [];
-
-    if(isValid(p?.imageUrl)) arr.push(p.imageUrl.trim());
-    if(isValid(p?.image)) arr.push(p.image.trim());
-    if(isValid(p?.img)) arr.push(p.img.trim());
-
-    if(Array.isArray(p?.images)){
-      arr.push(...p.images.filter(isValid).map(x=>x.trim()));
-    }else if(p?.images && typeof p.images === "object"){
-      arr.push(...Object.values(p.images).filter(isValid).map(x=>x.trim()));
-    }
-
-    const id = String(pid || p?.place_id || p?.id || "").trim();
-    if(id && PLACE_IMAGES[id]?.length) arr.push(...PLACE_IMAGES[id]);
-
-    if(id && (!PLACE_IMAGES[id] || !PLACE_IMAGES[id].length)){
-      const nm = placeNameAny(p, id);
-      const slug = slugifyName(nm);
-      if(slug && PLACE_IMAGES[slug]?.length) arr.push(...PLACE_IMAGES[slug]);
-    }
-
-    if(id) arr.push(...githubFolderCandidates(id));
-    return [...new Set(arr)];
-  }
-
-  function pickThumbPlaceId(routeIds){
-    for(const pid of (routeIds||[])){
-      if(pid && PLACES[pid]) return pid;
-    }
-    return (routeIds && routeIds[0]) ? routeIds[0] : "";
-  }
-  function pickPackagePhotosFromRoute(routeIds){
-    const out = [];
-    const seen = new Set();
-    for(const pid of (routeIds||[])){
-      if(!pid || seen.has(pid)) continue;
-      seen.add(pid);
-      const p = PLACES[pid] || {};
-      const imgs = pickAllPhotos(p, pid);
-      for(const u of imgs){
-        if(out.length >= 4) break;
-        out.push(u);
-      }
-      if(out.length >= 4) break;
-    }
-    return out;
-  }
-
-  /* Distance / Nearby */
-  function haversineKm(aLat,aLng,bLat,bLng){
-    const R = 6371;
-    const toRad = (x)=> x * Math.PI/180;
-    const dLat = toRad(bLat-aLat);
-    const dLng = toRad(bLng-aLng);
-    const s1 = Math.sin(dLat/2);
-    const s2 = Math.sin(dLng/2);
-    const q = s1*s1 + Math.cos(toRad(aLat))*Math.cos(toRad(bLat))*s2*s2;
-    return 2 * R * Math.asin(Math.min(1, Math.sqrt(q)));
-  }
-  function getNearbyForDay(dayPlaceIds, opts){
-    const { limit=6, radiusKm=15, excludeSet=new Set(), preferSameDistrict=true } = (opts||{});
-    const used = new Set([...(dayPlaceIds||[]).filter(Boolean)]);
-    for(const x of excludeSet) used.add(x);
-
-    const anchors = (dayPlaceIds||[])
-      .map(id => ({ id, p: PLACES[id] }))
-      .filter(x => x.p && isFinite(latAny(x.p)) && isFinite(lngAny(x.p)));
-    if(!anchors.length) return [];
-
-    const anchorDistricts = new Set(anchors.map(a=>districtAny(a.p)).filter(Boolean));
-    const candidatesSame = [];
-    const candidatesAny  = [];
-
-    for(const [pid, p] of Object.entries(PLACES)){
-      if(used.has(pid)) continue;
-      const lat = latAny(p), lng = lngAny(p);
-      if(!isFinite(lat) || !isFinite(lng)) continue;
-
-      let best = Infinity;
-      for(const a of anchors){
-        const d = haversineKm(latAny(a.p), lngAny(a.p), lat, lng);
-        if(d < best) best = d;
-      }
-      if(best > radiusKm) continue;
-
-      const dist = districtAny(p);
-      const item = { pid, bestKm: best };
-      if(preferSameDistrict && dist && anchorDistricts.has(dist)) candidatesSame.push(item);
-      else candidatesAny.push(item);
-    }
-
-    candidatesSame.sort((a,b)=>a.bestKm-b.bestKm);
-    candidatesAny.sort((a,b)=>a.bestKm-b.bestKm);
-
-    const out = [];
-    for(const it of candidatesSame){ out.push(it); if(out.length>=limit) break; }
-    if(out.length<limit){
-      for(const it of candidatesAny){ out.push(it); if(out.length>=limit) break; }
-    }
-    return out;
-  }
-
-  function renderNearbyRow(containerEl, dayPlaceIds, excludeSet){
-    const near = getNearbyForDay(dayPlaceIds, { limit:6, radiusKm:15, excludeSet, preferSameDistrict:true });
-    if(!near.length) return;
-
-    const wrap = document.createElement("div");
-    wrap.className = "nearWrap";
-    wrap.innerHTML = `
-      <div class="muted" style="margin-bottom:8px; text-transform:none;letter-spacing:.02em;">Nearby (close to today’s location)</div>
-      <div class="nearGrid"></div>
-    `;
-    const grid = wrap.querySelector(".nearGrid");
-
-    near.forEach(({pid, bestKm})=>{
-      const p = PLACES[pid] || {};
-      const nm = placeNameAny(p, pid);
-      const dist = districtAny(p) || "";
-      const urls = pickAllPhotos(p, pid);
-
-      const card = document.createElement("div");
-      card.className = "nearCard";
-      card.innerHTML = `
-        <div class="nearSquare">
-          ${urls.length ? `<img data-npid="${escapeHtml(pid)}" alt="${escapeHtml(nm)}" loading="lazy" referrerpolicy="no-referrer">`
-                        : `<div style="font-weight:950;opacity:.9;">${escapeHtml(initials(nm))}</div>`}
-        </div>
-        <div class="nearName" title="${escapeHtml(nm)}">${escapeHtml(nm)}</div>
-        <div class="nearMeta" title="${escapeHtml(dist)}">${escapeHtml(dist || (bestKm?bestKm.toFixed(1)+" km":""))}</div>
-      `;
-      const img = card.querySelector("img[data-npid]");
-      if(img) setImgWithFallback(img, urls);
-
-      card.onclick = (e)=>{
-        e.stopPropagation();
-        const lat = latAny(p), lng = lngAny(p);
-        if(isFinite(lat) && isFinite(lng) && window.map){
-          map.setView([lat,lng], Math.max(map.getZoom(), 12), { animate:true });
-          invalidateMapSoon();
-        }
-      };
-      grid.appendChild(card);
-    });
-
-    containerEl.appendChild(wrap);
-    near.forEach(n=>excludeSet.add(n.pid));
-  }
-
-  /* Map */
   let map, tile, markersLayer, routeLine;
   let showMode = "all";
   let tilesDark = false;
@@ -1251,8 +820,13 @@
       setTimeout(()=>{ map && map.invalidateSize && map.invalidateSize(true); }, 260);
     }catch(e){}
   }
-
   function initMap(){
+    // ✅ Guard: if Leaflet failed somehow, show clear message
+    if(!window.L){
+      setStatus("Leaflet not loaded (check network)");
+      showBot("❌ Leaflet not loaded. Check console/network.");
+      return;
+    }
     map = L.map('map', { zoomControl:true }).setView([31.1048, 77.1734], 8);
     tile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
     tile.addTo(map);
@@ -1261,34 +835,27 @@
     window.addEventListener("resize", invalidateMapSoon);
   }
   function clearMap(){
-    markersLayer.clearLayers();
-    if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
+    if(markersLayer) markersLayer.clearLayers();
+    if(routeLine && map){ map.removeLayer(routeLine); routeLine = null; }
     $("kmBadge").textContent = "—";
     invalidateMapSoon();
   }
-  function fitRoute(){ if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] }); }
+  function fitRoute(){ if(routeLine && map) map.fitBounds(routeLine.getBounds(), { padding:[22,22] }); }
 
   /* Data */
   let db, analytics, auth;
   let TEMPLATES = {};
   let ACTIVE_TEMPLATES = [];
+  let PLACES = {};
   let NAME_TO_ID = new Map();
   let STARTS = [];
 
+  let COSTS = {};
   let INTER_ALL = [];
   let DISTRICT_KEYS = [];
   let ACTIVE_DISTRICT = "ALL";
-
   let CURRENT_TEMPLATE_KEY = "";
   let CURRENT_ROUTE_KM = 0;
-
-  let pricing_transport = {};
-  let rate_hotel = {};
-  let stay_rate_rules = {};
-  let PRICING_READY = false;
-
-  const CACHE_KEY = "hp_portal_cache_inlineDetails_v1";
-  const CACHE_TTL_MS = 1000 * 60 * 30;
 
   const WHATSAPP_NUMBER = "917018138847";
 
@@ -1296,62 +863,6 @@
     const hero = $("centreHero");
     if(!hero) return;
     hero.style.display = on ? "block" : "none";
-  }
-
-  function normalizeStartInput(){
-    const typed = String($("startInp").value || "").trim().toUpperCase();
-    if(!typed) return "";
-    const exact = STARTS.find(s => String(s).trim().toUpperCase() === typed);
-    if(exact) return exact;
-    const partial = STARTS.find(s => String(s).trim().toUpperCase().startsWith(typed));
-    if(partial) return partial;
-    return "";
-  }
-
-  function getSelectedPax(){
-    const v = Number($("paxSel")?.value || 2);
-    return (isFinite(v) && v > 0) ? v : 2;
-  }
-
-  function loadCache(){
-    try{
-      const raw = localStorage.getItem(CACHE_KEY);
-      if(!raw) return false;
-      const parsed = JSON.parse(raw);
-      if(!parsed?.ts) return false;
-      if(Date.now() - parsed.ts > CACHE_TTL_MS) return false;
-
-      PLACES = parsed.places || {};
-      TEMPLATES = parsed.templates || {};
-      pricing_transport = parsed.pricing_transport || {};
-      rate_hotel = parsed.rate_hotel || {};
-      stay_rate_rules = parsed.stay_rate_rules || {};
-      PLACE_IMAGES = parsed.place_images || {};
-      PRICING_READY = true;
-
-      ACTIVE_TEMPLATES = Object.entries(TEMPLATES)
-        .map(([key,obj])=>({key, ...(obj||{})}))
-        .filter(t=>{ const st = safeLower(t.status || "active"); return st==="active" || st==="enabled" || st==="true"; });
-
-      buildNameIndex();
-      buildStartList(ACTIVE_TEMPLATES);
-
-      setStatus(`Loaded from cache • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places • ${Object.keys(PLACE_IMAGES).length} image-keys`);
-      return true;
-    }catch(e){ return false; }
-  }
-  function saveCache(){
-    try{
-      localStorage.setItem(CACHE_KEY, JSON.stringify({
-        ts: Date.now(),
-        places: PLACES,
-        templates: TEMPLATES,
-        pricing_transport,
-        rate_hotel,
-        stay_rate_rules,
-        place_images: PLACE_IMAGES
-      }));
-    }catch(e){}
   }
 
   function buildNameIndex(){
@@ -1378,6 +889,21 @@
       opt.value = String(s).toUpperCase();
       dl.appendChild(opt);
     });
+  }
+
+  function normalizeStartInput(){
+    const typed = String($("startInp").value || "").trim().toUpperCase();
+    if(!typed) return "";
+    const exact = STARTS.find(s => String(s).trim().toUpperCase() === typed);
+    if(exact) return exact;
+    const partial = STARTS.find(s => String(s).trim().toUpperCase().startsWith(typed));
+    if(partial) return partial;
+    return "";
+  }
+
+  function getSelectedPax(){
+    const v = Number($("paxSel")?.value || 2);
+    return (isFinite(v) && v > 0) ? v : 2;
   }
 
   function getPlaceIdByNameAny(name){
@@ -1502,7 +1028,22 @@
     return isFinite(km) && km>0 ? km : 0;
   }
 
-  /* WhatsApp */
+  /* ✅ FINAL PRICE FETCH (PER PERSON) + MULTIPLY PAX */
+  function getPerPersonPrice(tpl){
+    const tier = String($("visitType")?.value || "budget").toLowerCase();
+    const pid = String(tpl.package_id || tpl.key || "").trim();
+    const node = COSTS?.[pid] || COSTS?.[String(pid).toLowerCase()] || null;
+    const src = node || tpl || {};
+
+    const b = Number(src.budget_price_per_person ?? src.budget ?? src.budget_pp ?? 0);
+    const p = Number(src.premium_price_per_person ?? src.premium ?? src.premium_pp ?? 0);
+    const l = Number(src.luxury_price_per_person ?? src.luxury ?? src.luxury_pp ?? 0);
+
+    if(tier === "premium") return isFinite(p) && p>0 ? p : NaN;
+    if(tier === "luxury")  return isFinite(l) && l>0 ? l : NaN;
+    return isFinite(b) && b>0 ? b : NaN;
+  }
+
   function buildWhatsAppMessage({tpl, startName, endKey, pax, tier, km, total, perPerson}){
     const days = Number(tpl?.days || 0) || 0;
     const code = String(tpl?.route_id || "—");
@@ -1518,8 +1059,8 @@
       `Type: ${String(tier||"").toUpperCase()}`,
       `Pax: ${pax}`,
       `Route KM (est.): ${isFinite(km)?Number(km).toFixed(1):"—"}`,
-      `Total (est.): ${isFinite(total)?rupees(total):"—"}`,
-      `Per Person (est.): ${isFinite(perPerson)?rupees(perPerson):"—"}`,
+      `Per Person: ${isFinite(perPerson)?rupees(perPerson):"—"}`,
+      `Total: ${isFinite(total)?rupees(total):"—"}`,
       `Code: ${code}`,
       route ? `Route: ${route}` : "",
       includes ? `Includes: ${includes}` : "",
@@ -1559,14 +1100,14 @@
     return blocks.filter(x=>x.ids.length);
   }
 
-  function renderInlineDetails(detailsEl, tpl, startUpper, endKey, km, total, perPerson){
-    const isLocalNow = isLocalComputed(tpl);
+  function renderInlineDetails(detailsEl, tpl, startUpper, endKey, km){
     const pax = getSelectedPax();
     const tier = String($("visitType")?.value || "budget").toUpperCase();
 
-    const title = isLocalNow
-      ? String(tpl.route_path || tpl.route_name || tpl.package_id || "LOCAL").trim()
-      : `${String(startUpper||"START").toUpperCase()} → ${String(endKey||"").toUpperCase()}`;
+    const perPerson = getPerPersonPrice(tpl);
+    const total = isFinite(perPerson) ? (perPerson * pax) : NaN;
+
+    const title = `${String(startUpper||"START").toUpperCase()} → ${String(endKey||"").toUpperCase()}`;
 
     const metaParts = [];
     if(tpl.route_id) metaParts.push(`Code: ${tpl.route_id}`);
@@ -1591,11 +1132,11 @@
 
       <div class="detailsGrid" style="margin-top:10px;">
         <div class="mini">
-          <div class="k">Total (est.)</div>
+          <div class="k">Total (final)</div>
           <div class="v">${isFinite(total)?rupees(total):"—"} <small>(${escapeHtml(tier)})</small></div>
         </div>
         <div class="mini">
-          <div class="k">Per Person</div>
+          <div class="k">Per Person (final)</div>
           <div class="v">${isFinite(perPerson)?rupees(perPerson):"—"} <small>per person</small></div>
         </div>
         <div class="mini">
@@ -1623,13 +1164,10 @@
     const startName = normalizeStartInput() || (tpl.start_point || tpl.start || startUpper || "");
     const msg = buildWhatsAppMessage({ tpl, startName, endKey, pax, tier, km, total, perPerson });
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-    setWhatsAppInline(document.getElementById(waBtnId), true, url);
+    setWhatsAppInline(document.getElementById(waBtnId), isFinite(perPerson), url);
 
     const daysWrap = document.getElementById(`days_${tpl.key}`);
     if(!daysWrap) return;
-
-    const routeAll = routeIdsFromTemplateIncludingStart(tpl);
-    const excludeSet = new Set(routeAll.filter(Boolean));
 
     const blocks = buildDayWise(tpl);
     blocks.forEach(block=>{
@@ -1649,27 +1187,20 @@
         const p = PLACES[pid] || {};
         const name = placeNameAny(p, pid);
         const dist = districtAny(p) || "—";
-        const urls = pickAllPhotos(p, pid);
 
         const line = document.createElement("div");
         line.className = "placeLine";
         line.innerHTML = `
-          <div class="thumb">
-            ${urls.length ? `<img data-plthumb="${escapeHtml(pid)}" alt="${escapeHtml(name)} photo" loading="lazy" referrerpolicy="no-referrer">`
-                          : escapeHtml(initials(name))}
-          </div>
+          <div class="thumb">${escapeHtml(initials(name))}</div>
           <div class="pinfo">
             <div class="pname">${escapeHtml(name)}</div>
             <div class="pmeta">${escapeHtml(dist)}</div>
           </div>
         `;
-        const img = line.querySelector("img[data-plthumb]");
-        if(img) setImgWithFallback(img, urls);
-
         line.onclick = (e)=>{
           e.stopPropagation();
           const lat = latAny(p), lng = lngAny(p);
-          if(isFinite(lat) && isFinite(lng)){
+          if(isFinite(lat) && isFinite(lng) && map){
             map.setView([lat,lng], Math.max(map.getZoom(), 12), { animate:true });
             invalidateMapSoon();
           }
@@ -1677,108 +1208,10 @@
         cont.appendChild(line);
       });
 
-      renderNearbyRow(cont, block.ids, excludeSet);
       daysWrap.appendChild(dayCard);
     });
   }
 
-  /* Pricing */
-  function pickStayRule(tier){
-    const t = String(tier||"budget").toLowerCase();
-    const key = (t==="premium") ? "r2" : (t==="luxury") ? "r3" : "r1";
-    return stay_rate_rules?.[key] || {};
-  }
-  function pickVehicleByPax(pax){
-    pax = Number(pax||2);
-    if(pax <= 4) return "hatchback";
-    if(pax <= 7) return "innova";
-    return "luxury_suv";
-  }
-  function autoSeason(tpl){
-    const text = String(tpl?.best_season || "").toLowerCase();
-    if(/monsoon|rain|jul|aug/.test(text)) return "low";
-    if(/winter|snow|snowfall|dec|jan/.test(text)) return "peak";
-    if(/peak/.test(text)) return "peak";
-    if(/low/.test(text)) return "low";
-    if(/mid/.test(text)) return "mid";
-    const m = new Date().getMonth() + 1;
-    if([1,5,6,10,12].includes(m)) return "peak";
-    if([2,7,8].includes(m)) return "low";
-    return "mid";
-  }
-  function pickBaseRoomBySeason(rule, season){
-    const s = String(season||"mid").toLowerCase();
-    if(s === "low")  return Number(rule.base_rate_low || rule.base_rate_mid || rule.base_rate_peak || 0);
-    if(s === "peak") return Number(rule.base_rate_peak || rule.base_rate_mid || rule.base_rate_low || 0);
-    return Number(rule.base_rate_mid || rule.base_rate_low || rule.base_rate_peak || 0);
-  }
-  function computeSnowMultiplier(tpl, vehicle){
-    const sr = String(tpl?.snow_risk || "").toLowerCase();
-    const base = Number(vehicle?.snow_multiplier || 1);
-    if(!isFinite(base) || base <= 0) return 1;
-    if(sr.includes("high")) return base;
-    if(sr.includes("medium")) return 1 + (base - 1) * 0.5;
-    return 1;
-  }
-  function computeRoadMultiplier(tpl, vehicle){
-    const rt = String(tpl?.road_type || "").toLowerCase();
-    const dl = String(tpl?.drive_level || "").toLowerCase();
-    const bad = Number(vehicle?.bad_road_multiplier || 1);
-    const hill = Number(vehicle?.hill_multiplier || 1);
-    let m = 1;
-    if(rt.includes("bad") || rt.includes("mix")) m *= (isFinite(bad) && bad>0 ? bad : 1);
-    if(dl.includes("high") || rt.includes("hill")) m *= (isFinite(hill) && hill>0 ? hill : 1);
-    return m;
-  }
-
-  function estimateTotalCost({ km=0, days=3, pax=2, tpl=null }){
-    km = Number(km||0);
-    days = Number(days||0);
-    pax = Math.max(1, Number(pax||1));
-    const nights = Math.max(0, days-1);
-
-    if(!PRICING_READY || !isFinite(km) || km<=0 || !days){
-      return { total:NaN };
-    }
-
-    const tier   = String($("visitType")?.value || "budget").toLowerCase();
-    const season = autoSeason(tpl);
-
-    const vehicleKey = pickVehicleByPax(pax);
-    const v = pricing_transport?.[vehicleKey] || {};
-
-    const perKm = Number(v.per_km || 0);
-    const driverPerDay = Number(v.driver_per_day || 0);
-    const minKmPerDay = Number(v.min_km_per_day || 0);
-    const nightCharge = Number(v.night_charge || 0);
-    const tollPct = Number(v.parking_toll_buffer_pct || 0);
-
-    const minBillKm = (isFinite(minKmPerDay) && minKmPerDay > 0) ? (days * minKmPerDay) : 0;
-    const billedKm = Math.max(km, minBillKm);
-
-    const roadMul = computeRoadMultiplier(tpl, v);
-    const snowMul = computeSnowMultiplier(tpl, v);
-    const bufferMul = 1 + (isFinite(tollPct) ? tollPct : 0) / 100;
-
-    const transportKmCost = billedKm * perKm * roadMul * snowMul * bufferMul;
-    const driverCost = days * driverPerDay;
-    const nightCost = nights * nightCharge;
-
-    const transport = transportKmCost + driverCost + nightCost;
-
-    const rule = pickStayRule(tier);
-    const baseRoom = pickBaseRoomBySeason(rule, season);
-    const weekendMul = Number(rule.weekend_multiplier || 1);
-
-    const rooms = Math.max(1, Math.ceil(pax / 2));
-    const wkFactor = (nights >= 2) ? (isFinite(weekendMul) && weekendMul>0 ? weekendMul : 1) : 1;
-    const hotel = nights * baseRoom * rooms * wkFactor;
-
-    const total = transport + hotel;
-    return { total };
-  }
-
-  /* Cards */
   function renderInterCard(t, startUpper){
     const days = Number(t.days||0) || 0;
     const endKey = endKeyFromRoutePath(t);
@@ -1786,28 +1219,13 @@
     const code = String(t.route_id || "—").toUpperCase();
     const km = approxKmFromTpl(t);
 
-    const routeIds = routeIdsFromTemplateIncludingStart(t);
-    const thumbPid = pickThumbPlaceId(routeIds);
-    const p0 = PLACES[thumbPid] || {};
-    const nm0 = placeNameAny(p0, thumbPid);
-    const ini = initials(nm0);
-
-    const pkgPhotos = pickPackagePhotosFromRoute(routeIds);
-    const thumbUrls = pkgPhotos.length ? pkgPhotos : pickAllPhotos(p0, thumbPid);
-
     const el = document.createElement("div");
     el.className = "pkgW";
     el.dataset.key = t.key;
 
     el.innerHTML = `
       <div class="pkgWTop">
-        <div class="pkgThumb">
-          ${thumbUrls.length
-            ? `<img data-pthumb="${escapeHtml(thumbPid||"")}" alt="Package thumbnail" loading="lazy" referrerpolicy="no-referrer">`
-            : `<div class="ini">${escapeHtml(ini)}</div>`
-          }
-        </div>
-
+        <div class="pkgThumb"><div class="ini">${escapeHtml(initials(district))}</div></div>
         <div class="pkgWBody">
           <div class="pkgWTitle">
             <div class="mainT">${escapeHtml(startUpper)} → ${escapeHtml(district)}</div>
@@ -1819,14 +1237,7 @@
             <div class="pkgChip">Days <b>${days}</b></div>
             <div class="pkgChip">KM <b>${km ? km.toFixed(0) : "—"}</b></div>
             <div class="pkgChip">Code <b class="mono">${escapeHtml(code)}</b></div>
-            <div class="pkgChip">ID <b class="mono">${escapeHtml(String(t.key||"—").toUpperCase())}</b></div>
-          </div>
-
-          <div class="pkgStrip">
-            ${[0,1,2].map(i=>{
-              const u = pkgPhotos[i];
-              return `<div class="stripImg">${u ? `<img data-strip="${i}" alt="photo ${i+1}" loading="lazy" referrerpolicy="no-referrer">` : ``}</div>`;
-            }).join("")}
+            <div class="pkgChip">ID <b class="mono">${escapeHtml(String(t.package_id || t.key || "—").toUpperCase())}</b></div>
           </div>
         </div>
       </div>
@@ -1839,20 +1250,9 @@
       </div>
 
       <div class="pkgDetails" id="details_${escapeHtml(t.key)}">
-        <div class="pill"><b>Loading…</b> computing route + cost</div>
+        <div class="pill"><b>Loading…</b></div>
       </div>
     `;
-
-    const img = el.querySelector("img[data-pthumb]");
-    if(img) setImgWithFallback(img, thumbUrls);
-
-    const stripImgs = el.querySelectorAll("img[data-strip]");
-    stripImgs.forEach((im, idx)=>{
-      const u = pkgPhotos[idx];
-      if(u){
-        setImgWithFallback(im, [u, ...pkgPhotos.filter(x=>x!==u)]);
-      }
-    });
 
     el.onclick = ()=>toggleOpenTemplate(t.key);
     return el;
@@ -1864,28 +1264,13 @@
     const code = String(t.route_id || "LOCAL").toUpperCase();
     const km = approxKmFromTpl(t);
 
-    const routeIds = routeIdsFromTemplateIncludingStart(t);
-    const thumbPid = pickThumbPlaceId(routeIds);
-    const p0 = PLACES[thumbPid] || {};
-    const nm0 = placeNameAny(p0, thumbPid);
-    const ini = initials(nm0);
-
-    const pkgPhotos = pickPackagePhotosFromRoute(routeIds);
-    const thumbUrls = pkgPhotos.length ? pkgPhotos : pickAllPhotos(p0, thumbPid);
-
     const el = document.createElement("div");
     el.className = "pkgW";
     el.dataset.key = t.key;
 
     el.innerHTML = `
       <div class="pkgWTop">
-        <div class="pkgThumb">
-          ${thumbUrls.length
-            ? `<img data-lthumb="${escapeHtml(thumbPid)}" alt="Local package thumbnail" loading="lazy" referrerpolicy="no-referrer">`
-            : `<div class="ini">${escapeHtml(ini)}</div>`
-          }
-        </div>
-
+        <div class="pkgThumb"><div class="ini">${escapeHtml(initials(heading))}</div></div>
         <div class="pkgWBody">
           <div class="pkgWTitle">
             <div class="mainT">${escapeHtml(heading)}</div>
@@ -1897,14 +1282,7 @@
             <div class="pkgChip">Days <b>${days}</b></div>
             <div class="pkgChip">KM <b>${km ? km.toFixed(0) : "—"}</b></div>
             <div class="pkgChip">Code <b class="mono">${escapeHtml(code)}</b></div>
-            <div class="pkgChip">ID <b class="mono">${escapeHtml(String(t.key||"—").toUpperCase())}</b></div>
-          </div>
-
-          <div class="pkgStrip">
-            ${[0,1,2].map(i=>{
-              const u = pkgPhotos[i];
-              return `<div class="stripImg">${u ? `<img data-strip="${i}" alt="photo ${i+1}" loading="lazy" referrerpolicy="no-referrer">` : ``}</div>`;
-            }).join("")}
+            <div class="pkgChip">ID <b class="mono">${escapeHtml(String(t.package_id || t.key || "—").toUpperCase())}</b></div>
           </div>
         </div>
       </div>
@@ -1917,38 +1295,24 @@
       </div>
 
       <div class="pkgDetails" id="details_${escapeHtml(t.key)}">
-        <div class="pill"><b>Loading…</b> computing route + cost</div>
+        <div class="pill"><b>Loading…</b></div>
       </div>
     `;
-
-    const img = el.querySelector("img[data-lthumb]");
-    if(img) setImgWithFallback(img, thumbUrls);
-
-    const stripImgs = el.querySelectorAll("img[data-strip]");
-    stripImgs.forEach((im, idx)=>{
-      const u = pkgPhotos[idx];
-      if(u){
-        setImgWithFallback(im, [u, ...pkgPhotos.filter(x=>x!==u)]);
-      }
-    });
 
     el.onclick = ()=>toggleOpenTemplate(t.key);
     return el;
   }
 
-  /* ✅ NEW: Build the current filtered list once */
   function getFilteredLists(){
     const start = normalizeStartInput() || "";
     const startUpper = String(start).trim().toUpperCase();
     const daysF = $("daysSel").value.trim();
 
-    // Inter list from cached INTER_ALL (already matches start/days)
     let shownInter = INTER_ALL.slice();
     if(ACTIVE_DISTRICT && ACTIVE_DISTRICT !== "ALL"){
       shownInter = shownInter.filter(t => endDistrictFromTemplate(t) === ACTIVE_DISTRICT);
     }
 
-    // Locals only if exist
     const locals = ACTIVE_TEMPLATES
       .filter(t => isLocalComputed(t))
       .filter(t => matchesStart(t, startUpper))
@@ -1959,18 +1323,15 @@
     return { startUpper, daysF, shownInter, locals };
   }
 
-  /* ✅ NEW: Render center+left depending on selection */
   function renderPanels(){
     const center = $("pkgList");
     const other = $("otherPkgList");
 
     const { startUpper, daysF, shownInter, locals } = getFilteredLists();
 
-    // Count
     const totalCount = shownInter.length + locals.length;
     $("pkgCount").textContent = `${totalCount} Results`;
 
-    // If start not selected yet
     if(!startUpper){
       setCentreHeroVisible(true);
       CURRENT_TEMPLATE_KEY = "";
@@ -1983,26 +1344,20 @@
       return;
     }
 
-    // Helper: build “all cards” array
     const allCards = [];
     shownInter.forEach(t => allCards.push({ t, kind:"inter" }));
     locals.forEach(t => allCards.push({ t, kind:"local" }));
 
-    // No selection -> show normal list in center; left shows hint
     if(!CURRENT_TEMPLATE_KEY){
       setCentreHeroVisible(true);
-
-      other.innerHTML = `
-        <div class="otherHint">
-          After you open a package, the remaining packages will move here.
-        </div>`;
+      other.innerHTML = `<div class="otherHint">After you open a package, the remaining packages will move here.</div>`;
 
       center.innerHTML = "";
       const hdr1 = document.createElement("div");
       hdr1.className = "pkgGroupHdr";
       hdr1.innerHTML = `
         <div class="h1">${escapeHtml(startUpper)} • ${escapeHtml(daysF || "ANY")} DAYS</div>
-        <div class="h2">Click a package → cost + itinerary opens right under it.</div>
+        <div class="h2">Click a package → per-person final price × pax shown inside.</div>
       `;
       center.appendChild(hdr1);
 
@@ -2015,7 +1370,6 @@
         shownInter.forEach(t => center.appendChild(renderInterCard(t, startUpper)));
       }
 
-      // ✅ Local header only if locals exist
       if(locals.length){
         const hdr2 = document.createElement("div");
         hdr2.className = "pkgGroupHdr";
@@ -2032,16 +1386,13 @@
       return;
     }
 
-    // Selection exists -> show selected in CENTER only, rest in LEFT
     setCentreHeroVisible(false);
 
     const selectedObj = allCards.find(x => x.t.key === CURRENT_TEMPLATE_KEY);
     const rest = allCards.filter(x => x.t.key !== CURRENT_TEMPLATE_KEY);
 
-    // Center: selected only
     center.innerHTML = "";
     if(!selectedObj){
-      // selected key not in this filtered view (district change etc.)
       CURRENT_TEMPLATE_KEY = "";
       renderPanels();
       return;
@@ -2051,7 +1402,7 @@
     selHdr.className = "pkgGroupHdr";
     selHdr.innerHTML = `
       <div class="h1">Selected Package</div>
-      <div class="h2">Details stay here. Other packages move to left panel.</div>
+      <div class="h2">Details stay here. Other packages moved to left panel.</div>
     `;
     center.appendChild(selHdr);
 
@@ -2059,11 +1410,9 @@
       ? renderLocalCard(selectedObj.t, startUpper)
       : renderInterCard(selectedObj.t, startUpper);
 
-    // Force active style
     selCard.classList.add("active");
     center.appendChild(selCard);
 
-    // Left: rest list
     other.innerHTML = "";
     if(!rest.length){
       other.innerHTML = `<div class="otherHint">No other packages in this filter.</div>`;
@@ -2072,14 +1421,9 @@
         const c = (obj.kind === "local")
           ? renderLocalCard(obj.t, startUpper)
           : renderInterCard(obj.t, startUpper);
-
-        // Make them compact: remove inline details open by default, but clickable works
-        // Keep consistent behavior (click replaces selected)
         other.appendChild(c);
       });
     }
-
-    // Keep active highlight
     highlightActiveCard();
   }
 
@@ -2088,8 +1432,8 @@
     $("pkgCount").textContent = "—";
   }
 
-  /* Map route draw */
   async function drawRoadRouteFromPlaces(placeIds){
+    if(!markersLayer || !map) return { ok:false, km:0 };
     markersLayer.clearLayers();
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
 
@@ -2104,9 +1448,7 @@
         validIds.push(pid);
       }
     }
-    if(pts.length < 2){
-      return { ok:false, km:0 };
-    }
+    if(pts.length < 2) return { ok:false, km:0 };
 
     const maxPts = 25;
     let used = pts;
@@ -2123,9 +1465,7 @@
 
       const res = await fetch(url);
       const data = await res.json();
-      if(!data.routes?.length){
-        return { ok:false, km:0 };
-      }
+      if(!data.routes?.length) return { ok:false, km:0 };
 
       const r = data.routes[0];
       const latlngs = r.geometry.coordinates.map(c=>[c[1],c[0]]);
@@ -2137,8 +1477,7 @@
         ? [validIds[0], validIds[validIds.length-1]]
         : validIds;
 
-      for(let i=0;i<markIds.length;i++){
-        const pid = markIds[i];
+      for(const pid of markIds){
         const p = PLACES[pid] || {};
         const lat = latAny(p);
         const lng = lngAny(p);
@@ -2155,13 +1494,10 @@
     }
   }
 
-  /* ✅ Selection open/close */
   async function toggleOpenTemplate(key){
     const startUpper = String(normalizeStartInput() || "").toUpperCase();
-
     const same = (CURRENT_TEMPLATE_KEY === key);
 
-    // Close
     if(same){
       CURRENT_TEMPLATE_KEY = "";
       CURRENT_ROUTE_KM = 0;
@@ -2172,9 +1508,8 @@
       return;
     }
 
-    // Open new
     CURRENT_TEMPLATE_KEY = key;
-    renderPanels(); // move rest to left, selected to center immediately
+    renderPanels();
     highlightActiveCard();
 
     const tpl = TEMPLATES[key];
@@ -2185,31 +1520,24 @@
 
     const detailsEl = document.getElementById(`details_${key}`);
     if(detailsEl){
-      detailsEl.innerHTML = `<div class="pill"><b>Loading…</b> fetching road route + calculating cost</div>`;
+      detailsEl.innerHTML = `<div class="pill"><b>Loading…</b> fetching road route + final price</div>`;
     }
 
     const rr = await drawRoadRouteFromPlaces(routeIds);
     CURRENT_ROUTE_KM = rr.ok ? rr.km : 0;
 
-    const pax = getSelectedPax();
-    const days = Number(tpl.days || 3);
     let km = Number(CURRENT_ROUTE_KM || 0);
     if(!isFinite(km) || km <= 0){
       km = Number(tpl.total_km_est || tpl.estimated_drive_km || tpl.total_km || 0);
     }
-    const est = estimateTotalCost({ km, days, pax, tpl });
-    const total = est.total;
-    const perPerson = isFinite(total) ? (total/pax) : NaN;
 
     if(detailsEl){
-      renderInlineDetails(detailsEl, tpl, startUpper, endKey, km, total, perPerson);
+      renderInlineDetails(detailsEl, tpl, startUpper, endKey, km);
     }
 
-    // Keep selected visible
     const card = document.querySelector(`#pkgList .pkgW[data-key="${CSS.escape(key)}"]`);
     if(card) card.scrollIntoView({ behavior:"smooth", block:"start" });
-
-    showBot("✅ Selected package pinned in center. Other packages moved to left.");
+    showBot("✅ Price loaded from Firebase (per person) × Pax.");
   }
 
   function applyFilters(){
@@ -2262,58 +1590,44 @@
     }
 
     renderPanels();
-    showBot("✅ Packages loaded. Click any package → it pins in center, rest move left.");
+    showBot("✅ Packages loaded. Open any package → final price shows inside.");
   }
 
-  /* Firebase load */
-  async function loadLive(){
-    setStatus("Loading live from Firebase…");
-
-    const [tplSnap, placesSnap, tranSnap, hotelSnap, staySnap] = await Promise.all([
-      db.ref(NODE_TEMPLATES).once("value"),
-      db.ref(NODE_PLACES).once("value"),
-      db.ref(NODE_TRANSPORT).once("value").catch(()=>({ val:()=>({}) })),
-      db.ref(NODE_HOTEL).once("value").catch(()=>({ val:()=>({}) })),
-      db.ref(NODE_STAYRULES).once("value").catch(()=>({ val:()=>({}) }))
-    ]);
-
-    TEMPLATES = tplSnap.val() || {};
-    const rawPlaces = placesSnap.val() || {};
-
-    PLACES = {};
-    for(const [k,v] of Object.entries(rawPlaces)){
-      if(v && typeof v === "object"){
-        const pid = placeIdAny(v, k) || k;
-        PLACES[pid] = { ...v, place_id: pid };
-      }
-    }
-
-    pricing_transport = (tranSnap && typeof tranSnap.val==="function") ? (tranSnap.val() || {}) : {};
-    rate_hotel = (hotelSnap && typeof hotelSnap.val==="function") ? (hotelSnap.val() || {}) : {};
-    stay_rate_rules = (staySnap && typeof staySnap.val==="function") ? (staySnap.val() || {}) : {};
-    PRICING_READY = true;
-
-    ACTIVE_TEMPLATES = Object.entries(TEMPLATES)
-      .map(([key, obj]) => ({ key, ...(obj||{}) }))
-      .filter(t => {
-        const st = safeLower(t.status || "active");
-        return st === "active" || st === "enabled" || st === "true";
-      });
-
-    buildNameIndex();
-    buildStartList(ACTIVE_TEMPLATES);
-  }
-
+  /* Firebase Load */
   async function refreshAll(){
     try{
       setStatus("Loading live from Firebase…");
 
-      await loadLive();
-      await loadPlaceImagesFromGarg();
+      // ✅ If rules deny read, this will throw. We show message clearly.
+      const [tplSnap, placesSnap, costsSnap] = await Promise.all([
+        db.ref(NODE_TEMPLATES).once("value"),
+        db.ref(NODE_PLACES).once("value"),
+        db.ref(NODE_COSTS).once("value").catch(()=>({ val:()=>({}) }))
+      ]);
 
-      saveCache();
+      TEMPLATES = tplSnap.val() || {};
+      const rawPlaces = placesSnap.val() || {};
+      COSTS = (costsSnap && typeof costsSnap.val==="function") ? (costsSnap.val() || {}) : {};
 
-      setStatus(`Loaded LIVE • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places • ${Object.keys(PLACE_IMAGES).length} image-keys`);
+      PLACES = {};
+      for(const [k,v] of Object.entries(rawPlaces)){
+        if(v && typeof v === "object"){
+          const pid = placeIdAny(v, k) || k;
+          PLACES[pid] = { ...v, place_id: pid };
+        }
+      }
+
+      ACTIVE_TEMPLATES = Object.entries(TEMPLATES)
+        .map(([key, obj]) => ({ key, ...(obj||{}) }))
+        .filter(t => {
+          const st = safeLower(t.status || "active");
+          return st === "active" || st === "enabled" || st === "true";
+        });
+
+      buildNameIndex();
+      buildStartList(ACTIVE_TEMPLATES);
+
+      setStatus(`Loaded LIVE • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places • ${Object.keys(COSTS).length} cost items`);
       invalidateMapSoon();
 
       if($("pills").children.length){
@@ -2324,8 +1638,16 @@
       }
     }catch(err){
       console.error(err);
-      setStatus("Firebase load error (check rules / node names)");
-      showBot("❌ Firebase load error. Check DB rules/nodes.");
+      const msg = String(err?.message || err || "Unknown error");
+
+      // Helpful hint if permission denied
+      const hint =
+        msg.toLowerCase().includes("permission_denied") || msg.toLowerCase().includes("permission denied")
+          ? "❌ Permission denied. Fix RTDB Rules or login.\nTry opening:\n/templates.json\n/places_in_packages.json\n/package_cost_breakdown.json"
+          : "❌ Firebase load error. Check node names + internet.";
+
+      setStatus("Firebase load error (rules / node names)");
+      showBot(hint.replace(/\n/g,"<br>"));
     }
   }
 
@@ -2357,6 +1679,13 @@
     startCentreHero();
     showBot("👋 Welcome! Select Start and click Generate.");
 
+    // ✅ Guard: firebase scripts must be loaded
+    if(!window.firebase){
+      setStatus("Firebase not loaded (check network)");
+      showBot("❌ Firebase not loaded. Check console/network.");
+      return;
+    }
+
     if(!firebase.apps.length){
       firebase.initializeApp(firebaseConfig);
     }else{
@@ -2364,13 +1693,11 @@
     }
 
     db = firebase.database();
-    analytics = firebase.analytics();
-    auth = firebase.auth();
 
-    let imagesApp;
-    try{ imagesApp = firebase.app("imagesApp"); }
-    catch(e){ imagesApp = firebase.initializeApp(firebaseConfigImages, "imagesApp"); }
-    imagesDb = firebase.database(imagesApp);
+    // ✅ Analytics can fail in some setups — don’t break page
+    try{ analytics = firebase.analytics(); } catch(e){ analytics = null; }
+
+    auth = firebase.auth();
 
     auth.onAuthStateChanged((user)=>{
       $("mintLoginBtn").textContent = user ? "Logout" : "Mint Login";
@@ -2454,8 +1781,8 @@
     $("paxSel")?.addEventListener("change", ()=>{
       if(CURRENT_TEMPLATE_KEY){
         const k = CURRENT_TEMPLATE_KEY;
-        toggleOpenTemplate(k); // close
-        setTimeout(()=>toggleOpenTemplate(k), 80); // open again
+        toggleOpenTemplate(k);
+        setTimeout(()=>toggleOpenTemplate(k), 80);
       }else if($("pills").children.length){
         applyFilters();
       }
@@ -2476,10 +1803,6 @@
     });
 
     initMap();
-
-    const hadCache = loadCache();
-    if(hadCache) showBot("⚡ Loaded fast from cache");
-
     setCentreHeroVisible(true);
     refreshAll();
   });
