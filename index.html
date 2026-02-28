@@ -1386,14 +1386,7 @@
       .replace(/-+/g,"-")
       .replace(/^-|-$/g,"");
   }
-    const list = Array.from(set).sort((a,b)=>a.localeCompare(b));
-
-    if(!list.length){
-      wrap.innerHTML = `<div class="pill"><b>No districts found</b></div>`;
-      return;
-    }
-
-    wrap.innerHTML = list.map(d=>{
+     wrap.innerHTML = list.map(d=>{
       const slug = slugDistrictName(d);
       // ✅ You will create these district pages separately:
       // ./districts/kullu.html, ./districts/kangra.html, ...
