@@ -43,7 +43,6 @@
 
       /* 90% width usage (cross platform) */
       --shellW: min(90vw, 1700px);
-
       --heroH: clamp(220px, 26vw, 320px);
     }
     *{ box-sizing:border-box; }
@@ -123,7 +122,7 @@
       pointer-events:none;
     }
 
-    /* ✅ Brand is UNDER hero image */
+    /* Brand is UNDER hero image */
     .heroBar{
       display:flex;
       align-items:center;
@@ -225,7 +224,7 @@
       min-height: 620px;
       display:flex;
       flex-direction:column;
-      min-width: 0; /* ✅ prevents overflow on small screens */
+      min-width: 0; /* prevents overflow on small screens */
     }
     .paneHdr{
       padding: 10px 12px;
@@ -329,8 +328,7 @@
       color: rgba(10,30,60,.72);
       font-size: 11px;
       letter-spacing:.02em;
-      line-height: 1.5;
-      white-space: normal;
+      line-height: 1.35;
     }
 
     .centerInner{ display:flex; flex-direction:column; min-height:0; flex:1; }
@@ -471,6 +469,7 @@
     .pkgW.active{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 3px rgba(37,99,235,.14), 0 18px 40px rgba(10,30,60,.12); }
 
     .pkgWTop{ display:flex; gap:10px; padding:10px; align-items:stretch; }
+
     .pkgThumb{
       width:86px; height:86px;
       border-radius: 14px; overflow:hidden;
@@ -478,9 +477,18 @@
       background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.78), rgba(37,99,235,.12));
       flex: 0 0 auto;
       display:grid; place-items:center;
+      position:relative;
     }
     .pkgThumb img{ width:100%; height:100%; object-fit:cover; display:block; }
     .pkgThumb .ini{ font-weight:950; letter-spacing:.08em; }
+
+    /* ✅ Compact cards for LEFT sidebar */
+    .pkgW.compact .pkgThumb{ width:58px; height:58px; border-radius: 14px; }
+    .pkgW.compact .pkgWTop{ padding:9px; gap:9px; }
+    .pkgW.compact .pkgWMeta{ display:none; }
+    .pkgW.compact .pkgWBottom{ padding: 8px 9px; }
+    .pkgW.compact .pkgCTA{ display:none; }
+    .pkgW.compact .pkgHint{ font-size: 10.5px; }
 
     .pkgWBody{ flex:1; min-width:0; display:flex; flex-direction:column; justify-content:space-between; gap:8px; }
     .pkgWTitle{ display:flex; align-items:center; gap:8px; min-width:0; flex-wrap:wrap; }
@@ -616,6 +624,21 @@
     }
     .dayTop{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom: 7px; }
     .dayTop .d{ font-size: 11px; font-weight: 950; letter-spacing:.18em; text-transform: uppercase; }
+    .dayTop .btnMini{
+      border:1px solid rgba(37,99,235,.30);
+      background: rgba(37,99,235,.12);
+      color: rgba(10,30,60,.92);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 10px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      cursor:pointer;
+      user-select:none;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 10px 20px rgba(10,30,60,.08);
+    }
 
     .placeLine{
       display:flex; align-items:center; gap:9px;
@@ -641,6 +664,33 @@
     /* Map pane */
     .mapPane{ position: sticky; top: 12px; height: calc(100vh - 24px); min-height: 620px; max-height: 920px; }
     #map{ width:100%; flex:1; min-height: 520px; background: rgba(255,255,255,.62); }
+
+    .mapDayBar{
+      padding: 10px 12px;
+      border-top:1px solid rgba(10,30,60,.14);
+      display:flex; gap:8px; flex-wrap:wrap;
+      background: rgba(255,255,255,.62);
+    }
+    .dayChip{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.66);
+      color: rgba(10,30,60,.86);
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-size: 10px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      cursor:pointer;
+      user-select:none;
+      white-space: nowrap;
+      box-shadow: 0 10px 20px rgba(10,30,60,.08);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .dayChip.active{
+      border-color: rgba(37,99,235,.40);
+      background: rgba(37,99,235,.14);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.14), 0 10px 22px rgba(10,30,60,.08);
+    }
 
     .mapTools{
       padding: 10px 12px;
@@ -889,7 +939,188 @@
     }
     .footLinks a:hover{ background: rgba(255,255,255,.78); }
 
-    /* ✅ RESPONSIVE: all platforms */
+    /* ✅ PLACE MODAL (attractive popup) */
+    .modal{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center; justify-content:center;
+      z-index: 20000;
+      padding: 14px;
+    }
+    .modal.show{ display:flex; }
+    .modalBack{
+      position:absolute; inset:0;
+      background: rgba(10,30,60,.32);
+      backdrop-filter: blur(10px);
+    }
+    .modalCard{
+      position:relative;
+      width: min(900px, 100%);
+      max-height: min(88vh, 760px);
+      overflow:auto;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.55);
+      background: linear-gradient(180deg, rgba(255,255,255,.86), rgba(255,255,255,.70));
+      box-shadow: 0 28px 90px rgba(10,30,60,.22);
+    }
+    .modalTop{
+      padding: 12px 12px;
+      border-bottom: 1px solid rgba(10,30,60,.14);
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+      position: sticky; top:0;
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(12px);
+      z-index: 2;
+    }
+    .modalTitle{
+      min-width:0;
+    }
+    .modalTitle .h{
+      font-size: 12px;
+      font-weight: 1000;
+      letter-spacing:.16em;
+      text-transform: uppercase;
+      margin:0;
+      color: rgba(10,30,60,.94);
+      white-space:nowrap; overflow:hidden; text-overflow: ellipsis;
+    }
+    .modalTitle .s{
+      margin-top:6px;
+      font-size: 10.5px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.62);
+      white-space:nowrap; overflow:hidden; text-overflow: ellipsis;
+    }
+    .modalClose{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.78);
+      color: rgba(10,30,60,.86);
+      border-radius: 12px;
+      padding: 8px 10px;
+      font-size: 10px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      cursor:pointer;
+      user-select:none;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .modalBody{
+      padding: 12px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 12px;
+    }
+    .modalMedia{
+      border:1px solid rgba(10,30,60,.16);
+      border-radius: 16px;
+      overflow:hidden;
+      background: rgba(255,255,255,.66);
+      box-shadow: 0 14px 36px rgba(10,30,60,.10);
+      position:relative;
+      min-height: 220px;
+    }
+    .modalMedia img{
+      width:100%; height:100%; object-fit:cover; display:block;
+    }
+    .modalMedia::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,0), rgba(255,255,255,.18));
+      pointer-events:none;
+    }
+    .mediaRow{
+      margin-top:10px;
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
+    .mediaDot{
+      width:10px; height:10px; border-radius: 999px;
+      border:1px solid rgba(10,30,60,.18);
+      background: rgba(255,255,255,.70);
+      cursor:pointer;
+      box-shadow: 0 10px 20px rgba(10,30,60,.08);
+    }
+    .mediaDot.active{
+      border-color: rgba(37,99,235,.45);
+      background: rgba(37,99,235,.20);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.14), 0 10px 20px rgba(10,30,60,.08);
+    }
+    .modalInfo{
+      display:flex; flex-direction:column; gap:10px;
+      min-width:0;
+    }
+    .infoBox{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.66);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 14px 36px rgba(10,30,60,.10);
+      min-width:0;
+    }
+    .infoHdr{
+      font-size: 10px;
+      font-weight: 1000;
+      letter-spacing:.16em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.82);
+      margin:0 0 8px;
+    }
+    .infoText{
+      margin:0;
+      color: rgba(10,30,60,.78);
+      font-size: 12px;
+      line-height: 1.65;
+      letter-spacing:.01em;
+      white-space: pre-wrap;
+    }
+    .infoChips{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .infoChip{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.62);
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 10px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.74);
+    }
+    .infoBtnRow{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .infoBtn{
+      flex:1;
+      border:1px solid rgba(37,99,235,.30);
+      background: rgba(37,99,235,.12);
+      color: rgba(10,30,60,.92);
+      border-radius: 14px;
+      padding: 10px 10px;
+      text-decoration:none;
+      text-transform: uppercase;
+      letter-spacing:.10em;
+      font-weight: 950;
+      font-size: 11px;
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      user-select:none;
+      box-shadow: 0 12px 28px rgba(37,99,235,.14);
+      -webkit-tap-highlight-color: transparent;
+      min-width: 220px;
+      cursor:pointer;
+    }
+
+    /* Leaflet numbered marker */
+    .numPin{
+      width: 30px; height: 30px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.92);
+      border:1px solid rgba(10,30,60,.20);
+      box-shadow: 0 12px 26px rgba(10,30,60,.14);
+      display:grid; place-items:center;
+      font-weight: 1000;
+      color: rgba(10,30,60,.92);
+      font-size: 12px;
+      letter-spacing:.02em;
+    }
+
+    /* ✅ RESPONSIVE */
     @media (max-width: 1200px){
       .main{ grid-template-columns: 1fr; }
       .mapPane{ position:relative; top:auto; height:520px; max-height:none; }
@@ -899,13 +1130,13 @@
       .heroRight{ justify-content:flex-start; }
       .aboutGrid{ grid-template-columns: 1fr; }
       .aboutFooterRow{ justify-content:flex-start; }
+      .modalBody{ grid-template-columns: 1fr; }
     }
     @media (max-width: 520px){
       .shell{ padding: 10px 8px 16px; }
       .heroBar{ padding: 10px 10px; }
       .logo{ width:52px; height:52px; border-radius: 16px; }
       .chip{ padding: 8px 9px; font-size: 10.5px; }
-      .pkgThumb{ width:78px; height:78px; }
       .detailsGrid{ grid-template-columns: 1fr; }
       .waText{ display:none; }
       .waFloat{ padding: 10px; }
@@ -913,241 +1144,10 @@
       .footInner{ flex-direction:column; align-items:flex-start; }
     }
 
-    /* prefers-reduced-motion */
     @media (prefers-reduced-motion: reduce){
       .aurora{ animation:none; }
       .pkgW{ transition:none; }
       .centreHero img{ transition:none; }
-    }
-
-    /* =========================
-       ✅ Compact package card for LEFT sidebar
-       ========================= */
-    .pkgMini{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.66);
-      border-radius: 14px;
-      overflow:hidden;
-      cursor:pointer;
-      box-shadow: 0 10px 22px rgba(10,30,60,.08);
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
-    }
-    .pkgMini:hover{ transform: translateY(-1px); background: rgba(255,255,255,.76); border-color: rgba(37,99,235,.28); }
-
-    .pkgMiniTop{
-      display:flex;
-      gap:10px;
-      padding:10px;
-      align-items:center;
-    }
-    .pkgMiniThumb{
-      width:56px; height:56px;
-      border-radius: 12px;
-      overflow:hidden;
-      border:1px solid rgba(10,30,60,.16);
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.78), rgba(37,99,235,.12));
-      flex:0 0 auto;
-      display:grid; place-items:center;
-    }
-    .pkgMiniThumb img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .pkgMiniThumb .ini{ font-weight:1000; letter-spacing:.08em; font-size:12px; }
-
-    .pkgMiniBody{ min-width:0; flex:1; display:flex; flex-direction:column; gap:6px; }
-    .pkgMiniTitle{
-      font-size: 11px;
-      font-weight: 1000;
-      letter-spacing:.10em;
-      text-transform: uppercase;
-      line-height:1.15;
-      white-space: normal;
-      overflow: hidden;
-      word-break: break-word;
-    }
-    .pkgMiniMeta{
-      display:flex; flex-wrap:wrap; gap:6px;
-    }
-    .pkgMiniChip{
-      border:1px solid rgba(10,30,60,.14);
-      background: rgba(255,255,255,.62);
-      border-radius: 999px;
-      padding: 5px 8px;
-      font-size: 9.5px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.74);
-      white-space: nowrap;
-    }
-    .pkgMiniBottom{
-      border-top:1px solid rgba(10,30,60,.14);
-      padding: 8px 10px;
-      background: rgba(255,255,255,.58);
-    }
-    .pkgMiniRoute{
-      font-size: 10.5px;
-      color: rgba(10,30,60,.64);
-      letter-spacing:.03em;
-      line-height:1.35;
-      white-space: normal;
-      overflow: hidden;
-      word-break: break-word;
-    }
-
-    /* =========================
-       ✅ Attractive Place Popup (Modal)
-       ========================= */
-    .placeModal{
-      position:fixed; inset:0;
-      display:none;
-      z-index: 20000;
-    }
-    .placeModal.show{ display:block; }
-
-    .placeBackdrop{
-      position:absolute; inset:0;
-      background: rgba(10,30,60,.35);
-      backdrop-filter: blur(10px);
-    }
-
-    .placeSheet{
-      position:absolute;
-      left:50%; top:50%;
-      transform: translate(-50%,-50%);
-      width: min(760px, calc(100vw - 22px));
-      max-height: min(86vh, 780px);
-      overflow:hidden;
-      border-radius: 20px;
-      border:1px solid rgba(10,30,60,.16);
-      background: linear-gradient(180deg, rgba(255,255,255,.84), rgba(255,255,255,.66));
-      box-shadow: 0 40px 120px rgba(10,30,60,.22);
-    }
-
-    .placeTop{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
-      padding: 12px 14px;
-      background: rgba(255,255,255,.70);
-      border-bottom:1px solid rgba(10,30,60,.14);
-    }
-    .placeKicker{
-      font-size:10px;
-      letter-spacing:.18em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.62);
-      font-weight: 950;
-    }
-    .placeTitle{
-      margin-top:5px;
-      font-size: 14px;
-      font-weight: 1000;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.94);
-      line-height: 1.2;
-    }
-    .placeMeta{
-      margin-top:6px;
-      font-size: 11px;
-      color: rgba(10,30,60,.70);
-      letter-spacing:.04em;
-      line-height: 1.35;
-    }
-    .placeClose{
-      width:40px; height:40px;
-      border-radius: 14px;
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.78);
-      color: rgba(10,30,60,.86);
-      cursor:pointer;
-      display:grid; place-items:center;
-      flex:0 0 auto;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .placeBody{
-      padding: 12px 14px 14px;
-      overflow:auto;
-      max-height: calc(min(86vh, 780px) - 64px);
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .placeGallery{
-      display:flex;
-      gap:10px;
-      overflow:auto;
-      padding-bottom: 10px;
-      -webkit-overflow-scrolling: touch;
-    }
-    .placeImg{
-      width: 220px;
-      height: 140px;
-      border-radius: 16px;
-      overflow:hidden;
-      flex: 0 0 auto;
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.70);
-      box-shadow: 0 18px 42px rgba(10,30,60,.10);
-    }
-    .placeImg img{
-      width:100%; height:100%;
-      object-fit: cover;
-      display:block;
-    }
-
-    .placeGrid{
-      margin-top: 8px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    .placeCardX{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.66);
-      border-radius: 16px;
-      padding: 12px;
-      box-shadow: 0 14px 36px rgba(10,30,60,.10);
-    }
-    .placeCardHdr{
-      font-size: 10px;
-      letter-spacing:.18em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.62);
-      font-weight: 1000;
-    }
-    .placeCardTxt{
-      margin-top: 8px;
-      font-size: 12px;
-      line-height: 1.6;
-      color: rgba(10,30,60,.84);
-      letter-spacing:.01em;
-      white-space: pre-wrap;
-    }
-
-    .placePills{
-      margin-top: 12px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-    }
-    .placePill{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.62);
-      border-radius: 999px;
-      padding: 7px 10px;
-      font-size: 10px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.78);
-    }
-
-    @media (max-width: 720px){
-      .placeSheet{
-        left: 50%;
-        top: auto;
-        bottom: 10px;
-        transform: translate(-50%, 0);
-        border-radius: 20px;
-      }
-      .placeGrid{ grid-template-columns: 1fr; }
-      .placeImg{ width: 200px; height: 128px; }
     }
   </style>
 </head>
@@ -1177,6 +1177,42 @@
     </div>
     <div class="waClose" id="waClose" title="Hide" aria-label="Hide WhatsApp button">✕</div>
   </a>
+
+  <!-- ✅ Place popup modal -->
+  <div class="modal" id="placeModal" aria-hidden="true">
+    <div class="modalBack" id="placeModalBack"></div>
+    <div class="modalCard" role="dialog" aria-modal="true" aria-label="Place Details">
+      <div class="modalTop">
+        <div class="modalTitle">
+          <div class="h" id="pmTitle">PLACE</div>
+          <div class="s" id="pmSub">—</div>
+        </div>
+        <div class="modalClose" id="pmClose">Close</div>
+      </div>
+      <div class="modalBody">
+        <div>
+          <div class="modalMedia">
+            <img id="pmImg" src="" alt="Place photo" onerror="this.style.display='none'">
+          </div>
+          <div class="mediaRow" id="pmDots"></div>
+        </div>
+        <div class="modalInfo">
+          <div class="infoBox">
+            <div class="infoHdr">History / About</div>
+            <p class="infoText" id="pmHistory">—</p>
+          </div>
+          <div class="infoBox">
+            <div class="infoHdr">What you can find</div>
+            <p class="infoText" id="pmFind">—</p>
+            <div class="infoChips" id="pmChips"></div>
+            <div class="infoBtnRow">
+              <div class="infoBtn" id="pmGoMap">Show on map</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="shell">
     <!-- HERO -->
@@ -1283,7 +1319,7 @@
       </div>
 
       <!-- CENTER -->
-      <div class="pane" id="packages">
+      <div class="pane">
         <div class="paneHdr">
           <div>
             <p class="t">Packages</p>
@@ -1323,22 +1359,20 @@
 
         <div id="map"></div>
 
-        <!-- ✅ Updated map tools: includes Day-wise controls -->
+        <!-- ✅ Day-wise on map -->
+        <div class="mapDayBar" id="mapDayBar">
+          <div class="dayChip active">All days</div>
+        </div>
+
         <div class="mapTools">
           <div class="toolBtn" id="showAllStopsBtn">Show Stops</div>
           <div class="toolBtn" id="showStartEndBtn">Start/End Only</div>
-
-          <select id="mapDaySel" class="toolBtn" style="padding:9px 10px;">
-            <option value="all">Day-wise: All</option>
-          </select>
-          <div class="toolBtn" id="showDayWiseBtn">Day-wise</div>
-
           <div class="toolBtn" id="toggleTilesBtn">Toggle Tiles</div>
         </div>
       </div>
     </div>
 
-    <!-- ✅ ABOUT (ONE SECTION) -->
+    <!-- ABOUT -->
     <section class="aboutWrap" id="about">
       <div class="aboutInner">
         <div class="aboutHead">
@@ -1350,7 +1384,6 @@
         </div>
 
         <div class="aboutGrid">
-          <!-- About Website -->
           <div class="aboutBox">
             <div class="aboutBoxTop">
               <div class="aboutIcon" aria-hidden="true">🌐</div>
@@ -1378,7 +1411,6 @@
             </div>
           </div>
 
-          <!-- About Us -->
           <div class="aboutBox">
             <div class="aboutBoxTop">
               <div class="aboutIcon" aria-hidden="true">🤝</div>
@@ -1391,7 +1423,8 @@
             <p class="aboutText">
               We are new in the market, but our intention and service standards are very clear:
               <b>quality</b>, <b>comfort</b>, and <b>honest guidance</b>.
-              </p>
+              <b>Ham naye zaroor hain, lekin iska matlab yeh nahi ki hum quality ya aapko comfortable stay provide nahi kar sakte.</b>
+            </p>
 
             <p class="aboutText" style="margin-top:10px;">
               Every itinerary is planned carefully — practical routes, verified stays (as per availability), and smooth coordination.
@@ -1413,7 +1446,6 @@
       </div>
     </section>
 
-    <!-- ✅ MINIMAL FOOTER (NO CONTACT DETAILS) -->
     <footer>
       <div class="footInner">
         <div class="footLeft">© <span id="yy"></span> Himachal Explorer Portal</div>
@@ -1427,43 +1459,7 @@
 
   <div class="botToast" id="botToast">👋 Welcome! Select your <b>Start</b> and click <b>Generate</b>. Then open any package to see details.</div>
 
-  <!-- ✅ PLACE POPUP (Modal) -->
-  <div class="placeModal" id="placeModal" aria-hidden="true">
-    <div class="placeBackdrop" id="placeBackdrop"></div>
-
-    <div class="placeSheet" role="dialog" aria-modal="true" aria-label="Place details">
-      <div class="placeTop">
-        <div class="placeTitleWrap">
-          <div class="placeKicker" id="pmKicker">Place</div>
-          <div class="placeTitle" id="pmTitle">—</div>
-          <div class="placeMeta" id="pmMeta">—</div>
-        </div>
-
-        <button class="placeClose" id="pmClose" aria-label="Close">✕</button>
-      </div>
-
-      <div class="placeBody">
-        <div class="placeGallery" id="pmGallery"></div>
-
-        <div class="placeGrid">
-          <div class="placeCardX">
-            <div class="placeCardHdr">History</div>
-            <div class="placeCardTxt" id="pmHistory">—</div>
-          </div>
-
-          <div class="placeCardX">
-            <div class="placeCardHdr">What you can find</div>
-            <div class="placeCardTxt" id="pmFind">—</div>
-          </div>
-        </div>
-
-        <div class="placePills" id="pmPills"></div>
-      </div>
-    </div>
-  </div>
-
   <script>
-    // year + top link
     document.addEventListener("DOMContentLoaded", ()=>{
       const y = document.getElementById("yy");
       if(y) y.textContent = new Date().getFullYear();
@@ -1515,7 +1511,7 @@
   };
 
   const NODE_TEMPLATES  = "templates";
-  const NODE_PLACES     = "places_in_packages";
+  const NODE_PLACES     = "places";               // ✅ FIXED (your DB screenshot shows /places)
   const NODE_COSTS      = "package_cost_breakdown";
 
   const $ = (id)=>document.getElementById(id);
@@ -1574,12 +1570,30 @@
   function latAny(p){ return Number(p?.latitude ?? p?.lat ?? p?.Latitude); }
   function lngAny(p){ return Number(p?.longitude ?? p?.lng ?? p?.Longitude); }
   function districtAny(p){ return String(p?.district || p?.District || "").trim().toUpperCase(); }
+  function categoryAny(p){ return String(p?.category || p?.Category || "").trim(); }
+  function regionAny(p){ return String(p?.region || p?.Region || "").trim(); }
+  function historyAny(p){ return String(p?.history_tagline || p?.history || p?.about || "").trim(); }
+  function findAny(p){ return String(p?.what_you_find || p?.highlights || p?.what_to_do || "").trim(); }
+
+  function isUrl(x){
+    const s = String(x||"").trim();
+    return /^https?:\/\//i.test(s) || /^data:image\//i.test(s);
+  }
+  function pickPhotos(p){
+    const raw = [
+      p?.photo_1, p?.photo_2, p?.photo_3, p?.photo_4,
+      p?.image_1, p?.image_2, p?.image_3, p?.image_4
+    ].map(x=>String(x??"").trim()).filter(Boolean);
+
+    // filter out numeric placeholders like "1"
+    const urls = raw.filter(x => isUrl(x));
+    return urls.slice(0, 6);
+  }
 
   let map, tile, markersLayer, routeLine;
-  let showMode = "all"; // "all" | "startend" | "daywise"
-  let DAY_BLOCKS = [];  // day wise blocks for selected package
-
+  let showMode = "all";
   let tilesDark = false;
+  let CURRENT_DAY_FILTER = "all"; // ✅ map day filter
 
   function invalidateMapSoon(){
     try{
@@ -1587,6 +1601,16 @@
       setTimeout(()=>{ map && map.invalidateSize && map.invalidateSize(true); }, 260);
     }catch(e){}
   }
+
+  function createNumberIcon(n){
+    return L.divIcon({
+      className: "",
+      html: `<div class="numPin">${escapeHtml(String(n))}</div>`,
+      iconSize: [30,30],
+      iconAnchor: [15,15]
+    });
+  }
+
   function initMap(){
     map = L.map('map', { zoomControl:true }).setView([31.1048, 77.1734], 8);
     tile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
@@ -1595,13 +1619,14 @@
     invalidateMapSoon();
     window.addEventListener("resize", invalidateMapSoon, { passive:true });
   }
+
   function clearMap(){
     markersLayer.clearLayers();
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
     $("kmBadge").textContent = "—";
+    setMapDayBar(null);
     invalidateMapSoon();
   }
-  function fitRoute(){ if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] }); }
 
   /* Data */
   let db, analytics, auth;
@@ -1610,15 +1635,12 @@
   let PLACES = {};
   let NAME_TO_ID = new Map();
   let STARTS = [];
-
   let COSTS = {};
-
   let INTER_ALL = [];
   let DISTRICT_KEYS = [];
   let ACTIVE_DISTRICT = "ALL";
   let CURRENT_TEMPLATE_KEY = "";
   let CURRENT_ROUTE_KM = 0;
-
   const WHATSAPP_NUMBER = "917018138847";
 
   function setCentreHeroVisible(on){
@@ -1698,6 +1720,24 @@
       raw.split(",").map(x=>x.trim()).filter(Boolean).forEach(pid=>out.push(pid));
     }
     return out;
+  }
+
+  function buildDayWise(tpl){
+    const days = Number(tpl.days || 1);
+    const blocks = [];
+    for(let d=1; d<=Math.min(12, Math.max(1, days)); d++){
+      const k = `day${d}_place_ids`;
+      const raw = String(tpl[k] || "").trim();
+      const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
+      blocks.push({ day:d, ids });
+    }
+    const anyHas = blocks.some(x=>x.ids.length);
+    if(!anyHas){
+      const raw = String(tpl.major_place_ids || tpl.place_ids || "").trim();
+      const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
+      return [{ day:1, ids }];
+    }
+    return blocks.filter(x=>x.ids.length);
   }
 
   function routeIdsFromTemplateIncludingStart(tpl){
@@ -1845,282 +1885,299 @@
     }
   }
 
-  function buildDayWise(tpl){
-    const days = Number(tpl.days || 1);
-    const blocks = [];
-    for(let d=1; d<=Math.min(12, Math.max(1, days)); d++){
-      const k = `day${d}_place_ids`;
-      const raw = String(tpl[k] || "").trim();
-      const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
-      blocks.push({ day:d, ids });
-    }
-    const anyHas = blocks.some(x=>x.ids.length);
-    if(!anyHas){
-      const raw = String(tpl.major_place_ids || tpl.place_ids || "").trim();
-      const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
-      return [{ day:1, ids }];
-    }
-    return blocks.filter(x=>x.ids.length);
-  }
+  /* ✅ Place Modal (attractive popup) */
+  let MODAL_CURRENT_PID = "";
+  function openPlaceModal(pid){
+    const p = PLACES[pid];
+    if(!p) return;
 
-  /* ✅ Day-wise map dropdown options */
-  function setMapDayOptions(blocks){
-    const sel = $("mapDaySel");
-    if(!sel) return;
-    sel.innerHTML = `<option value="all">Day-wise: All</option>`;
-    blocks.forEach(b=>{
-      const opt = document.createElement("option");
-      opt.value = String(b.day);
-      opt.textContent = `Day ${b.day}`;
-      sel.appendChild(opt);
-    });
-  }
+    MODAL_CURRENT_PID = pid;
+    const nm = placeNameAny(p, pid);
+    const dist = districtAny(p) || "—";
+    const cat = categoryAny(p) || "—";
+    const reg = regionAny(p) || "";
+    const his = historyAny(p) || "—";
+    const what = findAny(p) || "—";
 
-  /* ✅ Place modal helpers */
-  function getPlacePhotos(p){
-    const arr = [];
-    ["photo_1","photo_2","photo_3","photo_4","photo1","photo2","photo3","photo4"].forEach(k=>{
-      const v = String(p?.[k] ?? "").trim();
-      if(v && v !== "1") arr.push(v);
-    });
-    if(Array.isArray(p?.photos)){
-      p.photos.forEach(x=>{
-        const v = String(x||"").trim();
-        if(v) arr.push(v);
-      });
-    }
-    return [...new Set(arr)];
-  }
+    $("pmTitle").textContent = nm;
+    $("pmSub").textContent = `${dist} • ${cat}${reg ? " • " + reg : ""}`;
 
-  function openPlaceModal(placeObj, pid){
-    const modal = $("placeModal");
-    if(!modal) return;
-
-    const name = placeNameAny(placeObj, pid);
-    const dist = districtAny(placeObj) || "—";
-    const region = String(placeObj?.region || "").trim();
-    const cat = String(placeObj?.category || "").trim();
-    const seg = String(placeObj?.segment || "").trim();
-
-    $("pmTitle").textContent = name || "Place";
-    $("pmMeta").textContent = [dist, region].filter(Boolean).join(" • ") || "—";
-
-    const history = String(placeObj?.history_tagline || placeObj?.history || "").trim();
-    const find = String(placeObj?.what_you_find || placeObj?.what || placeObj?.highlights || "").trim();
-
-    $("pmHistory").textContent = history || "History will be updated soon.";
-    $("pmFind").textContent = find || "Highlights will be updated soon.";
-
-    const pills = $("pmPills");
-    pills.innerHTML = "";
-    [
-      cat ? `Category: ${cat}` : "",
-      seg ? `Segment: ${seg}` : "",
+    // chips
+    const chips = $("pmChips");
+    chips.innerHTML = "";
+    const chipVals = [
+      dist && dist !== "—" ? dist : "",
+      cat && cat !== "—" ? cat : "",
+      reg ? reg : "",
       pid ? `ID: ${pid}` : ""
-    ].filter(Boolean).forEach(txt=>{
-      const s = document.createElement("div");
-      s.className = "placePill";
-      s.textContent = txt;
-      pills.appendChild(s);
+    ].filter(Boolean);
+    chipVals.forEach(x=>{
+      const s = document.createElement("span");
+      s.className = "infoChip";
+      s.textContent = x;
+      chips.appendChild(s);
     });
 
-    const g = $("pmGallery");
-    g.innerHTML = "";
-    const photos = getPlacePhotos(placeObj);
+    $("pmHistory").textContent = his;
+    $("pmFind").textContent = what;
+
+    const photos = pickPhotos(p);
+    const img = $("pmImg");
+    const dots = $("pmDots");
+    dots.innerHTML = "";
+
     if(photos.length){
-      photos.slice(0,8).forEach(url=>{
-        const box = document.createElement("div");
-        box.className = "placeImg";
-        box.innerHTML = `<img src="${escapeHtml(url)}" alt="${escapeHtml(name)}" loading="lazy">`;
-        g.appendChild(box);
+      img.style.display = "block";
+      img.src = photos[0];
+
+      photos.forEach((url, i)=>{
+        const d = document.createElement("div");
+        d.className = "mediaDot" + (i===0 ? " active" : "");
+        d.title = "Photo " + (i+1);
+        d.onclick = ()=>{
+          img.src = url;
+          dots.querySelectorAll(".mediaDot").forEach(x=>x.classList.remove("active"));
+          d.classList.add("active");
+        };
+        dots.appendChild(d);
       });
     }else{
-      const box = document.createElement("div");
-      box.className = "placeImg";
-      box.style.display = "grid";
-      box.style.placeItems = "center";
-      box.innerHTML = `<div style="font-weight:1000;letter-spacing:.12em;text-transform:uppercase;color:rgba(10,30,60,.72);">${escapeHtml(initials(name))}</div>`;
-      g.appendChild(box);
+      img.style.display = "none";
+      dots.innerHTML = "";
     }
 
+    const modal = $("placeModal");
     modal.classList.add("show");
     modal.setAttribute("aria-hidden","false");
-    document.body.style.overflow = "hidden";
   }
 
   function closePlaceModal(){
     const modal = $("placeModal");
-    if(!modal) return;
     modal.classList.remove("show");
     modal.setAttribute("aria-hidden","true");
-    document.body.style.overflow = "";
+    MODAL_CURRENT_PID = "";
   }
 
-  /* ✅ Day-wise markers renderer */
-  function drawMarkersDayWise(blocks, dayValue){
-    markersLayer.clearLayers();
-    const wantedDay = (dayValue === "all") ? null : Number(dayValue);
-
-    blocks.forEach(block=>{
-      if(wantedDay && block.day !== wantedDay) return;
-
-      block.ids.forEach((pid)=>{
-        const p = PLACES[pid] || {};
-        const lat = latAny(p), lng = lngAny(p);
-        if(!isFinite(lat) || !isFinite(lng)) return;
-
-        const name = placeNameAny(p, pid);
-        const dist = districtAny(p) || "—";
-
-        const marker = L.marker([lat, lng], { riseOnHover:true });
-        marker.bindPopup(
-          `<b>Day ${block.day}</b><br>${escapeHtml(name)}<br><small>${escapeHtml(dist)}</small><br><small style="opacity:.75">Tap marker again for details</small>`
-        );
-        marker.on("click", ()=> openPlaceModal(p, pid));
-        marker.addTo(markersLayer);
-      });
-    });
-
-    const layers = markersLayer.getLayers();
-    if(layers.length){
-      const group = L.featureGroup(layers);
-      map.fitBounds(group.getBounds(), { padding:[22,22] });
+  function goToPlaceOnMap(pid){
+    const p = PLACES[pid];
+    if(!p) return;
+    const lat = latAny(p), lng = lngAny(p);
+    if(isFinite(lat) && isFinite(lng)){
+      map.setView([lat,lng], Math.max(map.getZoom(), 12), { animate:true });
+      invalidateMapSoon();
     }
-    invalidateMapSoon();
   }
 
-  function renderInlineDetails(detailsEl, tpl, startUpper, endKey, km){
-    const pax = getSelectedPax();
-    const tier = String($("visitType")?.value || "budget").toUpperCase();
-
-    const perPerson = getPerPersonPrice(tpl);
-    const total = isFinite(perPerson) ? (perPerson * pax) : NaN;
-
-    const title = `${String(startUpper||"START").toUpperCase()} → ${String(endKey||"").toUpperCase()}`;
-
-    const metaParts = [];
-    if(tpl.route_id) metaParts.push(`Code: ${tpl.route_id}`);
-    if(tpl.route_path) metaParts.push(`Route: ${tpl.route_path}`);
-    if(tpl.best_season) metaParts.push(`Season: ${tpl.best_season}`);
-    if(tpl.ideal_for) metaParts.push(`Ideal: ${tpl.ideal_for}`);
-
-    const inc = String(tpl.includes || tpl.inclusions || "").trim();
-    const exc = String(tpl.excludes || tpl.exclusions || "").trim();
-    const note = String(tpl.important_notes || tpl.notes || "").trim();
-
-    const waBtnId = `wa_inline_${tpl.key}`;
-    detailsEl.innerHTML = `
-      <div class="detailsCard">
-        <h3 class="bigTitle">${escapeHtml(title)}</h3>
-        <div class="muted" style="margin-top:6px; text-transform:none; letter-spacing:.02em;">${escapeHtml(metaParts.join(" • ") || "—")}</div>
-
-        <div class="enqRow">
-          <a id="${waBtnId}" class="enqBtn disabled" href="#" target="_blank" rel="noopener">Send Query on WhatsApp</a>
-        </div>
-      </div>
-
-      <div class="detailsGrid" style="margin-top:10px;">
-        <div class="mini">
-          <div class="k">Total (final)</div>
-          <div class="v">${isFinite(total)?rupees(total):"—"} <small>(${escapeHtml(tier)})</small></div>
-        </div>
-        <div class="mini">
-          <div class="k">Per Person (final)</div>
-          <div class="v">${isFinite(perPerson)?rupees(perPerson):"—"} <small>per person</small></div>
-        </div>
-        <div class="mini">
-          <div class="k">Pax used</div>
-          <div class="v">${escapeHtml(String(pax))} <small>selected</small></div>
-        </div>
-        <div class="mini">
-          <div class="k">Route KM</div>
-          <div class="v">${isFinite(km)&&km>0?Number(km).toFixed(1):"—"} <small>estimated</small></div>
-        </div>
-      </div>
-
-      <div class="detailsCard" style="margin-top:10px;">
-        <div class="muted" style="margin-bottom:8px;">Package includes / excludes</div>
-        <div class="muted" style="text-transform:none;letter-spacing:.02em;">
-          <b style="color:rgba(10,30,60,.92);letter-spacing:.12em;">INCLUDES:</b> ${escapeHtml(inc || "—")}<br><br>
-          <b style="color:rgba(10,30,60,.92);letter-spacing:.12em;">EXCLUDES:</b> ${escapeHtml(exc || "—")}<br><br>
-          <b style="color:rgba(10,30,60,.92);letter-spacing:.12em;">NOTES:</b> ${escapeHtml(note || "—")}
-        </div>
-      </div>
-
-      <div class="daysList" id="days_${tpl.key}" style="margin-top:10px;"></div>
-    `;
-
-    const startName = normalizeStartInput() || (tpl.start_point || tpl.start || startUpper || "");
-    const msg = buildWhatsAppMessage({ tpl, startName, endKey, pax, tier, km, total, perPerson });
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-    setWhatsAppInline(document.getElementById(waBtnId), isFinite(perPerson), url);
-
-    const daysWrap = document.getElementById(`days_${tpl.key}`);
-    if(!daysWrap) return;
+  /* ✅ map day bar */
+  function setMapDayBar(tpl){
+    const bar = $("mapDayBar");
+    bar.innerHTML = "";
+    if(!tpl){
+      const x = document.createElement("div");
+      x.className = "dayChip active";
+      x.textContent = "All days";
+      bar.appendChild(x);
+      CURRENT_DAY_FILTER = "all";
+      return;
+    }
 
     const blocks = buildDayWise(tpl);
-    blocks.forEach(block=>{
-      const dayCard = document.createElement("div");
-      dayCard.className = "dayCard";
-      dayCard.innerHTML = `
-        <div class="dayTop">
-          <div class="d">Day ${block.day}</div>
-          <div class="muted" style="text-transform:none;letter-spacing:.02em;">${block.ids.length} places</div>
-        </div>
-        <div class="muted" style="text-transform:none;letter-spacing:.02em;">Places</div>
-        <div class="dayPlaces"></div>
-      `;
-      const cont = dayCard.querySelector(".dayPlaces");
+    const make = (label, key)=>{
+      const c = document.createElement("div");
+      c.className = "dayChip" + (CURRENT_DAY_FILTER===key ? " active" : "");
+      c.textContent = label;
+      c.onclick = async ()=>{
+        CURRENT_DAY_FILTER = key;
+        bar.querySelectorAll(".dayChip").forEach(x=>x.classList.remove("active"));
+        c.classList.add("active");
+        await redrawCurrentPackageRoute();
+      };
+      return c;
+    };
 
-      block.ids.forEach(pid=>{
+    bar.appendChild(make("All days","all"));
+    blocks.forEach(b=>{
+      bar.appendChild(make(`Day ${b.day}`, `day${b.day}`));
+    });
+
+    // default
+    if(!CURRENT_DAY_FILTER) CURRENT_DAY_FILTER = "all";
+  }
+
+  async function redrawCurrentPackageRoute(){
+    if(!CURRENT_TEMPLATE_KEY) return;
+    const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
+    if(!tpl) return;
+
+    let ids = routeIdsFromTemplateIncludingStart(tpl);
+
+    if(CURRENT_DAY_FILTER && CURRENT_DAY_FILTER !== "all"){
+      const dayN = Number(String(CURRENT_DAY_FILTER).replace("day",""));
+      const blocks = buildDayWise(tpl);
+      const block = blocks.find(b => b.day === dayN);
+      const startName = String(tpl?.start_point || tpl?.start || "").trim();
+      const startPid = getPlaceIdByNameAny(startName);
+      ids = [];
+      if(startPid) ids.push(startPid);
+      if(block?.ids?.length) ids.push(...block.ids);
+      // remove dup
+      ids = Array.from(new Set(ids));
+    }
+
+    const rr = await drawRoadRouteFromPlaces(ids);
+    CURRENT_ROUTE_KM = rr.ok ? rr.km : CURRENT_ROUTE_KM;
+  }
+
+  /* draw route */
+  async function drawRoadRouteFromPlaces(placeIds){
+    markersLayer.clearLayers();
+    if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
+
+    const pts = [];
+    const validIds = [];
+    for(const pid of placeIds){
+      const p = PLACES[pid] || {};
+      const lat = latAny(p);
+      const lng = lngAny(p);
+      if(isFinite(lat) && isFinite(lng)){
+        pts.push([lng,lat]);
+        validIds.push(pid);
+      }
+    }
+    if(pts.length < 2){
+      $("kmBadge").textContent = "—";
+      return { ok:false, km:0 };
+    }
+
+    const maxPts = 25;
+    let used = pts;
+    if(pts.length > maxPts){
+      const step = Math.ceil(pts.length / maxPts);
+      used = pts.filter((_,i)=> i%step===0 || i===pts.length-1);
+    }
+
+    try{
+      const url =
+        "https://router.project-osrm.org/route/v1/driving/" +
+        used.map(c=>c.join(",")).join(";") +
+        "?overview=full&geometries=geojson&steps=false";
+
+      const res = await fetch(url);
+      const data = await res.json();
+      if(!data.routes?.length){
+        $("kmBadge").textContent = "—";
+        return { ok:false, km:0 };
+      }
+
+      const r = data.routes[0];
+      const latlngs = r.geometry.coordinates.map(c=>[c[1],c[0]]);
+      routeLine = L.polyline(latlngs, { weight: 5, opacity: .95 }).addTo(map);
+      if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] });
+      invalidateMapSoon();
+
+      const markIds = (showMode==="startend")
+        ? [validIds[0], validIds[validIds.length-1]]
+        : validIds;
+
+      // numbered markers
+      markIds.forEach((pid, idx)=>{
         const p = PLACES[pid] || {};
-        const name = placeNameAny(p, pid);
-        const dist = districtAny(p) || "—";
+        const lat = latAny(p);
+        const lng = lngAny(p);
+        if(!isFinite(lat)||!isFinite(lng)) return;
 
-        const line = document.createElement("div");
-        line.className = "placeLine";
-        line.innerHTML = `
-          <div class="thumb">${escapeHtml(initials(name))}</div>
-          <div class="pinfo">
-            <div class="pname">${escapeHtml(name)}</div>
-            <div class="pmeta">${escapeHtml(dist)}</div>
+        const name = placeNameAny(p, pid);
+        const dist = districtAny(p) || "";
+        const cat = categoryAny(p) || "";
+
+        const marker = L.marker([lat,lng], {
+          riseOnHover:true,
+          icon: createNumberIcon(idx+1)
+        }).addTo(markersLayer);
+
+        const pop = `
+          <div style="min-width:220px;">
+            <div style="font-weight:1000;letter-spacing:.14em;text-transform:uppercase;color:rgba(10,30,60,.92);font-size:11px;">
+              ${escapeHtml(name)}
+            </div>
+            <div style="margin-top:6px;color:rgba(10,30,60,.65);letter-spacing:.10em;text-transform:uppercase;font-size:10px;">
+              ${escapeHtml([dist,cat].filter(Boolean).join(" • ") || "—")}
+            </div>
+            <div style="margin-top:10px;padding:10px;border:1px solid rgba(10,30,60,.14);border-radius:12px;background:rgba(255,255,255,.66);box-shadow:0 12px 24px rgba(10,30,60,.10);">
+              <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(10,30,60,.70);font-weight:1000;">History</div>
+              <div style="margin-top:6px;font-size:12px;line-height:1.55;color:rgba(10,30,60,.80);">
+                ${escapeHtml(historyAny(p) || "—")}
+              </div>
+              <div style="margin-top:10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(10,30,60,.70);font-weight:1000;">What you find</div>
+              <div style="margin-top:6px;font-size:12px;line-height:1.55;color:rgba(10,30,60,.80);">
+                ${escapeHtml(findAny(p) || "—")}
+              </div>
+              <div style="margin-top:10px;">
+                <button data-pid="${escapeHtml(pid)}"
+                  style="border:1px solid rgba(37,99,235,.30);background:rgba(37,99,235,.12);color:rgba(10,30,60,.92);
+                    border-radius:12px;padding:8px 10px;font-weight:1000;letter-spacing:.10em;text-transform:uppercase;font-size:10px;cursor:pointer;">
+                  Open details
+                </button>
+              </div>
+            </div>
           </div>
         `;
 
-        // ✅ Click place: open attractive popup + pan map
-        line.onclick = (e)=>{
-          e.stopPropagation();
-          openPlaceModal(p, pid);
-
-          const lat = latAny(p), lng = lngAny(p);
-          if(isFinite(lat) && isFinite(lng)){
-            map.setView([lat,lng], Math.max(map.getZoom(), 12), { animate:true });
-            invalidateMapSoon();
-          }
-        };
-
-        cont.appendChild(line);
+        marker.bindPopup(pop, { maxWidth: 340 });
+        marker.on("popupopen", ()=>{
+          setTimeout(()=>{
+            const btn = document.querySelector(`button[data-pid="${CSS.escape(pid)}"]`);
+            if(btn){
+              btn.onclick = (e)=>{
+                e.preventDefault();
+                openPlaceModal(pid);
+              };
+            }
+          }, 40);
+        });
       });
 
-      daysWrap.appendChild(dayCard);
-    });
+      const km = Number(r.distance/1000);
+      $("kmBadge").textContent = km.toFixed(1) + " KM";
+      return { ok:true, km };
+    }catch(e){
+      console.error(e);
+      $("kmBadge").textContent = "—";
+      return { ok:false, km:0 };
+    }
+  }
+
+  /* Cards helpers */
+  function getThumbForTemplate(tpl){
+    const ids = stopsFromTemplate(tpl);
+    const first = ids[0];
+    if(!first) return "";
+    const p = PLACES[first];
+    if(!p) return "";
+    const photos = pickPhotos(p);
+    return photos[0] || "";
   }
 
   /* Cards */
-  function renderInterCard(t, startUpper){
+  function renderInterCard(t, startUpper, opts={}){
+    const { compact=false } = opts;
     const days = Number(t.days||0) || 0;
     const endKey = endKeyFromRoutePath(t);
     const district = endDistrictFromTemplate(t);
     const code = String(t.route_id || "—").toUpperCase();
     const km = approxKmFromTpl(t);
+    const thumbUrl = getThumbForTemplate(t);
 
     const el = document.createElement("div");
-    el.className = "pkgW";
+    el.className = "pkgW" + (compact ? " compact" : "");
     el.dataset.key = t.key;
 
     el.innerHTML = `
       <div class="pkgWTop">
-        <div class="pkgThumb"><div class="ini">${escapeHtml(initials(district))}</div></div>
+        <div class="pkgThumb">
+          ${thumbUrl ? `<img src="${escapeHtml(thumbUrl)}" alt="${escapeHtml(district)}" onerror="this.remove()">` : ""}
+          ${thumbUrl ? `` : `<div class="ini">${escapeHtml(initials(district))}</div>`}
+        </div>
         <div class="pkgWBody">
           <div class="pkgWTitle">
             <div class="mainT">${escapeHtml(startUpper)} → ${escapeHtml(district)}</div>
@@ -2153,19 +2210,24 @@
     return el;
   }
 
-  function renderLocalCard(t, startUpper){
+  function renderLocalCard(t, startUpper, opts={}){
+    const { compact=false } = opts;
     const days = Number(t.days||0) || 0;
     const heading = String(t.route_path || t.route_name || t.package_id || t.key || "Local Package").trim();
     const code = String(t.route_id || "LOCAL").toUpperCase();
     const km = approxKmFromTpl(t);
+    const thumbUrl = getThumbForTemplate(t);
 
     const el = document.createElement("div");
-    el.className = "pkgW";
+    el.className = "pkgW" + (compact ? " compact" : "");
     el.dataset.key = t.key;
 
     el.innerHTML = `
       <div class="pkgWTop">
-        <div class="pkgThumb"><div class="ini">${escapeHtml(initials(heading))}</div></div>
+        <div class="pkgThumb">
+          ${thumbUrl ? `<img src="${escapeHtml(thumbUrl)}" alt="${escapeHtml(heading)}" onerror="this.remove()">` : ""}
+          ${thumbUrl ? `` : `<div class="ini">${escapeHtml(initials(heading))}</div>`}
+        </div>
         <div class="pkgWBody">
           <div class="pkgWTitle">
             <div class="mainT">${escapeHtml(heading)}</div>
@@ -2191,53 +2253,6 @@
 
       <div class="pkgDetails" id="details_${escapeHtml(t.key)}">
         <div class="pill"><b>Loading…</b></div>
-      </div>
-    `;
-
-    el.onclick = ()=>toggleOpenTemplate(t.key);
-    return el;
-  }
-
-  /* ✅ Compact sidebar card renderer (left "Other Packages") */
-  function renderSidebarCard(t, startUpper){
-    const days = Number(t.days||0) || 0;
-    const district = isLocalComputed(t) ? "LOCAL" : endDistrictFromTemplate(t);
-    const endKey = isLocalComputed(t) ? (t.route_name || t.package_id || t.key || "Local") : endKeyFromRoutePath(t);
-    const code = String(t.route_id || "—").toUpperCase();
-    const km = approxKmFromTpl(t);
-    const route = String(t.route_path || "").trim();
-
-    const photo = String(t.photo || t.image || "").trim();
-
-    const el = document.createElement("div");
-    el.className = "pkgMini";
-    el.dataset.key = t.key;
-
-    el.innerHTML = `
-      <div class="pkgMiniTop">
-        <div class="pkgMiniThumb">
-          ${
-            photo
-              ? `<img src="${escapeHtml(photo)}" alt="${escapeHtml(endKey)}" onerror="this.remove(); this.parentNode.innerHTML='<div class=\\'ini\\'>${escapeHtml(initials(district))}</div>';">`
-              : `<div class="ini">${escapeHtml(initials(district))}</div>`
-          }
-        </div>
-
-        <div class="pkgMiniBody">
-          <div class="pkgMiniTitle">${escapeHtml(startUpper)} → ${escapeHtml(String(endKey).toUpperCase())}</div>
-
-          <div class="pkgMiniMeta">
-            <div class="pkgMiniChip">${days}D</div>
-            <div class="pkgMiniChip">KM ${km ? km.toFixed(0) : "—"}</div>
-            <div class="pkgMiniChip">${escapeHtml(code)}</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="pkgMiniBottom">
-        <div class="pkgMiniRoute">
-          ${escapeHtml(route || "Tap to open this package")}
-        </div>
       </div>
     `;
 
@@ -2355,16 +2370,18 @@
     selCard.classList.add("active");
     center.appendChild(selCard);
 
-    // ✅ Left sidebar uses compact cards
+    // ✅ left sidebar now uses compact cards with smaller photo
     other.innerHTML = "";
     if(!rest.length){
       other.innerHTML = `<div class="otherHint">No other packages in this filter.</div>`;
     }else{
       rest.forEach(obj=>{
-        other.appendChild(renderSidebarCard(obj.t, startUpper));
+        const c = (obj.kind === "local")
+          ? renderLocalCard(obj.t, startUpper, { compact:true })
+          : renderInterCard(obj.t, startUpper, { compact:true });
+        other.appendChild(c);
       });
     }
-
     highlightActiveCard();
   }
 
@@ -2373,129 +2390,143 @@
     $("pkgCount").textContent = "—";
   }
 
-  async function drawRoadRouteFromPlaces(placeIds){
-    markersLayer.clearLayers();
-    if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
-
-    const pts = [];
-    const validIds = [];
-    for(const pid of placeIds){
-      const p = PLACES[pid] || {};
-      const lat = latAny(p);
-      const lng = lngAny(p);
-      if(isFinite(lat) && isFinite(lng)){
-        pts.push([lng,lat]);
-        validIds.push(pid);
-      }
-    }
-    if(pts.length < 2) return { ok:false, km:0 };
-
-    const maxPts = 25;
-    let used = pts;
-    if(pts.length > maxPts){
-      const step = Math.ceil(pts.length / maxPts);
-      used = pts.filter((_,i)=> i%step===0 || i===pts.length-1);
-    }
-
-    try{
-      const url =
-        "https://router.project-osrm.org/route/v1/driving/" +
-        used.map(c=>c.join(",")).join(";") +
-        "?overview=full&geometries=geojson&steps=false";
-
-      const res = await fetch(url);
-      const data = await res.json();
-      if(!data.routes?.length) return { ok:false, km:0 };
-
-      const r = data.routes[0];
-      const latlngs = r.geometry.coordinates.map(c=>[c[1],c[0]]);
-      routeLine = L.polyline(latlngs, { weight: 5, opacity: .95 }).addTo(map);
-      if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] });
-      invalidateMapSoon();
-
-      // ✅ Markers logic
-      if(showMode === "daywise" && DAY_BLOCKS.length){
-        const sel = $("mapDaySel");
-        const dayVal = sel ? sel.value : "all";
-        drawMarkersDayWise(DAY_BLOCKS, dayVal);
-      } else {
-        const markIds = (showMode==="startend")
-          ? [validIds[0], validIds[validIds.length-1]]
-          : validIds;
-
-        for(const pid of markIds){
-          const p = PLACES[pid] || {};
-          const lat = latAny(p);
-          const lng = lngAny(p);
-          if(!isFinite(lat)||!isFinite(lng)) continue;
-
-          const name = placeNameAny(p, pid);
-          const dist = districtAny(p) || "—";
-
-          const marker = L.marker([lat,lng], { riseOnHover:true });
-          marker.bindPopup(`<b>${escapeHtml(name)}</b><br><small>${escapeHtml(dist)}</small><br><small style="opacity:.75">Tap marker again for details</small>`);
-          marker.on("click", ()=> openPlaceModal(p, pid));
-          marker.addTo(markersLayer);
-        }
-      }
-
-      const km = Number(r.distance/1000);
-      $("kmBadge").textContent = km.toFixed(1) + " KM";
-      return { ok:true, km };
-    }catch(e){
-      console.error(e);
-      return { ok:false, km:0 };
-    }
+  function buildWhatsAppUrlForTemplate(tpl, startUpper, endKey, km){
+    const pax = getSelectedPax();
+    const tier = String($("visitType")?.value || "budget").toUpperCase();
+    const perPerson = getPerPersonPrice(tpl);
+    const total = isFinite(perPerson) ? (perPerson * pax) : NaN;
+    const startName = normalizeStartInput() || (tpl.start_point || tpl.start || startUpper || "");
+    const msg = buildWhatsAppMessage({ tpl, startName, endKey, pax, tier, km, total, perPerson });
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
   }
 
-  async function toggleOpenTemplate(key){
-    const startUpper = String(normalizeStartInput() || "").toUpperCase();
-    const same = (CURRENT_TEMPLATE_KEY === key);
+  function renderInlineDetails(detailsEl, tpl, startUpper, endKey, km){
+    const pax = getSelectedPax();
+    const tier = String($("visitType")?.value || "budget").toUpperCase();
 
-    if(same){
-      CURRENT_TEMPLATE_KEY = "";
-      CURRENT_ROUTE_KM = 0;
-      DAY_BLOCKS = [];
-      setMapDayOptions([]);
-      clearMap();
-      setCentreHeroVisible(true);
-      renderPanels();
-      showBot("Closed package. Select another one.");
-      return;
-    }
+    const perPerson = getPerPersonPrice(tpl);
+    const total = isFinite(perPerson) ? (perPerson * pax) : NaN;
 
-    CURRENT_TEMPLATE_KEY = key;
-    renderPanels();
-    highlightActiveCard();
+    const title = `${String(startUpper||"START").toUpperCase()} → ${String(endKey||"").toUpperCase()}`;
 
-    const tpl = TEMPLATES[key];
-    if(!tpl) return;
+    const metaParts = [];
+    if(tpl.route_id) metaParts.push(`Code: ${tpl.route_id}`);
+    if(tpl.route_path) metaParts.push(`Route: ${tpl.route_path}`);
+    if(tpl.best_season) metaParts.push(`Season: ${tpl.best_season}`);
+    if(tpl.ideal_for) metaParts.push(`Ideal: ${tpl.ideal_for}`);
 
-    // ✅ Prepare day-wise blocks for map + dropdown
-    DAY_BLOCKS = buildDayWise(tpl);
-    setMapDayOptions(DAY_BLOCKS);
+    const inc = String(tpl.includes || tpl.inclusions || "").trim();
+    const exc = String(tpl.excludes || tpl.exclusions || "").trim();
+    const note = String(tpl.important_notes || tpl.notes || "").trim();
 
-    const endKey = endKeyFromRoutePath(tpl);
-    const routeIds = routeIdsFromTemplateIncludingStart(tpl);
+    const waBtnId = `wa_inline_${tpl.key}`;
+    detailsEl.innerHTML = `
+      <div class="detailsCard">
+        <h3 class="bigTitle">${escapeHtml(title)}</h3>
+        <div class="muted" style="margin-top:6px; text-transform:none; letter-spacing:.02em;">${escapeHtml(metaParts.join(" • ") || "—")}</div>
 
-    const detailsEl = document.getElementById(`details_${key}`);
-    if(detailsEl){
-      detailsEl.innerHTML = `<div class="pill"><b>Loading…</b> fetching road route + final price</div>`;
-    }
+        <div class="enqRow">
+          <a id="${waBtnId}" class="enqBtn disabled" href="#" target="_blank" rel="noopener">Send Query on WhatsApp</a>
+        </div>
+      </div>
 
-    const rr = await drawRoadRouteFromPlaces(routeIds);
-    CURRENT_ROUTE_KM = rr.ok ? rr.km : 0;
+      <div class="detailsGrid" style="margin-top:10px;">
+        <div class="mini">
+          <div class="k">Total (final)</div>
+          <div class="v">${isFinite(total)?rupees(total):"—"} <small>(${escapeHtml(tier)})</small></div>
+        </div>
+        <div class="mini">
+          <div class="k">Per Person (final)</div>
+          <div class="v">${isFinite(perPerson)?rupees(perPerson):"—"} <small>per person</small></div>
+        </div>
+        <div class="mini">
+          <div class="k">Pax used</div>
+          <div class="v">${escapeHtml(String(pax))} <small>selected</small></div>
+        </div>
+        <div class="mini">
+          <div class="k">Route KM</div>
+          <div class="v">${isFinite(km)&&km>0?Number(km).toFixed(1):"—"} <small>estimated</small></div>
+        </div>
+      </div>
 
-    let km = Number(CURRENT_ROUTE_KM || 0);
-    if(!isFinite(km) || km <= 0) km = Number(tpl.total_km_est || tpl.estimated_drive_km || tpl.total_km || 0);
+      <div class="detailsCard" style="margin-top:10px;">
+        <div class="muted" style="margin-bottom:8px;">Package includes / excludes</div>
+        <div class="muted" style="text-transform:none;letter-spacing:.02em;">
+          <b style="color:rgba(10,30,60,.92);letter-spacing:.12em;">INCLUDES:</b> ${escapeHtml(inc || "—")}<br><br>
+          <b style="color:rgba(10,30,60,.92);letter-spacing:.12em;">EXCLUDES:</b> ${escapeHtml(exc || "—")}<br><br>
+          <b style="color:rgba(10,30,60,.92);letter-spacing:.12em;">NOTES:</b> ${escapeHtml(note || "—")}
+        </div>
+      </div>
 
-    if(detailsEl){
-      renderInlineDetails(detailsEl, tpl, startUpper, endKey, km);
-    }
+      <div class="daysList" id="days_${tpl.key}" style="margin-top:10px;"></div>
+    `;
 
-    const card = document.querySelector(`#pkgList .pkgW[data-key="${CSS.escape(key)}"]`);
-    if(card) card.scrollIntoView({ behavior:"smooth", block:"start" });
-    showBot("✅ Price loaded from Firebase (per person) × Pax.");
+    const waUrl = buildWhatsAppUrlForTemplate(tpl, startUpper, endKey, km);
+    setWhatsAppInline(document.getElementById(waBtnId), isFinite(perPerson), waUrl);
+
+    const daysWrap = document.getElementById(`days_${tpl.key}`);
+    if(!daysWrap) return;
+
+    const blocks = buildDayWise(tpl);
+    blocks.forEach(block=>{
+      const dayCard = document.createElement("div");
+      dayCard.className = "dayCard";
+      dayCard.innerHTML = `
+        <div class="dayTop">
+          <div class="d">Day ${block.day}</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <div class="muted" style="text-transform:none;letter-spacing:.02em;">${block.ids.length} places</div>
+            <div class="btnMini" data-day="${block.day}">Show on map</div>
+          </div>
+        </div>
+        <div class="muted" style="text-transform:none;letter-spacing:.02em;">Tap any place → opens beautiful info popup</div>
+        <div class="dayPlaces"></div>
+      `;
+      const cont = dayCard.querySelector(".dayPlaces");
+
+      block.ids.forEach(pid=>{
+        const p = PLACES[pid] || {};
+        const name = placeNameAny(p, pid);
+        const dist = districtAny(p) || "—";
+        const photos = pickPhotos(p);
+        const thumbUrl = photos[0] || "";
+
+        const line = document.createElement("div");
+        line.className = "placeLine";
+        line.innerHTML = `
+          <div class="thumb">
+            ${thumbUrl ? `<img src="${escapeHtml(thumbUrl)}" alt="${escapeHtml(name)}" onerror="this.remove()">` : escapeHtml(initials(name))}
+          </div>
+          <div class="pinfo">
+            <div class="pname">${escapeHtml(name)}</div>
+            <div class="pmeta">${escapeHtml(dist)}</div>
+          </div>
+        `;
+        line.onclick = (e)=>{
+          e.stopPropagation();
+          openPlaceModal(pid);
+        };
+        cont.appendChild(line);
+      });
+
+      daysWrap.appendChild(dayCard);
+
+      const btn = dayCard.querySelector(".btnMini");
+      if(btn){
+        btn.onclick = async (e)=>{
+          e.stopPropagation();
+          CURRENT_DAY_FILTER = `day${block.day}`;
+          setMapDayBar(tpl);
+          // activate correct chip
+          const chips = $("mapDayBar").querySelectorAll(".dayChip");
+          chips.forEach(c=>{
+            c.classList.toggle("active", c.textContent.trim().toLowerCase() === `day ${block.day}`);
+          });
+          await redrawCurrentPackageRoute();
+          showBot(`✅ Showing Day ${block.day} on map`);
+        };
+      }
+    });
   }
 
   function applyFilters(){
@@ -2507,8 +2538,7 @@
     clearMap();
     CURRENT_TEMPLATE_KEY = "";
     CURRENT_ROUTE_KM = 0;
-    DAY_BLOCKS = [];
-    setMapDayOptions([]);
+    CURRENT_DAY_FILTER = "all";
     setCentreHeroVisible(true);
 
     if(!start){
@@ -2550,7 +2580,57 @@
     }
 
     renderPanels();
-    showBot("✅ Packages loaded. Open any package → final price shows inside.");
+    showBot("✅ Packages loaded. Open any package → day-wise places + map + popups.");
+  }
+
+  async function toggleOpenTemplate(key){
+    const startUpper = String(normalizeStartInput() || "").toUpperCase();
+    const same = (CURRENT_TEMPLATE_KEY === key);
+
+    if(same){
+      CURRENT_TEMPLATE_KEY = "";
+      CURRENT_ROUTE_KM = 0;
+      CURRENT_DAY_FILTER = "all";
+      clearMap();
+      setCentreHeroVisible(true);
+      renderPanels();
+      showBot("Closed package. Select another one.");
+      return;
+    }
+
+    CURRENT_TEMPLATE_KEY = key;
+    CURRENT_DAY_FILTER = "all";
+    renderPanels();
+    highlightActiveCard();
+
+    const tpl = TEMPLATES[key];
+    if(!tpl) return;
+
+    // ✅ build map day bar
+    setMapDayBar(tpl);
+
+    const endKey = endKeyFromRoutePath(tpl);
+    const routeIds = routeIdsFromTemplateIncludingStart(tpl);
+
+    const detailsEl = document.getElementById(`details_${key}`);
+    if(detailsEl){
+      detailsEl.innerHTML = `<div class="pill"><b>Loading…</b> fetching road route + final price</div>`;
+    }
+
+    const rr = await drawRoadRouteFromPlaces(routeIds);
+    CURRENT_ROUTE_KM = rr.ok ? rr.km : 0;
+
+    let km = Number(CURRENT_ROUTE_KM || 0);
+    if(!isFinite(km) || km <= 0) km = Number(tpl.total_km_est || tpl.estimated_drive_km || tpl.total_km || 0);
+
+    if(detailsEl){
+      renderInlineDetails(detailsEl, tpl, startUpper, endKey, km);
+    }
+
+    const card = document.querySelector(`#pkgList .pkgW[data-key="${CSS.escape(key)}"]`);
+    if(card) card.scrollIntoView({ behavior:"smooth", block:"start" });
+
+    showBot("✅ Click any place → beautiful popup (history + what you find).");
   }
 
   /* Firebase Load */
@@ -2568,6 +2648,7 @@
       const rawPlaces = placesSnap.val() || {};
       COSTS = (costsSnap && typeof costsSnap.val==="function") ? (costsSnap.val() || {}) : {};
 
+      // ✅ robust: index by place_id
       PLACES = {};
       for(const [k,v] of Object.entries(rawPlaces)){
         if(v && typeof v === "object"){
@@ -2589,6 +2670,7 @@
       setStatus(`Loaded LIVE • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places • ${Object.keys(COSTS).length} cost items`);
       invalidateMapSoon();
 
+      // If filters already used, refresh view
       if($("pills").children.length){
         applyFilters();
       }else{
@@ -2630,10 +2712,14 @@
     startCentreHero();
     showBot("👋 Welcome! Select Start and click Generate.");
 
-    // modal close
-    $("pmClose")?.addEventListener("click", closePlaceModal);
-    $("placeBackdrop")?.addEventListener("click", closePlaceModal);
-    document.addEventListener("keydown",(e)=>{
+    // ✅ modal handlers
+    $("pmClose").onclick = closePlaceModal;
+    $("placeModalBack").onclick = closePlaceModal;
+    $("pmGoMap").onclick = ()=>{
+      if(MODAL_CURRENT_PID) goToPlaceOnMap(MODAL_CURRENT_PID);
+      closePlaceModal();
+    };
+    window.addEventListener("keydown", (e)=>{
       if(e.key === "Escape") closePlaceModal();
     });
 
@@ -2677,8 +2763,7 @@
       clearMap();
       CURRENT_TEMPLATE_KEY = "";
       CURRENT_ROUTE_KM = 0;
-      DAY_BLOCKS = [];
-      setMapDayOptions([]);
+      CURRENT_DAY_FILTER = "all";
       INTER_ALL = [];
       DISTRICT_KEYS = [];
       ACTIVE_DISTRICT = "ALL";
@@ -2696,40 +2781,13 @@
     $("showAllStopsBtn").addEventListener("click", async ()=>{
       showMode="all";
       showBot("Markers: all stops");
-      if(CURRENT_TEMPLATE_KEY){
-        const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
-        const routeIds = routeIdsFromTemplateIncludingStart(tpl);
-        const rr = await drawRoadRouteFromPlaces(routeIds);
-        CURRENT_ROUTE_KM = rr.ok ? rr.km : CURRENT_ROUTE_KM;
-      }
+      await redrawCurrentPackageRoute();
     });
 
     $("showStartEndBtn").addEventListener("click", async ()=>{
       showMode="startend";
       showBot("Markers: start/end");
-      if(CURRENT_TEMPLATE_KEY){
-        const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
-        const routeIds = routeIdsFromTemplateIncludingStart(tpl);
-        const rr = await drawRoadRouteFromPlaces(routeIds);
-        CURRENT_ROUTE_KM = rr.ok ? rr.km : CURRENT_ROUTE_KM;
-      }
-    });
-
-    $("showDayWiseBtn")?.addEventListener("click", async ()=>{
-      showMode = "daywise";
-      showBot("Day-wise markers enabled");
-      if(CURRENT_TEMPLATE_KEY){
-        const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
-        const routeIds = routeIdsFromTemplateIncludingStart(tpl);
-        await drawRoadRouteFromPlaces(routeIds);
-      }
-    });
-
-    $("mapDaySel")?.addEventListener("change", ()=>{
-      if(showMode !== "daywise") return;
-      if(CURRENT_TEMPLATE_KEY){
-        drawMarkersDayWise(DAY_BLOCKS, $("mapDaySel").value);
-      }
+      await redrawCurrentPackageRoute();
     });
 
     $("toggleTilesBtn").addEventListener("click", ()=>{
