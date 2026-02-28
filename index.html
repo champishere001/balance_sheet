@@ -1376,26 +1376,7 @@
     el.classList.add("show");
     setTimeout(()=> el.classList.remove("show"), 3800);
   }
-
-  /* ✅ District footer buttons (auto from PLACES.district) */
-  function slugDistrictName(d){
-    return String(d || "")
-      .trim().toLowerCase()
-      .replace(/&/g,"and")
-      .replace(/[^a-z0-9]+/g,"-")
-      .replace(/-+/g,"-")
-      .replace(/^-|-$/g,"");
-  }
-     wrap.innerHTML = list.map(d=>{
-      const slug = slugDistrictName(d);
-      // ✅ You will create these district pages separately:
-      // ./districts/kullu.html, ./districts/kangra.html, ...
-      const url = `./districts/${slug}.html`;
-      return `<a class="districtBtn" href="${url}" target="_blank" rel="noopener">📸 ${escapeHtml(d)}</a>`;
-    }).join("");
-  }
-
-  /* Centre hero slideshow */
+/* Centre hero slideshow */
   const CENTRE_HERO_IMAGES = ["./kinnaur-kailash.webp","./n1.jpg","./temple.jpg","./trek.jpeg"];
   let heroIdx = 0;
   function startCentreHero(){
