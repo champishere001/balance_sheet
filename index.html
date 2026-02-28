@@ -225,7 +225,7 @@
       min-height: 620px;
       display:flex;
       flex-direction:column;
-      min-width: 0; /* ✅ prevents overflow on small screens */
+      min-width: 0;
     }
     .paneHdr{
       padding: 10px 12px;
@@ -704,160 +704,7 @@
     }
     .botToast.show{ display:block; }
 
-    /* ================= ABOUT (40/40/20) ================= */
-    .aboutWrap{
-      margin-top: 12px;
-      border:1px solid rgba(10,30,60,.16);
-      border-radius: 18px;
-      background: linear-gradient(180deg, rgba(255,255,255,.70), rgba(255,255,255,.56));
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      overflow:hidden;
-    }
-    .aboutInner{ padding: 14px; }
-    .aboutHead{
-      display:flex; flex-direction:column; gap:8px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid rgba(10,30,60,.14);
-    }
-    .aboutBadge{
-      width: fit-content;
-      border:1px solid rgba(37,99,235,.30);
-      background: rgba(37,99,235,.12);
-      color: rgba(10,30,60,.92);
-      border-radius: 999px;
-      padding: 7px 10px;
-      font-size: 10px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      font-weight: 950;
-    }
-    .aboutHead h2{
-      margin:0;
-      font-size: 14px;
-      letter-spacing:.18em;
-      text-transform: uppercase;
-      font-weight: 1000;
-      color: rgba(10,30,60,.94);
-    }
-    .aboutSub{
-      margin:0;
-      color: rgba(10,30,60,.68);
-      font-size: 12px;
-      letter-spacing:.04em;
-      line-height: 1.5;
-    }
-
-    /* ✅ 40 / 40 / 20 columns */
-    .aboutGrid{
-      margin-top: 12px;
-      display:grid;
-      grid-template-columns: 40% 40% 20%;
-      gap: 12px;
-      align-items: stretch;
-    }
-    .aboutSpacer{
-      background: transparent;
-      border: 0;
-      box-shadow: none;
-      border-radius: 0;
-      padding: 0;
-    }
-
-    .aboutBox{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.66);
-      border-radius: 16px;
-      padding: 12px;
-      box-shadow: 0 14px 36px rgba(10,30,60,.10);
-      min-width: 0;
-    }
-    .aboutBoxTop{
-      display:flex; align-items:center; gap:10px;
-      margin-bottom: 10px;
-    }
-    .aboutIcon{
-      width:40px; height:40px;
-      border-radius: 14px;
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.78);
-      display:grid; place-items:center;
-      box-shadow: 0 10px 22px rgba(10,30,60,.08);
-      flex:0 0 auto;
-      font-size: 18px;
-    }
-    .aboutTitle{
-      font-size: 11px;
-      font-weight: 1000;
-      letter-spacing:.14em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.94);
-    }
-    .aboutMini{
-      margin-top: 4px;
-      font-size: 10.5px;
-      letter-spacing:.08em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.62);
-    }
-    .aboutText{
-      margin:0;
-      color: rgba(10,30,60,.78);
-      font-size: 12px;
-      line-height: 1.6;
-      letter-spacing:.01em;
-    }
-    .aboutPills{
-      margin-top: 10px;
-      display:flex; flex-wrap:wrap; gap:8px;
-    }
-    .aboutPill{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.62);
-      border-radius: 999px;
-      padding: 6px 9px;
-      font-size: 10px;
-      letter-spacing:.10em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.74);
-    }
-    .aboutNote{
-      margin-top: 10px;
-      border:1px dashed rgba(37,99,235,.35);
-      background: rgba(37,99,235,.08);
-      border-radius: 14px;
-      padding: 10px;
-      color: rgba(10,30,60,.82);
-      font-size: 12px;
-      line-height: 1.55;
-    }
-    .aboutFooterRow{
-      margin-top: 12px;
-      display:flex; gap:10px; flex-wrap:wrap;
-      justify-content:flex-end;
-    }
-    .aboutBtn{
-      border:1px solid rgba(37,99,235,.34);
-      background: rgba(37,99,235,.14);
-      color: rgba(10,30,60,.92);
-      border-radius: 14px;
-      padding: 10px 12px;
-      text-decoration:none;
-      text-transform: uppercase;
-      letter-spacing:.12em;
-      font-weight: 950;
-      font-size: 11px;
-      display:inline-flex; align-items:center; justify-content:center;
-      box-shadow: 0 12px 28px rgba(37,99,235,.14);
-      -webkit-tap-highlight-color: transparent;
-    }
-    .aboutBtn.ghost{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.66);
-      box-shadow: 0 10px 22px rgba(10,30,60,.08);
-    }
-
-    /* ✅ FOOTER */
+    /* ✅ FOOTER (Lavish, 80/40 and 24% dropdown) */
     footer{
       margin-top: 12px;
       border:1px solid rgba(10,30,60,.16);
@@ -904,34 +751,43 @@
     }
     .footLinks a:hover{ background: rgba(255,255,255,.78); }
 
-    .districtFooterWrap{
+    /* ---- new footer grid ---- */
+    .footerFancyGrid{
+      display:grid;
+      grid-template-columns: 1fr 24%;
+      gap: 14px;
       border-top: 1px solid rgba(10,30,60,.12);
       padding-top: 12px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+      align-items: stretch;
     }
-
-    /* ✅ Title + dropdown row */
-    .districtFooterRow{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
+    .footerAboutGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr; /* about website + about us */
+      gap: 14px;
+      min-width:0;
     }
-    .districtFooterTitle{
+    .footerBox{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.66);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 14px 36px rgba(10,30,60,.10);
+      min-width:0;
+    }
+    .footerTitle{
       font-size: 11px;
       font-weight: 1000;
       letter-spacing:.14em;
       text-transform: uppercase;
-      color: rgba(10,30,60,.86);
+      margin: 0 0 10px;
+      color: rgba(10,30,60,.92);
       display:flex;
       align-items:center;
+      justify-content:space-between;
       gap:10px;
       flex-wrap:wrap;
     }
-    .districtFooterTitle .tag{
+    .footerTitle .tag{
       border:1px solid rgba(37,99,235,.30);
       background: rgba(37,99,235,.10);
       color: rgba(10,30,60,.90);
@@ -941,29 +797,53 @@
       letter-spacing:.12em;
       text-transform: uppercase;
       font-weight: 950;
+      white-space: nowrap;
     }
+    .footerBox ul{
+      margin:0;
+      padding-left: 16px;
+      display:grid;
+      gap: 6px;
+      color: rgba(10,30,60,.78);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+    .footerBox li{ margin:0; }
 
-    /* ✅ dropdown = 20% width */
-    .districtSelectWrap{
-      width: 20%;
-      min-width: 220px;
+    .footerDistrictBox{
+      border:1px solid rgba(10,30,60,.16);
+      background: linear-gradient(180deg, rgba(255,255,255,.68), rgba(255,255,255,.56));
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 14px 36px rgba(10,30,60,.10);
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:10px;
     }
-    .districtSelectWrap select{
-      width:100%;
+    .footerDistrictBox .help{
+      color: rgba(10,30,60,.68);
+      font-size: 11px;
+      letter-spacing:.02em;
+      line-height: 1.45;
+    }
+    .footerDistrictBox select{
+      width: 100%;
       padding: 10px 12px;
       border-radius: 999px;
-      border:1px solid rgba(10,30,60,.16);
+      border: 1px solid rgba(10,30,60,.16);
       background: rgba(255,255,255,.66);
       color: rgba(10,30,60,.90);
       font-size: 11px;
-      letter-spacing:.10em;
+      letter-spacing:.08em;
       text-transform: uppercase;
-      font-weight: 950;
+      font-weight: 900;
       box-shadow: 0 10px 22px rgba(10,30,60,.08);
-      cursor:pointer;
+      cursor: pointer;
     }
 
-    /* ✅ RESPONSIVE: all platforms */
+    /* ✅ RESPONSIVE */
     @media (max-width: 1200px){
       .main{ grid-template-columns: 1fr; }
       .mapPane{ position:relative; top:auto; height:520px; max-height:none; }
@@ -971,66 +851,10 @@
       .pane{ min-height: unset; }
       .heroBar{ flex-direction: column; align-items: stretch; }
       .heroRight{ justify-content:flex-start; }
-      .aboutGrid{ grid-template-columns: 1fr; }
-      .aboutSpacer{ display:none; }
-      .aboutFooterRow{ justify-content:flex-start; }
-      .districtSelectWrap{ width: 100%; }
+
+      .footerFancyGrid{ grid-template-columns: 1fr; }
+      .footerAboutGrid{ grid-template-columns: 1fr; }
     }
-    /* ===== 40 / 40 / 20 Footer Layout ===== */
-
-.footerMainGrid{
-  margin-top: 14px;
-  display: grid;
-  grid-template-columns: 40% 40% 20%;
-  gap: 24px;
-}
-
-.footerCol{
-  font-size: 11px;
-  color: rgba(10,30,60,.75);
-}
-
-.footerTitle{
-  font-size: 11px;
-  font-weight: 1000;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-  color: rgba(10,30,60,.92);
-}
-
-.footerCol ul{
-  margin: 0;
-  padding-left: 16px;
-  display: grid;
-  gap: 6px;
-}
-
-.footerCol li{
-  line-height: 1.6;
-}
-
-.footerDistrict select{
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.66);
-  color: rgba(10,30,60,.90);
-  font-size: 11px;
-  letter-spacing:.08em;
-  text-transform: uppercase;
-  font-weight: 900;
-  box-shadow: 0 10px 22px rgba(10,30,60,.08);
-  cursor: pointer;
-}
-
-/* Mobile Responsive */
-@media (max-width: 1024px){
-  .footerMainGrid{
-    grid-template-columns: 1fr;
-  }
-                  }
     @media (max-width: 520px){
       .shell{ padding: 10px 8px 16px; }
       .heroBar{ padding: 10px 10px; }
@@ -1042,10 +866,8 @@
       .waFloat{ padding: 10px; }
       .waClose{ display:none; }
       .footTopRow{ flex-direction:column; align-items:flex-start; }
-      .districtSelectWrap{ width:100%; min-width:0; }
     }
 
-    /* prefers-reduced-motion */
     @media (prefers-reduced-motion: reduce){
       .aurora{ animation:none; }
       .pkgW{ transition:none; }
@@ -1232,73 +1054,77 @@
         </div>
       </div>
     </div>
-      
-<footer>
-  <div class="footInner">
 
-    <!-- Top Row -->
-    <div class="footTopRow">
-      <div class="footLeft">© <span id="yy"></span> Himachal Explorer Portal</div>
+    <!-- ✅ FOOTER UPDATED: About Website + About Us (equal), District dropdown fixed to 24% -->
+    <footer>
+      <div class="footInner">
+        <div class="footTopRow">
+          <div class="footLeft">© <span id="yy"></span> Himachal Explorer Portal</div>
+          <div class="footLinks">
+            <a href="#" id="topLink">Top</a>
+            <a href="https://wa.me/917018138847?text=Hi%20Chandan%2C%20I%20want%20to%20book%20a%20Himachal%20tour%20package."
+               target="_blank" rel="noopener">WhatsApp</a>
+          </div>
+        </div>
 
-      <div class="footLinks">
-        <a href="#" id="topLink">Top</a>
-        <a href="https://wa.me/917018138847?text=Hi%20Chandan%2C%20I%20want%20to%20book%20a%20Himachal%20tour%20package."
-           target="_blank" rel="noopener">WhatsApp</a>
+        <div class="footerFancyGrid">
+          <!-- LEFT (76%) -> inside 2 equal boxes (About Website / About Us) -->
+          <div class="footerAboutGrid">
+            <div class="footerBox">
+              <div class="footerTitle">
+                About Website <span class="tag">Live Portal</span>
+              </div>
+              <ul>
+                <li>Live OSRM route map integration</li>
+                <li>Day-wise itinerary breakdown</li>
+                <li>Transparent pricing (Firebase + markup rule)</li>
+                <li>Instant WhatsApp booking query</li>
+                <li>District guide integration</li>
+              </ul>
+            </div>
+
+            <div class="footerBox">
+              <div class="footerTitle">
+                About Us <span class="tag">Trusted</span>
+              </div>
+              <ul>
+                <li>Quality-first travel planning</li>
+                <li>Comfort-focused itineraries</li>
+                <li>Verified hotel coordination</li>
+                <li>Clear communication & honest pricing</li>
+                <li>Family & elder-friendly route design</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- RIGHT (24%) -> District dropdown -->
+          <div class="footerDistrictBox">
+            <div>
+              <div class="footerTitle">
+                Explore District <span class="tag">Guides</span>
+              </div>
+              <div class="help">Pick a district to open its guide page.</div>
+            </div>
+
+            <select id="districtSelect">
+              <option value="">Select District</option>
+              <option value="./districts/bilaspur.html">Bilaspur</option>
+              <option value="./districts/chamba.html">Chamba</option>
+              <option value="./districts/hamirpur.html">Hamirpur</option>
+              <option value="./districts/kangra.html">Kangra</option>
+              <option value="./districts/kinnaur.html">Kinnaur</option>
+              <option value="./districts/kullu.html">Kullu</option>
+              <option value="./districts/lahaul-spiti.html">Lahaul & Spiti</option>
+              <option value="./districts/mandi.html">Mandi</option>
+              <option value="./districts/shimla.html">Shimla</option>
+              <option value="./districts/sirmaur.html">Sirmaur</option>
+              <option value="./districts/solan.html">Solan</option>
+              <option value="./districts/una.html">Una</option>
+            </select>
+          </div>
+        </div>
       </div>
-    </div>
-
-    <!-- ✅ 40 / 40 / 20 Layout -->
-    <div class="footerMainGrid">
-
-      <!-- 40% About Website -->
-      <div class="footerCol">
-        <div class="footerTitle">About Website</div>
-        <ul>
-          <li>Live OSRM route map integration</li>
-          <li>Day-wise itinerary breakdown</li>
-          <li>Transparent pricing (Firebase + markup rule)</li>
-          <li>Instant WhatsApp booking query</li>
-          <li>District guide integration</li>
-        </ul>
-      </div>
-
-      <!-- 40% About Us -->
-      <div class="footerCol">
-        <div class="footerTitle">About Us</div>
-        <ul>
-          <li>Quality-first travel planning</li>
-          <li>Comfort-focused itineraries</li>
-          <li>Verified hotel coordination</li>
-          <li>Clear communication & honest pricing</li>
-          <li>Family & elder-friendly route design</li>
-        </ul>
-      </div>
-
-      <!-- 20% District Dropdown -->
-      <div class="footerCol footerDistrict">
-        <div class="footerTitle">Explore District</div>
-
-        <select id="districtSelect">
-          <option value="">Select District</option>
-          <option value="./districts/bilaspur.html">Bilaspur</option>
-          <option value="./districts/chamba.html">Chamba</option>
-          <option value="./districts/hamirpur.html">Hamirpur</option>
-          <option value="./districts/kangra.html">Kangra</option>
-          <option value="./districts/kinnaur.html">Kinnaur</option>
-          <option value="./districts/kullu.html">Kullu</option>
-          <option value="./districts/lahaul-spiti.html">Lahaul & Spiti</option>
-          <option value="./districts/mandi.html">Mandi</option>
-          <option value="./districts/shimla.html">Shimla</option>
-          <option value="./districts/sirmaur.html">Sirmaur</option>
-          <option value="./districts/solan.html">Solan</option>
-          <option value="./districts/una.html">Una</option>
-        </select>
-      </div>
-
-    </div>
-
-  </div>
-</footer>
+    </footer>
   </div><!-- /shell -->
 
   <div class="botToast" id="botToast">👋 Welcome! Select your <b>Start</b> and click <b>Generate</b>. Then open any package to see details.</div>
@@ -1448,7 +1274,6 @@
     $("kmBadge").textContent = "—";
     invalidateMapSoon();
   }
-  function fitRoute(){ if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] }); }
 
   /* Data */
   let db, analytics, auth;
@@ -1457,7 +1282,6 @@
   let PLACES = {};
   let NAME_TO_ID = new Map();
   let STARTS = [];
-
   let COSTS = {};
 
   let INTER_ALL = [];
@@ -1465,8 +1289,6 @@
   let ACTIVE_DISTRICT = "ALL";
   let CURRENT_TEMPLATE_KEY = "";
   let CURRENT_ROUTE_KM = 0;
-
-  const WHATSAPP_NUMBER = "917018138847";
 
   function setCentreHeroVisible(on){
     const hero = $("centreHero");
@@ -1654,11 +1476,6 @@
     return isFinite(b) && b>0 ? b : NaN;
   }
 
-  /* =========================
-     ✅ MARKUP RULES (YOUR REQUEST)
-     - Long duration packages: +10% to +15%
-     - 1–2 day local tours + low pax: +5% to +10%
-     ========================= */
   function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
 
   function computeMarkupPct(tpl, pax){
@@ -1690,6 +1507,8 @@
   }
 
   /* WhatsApp */
+  const WHATSAPP_NUMBER = "917018138847";
+
   function buildWhatsAppMessage({tpl, startName, endKey, pax, tier, km, total, perPerson, markupPct}){
     const days = Number(tpl?.days || 0) || 0;
     const code = String(tpl?.route_id || "—");
@@ -1819,15 +1638,7 @@
 
     const startName = normalizeStartInput() || (tpl.start_point || tpl.start || startUpper || "");
     const msg = buildWhatsAppMessage({
-      tpl,
-      startName,
-      endKey,
-      pax,
-      tier,
-      km,
-      total,
-      perPerson,
-      markupPct
+      tpl, startName, endKey, pax, tier, km, total, perPerson, markupPct
     });
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
     setWhatsAppInline(document.getElementById(waBtnId), isFinite(perPerson), url);
@@ -1878,7 +1689,6 @@
     });
   }
 
-  /* Cards */
   function renderInterCard(t, startUpper){
     const days = Number(t.days||0) || 0;
     const endKey = endKeyFromRoutePath(t);
@@ -2148,7 +1958,19 @@
         const lat = latAny(p);
         const lng = lngAny(p);
         if(!isFinite(lat)||!isFinite(lng)) continue;
-        L.marker([lat,lng], { riseOnHover:true }).addTo(markersLayer);
+        const m = L.marker([lat,lng], { riseOnHover:true }).addTo(markersLayer);
+
+        // ✅ Map toggle click -> popup
+        const nm = placeNameAny(p, pid);
+        const dist = districtAny(p) || "";
+        m.bindPopup(
+          `<div style="font-family:ui-sans-serif,system-ui;letter-spacing:.02em;">
+            <b style="letter-spacing:.08em;text-transform:uppercase;">${escapeHtml(nm)}</b><br>
+            <span style="opacity:.75">${escapeHtml(dist)}</span><br>
+            <span style="opacity:.65;font-size:12px">${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}</span>
+          </div>`,
+          { maxWidth: 280 }
+        );
       }
 
       const km = Number(r.distance/1000);
@@ -2451,16 +2273,6 @@
     setCentreHeroVisible(true);
     refreshAll();
   });
-  </script>
-  <script>
-document.addEventListener("DOMContentLoaded", ()=>{
-  const sel = document.getElementById("districtSelect");
-  if(sel){
-    sel.addEventListener("change", ()=>{
-      if(sel.value) window.location.href = sel.value;
-    });
-  }
-});
   </script>
 </body>
 </html>
