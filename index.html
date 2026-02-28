@@ -1386,15 +1386,6 @@
       .replace(/-+/g,"-")
       .replace(/^-|-$/g,"");
   }
-  function buildDistrictFooterButtons(){
-    const wrap = $("districtFooterBtns");
-    if(!wrap) return;
-
-    const set = new Set();
-    for(const p of Object.values(PLACES || {})){
-      const d = String(p?.district || "").trim();
-      if(d) set.add(d.toUpperCase());
-    }
     const list = Array.from(set).sort((a,b)=>a.localeCompare(b));
 
     if(!list.length){
@@ -2312,9 +2303,6 @@
 
       buildNameIndex();
       buildStartList(ACTIVE_TEMPLATES);
-
-      // ✅ build district buttons in footer
-      buildDistrictFooterButtons();
 
       setStatus(`Loaded LIVE • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places • ${Object.keys(COSTS).length} cost items`);
       invalidateMapSoon();
