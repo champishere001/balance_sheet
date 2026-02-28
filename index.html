@@ -976,6 +976,61 @@
       .aboutFooterRow{ justify-content:flex-start; }
       .districtSelectWrap{ width: 100%; }
     }
+    /* ===== 40 / 40 / 20 Footer Layout ===== */
+
+.footerMainGrid{
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: 40% 40% 20%;
+  gap: 24px;
+}
+
+.footerCol{
+  font-size: 11px;
+  color: rgba(10,30,60,.75);
+}
+
+.footerTitle{
+  font-size: 11px;
+  font-weight: 1000;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  color: rgba(10,30,60,.92);
+}
+
+.footerCol ul{
+  margin: 0;
+  padding-left: 16px;
+  display: grid;
+  gap: 6px;
+}
+
+.footerCol li{
+  line-height: 1.6;
+}
+
+.footerDistrict select{
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.66);
+  color: rgba(10,30,60,.90);
+  font-size: 11px;
+  letter-spacing:.08em;
+  text-transform: uppercase;
+  font-weight: 900;
+  box-shadow: 0 10px 22px rgba(10,30,60,.08);
+  cursor: pointer;
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px){
+  .footerMainGrid{
+    grid-template-columns: 1fr;
+  }
+                  }
     @media (max-width: 520px){
       .shell{ padding: 10px 8px 16px; }
       .heroBar{ padding: 10px 10px; }
@@ -1177,132 +1232,73 @@
         </div>
       </div>
     </div>
+      
+<footer>
+  <div class="footInner">
 
-    <!-- ✅ ABOUT (40/40/20) -->
-    <section class="aboutWrap" id="about">
-      <div class="aboutInner">
-        <div class="aboutHead">
-          <div class="aboutBadge">Himachal Explorer Portal</div>
-          <h2>About</h2>
-          <p class="aboutSub">
-            A simple, transparent and comfortable way to plan your Himachal trip — routes, stays and pricing in one place.
-          </p>
-        </div>
+    <!-- Top Row -->
+    <div class="footTopRow">
+      <div class="footLeft">© <span id="yy"></span> Himachal Explorer Portal</div>
 
-        <div class="aboutGrid">
-          <!-- About Website -->
-          <div class="aboutBox">
-            <div class="aboutBoxTop">
-              <div class="aboutIcon" aria-hidden="true">🌐</div>
-              <div>
-                <div class="aboutTitle">About the Website</div>
-                <div class="aboutMini">Live map • day-wise itinerary • instant estimate</div>
-              </div>
-            </div>
-
-            <p class="aboutText">
-              <b>Himachal Explorer Portal</b> is designed to make trip planning easy and clear.
-              You can choose your <b>start point</b>, <b>number of days</b>, and <b>travel type</b> (Budget / Premium / Luxury),
-              and then instantly view recommended packages with a <b>route map</b>, <b>day-wise places</b>, and a transparent estimate.
-            </p>
-
-            <p class="aboutText" style="margin-top:10px;">
-              Our goal is to help you decide faster with the right information — so you feel confident before you book.
-            </p>
-
-            <div class="aboutPills">
-              <span class="aboutPill">Route map</span>
-              <span class="aboutPill">Day-wise plan</span>
-              <span class="aboutPill">Transparent pricing</span>
-              <span class="aboutPill">Quick WhatsApp query</span>
-            </div>
-          </div>
-
-          <!-- About Us -->
-          <div class="aboutBox">
-            <div class="aboutBoxTop">
-              <div class="aboutIcon" aria-hidden="true">🤝</div>
-              <div>
-                <div class="aboutTitle">About Us</div>
-                <div class="aboutMini">New team • quality-first • comfort-focused</div>
-              </div>
-            </div>
-
-            <p class="aboutText">
-              We are new in the market, but our intention and service standards are very clear:
-              <b>quality</b>, <b>comfort</b>, and <b>honest guidance</b>.
-              <b>Ham naye zaroor hain, lekin iska matlab yeh nahi ki hum quality ya aapko comfortable stay provide nahi kar sakte.</b>
-            </p>
-
-            <p class="aboutText" style="margin-top:10px;">
-              Every itinerary is planned carefully — practical routes, verified stays (as per availability), and smooth coordination.
-              If you are traveling with family, elders, or on a short schedule, we keep the plan realistic and comfortable.
-            </p>
-
-            <div class="aboutNote">
-              <b>Our promise:</b> Clear communication, transparent pricing, and a comfortable experience from start to finish.
-            </div>
-          </div>
-
-          <!-- 20% spacer -->
-          <div class="aboutSpacer" aria-hidden="true"></div>
-        </div>
-
-        <div class="aboutFooterRow">
-          <a class="aboutBtn" href="#packages" onclick="document.getElementById('startInp')?.focus(); return false;">Explore Packages</a>
-          <a class="aboutBtn ghost"
-             href="https://wa.me/917018138847?text=Hi%20Chandan%2C%20I%20want%20to%20book%20a%20Himachal%20tour%20package."
-             target="_blank" rel="noopener">WhatsApp</a>
-        </div>
+      <div class="footLinks">
+        <a href="#" id="topLink">Top</a>
+        <a href="https://wa.me/917018138847?text=Hi%20Chandan%2C%20I%20want%20to%20book%20a%20Himachal%20tour%20package."
+           target="_blank" rel="noopener">WhatsApp</a>
       </div>
-    </section>
+    </div>
 
-    <!-- ✅ FOOTER (Dropdown 20% width) -->
-    <footer>
-      <div class="footInner">
+    <!-- ✅ 40 / 40 / 20 Layout -->
+    <div class="footerMainGrid">
 
-        <div class="footTopRow">
-          <div class="footLeft">© <span id="yy"></span> Himachal Explorer Portal</div>
-
-          <div class="footLinks">
-            <a href="#about">About</a>
-            <a href="#" id="topLink">Top</a>
-          </div>
-        </div>
-
-        <div class="districtFooterWrap">
-          <div class="districtFooterRow">
-            <div class="districtFooterTitle">
-              Explore District Profiles <span class="tag">Photos • Guide • Places</span>
-            </div>
-
-            <div class="districtSelectWrap">
-              <select id="districtSelect" aria-label="Select district page">
-                <option value="">Select District</option>
-                <option value="./districts/bilaspur.html">Bilaspur</option>
-                <option value="./districts/chamba.html">Chamba</option>
-                <option value="./districts/hamirpur.html">Hamirpur</option>
-                <option value="./districts/kangra.html">Kangra</option>
-                <option value="./districts/kinnaur.html">Kinnaur</option>
-                <option value="./districts/kullu.html">Kullu</option>
-                <option value="./districts/lahaul-spiti.html">Lahaul &amp; Spiti</option>
-                <option value="./districts/mandi.html">Mandi</option>
-                <option value="./districts/shimla.html">Shimla</option>
-                <option value="./districts/sirmaur.html">Sirmaur</option>
-                <option value="./districts/solan.html">Solan</option>
-                <option value="./districts/una.html">Una</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="muted" style="text-transform:none;letter-spacing:.02em;">
-            Tip: District pages should be at <b>./districts/&lt;district-slug&gt;.html</b>
-          </div>
-        </div>
-
+      <!-- 40% About Website -->
+      <div class="footerCol">
+        <div class="footerTitle">About Website</div>
+        <ul>
+          <li>Live OSRM route map integration</li>
+          <li>Day-wise itinerary breakdown</li>
+          <li>Transparent pricing (Firebase + markup rule)</li>
+          <li>Instant WhatsApp booking query</li>
+          <li>District guide integration</li>
+        </ul>
       </div>
-    </footer>
 
+      <!-- 40% About Us -->
+      <div class="footerCol">
+        <div class="footerTitle">About Us</div>
+        <ul>
+          <li>Quality-first travel planning</li>
+          <li>Comfort-focused itineraries</li>
+          <li>Verified hotel coordination</li>
+          <li>Clear communication & honest pricing</li>
+          <li>Family & elder-friendly route design</li>
+        </ul>
+      </div>
+
+      <!-- 20% District Dropdown -->
+      <div class="footerCol footerDistrict">
+        <div class="footerTitle">Explore District</div>
+
+        <select id="districtSelect">
+          <option value="">Select District</option>
+          <option value="./districts/bilaspur.html">Bilaspur</option>
+          <option value="./districts/chamba.html">Chamba</option>
+          <option value="./districts/hamirpur.html">Hamirpur</option>
+          <option value="./districts/kangra.html">Kangra</option>
+          <option value="./districts/kinnaur.html">Kinnaur</option>
+          <option value="./districts/kullu.html">Kullu</option>
+          <option value="./districts/lahaul-spiti.html">Lahaul & Spiti</option>
+          <option value="./districts/mandi.html">Mandi</option>
+          <option value="./districts/shimla.html">Shimla</option>
+          <option value="./districts/sirmaur.html">Sirmaur</option>
+          <option value="./districts/solan.html">Solan</option>
+          <option value="./districts/una.html">Una</option>
+        </select>
+      </div>
+
+    </div>
+
+  </div>
+</footer>
   </div><!-- /shell -->
 
   <div class="botToast" id="botToast">👋 Welcome! Select your <b>Start</b> and click <b>Generate</b>. Then open any package to see details.</div>
@@ -2455,6 +2451,16 @@
     setCentreHeroVisible(true);
     refreshAll();
   });
+  </script>
+  <script>
+document.addEventListener("DOMContentLoaded", ()=>{
+  const sel = document.getElementById("districtSelect");
+  if(sel){
+    sel.addEventListener("change", ()=>{
+      if(sel.value) window.location.href = sel.value;
+    });
+  }
+});
   </script>
 </body>
 </html>
