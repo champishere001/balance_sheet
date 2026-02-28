@@ -1254,6 +1254,9 @@
   let showMode = "all";
   let tilesDark = false;
 
+  // ✅ NEW: marker cache so clicking a place (in day-wise list) can open the same popup
+  let MARKERS_BY_PLACE_ID = new Map();
+
   function invalidateMapSoon(){
     try{
       setTimeout(()=>{ map && map.invalidateSize && map.invalidateSize(true); }, 60);
@@ -1270,6 +1273,7 @@
   }
   function clearMap(){
     markersLayer.clearLayers();
+    MARKERS_BY_PLACE_ID.clear(); // ✅ NEW
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
     $("kmBadge").textContent = "—";
     invalidateMapSoon();
@@ -1547,6 +1551,76 @@
     }
   }
 
+  // ✅ NEW: rich place popup html (image + history + what you find)
+  function getPlacePopupHtml(pid){
+    const p = PLACES[pid] || {};
+    const nm = placeNameAny(p, pid);
+    const dist = districtAny(p) || "—";
+    const lat = latAny(p), lng = lngAny(p);
+
+    const img = String(p.photo_1 || p.photo || p.image || "").trim();     // supports photo_1
+    const history = String(p.history_tagline || p.history || "").trim();  // supports history_tagline
+    const find = String(p.what_you_find || p.highlights || "").trim();    // supports what_you_find
+
+    return `
+      <div style="max-width:300px; font-family:ui-sans-serif,system-ui; letter-spacing:.02em;">
+        ${img ? `
+          <img src="${escapeHtml(img)}"
+               style="width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:10px;border:1px solid rgba(10,30,60,.14);"
+               onerror="this.style.display='none'">
+        ` : ``}
+
+        <div style="font-weight:950; letter-spacing:.10em; text-transform:uppercase; margin-bottom:4px;">
+          ${escapeHtml(nm)}
+        </div>
+
+        <div style="font-size:11px; letter-spacing:.12em; text-transform:uppercase; opacity:.72; margin-bottom:10px;">
+          ${escapeHtml(dist)}
+        </div>
+
+        ${history ? `
+          <div style="font-size:12px; line-height:1.45; margin-bottom:8px;">
+            <b style="letter-spacing:.08em; text-transform:uppercase;">History:</b>
+            <span style="opacity:.86">${escapeHtml(history)}</span>
+          </div>
+        ` : ``}
+
+        ${find ? `
+          <div style="font-size:12px; line-height:1.45; margin-bottom:8px;">
+            <b style="letter-spacing:.08em; text-transform:uppercase;">What you find:</b>
+            <span style="opacity:.86">${escapeHtml(find)}</span>
+          </div>
+        ` : ``}
+
+        <div style="opacity:.65;font-size:12px">
+          ${isFinite(lat)&&isFinite(lng) ? `${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}` : "—"}
+        </div>
+      </div>
+    `;
+  }
+
+  // ✅ NEW: open popup for a place id (works from day list click too)
+  function openPlacePopup(pid, zoomMin = 12){
+    const p = PLACES[pid] || {};
+    const lat = latAny(p), lng = lngAny(p);
+    if(!isFinite(lat) || !isFinite(lng) || !map) return;
+
+    const marker = MARKERS_BY_PLACE_ID.get(pid);
+    map.setView([lat, lng], Math.max(map.getZoom(), zoomMin), { animate:true });
+    invalidateMapSoon();
+
+    if(marker){
+      marker.setPopupContent(getPlacePopupHtml(pid));
+      marker.openPopup();
+    }else{
+      // fallback popup even if marker isn't present (e.g. not in current route markers)
+      L.popup({ maxWidth: 320 })
+        .setLatLng([lat, lng])
+        .setContent(getPlacePopupHtml(pid))
+        .openOn(map);
+    }
+  }
+
   function buildDayWise(tpl){
     const days = Number(tpl.days || 1);
     const blocks = [];
@@ -1674,14 +1748,13 @@
             <div class="pmeta">${escapeHtml(dist)}</div>
           </div>
         `;
+
+        // ✅ UPDATED: click opens popup with image + history + what you find
         line.onclick = (e)=>{
           e.stopPropagation();
-          const lat = latAny(p), lng = lngAny(p);
-          if(isFinite(lat) && isFinite(lng)){
-            map.setView([lat,lng], Math.max(map.getZoom(), 12), { animate:true });
-            invalidateMapSoon();
-          }
+          openPlacePopup(pid, 12);
         };
+
         cont.appendChild(line);
       });
 
@@ -1911,6 +1984,7 @@
 
   async function drawRoadRouteFromPlaces(placeIds){
     markersLayer.clearLayers();
+    MARKERS_BY_PLACE_ID.clear(); // ✅ NEW
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
 
     const pts = [];
@@ -1958,19 +2032,14 @@
         const lat = latAny(p);
         const lng = lngAny(p);
         if(!isFinite(lat)||!isFinite(lng)) continue;
+
         const m = L.marker([lat,lng], { riseOnHover:true }).addTo(markersLayer);
 
-        // ✅ Map toggle click -> popup
-        const nm = placeNameAny(p, pid);
-        const dist = districtAny(p) || "";
-        m.bindPopup(
-          `<div style="font-family:ui-sans-serif,system-ui;letter-spacing:.02em;">
-            <b style="letter-spacing:.08em;text-transform:uppercase;">${escapeHtml(nm)}</b><br>
-            <span style="opacity:.75">${escapeHtml(dist)}</span><br>
-            <span style="opacity:.65;font-size:12px">${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}</span>
-          </div>`,
-          { maxWidth: 280 }
-        );
+        // ✅ UPDATED POPUP: image + history_tagline + what_you_find
+        m.bindPopup(getPlacePopupHtml(pid), { maxWidth: 320 });
+
+        // ✅ NEW: store marker reference
+        MARKERS_BY_PLACE_ID.set(pid, m);
       }
 
       const km = Number(r.distance/1000);
