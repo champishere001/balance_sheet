@@ -1240,33 +1240,51 @@
       </div>
     </section>
 
-    <!-- ✅ FOOTER (NOW HAS DISTRICT BUTTONS) -->
-    <footer>
-      <div class="footInner">
-        <div class="footTopRow">
-          <div class="footLeft">© <span id="yy"></span> Himachal Explorer Portal</div>
-          <div class="footLinks">
-            <a href="#about">About</a>
-            <a href="#" id="topLink">Top</a>
-          </div>
-        </div>
+  <!-- ✅ FOOTER (DISTRICT BUTTONS = SIMPLE LINKS TO SEPARATE PAGES) -->
+<footer>
+  <div class="footInner">
 
-        <div class="districtFooterWrap">
-          <div class="districtFooterTitle">
-            Explore District Profiles
-            <span class="tag">Photos • Guide • Places</span>
-          </div>
-          <div class="districtFooterBtns" id="districtFooterBtns">
-            <div class="pill"><b>Loading districts…</b></div>
-          </div>
-          <div class="muted" style="text-transform:none;letter-spacing:.02em;">
-            Tip: District pages are expected at <b>./districts/&lt;district-slug&gt;.html</b>
-          </div>
-        </div>
+    <div class="footTopRow" style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+      <div class="footLeft">© <span id="yy"></span> Himachal Explorer Portal</div>
+
+      <div class="footLinks">
+        <a href="#about">About</a>
+        <a href="#" id="topLink">Top</a>
       </div>
-    </footer>
-  </div>
+    </div>
 
+    <div class="districtFooterWrap">
+      <div class="districtFooterTitle">
+        Explore District Profiles
+        <span class="tag">Photos • Guide • Places</span>
+      </div>
+
+      <!-- ✅ No JS. Just links -->
+      <div class="districtFooterBtns">
+        <a class="districtBtn" href="./districts/bilaspur.html">Bilaspur</a>
+        <a class="districtBtn" href="./districts/chamba.html">Chamba</a>
+        <a class="districtBtn" href="./districts/hamirpur.html">Hamirpur</a>
+        <a class="districtBtn" href="./districts/kangra.html">Kangra</a>
+
+        <a class="districtBtn" href="./districts/kinnaur.html">Kinnaur</a>
+        <a class="districtBtn" href="./districts/kullu.html">Kullu</a>
+        <a class="districtBtn" href="./districts/lahaul-spiti.html">Lahaul &amp; Spiti</a>
+        <a class="districtBtn" href="./districts/mandi.html">Mandi</a>
+
+        <a class="districtBtn" href="./districts/shimla.html">Shimla</a>
+        <a class="districtBtn" href="./districts/sirmaur.html">Sirmaur</a>
+        <a class="districtBtn" href="./districts/solan.html">Solan</a>
+        <a class="districtBtn" href="./districts/una.html">Una</a>
+      </div>
+
+      <div class="muted" style="text-transform:none;letter-spacing:.02em;">
+        Tip: District pages should be at <b>./districts/&lt;district-slug&gt;.html</b>
+      </div>
+    </div>
+
+  </div>
+</footer>
+    
   <div class="botToast" id="botToast">👋 Welcome! Select your <b>Start</b> and click <b>Generate</b>. Then open any package to see details.</div>
 
   <script>
