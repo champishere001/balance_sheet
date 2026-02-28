@@ -1027,7 +1027,66 @@
   </style>
 </head>
 
-<body>
+<body>  
+   
+   <!-- ENTRY STEP -->
+<div id="entryStep" style="
+position:fixed;
+inset:0;
+background:linear-gradient(180deg,#F6FAFF,#EAF3FF);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:99999;
+">
+
+  <div style="
+    width:min(520px,92vw);
+    background:white;
+    border-radius:20px;
+    padding:28px;
+    box-shadow:0 30px 80px rgba(0,0,0,.15);
+    text-align:center;
+  ">
+
+    <h2 style="margin:0 0 10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;">
+      Welcome to Himachal Explorer
+    </h2>
+
+    <p style="margin:0 0 22px;color:#334155;">
+      Are you coming from outside Himachal Pradesh or planning a tour within Himachal?
+    </p>
+
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <button id="btnOutsideHP" style="
+        padding:14px;
+        border-radius:14px;
+        border:none;
+        font-weight:900;
+        letter-spacing:.1em;
+        background:#2563EB;
+        color:white;
+        cursor:pointer;
+      ">
+        Coming From Outside HP
+      </button>
+
+      <button id="btnInterCity" style="
+        padding:14px;
+        border-radius:14px;
+        border:2px solid #2563EB;
+        background:white;
+        font-weight:900;
+        letter-spacing:.1em;
+        cursor:pointer;
+      ">
+        Inter-City Tour (Within HP)
+      </button>
+    </div>
+
+  </div>
+</div>
+
   <div class="aurora"></div>
   <div class="noise"></div>
 
@@ -1306,6 +1365,211 @@
   </div>
 
   <script>
+      <script>
+/* ===============================
+   TOUR MODE (ENTRY STEP)
+   =============================== */
+
+let TOUR_MODE = null; // "outside" | "intercity"
+
+/* ===============================
+   Firebase Config
+   =============================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
+  authDomain: "revnue-records.firebaseapp.com",
+  databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "revnue-records",
+  storageBucket: "revnue-records.firebasestorage.app",
+  messagingSenderId: "182348503564",
+  appId: "1:182348503564:web:480085405b09177245ac29"
+};
+
+const NODE_TEMPLATES = "templates";
+const NODE_PLACES = "places";
+const NODE_COSTS = "package_cost_breakdown";
+
+const $ = (id)=>document.getElementById(id);
+
+let db, auth;
+
+let TEMPLATES = {};
+let ACTIVE_TEMPLATES = [];
+let PLACES = {};
+let COSTS = {};
+
+let CURRENT_TEMPLATE_KEY = "";
+let INTER_ALL = [];
+let ACTIVE_DISTRICT = "ALL";
+
+/* ===============================
+   ENTRY STEP LOGIC
+   =============================== */
+
+function initEntryStep(){
+  const entry = document.getElementById("entryStep");
+  const btnOutside = document.getElementById("btnOutsideHP");
+  const btnInter = document.getElementById("btnInterCity");
+
+  btnOutside.addEventListener("click", ()=>{
+    TOUR_MODE = "outside";
+    entry.style.display = "none";
+    history.pushState({ step:"tourMode", mode:"outside" }, "", location.href);
+  });
+
+  btnInter.addEventListener("click", ()=>{
+    TOUR_MODE = "intercity";
+    entry.style.display = "none";
+    history.pushState({ step:"tourMode", mode:"intercity" }, "", location.href);
+  });
+
+  // Back button support
+  window.addEventListener("popstate", (ev)=>{
+    if(!ev.state || ev.state.step === "tourMode"){
+      entry.style.display = "flex";
+      TOUR_MODE = null;
+      return;
+    }
+  });
+}
+
+/* ===============================
+   FILTER LOGIC
+   =============================== */
+
+function isLocalComputed(tpl){
+  const routeId = String(tpl.route_id || "").toUpperCase().trim();
+  const regionStyle = String(tpl.region_style || "").toLowerCase().trim();
+  const pkgId = String(tpl.package_id || tpl.key || "").toLowerCase();
+  return regionStyle === "local" || routeId.endsWith("-LCL") || pkgId.includes("-local");
+}
+
+function applyFilters(){
+
+  const start = String($("startInp").value || "").trim().toUpperCase();
+  const daysF = $("daysSel").value.trim();
+
+  if(!start){
+    alert("Please select Start");
+    return;
+  }
+
+  INTER_ALL = ACTIVE_TEMPLATES
+    .filter(t => String(t.start_point||"").toUpperCase() === start)
+    .filter(t => !daysF || Number(t.days) === Number(daysF));
+
+  // TOUR MODE FILTERING
+  if(TOUR_MODE === "outside"){
+    INTER_ALL = INTER_ALL.filter(t => !isLocalComputed(t));
+  }
+
+  if(TOUR_MODE === "intercity"){
+    INTER_ALL = INTER_ALL.filter(t => isLocalComputed(t));
+  }
+
+  renderPackages();
+}
+
+/* ===============================
+   RENDER PACKAGES (GRID FIRST)
+   =============================== */
+
+function renderPackages(){
+  const container = $("pkgList");
+  container.innerHTML = "";
+
+  if(!INTER_ALL.length){
+    container.innerHTML = "<div class='pill'><b>No Packages Found</b></div>";
+    return;
+  }
+
+  container.style.display = "grid";
+  container.style.gridTemplateColumns = "repeat(auto-fit,minmax(260px,1fr))";
+  container.style.gap = "12px";
+
+  INTER_ALL.forEach(t=>{
+    const card = document.createElement("div");
+    card.className = "pkgW";
+    card.innerHTML = `
+      <div style="padding:16px;">
+        <div style="font-weight:900;letter-spacing:.1em;text-transform:uppercase;">
+          ${t.route_path || t.package_id}
+        </div>
+        <div style="margin-top:8px;font-size:12px;">
+          ${t.days} Days
+        </div>
+      </div>
+    `;
+    card.onclick = ()=>openPackage(t.key);
+    container.appendChild(card);
+  });
+}
+
+/* ===============================
+   OPEN PACKAGE
+   =============================== */
+
+function openPackage(key){
+  CURRENT_TEMPLATE_KEY = key;
+
+  const tpl = TEMPLATES[key];
+  if(!tpl) return;
+
+  const container = $("pkgList");
+  container.style.display = "block";
+  container.innerHTML = `
+    <div class="detailsCard">
+      <h3 style="font-weight:900;">${tpl.route_path}</h3>
+      <div>Days: ${tpl.days}</div>
+      <div>Route: ${tpl.route_path}</div>
+      <div style="margin-top:10px;">
+        <button onclick="history.back()">Back</button>
+      </div>
+    </div>
+  `;
+}
+
+/* ===============================
+   FIREBASE LOAD
+   =============================== */
+
+async function refreshAll(){
+  const [tplSnap, placesSnap, costSnap] = await Promise.all([
+    db.ref(NODE_TEMPLATES).once("value"),
+    db.ref(NODE_PLACES).once("value"),
+    db.ref(NODE_COSTS).once("value")
+  ]);
+
+  TEMPLATES = tplSnap.val() || {};
+  PLACES = placesSnap.val() || {};
+  COSTS = costSnap.val() || {};
+
+  ACTIVE_TEMPLATES = Object.entries(TEMPLATES)
+    .map(([key,obj])=>({ key,...obj }))
+    .filter(t => (t.status||"active") === "active");
+}
+
+/* ===============================
+   INIT
+   =============================== */
+
+window.addEventListener("DOMContentLoaded", async ()=>{
+
+  initEntryStep();
+
+  if(!firebase.apps.length){
+    firebase.initializeApp(firebaseConfig);
+  }
+
+  db = firebase.database();
+  auth = firebase.auth();
+
+  await refreshAll();
+
+  $("genBtn").addEventListener("click", applyFilters);
+
+});
+</script>
     // year + top link + district dropdown nav
     document.addEventListener("DOMContentLoaded", ()=>{
       const y = document.getElementById("yy");
