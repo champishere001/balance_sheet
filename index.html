@@ -329,7 +329,8 @@
       color: rgba(10,30,60,.72);
       font-size: 11px;
       letter-spacing:.02em;
-      line-height: 1.35;
+      line-height: 1.5;
+      white-space: normal;
     }
 
     .centerInner{ display:flex; flex-direction:column; min-height:0; flex:1; }
@@ -482,12 +483,13 @@
     .pkgThumb .ini{ font-weight:950; letter-spacing:.08em; }
 
     .pkgWBody{ flex:1; min-width:0; display:flex; flex-direction:column; justify-content:space-between; gap:8px; }
-    .pkgWTitle{ display:flex; align-items:center; gap:8px; min-width:0; }
+    .pkgWTitle{ display:flex; align-items:center; gap:8px; min-width:0; flex-wrap:wrap; }
     .pkgWTitle .mainT{
       font-size: 12px; font-weight: 950;
       letter-spacing:.10em; text-transform: uppercase;
       white-space: nowrap; overflow:hidden; text-overflow: ellipsis;
       flex:1;
+      min-width: 180px;
     }
     .pkgBadge{
       flex:0 0 auto;
@@ -703,6 +705,190 @@
     }
     .botToast.show{ display:block; }
 
+    /* ================= ABOUT (ONE SECTION) ================= */
+    .aboutWrap{
+      margin-top: 12px;
+      border:1px solid rgba(10,30,60,.16);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.70), rgba(255,255,255,.56));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      overflow:hidden;
+    }
+    .aboutInner{ padding: 14px; }
+    .aboutHead{
+      display:flex; flex-direction:column; gap:8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(10,30,60,.14);
+    }
+    .aboutBadge{
+      width: fit-content;
+      border:1px solid rgba(37,99,235,.30);
+      background: rgba(37,99,235,.12);
+      color: rgba(10,30,60,.92);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 10px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      font-weight: 950;
+    }
+    .aboutHead h2{
+      margin:0;
+      font-size: 14px;
+      letter-spacing:.18em;
+      text-transform: uppercase;
+      font-weight: 1000;
+      color: rgba(10,30,60,.94);
+    }
+    .aboutSub{
+      margin:0;
+      color: rgba(10,30,60,.68);
+      font-size: 12px;
+      letter-spacing:.04em;
+      line-height: 1.5;
+    }
+    .aboutGrid{
+      margin-top: 12px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .aboutBox{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.66);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 14px 36px rgba(10,30,60,.10);
+      min-width: 0;
+    }
+    .aboutBoxTop{
+      display:flex; align-items:center; gap:10px;
+      margin-bottom: 10px;
+    }
+    .aboutIcon{
+      width:40px; height:40px;
+      border-radius: 14px;
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.78);
+      display:grid; place-items:center;
+      box-shadow: 0 10px 22px rgba(10,30,60,.08);
+      flex:0 0 auto;
+      font-size: 18px;
+    }
+    .aboutTitle{
+      font-size: 11px;
+      font-weight: 1000;
+      letter-spacing:.14em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.94);
+    }
+    .aboutMini{
+      margin-top: 4px;
+      font-size: 10.5px;
+      letter-spacing:.08em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.62);
+    }
+    .aboutText{
+      margin:0;
+      color: rgba(10,30,60,.78);
+      font-size: 12px;
+      line-height: 1.6;
+      letter-spacing:.01em;
+    }
+    .aboutPills{
+      margin-top: 10px;
+      display:flex; flex-wrap:wrap; gap:8px;
+    }
+    .aboutPill{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.62);
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 10px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.74);
+    }
+    .aboutNote{
+      margin-top: 10px;
+      border:1px dashed rgba(37,99,235,.35);
+      background: rgba(37,99,235,.08);
+      border-radius: 14px;
+      padding: 10px;
+      color: rgba(10,30,60,.82);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .aboutFooterRow{
+      margin-top: 12px;
+      display:flex; gap:10px; flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .aboutBtn{
+      border:1px solid rgba(37,99,235,.34);
+      background: rgba(37,99,235,.14);
+      color: rgba(10,30,60,.92);
+      border-radius: 14px;
+      padding: 10px 12px;
+      text-decoration:none;
+      text-transform: uppercase;
+      letter-spacing:.12em;
+      font-weight: 950;
+      font-size: 11px;
+      display:inline-flex; align-items:center; justify-content:center;
+      box-shadow: 0 12px 28px rgba(37,99,235,.14);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .aboutBtn.ghost{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.66);
+      box-shadow: 0 10px 22px rgba(10,30,60,.08);
+    }
+
+    /* Minimal footer (no contact details) */
+    footer{
+      margin-top: 12px;
+      border:1px solid rgba(10,30,60,.16);
+      border-radius: 18px;
+      background: rgba(255,255,255,.62);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      overflow:hidden;
+    }
+    .footInner{
+      padding: 12px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .footLeft{
+      font-size: 11px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.70);
+    }
+    .footLinks{
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .footLinks a{
+      font-size: 11px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      text-decoration:none;
+      color: rgba(10,30,60,.86);
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.66);
+      padding: 8px 10px;
+      border-radius: 999px;
+      box-shadow: 0 10px 22px rgba(10,30,60,.08);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .footLinks a:hover{ background: rgba(255,255,255,.78); }
+
     /* ✅ RESPONSIVE: all platforms */
     @media (max-width: 1200px){
       .main{ grid-template-columns: 1fr; }
@@ -711,6 +897,8 @@
       .pane{ min-height: unset; }
       .heroBar{ flex-direction: column; align-items: stretch; }
       .heroRight{ justify-content:flex-start; }
+      .aboutGrid{ grid-template-columns: 1fr; }
+      .aboutFooterRow{ justify-content:flex-start; }
     }
     @media (max-width: 520px){
       .shell{ padding: 10px 8px 16px; }
@@ -722,6 +910,7 @@
       .waText{ display:none; }
       .waFloat{ padding: 10px; }
       .waClose{ display:none; }
+      .footInner{ flex-direction:column; align-items:flex-start; }
     }
 
     /* prefers-reduced-motion */
@@ -729,6 +918,236 @@
       .aurora{ animation:none; }
       .pkgW{ transition:none; }
       .centreHero img{ transition:none; }
+    }
+
+    /* =========================
+       ✅ Compact package card for LEFT sidebar
+       ========================= */
+    .pkgMini{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.66);
+      border-radius: 14px;
+      overflow:hidden;
+      cursor:pointer;
+      box-shadow: 0 10px 22px rgba(10,30,60,.08);
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+    .pkgMini:hover{ transform: translateY(-1px); background: rgba(255,255,255,.76); border-color: rgba(37,99,235,.28); }
+
+    .pkgMiniTop{
+      display:flex;
+      gap:10px;
+      padding:10px;
+      align-items:center;
+    }
+    .pkgMiniThumb{
+      width:56px; height:56px;
+      border-radius: 12px;
+      overflow:hidden;
+      border:1px solid rgba(10,30,60,.16);
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.78), rgba(37,99,235,.12));
+      flex:0 0 auto;
+      display:grid; place-items:center;
+    }
+    .pkgMiniThumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .pkgMiniThumb .ini{ font-weight:1000; letter-spacing:.08em; font-size:12px; }
+
+    .pkgMiniBody{ min-width:0; flex:1; display:flex; flex-direction:column; gap:6px; }
+    .pkgMiniTitle{
+      font-size: 11px;
+      font-weight: 1000;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      line-height:1.15;
+      white-space: normal;
+      overflow: hidden;
+      word-break: break-word;
+    }
+    .pkgMiniMeta{
+      display:flex; flex-wrap:wrap; gap:6px;
+    }
+    .pkgMiniChip{
+      border:1px solid rgba(10,30,60,.14);
+      background: rgba(255,255,255,.62);
+      border-radius: 999px;
+      padding: 5px 8px;
+      font-size: 9.5px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.74);
+      white-space: nowrap;
+    }
+    .pkgMiniBottom{
+      border-top:1px solid rgba(10,30,60,.14);
+      padding: 8px 10px;
+      background: rgba(255,255,255,.58);
+    }
+    .pkgMiniRoute{
+      font-size: 10.5px;
+      color: rgba(10,30,60,.64);
+      letter-spacing:.03em;
+      line-height:1.35;
+      white-space: normal;
+      overflow: hidden;
+      word-break: break-word;
+    }
+
+    /* =========================
+       ✅ Attractive Place Popup (Modal)
+       ========================= */
+    .placeModal{
+      position:fixed; inset:0;
+      display:none;
+      z-index: 20000;
+    }
+    .placeModal.show{ display:block; }
+
+    .placeBackdrop{
+      position:absolute; inset:0;
+      background: rgba(10,30,60,.35);
+      backdrop-filter: blur(10px);
+    }
+
+    .placeSheet{
+      position:absolute;
+      left:50%; top:50%;
+      transform: translate(-50%,-50%);
+      width: min(760px, calc(100vw - 22px));
+      max-height: min(86vh, 780px);
+      overflow:hidden;
+      border-radius: 20px;
+      border:1px solid rgba(10,30,60,.16);
+      background: linear-gradient(180deg, rgba(255,255,255,.84), rgba(255,255,255,.66));
+      box-shadow: 0 40px 120px rgba(10,30,60,.22);
+    }
+
+    .placeTop{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,.70);
+      border-bottom:1px solid rgba(10,30,60,.14);
+    }
+    .placeKicker{
+      font-size:10px;
+      letter-spacing:.18em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.62);
+      font-weight: 950;
+    }
+    .placeTitle{
+      margin-top:5px;
+      font-size: 14px;
+      font-weight: 1000;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.94);
+      line-height: 1.2;
+    }
+    .placeMeta{
+      margin-top:6px;
+      font-size: 11px;
+      color: rgba(10,30,60,.70);
+      letter-spacing:.04em;
+      line-height: 1.35;
+    }
+    .placeClose{
+      width:40px; height:40px;
+      border-radius: 14px;
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.78);
+      color: rgba(10,30,60,.86);
+      cursor:pointer;
+      display:grid; place-items:center;
+      flex:0 0 auto;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .placeBody{
+      padding: 12px 14px 14px;
+      overflow:auto;
+      max-height: calc(min(86vh, 780px) - 64px);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .placeGallery{
+      display:flex;
+      gap:10px;
+      overflow:auto;
+      padding-bottom: 10px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .placeImg{
+      width: 220px;
+      height: 140px;
+      border-radius: 16px;
+      overflow:hidden;
+      flex: 0 0 auto;
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.70);
+      box-shadow: 0 18px 42px rgba(10,30,60,.10);
+    }
+    .placeImg img{
+      width:100%; height:100%;
+      object-fit: cover;
+      display:block;
+    }
+
+    .placeGrid{
+      margin-top: 8px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .placeCardX{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.66);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 14px 36px rgba(10,30,60,.10);
+    }
+    .placeCardHdr{
+      font-size: 10px;
+      letter-spacing:.18em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.62);
+      font-weight: 1000;
+    }
+    .placeCardTxt{
+      margin-top: 8px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: rgba(10,30,60,.84);
+      letter-spacing:.01em;
+      white-space: pre-wrap;
+    }
+
+    .placePills{
+      margin-top: 12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .placePill{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.62);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 10px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.78);
+    }
+
+    @media (max-width: 720px){
+      .placeSheet{
+        left: 50%;
+        top: auto;
+        bottom: 10px;
+        transform: translate(-50%, 0);
+        border-radius: 20px;
+      }
+      .placeGrid{ grid-template-columns: 1fr; }
+      .placeImg{ width: 200px; height: 128px; }
     }
   </style>
 </head>
@@ -762,12 +1181,10 @@
   <div class="shell">
     <!-- HERO -->
     <div class="hero">
-      <!-- ✅ hero image kunjum.jpg -->
       <div class="heroMedia">
         <img src="./vivek-kumar-7k1IKQZikSc-unsplash.jpg" alt="Kunjum Pass / Himachal Explorer" onerror="this.style.display='none';">
       </div>
 
-      <!-- ✅ Name + Logo UNDER hero image -->
       <div class="heroBar">
         <div class="heroBrand">
           <div class="logo">
@@ -866,7 +1283,7 @@
       </div>
 
       <!-- CENTER -->
-      <div class="pane">
+      <div class="pane" id="packages">
         <div class="paneHdr">
           <div>
             <p class="t">Packages</p>
@@ -906,16 +1323,160 @@
 
         <div id="map"></div>
 
+        <!-- ✅ Updated map tools: includes Day-wise controls -->
         <div class="mapTools">
           <div class="toolBtn" id="showAllStopsBtn">Show Stops</div>
           <div class="toolBtn" id="showStartEndBtn">Start/End Only</div>
+
+          <select id="mapDaySel" class="toolBtn" style="padding:9px 10px;">
+            <option value="all">Day-wise: All</option>
+          </select>
+          <div class="toolBtn" id="showDayWiseBtn">Day-wise</div>
+
           <div class="toolBtn" id="toggleTilesBtn">Toggle Tiles</div>
         </div>
       </div>
     </div>
+
+    <!-- ✅ ABOUT (ONE SECTION) -->
+    <section class="aboutWrap" id="about">
+      <div class="aboutInner">
+        <div class="aboutHead">
+          <div class="aboutBadge">Himachal Explorer Portal</div>
+          <h2>About</h2>
+          <p class="aboutSub">
+            A simple, transparent and comfortable way to plan your Himachal trip — routes, stays and pricing in one place.
+          </p>
+        </div>
+
+        <div class="aboutGrid">
+          <!-- About Website -->
+          <div class="aboutBox">
+            <div class="aboutBoxTop">
+              <div class="aboutIcon" aria-hidden="true">🌐</div>
+              <div>
+                <div class="aboutTitle">About the Website</div>
+                <div class="aboutMini">Live map • day-wise itinerary • instant estimate</div>
+              </div>
+            </div>
+
+            <p class="aboutText">
+              <b>Himachal Explorer Portal</b> is designed to make trip planning easy and clear.
+              You can choose your <b>start point</b>, <b>number of days</b>, and <b>travel type</b> (Budget / Premium / Luxury),
+              and then instantly view recommended packages with a <b>route map</b>, <b>day-wise places</b>, and a transparent estimate.
+            </p>
+
+            <p class="aboutText" style="margin-top:10px;">
+              Our goal is to help you decide faster with the right information — so you feel confident before you book.
+            </p>
+
+            <div class="aboutPills">
+              <span class="aboutPill">Route map</span>
+              <span class="aboutPill">Day-wise plan</span>
+              <span class="aboutPill">Transparent pricing</span>
+              <span class="aboutPill">Quick WhatsApp query</span>
+            </div>
+          </div>
+
+          <!-- About Us -->
+          <div class="aboutBox">
+            <div class="aboutBoxTop">
+              <div class="aboutIcon" aria-hidden="true">🤝</div>
+              <div>
+                <div class="aboutTitle">About Us</div>
+                <div class="aboutMini">New team • quality-first • comfort-focused</div>
+              </div>
+            </div>
+
+            <p class="aboutText">
+              We are new in the market, but our intention and service standards are very clear:
+              <b>quality</b>, <b>comfort</b>, and <b>honest guidance</b>.
+              <b>Ham naye zaroor hain, lekin iska matlab yeh nahi ki hum quality ya aapko comfortable stay provide nahi kar sakte.</b>
+            </p>
+
+            <p class="aboutText" style="margin-top:10px;">
+              Every itinerary is planned carefully — practical routes, verified stays (as per availability), and smooth coordination.
+              If you are traveling with family, elders, or on a short schedule, we keep the plan realistic and comfortable.
+            </p>
+
+            <div class="aboutNote">
+              <b>Our promise:</b> Clear communication, transparent pricing, and a comfortable experience from start to finish.
+            </div>
+          </div>
+        </div>
+
+        <div class="aboutFooterRow">
+          <a class="aboutBtn" href="#packages" onclick="document.getElementById('startInp')?.focus(); return false;">Explore Packages</a>
+          <a class="aboutBtn ghost"
+             href="https://wa.me/917018138847?text=Hi%20Chandan%2C%20I%20want%20to%20book%20a%20Himachal%20tour%20package."
+             target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ✅ MINIMAL FOOTER (NO CONTACT DETAILS) -->
+    <footer>
+      <div class="footInner">
+        <div class="footLeft">© <span id="yy"></span> Himachal Explorer Portal</div>
+        <div class="footLinks">
+          <a href="#about">About</a>
+          <a href="#" id="topLink">Top</a>
+        </div>
+      </div>
+    </footer>
   </div>
 
   <div class="botToast" id="botToast">👋 Welcome! Select your <b>Start</b> and click <b>Generate</b>. Then open any package to see details.</div>
+
+  <!-- ✅ PLACE POPUP (Modal) -->
+  <div class="placeModal" id="placeModal" aria-hidden="true">
+    <div class="placeBackdrop" id="placeBackdrop"></div>
+
+    <div class="placeSheet" role="dialog" aria-modal="true" aria-label="Place details">
+      <div class="placeTop">
+        <div class="placeTitleWrap">
+          <div class="placeKicker" id="pmKicker">Place</div>
+          <div class="placeTitle" id="pmTitle">—</div>
+          <div class="placeMeta" id="pmMeta">—</div>
+        </div>
+
+        <button class="placeClose" id="pmClose" aria-label="Close">✕</button>
+      </div>
+
+      <div class="placeBody">
+        <div class="placeGallery" id="pmGallery"></div>
+
+        <div class="placeGrid">
+          <div class="placeCardX">
+            <div class="placeCardHdr">History</div>
+            <div class="placeCardTxt" id="pmHistory">—</div>
+          </div>
+
+          <div class="placeCardX">
+            <div class="placeCardHdr">What you can find</div>
+            <div class="placeCardTxt" id="pmFind">—</div>
+          </div>
+        </div>
+
+        <div class="placePills" id="pmPills"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // year + top link
+    document.addEventListener("DOMContentLoaded", ()=>{
+      const y = document.getElementById("yy");
+      if(y) y.textContent = new Date().getFullYear();
+      const t = document.getElementById("topLink");
+      if(t){
+        t.addEventListener("click",(e)=>{
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior:"smooth" });
+        });
+      }
+    });
+  </script>
 
   <script>
     (function(){
@@ -1016,7 +1577,9 @@
   function districtAny(p){ return String(p?.district || p?.District || "").trim().toUpperCase(); }
 
   let map, tile, markersLayer, routeLine;
-  let showMode = "all";
+  let showMode = "all"; // "all" | "startend" | "daywise"
+  let DAY_BLOCKS = [];  // day wise blocks for selected package
+
   let tilesDark = false;
 
   function invalidateMapSoon(){
@@ -1301,6 +1864,132 @@
     return blocks.filter(x=>x.ids.length);
   }
 
+  /* ✅ Day-wise map dropdown options */
+  function setMapDayOptions(blocks){
+    const sel = $("mapDaySel");
+    if(!sel) return;
+    sel.innerHTML = `<option value="all">Day-wise: All</option>`;
+    blocks.forEach(b=>{
+      const opt = document.createElement("option");
+      opt.value = String(b.day);
+      opt.textContent = `Day ${b.day}`;
+      sel.appendChild(opt);
+    });
+  }
+
+  /* ✅ Place modal helpers */
+  function getPlacePhotos(p){
+    const arr = [];
+    ["photo_1","photo_2","photo_3","photo_4","photo1","photo2","photo3","photo4"].forEach(k=>{
+      const v = String(p?.[k] ?? "").trim();
+      if(v && v !== "1") arr.push(v);
+    });
+    if(Array.isArray(p?.photos)){
+      p.photos.forEach(x=>{
+        const v = String(x||"").trim();
+        if(v) arr.push(v);
+      });
+    }
+    return [...new Set(arr)];
+  }
+
+  function openPlaceModal(placeObj, pid){
+    const modal = $("placeModal");
+    if(!modal) return;
+
+    const name = placeNameAny(placeObj, pid);
+    const dist = districtAny(placeObj) || "—";
+    const region = String(placeObj?.region || "").trim();
+    const cat = String(placeObj?.category || "").trim();
+    const seg = String(placeObj?.segment || "").trim();
+
+    $("pmTitle").textContent = name || "Place";
+    $("pmMeta").textContent = [dist, region].filter(Boolean).join(" • ") || "—";
+
+    const history = String(placeObj?.history_tagline || placeObj?.history || "").trim();
+    const find = String(placeObj?.what_you_find || placeObj?.what || placeObj?.highlights || "").trim();
+
+    $("pmHistory").textContent = history || "History will be updated soon.";
+    $("pmFind").textContent = find || "Highlights will be updated soon.";
+
+    const pills = $("pmPills");
+    pills.innerHTML = "";
+    [
+      cat ? `Category: ${cat}` : "",
+      seg ? `Segment: ${seg}` : "",
+      pid ? `ID: ${pid}` : ""
+    ].filter(Boolean).forEach(txt=>{
+      const s = document.createElement("div");
+      s.className = "placePill";
+      s.textContent = txt;
+      pills.appendChild(s);
+    });
+
+    const g = $("pmGallery");
+    g.innerHTML = "";
+    const photos = getPlacePhotos(placeObj);
+    if(photos.length){
+      photos.slice(0,8).forEach(url=>{
+        const box = document.createElement("div");
+        box.className = "placeImg";
+        box.innerHTML = `<img src="${escapeHtml(url)}" alt="${escapeHtml(name)}" loading="lazy">`;
+        g.appendChild(box);
+      });
+    }else{
+      const box = document.createElement("div");
+      box.className = "placeImg";
+      box.style.display = "grid";
+      box.style.placeItems = "center";
+      box.innerHTML = `<div style="font-weight:1000;letter-spacing:.12em;text-transform:uppercase;color:rgba(10,30,60,.72);">${escapeHtml(initials(name))}</div>`;
+      g.appendChild(box);
+    }
+
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden","false");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closePlaceModal(){
+    const modal = $("placeModal");
+    if(!modal) return;
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden","true");
+    document.body.style.overflow = "";
+  }
+
+  /* ✅ Day-wise markers renderer */
+  function drawMarkersDayWise(blocks, dayValue){
+    markersLayer.clearLayers();
+    const wantedDay = (dayValue === "all") ? null : Number(dayValue);
+
+    blocks.forEach(block=>{
+      if(wantedDay && block.day !== wantedDay) return;
+
+      block.ids.forEach((pid)=>{
+        const p = PLACES[pid] || {};
+        const lat = latAny(p), lng = lngAny(p);
+        if(!isFinite(lat) || !isFinite(lng)) return;
+
+        const name = placeNameAny(p, pid);
+        const dist = districtAny(p) || "—";
+
+        const marker = L.marker([lat, lng], { riseOnHover:true });
+        marker.bindPopup(
+          `<b>Day ${block.day}</b><br>${escapeHtml(name)}<br><small>${escapeHtml(dist)}</small><br><small style="opacity:.75">Tap marker again for details</small>`
+        );
+        marker.on("click", ()=> openPlaceModal(p, pid));
+        marker.addTo(markersLayer);
+      });
+    });
+
+    const layers = markersLayer.getLayers();
+    if(layers.length){
+      const group = L.featureGroup(layers);
+      map.fitBounds(group.getBounds(), { padding:[22,22] });
+    }
+    invalidateMapSoon();
+  }
+
   function renderInlineDetails(detailsEl, tpl, startUpper, endKey, km){
     const pax = getSelectedPax();
     const tier = String($("visitType")?.value || "budget").toUpperCase();
@@ -1398,14 +2087,19 @@
             <div class="pmeta">${escapeHtml(dist)}</div>
           </div>
         `;
+
+        // ✅ Click place: open attractive popup + pan map
         line.onclick = (e)=>{
           e.stopPropagation();
+          openPlaceModal(p, pid);
+
           const lat = latAny(p), lng = lngAny(p);
           if(isFinite(lat) && isFinite(lng)){
             map.setView([lat,lng], Math.max(map.getZoom(), 12), { animate:true });
             invalidateMapSoon();
           }
         };
+
         cont.appendChild(line);
       });
 
@@ -1498,6 +2192,53 @@
 
       <div class="pkgDetails" id="details_${escapeHtml(t.key)}">
         <div class="pill"><b>Loading…</b></div>
+      </div>
+    `;
+
+    el.onclick = ()=>toggleOpenTemplate(t.key);
+    return el;
+  }
+
+  /* ✅ Compact sidebar card renderer (left "Other Packages") */
+  function renderSidebarCard(t, startUpper){
+    const days = Number(t.days||0) || 0;
+    const district = isLocalComputed(t) ? "LOCAL" : endDistrictFromTemplate(t);
+    const endKey = isLocalComputed(t) ? (t.route_name || t.package_id || t.key || "Local") : endKeyFromRoutePath(t);
+    const code = String(t.route_id || "—").toUpperCase();
+    const km = approxKmFromTpl(t);
+    const route = String(t.route_path || "").trim();
+
+    const photo = String(t.photo || t.image || "").trim();
+
+    const el = document.createElement("div");
+    el.className = "pkgMini";
+    el.dataset.key = t.key;
+
+    el.innerHTML = `
+      <div class="pkgMiniTop">
+        <div class="pkgMiniThumb">
+          ${
+            photo
+              ? `<img src="${escapeHtml(photo)}" alt="${escapeHtml(endKey)}" onerror="this.remove(); this.parentNode.innerHTML='<div class=\\'ini\\'>${escapeHtml(initials(district))}</div>';">`
+              : `<div class="ini">${escapeHtml(initials(district))}</div>`
+          }
+        </div>
+
+        <div class="pkgMiniBody">
+          <div class="pkgMiniTitle">${escapeHtml(startUpper)} → ${escapeHtml(String(endKey).toUpperCase())}</div>
+
+          <div class="pkgMiniMeta">
+            <div class="pkgMiniChip">${days}D</div>
+            <div class="pkgMiniChip">KM ${km ? km.toFixed(0) : "—"}</div>
+            <div class="pkgMiniChip">${escapeHtml(code)}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pkgMiniBottom">
+        <div class="pkgMiniRoute">
+          ${escapeHtml(route || "Tap to open this package")}
+        </div>
       </div>
     `;
 
@@ -1615,17 +2356,16 @@
     selCard.classList.add("active");
     center.appendChild(selCard);
 
+    // ✅ Left sidebar uses compact cards
     other.innerHTML = "";
     if(!rest.length){
       other.innerHTML = `<div class="otherHint">No other packages in this filter.</div>`;
     }else{
       rest.forEach(obj=>{
-        const c = (obj.kind === "local")
-          ? renderLocalCard(obj.t, startUpper)
-          : renderInterCard(obj.t, startUpper);
-        other.appendChild(c);
+        other.appendChild(renderSidebarCard(obj.t, startUpper));
       });
     }
+
     highlightActiveCard();
   }
 
@@ -1674,16 +2414,30 @@
       if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] });
       invalidateMapSoon();
 
-      const markIds = (showMode==="startend")
-        ? [validIds[0], validIds[validIds.length-1]]
-        : validIds;
+      // ✅ Markers logic
+      if(showMode === "daywise" && DAY_BLOCKS.length){
+        const sel = $("mapDaySel");
+        const dayVal = sel ? sel.value : "all";
+        drawMarkersDayWise(DAY_BLOCKS, dayVal);
+      } else {
+        const markIds = (showMode==="startend")
+          ? [validIds[0], validIds[validIds.length-1]]
+          : validIds;
 
-      for(const pid of markIds){
-        const p = PLACES[pid] || {};
-        const lat = latAny(p);
-        const lng = lngAny(p);
-        if(!isFinite(lat)||!isFinite(lng)) continue;
-        L.marker([lat,lng], { riseOnHover:true }).addTo(markersLayer);
+        for(const pid of markIds){
+          const p = PLACES[pid] || {};
+          const lat = latAny(p);
+          const lng = lngAny(p);
+          if(!isFinite(lat)||!isFinite(lng)) continue;
+
+          const name = placeNameAny(p, pid);
+          const dist = districtAny(p) || "—";
+
+          const marker = L.marker([lat,lng], { riseOnHover:true });
+          marker.bindPopup(`<b>${escapeHtml(name)}</b><br><small>${escapeHtml(dist)}</small><br><small style="opacity:.75">Tap marker again for details</small>`);
+          marker.on("click", ()=> openPlaceModal(p, pid));
+          marker.addTo(markersLayer);
+        }
       }
 
       const km = Number(r.distance/1000);
@@ -1702,6 +2456,8 @@
     if(same){
       CURRENT_TEMPLATE_KEY = "";
       CURRENT_ROUTE_KM = 0;
+      DAY_BLOCKS = [];
+      setMapDayOptions([]);
       clearMap();
       setCentreHeroVisible(true);
       renderPanels();
@@ -1715,6 +2471,10 @@
 
     const tpl = TEMPLATES[key];
     if(!tpl) return;
+
+    // ✅ Prepare day-wise blocks for map + dropdown
+    DAY_BLOCKS = buildDayWise(tpl);
+    setMapDayOptions(DAY_BLOCKS);
 
     const endKey = endKeyFromRoutePath(tpl);
     const routeIds = routeIdsFromTemplateIncludingStart(tpl);
@@ -1748,6 +2508,8 @@
     clearMap();
     CURRENT_TEMPLATE_KEY = "";
     CURRENT_ROUTE_KM = 0;
+    DAY_BLOCKS = [];
+    setMapDayOptions([]);
     setCentreHeroVisible(true);
 
     if(!start){
@@ -1869,6 +2631,13 @@
     startCentreHero();
     showBot("👋 Welcome! Select Start and click Generate.");
 
+    // modal close
+    $("pmClose")?.addEventListener("click", closePlaceModal);
+    $("placeBackdrop")?.addEventListener("click", closePlaceModal);
+    document.addEventListener("keydown",(e)=>{
+      if(e.key === "Escape") closePlaceModal();
+    });
+
     if(!firebase.apps.length){
       firebase.initializeApp(firebaseConfig);
     }else{
@@ -1909,6 +2678,8 @@
       clearMap();
       CURRENT_TEMPLATE_KEY = "";
       CURRENT_ROUTE_KM = 0;
+      DAY_BLOCKS = [];
+      setMapDayOptions([]);
       INTER_ALL = [];
       DISTRICT_KEYS = [];
       ACTIVE_DISTRICT = "ALL";
@@ -1942,6 +2713,23 @@
         const routeIds = routeIdsFromTemplateIncludingStart(tpl);
         const rr = await drawRoadRouteFromPlaces(routeIds);
         CURRENT_ROUTE_KM = rr.ok ? rr.km : CURRENT_ROUTE_KM;
+      }
+    });
+
+    $("showDayWiseBtn")?.addEventListener("click", async ()=>{
+      showMode = "daywise";
+      showBot("Day-wise markers enabled");
+      if(CURRENT_TEMPLATE_KEY){
+        const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
+        const routeIds = routeIdsFromTemplateIncludingStart(tpl);
+        await drawRoadRouteFromPlaces(routeIds);
+      }
+    });
+
+    $("mapDaySel")?.addEventListener("change", ()=>{
+      if(showMode !== "daywise") return;
+      if(CURRENT_TEMPLATE_KEY){
+        drawMarkersDayWise(DAY_BLOCKS, $("mapDaySel").value);
       }
     });
 
