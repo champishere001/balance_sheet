@@ -368,7 +368,7 @@
       border-radius: 18px;
       overflow:hidden;
       position:relative;
-      height: clamp(220px, 26vw, 280px);
+      height: clamp(240px, 30vw, 360px);
       background: rgba(255,255,255,.62);
       box-shadow: 0 24px 80px rgba(10,30,60,.12);
     }
@@ -382,9 +382,9 @@
       content:""; position:absolute; inset:0;
       background: linear-gradient(
         180deg,
-        rgba(255,255,255,.30),
-        rgba(255,255,255,.05),
-        rgba(255,255,255,.30)
+        rgba(255,255,255,.36),
+        rgba(255,255,255,.10),
+        rgba(255,255,255,.36)
       );
       z-index:2;
     }
@@ -395,14 +395,16 @@
     }
     .centreHeroContent .h{
       font-size: clamp(16px, 2.2vw, 22px);
-      font-weight: 950; letter-spacing:.14em; text-transform: uppercase;
+      font-weight: 1000; letter-spacing:.14em; text-transform: uppercase;
       color: rgba(10,30,60,.94);
       text-shadow: 0 14px 30px rgba(255,255,255,.55);
     }
     .centreHeroContent .p{
-      max-width: 520px; font-size: 12px;
+      max-width: 720px; font-size: 12px;
       color: rgba(10,30,60,.74);
-      letter-spacing:.08em; text-transform: uppercase; line-height: 1.5;
+      letter-spacing:.08em;
+      text-transform: uppercase;
+      line-height: 1.5;
       text-shadow: 0 14px 30px rgba(255,255,255,.55);
     }
     .centreHeroContent .tag{
@@ -1027,65 +1029,44 @@
   </style>
 </head>
 
-<body>  
-   
-   <!-- ENTRY STEP -->
-<div id="entryStep" style="
-position:fixed;
-inset:0;
-background:linear-gradient(180deg,#F6FAFF,#EAF3FF);
-display:flex;
-align-items:center;
-justify-content:center;
-z-index:99999;
-">
+<body>
 
-  <div style="
-    width:min(520px,92vw);
-    background:white;
-    border-radius:20px;
-    padding:28px;
-    box-shadow:0 30px 80px rgba(0,0,0,.15);
-    text-align:center;
-  ">
+  <!-- ENTRY STEP -->
+  <div id="entryStep" style="
+    position:fixed; inset:0;
+    background:linear-gradient(180deg,#F6FAFF,#EAF3FF);
+    display:flex; align-items:center; justify-content:center;
+    z-index:99999;">
+    <div style="
+      width:min(520px,92vw);
+      background:white;
+      border-radius:20px;
+      padding:28px;
+      box-shadow:0 30px 80px rgba(0,0,0,.15);
+      text-align:center;">
+      <h2 style="margin:0 0 10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;">
+        Welcome to Himachal Explorer
+      </h2>
+      <p style="margin:0 0 22px;color:#334155;">
+        Are you coming from outside Himachal Pradesh or planning a tour within Himachal?
+      </p>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <button id="btnOutsideHP" style="
+          padding:14px;border-radius:14px;border:none;
+          font-weight:900;letter-spacing:.1em;
+          background:#2563EB;color:white;cursor:pointer;">
+          Coming From Outside HP
+        </button>
 
-    <h2 style="margin:0 0 10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;">
-      Welcome to Himachal Explorer
-    </h2>
-
-    <p style="margin:0 0 22px;color:#334155;">
-      Are you coming from outside Himachal Pradesh or planning a tour within Himachal?
-    </p>
-
-    <div style="display:flex;flex-direction:column;gap:14px;">
-      <button id="btnOutsideHP" style="
-        padding:14px;
-        border-radius:14px;
-        border:none;
-        font-weight:900;
-        letter-spacing:.1em;
-        background:#2563EB;
-        color:white;
-        cursor:pointer;
-      ">
-        Coming From Outside HP
-      </button>
-
-      <button id="btnInterCity" style="
-        padding:14px;
-        border-radius:14px;
-        border:2px solid #2563EB;
-        background:white;
-        font-weight:900;
-        letter-spacing:.1em;
-        cursor:pointer;
-      ">
-        Inter-City Tour (Within HP)
-      </button>
+        <button id="btnInterCity" style="
+          padding:14px;border-radius:14px;
+          border:2px solid #2563EB;background:white;
+          font-weight:900;letter-spacing:.1em;cursor:pointer;">
+          Inter-City Tour (Within HP)
+        </button>
+      </div>
     </div>
-
   </div>
-</div>
 
   <div class="aurora"></div>
   <div class="noise"></div>
@@ -1229,18 +1210,51 @@ z-index:99999;
         <div class="centerInner">
           <div class="districtBar" id="districtBar"></div>
 
+          <!-- ✅ Stylish landing hero: logo + motive + destinations -->
           <div class="centreHero" id="centreHero">
             <img id="centreHeroImg" src="./kinnaur-kailash.webp" alt="Himachal Pradesh" onerror="this.src='./n1.jpg'">
             <div class="centreHeroContent">
-              <div class="tag">Himachal Explorer Portal</div>
-              <div class="h">Discover Himachal Pradesh</div>
-              <div class="p">Mountains • Valleys • Temples • Treks • Hidden Places • Road Trips</div>
-              <div class="tag">Select Start → Generate → Open any package</div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div style="width:54px;height:54px;border-radius:16px;overflow:hidden;border:1px solid rgba(10,30,60,.16);background:rgba(255,255,255,.75);box-shadow:0 14px 34px rgba(10,30,60,.12);">
+                    <img src="./logo.png" alt="Himachal Explorer Logo"
+                         style="width:100%;height:100%;object-fit:cover;display:block;"
+                         onerror="this.style.display='none'">
+                  </div>
+                  <div style="text-align:left;">
+                    <div class="h" style="margin:0;">Himachal Explorer</div>
+                    <div class="p" style="margin:4px 0 0;max-width:none;">
+                      Curated itineraries • Live route maps • Transparent pricing
+                    </div>
+                  </div>
+                </div>
+
+                <div class="tag">Our Motive</div>
+                <div class="p" style="max-width:720px;text-transform:none;letter-spacing:.02em;">
+                  Make Himachal travel <b>simple</b>, <b>safe</b> and <b>premium</b> — verified stays, smooth routes,
+                  realistic day plans, and honest costing. One click → itinerary + map + WhatsApp booking.
+                </div>
+
+                <div class="tag">Destinations We Cover</div>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+                  <div class="chip">Shimla</div>
+                  <div class="chip">Manali</div>
+                  <div class="chip">Kasol</div>
+                  <div class="chip">Kullu</div>
+                  <div class="chip">Dharamshala</div>
+                  <div class="chip">Dalhousie</div>
+                  <div class="chip">Chamba</div>
+                  <div class="chip">Spiti</div>
+                  <div class="chip">Kinnaur</div>
+                </div>
+
+                <div class="tag">Select Start → Generate → Open any package</div>
+              </div>
             </div>
           </div>
 
           <div class="pkgList" id="pkgList">
-            <div class="pill"><b>Type Start</b> then click <b>Generate</b></div>
+            <div class="pill"><b>Choose tour mode above</b> then select <b>Start</b> and click <b>Generate</b></div>
           </div>
         </div>
       </div>
@@ -1265,7 +1279,7 @@ z-index:99999;
       </div>
     </div>
 
-    <!-- ✅ FOOTER UPDATED: About Website + About Us (equal), District dropdown fixed to 24% -->
+    <!-- FOOTER -->
     <footer>
       <div class="footInner">
         <div class="footTopRow">
@@ -1278,7 +1292,6 @@ z-index:99999;
         </div>
 
         <div class="footerFancyGrid">
-          <!-- LEFT (76%) -> inside 2 equal boxes (About Website / About Us) -->
           <div class="footerAboutGrid">
             <div class="footerBox">
               <div class="footerTitle">
@@ -1307,7 +1320,6 @@ z-index:99999;
             </div>
           </div>
 
-          <!-- RIGHT (24%) -> District dropdown -->
           <div class="footerDistrictBox">
             <div>
               <div class="footerTitle">
@@ -1364,259 +1376,10 @@ z-index:99999;
     </div>
   </div>
 
-  <script>
-      <script>
-/* ===============================
-   TOUR MODE (ENTRY STEP)
-   =============================== */
-
-let TOUR_MODE = null; // "outside" | "intercity"
-
-/* ===============================
-   Firebase Config
-   =============================== */
-const firebaseConfig = {
-  apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
-  authDomain: "revnue-records.firebaseapp.com",
-  databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "revnue-records",
-  storageBucket: "revnue-records.firebasestorage.app",
-  messagingSenderId: "182348503564",
-  appId: "1:182348503564:web:480085405b09177245ac29"
-};
-
-const NODE_TEMPLATES = "templates";
-const NODE_PLACES = "places";
-const NODE_COSTS = "package_cost_breakdown";
-
-const $ = (id)=>document.getElementById(id);
-
-let db, auth;
-
-let TEMPLATES = {};
-let ACTIVE_TEMPLATES = [];
-let PLACES = {};
-let COSTS = {};
-
-let CURRENT_TEMPLATE_KEY = "";
-let INTER_ALL = [];
-let ACTIVE_DISTRICT = "ALL";
-
-/* ===============================
-   ENTRY STEP LOGIC
-   =============================== */
-
-function initEntryStep(){
-  const entry = document.getElementById("entryStep");
-  const btnOutside = document.getElementById("btnOutsideHP");
-  const btnInter = document.getElementById("btnInterCity");
-
-  btnOutside.addEventListener("click", ()=>{
-    TOUR_MODE = "outside";
-    entry.style.display = "none";
-    history.pushState({ step:"tourMode", mode:"outside" }, "", location.href);
-  });
-
-  btnInter.addEventListener("click", ()=>{
-    TOUR_MODE = "intercity";
-    entry.style.display = "none";
-    history.pushState({ step:"tourMode", mode:"intercity" }, "", location.href);
-  });
-
-  // Back button support
-  window.addEventListener("popstate", (ev)=>{
-    if(!ev.state || ev.state.step === "tourMode"){
-      entry.style.display = "flex";
-      TOUR_MODE = null;
-      return;
-    }
-  });
-}
-
-/* ===============================
-   FILTER LOGIC
-   =============================== */
-
-function isLocalComputed(tpl){
-  const routeId = String(tpl.route_id || "").toUpperCase().trim();
-  const regionStyle = String(tpl.region_style || "").toLowerCase().trim();
-  const pkgId = String(tpl.package_id || tpl.key || "").toLowerCase();
-  return regionStyle === "local" || routeId.endsWith("-LCL") || pkgId.includes("-local");
-}
-
-function applyFilters(){
-
-  const start = String($("startInp").value || "").trim().toUpperCase();
-  const daysF = $("daysSel").value.trim();
-
-  if(!start){
-    alert("Please select Start");
-    return;
-  }
-
-  INTER_ALL = ACTIVE_TEMPLATES
-    .filter(t => String(t.start_point||"").toUpperCase() === start)
-    .filter(t => !daysF || Number(t.days) === Number(daysF));
-
-  // TOUR MODE FILTERING
-  if(TOUR_MODE === "outside"){
-    INTER_ALL = INTER_ALL.filter(t => !isLocalComputed(t));
-  }
-
-  if(TOUR_MODE === "intercity"){
-    INTER_ALL = INTER_ALL.filter(t => isLocalComputed(t));
-  }
-
-  renderPackages();
-}
-
-/* ===============================
-   RENDER PACKAGES (GRID FIRST)
-   =============================== */
-
-function renderPackages(){
-  const container = $("pkgList");
-  container.innerHTML = "";
-
-  if(!INTER_ALL.length){
-    container.innerHTML = "<div class='pill'><b>No Packages Found</b></div>";
-    return;
-  }
-
-  container.style.display = "grid";
-  container.style.gridTemplateColumns = "repeat(auto-fit,minmax(260px,1fr))";
-  container.style.gap = "12px";
-
-  INTER_ALL.forEach(t=>{
-    const card = document.createElement("div");
-    card.className = "pkgW";
-    card.innerHTML = `
-      <div style="padding:16px;">
-        <div style="font-weight:900;letter-spacing:.1em;text-transform:uppercase;">
-          ${t.route_path || t.package_id}
-        </div>
-        <div style="margin-top:8px;font-size:12px;">
-          ${t.days} Days
-        </div>
-      </div>
-    `;
-    card.onclick = ()=>openPackage(t.key);
-    container.appendChild(card);
-  });
-}
-
-/* ===============================
-   OPEN PACKAGE
-   =============================== */
-
-function openPackage(key){
-  CURRENT_TEMPLATE_KEY = key;
-
-  const tpl = TEMPLATES[key];
-  if(!tpl) return;
-
-  const container = $("pkgList");
-  container.style.display = "block";
-  container.innerHTML = `
-    <div class="detailsCard">
-      <h3 style="font-weight:900;">${tpl.route_path}</h3>
-      <div>Days: ${tpl.days}</div>
-      <div>Route: ${tpl.route_path}</div>
-      <div style="margin-top:10px;">
-        <button onclick="history.back()">Back</button>
-      </div>
-    </div>
-  `;
-}
-
-/* ===============================
-   FIREBASE LOAD
-   =============================== */
-
-async function refreshAll(){
-  const [tplSnap, placesSnap, costSnap] = await Promise.all([
-    db.ref(NODE_TEMPLATES).once("value"),
-    db.ref(NODE_PLACES).once("value"),
-    db.ref(NODE_COSTS).once("value")
-  ]);
-
-  TEMPLATES = tplSnap.val() || {};
-  PLACES = placesSnap.val() || {};
-  COSTS = costSnap.val() || {};
-
-  ACTIVE_TEMPLATES = Object.entries(TEMPLATES)
-    .map(([key,obj])=>({ key,...obj }))
-    .filter(t => (t.status||"active") === "active");
-}
-
-/* ===============================
-   INIT
-   =============================== */
-
-window.addEventListener("DOMContentLoaded", async ()=>{
-
-  initEntryStep();
-
-  if(!firebase.apps.length){
-    firebase.initializeApp(firebaseConfig);
-  }
-
-  db = firebase.database();
-  auth = firebase.auth();
-
-  await refreshAll();
-
-  $("genBtn").addEventListener("click", applyFilters);
-
-});
-</script>
-    // year + top link + district dropdown nav
-    document.addEventListener("DOMContentLoaded", ()=>{
-      const y = document.getElementById("yy");
-      if(y) y.textContent = new Date().getFullYear();
-
-      const t = document.getElementById("topLink");
-      if(t){
-        t.addEventListener("click",(e)=>{
-          e.preventDefault();
-          window.scrollTo({ top: 0, behavior:"smooth" });
-        });
-      }
-
-      const sel = document.getElementById("districtSelect");
-      if(sel){
-        sel.addEventListener("change", ()=>{
-          if(sel.value) window.location.href = sel.value;
-        });
-      }
-    });
-  </script>
-
-  <script>
-    (function(){
-      const KEY = "wa_float_hidden_v1";
-      function apply(){
-        const hidden = localStorage.getItem(KEY) === "1";
-        const el = document.getElementById("waFloat");
-        if(el) el.style.display = hidden ? "none" : "flex";
-      }
-      window.addEventListener("DOMContentLoaded", ()=>{
-        const close = document.getElementById("waClose");
-        if(close){
-          close.addEventListener("click", (e)=>{
-            e.preventDefault(); e.stopPropagation();
-            localStorage.setItem(KEY, "1");
-            apply();
-          });
-        }
-        apply();
-      });
-    })();
-  </script>
-
+  <!-- ✅ SINGLE SCRIPT ONLY (all logic merged, no duplicates) -->
   <script>
   /* ===============================
-     Firebase Config (revnue-records)
+     FIREBASE CONFIG (only once)
      =============================== */
   const firebaseConfig = {
     apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
@@ -1635,6 +1398,53 @@ window.addEventListener("DOMContentLoaded", async ()=>{
 
   const $ = (id)=>document.getElementById(id);
 
+  /* ===============================
+     TOUR MODE (ENTRY STEP)
+     =============================== */
+  let TOUR_MODE = null; // "outside" | "intercity"
+
+  function initEntryStep(){
+    const entry = $("entryStep");
+    const btnOutside = $("btnOutsideHP");
+    const btnInter = $("btnInterCity");
+
+    function setMode(mode){
+      TOUR_MODE = mode;
+      entry.style.display = "none";
+      // push state so back button re-opens overlay
+      history.pushState({ tag:"tourMode", mode }, "", location.href);
+      showBot(mode==="outside"
+        ? "✅ Mode: Outside HP (inter-district packages prioritized)"
+        : "✅ Mode: Inter-City within HP (local packages prioritized)"
+      );
+    }
+
+    btnOutside.addEventListener("click", ()=> setMode("outside"));
+    btnInter.addEventListener("click", ()=> setMode("intercity"));
+
+    window.addEventListener("popstate", (ev)=>{
+      const st = ev.state;
+      // if user goes back from tourMode (or has no state), show entry again
+      if(!st || st.tag === "boot"){
+        entry.style.display = "flex";
+        TOUR_MODE = null;
+        // reset selection (optional safe)
+        CURRENT_TEMPLATE_KEY = "";
+        setCentreHeroVisible(true);
+        renderPanels();
+        return;
+      }
+      if(st && st.tag === "tourMode"){
+        // keep overlay hidden if they are on that state
+        entry.style.display = "none";
+        TOUR_MODE = st.mode || null;
+      }
+    });
+  }
+
+  /* ===============================
+     HELPERS
+     =============================== */
   function setStatus(msg){ $("statusLine").textContent = msg; }
   function safeLower(x){ return String(x ?? "").trim().toLowerCase(); }
   function escapeHtml(str){
@@ -1658,7 +1468,6 @@ window.addEventListener("DOMContentLoaded", async ()=>{
       .replace(/-+/g,"-")
       .replace(/^-|-$/g,"");
   }
-
   function showBot(msg){
     const el = $("botToast");
     if(!el) return;
@@ -1667,7 +1476,45 @@ window.addEventListener("DOMContentLoaded", async ()=>{
     setTimeout(()=> el.classList.remove("show"), 3800);
   }
 
-  /* Centre hero slideshow */
+  /* ===============================
+     YEAR + TOP + DISTRICT DROPDOWN
+     =============================== */
+  function initFooter(){
+    const y = $("yy");
+    if(y) y.textContent = new Date().getFullYear();
+
+    $("topLink")?.addEventListener("click",(e)=>{
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior:"smooth" });
+    });
+
+    $("districtSelect")?.addEventListener("change", ()=>{
+      const v = $("districtSelect").value;
+      if(v) window.location.href = v;
+    });
+  }
+
+  /* ===============================
+     WhatsApp float hide (localStorage)
+     =============================== */
+  function initWaHide(){
+    const KEY = "wa_float_hidden_v1";
+    const apply = ()=>{
+      const hidden = localStorage.getItem(KEY) === "1";
+      const el = $("waFloat");
+      if(el) el.style.display = hidden ? "none" : "flex";
+    };
+    $("waClose")?.addEventListener("click", (e)=>{
+      e.preventDefault(); e.stopPropagation();
+      localStorage.setItem(KEY, "1");
+      apply();
+    });
+    apply();
+  }
+
+  /* ===============================
+     Centre hero slideshow
+     =============================== */
   const CENTRE_HERO_IMAGES = ["./kinnaur-kailash.webp","./n1.jpg","./temple.jpg","./trek.jpeg"];
   let heroIdx = 0;
   function startCentreHero(){
@@ -1683,7 +1530,9 @@ window.addEventListener("DOMContentLoaded", async ()=>{
     }, 4200);
   }
 
-  /* Map + Utils */
+  /* ===============================
+     MAP
+     =============================== */
   function placeIdAny(p, key){ return String(p?.place_id || p?.id || key || "").trim(); }
   function placeNameAny(p, key){ return String(p?.name || p?.["Location Name"] || p?.title || key || "PLACE").trim(); }
   function latAny(p){ return Number(p?.latitude ?? p?.lat ?? p?.Latitude); }
@@ -1715,7 +1564,9 @@ window.addEventListener("DOMContentLoaded", async ()=>{
     invalidateMapSoon();
   }
 
-  /* Data */
+  /* ===============================
+     DATA
+     =============================== */
   let db, analytics, auth;
   let TEMPLATES = {};
   let ACTIVE_TEMPLATES = [];
@@ -1729,7 +1580,7 @@ window.addEventListener("DOMContentLoaded", async ()=>{
   let ACTIVE_DISTRICT = "ALL";
   let CURRENT_TEMPLATE_KEY = "";
   let CURRENT_ROUTE_KM = 0;
-  let CURRENT_DAY_INDEX = new Map(); // placeId -> {day,order}
+  let CURRENT_DAY_INDEX = new Map();
 
   function setCentreHeroVisible(on){
     const hero = $("centreHero");
@@ -1900,7 +1751,9 @@ window.addEventListener("DOMContentLoaded", async ()=>{
     return isFinite(km) && km>0 ? km : 0;
   }
 
-  /* FINAL PRICE FETCH (PER PERSON) */
+  /* ===============================
+     PRICING
+     =============================== */
   function getPerPersonPrice(tpl){
     const tier = String($("visitType")?.value || "budget").toLowerCase();
     const pid = String(tpl.package_id || tpl.key || "").trim();
@@ -1977,6 +1830,7 @@ window.addEventListener("DOMContentLoaded", async ()=>{
 
     return lines.join("\n");
   }
+
   function setWhatsAppInline(btnEl, enabled, url){
     if(!btnEl) return;
     if(enabled){
@@ -1988,6 +1842,9 @@ window.addEventListener("DOMContentLoaded", async ()=>{
     }
   }
 
+  /* ===============================
+     DAYWISE + PINS
+     =============================== */
   function buildDayWise(tpl){
     const days = Number(tpl.days || 1);
     const blocks = [];
@@ -2006,7 +1863,6 @@ window.addEventListener("DOMContentLoaded", async ()=>{
     return blocks.filter(x=>x.ids.length);
   }
 
-  /* ✅ Day index for pins */
   function makeDayIndexFromTemplate(tpl){
     const blocks = buildDayWise(tpl);
     const mp = new Map();
@@ -2017,6 +1873,7 @@ window.addEventListener("DOMContentLoaded", async ()=>{
     });
     return mp;
   }
+
   function dayIconHTML(day, order){
     return `
       <div style="
@@ -2033,7 +1890,9 @@ window.addEventListener("DOMContentLoaded", async ()=>{
       </div>`;
   }
 
-  /* ✅ Place modal */
+  /* ===============================
+     PLACE MODAL
+     =============================== */
   function getPlacePhotos(p){
     const a = [];
     ["photo_1","photo_2","photo_3","image","img","cover"].forEach(k=>{
@@ -2042,6 +1901,7 @@ window.addEventListener("DOMContentLoaded", async ()=>{
     });
     return a;
   }
+
   function openPlaceModal({ place, dayNum, orderNum, placeId }){
     const modal = $("placeModal");
     const ttl = $("pmTitle");
@@ -2098,6 +1958,9 @@ window.addEventListener("DOMContentLoaded", async ()=>{
   }
   function closePlaceModal(){ $("placeModal")?.classList.remove("show"); }
 
+  /* ===============================
+     PACKAGE RENDERING
+     =============================== */
   function renderSelectedInfoBar(tpl, startUpper){
     const endKey = endKeyFromRoutePath(tpl);
     const pax = getSelectedPax();
@@ -2126,83 +1989,6 @@ window.addEventListener("DOMContentLoaded", async ()=>{
       </div>
     `;
     return el;
-  }
-
-  /* ===============================
-     STEP BACK NAV (History API)
-     =============================== */
-  let HISTORY_BOOTED = false;
-  let IGNORE_POP = false;
-
-  function snapshotState(){
-    return {
-      start: String($("startInp")?.value || ""),
-      visitType: String($("visitType")?.value || "budget"),
-      days: String($("daysSel")?.value || ""),
-      pax: String($("paxSel")?.value || "2"),
-      activeDistrict: String(ACTIVE_DISTRICT || "ALL"),
-      selectedKey: String(CURRENT_TEMPLATE_KEY || "")
-    };
-  }
-  function applySnapshot(s){
-    if(!s) return;
-    $("startInp").value = s.start ?? "";
-    $("visitType").value = s.visitType ?? "budget";
-    $("daysSel").value = s.days ?? "";
-    $("paxSel").value = s.pax ?? "2";
-    ACTIVE_DISTRICT = s.activeDistrict ?? "ALL";
-  }
-  function historyReplace(tag){ history.replaceState({ tag, ...snapshotState() }, "", location.href); }
-  function historyPush(tag){ history.pushState({ tag, ...snapshotState() }, "", location.href); }
-
-  function bootHistory(){
-    if(HISTORY_BOOTED) return;
-    HISTORY_BOOTED = true;
-
-    historyReplace("boot");
-
-    window.addEventListener("popstate", async (ev)=>{
-      if(IGNORE_POP) return;
-      const st = ev.state;
-
-      if(!st){
-        if(CURRENT_TEMPLATE_KEY){
-          IGNORE_POP = true;
-          try{ await toggleOpenTemplate(CURRENT_TEMPLATE_KEY); } finally{ IGNORE_POP = false; }
-        }
-        return;
-      }
-
-      applySnapshot(st);
-
-      clearMap();
-      CURRENT_ROUTE_KM = 0;
-
-      const startNorm = normalizeStartInput() || "";
-      if(!startNorm){
-        CURRENT_TEMPLATE_KEY = "";
-        setCentreHeroVisible(true);
-        renderDistrictChipsReset();
-        renderPanels();
-        return;
-      }
-
-      applyFilters();
-
-      if(st.selectedKey){
-        IGNORE_POP = true;
-        try{ await toggleOpenTemplate(st.selectedKey); } finally{ IGNORE_POP = false; }
-      }else{
-        CURRENT_TEMPLATE_KEY = "";
-        setCentreHeroVisible(true);
-        renderPanels();
-      }
-    });
-  }
-
-  function renderDistrictChipsReset(){
-    $("districtBar").innerHTML = "";
-    $("pkgCount").textContent = "—";
   }
 
   function renderInlineDetails(detailsEl, tpl, startUpper, endKey, km){
@@ -2431,13 +2217,15 @@ window.addEventListener("DOMContentLoaded", async ()=>{
       shownInter = shownInter.filter(t => endDistrictFromTemplate(t) === ACTIVE_DISTRICT);
     }
 
-    const locals = ACTIVE_TEMPLATES
+    // locals list (start/days match)
+    let locals = ACTIVE_TEMPLATES
       .filter(t => isLocalComputed(t))
       .filter(t => matchesStart(t, startUpper))
       .filter(t => matchesDaysOptional(t, daysF))
       .filter(t => Number(t.days||0) > 0 && Number(t.days||0) <= 3)
       .sort((a,b)=>(Number(a.days)||0)-(Number(b.days)||0));
 
+    // TOUR MODE preference (not hard filter here; hard filter is applied in applyFilters)
     return { startUpper, daysF, shownInter, locals };
   }
 
@@ -2447,7 +2235,6 @@ window.addEventListener("DOMContentLoaded", async ()=>{
     center.classList.remove("pkgGrid");
 
     const { startUpper, daysF, shownInter, locals } = getFilteredLists();
-
     const totalCount = shownInter.length + locals.length;
     $("pkgCount").textContent = `${totalCount} Results`;
 
@@ -2525,7 +2312,7 @@ window.addEventListener("DOMContentLoaded", async ()=>{
     selHdr.className = "pkgGroupHdr";
     selHdr.innerHTML = `
       <div class="h1">Selected Package</div>
-      <div class="h2">Overview + cost shown above. Day-wise schedule below. Click a place for rich popup + map focus.</div>
+      <div class="h2">Overview + cost above. Day-wise schedule below. Click a place for rich popup + map focus.</div>
     `;
     center.appendChild(selHdr);
 
@@ -2552,6 +2339,9 @@ window.addEventListener("DOMContentLoaded", async ()=>{
     highlightActiveCard();
   }
 
+  /* ===============================
+     OSRM ROUTE DRAW + MARKERS
+     =============================== */
   async function drawRoadRouteFromPlaces(placeIds, dayIndex = new Map()){
     markersLayer.clearLayers();
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
@@ -2642,13 +2432,15 @@ window.addEventListener("DOMContentLoaded", async ()=>{
     }
   }
 
+  /* ===============================
+     OPEN/CLOSE PACKAGE
+     =============================== */
   async function toggleOpenTemplate(key){
     const startUpper = String(normalizeStartInput() || "").toUpperCase();
     const same = (CURRENT_TEMPLATE_KEY === key);
 
     if(same){
       CURRENT_TEMPLATE_KEY = "";
-      historyPush("close"); // back-step state
       CURRENT_ROUTE_KM = 0;
       CURRENT_DAY_INDEX = new Map();
       clearMap();
@@ -2659,7 +2451,6 @@ window.addEventListener("DOMContentLoaded", async ()=>{
     }
 
     CURRENT_TEMPLATE_KEY = key;
-    historyPush("open"); // back-step state
     renderPanels();
     highlightActiveCard();
 
@@ -2669,7 +2460,6 @@ window.addEventListener("DOMContentLoaded", async ()=>{
     const endKey = endKeyFromRoutePath(tpl);
     const routeIds = routeIdsFromTemplateIncludingStart(tpl);
 
-    // ✅ day-wise pin index
     CURRENT_DAY_INDEX = makeDayIndexFromTemplate(tpl);
 
     const detailsEl = document.getElementById(`details_${key}`);
@@ -2692,7 +2482,16 @@ window.addEventListener("DOMContentLoaded", async ()=>{
     showBot("✅ Selected. Tap a place to open rich popup + map focus.");
   }
 
+  /* ===============================
+     APPLY FILTERS (WITH TOUR_MODE)
+     =============================== */
   function applyFilters(){
+    if(!TOUR_MODE){
+      showBot("⚠️ Select tour mode first (Outside HP / Inter-City).");
+      $("entryStep").style.display = "flex";
+      return;
+    }
+
     const start = normalizeStartInput();
     const daysF = $("daysSel").value.trim();
     const pax   = getSelectedPax();
@@ -2706,7 +2505,7 @@ window.addEventListener("DOMContentLoaded", async ()=>{
 
     if(!start){
       showBot("⚠️ Start not found. Please type a Start exactly as saved in templates.");
-      renderDistrictChipsReset();
+      $("districtBar").innerHTML = "";
       $("pkgList").classList.remove("pkgGrid");
       $("pkgList").innerHTML = `<div class="pill"><b>Start not found</b></div>`;
       $("otherPkgList").innerHTML = `<div class="otherHint">Select a valid Start and Generate.</div>`;
@@ -2716,26 +2515,39 @@ window.addEventListener("DOMContentLoaded", async ()=>{
 
     const startUpper = String(start).trim().toUpperCase();
 
-    INTER_ALL = ACTIVE_TEMPLATES
+    // Build both sets first
+    const inter = ACTIVE_TEMPLATES
       .filter(t => matchesStart(t, startUpper))
       .filter(t => matchesDaysOptional(t, daysF))
-      .filter(t => !isLocalComputed(t))
-      .sort((a,b)=>{
-        const da = Number(a.days||0), db = Number(b.days||0);
-        if(da !== db) return da - db;
-        const kmA = Number(a.total_km_est || a.estimated_drive_km || a.total_km || 1e9);
-        const kmB = Number(b.total_km_est || b.estimated_drive_km || b.total_km || 1e9);
-        return kmA - kmB;
-      });
+      .filter(t => !isLocalComputed(t));
 
+    const local = ACTIVE_TEMPLATES
+      .filter(t => matchesStart(t, startUpper))
+      .filter(t => matchesDaysOptional(t, daysF))
+      .filter(t => isLocalComputed(t));
+
+    // TOUR MODE FILTER:
+    // outside => only inter-district
+    // intercity => only local
+    if(TOUR_MODE === "outside"){
+      INTER_ALL = inter.slice();
+    } else {
+      INTER_ALL = []; // intercity mode will show locals only (below)
+    }
+
+    // District keys from inter list
     const set = new Set();
     INTER_ALL.forEach(t => set.add(endDistrictFromTemplate(t)));
     DISTRICT_KEYS = Array.from(set).sort((a,b)=>a.localeCompare(b));
     ACTIVE_DISTRICT = "ALL";
     renderDistrictChips();
 
+    // Pills
     $("pills").innerHTML = "";
-    const pillData = { START: startUpper, DAYS: (daysF ? daysF : "ANY"), TYPE: tier, INTER: INTER_ALL.length, PAX: pax };
+    const pillData = { MODE: (TOUR_MODE==="outside"?"OUTSIDE":"INTERCITY"), START: startUpper, DAYS: (daysF ? daysF : "ANY"), TYPE: tier, PAX: pax };
+    if(TOUR_MODE === "outside") pillData.INTER = INTER_ALL.length;
+    if(TOUR_MODE === "intercity") pillData.LOCAL = local.length;
+
     for(const [k,v] of Object.entries(pillData)){
       const div = document.createElement("div");
       div.className = "pill";
@@ -2743,12 +2555,16 @@ window.addEventListener("DOMContentLoaded", async ()=>{
       $("pills").appendChild(div);
     }
 
-    historyPush("filters"); // ✅ back-step state for Generate
+    // Save locals into ACTIVE_TEMPLATES (already) — renderPanels will compute locals list.
+    // For intercity mode, inter list is empty, locals will still render.
+
     renderPanels();
     showBot("✅ Packages loaded in grid. Open any package → details + schedule.");
   }
 
-  /* Firebase Load */
+  /* ===============================
+     FIREBASE LOAD
+     =============================== */
   async function refreshAll(){
     try{
       setStatus("Loading live from Firebase…");
@@ -2821,11 +2637,16 @@ window.addEventListener("DOMContentLoaded", async ()=>{
     }
   }
 
+  /* ===============================
+     INIT
+     =============================== */
   window.addEventListener("DOMContentLoaded", () => {
-    bootHistory();
+    initEntryStep();
+    initFooter();
+    initWaHide();
 
     startCentreHero();
-    showBot("👋 Welcome! Select Start and click Generate.");
+    showBot("👋 Welcome! Select tour mode, then Start and click Generate.");
 
     // place modal close
     $("pmClose")?.addEventListener("click", closePlaceModal);
@@ -2863,7 +2684,7 @@ window.addEventListener("DOMContentLoaded", async ()=>{
       $("paxSel").value="2";
       $("pills").innerHTML="";
       $("pkgList").classList.remove("pkgGrid");
-      $("pkgList").innerHTML = `<div class="pill"><b>Type Start</b> then click <b>Generate</b></div>`;
+      $("pkgList").innerHTML = `<div class="pill"><b>Choose tour mode</b> then type <b>Start</b> and click <b>Generate</b></div>`;
       $("districtBar").innerHTML = "";
       $("pkgCount").textContent="—";
       $("otherPkgList").innerHTML = `
@@ -2881,7 +2702,6 @@ window.addEventListener("DOMContentLoaded", async ()=>{
       setCentreHeroVisible(true);
       showBot("Reset done");
       invalidateMapSoon();
-      historyPush("reset");
     });
 
     $("fitMapBtn").addEventListener("click", ()=>{ if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] }); invalidateMapSoon(); });
