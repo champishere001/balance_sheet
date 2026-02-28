@@ -43,6 +43,7 @@
 
       /* 90% width usage (cross platform) */
       --shellW: min(90vw, 1700px);
+
       --heroH: clamp(220px, 26vw, 320px);
     }
     *{ box-sizing:border-box; }
@@ -122,7 +123,7 @@
       pointer-events:none;
     }
 
-    /* Brand is UNDER hero image */
+    /* ✅ Brand is UNDER hero image */
     .heroBar{
       display:flex;
       align-items:center;
@@ -224,7 +225,7 @@
       min-height: 620px;
       display:flex;
       flex-direction:column;
-      min-width: 0; /* prevents overflow on small screens */
+      min-width: 0; /* ✅ prevents overflow on small screens */
     }
     .paneHdr{
       padding: 10px 12px;
@@ -469,7 +470,6 @@
     .pkgW.active{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 3px rgba(37,99,235,.14), 0 18px 40px rgba(10,30,60,.12); }
 
     .pkgWTop{ display:flex; gap:10px; padding:10px; align-items:stretch; }
-
     .pkgThumb{
       width:86px; height:86px;
       border-radius: 14px; overflow:hidden;
@@ -477,18 +477,9 @@
       background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.78), rgba(37,99,235,.12));
       flex: 0 0 auto;
       display:grid; place-items:center;
-      position:relative;
     }
     .pkgThumb img{ width:100%; height:100%; object-fit:cover; display:block; }
     .pkgThumb .ini{ font-weight:950; letter-spacing:.08em; }
-
-    /* ✅ Compact cards for LEFT sidebar */
-    .pkgW.compact .pkgThumb{ width:58px; height:58px; border-radius: 14px; }
-    .pkgW.compact .pkgWTop{ padding:9px; gap:9px; }
-    .pkgW.compact .pkgWMeta{ display:none; }
-    .pkgW.compact .pkgWBottom{ padding: 8px 9px; }
-    .pkgW.compact .pkgCTA{ display:none; }
-    .pkgW.compact .pkgHint{ font-size: 10.5px; }
 
     .pkgWBody{ flex:1; min-width:0; display:flex; flex-direction:column; justify-content:space-between; gap:8px; }
     .pkgWTitle{ display:flex; align-items:center; gap:8px; min-width:0; flex-wrap:wrap; }
@@ -624,21 +615,6 @@
     }
     .dayTop{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom: 7px; }
     .dayTop .d{ font-size: 11px; font-weight: 950; letter-spacing:.18em; text-transform: uppercase; }
-    .dayTop .btnMini{
-      border:1px solid rgba(37,99,235,.30);
-      background: rgba(37,99,235,.12);
-      color: rgba(10,30,60,.92);
-      border-radius: 999px;
-      padding: 7px 10px;
-      font-size: 10px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      cursor:pointer;
-      user-select:none;
-      white-space: nowrap;
-      -webkit-tap-highlight-color: transparent;
-      box-shadow: 0 10px 20px rgba(10,30,60,.08);
-    }
 
     .placeLine{
       display:flex; align-items:center; gap:9px;
@@ -664,33 +640,6 @@
     /* Map pane */
     .mapPane{ position: sticky; top: 12px; height: calc(100vh - 24px); min-height: 620px; max-height: 920px; }
     #map{ width:100%; flex:1; min-height: 520px; background: rgba(255,255,255,.62); }
-
-    .mapDayBar{
-      padding: 10px 12px;
-      border-top:1px solid rgba(10,30,60,.14);
-      display:flex; gap:8px; flex-wrap:wrap;
-      background: rgba(255,255,255,.62);
-    }
-    .dayChip{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.66);
-      color: rgba(10,30,60,.86);
-      border-radius: 999px;
-      padding: 8px 10px;
-      font-size: 10px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      cursor:pointer;
-      user-select:none;
-      white-space: nowrap;
-      box-shadow: 0 10px 20px rgba(10,30,60,.08);
-      -webkit-tap-highlight-color: transparent;
-    }
-    .dayChip.active{
-      border-color: rgba(37,99,235,.40);
-      background: rgba(37,99,235,.14);
-      box-shadow: 0 0 0 3px rgba(37,99,235,.14), 0 10px 22px rgba(10,30,60,.08);
-    }
 
     .mapTools{
       padding: 10px 12px;
@@ -897,7 +846,7 @@
       box-shadow: 0 10px 22px rgba(10,30,60,.08);
     }
 
-    /* Minimal footer (no contact details) */
+    /* ✅ FOOTER WITH DISTRICT BUTTONS */
     footer{
       margin-top: 12px;
       border:1px solid rgba(10,30,60,.16);
@@ -909,6 +858,11 @@
     }
     .footInner{
       padding: 12px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .footTopRow{
       display:flex;
       align-items:center;
       justify-content:space-between;
@@ -939,188 +893,66 @@
     }
     .footLinks a:hover{ background: rgba(255,255,255,.78); }
 
-    /* ✅ PLACE MODAL (attractive popup) */
-    .modal{
-      position:fixed; inset:0;
-      display:none;
-      align-items:center; justify-content:center;
-      z-index: 20000;
-      padding: 14px;
+    .districtFooterWrap{
+      border-top: 1px solid rgba(10,30,60,.12);
+      padding-top: 12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
     }
-    .modal.show{ display:flex; }
-    .modalBack{
-      position:absolute; inset:0;
-      background: rgba(10,30,60,.32);
-      backdrop-filter: blur(10px);
-    }
-    .modalCard{
-      position:relative;
-      width: min(900px, 100%);
-      max-height: min(88vh, 760px);
-      overflow:auto;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.55);
-      background: linear-gradient(180deg, rgba(255,255,255,.86), rgba(255,255,255,.70));
-      box-shadow: 0 28px 90px rgba(10,30,60,.22);
-    }
-    .modalTop{
-      padding: 12px 12px;
-      border-bottom: 1px solid rgba(10,30,60,.14);
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
-      position: sticky; top:0;
-      background: rgba(255,255,255,.78);
-      backdrop-filter: blur(12px);
-      z-index: 2;
-    }
-    .modalTitle{
-      min-width:0;
-    }
-    .modalTitle .h{
-      font-size: 12px;
+    .districtFooterTitle{
+      font-size: 11px;
       font-weight: 1000;
-      letter-spacing:.16em;
+      letter-spacing:.14em;
       text-transform: uppercase;
-      margin:0;
-      color: rgba(10,30,60,.94);
-      white-space:nowrap; overflow:hidden; text-overflow: ellipsis;
-    }
-    .modalTitle .s{
-      margin-top:6px;
-      font-size: 10.5px;
-      letter-spacing:.10em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.62);
-      white-space:nowrap; overflow:hidden; text-overflow: ellipsis;
-    }
-    .modalClose{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.78);
       color: rgba(10,30,60,.86);
-      border-radius: 12px;
-      padding: 8px 10px;
-      font-size: 10px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      cursor:pointer;
-      user-select:none;
-      white-space: nowrap;
-      -webkit-tap-highlight-color: transparent;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
     }
-    .modalBody{
-      padding: 12px;
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 12px;
-    }
-    .modalMedia{
-      border:1px solid rgba(10,30,60,.16);
-      border-radius: 16px;
-      overflow:hidden;
-      background: rgba(255,255,255,.66);
-      box-shadow: 0 14px 36px rgba(10,30,60,.10);
-      position:relative;
-      min-height: 220px;
-    }
-    .modalMedia img{
-      width:100%; height:100%; object-fit:cover; display:block;
-    }
-    .modalMedia::after{
-      content:"";
-      position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,0), rgba(255,255,255,.18));
-      pointer-events:none;
-    }
-    .mediaRow{
-      margin-top:10px;
-      display:flex; gap:8px; flex-wrap:wrap;
-    }
-    .mediaDot{
-      width:10px; height:10px; border-radius: 999px;
-      border:1px solid rgba(10,30,60,.18);
-      background: rgba(255,255,255,.70);
-      cursor:pointer;
-      box-shadow: 0 10px 20px rgba(10,30,60,.08);
-    }
-    .mediaDot.active{
-      border-color: rgba(37,99,235,.45);
-      background: rgba(37,99,235,.20);
-      box-shadow: 0 0 0 3px rgba(37,99,235,.14), 0 10px 20px rgba(10,30,60,.08);
-    }
-    .modalInfo{
-      display:flex; flex-direction:column; gap:10px;
-      min-width:0;
-    }
-    .infoBox{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.66);
-      border-radius: 16px;
-      padding: 12px;
-      box-shadow: 0 14px 36px rgba(10,30,60,.10);
-      min-width:0;
-    }
-    .infoHdr{
-      font-size: 10px;
-      font-weight: 1000;
-      letter-spacing:.16em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.82);
-      margin:0 0 8px;
-    }
-    .infoText{
-      margin:0;
-      color: rgba(10,30,60,.78);
-      font-size: 12px;
-      line-height: 1.65;
-      letter-spacing:.01em;
-      white-space: pre-wrap;
-    }
-    .infoChips{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
-    .infoChip{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.62);
+    .districtFooterTitle .tag{
+      border:1px solid rgba(37,99,235,.30);
+      background: rgba(37,99,235,.10);
+      color: rgba(10,30,60,.90);
       border-radius: 999px;
       padding: 6px 9px;
       font-size: 10px;
-      letter-spacing:.10em;
+      letter-spacing:.12em;
       text-transform: uppercase;
-      color: rgba(10,30,60,.74);
-    }
-    .infoBtnRow{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
-    .infoBtn{
-      flex:1;
-      border:1px solid rgba(37,99,235,.30);
-      background: rgba(37,99,235,.12);
-      color: rgba(10,30,60,.92);
-      border-radius: 14px;
-      padding: 10px 10px;
-      text-decoration:none;
-      text-transform: uppercase;
-      letter-spacing:.10em;
       font-weight: 950;
-      font-size: 11px;
-      display:flex; align-items:center; justify-content:center; gap:10px;
-      user-select:none;
-      box-shadow: 0 12px 28px rgba(37,99,235,.14);
-      -webkit-tap-highlight-color: transparent;
-      min-width: 220px;
-      cursor:pointer;
     }
-
-    /* Leaflet numbered marker */
-    .numPin{
-      width: 30px; height: 30px;
+    .districtFooterBtns{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .districtBtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding: 9px 11px;
       border-radius: 999px;
-      background: rgba(255,255,255,.92);
-      border:1px solid rgba(10,30,60,.20);
-      box-shadow: 0 12px 26px rgba(10,30,60,.14);
-      display:grid; place-items:center;
-      font-weight: 1000;
-      color: rgba(10,30,60,.92);
-      font-size: 12px;
-      letter-spacing:.02em;
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.66);
+      color: rgba(10,30,60,.90);
+      text-decoration:none;
+      font-size: 11px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      font-weight: 950;
+      box-shadow: 0 10px 22px rgba(10,30,60,.08);
+      -webkit-tap-highlight-color: transparent;
+      white-space: nowrap;
+    }
+    .districtBtn:hover{
+      background: rgba(37,99,235,.14);
+      border-color: rgba(37,99,235,.35);
+      transform: translateY(-1px);
     }
 
-    /* ✅ RESPONSIVE */
+    /* ✅ RESPONSIVE: all platforms */
     @media (max-width: 1200px){
       .main{ grid-template-columns: 1fr; }
       .mapPane{ position:relative; top:auto; height:520px; max-height:none; }
@@ -1130,20 +962,21 @@
       .heroRight{ justify-content:flex-start; }
       .aboutGrid{ grid-template-columns: 1fr; }
       .aboutFooterRow{ justify-content:flex-start; }
-      .modalBody{ grid-template-columns: 1fr; }
     }
     @media (max-width: 520px){
       .shell{ padding: 10px 8px 16px; }
       .heroBar{ padding: 10px 10px; }
       .logo{ width:52px; height:52px; border-radius: 16px; }
       .chip{ padding: 8px 9px; font-size: 10.5px; }
+      .pkgThumb{ width:78px; height:78px; }
       .detailsGrid{ grid-template-columns: 1fr; }
       .waText{ display:none; }
       .waFloat{ padding: 10px; }
       .waClose{ display:none; }
-      .footInner{ flex-direction:column; align-items:flex-start; }
+      .footTopRow{ flex-direction:column; align-items:flex-start; }
     }
 
+    /* prefers-reduced-motion */
     @media (prefers-reduced-motion: reduce){
       .aurora{ animation:none; }
       .pkgW{ transition:none; }
@@ -1177,42 +1010,6 @@
     </div>
     <div class="waClose" id="waClose" title="Hide" aria-label="Hide WhatsApp button">✕</div>
   </a>
-
-  <!-- ✅ Place popup modal -->
-  <div class="modal" id="placeModal" aria-hidden="true">
-    <div class="modalBack" id="placeModalBack"></div>
-    <div class="modalCard" role="dialog" aria-modal="true" aria-label="Place Details">
-      <div class="modalTop">
-        <div class="modalTitle">
-          <div class="h" id="pmTitle">PLACE</div>
-          <div class="s" id="pmSub">—</div>
-        </div>
-        <div class="modalClose" id="pmClose">Close</div>
-      </div>
-      <div class="modalBody">
-        <div>
-          <div class="modalMedia">
-            <img id="pmImg" src="" alt="Place photo" onerror="this.style.display='none'">
-          </div>
-          <div class="mediaRow" id="pmDots"></div>
-        </div>
-        <div class="modalInfo">
-          <div class="infoBox">
-            <div class="infoHdr">History / About</div>
-            <p class="infoText" id="pmHistory">—</p>
-          </div>
-          <div class="infoBox">
-            <div class="infoHdr">What you can find</div>
-            <p class="infoText" id="pmFind">—</p>
-            <div class="infoChips" id="pmChips"></div>
-            <div class="infoBtnRow">
-              <div class="infoBtn" id="pmGoMap">Show on map</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <div class="shell">
     <!-- HERO -->
@@ -1359,11 +1156,6 @@
 
         <div id="map"></div>
 
-        <!-- ✅ Day-wise on map -->
-        <div class="mapDayBar" id="mapDayBar">
-          <div class="dayChip active">All days</div>
-        </div>
-
         <div class="mapTools">
           <div class="toolBtn" id="showAllStopsBtn">Show Stops</div>
           <div class="toolBtn" id="showStartEndBtn">Start/End Only</div>
@@ -1372,7 +1164,7 @@
       </div>
     </div>
 
-    <!-- ABOUT -->
+    <!-- ✅ ABOUT (ONE SECTION) -->
     <section class="aboutWrap" id="about">
       <div class="aboutInner">
         <div class="aboutHead">
@@ -1384,6 +1176,7 @@
         </div>
 
         <div class="aboutGrid">
+          <!-- About Website -->
           <div class="aboutBox">
             <div class="aboutBoxTop">
               <div class="aboutIcon" aria-hidden="true">🌐</div>
@@ -1411,6 +1204,7 @@
             </div>
           </div>
 
+          <!-- About Us -->
           <div class="aboutBox">
             <div class="aboutBoxTop">
               <div class="aboutIcon" aria-hidden="true">🤝</div>
@@ -1446,12 +1240,28 @@
       </div>
     </section>
 
+    <!-- ✅ FOOTER (NOW HAS DISTRICT BUTTONS) -->
     <footer>
       <div class="footInner">
-        <div class="footLeft">© <span id="yy"></span> Himachal Explorer Portal</div>
-        <div class="footLinks">
-          <a href="#about">About</a>
-          <a href="#" id="topLink">Top</a>
+        <div class="footTopRow">
+          <div class="footLeft">© <span id="yy"></span> Himachal Explorer Portal</div>
+          <div class="footLinks">
+            <a href="#about">About</a>
+            <a href="#" id="topLink">Top</a>
+          </div>
+        </div>
+
+        <div class="districtFooterWrap">
+          <div class="districtFooterTitle">
+            Explore District Profiles
+            <span class="tag">Photos • Guide • Places</span>
+          </div>
+          <div class="districtFooterBtns" id="districtFooterBtns">
+            <div class="pill"><b>Loading districts…</b></div>
+          </div>
+          <div class="muted" style="text-transform:none;letter-spacing:.02em;">
+            Tip: District pages are expected at <b>./districts/&lt;district-slug&gt;.html</b>
+          </div>
         </div>
       </div>
     </footer>
@@ -1460,6 +1270,7 @@
   <div class="botToast" id="botToast">👋 Welcome! Select your <b>Start</b> and click <b>Generate</b>. Then open any package to see details.</div>
 
   <script>
+    // year + top link
     document.addEventListener("DOMContentLoaded", ()=>{
       const y = document.getElementById("yy");
       if(y) y.textContent = new Date().getFullYear();
@@ -1511,7 +1322,7 @@
   };
 
   const NODE_TEMPLATES  = "templates";
-  const NODE_PLACES     = "places";               // ✅ FIXED (your DB screenshot shows /places)
+  const NODE_PLACES     = "places_in_packages";
   const NODE_COSTS      = "package_cost_breakdown";
 
   const $ = (id)=>document.getElementById(id);
@@ -1548,6 +1359,40 @@
     setTimeout(()=> el.classList.remove("show"), 3800);
   }
 
+  /* ✅ District footer buttons (auto from PLACES.district) */
+  function slugDistrictName(d){
+    return String(d || "")
+      .trim().toLowerCase()
+      .replace(/&/g,"and")
+      .replace(/[^a-z0-9]+/g,"-")
+      .replace(/-+/g,"-")
+      .replace(/^-|-$/g,"");
+  }
+  function buildDistrictFooterButtons(){
+    const wrap = $("districtFooterBtns");
+    if(!wrap) return;
+
+    const set = new Set();
+    for(const p of Object.values(PLACES || {})){
+      const d = String(p?.district || "").trim();
+      if(d) set.add(d.toUpperCase());
+    }
+    const list = Array.from(set).sort((a,b)=>a.localeCompare(b));
+
+    if(!list.length){
+      wrap.innerHTML = `<div class="pill"><b>No districts found</b></div>`;
+      return;
+    }
+
+    wrap.innerHTML = list.map(d=>{
+      const slug = slugDistrictName(d);
+      // ✅ You will create these district pages separately:
+      // ./districts/kullu.html, ./districts/kangra.html, ...
+      const url = `./districts/${slug}.html`;
+      return `<a class="districtBtn" href="${url}" target="_blank" rel="noopener">📸 ${escapeHtml(d)}</a>`;
+    }).join("");
+  }
+
   /* Centre hero slideshow */
   const CENTRE_HERO_IMAGES = ["./kinnaur-kailash.webp","./n1.jpg","./temple.jpg","./trek.jpeg"];
   let heroIdx = 0;
@@ -1570,30 +1415,10 @@
   function latAny(p){ return Number(p?.latitude ?? p?.lat ?? p?.Latitude); }
   function lngAny(p){ return Number(p?.longitude ?? p?.lng ?? p?.Longitude); }
   function districtAny(p){ return String(p?.district || p?.District || "").trim().toUpperCase(); }
-  function categoryAny(p){ return String(p?.category || p?.Category || "").trim(); }
-  function regionAny(p){ return String(p?.region || p?.Region || "").trim(); }
-  function historyAny(p){ return String(p?.history_tagline || p?.history || p?.about || "").trim(); }
-  function findAny(p){ return String(p?.what_you_find || p?.highlights || p?.what_to_do || "").trim(); }
-
-  function isUrl(x){
-    const s = String(x||"").trim();
-    return /^https?:\/\//i.test(s) || /^data:image\//i.test(s);
-  }
-  function pickPhotos(p){
-    const raw = [
-      p?.photo_1, p?.photo_2, p?.photo_3, p?.photo_4,
-      p?.image_1, p?.image_2, p?.image_3, p?.image_4
-    ].map(x=>String(x??"").trim()).filter(Boolean);
-
-    // filter out numeric placeholders like "1"
-    const urls = raw.filter(x => isUrl(x));
-    return urls.slice(0, 6);
-  }
 
   let map, tile, markersLayer, routeLine;
   let showMode = "all";
   let tilesDark = false;
-  let CURRENT_DAY_FILTER = "all"; // ✅ map day filter
 
   function invalidateMapSoon(){
     try{
@@ -1601,16 +1426,6 @@
       setTimeout(()=>{ map && map.invalidateSize && map.invalidateSize(true); }, 260);
     }catch(e){}
   }
-
-  function createNumberIcon(n){
-    return L.divIcon({
-      className: "",
-      html: `<div class="numPin">${escapeHtml(String(n))}</div>`,
-      iconSize: [30,30],
-      iconAnchor: [15,15]
-    });
-  }
-
   function initMap(){
     map = L.map('map', { zoomControl:true }).setView([31.1048, 77.1734], 8);
     tile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
@@ -1619,14 +1434,13 @@
     invalidateMapSoon();
     window.addEventListener("resize", invalidateMapSoon, { passive:true });
   }
-
   function clearMap(){
     markersLayer.clearLayers();
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
     $("kmBadge").textContent = "—";
-    setMapDayBar(null);
     invalidateMapSoon();
   }
+  function fitRoute(){ if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] }); }
 
   /* Data */
   let db, analytics, auth;
@@ -1635,12 +1449,15 @@
   let PLACES = {};
   let NAME_TO_ID = new Map();
   let STARTS = [];
+
   let COSTS = {};
+
   let INTER_ALL = [];
   let DISTRICT_KEYS = [];
   let ACTIVE_DISTRICT = "ALL";
   let CURRENT_TEMPLATE_KEY = "";
   let CURRENT_ROUTE_KM = 0;
+
   const WHATSAPP_NUMBER = "917018138847";
 
   function setCentreHeroVisible(on){
@@ -1720,24 +1537,6 @@
       raw.split(",").map(x=>x.trim()).filter(Boolean).forEach(pid=>out.push(pid));
     }
     return out;
-  }
-
-  function buildDayWise(tpl){
-    const days = Number(tpl.days || 1);
-    const blocks = [];
-    for(let d=1; d<=Math.min(12, Math.max(1, days)); d++){
-      const k = `day${d}_place_ids`;
-      const raw = String(tpl[k] || "").trim();
-      const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
-      blocks.push({ day:d, ids });
-    }
-    const anyHas = blocks.some(x=>x.ids.length);
-    if(!anyHas){
-      const raw = String(tpl.major_place_ids || tpl.place_ids || "").trim();
-      const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
-      return [{ day:1, ids }];
-    }
-    return blocks.filter(x=>x.ids.length);
   }
 
   function routeIdsFromTemplateIncludingStart(tpl){
@@ -1830,7 +1629,7 @@
     return isFinite(km) && km>0 ? km : 0;
   }
 
-  /* FINAL PRICE FETCH (PER PERSON) + MULTIPLY PAX */
+  /* FINAL PRICE FETCH (PER PERSON) */
   function getPerPersonPrice(tpl){
     const tier = String($("visitType")?.value || "budget").toLowerCase();
     const pid = String(tpl.package_id || tpl.key || "").trim();
@@ -1847,8 +1646,51 @@
     return isFinite(b) && b>0 ? b : NaN;
   }
 
+  /* =========================
+     ✅ MARKUP RULES (YOUR REQUEST)
+     - Long duration packages: +10% to +15%
+     - 1–2 day local tours + low pax: +5% to +10%
+     ========================= */
+  function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+  function computeMarkupPct(tpl, pax){
+    const days = Number(tpl?.days || 0) || 0;
+    const local = isLocalComputed(tpl);
+    const lowPax = Number(pax || 0) <= 2; // change to <=3 if you want
+
+    // 1–2 day local tours AND low pax → 5%..10%
+    if(local && days <= 2 && lowPax){
+      // day1 ≈ 7.5, day2 ≈ 10 (and pax=1 slightly higher)
+      let pct = 5 + (days === 2 ? 5 : 2.5);
+      if(Number(pax) === 1) pct += 1.5;
+      return clamp(pct, 5, 10);
+    }
+
+    // Long duration (6–12) → 10%..15%
+    if(days >= 6){
+      const pct = 10 + ((clamp(days, 6, 12) - 6) / (12 - 6)) * 5;
+      return clamp(pct, 10, 15);
+    }
+
+    // Medium duration (3–5) → 8%..10% (balanced)
+    if(days >= 3){
+      const pct = 8 + ((clamp(days, 3, 5) - 3) / (5 - 3)) * 2;
+      return clamp(pct, 8, 10);
+    }
+
+    // Default small trips
+    return 6.5;
+  }
+
+  function applyMarkup(perPersonBase, markupPct){
+    const base = Number(perPersonBase || 0);
+    if(!isFinite(base) || base <= 0) return NaN;
+    const pct = Number(markupPct || 0);
+    return Math.round(base * (1 + pct/100));
+  }
+
   /* WhatsApp */
-  function buildWhatsAppMessage({tpl, startName, endKey, pax, tier, km, total, perPerson}){
+  function buildWhatsAppMessage({tpl, startName, endKey, pax, tier, km, total, perPerson, markupPct}){
     const days = Number(tpl?.days || 0) || 0;
     const code = String(tpl?.route_id || "—");
     const route = String(tpl?.route_path || "").trim();
@@ -1863,8 +1705,9 @@
       `Type: ${String(tier||"").toUpperCase()}`,
       `Pax: ${pax}`,
       `Route KM (est.): ${isFinite(km)?Number(km).toFixed(1):"—"}`,
-      `Per Person: ${isFinite(perPerson)?rupees(perPerson):"—"}`,
-      `Total: ${isFinite(total)?rupees(total):"—"}`,
+      `Markup: ${isFinite(markupPct)?Number(markupPct).toFixed(1)+"%":"—"}`,
+      `Per Person (final): ${isFinite(perPerson)?rupees(perPerson):"—"}`,
+      `Total (final): ${isFinite(total)?rupees(total):"—"}`,
       `Code: ${code}`,
       route ? `Route: ${route}` : "",
       includes ? `Includes: ${includes}` : "",
@@ -1885,299 +1728,176 @@
     }
   }
 
-  /* ✅ Place Modal (attractive popup) */
-  let MODAL_CURRENT_PID = "";
-  function openPlaceModal(pid){
-    const p = PLACES[pid];
-    if(!p) return;
+  function buildDayWise(tpl){
+    const days = Number(tpl.days || 1);
+    const blocks = [];
+    for(let d=1; d<=Math.min(12, Math.max(1, days)); d++){
+      const k = `day${d}_place_ids`;
+      const raw = String(tpl[k] || "").trim();
+      const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
+      blocks.push({ day:d, ids });
+    }
+    const anyHas = blocks.some(x=>x.ids.length);
+    if(!anyHas){
+      const raw = String(tpl.major_place_ids || tpl.place_ids || "").trim();
+      const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
+      return [{ day:1, ids }];
+    }
+    return blocks.filter(x=>x.ids.length);
+  }
 
-    MODAL_CURRENT_PID = pid;
-    const nm = placeNameAny(p, pid);
-    const dist = districtAny(p) || "—";
-    const cat = categoryAny(p) || "—";
-    const reg = regionAny(p) || "";
-    const his = historyAny(p) || "—";
-    const what = findAny(p) || "—";
+  function renderInlineDetails(detailsEl, tpl, startUpper, endKey, km){
+    const pax = getSelectedPax();
+    const tier = String($("visitType")?.value || "budget").toUpperCase();
 
-    $("pmTitle").textContent = nm;
-    $("pmSub").textContent = `${dist} • ${cat}${reg ? " • " + reg : ""}`;
+    // ✅ base price from Firebase
+    const perPersonBase = getPerPersonPrice(tpl);
 
-    // chips
-    const chips = $("pmChips");
-    chips.innerHTML = "";
-    const chipVals = [
-      dist && dist !== "—" ? dist : "",
-      cat && cat !== "—" ? cat : "",
-      reg ? reg : "",
-      pid ? `ID: ${pid}` : ""
-    ].filter(Boolean);
-    chipVals.forEach(x=>{
-      const s = document.createElement("span");
-      s.className = "infoChip";
-      s.textContent = x;
-      chips.appendChild(s);
+    // ✅ markup as per your rule
+    const markupPct = computeMarkupPct(tpl, pax);
+
+    // ✅ final per person after markup
+    const perPerson = applyMarkup(perPersonBase, markupPct);
+    const total = isFinite(perPerson) ? (perPerson * pax) : NaN;
+
+    const title = `${String(startUpper||"START").toUpperCase()} → ${String(endKey||"").toUpperCase()}`;
+
+    const metaParts = [];
+    if(tpl.route_id) metaParts.push(`Code: ${tpl.route_id}`);
+    if(tpl.route_path) metaParts.push(`Route: ${tpl.route_path}`);
+    if(tpl.best_season) metaParts.push(`Season: ${tpl.best_season}`);
+    if(tpl.ideal_for) metaParts.push(`Ideal: ${tpl.ideal_for}`);
+
+    const inc = String(tpl.includes || tpl.inclusions || "").trim();
+    const exc = String(tpl.excludes || tpl.exclusions || "").trim();
+    const note = String(tpl.important_notes || tpl.notes || "").trim();
+
+    const waBtnId = `wa_inline_${tpl.key}`;
+    detailsEl.innerHTML = `
+      <div class="detailsCard">
+        <h3 class="bigTitle">${escapeHtml(title)}</h3>
+        <div class="muted" style="margin-top:6px; text-transform:none; letter-spacing:.02em;">${escapeHtml(metaParts.join(" • ") || "—")}</div>
+
+        <div class="enqRow">
+          <a id="${waBtnId}" class="enqBtn disabled" href="#" target="_blank" rel="noopener">Send Query on WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="detailsGrid" style="margin-top:10px;">
+        <div class="mini">
+          <div class="k">Total (final)</div>
+          <div class="v">${isFinite(total)?rupees(total):"—"} <small>(${escapeHtml(tier)})</small></div>
+        </div>
+        <div class="mini">
+          <div class="k">Per Person (final)</div>
+          <div class="v">${isFinite(perPerson)?rupees(perPerson):"—"} <small>incl. markup</small></div>
+        </div>
+        <div class="mini">
+          <div class="k">Markup</div>
+          <div class="v">${isFinite(markupPct)?Number(markupPct).toFixed(1)+"%":"—"} <small>rule-based</small></div>
+        </div>
+        <div class="mini">
+          <div class="k">Pax used</div>
+          <div class="v">${escapeHtml(String(pax))} <small>selected</small></div>
+        </div>
+        <div class="mini">
+          <div class="k">Route KM</div>
+          <div class="v">${isFinite(km)&&km>0?Number(km).toFixed(1):"—"} <small>estimated</small></div>
+        </div>
+        <div class="mini">
+          <div class="k">Per Person (base)</div>
+          <div class="v">${isFinite(perPersonBase)?rupees(perPersonBase):"—"} <small>Firebase</small></div>
+        </div>
+      </div>
+
+      <div class="detailsCard" style="margin-top:10px;">
+        <div class="muted" style="margin-bottom:8px;">Package includes / excludes</div>
+        <div class="muted" style="text-transform:none;letter-spacing:.02em;">
+          <b style="color:rgba(10,30,60,.92);letter-spacing:.12em;">INCLUDES:</b> ${escapeHtml(inc || "—")}<br><br>
+          <b style="color:rgba(10,30,60,.92);letter-spacing:.12em;">EXCLUDES:</b> ${escapeHtml(exc || "—")}<br><br>
+          <b style="color:rgba(10,30,60,.92);letter-spacing:.12em;">NOTES:</b> ${escapeHtml(note || "—")}
+        </div>
+      </div>
+
+      <div class="daysList" id="days_${tpl.key}" style="margin-top:10px;"></div>
+    `;
+
+    const startName = normalizeStartInput() || (tpl.start_point || tpl.start || startUpper || "");
+    const msg = buildWhatsAppMessage({
+      tpl,
+      startName,
+      endKey,
+      pax,
+      tier,
+      km,
+      total,
+      perPerson,
+      markupPct
     });
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+    setWhatsAppInline(document.getElementById(waBtnId), isFinite(perPerson), url);
 
-    $("pmHistory").textContent = his;
-    $("pmFind").textContent = what;
-
-    const photos = pickPhotos(p);
-    const img = $("pmImg");
-    const dots = $("pmDots");
-    dots.innerHTML = "";
-
-    if(photos.length){
-      img.style.display = "block";
-      img.src = photos[0];
-
-      photos.forEach((url, i)=>{
-        const d = document.createElement("div");
-        d.className = "mediaDot" + (i===0 ? " active" : "");
-        d.title = "Photo " + (i+1);
-        d.onclick = ()=>{
-          img.src = url;
-          dots.querySelectorAll(".mediaDot").forEach(x=>x.classList.remove("active"));
-          d.classList.add("active");
-        };
-        dots.appendChild(d);
-      });
-    }else{
-      img.style.display = "none";
-      dots.innerHTML = "";
-    }
-
-    const modal = $("placeModal");
-    modal.classList.add("show");
-    modal.setAttribute("aria-hidden","false");
-  }
-
-  function closePlaceModal(){
-    const modal = $("placeModal");
-    modal.classList.remove("show");
-    modal.setAttribute("aria-hidden","true");
-    MODAL_CURRENT_PID = "";
-  }
-
-  function goToPlaceOnMap(pid){
-    const p = PLACES[pid];
-    if(!p) return;
-    const lat = latAny(p), lng = lngAny(p);
-    if(isFinite(lat) && isFinite(lng)){
-      map.setView([lat,lng], Math.max(map.getZoom(), 12), { animate:true });
-      invalidateMapSoon();
-    }
-  }
-
-  /* ✅ map day bar */
-  function setMapDayBar(tpl){
-    const bar = $("mapDayBar");
-    bar.innerHTML = "";
-    if(!tpl){
-      const x = document.createElement("div");
-      x.className = "dayChip active";
-      x.textContent = "All days";
-      bar.appendChild(x);
-      CURRENT_DAY_FILTER = "all";
-      return;
-    }
+    const daysWrap = document.getElementById(`days_${tpl.key}`);
+    if(!daysWrap) return;
 
     const blocks = buildDayWise(tpl);
-    const make = (label, key)=>{
-      const c = document.createElement("div");
-      c.className = "dayChip" + (CURRENT_DAY_FILTER===key ? " active" : "");
-      c.textContent = label;
-      c.onclick = async ()=>{
-        CURRENT_DAY_FILTER = key;
-        bar.querySelectorAll(".dayChip").forEach(x=>x.classList.remove("active"));
-        c.classList.add("active");
-        await redrawCurrentPackageRoute();
-      };
-      return c;
-    };
+    blocks.forEach(block=>{
+      const dayCard = document.createElement("div");
+      dayCard.className = "dayCard";
+      dayCard.innerHTML = `
+        <div class="dayTop">
+          <div class="d">Day ${block.day}</div>
+          <div class="muted" style="text-transform:none;letter-spacing:.02em;">${block.ids.length} places</div>
+        </div>
+        <div class="muted" style="text-transform:none;letter-spacing:.02em;">Places</div>
+        <div class="dayPlaces"></div>
+      `;
+      const cont = dayCard.querySelector(".dayPlaces");
 
-    bar.appendChild(make("All days","all"));
-    blocks.forEach(b=>{
-      bar.appendChild(make(`Day ${b.day}`, `day${b.day}`));
-    });
-
-    // default
-    if(!CURRENT_DAY_FILTER) CURRENT_DAY_FILTER = "all";
-  }
-
-  async function redrawCurrentPackageRoute(){
-    if(!CURRENT_TEMPLATE_KEY) return;
-    const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
-    if(!tpl) return;
-
-    let ids = routeIdsFromTemplateIncludingStart(tpl);
-
-    if(CURRENT_DAY_FILTER && CURRENT_DAY_FILTER !== "all"){
-      const dayN = Number(String(CURRENT_DAY_FILTER).replace("day",""));
-      const blocks = buildDayWise(tpl);
-      const block = blocks.find(b => b.day === dayN);
-      const startName = String(tpl?.start_point || tpl?.start || "").trim();
-      const startPid = getPlaceIdByNameAny(startName);
-      ids = [];
-      if(startPid) ids.push(startPid);
-      if(block?.ids?.length) ids.push(...block.ids);
-      // remove dup
-      ids = Array.from(new Set(ids));
-    }
-
-    const rr = await drawRoadRouteFromPlaces(ids);
-    CURRENT_ROUTE_KM = rr.ok ? rr.km : CURRENT_ROUTE_KM;
-  }
-
-  /* draw route */
-  async function drawRoadRouteFromPlaces(placeIds){
-    markersLayer.clearLayers();
-    if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
-
-    const pts = [];
-    const validIds = [];
-    for(const pid of placeIds){
-      const p = PLACES[pid] || {};
-      const lat = latAny(p);
-      const lng = lngAny(p);
-      if(isFinite(lat) && isFinite(lng)){
-        pts.push([lng,lat]);
-        validIds.push(pid);
-      }
-    }
-    if(pts.length < 2){
-      $("kmBadge").textContent = "—";
-      return { ok:false, km:0 };
-    }
-
-    const maxPts = 25;
-    let used = pts;
-    if(pts.length > maxPts){
-      const step = Math.ceil(pts.length / maxPts);
-      used = pts.filter((_,i)=> i%step===0 || i===pts.length-1);
-    }
-
-    try{
-      const url =
-        "https://router.project-osrm.org/route/v1/driving/" +
-        used.map(c=>c.join(",")).join(";") +
-        "?overview=full&geometries=geojson&steps=false";
-
-      const res = await fetch(url);
-      const data = await res.json();
-      if(!data.routes?.length){
-        $("kmBadge").textContent = "—";
-        return { ok:false, km:0 };
-      }
-
-      const r = data.routes[0];
-      const latlngs = r.geometry.coordinates.map(c=>[c[1],c[0]]);
-      routeLine = L.polyline(latlngs, { weight: 5, opacity: .95 }).addTo(map);
-      if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] });
-      invalidateMapSoon();
-
-      const markIds = (showMode==="startend")
-        ? [validIds[0], validIds[validIds.length-1]]
-        : validIds;
-
-      // numbered markers
-      markIds.forEach((pid, idx)=>{
+      block.ids.forEach(pid=>{
         const p = PLACES[pid] || {};
-        const lat = latAny(p);
-        const lng = lngAny(p);
-        if(!isFinite(lat)||!isFinite(lng)) return;
-
         const name = placeNameAny(p, pid);
-        const dist = districtAny(p) || "";
-        const cat = categoryAny(p) || "";
+        const dist = districtAny(p) || "—";
 
-        const marker = L.marker([lat,lng], {
-          riseOnHover:true,
-          icon: createNumberIcon(idx+1)
-        }).addTo(markersLayer);
-
-        const pop = `
-          <div style="min-width:220px;">
-            <div style="font-weight:1000;letter-spacing:.14em;text-transform:uppercase;color:rgba(10,30,60,.92);font-size:11px;">
-              ${escapeHtml(name)}
-            </div>
-            <div style="margin-top:6px;color:rgba(10,30,60,.65);letter-spacing:.10em;text-transform:uppercase;font-size:10px;">
-              ${escapeHtml([dist,cat].filter(Boolean).join(" • ") || "—")}
-            </div>
-            <div style="margin-top:10px;padding:10px;border:1px solid rgba(10,30,60,.14);border-radius:12px;background:rgba(255,255,255,.66);box-shadow:0 12px 24px rgba(10,30,60,.10);">
-              <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(10,30,60,.70);font-weight:1000;">History</div>
-              <div style="margin-top:6px;font-size:12px;line-height:1.55;color:rgba(10,30,60,.80);">
-                ${escapeHtml(historyAny(p) || "—")}
-              </div>
-              <div style="margin-top:10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(10,30,60,.70);font-weight:1000;">What you find</div>
-              <div style="margin-top:6px;font-size:12px;line-height:1.55;color:rgba(10,30,60,.80);">
-                ${escapeHtml(findAny(p) || "—")}
-              </div>
-              <div style="margin-top:10px;">
-                <button data-pid="${escapeHtml(pid)}"
-                  style="border:1px solid rgba(37,99,235,.30);background:rgba(37,99,235,.12);color:rgba(10,30,60,.92);
-                    border-radius:12px;padding:8px 10px;font-weight:1000;letter-spacing:.10em;text-transform:uppercase;font-size:10px;cursor:pointer;">
-                  Open details
-                </button>
-              </div>
-            </div>
+        const line = document.createElement("div");
+        line.className = "placeLine";
+        line.innerHTML = `
+          <div class="thumb">${escapeHtml(initials(name))}</div>
+          <div class="pinfo">
+            <div class="pname">${escapeHtml(name)}</div>
+            <div class="pmeta">${escapeHtml(dist)}</div>
           </div>
         `;
-
-        marker.bindPopup(pop, { maxWidth: 340 });
-        marker.on("popupopen", ()=>{
-          setTimeout(()=>{
-            const btn = document.querySelector(`button[data-pid="${CSS.escape(pid)}"]`);
-            if(btn){
-              btn.onclick = (e)=>{
-                e.preventDefault();
-                openPlaceModal(pid);
-              };
-            }
-          }, 40);
-        });
+        line.onclick = (e)=>{
+          e.stopPropagation();
+          const lat = latAny(p), lng = lngAny(p);
+          if(isFinite(lat) && isFinite(lng)){
+            map.setView([lat,lng], Math.max(map.getZoom(), 12), { animate:true });
+            invalidateMapSoon();
+          }
+        };
+        cont.appendChild(line);
       });
 
-      const km = Number(r.distance/1000);
-      $("kmBadge").textContent = km.toFixed(1) + " KM";
-      return { ok:true, km };
-    }catch(e){
-      console.error(e);
-      $("kmBadge").textContent = "—";
-      return { ok:false, km:0 };
-    }
-  }
-
-  /* Cards helpers */
-  function getThumbForTemplate(tpl){
-    const ids = stopsFromTemplate(tpl);
-    const first = ids[0];
-    if(!first) return "";
-    const p = PLACES[first];
-    if(!p) return "";
-    const photos = pickPhotos(p);
-    return photos[0] || "";
+      daysWrap.appendChild(dayCard);
+    });
   }
 
   /* Cards */
-  function renderInterCard(t, startUpper, opts={}){
-    const { compact=false } = opts;
+  function renderInterCard(t, startUpper){
     const days = Number(t.days||0) || 0;
     const endKey = endKeyFromRoutePath(t);
     const district = endDistrictFromTemplate(t);
     const code = String(t.route_id || "—").toUpperCase();
     const km = approxKmFromTpl(t);
-    const thumbUrl = getThumbForTemplate(t);
 
     const el = document.createElement("div");
-    el.className = "pkgW" + (compact ? " compact" : "");
+    el.className = "pkgW";
     el.dataset.key = t.key;
 
     el.innerHTML = `
       <div class="pkgWTop">
-        <div class="pkgThumb">
-          ${thumbUrl ? `<img src="${escapeHtml(thumbUrl)}" alt="${escapeHtml(district)}" onerror="this.remove()">` : ""}
-          ${thumbUrl ? `` : `<div class="ini">${escapeHtml(initials(district))}</div>`}
-        </div>
+        <div class="pkgThumb"><div class="ini">${escapeHtml(initials(district))}</div></div>
         <div class="pkgWBody">
           <div class="pkgWTitle">
             <div class="mainT">${escapeHtml(startUpper)} → ${escapeHtml(district)}</div>
@@ -2210,24 +1930,19 @@
     return el;
   }
 
-  function renderLocalCard(t, startUpper, opts={}){
-    const { compact=false } = opts;
+  function renderLocalCard(t, startUpper){
     const days = Number(t.days||0) || 0;
     const heading = String(t.route_path || t.route_name || t.package_id || t.key || "Local Package").trim();
     const code = String(t.route_id || "LOCAL").toUpperCase();
     const km = approxKmFromTpl(t);
-    const thumbUrl = getThumbForTemplate(t);
 
     const el = document.createElement("div");
-    el.className = "pkgW" + (compact ? " compact" : "");
+    el.className = "pkgW";
     el.dataset.key = t.key;
 
     el.innerHTML = `
       <div class="pkgWTop">
-        <div class="pkgThumb">
-          ${thumbUrl ? `<img src="${escapeHtml(thumbUrl)}" alt="${escapeHtml(heading)}" onerror="this.remove()">` : ""}
-          ${thumbUrl ? `` : `<div class="ini">${escapeHtml(initials(heading))}</div>`}
-        </div>
+        <div class="pkgThumb"><div class="ini">${escapeHtml(initials(heading))}</div></div>
         <div class="pkgWBody">
           <div class="pkgWTitle">
             <div class="mainT">${escapeHtml(heading)}</div>
@@ -2314,7 +2029,7 @@
       hdr1.className = "pkgGroupHdr";
       hdr1.innerHTML = `
         <div class="h1">${escapeHtml(startUpper)} • ${escapeHtml(daysF || "ANY")} DAYS</div>
-        <div class="h2">Click a package → per-person final price × pax shown inside.</div>
+        <div class="h2">Click a package → base price from Firebase + markup rule applied.</div>
       `;
       center.appendChild(hdr1);
 
@@ -2370,15 +2085,14 @@
     selCard.classList.add("active");
     center.appendChild(selCard);
 
-    // ✅ left sidebar now uses compact cards with smaller photo
     other.innerHTML = "";
     if(!rest.length){
       other.innerHTML = `<div class="otherHint">No other packages in this filter.</div>`;
     }else{
       rest.forEach(obj=>{
         const c = (obj.kind === "local")
-          ? renderLocalCard(obj.t, startUpper, { compact:true })
-          : renderInterCard(obj.t, startUpper, { compact:true });
+          ? renderLocalCard(obj.t, startUpper)
+          : renderInterCard(obj.t, startUpper);
         other.appendChild(c);
       });
     }
@@ -2390,143 +2104,109 @@
     $("pkgCount").textContent = "—";
   }
 
-  function buildWhatsAppUrlForTemplate(tpl, startUpper, endKey, km){
-    const pax = getSelectedPax();
-    const tier = String($("visitType")?.value || "budget").toUpperCase();
-    const perPerson = getPerPersonPrice(tpl);
-    const total = isFinite(perPerson) ? (perPerson * pax) : NaN;
-    const startName = normalizeStartInput() || (tpl.start_point || tpl.start || startUpper || "");
-    const msg = buildWhatsAppMessage({ tpl, startName, endKey, pax, tier, km, total, perPerson });
-    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  async function drawRoadRouteFromPlaces(placeIds){
+    markersLayer.clearLayers();
+    if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
+
+    const pts = [];
+    const validIds = [];
+    for(const pid of placeIds){
+      const p = PLACES[pid] || {};
+      const lat = latAny(p);
+      const lng = lngAny(p);
+      if(isFinite(lat) && isFinite(lng)){
+        pts.push([lng,lat]);
+        validIds.push(pid);
+      }
+    }
+    if(pts.length < 2) return { ok:false, km:0 };
+
+    const maxPts = 25;
+    let used = pts;
+    if(pts.length > maxPts){
+      const step = Math.ceil(pts.length / maxPts);
+      used = pts.filter((_,i)=> i%step===0 || i===pts.length-1);
+    }
+
+    try{
+      const url =
+        "https://router.project-osrm.org/route/v1/driving/" +
+        used.map(c=>c.join(",")).join(";") +
+        "?overview=full&geometries=geojson&steps=false";
+
+      const res = await fetch(url);
+      const data = await res.json();
+      if(!data.routes?.length) return { ok:false, km:0 };
+
+      const r = data.routes[0];
+      const latlngs = r.geometry.coordinates.map(c=>[c[1],c[0]]);
+      routeLine = L.polyline(latlngs, { weight: 5, opacity: .95 }).addTo(map);
+      if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] });
+      invalidateMapSoon();
+
+      const markIds = (showMode==="startend")
+        ? [validIds[0], validIds[validIds.length-1]]
+        : validIds;
+
+      for(const pid of markIds){
+        const p = PLACES[pid] || {};
+        const lat = latAny(p);
+        const lng = lngAny(p);
+        if(!isFinite(lat)||!isFinite(lng)) continue;
+        L.marker([lat,lng], { riseOnHover:true }).addTo(markersLayer);
+      }
+
+      const km = Number(r.distance/1000);
+      $("kmBadge").textContent = km.toFixed(1) + " KM";
+      return { ok:true, km };
+    }catch(e){
+      console.error(e);
+      return { ok:false, km:0 };
+    }
   }
 
-  function renderInlineDetails(detailsEl, tpl, startUpper, endKey, km){
-    const pax = getSelectedPax();
-    const tier = String($("visitType")?.value || "budget").toUpperCase();
+  async function toggleOpenTemplate(key){
+    const startUpper = String(normalizeStartInput() || "").toUpperCase();
+    const same = (CURRENT_TEMPLATE_KEY === key);
 
-    const perPerson = getPerPersonPrice(tpl);
-    const total = isFinite(perPerson) ? (perPerson * pax) : NaN;
+    if(same){
+      CURRENT_TEMPLATE_KEY = "";
+      CURRENT_ROUTE_KM = 0;
+      clearMap();
+      setCentreHeroVisible(true);
+      renderPanels();
+      showBot("Closed package. Select another one.");
+      return;
+    }
 
-    const title = `${String(startUpper||"START").toUpperCase()} → ${String(endKey||"").toUpperCase()}`;
+    CURRENT_TEMPLATE_KEY = key;
+    renderPanels();
+    highlightActiveCard();
 
-    const metaParts = [];
-    if(tpl.route_id) metaParts.push(`Code: ${tpl.route_id}`);
-    if(tpl.route_path) metaParts.push(`Route: ${tpl.route_path}`);
-    if(tpl.best_season) metaParts.push(`Season: ${tpl.best_season}`);
-    if(tpl.ideal_for) metaParts.push(`Ideal: ${tpl.ideal_for}`);
+    const tpl = TEMPLATES[key];
+    if(!tpl) return;
 
-    const inc = String(tpl.includes || tpl.inclusions || "").trim();
-    const exc = String(tpl.excludes || tpl.exclusions || "").trim();
-    const note = String(tpl.important_notes || tpl.notes || "").trim();
+    const endKey = endKeyFromRoutePath(tpl);
+    const routeIds = routeIdsFromTemplateIncludingStart(tpl);
 
-    const waBtnId = `wa_inline_${tpl.key}`;
-    detailsEl.innerHTML = `
-      <div class="detailsCard">
-        <h3 class="bigTitle">${escapeHtml(title)}</h3>
-        <div class="muted" style="margin-top:6px; text-transform:none; letter-spacing:.02em;">${escapeHtml(metaParts.join(" • ") || "—")}</div>
+    const detailsEl = document.getElementById(`details_${key}`);
+    if(detailsEl){
+      detailsEl.innerHTML = `<div class="pill"><b>Loading…</b> fetching road route + final price</div>`;
+    }
 
-        <div class="enqRow">
-          <a id="${waBtnId}" class="enqBtn disabled" href="#" target="_blank" rel="noopener">Send Query on WhatsApp</a>
-        </div>
-      </div>
+    const rr = await drawRoadRouteFromPlaces(routeIds);
+    CURRENT_ROUTE_KM = rr.ok ? rr.km : 0;
 
-      <div class="detailsGrid" style="margin-top:10px;">
-        <div class="mini">
-          <div class="k">Total (final)</div>
-          <div class="v">${isFinite(total)?rupees(total):"—"} <small>(${escapeHtml(tier)})</small></div>
-        </div>
-        <div class="mini">
-          <div class="k">Per Person (final)</div>
-          <div class="v">${isFinite(perPerson)?rupees(perPerson):"—"} <small>per person</small></div>
-        </div>
-        <div class="mini">
-          <div class="k">Pax used</div>
-          <div class="v">${escapeHtml(String(pax))} <small>selected</small></div>
-        </div>
-        <div class="mini">
-          <div class="k">Route KM</div>
-          <div class="v">${isFinite(km)&&km>0?Number(km).toFixed(1):"—"} <small>estimated</small></div>
-        </div>
-      </div>
+    let km = Number(CURRENT_ROUTE_KM || 0);
+    if(!isFinite(km) || km <= 0) km = Number(tpl.total_km_est || tpl.estimated_drive_km || tpl.total_km || 0);
 
-      <div class="detailsCard" style="margin-top:10px;">
-        <div class="muted" style="margin-bottom:8px;">Package includes / excludes</div>
-        <div class="muted" style="text-transform:none;letter-spacing:.02em;">
-          <b style="color:rgba(10,30,60,.92);letter-spacing:.12em;">INCLUDES:</b> ${escapeHtml(inc || "—")}<br><br>
-          <b style="color:rgba(10,30,60,.92);letter-spacing:.12em;">EXCLUDES:</b> ${escapeHtml(exc || "—")}<br><br>
-          <b style="color:rgba(10,30,60,.92);letter-spacing:.12em;">NOTES:</b> ${escapeHtml(note || "—")}
-        </div>
-      </div>
+    if(detailsEl){
+      renderInlineDetails(detailsEl, tpl, startUpper, endKey, km);
+    }
 
-      <div class="daysList" id="days_${tpl.key}" style="margin-top:10px;"></div>
-    `;
-
-    const waUrl = buildWhatsAppUrlForTemplate(tpl, startUpper, endKey, km);
-    setWhatsAppInline(document.getElementById(waBtnId), isFinite(perPerson), waUrl);
-
-    const daysWrap = document.getElementById(`days_${tpl.key}`);
-    if(!daysWrap) return;
-
-    const blocks = buildDayWise(tpl);
-    blocks.forEach(block=>{
-      const dayCard = document.createElement("div");
-      dayCard.className = "dayCard";
-      dayCard.innerHTML = `
-        <div class="dayTop">
-          <div class="d">Day ${block.day}</div>
-          <div style="display:flex;gap:8px;align-items:center;">
-            <div class="muted" style="text-transform:none;letter-spacing:.02em;">${block.ids.length} places</div>
-            <div class="btnMini" data-day="${block.day}">Show on map</div>
-          </div>
-        </div>
-        <div class="muted" style="text-transform:none;letter-spacing:.02em;">Tap any place → opens beautiful info popup</div>
-        <div class="dayPlaces"></div>
-      `;
-      const cont = dayCard.querySelector(".dayPlaces");
-
-      block.ids.forEach(pid=>{
-        const p = PLACES[pid] || {};
-        const name = placeNameAny(p, pid);
-        const dist = districtAny(p) || "—";
-        const photos = pickPhotos(p);
-        const thumbUrl = photos[0] || "";
-
-        const line = document.createElement("div");
-        line.className = "placeLine";
-        line.innerHTML = `
-          <div class="thumb">
-            ${thumbUrl ? `<img src="${escapeHtml(thumbUrl)}" alt="${escapeHtml(name)}" onerror="this.remove()">` : escapeHtml(initials(name))}
-          </div>
-          <div class="pinfo">
-            <div class="pname">${escapeHtml(name)}</div>
-            <div class="pmeta">${escapeHtml(dist)}</div>
-          </div>
-        `;
-        line.onclick = (e)=>{
-          e.stopPropagation();
-          openPlaceModal(pid);
-        };
-        cont.appendChild(line);
-      });
-
-      daysWrap.appendChild(dayCard);
-
-      const btn = dayCard.querySelector(".btnMini");
-      if(btn){
-        btn.onclick = async (e)=>{
-          e.stopPropagation();
-          CURRENT_DAY_FILTER = `day${block.day}`;
-          setMapDayBar(tpl);
-          // activate correct chip
-          const chips = $("mapDayBar").querySelectorAll(".dayChip");
-          chips.forEach(c=>{
-            c.classList.toggle("active", c.textContent.trim().toLowerCase() === `day ${block.day}`);
-          });
-          await redrawCurrentPackageRoute();
-          showBot(`✅ Showing Day ${block.day} on map`);
-        };
-      }
-    });
+    const card = document.querySelector(`#pkgList .pkgW[data-key="${CSS.escape(key)}"]`);
+    if(card) card.scrollIntoView({ behavior:"smooth", block:"start" });
+    showBot("✅ Base price from Firebase + markup rule applied.");
   }
 
   function applyFilters(){
@@ -2538,7 +2218,6 @@
     clearMap();
     CURRENT_TEMPLATE_KEY = "";
     CURRENT_ROUTE_KM = 0;
-    CURRENT_DAY_FILTER = "all";
     setCentreHeroVisible(true);
 
     if(!start){
@@ -2580,57 +2259,7 @@
     }
 
     renderPanels();
-    showBot("✅ Packages loaded. Open any package → day-wise places + map + popups.");
-  }
-
-  async function toggleOpenTemplate(key){
-    const startUpper = String(normalizeStartInput() || "").toUpperCase();
-    const same = (CURRENT_TEMPLATE_KEY === key);
-
-    if(same){
-      CURRENT_TEMPLATE_KEY = "";
-      CURRENT_ROUTE_KM = 0;
-      CURRENT_DAY_FILTER = "all";
-      clearMap();
-      setCentreHeroVisible(true);
-      renderPanels();
-      showBot("Closed package. Select another one.");
-      return;
-    }
-
-    CURRENT_TEMPLATE_KEY = key;
-    CURRENT_DAY_FILTER = "all";
-    renderPanels();
-    highlightActiveCard();
-
-    const tpl = TEMPLATES[key];
-    if(!tpl) return;
-
-    // ✅ build map day bar
-    setMapDayBar(tpl);
-
-    const endKey = endKeyFromRoutePath(tpl);
-    const routeIds = routeIdsFromTemplateIncludingStart(tpl);
-
-    const detailsEl = document.getElementById(`details_${key}`);
-    if(detailsEl){
-      detailsEl.innerHTML = `<div class="pill"><b>Loading…</b> fetching road route + final price</div>`;
-    }
-
-    const rr = await drawRoadRouteFromPlaces(routeIds);
-    CURRENT_ROUTE_KM = rr.ok ? rr.km : 0;
-
-    let km = Number(CURRENT_ROUTE_KM || 0);
-    if(!isFinite(km) || km <= 0) km = Number(tpl.total_km_est || tpl.estimated_drive_km || tpl.total_km || 0);
-
-    if(detailsEl){
-      renderInlineDetails(detailsEl, tpl, startUpper, endKey, km);
-    }
-
-    const card = document.querySelector(`#pkgList .pkgW[data-key="${CSS.escape(key)}"]`);
-    if(card) card.scrollIntoView({ behavior:"smooth", block:"start" });
-
-    showBot("✅ Click any place → beautiful popup (history + what you find).");
+    showBot("✅ Packages loaded. Open any package → final price shows inside.");
   }
 
   /* Firebase Load */
@@ -2648,7 +2277,6 @@
       const rawPlaces = placesSnap.val() || {};
       COSTS = (costsSnap && typeof costsSnap.val==="function") ? (costsSnap.val() || {}) : {};
 
-      // ✅ robust: index by place_id
       PLACES = {};
       for(const [k,v] of Object.entries(rawPlaces)){
         if(v && typeof v === "object"){
@@ -2667,10 +2295,12 @@
       buildNameIndex();
       buildStartList(ACTIVE_TEMPLATES);
 
+      // ✅ build district buttons in footer
+      buildDistrictFooterButtons();
+
       setStatus(`Loaded LIVE • ${ACTIVE_TEMPLATES.length} templates • ${Object.keys(PLACES).length} places • ${Object.keys(COSTS).length} cost items`);
       invalidateMapSoon();
 
-      // If filters already used, refresh view
       if($("pills").children.length){
         applyFilters();
       }else{
@@ -2712,17 +2342,6 @@
     startCentreHero();
     showBot("👋 Welcome! Select Start and click Generate.");
 
-    // ✅ modal handlers
-    $("pmClose").onclick = closePlaceModal;
-    $("placeModalBack").onclick = closePlaceModal;
-    $("pmGoMap").onclick = ()=>{
-      if(MODAL_CURRENT_PID) goToPlaceOnMap(MODAL_CURRENT_PID);
-      closePlaceModal();
-    };
-    window.addEventListener("keydown", (e)=>{
-      if(e.key === "Escape") closePlaceModal();
-    });
-
     if(!firebase.apps.length){
       firebase.initializeApp(firebaseConfig);
     }else{
@@ -2763,7 +2382,6 @@
       clearMap();
       CURRENT_TEMPLATE_KEY = "";
       CURRENT_ROUTE_KM = 0;
-      CURRENT_DAY_FILTER = "all";
       INTER_ALL = [];
       DISTRICT_KEYS = [];
       ACTIVE_DISTRICT = "ALL";
@@ -2781,13 +2399,23 @@
     $("showAllStopsBtn").addEventListener("click", async ()=>{
       showMode="all";
       showBot("Markers: all stops");
-      await redrawCurrentPackageRoute();
+      if(CURRENT_TEMPLATE_KEY){
+        const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
+        const routeIds = routeIdsFromTemplateIncludingStart(tpl);
+        const rr = await drawRoadRouteFromPlaces(routeIds);
+        CURRENT_ROUTE_KM = rr.ok ? rr.km : CURRENT_ROUTE_KM;
+      }
     });
 
     $("showStartEndBtn").addEventListener("click", async ()=>{
       showMode="startend";
       showBot("Markers: start/end");
-      await redrawCurrentPackageRoute();
+      if(CURRENT_TEMPLATE_KEY){
+        const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
+        const routeIds = routeIdsFromTemplateIncludingStart(tpl);
+        const rr = await drawRoadRouteFromPlaces(routeIds);
+        CURRENT_ROUTE_KM = rr.ok ? rr.km : CURRENT_ROUTE_KM;
+      }
     });
 
     $("toggleTilesBtn").addEventListener("click", ()=>{
