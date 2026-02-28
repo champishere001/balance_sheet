@@ -704,7 +704,7 @@
     }
     .botToast.show{ display:block; }
 
-    /* ================= ABOUT (ONE SECTION) ================= */
+    /* ================= ABOUT (40/40/20) ================= */
     .aboutWrap{
       margin-top: 12px;
       border:1px solid rgba(10,30,60,.16);
@@ -747,12 +747,23 @@
       letter-spacing:.04em;
       line-height: 1.5;
     }
+
+    /* ✅ 40 / 40 / 20 columns */
     .aboutGrid{
       margin-top: 12px;
       display:grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 40% 40% 20%;
       gap: 12px;
+      align-items: stretch;
     }
+    .aboutSpacer{
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      border-radius: 0;
+      padding: 0;
+    }
+
     .aboutBox{
       border:1px solid rgba(10,30,60,.16);
       background: rgba(255,255,255,.66);
@@ -846,7 +857,7 @@
       box-shadow: 0 10px 22px rgba(10,30,60,.08);
     }
 
-    /* ✅ FOOTER (NO FIREBASE LOAD) */
+    /* ✅ FOOTER */
     footer{
       margin-top: 12px;
       border:1px solid rgba(10,30,60,.16);
@@ -900,6 +911,15 @@
       flex-direction:column;
       gap:10px;
     }
+
+    /* ✅ Title + dropdown row */
+    .districtFooterRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
     .districtFooterTitle{
       font-size: 11px;
       font-weight: 1000;
@@ -922,34 +942,25 @@
       text-transform: uppercase;
       font-weight: 950;
     }
-    .districtFooterBtns{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
+
+    /* ✅ dropdown = 20% width */
+    .districtSelectWrap{
+      width: 20%;
+      min-width: 220px;
     }
-    .districtBtn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      padding: 9px 11px;
+    .districtSelectWrap select{
+      width:100%;
+      padding: 10px 12px;
       border-radius: 999px;
       border:1px solid rgba(10,30,60,.16);
       background: rgba(255,255,255,.66);
       color: rgba(10,30,60,.90);
-      text-decoration:none;
       font-size: 11px;
       letter-spacing:.10em;
       text-transform: uppercase;
       font-weight: 950;
       box-shadow: 0 10px 22px rgba(10,30,60,.08);
-      -webkit-tap-highlight-color: transparent;
-      white-space: nowrap;
-    }
-    .districtBtn:hover{
-      background: rgba(37,99,235,.14);
-      border-color: rgba(37,99,235,.35);
-      transform: translateY(-1px);
+      cursor:pointer;
     }
 
     /* ✅ RESPONSIVE: all platforms */
@@ -961,7 +972,9 @@
       .heroBar{ flex-direction: column; align-items: stretch; }
       .heroRight{ justify-content:flex-start; }
       .aboutGrid{ grid-template-columns: 1fr; }
+      .aboutSpacer{ display:none; }
       .aboutFooterRow{ justify-content:flex-start; }
+      .districtSelectWrap{ width: 100%; }
     }
     @media (max-width: 520px){
       .shell{ padding: 10px 8px 16px; }
@@ -974,6 +987,7 @@
       .waFloat{ padding: 10px; }
       .waClose{ display:none; }
       .footTopRow{ flex-direction:column; align-items:flex-start; }
+      .districtSelectWrap{ width:100%; min-width:0; }
     }
 
     /* prefers-reduced-motion */
@@ -1116,7 +1130,7 @@
       </div>
 
       <!-- CENTER -->
-      <div class="pane" id="packages">
+      <div class="pane">
         <div class="paneHdr">
           <div>
             <p class="t">Packages</p>
@@ -1164,7 +1178,7 @@
       </div>
     </div>
 
-    <!-- ✅ ABOUT (ONE SECTION) -->
+    <!-- ✅ ABOUT (40/40/20) -->
     <section class="aboutWrap" id="about">
       <div class="aboutInner">
         <div class="aboutHead">
@@ -1229,6 +1243,9 @@
               <b>Our promise:</b> Clear communication, transparent pricing, and a comfortable experience from start to finish.
             </div>
           </div>
+
+          <!-- 20% spacer -->
+          <div class="aboutSpacer" aria-hidden="true"></div>
         </div>
 
         <div class="aboutFooterRow">
@@ -1240,11 +1257,13 @@
       </div>
     </section>
 
-    <!-- ✅ FOOTER (STATIC LINKS ONLY) -->
+    <!-- ✅ FOOTER (Dropdown 20% width) -->
     <footer>
       <div class="footInner">
+
         <div class="footTopRow">
           <div class="footLeft">© <span id="yy"></span> Himachal Explorer Portal</div>
+
           <div class="footLinks">
             <a href="#about">About</a>
             <a href="#" id="topLink">Top</a>
@@ -1252,33 +1271,35 @@
         </div>
 
         <div class="districtFooterWrap">
-          <div class="districtFooterTitle">
-            Explore District Profiles
-            <span class="tag">Photos • Guide • Places</span>
-          </div>
+          <div class="districtFooterRow">
+            <div class="districtFooterTitle">
+              Explore District Profiles <span class="tag">Photos • Guide • Places</span>
+            </div>
 
-          <!-- ✅ No JS. Just links -->
-          <div class="districtFooterBtns">
-            <a class="districtBtn" href="./districts/bilaspur.html">Bilaspur</a>
-            <a class="districtBtn" href="./districts/chamba.html">Chamba</a>
-            <a class="districtBtn" href="./districts/hamirpur.html">Hamirpur</a>
-            <a class="districtBtn" href="./districts/kangra.html">Kangra</a>
-
-            <a class="districtBtn" href="./districts/kinnaur.html">Kinnaur</a>
-            <a class="districtBtn" href="./districts/kullu.html">Kullu</a>
-            <a class="districtBtn" href="./districts/lahaul-spiti.html">Lahaul &amp; Spiti</a>
-            <a class="districtBtn" href="./districts/mandi.html">Mandi</a>
-
-            <a class="districtBtn" href="./districts/shimla.html">Shimla</a>
-            <a class="districtBtn" href="./districts/sirmaur.html">Sirmaur</a>
-            <a class="districtBtn" href="./districts/solan.html">Solan</a>
-            <a class="districtBtn" href="./districts/una.html">Una</a>
+            <div class="districtSelectWrap">
+              <select id="districtSelect" aria-label="Select district page">
+                <option value="">Select District</option>
+                <option value="./districts/bilaspur.html">Bilaspur</option>
+                <option value="./districts/chamba.html">Chamba</option>
+                <option value="./districts/hamirpur.html">Hamirpur</option>
+                <option value="./districts/kangra.html">Kangra</option>
+                <option value="./districts/kinnaur.html">Kinnaur</option>
+                <option value="./districts/kullu.html">Kullu</option>
+                <option value="./districts/lahaul-spiti.html">Lahaul &amp; Spiti</option>
+                <option value="./districts/mandi.html">Mandi</option>
+                <option value="./districts/shimla.html">Shimla</option>
+                <option value="./districts/sirmaur.html">Sirmaur</option>
+                <option value="./districts/solan.html">Solan</option>
+                <option value="./districts/una.html">Una</option>
+              </select>
+            </div>
           </div>
 
           <div class="muted" style="text-transform:none;letter-spacing:.02em;">
             Tip: District pages should be at <b>./districts/&lt;district-slug&gt;.html</b>
           </div>
         </div>
+
       </div>
     </footer>
 
@@ -1287,15 +1308,23 @@
   <div class="botToast" id="botToast">👋 Welcome! Select your <b>Start</b> and click <b>Generate</b>. Then open any package to see details.</div>
 
   <script>
-    // year + top link
+    // year + top link + district dropdown nav
     document.addEventListener("DOMContentLoaded", ()=>{
       const y = document.getElementById("yy");
       if(y) y.textContent = new Date().getFullYear();
+
       const t = document.getElementById("topLink");
       if(t){
         t.addEventListener("click",(e)=>{
           e.preventDefault();
           window.scrollTo({ top: 0, behavior:"smooth" });
+        });
+      }
+
+      const sel = document.getElementById("districtSelect");
+      if(sel){
+        sel.addEventListener("change", ()=>{
+          if(sel.value) window.location.href = sel.value;
         });
       }
     });
@@ -1423,6 +1452,7 @@
     $("kmBadge").textContent = "—";
     invalidateMapSoon();
   }
+  function fitRoute(){ if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] }); }
 
   /* Data */
   let db, analytics, auth;
@@ -1431,12 +1461,15 @@
   let PLACES = {};
   let NAME_TO_ID = new Map();
   let STARTS = [];
+
   let COSTS = {};
+
   let INTER_ALL = [];
   let DISTRICT_KEYS = [];
   let ACTIVE_DISTRICT = "ALL";
   let CURRENT_TEMPLATE_KEY = "";
   let CURRENT_ROUTE_KM = 0;
+
   const WHATSAPP_NUMBER = "917018138847";
 
   function setCentreHeroVisible(on){
@@ -1626,7 +1659,9 @@
   }
 
   /* =========================
-     ✅ MARKUP RULES
+     ✅ MARKUP RULES (YOUR REQUEST)
+     - Long duration packages: +10% to +15%
+     - 1–2 day local tours + low pax: +5% to +10%
      ========================= */
   function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
 
@@ -1640,17 +1675,14 @@
       if(Number(pax) === 1) pct += 1.5;
       return clamp(pct, 5, 10);
     }
-
     if(days >= 6){
       const pct = 10 + ((clamp(days, 6, 12) - 6) / (12 - 6)) * 5;
       return clamp(pct, 10, 15);
     }
-
     if(days >= 3){
       const pct = 8 + ((clamp(days, 3, 5) - 3) / (5 - 3)) * 2;
       return clamp(pct, 8, 10);
     }
-
     return 6.5;
   }
 
@@ -1678,8 +1710,8 @@
       `Pax: ${pax}`,
       `Route KM (est.): ${isFinite(km)?Number(km).toFixed(1):"—"}`,
       `Markup: ${isFinite(markupPct)?Number(markupPct).toFixed(1)+"%":"—"}`,
-      `Per Person (final): ${isFinite(perPerson) ? rupees(perPerson) : "—"}`,
-      `Total (final): ${isFinite(total) ? rupees(total) : "—"}`,
+      `Per Person (final): ${isFinite(perPerson)?rupees(perPerson):"—"}`,
+      `Total (final): ${isFinite(total)?rupees(total):"—"}`,
       `Code: ${code}`,
       route ? `Route: ${route}` : "",
       includes ? `Includes: ${includes}` : "",
@@ -1689,7 +1721,6 @@
 
     return lines.join("\n");
   }
-
   function setWhatsAppInline(btnEl, enabled, url){
     if(!btnEl) return;
     if(enabled){
@@ -1791,7 +1822,17 @@
     `;
 
     const startName = normalizeStartInput() || (tpl.start_point || tpl.start || startUpper || "");
-    const msg = buildWhatsAppMessage({ tpl, startName, endKey, pax, tier, km, total, perPerson, markupPct });
+    const msg = buildWhatsAppMessage({
+      tpl,
+      startName,
+      endKey,
+      pax,
+      tier,
+      km,
+      total,
+      perPerson,
+      markupPct
+    });
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
     setWhatsAppInline(document.getElementById(waBtnId), isFinite(perPerson), url);
 
@@ -2141,9 +2182,8 @@
     renderPanels();
     highlightActiveCard();
 
-    /* ✅ FIX #1: ensure tpl has { key } always */
-    const tpl = { key, ...(TEMPLATES[key] || {}) };
-    if(!tpl || !Object.keys(tpl).length) return;
+    const tpl = TEMPLATES[key];
+    if(!tpl) return;
 
     const endKey = endKeyFromRoutePath(tpl);
     const routeIds = routeIdsFromTemplateIncludingStart(tpl);
@@ -2163,10 +2203,8 @@
       renderInlineDetails(detailsEl, tpl, startUpper, endKey, km);
     }
 
-    /* ✅ FIX #2: scroll card safely (works in center + other panels) */
-    const card = document.querySelector(`.pkgW[data-key="${CSS.escape(key)}"]`);
+    const card = document.querySelector(`#pkgList .pkgW[data-key="${CSS.escape(key)}"]`);
     if(card) card.scrollIntoView({ behavior:"smooth", block:"start" });
-
     showBot("✅ Base price from Firebase + markup rule applied.");
   }
 
@@ -2206,7 +2244,6 @@
 
     const set = new Set();
     INTER_ALL.forEach(t => set.add(endDistrictFromTemplate(t)));
-    /* (This is for districtBar on top, NOT footer) */
     DISTRICT_KEYS = Array.from(set).sort((a,b)=>a.localeCompare(b));
     ACTIVE_DISTRICT = "ALL";
     renderDistrictChips();
@@ -2308,10 +2345,7 @@
     }
 
     db = firebase.database();
-
-    /* ✅ FIX #3: analytics can fail in strict browsers / local */
-    try{ analytics = firebase.analytics(); } catch(e){ analytics = null; }
-
+    analytics = firebase.analytics();
     auth = firebase.auth();
 
     auth.onAuthStateChanged((user)=>{
@@ -2362,7 +2396,7 @@
       showMode="all";
       showBot("Markers: all stops");
       if(CURRENT_TEMPLATE_KEY){
-        const tpl = { key: CURRENT_TEMPLATE_KEY, ...(TEMPLATES[CURRENT_TEMPLATE_KEY] || {}) };
+        const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
         const routeIds = routeIdsFromTemplateIncludingStart(tpl);
         const rr = await drawRoadRouteFromPlaces(routeIds);
         CURRENT_ROUTE_KM = rr.ok ? rr.km : CURRENT_ROUTE_KM;
@@ -2373,7 +2407,7 @@
       showMode="startend";
       showBot("Markers: start/end");
       if(CURRENT_TEMPLATE_KEY){
-        const tpl = { key: CURRENT_TEMPLATE_KEY, ...(TEMPLATES[CURRENT_TEMPLATE_KEY] || {}) };
+        const tpl = TEMPLATES[CURRENT_TEMPLATE_KEY];
         const routeIds = routeIdsFromTemplateIncludingStart(tpl);
         const rr = await drawRoadRouteFromPlaces(routeIds);
         CURRENT_ROUTE_KM = rr.ok ? rr.km : CURRENT_ROUTE_KM;
