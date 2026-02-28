@@ -603,6 +603,13 @@
       border-color: rgba(10,30,60,.16);
       background: rgba(255,255,255,.66);
     }
+    /* NEW: Full details button style */
+    .enqBtn.blue{
+      border:1px solid rgba(37,99,235,.30);
+      background: rgba(37,99,235,.14);
+      box-shadow: 0 12px 28px rgba(37,99,235,.14);
+      min-width: 220px;
+    }
 
     .daysList{ display:flex; flex-direction:column; gap:9px; margin-top:10px; }
     .dayCard{
@@ -843,6 +850,179 @@
       cursor: pointer;
     }
 
+    /* ================= FULL DETAILS OVERLAY (NEW) ================= */
+    .overlay{
+      position:fixed; inset:0; z-index: 12000;
+      background: rgba(10,30,60,.22);
+      backdrop-filter: blur(10px);
+      display:none;
+    }
+    .overlay.show{ display:block; }
+    .overlayPanel{
+      width: min(980px, calc(100vw - 20px));
+      height: min(90vh, 980px);
+      margin: 10px auto;
+      border:1px solid rgba(10,30,60,.18);
+      border-radius: 18px;
+      background: rgba(255,255,255,.78);
+      box-shadow: 0 28px 90px rgba(10,30,60,.22);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+    }
+    .overlayHdr{
+      padding: 10px 12px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      border-bottom:1px solid rgba(10,30,60,.14);
+      background: rgba(255,255,255,.72);
+    }
+    .overlayHdr .ttl{
+      font-size: 11px;
+      font-weight: 1000;
+      letter-spacing:.16em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.92);
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      min-width:0;
+      flex:1;
+    }
+    .overlayHdr .hdrBtns{
+      display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;
+      flex:0 0 auto;
+    }
+    .overlayBtn{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.76);
+      color: rgba(10,30,60,.90);
+      border-radius: 12px;
+      padding: 9px 10px;
+      font-size: 10px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      font-weight: 950;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 10px 22px rgba(10,30,60,.08);
+      white-space: nowrap;
+    }
+    .overlayBtn.primary{
+      border-color: rgba(37,99,235,.32);
+      background: rgba(37,99,235,.14);
+    }
+    .overlayBody{
+      padding: 12px;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height:0;
+      background: rgba(255,255,255,.62);
+    }
+
+    .pkgHeaderCard{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.74);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 14px 36px rgba(10,30,60,.10);
+      display:flex; flex-direction:column; gap:8px;
+    }
+    .pkgHeaderCard .h{
+      font-size: 12px;
+      font-weight: 1000;
+      letter-spacing:.16em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.92);
+    }
+    .pkgHeaderMeta{
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
+    .metaPill{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.70);
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 10px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.74);
+    }
+    .metaPill b{ color: rgba(10,30,60,.92); letter-spacing:.06em; }
+
+    .placeCardFull{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.74);
+      border-radius: 16px;
+      padding: 10px;
+      box-shadow: 0 14px 36px rgba(10,30,60,.10);
+      display:grid;
+      grid-template-columns: 140px 1fr;
+      gap: 10px;
+      align-items:start;
+      min-width:0;
+    }
+    .placeImg{
+      width:140px; height:120px;
+      border-radius: 14px;
+      overflow:hidden;
+      border:1px solid rgba(10,30,60,.16);
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.86), rgba(14,165,233,.14));
+    }
+    .placeImg img{
+      width:100%; height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .placeFullInfo{ min-width:0; }
+    .placeFullInfo .nm{
+      font-size: 12px;
+      font-weight: 1000;
+      letter-spacing:.14em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.92);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .placeFullInfo .sub{
+      margin-top:6px;
+      font-size: 10.5px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.62);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .placeFullInfo .txt{
+      margin-top:8px;
+      font-size: 12px;
+      color: rgba(10,30,60,.82);
+      line-height: 1.55;
+      letter-spacing:.01em;
+    }
+    .placeFullInfo .lbl{
+      margin-top:10px;
+      font-size: 10px;
+      letter-spacing:.16em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.62);
+      font-weight: 950;
+    }
+    .bul{
+      margin: 8px 0 0;
+      padding-left: 18px;
+      color: rgba(10,30,60,.84);
+      line-height: 1.6;
+      font-size: 12px;
+    }
+    .placeActionRow{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+
     /* ✅ RESPONSIVE */
     @media (max-width: 1200px){
       .main{ grid-template-columns: 1fr; }
@@ -855,6 +1035,10 @@
       .footerFancyGrid{ grid-template-columns: 1fr; }
       .footerAboutGrid{ grid-template-columns: 1fr; }
     }
+    @media (max-width: 720px){
+      .placeCardFull{ grid-template-columns: 1fr; }
+      .placeImg{ width:100%; height:180px; }
+    }
     @media (max-width: 520px){
       .shell{ padding: 10px 8px 16px; }
       .heroBar{ padding: 10px 10px; }
@@ -866,6 +1050,7 @@
       .waFloat{ padding: 10px; }
       .waClose{ display:none; }
       .footTopRow{ flex-direction:column; align-items:flex-start; }
+      .overlayPanel{ height: 92vh; }
     }
 
     @media (prefers-reduced-motion: reduce){
@@ -879,6 +1064,20 @@
 <body>
   <div class="aurora"></div>
   <div class="noise"></div>
+
+  <!-- ================= FULL DETAILS OVERLAY (NEW) ================= -->
+  <div class="overlay" id="fullOverlay" aria-hidden="true">
+    <div class="overlayPanel" role="dialog" aria-modal="true" aria-label="Full package details">
+      <div class="overlayHdr">
+        <div class="ttl" id="fullTitle">Full Details</div>
+        <div class="hdrBtns">
+          <button class="overlayBtn" id="fullBackBtn" type="button">Back to Package</button>
+          <button class="overlayBtn primary" id="fullCloseBtn" type="button">Close</button>
+        </div>
+      </div>
+      <div class="overlayBody" id="fullBody"></div>
+    </div>
+  </div>
 
   <!-- WhatsApp Floating CTA -->
   <a
@@ -1249,13 +1448,40 @@
   function latAny(p){ return Number(p?.latitude ?? p?.lat ?? p?.Latitude); }
   function lngAny(p){ return Number(p?.longitude ?? p?.lng ?? p?.Longitude); }
   function districtAny(p){ return String(p?.district || p?.District || "").trim().toUpperCase(); }
+  function historyAny(p){ return String(p?.history_tagline || p?.history || p?.about || "").trim(); }
+  function whatAny(p){ return String(p?.what_you_find || p?.what_to_find || p?.highlights || "").trim(); }
+  function photoAny(p){
+    const a = String(p?.photo_1 || p?.photo1 || p?.image || "").trim();
+    const b = String(p?.photo_2 || p?.photo2 || "").trim();
+    const c = String(p?.photo_3 || p?.photo3 || "").trim();
+    return a || b || c || "";
+  }
+
+  // turn "what_you_find" into bullets
+  function parseBullets(txt){
+    const t = String(txt||"").trim();
+    if(!t) return [];
+    // split on newline, comma, bullet char, semicolon, pipe
+    const parts = t
+      .replace(/\r/g,"")
+      .split(/\n|•|·|\||;|,/g)
+      .map(x=>x.trim())
+      .filter(Boolean);
+    // remove duplicates
+    const out = [];
+    const seen = new Set();
+    for(const p of parts){
+      const k = p.toLowerCase();
+      if(seen.has(k)) continue;
+      seen.add(k);
+      out.push(p);
+    }
+    return out.slice(0, 12);
+  }
 
   let map, tile, markersLayer, routeLine;
   let showMode = "all";
   let tilesDark = false;
-
-  // ✅ NEW: marker cache so clicking a place (in day-wise list) can open the same popup
-  let MARKERS_BY_PLACE_ID = new Map();
 
   function invalidateMapSoon(){
     try{
@@ -1273,7 +1499,6 @@
   }
   function clearMap(){
     markersLayer.clearLayers();
-    MARKERS_BY_PLACE_ID.clear(); // ✅ NEW
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
     $("kmBadge").textContent = "—";
     invalidateMapSoon();
@@ -1551,76 +1776,6 @@
     }
   }
 
-  // ✅ NEW: rich place popup html (image + history + what you find)
-  function getPlacePopupHtml(pid){
-    const p = PLACES[pid] || {};
-    const nm = placeNameAny(p, pid);
-    const dist = districtAny(p) || "—";
-    const lat = latAny(p), lng = lngAny(p);
-
-    const img = String(p.photo_1 || p.photo || p.image || "").trim();     // supports photo_1
-    const history = String(p.history_tagline || p.history || "").trim();  // supports history_tagline
-    const find = String(p.what_you_find || p.highlights || "").trim();    // supports what_you_find
-
-    return `
-      <div style="max-width:300px; font-family:ui-sans-serif,system-ui; letter-spacing:.02em;">
-        ${img ? `
-          <img src="${escapeHtml(img)}"
-               style="width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:10px;border:1px solid rgba(10,30,60,.14);"
-               onerror="this.style.display='none'">
-        ` : ``}
-
-        <div style="font-weight:950; letter-spacing:.10em; text-transform:uppercase; margin-bottom:4px;">
-          ${escapeHtml(nm)}
-        </div>
-
-        <div style="font-size:11px; letter-spacing:.12em; text-transform:uppercase; opacity:.72; margin-bottom:10px;">
-          ${escapeHtml(dist)}
-        </div>
-
-        ${history ? `
-          <div style="font-size:12px; line-height:1.45; margin-bottom:8px;">
-            <b style="letter-spacing:.08em; text-transform:uppercase;">History:</b>
-            <span style="opacity:.86">${escapeHtml(history)}</span>
-          </div>
-        ` : ``}
-
-        ${find ? `
-          <div style="font-size:12px; line-height:1.45; margin-bottom:8px;">
-            <b style="letter-spacing:.08em; text-transform:uppercase;">What you find:</b>
-            <span style="opacity:.86">${escapeHtml(find)}</span>
-          </div>
-        ` : ``}
-
-        <div style="opacity:.65;font-size:12px">
-          ${isFinite(lat)&&isFinite(lng) ? `${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}` : "—"}
-        </div>
-      </div>
-    `;
-  }
-
-  // ✅ NEW: open popup for a place id (works from day list click too)
-  function openPlacePopup(pid, zoomMin = 12){
-    const p = PLACES[pid] || {};
-    const lat = latAny(p), lng = lngAny(p);
-    if(!isFinite(lat) || !isFinite(lng) || !map) return;
-
-    const marker = MARKERS_BY_PLACE_ID.get(pid);
-    map.setView([lat, lng], Math.max(map.getZoom(), zoomMin), { animate:true });
-    invalidateMapSoon();
-
-    if(marker){
-      marker.setPopupContent(getPlacePopupHtml(pid));
-      marker.openPopup();
-    }else{
-      // fallback popup even if marker isn't present (e.g. not in current route markers)
-      L.popup({ maxWidth: 320 })
-        .setLatLng([lat, lng])
-        .setContent(getPlacePopupHtml(pid))
-        .openOn(map);
-    }
-  }
-
   function buildDayWise(tpl){
     const days = Number(tpl.days || 1);
     const blocks = [];
@@ -1639,6 +1794,160 @@
     return blocks.filter(x=>x.ids.length);
   }
 
+  // ===================== FULL DETAILS OVERLAY (NEW) =====================
+  let _overlayScrollY = 0;
+  function openOverlay(){
+    const ov = $("fullOverlay");
+    if(!ov) return;
+    _overlayScrollY = window.scrollY || 0;
+    ov.classList.add("show");
+    ov.setAttribute("aria-hidden","false");
+    document.body.style.overflow = "hidden";
+  }
+  function closeOverlay(){
+    const ov = $("fullOverlay");
+    if(!ov) return;
+    ov.classList.remove("show");
+    ov.setAttribute("aria-hidden","true");
+    document.body.style.overflow = "";
+    window.scrollTo({ top: _overlayScrollY, behavior:"instant" });
+  }
+
+  function openFullDetails(tplKey){
+    const tpl = TEMPLATES[tplKey];
+    if(!tpl) return;
+
+    const startUpper = String(normalizeStartInput() || (tpl.start_point || tpl.start || "")).toUpperCase();
+    const endKey = endKeyFromRoutePath(tpl);
+    const days = Number(tpl.days||0) || 0;
+
+    // price summary
+    const pax = getSelectedPax();
+    const tier = String($("visitType")?.value || "budget").toUpperCase();
+    const perPersonBase = getPerPersonPrice(tpl);
+    const markupPct = computeMarkupPct(tpl, pax);
+    const perPerson = applyMarkup(perPersonBase, markupPct);
+    const total = isFinite(perPerson) ? perPerson * pax : NaN;
+
+    const title = `${startUpper} → ${String(endKey||"").toUpperCase()} • ${days} DAYS`;
+    $("fullTitle").textContent = title;
+
+    const body = $("fullBody");
+    body.innerHTML = "";
+
+    const head = document.createElement("div");
+    head.className = "pkgHeaderCard";
+    head.innerHTML = `
+      <div class="h">${escapeHtml(title)}</div>
+      <div class="pkgHeaderMeta">
+        <div class="metaPill">Type <b>${escapeHtml(tier)}</b></div>
+        <div class="metaPill">Pax <b>${escapeHtml(String(pax))}</b></div>
+        <div class="metaPill">Per Person <b>${isFinite(perPerson)?rupees(perPerson):"—"}</b></div>
+        <div class="metaPill">Total <b>${isFinite(total)?rupees(total):"—"}</b></div>
+        <div class="metaPill">Markup <b>${isFinite(markupPct)?Number(markupPct).toFixed(1)+"%":"—"}</b></div>
+        <div class="metaPill">Code <b>${escapeHtml(String(tpl.route_id || "—"))}</b></div>
+      </div>
+      <div class="muted" style="text-transform:none;letter-spacing:.02em;">
+        ${escapeHtml(String(tpl.route_path || "").trim() || "—")}
+      </div>
+    `;
+    body.appendChild(head);
+
+    const blocks = buildDayWise(tpl);
+
+    blocks.forEach(block=>{
+      const dayWrap = document.createElement("div");
+      dayWrap.className = "dayCard";
+      dayWrap.innerHTML = `
+        <div class="dayTop">
+          <div class="d">Day ${block.day}</div>
+          <div class="muted" style="text-transform:none;letter-spacing:.02em;">${block.ids.length} locations</div>
+        </div>
+        <div class="muted" style="text-transform:none;letter-spacing:.02em;">Detailed locations</div>
+      `;
+      body.appendChild(dayWrap);
+
+      block.ids.forEach(pid=>{
+        const p = PLACES[pid] || {};
+        const nm = placeNameAny(p, pid);
+        const dist = districtAny(p) || "—";
+        const hist = historyAny(p);
+        const what = whatAny(p);
+        const bullets = parseBullets(what);
+        const img = photoAny(p);
+
+        const card = document.createElement("div");
+        card.className = "placeCardFull";
+        card.innerHTML = `
+          <div class="placeImg">
+            ${
+              img
+                ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(nm)}" onerror="this.style.display='none'; this.parentNode.style.display='none';">`
+                : `<div style="height:100%;display:grid;place-items:center;font-weight:1000;letter-spacing:.12em;text-transform:uppercase;color:rgba(10,30,60,.62);">${escapeHtml(initials(nm))}</div>`
+            }
+          </div>
+          <div class="placeFullInfo">
+            <div class="nm">${escapeHtml(nm)}</div>
+            <div class="sub">${escapeHtml(dist)} • ${escapeHtml(pid)}</div>
+
+            <div class="lbl">History</div>
+            <div class="txt">${escapeHtml(hist || "—")}</div>
+
+            <div class="lbl">What you can find</div>
+            ${
+              bullets.length
+                ? `<ul class="bul">${bullets.map(b=>`<li>${escapeHtml(b)}</li>`).join("")}</ul>`
+                : `<div class="txt">${escapeHtml(what || "—")}</div>`
+            }
+
+            <div class="placeActionRow">
+              <button class="overlayBtn" type="button" data-zoom="${escapeHtml(pid)}">Show on Map</button>
+            </div>
+          </div>
+        `;
+        body.appendChild(card);
+
+        // zoom handler
+        const btn = card.querySelector('[data-zoom]');
+        if(btn){
+          btn.addEventListener("click", ()=>{
+            const pp = PLACES[pid] || {};
+            const lat = latAny(pp), lng = lngAny(pp);
+            if(isFinite(lat) && isFinite(lng)){
+              closeOverlay();
+              setTimeout(()=>{
+                map.setView([lat,lng], Math.max(map.getZoom(), 12), { animate:true });
+                invalidateMapSoon();
+                showBot(`📍 ${escapeHtml(nm)} on map`);
+              }, 120);
+            }else{
+              showBot("No valid lat/long for this place.");
+            }
+          });
+        }
+      });
+    });
+
+    openOverlay();
+  }
+
+  // close overlay when clicking outside panel
+  window.addEventListener("click", (e)=>{
+    const ov = $("fullOverlay");
+    if(!ov) return;
+    if(!ov.classList.contains("show")) return;
+    if(e.target === ov) closeOverlay();
+  });
+
+  // escape key close
+  window.addEventListener("keydown", (e)=>{
+    if(e.key === "Escape"){
+      const ov = $("fullOverlay");
+      if(ov && ov.classList.contains("show")) closeOverlay();
+    }
+  });
+
+  /* ========================= inline details in card ========================= */
   function renderInlineDetails(detailsEl, tpl, startUpper, endKey, km){
     const pax = getSelectedPax();
     const tier = String($("visitType")?.value || "budget").toUpperCase();
@@ -1661,6 +1970,8 @@
     const note = String(tpl.important_notes || tpl.notes || "").trim();
 
     const waBtnId = `wa_inline_${tpl.key}`;
+    const fullBtnId = `full_inline_${tpl.key}`;
+
     detailsEl.innerHTML = `
       <div class="detailsCard">
         <h3 class="bigTitle">${escapeHtml(title)}</h3>
@@ -1668,6 +1979,7 @@
 
         <div class="enqRow">
           <a id="${waBtnId}" class="enqBtn disabled" href="#" target="_blank" rel="noopener">Send Query on WhatsApp</a>
+          <button id="${fullBtnId}" class="enqBtn blue" type="button">View Full Details</button>
         </div>
       </div>
 
@@ -1717,6 +2029,16 @@
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
     setWhatsAppInline(document.getElementById(waBtnId), isFinite(perPerson), url);
 
+    // Full details button action
+    const fullBtn = document.getElementById(fullBtnId);
+    if(fullBtn){
+      fullBtn.addEventListener("click", (e)=>{
+        e.preventDefault();
+        e.stopPropagation();
+        openFullDetails(tpl.key);
+      });
+    }
+
     const daysWrap = document.getElementById(`days_${tpl.key}`);
     if(!daysWrap) return;
 
@@ -1738,23 +2060,29 @@
         const p = PLACES[pid] || {};
         const name = placeNameAny(p, pid);
         const dist = districtAny(p) || "—";
+        const img = photoAny(p);
 
         const line = document.createElement("div");
         line.className = "placeLine";
         line.innerHTML = `
-          <div class="thumb">${escapeHtml(initials(name))}</div>
+          <div class="thumb">${
+            img
+              ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(name)}" onerror="this.remove(); this.parentNode.textContent='${escapeHtml(initials(name))}';">`
+              : `${escapeHtml(initials(name))}`
+          }</div>
           <div class="pinfo">
             <div class="pname">${escapeHtml(name)}</div>
             <div class="pmeta">${escapeHtml(dist)}</div>
           </div>
         `;
-
-        // ✅ UPDATED: click opens popup with image + history + what you find
         line.onclick = (e)=>{
           e.stopPropagation();
-          openPlacePopup(pid, 12);
+          const lat = latAny(p), lng = lngAny(p);
+          if(isFinite(lat) && isFinite(lng)){
+            map.setView([lat,lng], Math.max(map.getZoom(), 12), { animate:true });
+            invalidateMapSoon();
+          }
         };
-
         cont.appendChild(line);
       });
 
@@ -1984,7 +2312,6 @@
 
   async function drawRoadRouteFromPlaces(placeIds){
     markersLayer.clearLayers();
-    MARKERS_BY_PLACE_ID.clear(); // ✅ NEW
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
 
     const pts = [];
@@ -2032,14 +2359,45 @@
         const lat = latAny(p);
         const lng = lngAny(p);
         if(!isFinite(lat)||!isFinite(lng)) continue;
-
         const m = L.marker([lat,lng], { riseOnHover:true }).addTo(markersLayer);
 
-        // ✅ UPDATED POPUP: image + history_tagline + what_you_find
-        m.bindPopup(getPlacePopupHtml(pid), { maxWidth: 320 });
+        // ✅ Map popup now supports image + history + what_you_find
+        const nm = placeNameAny(p, pid);
+        const dist = districtAny(p) || "";
+        const hist = historyAny(p);
+        const what = whatAny(p);
+        const img = photoAny(p);
+        const bullets = parseBullets(what);
 
-        // ✅ NEW: store marker reference
-        MARKERS_BY_PLACE_ID.set(pid, m);
+        const imgHtml = img
+          ? `<div style="width:100%;height:120px;border-radius:12px;overflow:hidden;border:1px solid rgba(10,30,60,.14);margin-bottom:8px;background:rgba(255,255,255,.7);">
+               <img src="${escapeHtml(img)}" alt="${escapeHtml(nm)}" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.parentNode.style.display='none';">
+             </div>`
+          : "";
+
+        const bulletsHtml = bullets.length
+          ? `<ul style="margin:6px 0 0;padding-left:18px;line-height:1.55;">
+               ${bullets.slice(0,8).map(b=>`<li>${escapeHtml(b)}</li>`).join("")}
+             </ul>`
+          : (what ? `<div style="margin-top:6px;opacity:.82;">${escapeHtml(what)}</div>` : `<div style="margin-top:6px;opacity:.65;">—</div>`);
+
+        m.bindPopup(
+          `<div style="font-family:ui-sans-serif,system-ui;letter-spacing:.02em;max-width:320px;">
+            ${imgHtml}
+            <div style="font-weight:1000;letter-spacing:.10em;text-transform:uppercase;">${escapeHtml(nm)}</div>
+            <div style="opacity:.75;letter-spacing:.10em;text-transform:uppercase;margin-top:3px;">${escapeHtml(dist)}</div>
+            <div style="opacity:.65;font-size:12px;margin-top:6px;">
+              ${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}
+            </div>
+
+            <div style="margin-top:10px;font-weight:950;letter-spacing:.14em;text-transform:uppercase;opacity:.75;font-size:10px;">History</div>
+            <div style="margin-top:5px;opacity:.85;line-height:1.55;">${escapeHtml(hist || "—")}</div>
+
+            <div style="margin-top:10px;font-weight:950;letter-spacing:.14em;text-transform:uppercase;opacity:.75;font-size:10px;">What you can find</div>
+            ${bulletsHtml}
+          </div>`,
+          { maxWidth: 340 }
+        );
       }
 
       const km = Number(r.distance/1000);
@@ -2239,6 +2597,10 @@
       $("mintLoginBtn").textContent = user ? "Logout" : "Mint Login";
       if(user) setStatus(`Logged in: ${user.email} • Loading…`);
     });
+
+    // overlay buttons
+    $("fullBackBtn")?.addEventListener("click", closeOverlay);
+    $("fullCloseBtn")?.addEventListener("click", closeOverlay);
 
     $("genBtn").addEventListener("click", applyFilters);
     $("startInp").addEventListener("keydown",(e)=>{ if(e.key==="Enter") applyFilters(); });
