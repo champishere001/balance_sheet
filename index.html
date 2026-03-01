@@ -37,39 +37,25 @@
       min-height:220px;
     }
 
-    /* ✅ One-frame collage (all pics visible together) */
     .slidesGrid{
-      position:absolute; inset:0;
-      display:grid;
-      gap:8px;
-      padding:10px;
+      position:absolute; inset:0; display:grid; gap:8px; padding:10px;
       background: rgba(255,255,255,.22);
-
-      /* Layout: big left + 4 on right */
       grid-template-columns: 1.35fr 1fr;
       grid-template-rows: repeat(3, 1fr);
     }
     .slidesGrid .tile{
-      border-radius:18px;
-      background-size:cover;
-      background-position:center;
+      border-radius:18px; background-size:cover; background-position:center;
       border: 1px solid rgba(215,230,255,.85);
       box-shadow: 0 10px 22px rgba(12,34,70,.08);
-      position:relative;
-      overflow:hidden;
+      position:relative; overflow:hidden;
     }
     .slidesGrid .tile::after{
-      content:"";
-      position:absolute; inset:0;
+      content:""; position:absolute; inset:0;
       background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.22));
       pointer-events:none;
     }
-    .slidesGrid .tile:nth-child(1){
-      grid-column: 1 / 2;
-      grid-row: 1 / 4;
-    }
+    .slidesGrid .tile:nth-child(1){ grid-column: 1 / 2; grid-row: 1 / 4; }
 
-    /* Overlay for readability */
     .hero:after{
       content:""; position:absolute; inset:0;
       background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.66));
@@ -77,15 +63,9 @@
     }
 
     .heroContent{
-      position:relative;
-      padding:16px;
-      min-height:220px;
-      display:flex;
-      flex-direction:column;
-      justify-content:flex-end;
-      gap:10px;
+      position:relative; padding:16px; min-height:220px;
+      display:flex; flex-direction:column; justify-content:flex-end; gap:10px;
     }
-
     .brandRow{
       display:flex; align-items:center; gap:12px; width:fit-content; max-width:100%;
       background:rgba(255,255,255,.78); border:1px solid rgba(215,230,255,.9);
@@ -97,10 +77,8 @@
     .brandName{font-weight:800; letter-spacing:.12em; text-transform:uppercase; font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
     .tagline{font-size:12px; color:#7B8DA3; letter-spacing:.12em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;}
 
-    .card{
-      border-radius:calc(var(--r) + 2px); border:1px solid var(--stroke);
-      background:var(--card); box-shadow:var(--shadow); overflow:hidden;
-    }
+    .card{ border-radius:calc(var(--r) + 2px); border:1px solid var(--stroke);
+      background:var(--card); box-shadow:var(--shadow); overflow:hidden; }
     .cardInner{padding:18px;}
     .grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:12px;}
     .opt{
@@ -114,15 +92,10 @@
     .opt ul{margin:6px 0 0; padding-left:18px; font-size:13px; color:#2b3f59}
     .opt li{margin:6px 0}
     .btn{
-      margin-top:auto;
-      width:100%;
-      border:none; border-radius:14px;
-      padding:12px 14px;
-      font-weight:800; letter-spacing:.10em; text-transform:uppercase;
+      margin-top:auto; width:100%; border:none; border-radius:14px;
+      padding:12px 14px; font-weight:800; letter-spacing:.10em; text-transform:uppercase;
       cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;
-      transition:transform .12s ease, box-shadow .2s ease;
     }
-    .btn:active{transform:translateY(1px)}
     .btnPrimary{background:linear-gradient(135deg,var(--primary),var(--primary2)); color:#fff; box-shadow:0 10px 22px rgba(47,123,255,.22)}
     .btnGhost{background:#fff; color:#0D1B2A; border:1px solid rgba(210,225,255,.95); box-shadow:0 8px 18px rgba(12,34,70,.08)}
     .note{margin-top:10px; font-size:12px; color:rgba(25,40,65,.72); text-align:center}
@@ -137,273 +110,277 @@
       background:#fff; padding:8px 10px; border-radius:999px; text-decoration:none}
 
     @media (max-width:860px){ .grid{grid-template-columns:1fr;} }
-
-    /* ✅ Mobile collage layout */
     @media (max-width:820px){
-      .slidesGrid{
-        grid-template-columns: 1fr;
-        grid-template-rows: 1.2fr repeat(4, .8fr);
-      }
-      .slidesGrid .tile:nth-child(1){
-        grid-column: 1 / 2;
-        grid-row: 1 / 2;
-      }
+      .slidesGrid{ grid-template-columns: 1fr; grid-template-rows: 1.2fr repeat(4, .8fr); }
+      .slidesGrid .tile:nth-child(1){ grid-column: 1 / 2; grid-row: 1 / 2; }
     }
-  
-    /* ===== Start selector (moved from dashboard) ===== */
+
     .startBox{
-      margin-top: 14px;
-      padding: 14px;
-      border-radius: 18px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.6);
-      box-shadow: var(--shadow);
+      margin-top: 14px; padding: 14px; border-radius: 18px;
+      border:1px solid var(--stroke); background: rgba(255,255,255,.6); box-shadow: var(--shadow);
     }
     .startBox.hidden{ display:none; }
-    .startTitle{ font-weight:800; letter-spacing:.2px; margin-bottom:10px; }
+    .startTitle{ font-weight:800; margin-bottom:10px; }
     .startRow{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
     .startRow input{
-      flex:1 1 260px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      border:1px solid var(--stroke);
-      outline:none;
-      font-weight:700;
-      letter-spacing:.4px;
-      text-transform:uppercase;
-      background: rgba(255,255,255,.8);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+      flex:1 1 260px; padding: 12px 14px; border-radius: 14px; border:1px solid var(--stroke);
+      outline:none; font-weight:700; text-transform:uppercase; background: rgba(255,255,255,.8);
     }
     .startHint{ margin-top:10px; color: var(--muted); font-size: 13px; }
     .opt.active{
       outline: 2px solid rgba(40,120,255,.35);
       box-shadow: 0 10px 30px rgba(20,60,130,.15);
     }
-
-</style>
+  </style>
 </head>
+
 <body>
-  <main class="wrap">
-    <section class="hero">
+<main class="wrap">
+  <section class="hero">
+    <div class="slidesGrid">
+      <div class="tile" style="background-image:url('./style/images/kunjum.jpg')"></div>
+      <div class="tile" style="background-image:url('./style/images/kinnaur-kailash.webp')"></div>
+      <div class="tile" style="background-image:url('./style/images/Travelers.jpg')"></div>
+      <div class="tile" style="background-image:url('./style/images/n1.jpg')"></div>
+      <div class="tile" style="background-image:url('./style/images/activity.jpg')"></div>
+    </div>
 
-      <!-- ✅ All pics in ONE frame -->
-      <div class="slidesGrid">
-        <div class="tile" style="background-image:url('./style/images/kunjum.jpg')"></div>
-        <div class="tile" style="background-image:url('./style/images/kinnaur-kailash.webp')"></div>
-        <div class="tile" style="background-image:url('./style/images/Travelers.jpg')"></div>
-        <div class="tile" style="background-image:url('./style/images/n1.jpg')"></div>
-        <div class="tile" style="background-image:url('./style/images/activity.jpg')"></div>
-      </div>
-
-      <div class="heroContent">
-        <div class="brandRow">
-          <div class="logo"><img src="./style/images/logo.png" alt="Logo" onerror="this.style.display='none'"></div>
-          <div>
-            <div class="brandName">Himachal Explorer</div>
-            <div class="tagline">Choose your travel origin</div>
-          </div>
+    <div class="heroContent">
+      <div class="brandRow">
+        <div class="logo"><img src="./style/images/logo.png" alt="Logo" onerror="this.style.display='none'"></div>
+        <div>
+          <div class="brandName">Himachal Explorer</div>
+          <div class="tagline">Choose your travel origin</div>
         </div>
-        <div class="note">After entering dashboard → Select <b>Start City</b> → Click <b>Show Packages</b>.</div>
       </div>
-    </section>
+      <div class="note">Mode select → Start City select → Dashboard (Dashboard will NOT fetch Firebase)</div>
+    </div>
+  </section>
 
-    <section class="card">
-      <div class="cardInner">
-        <div class="grid">
-          <div class="opt">
-            <h2>Within Himachal</h2>
-            <p>Local tours first. Inter-district packages also available.</p>
-            <ul>
-              <li>Short weekend tours priority</li>
-              <li>Nearby places suggestion enabled</li>
-              <li>Best for Himachal residents</li>
-            </ul>
-            <button class="btn btnPrimary" id="goWithin" type="button">Enter Dashboard →</button>
-          </div>
-
-          <div class="opt">
-            <h2>Outside Himachal</h2>
-            <p>Inter-district tours prioritized. Locals still visible.</p>
-            <ul>
-              <li>Delhi / Chandigarh pickup friendly</li>
-              <li>Longer circuits priority</li>
-              <li>Ideal for first-time visitors</li>
-            </ul>
-            <button class="btn btnGhost" id="goOutside" type="button">Enter Dashboard →</button>
-          </div>
+  <section class="card">
+    <div class="cardInner">
+      <div class="grid">
+        <div class="opt">
+          <h2>Within Himachal</h2>
+          <p>Local tours first. Inter-district packages also available.</p>
+          <ul>
+            <li>Short weekend tours priority</li>
+            <li>Nearby places suggestion enabled</li>
+            <li>Best for Himachal residents</li>
+          </ul>
+          <button class="btn btnPrimary" id="goWithin" type="button">Select Mode →</button>
         </div>
 
-        <div class="note">Mode is saved automatically and applied inside dashboard.</div>
-        <div id="startBox" class="startBox hidden">
-          <div class="startTitle">Select Start City / Pickup</div>
-          <div class="startRow">
-            <input id="startInp" list="startList" placeholder="E.g. SHIMLA / MANALI / CHANDIGARH / DELHI" autocomplete="off"/>
-            <datalist id="startList"></datalist>
-            <button class="btn btnPrimary" id="goDash" type="button">Start Exploring →</button>
-          </div>
-          <div class="startHint" id="startHint">Tip: choose a mode above to load start locations.</div>
+        <div class="opt">
+          <h2>Outside Himachal</h2>
+          <p>Inter-district tours prioritized. Locals still visible.</p>
+          <ul>
+            <li>Delhi / Chandigarh pickup friendly</li>
+            <li>Longer circuits priority</li>
+            <li>Ideal for first-time visitors</li>
+          </ul>
+          <button class="btn btnGhost" id="goOutside" type="button">Select Mode →</button>
         </div>
-
       </div>
-    </section>
 
-    <footer>
-      <a class="pill" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Top</a>
-      <span class="pill">© <span id="yy"></span> Himachal Explorer</span>
-    </footer>
-  </main>
+      <div class="note">Index caches: <b>templates + places + package_cost_breakdown</b></div>
 
-  
-  <!-- Firebase (Compat) - lightweight init for start list -->
-  <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+      <div id="startBox" class="startBox hidden">
+        <div class="startTitle">Select Start City / Pickup</div>
+        <div class="startRow">
+          <input id="startInp" list="startList" placeholder="E.g. SHIMLA / MANALI / CHANDIGARH / DELHI" autocomplete="off"/>
+          <datalist id="startList"></datalist>
+          <button class="btn btnPrimary" id="goDash" type="button">Start Exploring →</button>
+        </div>
+        <div class="startHint" id="startHint">Choose a mode above to load start locations…</div>
+      </div>
+    </div>
+  </section>
 
-  <script>
-    /* =========================================================
-       LANDING (index.html)
-       - Move "Start City / Pickup" selection here
-       - When user clicks Within HP -> show Himachal starts (local)
-       - When user clicks Outside HP -> show Outside starts (intercity)
-       - Then go to dashboard with mode + start prefilled
-       ========================================================= */
+  <footer>
+    <a class="pill" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Top</a>
+    <span class="pill">© <span id="yy"></span> Himachal Explorer</span>
+  </footer>
+</main>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
-      authDomain: "revnue-records.firebaseapp.com",
-      databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "revnue-records",
-      storageBucket: "revnue-records.firebasestorage.app",
-      messagingSenderId: "182348503564",
-      appId: "1:182348503564:web:480085405b0917724d9fce",
-      measurementId: "G-9J5JQFDX4R"
-    };
+<!-- Firebase ONLY on index -->
+<script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-    const NODE_TEMPLATES = "templates";
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
+    authDomain: "revnue-records.firebaseapp.com",
+    databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "revnue-records",
+    storageBucket: "revnue-records.firebasestorage.app",
+    messagingSenderId: "182348503564",
+    appId: "1:182348503564:web:480085405b0917724d9fce",
+    measurementId: "G-9J5JQFDX4R"
+  };
 
-    const $ = (id)=>document.getElementById(id);
+  // DB nodes (from your screenshot)
+  const NODE_TEMPLATES = "templates";
+  const NODE_PLACES = "places";
+  const NODE_COST = "package_cost_breakdown";
 
-    let SELECTED_MODE = null;          // "within" | "outside"
-    let TPL_ARR = null;               // normalized templates array
-    let STARTS = [];                  // current datalist values
+  // Cache
+  const CACHE_KEY = "HX_CACHE_V1";
+  const CACHE_TS  = "HX_CACHE_TS";
+  const CACHE_TTL_MS = 1000 * 60 * 30; // 30 min
 
-    function isLocalComputed(tpl){
-      const routeId = String(tpl.route_id || "").toUpperCase().trim();
-      const regionStyle = String(tpl.region_style || "").toLowerCase().trim();
-      const pkgId = String(tpl.package_id || tpl.key || "").toLowerCase();
-      return regionStyle === "local" || routeId.endsWith("-LCL") || pkgId.includes("-local");
+  const $ = (id)=>document.getElementById(id);
+
+  let SELECTED_MODE = null; // within | outside
+  let STARTS = [];
+
+  function cacheFresh(){
+    const ts = Number(localStorage.getItem(CACHE_TS) || "0");
+    return (Date.now() - ts) < CACHE_TTL_MS;
+  }
+  function cacheGet(){
+    const raw = localStorage.getItem(CACHE_KEY);
+    if(!raw) return null;
+    try{ return JSON.parse(raw); }catch{ return null; }
+  }
+  function cacheSet(obj){
+    localStorage.setItem(CACHE_KEY, JSON.stringify(obj));
+    localStorage.setItem(CACHE_TS, String(Date.now()));
+  }
+
+  function isLocalComputed(tpl){
+    const routeId = String(tpl.route_id || "").toUpperCase().trim();
+    const regionStyle = String(tpl.region_style || "").toLowerCase().trim();
+    const pkgId = String(tpl.package_id || tpl.key || "").toLowerCase();
+    return regionStyle === "local" || routeId.endsWith("-LCL") || pkgId.includes("-local");
+  }
+
+  async function waitFirebaseReady(){
+    for(let i=0;i<80;i++){
+      if(window.firebase && firebase.database) return;
+      await new Promise(r=>setTimeout(r, 30));
     }
+    throw new Error("Firebase failed to load");
+  }
 
-    async function dbGet(db, path){
-      return new Promise((resolve)=>{
-        db.ref(path).once("value", (snap)=> resolve(snap.val()));
-      });
-    }
+  async function dbGet(db, path){
+    return new Promise((resolve, reject)=>{
+      db.ref(path).once("value", s=>resolve(s.val()), e=>reject(e));
+    });
+  }
 
-    async function ensureTemplatesLoaded(){
-      if(TPL_ARR) return;
-      const hint = $("startHint");
-      hint.textContent = "Connecting to database…";
+  async function fetchAllAndCache(){
+    $("startHint").textContent = "Connecting to database…";
+    await waitFirebaseReady();
+    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
-      // Firebase loads via defer; wait until global exists
-      if(!window.firebase){
-        await new Promise(r=>setTimeout(r, 60));
-      }
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.database();
+    const db = firebase.database();
+    $("startHint").textContent = "Fetching data… (templates / places / cost)";
 
-      hint.textContent = "Loading start locations…";
-      const templates = await dbGet(db, NODE_TEMPLATES) || {};
-      TPL_ARR = Object.entries(templates).map(([k,v])=>({ key:k, ...(v||{}) }));
-      hint.textContent = "Start locations loaded ✅";
-    }
+    const [templates, places, cost] = await Promise.all([
+      dbGet(db, NODE_TEMPLATES).catch(()=> ({})),
+      dbGet(db, NODE_PLACES).catch(()=> ({})),
+      dbGet(db, NODE_COST).catch(()=> ({})),
+    ]);
 
-    function buildStartListForMode(mode){
-      if(!TPL_ARR) return;
+    const all = { templates: templates||{}, places: places||{}, package_cost_breakdown: cost||{} };
+    cacheSet(all);
 
-      // within => local templates; outside => intercity templates
-      const wantLocal = (mode === "within");
-      const starts = new Set();
+    $("startHint").textContent = "Cached ✅ Dashboard will use cache only.";
+    return all;
+  }
 
-      TPL_ARR.forEach(t=>{
-        const s = String(t.start_point || t.start || "").trim();
-        if(!s) return;
-        const local = isLocalComputed(t);
-        if(wantLocal && !local) return;
-        if(!wantLocal && local) return;
-        starts.add(s.toUpperCase());
-      });
+  async function ensureCache(){
+    const c = cacheGet();
+    if(c && cacheFresh()) return c;
+    return await fetchAllAndCache();
+  }
 
-      STARTS = Array.from(starts).sort((a,b)=>a.localeCompare(b));
-      const dl = $("startList");
-      dl.innerHTML = "";
-      STARTS.forEach(v=>{
-        const opt = document.createElement("option");
-        opt.value = v;
-        dl.appendChild(opt);
-      });
+  function buildStartListForMode(all, mode){
+    const templatesObj = all.templates || {};
+    const arr = Object.entries(templatesObj).map(([k,v])=>({ key:k, ...(v||{}) }));
 
-      $("startHint").textContent =
-        mode === "within"
-          ? `Within Himachal: ${STARTS.length} start locations`
-          : `Outside Himachal: ${STARTS.length} start locations`;
-    }
+    const wantLocal = (mode === "within");
+    const starts = new Set();
 
-    function normalizeStartInput(){
-      const typed = String($("startInp").value || "").trim().toUpperCase();
-      if(!typed) return "";
-      const exact = STARTS.find(s => s === typed);
-      if(exact) return exact;
-      const partial = STARTS.find(s => s.startsWith(typed));
-      if(partial) return partial;
-      return "";
-    }
+    arr.forEach(t=>{
+      const s = String(t.start_point || t.start || "").trim();
+      if(!s) return;
 
-    function markModeUI(){
-      document.querySelectorAll(".opt").forEach(el=>el.classList.remove("active"));
-      const active = SELECTED_MODE === "within" ? $("goWithin") : $("goOutside");
-      // button is inside .opt, so mark its parent card
-      if(active){
-        const card = active.closest(".opt");
-        card && card.classList.add("active");
-      }
-      $("startBox").classList.remove("hidden");
-      $("startInp").focus();
-    }
+      const local = isLocalComputed(t);
+      if(wantLocal && !local) return;
+      if(!wantLocal && local) return;
 
-    async function selectMode(mode){
-      SELECTED_MODE = mode;
-      localStorage.setItem("travel_origin", mode);
-      markModeUI();
-
-      await ensureTemplatesLoaded();
-      buildStartListForMode(mode);
-    }
-
-    function goDashboard(){
-      const start = normalizeStartInput();
-      if(!SELECTED_MODE){
-        alert("Please choose: Within Himachal or Outside Himachal first.");
-        return;
-      }
-      if(!start){
-        alert("Please select a Start City / Pickup from the list (or type and pick a match).");
-        $("startInp").focus();
-        return;
-      }
-      location.href = "./dashboard.html?mode=" + encodeURIComponent(SELECTED_MODE) + "&start=" + encodeURIComponent(start);
-    }
-
-    $("goWithin").onclick = ()=>selectMode("within");
-    $("goOutside").onclick = ()=>selectMode("outside");
-    $("goDash").onclick = goDashboard;
-
-    // ENTER key on start input
-    $("startInp").addEventListener("keydown", (e)=>{
-      if(e.key === "Enter"){ e.preventDefault(); goDashboard(); }
+      starts.add(s.toUpperCase());
     });
 
-    $("yy").textContent = new Date().getFullYear();
-  </script>
+    STARTS = Array.from(starts).sort((a,b)=>a.localeCompare(b));
+    const dl = $("startList");
+    dl.innerHTML = "";
+    STARTS.forEach(v=>{
+      const opt = document.createElement("option");
+      opt.value = v;
+      dl.appendChild(opt);
+    });
 
+    $("startHint").textContent =
+      mode === "within"
+        ? `Within Himachal: ${STARTS.length} start locations`
+        : `Outside Himachal: ${STARTS.length} start locations`;
+  }
+
+  function normalizeStartInput(){
+    const typed = String($("startInp").value || "").trim().toUpperCase();
+    if(!typed) return "";
+    const exact = STARTS.find(s => s === typed);
+    if(exact) return exact;
+    const partial = STARTS.find(s => s.startsWith(typed));
+    if(partial) return partial;
+    return "";
+  }
+
+  function markModeUI(){
+    document.querySelectorAll(".opt").forEach(el=>el.classList.remove("active"));
+    const btn = SELECTED_MODE === "within" ? $("goWithin") : $("goOutside");
+    const card = btn?.closest(".opt");
+    card && card.classList.add("active");
+    $("startBox").classList.remove("hidden");
+    $("startInp").focus();
+  }
+
+  async function selectMode(mode){
+    SELECTED_MODE = mode;
+    localStorage.setItem("HX_MODE", mode);
+    markModeUI();
+    const all = await ensureCache();
+    buildStartListForMode(all, mode);
+  }
+
+  function goDashboard(){
+    const start = normalizeStartInput();
+    if(!SELECTED_MODE){ alert("Choose mode first."); return; }
+    if(!start){ alert("Select Start City from list."); $("startInp").focus(); return; }
+
+    localStorage.setItem("HX_START", start);
+    location.href = "./dashboard.html";
+  }
+
+  $("goWithin").onclick = ()=>selectMode("within");
+  $("goOutside").onclick = ()=>selectMode("outside");
+  $("goDash").onclick = goDashboard;
+  $("startInp").addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); goDashboard(); } });
+
+  $("yy").textContent = new Date().getFullYear();
+
+  // Prefetch cache (optional)
+  (async ()=>{
+    try{
+      if(!(cacheGet() && cacheFresh())) await ensureCache();
+    }catch(e){
+      console.warn(e);
+      $("startHint").textContent = "Database not reachable right now.";
+    }
+  })();
+</script>
 </body>
 </html>
