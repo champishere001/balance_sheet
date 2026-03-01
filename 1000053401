@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Himachal Explorer — Admin Panel</title>
+
+  <!-- Firebase (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics-compat.js"></script>
+
+  <style>
+    :root{
+      --bg0:#070A12;
+      --bg1:#0B1222;
+      --card: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --muted2: rgba(255,255,255,.56);
+      --accent:#7C5CFF;
+      --good:#35d07f;
+      --bad:#ff4d6d;
+      --warn:#ffcc66;
+      --shadow: 0 12px 30px rgba(0,0,0,.35);
+      --r: 16px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 900px at 20% -10%, rgba(124,92,255,.22), transparent 60%),
+                  radial-gradient(1200px 900px at 90% 10%, rgba(53,208,127,.16), transparent 60%),
+                  var(--bg0);
+      color:var(--text);
+    }
+
+    .topbar{
+      position: sticky; top:0; z-index: 10;
+      backdrop-filter: blur(12px);
+      background: rgba(7,10,18,.6);
+      border-bottom: 1px solid var(--stroke);
+    }
+    .topbar-inner{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 14px 14px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content: space-between;
+    }
+    .brand{
+      display:flex; gap:10px; align-items:center;
+    }
+    .logo{
+      width:38px; height:38px; border-radius: 12px;
+      background: linear-gradient(135deg, rgba(124,92,255,.9), rgba(53,208,127,.7));
+      box-shadow: var(--shadow);
+    }
+    .brand h1{
+      font-size: 16px; margin:0;
+      letter-spacing:.2px;
+    }
+    .brand p{margin:0; font-size:12px; color:var(--muted2)}
+    .pill{
+      font-size: 12px;
+      padding: 8px 10px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      border-radius: 999px;
+      color: var(--muted);
+      display:flex;
+      align-items:center;
+      gap:8px;
+      white-space:nowrap;
+    }
+    .pill b{color:var(--text)}
+
+    .container{
+      max-width: 1200px;
+      margin: 18px auto 80px;
+      padding: 0 14px;
+      display:grid;
+      grid-template-columns: 280px 1fr;
+      gap: 14px;
+    }
+
+    .nav{
+      position: sticky;
+      top: 76px;
+      height: calc(100vh - 90px);
+      overflow:auto;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.04);
+      border-radius: var(--r);
+      padding: 12px;
+    }
+    .nav h3{
+      margin: 4px 0 10px;
+      font-size: 12px;
+      color: var(--muted2);
+      text-transform: uppercase;
+      letter-spacing:.14em;
+    }
+    .nav a{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap:10px;
+      text-decoration:none;
+      color: var(--text);
+      padding: 10px 10px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      margin-bottom: 6px;
+      background: rgba(0,0,0,.12);
+    }
+    .nav a:hover{
+      border-color: var(--stroke);
+      background: rgba(255,255,255,.06);
+    }
+    .nav a.active{
+      border-color: rgba(124,92,255,.6);
+      background: rgba(124,92,255,.12);
+    }
+    .nav small{color: var(--muted2)}
+    .main{
+      display:flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .card{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.05);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card-header{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap:10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--stroke);
+      background: rgba(0,0,0,.16);
+    }
+    .card-header h2{
+      margin:0;
+      font-size: 14px;
+      letter-spacing:.2px;
+    }
+    .card-header p{
+      margin:0;
+      font-size: 12px;
+      color: var(--muted2);
+    }
+    .card-body{
+      padding: 14px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 10px;
+    }
+    .col-12{grid-column: span 12}
+    .col-9{grid-column: span 9}
+    .col-8{grid-column: span 8}
+    .col-6{grid-column: span 6}
+    .col-5{grid-column: span 5}
+    .col-4{grid-column: span 4}
+    .col-3{grid-column: span 3}
+
+    label{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    input, textarea, select{
+      width:100%;
+      padding: 10px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      outline:none;
+    }
+    textarea{min-height: 96px; resize: vertical}
+    input::placeholder, textarea::placeholder{color: rgba(255,255,255,.40)}
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap: wrap;
+      align-items:center;
+    }
+    .btn{
+      padding: 10px 12px;
+      border-radius: 12px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      cursor:pointer;
+      font-weight: 600;
+      letter-spacing:.2px;
+    }
+    .btn:hover{background: rgba(255,255,255,.10)}
+    .btn.primary{
+      border-color: rgba(124,92,255,.6);
+      background: rgba(124,92,255,.18);
+    }
+    .btn.good{
+      border-color: rgba(53,208,127,.55);
+      background: rgba(53,208,127,.16);
+    }
+    .btn.bad{
+      border-color: rgba(255,77,109,.55);
+      background: rgba(255,77,109,.16);
+    }
+    .btn.warn{
+      border-color: rgba(255,204,102,.55);
+      background: rgba(255,204,102,.14);
+    }
+
+    .table{
+      width:100%;
+      border-collapse: collapse;
+      overflow:hidden;
+      border-radius: 14px;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.16);
+    }
+    .table th, .table td{
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      font-size: 12px;
+      text-align:left;
+      vertical-align: top;
+    }
+    .table th{
+      font-size: 12px;
+      color: var(--muted);
+      font-weight:700;
+      background: rgba(255,255,255,.04);
+    }
+    .table tr:hover td{background: rgba(255,255,255,.04)}
+    .muted{color: var(--muted2)}
+    .badge{
+      font-size: 11px;
+      border:1px solid var(--stroke);
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      color: var(--muted);
+      display:inline-block;
+      margin-left:6px;
+    }
+    .split{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 12px;
+    }
+
+    .preview{
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.18);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .preview img{
+      width:100%;
+      max-height: 220px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+    }
+    .hr{
+      height:1px;
+      background: rgba(255,255,255,.10);
+      margin: 10px 0;
+    }
+
+    @media (max-width: 980px){
+      .container{grid-template-columns: 1fr}
+      .nav{position: relative; top:0; height:auto}
+      .split{grid-template-columns: 1fr}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Himachal Explorer — Admin</h1>
+          <p>Manage Site Settings, Places, Packages, Rates</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="pill" id="dbStatus">DB: <b>Connecting…</b></div>
+        <button class="btn warn" id="btnReload">Reload Data</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Left Navigation -->
+    <aside class="nav">
+      <h3>Admin Menu</h3>
+      <a href="#settings" class="active" data-tab="settings">Site Settings <small id="countSettings">•</small></a>
+      <a href="#places" data-tab="places">Places <small id="countPlaces">0</small></a>
+      <a href="#packages" data-tab="packages">Packages <small id="countPackages">0</small></a>
+      <a href="#rates" data-tab="rates">Rates & Pricing <small id="countRates">•</small></a>
+      <div class="hr"></div>
+      <p class="muted" style="font-size:12px; margin:0;">
+        Tip: Keep IDs simple like <b>manali</b>, <b>chail</b>, <b>shimla-mall-road</b>.
+      </p>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+
+      <!-- SETTINGS -->
+      <section id="settings" class="card tab">
+        <div class="card-header">
+          <div>
+            <h2>Site Settings</h2>
+            <p>Edit global website content (title, moto, contact, footer, hero)</p>
+          </div>
+          <button class="btn primary" id="saveSettingsBtn">Save Settings</button>
+        </div>
+        <div class="card-body">
+          <div class="grid">
+            <div class="col-6">
+              <label>Site Title</label>
+              <input id="set_siteTitle" placeholder="Himachal Explorer — The Portal" />
+            </div>
+            <div class="col-6">
+              <label>Tagline / Moto</label>
+              <input id="set_tagline" placeholder="Creating Memorable Journeys for Visitors — Revenue Comes After Trust." />
+            </div>
+
+            <div class="col-4">
+              <label>Contact Name</label>
+              <input id="set_contactName" placeholder="Chandan Panwar" />
+            </div>
+            <div class="col-4">
+              <label>Contact Phone</label>
+              <input id="set_contactPhone" placeholder="7018138847" />
+            </div>
+            <div class="col-4">
+              <label>Contact Email</label>
+              <input id="set_contactEmail" placeholder="chandanpanwar001@gmail.com" />
+            </div>
+
+            <div class="col-8">
+              <label>Footer Text</label>
+              <input id="set_footerText" placeholder="© Himachal Explorer. All rights reserved." />
+            </div>
+            <div class="col-4">
+              <label>WhatsApp Link (optional)</label>
+              <input id="set_whatsapp" placeholder="https://wa.me/91XXXXXXXXXX" />
+            </div>
+
+            <div class="col-8">
+              <label>Hero Background Image URL (optional)</label>
+              <input id="set_heroImg" placeholder="https://.../hero.jpg" />
+            </div>
+            <div class="col-4">
+              <label>Theme Accent Color</label>
+              <input id="set_accent" placeholder="#7C5CFF" />
+            </div>
+
+            <div class="col-12">
+              <label>Home Intro (short)</label>
+              <textarea id="set_intro" placeholder="Write short intro for visitors..."></textarea>
+            </div>
+
+            <div class="col-12 preview">
+              <label class="muted">Preview</label>
+              <img id="heroPreview" alt="Hero Preview" />
+              <div class="hr"></div>
+              <div class="muted" style="font-size:12px">
+                Settings saved at: <b>/settings</b>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PLACES -->
+      <section id="places" class="card tab" style="display:none;">
+        <div class="card-header">
+          <div>
+            <h2>Places Manager</h2>
+            <p>Add / edit places shown on map & packages</p>
+          </div>
+          <div class="row">
+            <input id="placeSearch" placeholder="Search place by name / id..." style="width:260px" />
+            <button class="btn good" id="newPlaceBtn">+ New Place</button>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="split">
+            <div>
+              <table class="table" id="placesTable">
+                <thead>
+                  <tr>
+                    <th style="width:180px">Place</th>
+                    <th>Info</th>
+                    <th style="width:160px">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="placesTbody">
+                  <tr><td colspan="3" class="muted">Loading…</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="card" style="box-shadow:none; background: rgba(255,255,255,.03);">
+              <div class="card-header">
+                <div>
+                  <h2 style="font-size:13px">Edit Place</h2>
+                  <p class="muted">Saved at: <b>/places/{place_id}</b> + images at <b>/places_in_packages/{place_id}/images</b></p>
+                </div>
+                <div class="row">
+                  <button class="btn bad" id="deletePlaceBtn" disabled>Delete</button>
+                  <button class="btn primary" id="savePlaceBtn" disabled>Save</button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="grid">
+                  <div class="col-6">
+                    <label>Place ID (unique)</label>
+                    <input id="pl_id" placeholder="e.g. manali" />
+                  </div>
+                  <div class="col-6">
+                    <label>Place Name</label>
+                    <input id="pl_name" placeholder="Manali" />
+                  </div>
+
+                  <div class="col-6">
+                    <label>District</label>
+                    <input id="pl_district" placeholder="Kullu" />
+                  </div>
+                  <div class="col-6">
+                    <label>Region Style (optional)</label>
+                    <input id="pl_region" placeholder="e.g. Valley / High Altitude / Heritage" />
+                  </div>
+
+                  <div class="col-6">
+                    <label>Latitude</label>
+                    <input id="pl_lat" placeholder="32.2396" />
+                  </div>
+                  <div class="col-6">
+                    <label>Longitude</label>
+                    <input id="pl_lng" placeholder="77.1887" />
+                  </div>
+
+                  <div class="col-12">
+                    <label>Tags (comma separated)</label>
+                    <input id="pl_tags" placeholder="temple, trek, waterfall, market" />
+                  </div>
+
+                  <div class="col-12">
+                    <label>Overview (short)</label>
+                    <textarea id="pl_overview" placeholder="Short description shown on click..."></textarea>
+                  </div>
+
+                  <div class="col-12">
+                    <label>Main Image URL (optional) — saved in /places/{id}/imageUrl (for quick preview)</label>
+                    <input id="pl_imgUrl" placeholder="https://...jpg" />
+                  </div>
+
+                  <!-- ✅ NEW: Paste/Upload/URL image manager -->
+                  <div class="col-12">
+                    <label>Place Images (Paste / Upload / URL) → Storage → DB</label>
+
+                    <div class="grid">
+                      <div class="col-8">
+                        <div id="pasteBox" class="preview" style="border-style:dashed; cursor:text;">
+                          <div class="muted" style="font-size:12px;margin-bottom:8px;">
+                            Click here and <b>PASTE</b> image (Ctrl+V). On mobile: long-press → Paste.
+                          </div>
+                          <img id="pastePreview" alt="Paste Preview" style="display:none;" />
+                          <div id="pasteHint" class="muted" style="font-size:12px;">No image pasted yet.</div>
+                        </div>
+                      </div>
+
+                      <div class="col-4">
+                        <label class="muted">Upload File</label>
+                        <input id="pl_imgFile2" type="file" accept="image/*" />
+
+                        <label class="muted" style="margin-top:10px;">Or Image URL</label>
+                        <input id="pl_imgUrl2" placeholder="https://...jpg/png/webp" />
+
+                        <div class="row" style="margin-top:10px;">
+                          <button class="btn good" id="btnUploadImage" disabled>Upload & Save</button>
+                          <button class="btn primary" id="btnSaveUrlOnly" disabled>Save URL Only</button>
+                        </div>
+
+                        <div class="muted" id="imgOpsStatus" style="font-size:12px;margin-top:8px;"></div>
+                      </div>
+
+                      <div class="col-12">
+                        <div class="muted" style="font-size:12px;margin:6px 0 8px;">
+                          Saved to: <b>/places_in_packages/{place_id}/images</b> (portal uses this)
+                          + also updates <b>/places/{place_id}/imageUrl</b> with the first image.
+                        </div>
+
+                        <div id="imagesGallery" class="grid"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12 preview">
+                    <label class="muted">Main Image Preview (/places imageUrl)</label>
+                    <img id="placePreview" alt="Place Preview" />
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- PACKAGES -->
+      <section id="packages" class="card tab" style="display:none;">
+        <div class="card-header">
+          <div>
+            <h2>Packages Manager</h2>
+            <p>Add / edit packages (route, days, places, plan, include/exclude)</p>
+          </div>
+          <div class="row">
+            <input id="pkgSearch" placeholder="Search package by name / id..." style="width:260px" />
+            <button class="btn good" id="newPkgBtn">+ New Package</button>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="split">
+            <div>
+              <table class="table" id="pkgsTable">
+                <thead>
+                  <tr>
+                    <th style="width:190px">Package</th>
+                    <th>Route</th>
+                    <th style="width:160px">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="pkgsTbody">
+                  <tr><td colspan="3" class="muted">Loading…</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="card" style="box-shadow:none; background: rgba(255,255,255,.03);">
+              <div class="card-header">
+                <div>
+                  <h2 style="font-size:13px">Edit Package</h2>
+                  <p class="muted">Saved at: <b>/packages/{package_id}</b></p>
+                </div>
+                <div class="row">
+                  <button class="btn bad" id="deletePkgBtn" disabled>Delete</button>
+                  <button class="btn primary" id="savePkgBtn" disabled>Save</button>
+                </div>
+              </div>
+
+              <div class="card-body">
+                <div class="grid">
+                  <div class="col-6">
+                    <label>Package ID (unique)</label>
+                    <input id="pk_id" placeholder="e.g. shimla-manali-5d" />
+                  </div>
+                  <div class="col-6">
+                    <label>Package Name</label>
+                    <input id="pk_name" placeholder="Shimla → Manali (5 Days)" />
+                  </div>
+
+                  <div class="col-4">
+                    <label>Start Point</label>
+                    <input id="pk_start" placeholder="DELHI / CHANDIGARH / AMRITSAR" />
+                  </div>
+                  <div class="col-4">
+                    <label>End Point</label>
+                    <input id="pk_end" placeholder="Manali" />
+                  </div>
+                  <div class="col-4">
+                    <label>Days</label>
+                    <input id="pk_days" placeholder="5" />
+                  </div>
+
+                  <div class="col-12">
+                    <label>Route Path (pipe separated)</label>
+                    <input id="pk_route_path" placeholder="Delhi | Chandigarh | Shimla | Kullu | Manali" />
+                  </div>
+
+                  <div class="col-12">
+                    <label>Night Plan (pipe separated)</label>
+                    <input id="pk_night_plan" placeholder="Shimla | Manali | Manali | Manali | Chandigarh" />
+                  </div>
+
+                  <div class="col-12">
+                    <label>Major Place IDs (comma separated)</label>
+                    <input id="pk_major_ids" placeholder="shimla, kufri, manali, solang-valley" />
+                  </div>
+
+                  <div class="col-12">
+                    <label>Day-wise Place IDs (comma separated per day)</label>
+                    <div class="grid">
+                      <div class="col-6">
+                        <label>Day 1</label>
+                        <input id="pk_day1" placeholder="shimla, the-ridge, mall-road" />
+                      </div>
+                      <div class="col-6">
+                        <label>Day 2</label>
+                        <input id="pk_day2" placeholder="kufri, green-valley" />
+                      </div>
+                      <div class="col-6">
+                        <label>Day 3</label>
+                        <input id="pk_day3" placeholder="kullu, kasol" />
+                      </div>
+                      <div class="col-6">
+                        <label>Day 4</label>
+                        <input id="pk_day4" placeholder="manali, solang-valley" />
+                      </div>
+                      <div class="col-6">
+                        <label>Day 5</label>
+                        <input id="pk_day5" placeholder="atal-tunnel-viewpoint, sissu" />
+                      </div>
+                      <div class="col-6">
+                        <label>Day 6+</label>
+                        <input id="pk_day6" placeholder="optional..." />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <label>Includes (one per line)</label>
+                    <textarea id="pk_includes" placeholder="- Hotel stay&#10;- Breakfast&#10;- Cab for sightseeing"></textarea>
+                  </div>
+
+                  <div class="col-12">
+                    <label>Excludes (one per line)</label>
+                    <textarea id="pk_excludes" placeholder="- Personal shopping&#10;- Lunch/Dinner&#10;- Entry tickets"></textarea>
+                  </div>
+
+                  <div class="col-12">
+                    <label>Status</label>
+                    <select id="pk_status">
+                      <option value="active">Active</option>
+                      <option value="draft">Draft</option>
+                      <option value="hidden">Hidden</option>
+                    </select>
+                  </div>
+
+                  <div class="col-12 muted" style="font-size:12px">
+                    Tip: Your package cost calculator can read rates from <b>/rates</b> and compute Budget/Premium/Luxury.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- RATES -->
+      <section id="rates" class="card tab" style="display:none;">
+        <div class="card-header">
+          <div>
+            <h2>Rates & Pricing</h2>
+            <p>Budget / Premium / Luxury pricing used in tour cost calculation</p>
+          </div>
+          <button class="btn primary" id="saveRatesBtn">Save Rates</button>
+        </div>
+
+        <div class="card-body">
+          <div class="grid">
+            <div class="col-12 muted" style="font-size:12px">
+              Saved at: <b>/rates</b>
+            </div>
+
+            <div class="col-4">
+              <div class="card" style="box-shadow:none; background: rgba(255,255,255,.03);">
+                <div class="card-header">
+                  <div><h2 style="font-size:13px">Budget</h2><p class="muted">Low-cost plan</p></div>
+                  <span class="badge">budget</span>
+                </div>
+                <div class="card-body">
+                  <label>Hotel per night (₹)</label>
+                  <input id="rt_budget_hotel" placeholder="1800" />
+                  <label style="margin-top:10px;">Breakfast add-on (₹/person/day)</label>
+                  <input id="rt_budget_breakfast" placeholder="150" />
+                  <label style="margin-top:10px;">Travel rate (₹/km)</label>
+                  <input id="rt_budget_perKm" placeholder="14" />
+                  <label style="margin-top:10px;">Driver/Other fixed (₹/day)</label>
+                  <input id="rt_budget_fixedDay" placeholder="300" />
+                </div>
+              </div>
+            </div>
+
+            <div class="col-4">
+              <div class="card" style="box-shadow:none; background: rgba(255,255,255,.03);">
+                <div class="card-header">
+                  <div><h2 style="font-size:13px">Premium</h2><p class="muted">Mid-range</p></div>
+                  <span class="badge">premium</span>
+                </div>
+                <div class="card-body">
+                  <label>Hotel per night (₹)</label>
+                  <input id="rt_premium_hotel" placeholder="3200" />
+                  <label style="margin-top:10px;">Breakfast add-on (₹/person/day)</label>
+                  <input id="rt_premium_breakfast" placeholder="250" />
+                  <label style="margin-top:10px;">Travel rate (₹/km)</label>
+                  <input id="rt_premium_perKm" placeholder="18" />
+                  <label style="margin-top:10px;">Driver/Other fixed (₹/day)</label>
+                  <input id="rt_premium_fixedDay" placeholder="450" />
+                </div>
+              </div>
+            </div>
+
+            <div class="col-4">
+              <div class="card" style="box-shadow:none; background: rgba(255,255,255,.03);">
+                <div class="card-header">
+                  <div><h2 style="font-size:13px">Luxury</h2><p class="muted">High-end</p></div>
+                  <span class="badge">luxury</span>
+                </div>
+                <div class="card-body">
+                  <label>Hotel per night (₹)</label>
+                  <input id="rt_luxury_hotel" placeholder="6500" />
+                  <label style="margin-top:10px;">Breakfast add-on (₹/person/day)</label>
+                  <input id="rt_luxury_breakfast" placeholder="450" />
+                  <label style="margin-top:10px;">Travel rate (₹/km)</label>
+                  <input id="rt_luxury_perKm" placeholder="24" />
+                  <label style="margin-top:10px;">Driver/Other fixed (₹/day)</label>
+                  <input id="rt_luxury_fixedDay" placeholder="700" />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    /**********************
+     * 1) FIREBASE CONFIG
+     **********************/
+    // ✅ Use THIS config inside your Admin Panel (Firebase Compat)
+// (Same project you pasted)
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
+  authDomain: "revnue-records.firebaseapp.com",
+  databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "revnue-records",
+  storageBucket: "revnue-records.firebasestorage.app",
+  messagingSenderId: "182348503564",
+  appId: "1:182348503564:web:480085405b09177245ac29",
+  measurementId: "G-MGTDBCG896"
+};
+
+// ✅ Compat init (matches your admin HTML scripts)
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
+const db = firebase.database();
+const storage = firebase.storage();
+
+    /**********************
+     * 2) NAV / TABS
+     **********************/
+    const navLinks = document.querySelectorAll(".nav a[data-tab]");
+    const tabs = document.querySelectorAll(".tab");
+
+    function showTab(tabName){
+      tabs.forEach(s => s.style.display = "none");
+      el(tabName).style.display = "block";
+
+      navLinks.forEach(a => a.classList.remove("active"));
+      document.querySelector(`.nav a[data-tab="${tabName}"]`)?.classList.add("active");
+      location.hash = tabName;
+    }
+
+    navLinks.forEach(a=>{
+      a.addEventListener("click", (e)=>{
+        e.preventDefault();
+        showTab(a.dataset.tab);
+      })
+    });
+
+    window.addEventListener("load", ()=>{
+      const tab = (location.hash || "#settings").replace("#","");
+      showTab(tab);
+    });
+
+    /**********************
+     * 3) GLOBAL DATA CACHE
+     **********************/
+    let SETTINGS = {};
+    let PLACES = {};    // /places
+    let PACKAGES = {};  // /packages
+    let RATES = {};     // /rates
+    let currentPlaceKey = null;
+    let currentPkgKey = null;
+
+    function setStatus(ok, msg){
+      el("dbStatus").innerHTML = `DB: <b style="color:${ok?'var(--good)':'var(--bad)'}">${msg}</b>`;
+    }
+
+    async function loadAll(){
+      try{
+        setStatus(true, "Loading…");
+        const snap = await db.ref().once("value");
+        const root = snap.val() || {};
+
+        SETTINGS = root.settings || {};
+        PLACES   = root.places   || {};
+        PACKAGES = root.packages || {};
+        RATES    = root.rates    || {};
+
+        renderSettings();
+        renderPlacesTable();
+        renderPackagesTable();
+        renderRates();
+
+        el("countPlaces").textContent = Object.keys(PLACES).length;
+        el("countPackages").textContent = Object.keys(PACKAGES).length;
+        el("countRates").textContent = "✓";
+        el("countSettings").textContent = "✓";
+
+        setStatus(true, "Connected");
+      }catch(err){
+        console.error(err);
+        setStatus(false, "Error");
+        alert("Failed to load data. Check Firebase config & rules.");
+      }
+    }
+    el("btnReload").addEventListener("click", loadAll);
+
+    /**********************
+     * 4) SETTINGS
+     **********************/
+    function renderSettings(){
+      el("set_siteTitle").value    = SETTINGS.siteTitle || "";
+      el("set_tagline").value      = SETTINGS.tagline || "";
+      el("set_contactName").value  = SETTINGS.contactName || "";
+      el("set_contactPhone").value = SETTINGS.contactPhone || "";
+      el("set_contactEmail").value = SETTINGS.contactEmail || "";
+      el("set_footerText").value   = SETTINGS.footerText || "";
+      el("set_whatsapp").value     = SETTINGS.whatsapp || "";
+      el("set_heroImg").value      = SETTINGS.heroImg || "";
+      el("set_accent").value       = SETTINGS.accent || "";
+      el("set_intro").value        = SETTINGS.intro || "";
+
+      const hero = (SETTINGS.heroImg || "").trim();
+      el("heroPreview").src = hero ? hero : "data:image/svg+xml;charset=utf-8," + encodeURIComponent(
+        `<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='400'>
+          <defs><linearGradient id='g' x1='0' x2='1'>
+            <stop stop-color='#7C5CFF' offset='0'/><stop stop-color='#35d07f' offset='1'/>
+          </linearGradient></defs>
+          <rect width='1200' height='400' fill='url(#g)' opacity='0.35'/>
+          <text x='50%' y='52%' dominant-baseline='middle' text-anchor='middle'
+            fill='white' font-size='28' font-family='Arial'>Hero Preview</text>
+        </svg>`
+      );
+    }
+    el("set_heroImg").addEventListener("input", ()=>{
+      SETTINGS.heroImg = el("set_heroImg").value.trim();
+      renderSettings();
+    });
+
+    el("saveSettingsBtn").addEventListener("click", async ()=>{
+      const payload = {
+        siteTitle: el("set_siteTitle").value.trim(),
+        tagline: el("set_tagline").value.trim(),
+        contactName: el("set_contactName").value.trim(),
+        contactPhone: el("set_contactPhone").value.trim(),
+        contactEmail: el("set_contactEmail").value.trim(),
+        footerText: el("set_footerText").value.trim(),
+        whatsapp: el("set_whatsapp").value.trim(),
+        heroImg: el("set_heroImg").value.trim(),
+        accent: el("set_accent").value.trim(),
+        intro: el("set_intro").value.trim(),
+        updatedAt: Date.now()
+      };
+      try{
+        await db.ref("settings").set(payload);
+        SETTINGS = payload;
+        renderSettings();
+        alert("✅ Settings saved");
+      }catch(err){
+        console.error(err);
+        alert("❌ Failed saving settings");
+      }
+    });
+
+    /**********************
+     * 5) PLACES (table + editor)
+     **********************/
+    function placeRowHtml(id, p){
+      const name = p.name || id;
+      const dist = p.district ? ` • ${p.district}` : "";
+      const tags = (p.tags && Array.isArray(p.tags) && p.tags.length) ? ` • ${p.tags.slice(0,3).join(", ")}` : "";
+      const img  = p.imageUrl ? "🖼️" : "";
+      const latlng = (p.lat && p.lng) ? `${p.lat}, ${p.lng}` : "";
+      return `
+        <tr>
+          <td>
+            <div style="font-weight:800">${escapeHtml(name)} <span class="badge">${escapeHtml(id)}</span></div>
+            <div class="muted">${escapeHtml(latlng)}</div>
+          </td>
+          <td class="muted">${img} ${escapeHtml((p.overview || "").slice(0,90))}${(p.overview||"").length>90?"…":""}<br><span class="muted">${escapeHtml(dist)}${escapeHtml(tags)}</span></td>
+          <td>
+            <button class="btn primary" onclick="editPlace('${escapeAttr(id)}')">Edit</button>
+          </td>
+        </tr>
+      `;
+    }
+
+    function renderPlacesTable(){
+      const q = (el("placeSearch").value || "").trim().toLowerCase();
+      const keys = Object.keys(PLACES);
+
+      const filtered = keys.filter(k=>{
+        const p = PLACES[k] || {};
+        const hay = (k + " " + (p.name||"") + " " + (p.district||"") + " " + (p.region||"")).toLowerCase();
+        return hay.includes(q);
+      }).sort((a,b)=>{
+        const an = (PLACES[a]?.name || a).toLowerCase();
+        const bn = (PLACES[b]?.name || b).toLowerCase();
+        return an.localeCompare(bn);
+      });
+
+      if(!filtered.length){
+        el("placesTbody").innerHTML = `<tr><td colspan="3" class="muted">No places found.</td></tr>`;
+        return;
+      }
+
+      el("placesTbody").innerHTML = filtered.map(id => placeRowHtml(id, PLACES[id])).join("");
+    }
+    el("placeSearch").addEventListener("input", renderPlacesTable);
+
+    window.editPlace = async function(id){
+      currentPlaceKey = id;
+      const p = PLACES[id] || {};
+
+      el("pl_id").value = id;
+      el("pl_id").disabled = true;
+
+      el("pl_name").value = p.name || "";
+      el("pl_district").value = p.district || "";
+      el("pl_region").value = p.region || "";
+      el("pl_lat").value = (p.lat ?? "");
+      el("pl_lng").value = (p.lng ?? "");
+      el("pl_tags").value = (Array.isArray(p.tags) ? p.tags.join(", ") : (p.tags || ""));
+      el("pl_overview").value = p.overview || "";
+      el("pl_imgUrl").value = p.imageUrl || "";
+
+      el("savePlaceBtn").disabled = false;
+      el("deletePlaceBtn").disabled = false;
+      enableImageOps(true);
+
+      renderPlacePreview();
+      clearPaste();
+      await renderImagesGallery(id);
+      showTab("places");
+    }
+
+    function clearPlaceEditor(newMode=false){
+      currentPlaceKey = null;
+      el("pl_id").value = "";
+      el("pl_id").disabled = !newMode ? true : false;
+      el("pl_name").value = "";
+      el("pl_district").value = "";
+      el("pl_region").value = "";
+      el("pl_lat").value = "";
+      el("pl_lng").value = "";
+      el("pl_tags").value = "";
+      el("pl_overview").value = "";
+      el("pl_imgUrl").value = "";
+      el("pl_imgFile2").value = "";
+      el("pl_imgUrl2").value = "";
+      setImgStatus("", true);
+      el("imagesGallery").innerHTML = "";
+      clearPaste();
+
+      el("savePlaceBtn").disabled = !newMode;
+      el("deletePlaceBtn").disabled = true;
+      enableImageOps(newMode);
+
+      renderPlacePreview();
+    }
+
+    function renderPlacePreview(){
+      const url = (el("pl_imgUrl").value || "").trim();
+      el("placePreview").src = url ? url : "data:image/svg+xml;charset=utf-8," + encodeURIComponent(
+        `<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='600'>
+          <rect width='1200' height='600' fill='#0b1222'/>
+          <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
+            fill='rgba(255,255,255,.65)' font-size='28' font-family='Arial'>Place Image Preview</text>
+        </svg>`
+      );
+    }
+    el("pl_imgUrl").addEventListener("input", renderPlacePreview);
+
+    el("newPlaceBtn").addEventListener("click", ()=>{
+      clearPlaceEditor(true);
+      showTab("places");
+      el("pl_id").focus();
+    });
+
+    el("savePlaceBtn").addEventListener("click", async ()=>{
+      const id = (el("pl_id").value || "").trim();
+      if(!id){
+        alert("Place ID required");
+        return;
+      }
+
+      const tagsRaw = (el("pl_tags").value || "").trim();
+      const tags = tagsRaw ? tagsRaw.split(",").map(s=>s.trim()).filter(Boolean) : [];
+
+      const payload = {
+        name: el("pl_name").value.trim(),
+        district: el("pl_district").value.trim(),
+        region: el("pl_region").value.trim(),
+        lat: safeNumber(el("pl_lat").value.trim()),
+        lng: safeNumber(el("pl_lng").value.trim()),
+        tags,
+        overview: el("pl_overview").value.trim(),
+        imageUrl: el("pl_imgUrl").value.trim(),
+        updatedAt: Date.now()
+      };
+
+      try{
+        await db.ref("places/" + id).set(payload);
+        PLACES[id] = payload;
+
+        el("countPlaces").textContent = Object.keys(PLACES).length;
+        renderPlacesTable();
+
+        currentPlaceKey = id;
+        el("pl_id").disabled = true;
+        el("deletePlaceBtn").disabled = false;
+        enableImageOps(true);
+
+        alert("✅ Place saved");
+      }catch(err){
+        console.error(err);
+        alert("❌ Failed saving place");
+      }
+    });
+
+    el("deletePlaceBtn").addEventListener("click", async ()=>{
+      if(!currentPlaceKey) return;
+      const ok = confirm("Delete this place permanently? (This deletes /places only)");
+      if(!ok) return;
+
+      try{
+        await db.ref("places/" + currentPlaceKey).remove();
+        delete PLACES[currentPlaceKey];
+        el("countPlaces").textContent = Object.keys(PLACES).length;
+        renderPlacesTable();
+        clearPlaceEditor(false);
+        alert("✅ Place deleted");
+      }catch(err){
+        console.error(err);
+        alert("❌ Failed deleting place");
+      }
+    });
+
+    /**********************
+     * 5B) PLACE IMAGES (Paste/Upload/URL)
+     * Saves to: /places_in_packages/{place_id}/images
+     * Also sets: /places/{place_id}/imageUrl (first image)
+     **********************/
+    let pastedFile = null;
+
+    function setImgStatus(msg, ok=true){
+      if(!el("imgOpsStatus")) return;
+      if(!msg){ el("imgOpsStatus").innerHTML = ""; return; }
+      const c = ok ? "var(--good)" : "var(--bad)";
+      el("imgOpsStatus").innerHTML = `<span style="color:${c};font-weight:700">${escapeHtml(msg)}</span>`;
+    }
+
+    function enableImageOps(enable){
+      if(el("btnUploadImage")) el("btnUploadImage").disabled = !enable;
+      if(el("btnSaveUrlOnly")) el("btnSaveUrlOnly").disabled = !enable;
+    }
+
+    function showPastePreview(file){
+      const img = el("pastePreview");
+      img.src = URL.createObjectURL(file);
+      img.style.display = "block";
+      el("pasteHint").style.display = "none";
+    }
+
+    function clearPaste(){
+      pastedFile = null;
+      const img = el("pastePreview");
+      if(img){
+        img.src = "";
+        img.style.display = "none";
+      }
+      if(el("pasteHint")) el("pasteHint").style.display = "block";
+    }
+
+    async function fetchImagesList(placeId){
+      const snap = await db.ref(`places_in_packages/${placeId}/images`).once("value");
+      const val = snap.val();
+      if(!val) return [];
+      return Object.entries(val)
+        .map(([k,v]) => ({ key:k, url:String(v||"").trim() }))
+        .filter(x => x.url && x.url !== "1");
+    }
+
+    async function ensureMainImageUrlFromImages(placeId){
+      // If /places/{id}/imageUrl empty, set first from /places_in_packages/{id}/images
+      const place = PLACES[placeId] || {};
+      if(place.imageUrl && String(place.imageUrl).trim()) return;
+      const list = await fetchImagesList(placeId);
+      if(list[0]?.url){
+        place.imageUrl = list[0].url;
+        PLACES[placeId] = place;
+        await db.ref(`places/${placeId}/imageUrl`).set(list[0].url).catch(()=>{});
+        el("pl_imgUrl").value = list[0].url;
+        renderPlacePreview();
+      }
+    }
+
+    async function renderImagesGallery(placeId){
+      const box = el("imagesGallery");
+      if(!box) return;
+
+      const items = await fetchImagesList(placeId);
+      box.innerHTML = "";
+
+      if(!items.length){
+        box.innerHTML = `<div class="col-12 muted" style="font-size:12px">No images saved for this place yet.</div>`;
+        await ensureMainImageUrlFromImages(placeId);
+        return;
+      }
+
+      items.forEach(it=>{
+        const d = document.createElement("div");
+        d.className = "col-3";
+        d.innerHTML = `
+          <div class="preview" style="padding:10px">
+            <img src="${escapeHtml(it.url)}" style="width:100%;height:120px;object-fit:cover;border-radius:12px"
+              referrerpolicy="no-referrer"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="muted" style="display:none;font-size:12px">Image blocked / not loading</div>
+            <div class="row" style="margin-top:8px; justify-content:space-between;">
+              <button class="btn bad" style="padding:8px 10px" data-del="${escapeAttr(it.key)}">Delete</button>
+              <button class="btn" style="padding:8px 10px" data-copy="${escapeAttr(it.url)}">Copy</button>
+              <button class="btn good" style="padding:8px 10px" data-setmain="${escapeAttr(it.url)}">Set Main</button>
+            </div>
+          </div>
+        `;
+        box.appendChild(d);
+      });
+
+      box.querySelectorAll("[data-copy]").forEach(btn=>{
+        btn.addEventListener("click", async ()=>{
+          const url = btn.getAttribute("data-copy");
+          try{
+            await navigator.clipboard.writeText(url);
+            setImgStatus("Copied URL", true);
+          }catch(e){
+            setImgStatus("Copy not allowed", false);
+          }
+        });
+      });
+
+      box.querySelectorAll("[data-setmain]").forEach(btn=>{
+        btn.addEventListener("click", async ()=>{
+          const url = btn.getAttribute("data-setmain");
+          if(!currentPlaceKey) return;
+          try{
+            await db.ref(`places/${currentPlaceKey}/imageUrl`).set(url);
+            PLACES[currentPlaceKey] = { ...(PLACES[currentPlaceKey]||{}), imageUrl:url };
+            el("pl_imgUrl").value = url;
+            renderPlacePreview();
+            setImgStatus("Main image set. Click Save if you changed other fields.", true);
+          }catch(e){
+            setImgStatus("Failed to set main", false);
+          }
+        });
+      });
+
+      box.querySelectorAll("[data-del]").forEach(btn=>{
+        btn.addEventListener("click", async ()=>{
+          if(!currentPlaceKey) return;
+          const key = btn.getAttribute("data-del");
+          const ok = confirm("Remove this image URL from DB? (Storage file will remain)");
+          if(!ok) return;
+          try{
+            await db.ref(`places_in_packages/${currentPlaceKey}/images/${key}`).remove();
+            await renderImagesGallery(currentPlaceKey);
+            setImgStatus("Deleted from DB", true);
+          }catch(e){
+            console.error(e);
+            setImgStatus("Delete failed", false);
+          }
+        });
+      });
+
+      // If /places/{id}/imageUrl missing, set first image as main
+      await ensureMainImageUrlFromImages(placeId);
+    }
+
+    function isHttpUrl(u){
+      try{
+        const url = new URL(u);
+        return url.protocol === "http:" || url.protocol === "https:";
+      }catch(e){ return false; }
+    }
+
+    async function appendImageUrl(placeId, url){
+      const ref = db.ref(`places_in_packages/${placeId}/images`);
+      const snap = await ref.once("value");
+      const v = snap.val();
+      let idx = 0;
+      if(v){
+        // array-like? choose next number key
+        const numericKeys = Object.keys(v).filter(k => String(+k) === k).map(k=>+k);
+        if(numericKeys.length) idx = Math.max(...numericKeys) + 1;
+        else idx = Object.keys(v).length; // fallback
+      }
+      await ref.child(String(idx)).set(url);
+      return idx;
+    }
+
+    async function uploadToStorage(placeId, file){
+      const safeName = String(file.name || "image").replace(/[^\w.\-]+/g,"_");
+      const path = `place-images/${placeId}/${Date.now()}_${safeName}`;
+      const ref = storage.ref(path);
+      await ref.put(file);
+      return await ref.getDownloadURL();
+    }
+
+    // Paste box handler
+    window.addEventListener("load", ()=>{
+      const pb = el("pasteBox");
+      if(!pb) return;
+
+      pb.setAttribute("tabindex","0");
+      pb.addEventListener("paste", (e)=>{
+        const items = e.clipboardData && e.clipboardData.items;
+        if(!items) return;
+        for(const item of items){
+          if(item.type && item.type.startsWith("image/")){
+            const f = item.getAsFile();
+            if(f){
+              pastedFile = f;
+              showPastePreview(f);
+              setImgStatus("Image pasted. Click Upload & Save.", true);
+              e.preventDefault();
+              return;
+            }
+          }
+        }
+      });
+    });
+
+    // File select
+    window.addEventListener("load", ()=>{
+      const f = el("pl_imgFile2");
+      if(!f) return;
+      f.addEventListener("change", ()=>{
+        const file = f.files?.[0];
+        if(file){
+          pastedFile = file; // treat same
+          showPastePreview(file);
+          setImgStatus("File selected. Click Upload & Save.", true);
+        }
+      });
+    });
+
+    // Upload & Save
+    window.addEventListener("load", ()=>{
+      el("btnUploadImage")?.addEventListener("click", async ()=>{
+        if(!currentPlaceKey){
+          alert("Open a place first (Edit).");
+          return;
+        }
+        const placeId = currentPlaceKey;
+        const urlInput = (el("pl_imgUrl2").value || "").trim();
+
+        // choose file priority
+        const file = pastedFile || el("pl_imgFile2").files?.[0];
+
+        try{
+          if(file){
+            setImgStatus("Uploading to Storage…", true);
+            const dl = await uploadToStorage(placeId, file);
+            setImgStatus("Saving URL to DB…", true);
+            await appendImageUrl(placeId, dl);
+
+            // also set main image in /places
+            await db.ref(`places/${placeId}/imageUrl`).set(dl).catch(()=>{});
+            PLACES[placeId] = { ...(PLACES[placeId]||{}), imageUrl: dl };
+            el("pl_imgUrl").value = dl;
+            renderPlacePreview();
+
+            clearPaste();
+            el("pl_imgFile2").value = "";
+            setImgStatus("✅ Uploaded & saved. Gallery updated.", true);
+            await renderImagesGallery(placeId);
+            return;
+          }
+
+          // no file: try url upload? (CORS can block) -> for admin we just save URL
+          if(urlInput && isHttpUrl(urlInput)){
+            setImgStatus("Saving URL to DB…", true);
+            await appendImageUrl(placeId, urlInput);
+            // also set main
+            await db.ref(`places/${placeId}/imageUrl`).set(urlInput).catch(()=>{});
+            PLACES[placeId] = { ...(PLACES[placeId]||{}), imageUrl: urlInput };
+            el("pl_imgUrl").value = urlInput;
+            renderPlacePreview();
+
+            el("pl_imgUrl2").value = "";
+            setImgStatus("✅ URL saved (not uploaded). Gallery updated.", true);
+            await renderImagesGallery(placeId);
+            return;
+          }
+
+          setImgStatus("No image selected/pasted or URL missing.", false);
+        }catch(err){
+          console.error(err);
+          setImgStatus("Upload/save failed: " + (err.message || err), false);
+        }
+      });
+
+      // Save URL only
+      el("btnSaveUrlOnly")?.addEventListener("click", async ()=>{
+        if(!currentPlaceKey){
+          alert("Open a place first (Edit).");
+          return;
+        }
+        const placeId = currentPlaceKey;
+        const url = (el("pl_imgUrl2").value || "").trim();
+        if(!url || !isHttpUrl(url)){
+          setImgStatus("Please paste a valid http/https URL.", false);
+          return;
+        }
+        try{
+          setImgStatus("Saving URL…", true);
+          await appendImageUrl(placeId, url);
+
+          // also set main
+          await db.ref(`places/${placeId}/imageUrl`).set(url).catch(()=>{});
+          PLACES[placeId] = { ...(PLACES[placeId]||{}), imageUrl: url };
+          el("pl_imgUrl").value = url;
+          renderPlacePreview();
+
+          el("pl_imgUrl2").value = "";
+          setImgStatus("✅ URL saved. Gallery updated.", true);
+          await renderImagesGallery(placeId);
+        }catch(e){
+          console.error(e);
+          setImgStatus("Save failed", false);
+        }
+      });
+    });
+
+    /**********************
+     * 6) PACKAGES
+     **********************/
+    function pkgRowHtml(id, p){
+      const name = p.route_name || p.name || id;
+      const route = p.route_path || "";
+      const days = p.days ? `${p.days} days` : "";
+      return `
+        <tr>
+          <td>
+            <div style="font-weight:800">${escapeHtml(name)} <span class="badge">${escapeHtml(id)}</span></div>
+            <div class="muted">${escapeHtml(days)} • ${escapeHtml(p.status||"active")}</div>
+          </td>
+          <td class="muted">${escapeHtml(route)}</td>
+          <td><button class="btn primary" onclick="editPkg('${escapeAttr(id)}')">Edit</button></td>
+        </tr>
+      `;
+    }
+
+    function renderPackagesTable(){
+      const q = (el("pkgSearch").value || "").trim().toLowerCase();
+      const keys = Object.keys(PACKAGES);
+
+      const filtered = keys.filter(k=>{
+        const p = PACKAGES[k] || {};
+        const hay = (k + " " + (p.route_name||"") + " " + (p.name||"") + " " + (p.route_path||"") + " " + (p.start_point||"") + " " + (p.end_point||"")).toLowerCase();
+        return hay.includes(q);
+      }).sort((a,b)=>{
+        const an = (PACKAGES[a]?.route_name || PACKAGES[a]?.name || a).toLowerCase();
+        const bn = (PACKAGES[b]?.route_name || PACKAGES[b]?.name || b).toLowerCase();
+        return an.localeCompare(bn);
+      });
+
+      if(!filtered.length){
+        el("pkgsTbody").innerHTML = `<tr><td colspan="3" class="muted">No packages found.</td></tr>`;
+        return;
+      }
+      el("pkgsTbody").innerHTML = filtered.map(id => pkgRowHtml(id, PACKAGES[id])).join("");
+    }
+    el("pkgSearch").addEventListener("input", renderPackagesTable);
+
+    window.editPkg = function(id){
+      currentPkgKey = id;
+      const p = PACKAGES[id] || {};
+
+      el("pk_id").value = id;
+      el("pk_id").disabled = true;
+
+      el("pk_name").value = p.route_name || p.name || "";
+      el("pk_start").value = p.start_point || "";
+      el("pk_end").value = p.end_point || "";
+      el("pk_days").value = p.days || "";
+
+      el("pk_route_path").value = p.route_path || "";
+      el("pk_night_plan").value = p.night_plan || "";
+      el("pk_major_ids").value = p.major_place_ids || "";
+
+      el("pk_day1").value = p.day1_place_ids || "";
+      el("pk_day2").value = p.day2_place_ids || "";
+      el("pk_day3").value = p.day3_place_ids || "";
+      el("pk_day4").value = p.day4_place_ids || "";
+      el("pk_day5").value = p.day5_place_ids || "";
+      el("pk_day6").value = p.day6_place_ids || "";
+
+      el("pk_includes").value = (p.includes || "").trim();
+      el("pk_excludes").value = (p.excludes || "").trim();
+      el("pk_status").value = p.status || "active";
+
+      el("savePkgBtn").disabled = false;
+      el("deletePkgBtn").disabled = false;
+
+      showTab("packages");
+    }
+
+    function clearPkgEditor(newMode=false){
+      currentPkgKey = null;
+
+      el("pk_id").value = "";
+      el("pk_id").disabled = !newMode ? true : false;
+
+      el("pk_name").value = "";
+      el("pk_start").value = "";
+      el("pk_end").value = "";
+      el("pk_days").value = "";
+
+      el("pk_route_path").value = "";
+      el("pk_night_plan").value = "";
+      el("pk_major_ids").value = "";
+
+      el("pk_day1").value = "";
+      el("pk_day2").value = "";
+      el("pk_day3").value = "";
+      el("pk_day4").value = "";
+      el("pk_day5").value = "";
+      el("pk_day6").value = "";
+
+      el("pk_includes").value = "";
+      el("pk_excludes").value = "";
+      el("pk_status").value = "active";
+
+      el("savePkgBtn").disabled = !newMode;
+      el("deletePkgBtn").disabled = true;
+    }
+
+    el("newPkgBtn").addEventListener("click", ()=>{
+      clearPkgEditor(true);
+      showTab("packages");
+      el("pk_id").focus();
+    });
+
+    el("savePkgBtn").addEventListener("click", async ()=>{
+      const id = (el("pk_id").value || "").trim();
+      if(!id){ alert("Package ID required"); return; }
+
+      const payload = {
+        route_name: el("pk_name").value.trim(),
+        name: el("pk_name").value.trim(),
+        start_point: el("pk_start").value.trim(),
+        end_point: el("pk_end").value.trim(),
+        days: safeNumber(el("pk_days").value.trim()),
+        route_path: el("pk_route_path").value.trim(),
+        night_plan: el("pk_night_plan").value.trim(),
+        major_place_ids: el("pk_major_ids").value.trim(),
+
+        day1_place_ids: el("pk_day1").value.trim(),
+        day2_place_ids: el("pk_day2").value.trim(),
+        day3_place_ids: el("pk_day3").value.trim(),
+        day4_place_ids: el("pk_day4").value.trim(),
+        day5_place_ids: el("pk_day5").value.trim(),
+        day6_place_ids: el("pk_day6").value.trim(),
+
+        includes: el("pk_includes").value.trim(),
+        excludes: el("pk_excludes").value.trim(),
+        status: el("pk_status").value,
+        updatedAt: Date.now()
+      };
+
+      try{
+        await db.ref("packages/" + id).set(payload);
+        PACKAGES[id] = payload;
+
+        el("countPackages").textContent = Object.keys(PACKAGES).length;
+        renderPackagesTable();
+
+        currentPkgKey = id;
+        el("pk_id").disabled = true;
+        el("deletePkgBtn").disabled = false;
+
+        alert("✅ Package saved");
+      }catch(err){
+        console.error(err);
+        alert("❌ Failed saving package");
+      }
+    });
+
+    el("deletePkgBtn").addEventListener("click", async ()=>{
+      if(!currentPkgKey) return;
+      const ok = confirm("Delete this package permanently?");
+      if(!ok) return;
+
+      try{
+        await db.ref("packages/" + currentPkgKey).remove();
+        delete PACKAGES[currentPkgKey];
+        el("countPackages").textContent = Object.keys(PACKAGES).length;
+        renderPackagesTable();
+        clearPkgEditor(false);
+        alert("✅ Package deleted");
+      }catch(err){
+        console.error(err);
+        alert("❌ Failed deleting package");
+      }
+    });
+
+    /**********************
+     * 7) RATES
+     **********************/
+    function renderRates(){
+      const b = RATES.budget || {};
+      const p = RATES.premium || {};
+      const l = RATES.luxury || {};
+
+      el("rt_budget_hotel").value = b.hotelPerNight ?? "";
+      el("rt_budget_breakfast").value = b.breakfastPerPersonPerDay ?? "";
+      el("rt_budget_perKm").value = b.travelPerKm ?? "";
+      el("rt_budget_fixedDay").value = b.fixedPerDay ?? "";
+
+      el("rt_premium_hotel").value = p.hotelPerNight ?? "";
+      el("rt_premium_breakfast").value = p.breakfastPerPersonPerDay ?? "";
+      el("rt_premium_perKm").value = p.travelPerKm ?? "";
+      el("rt_premium_fixedDay").value = p.fixedPerDay ?? "";
+
+      el("rt_luxury_hotel").value = l.hotelPerNight ?? "";
+      el("rt_luxury_breakfast").value = l.breakfastPerPersonPerDay ?? "";
+      el("rt_luxury_perKm").value = l.travelPerKm ?? "";
+      el("rt_luxury_fixedDay").value = l.fixedPerDay ?? "";
+    }
+
+    el("saveRatesBtn").addEventListener("click", async ()=>{
+      const payload = {
+        budget: {
+          hotelPerNight: safeNumber(el("rt_budget_hotel").value.trim()),
+          breakfastPerPersonPerDay: safeNumber(el("rt_budget_breakfast").value.trim()),
+          travelPerKm: safeNumber(el("rt_budget_perKm").value.trim()),
+          fixedPerDay: safeNumber(el("rt_budget_fixedDay").value.trim())
+        },
+        premium: {
+          hotelPerNight: safeNumber(el("rt_premium_hotel").value.trim()),
+          breakfastPerPersonPerDay: safeNumber(el("rt_premium_breakfast").value.trim()),
+          travelPerKm: safeNumber(el("rt_premium_perKm").value.trim()),
+          fixedPerDay: safeNumber(el("rt_premium_fixedDay").value.trim())
+        },
+        luxury: {
+          hotelPerNight: safeNumber(el("rt_luxury_hotel").value.trim()),
+          breakfastPerPersonPerDay: safeNumber(el("rt_luxury_breakfast").value.trim()),
+          travelPerKm: safeNumber(el("rt_luxury_perKm").value.trim()),
+          fixedPerDay: safeNumber(el("rt_luxury_fixedDay").value.trim())
+        },
+        updatedAt: Date.now()
+      };
+
+      try{
+        await db.ref("rates").set(payload);
+        RATES = payload;
+        alert("✅ Rates saved");
+      }catch(err){
+        console.error(err);
+        alert("❌ Failed saving rates");
+      }
+    });
+
+    /**********************
+     * 8) HELPERS
+     **********************/
+    function safeNumber(v){
+      if(v === "" || v === null || v === undefined) return null;
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function escapeHtml(str){
+      return String(str ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+    function escapeAttr(str){
+      return String(str ?? "").replaceAll("'","&#039;");
+    }
+
+    /**********************
+     * 9) INIT
+     **********************/
+    loadAll();
+  </script>
+</body>
+</html>
