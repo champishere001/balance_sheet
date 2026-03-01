@@ -16,15 +16,7 @@
   <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
-   /* =========================================================
-   ✅ FULL dashboard.css (Himachal Explorer Portal)
-   - 3 column fixed layout (Left / Center / Map) ✅
-   - Center cards smaller + route line visible ✅
-   - Map NEVER drops below ✅
-   - Mobile responsive ✅
-   ========================================================= */
-
-:root{
+ :root{
   --bg0:#F6FAFF;
   --bg1:#EAF3FF;
   --card: rgba(255,255,255,.62);
@@ -32,15 +24,13 @@
   --muted: rgba(10,30,60,.62);
   --text: rgba(10,30,60,.92);
   --shadow: 0 18px 70px rgba(10,30,60,.14);
-  --shadow2: 0 14px 36px rgba(10,30,60,.10);
   --radius: 16px;
   --acc:#2563EB;
   --gap: 12px;
-  --shellW: min(90vw, 1700px);
+  --shellW: min(94vw, 1700px);
   --heroH: clamp(220px, 26vw, 320px);
 }
 
-/* Base */
 *{ box-sizing:border-box; }
 html, body{ height:100%; }
 body{
@@ -77,7 +67,7 @@ body{
 
 .shell{ width: var(--shellW); margin: 0 auto; padding: 12px 10px 18px; }
 
-/* HERO */
+/* ===== HERO ===== */
 .hero{
   border-radius: 22px; border:1px solid var(--stroke);
   overflow:hidden; position:relative; box-shadow: var(--shadow);
@@ -124,7 +114,6 @@ body{
 }
 .heroRight{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:flex-end; flex:0 0 auto; }
 
-/* Chips / buttons */
 .chip{
   border:1px solid rgba(10,30,60,.18);
   background: rgba(255,255,255,.62);
@@ -148,38 +137,18 @@ body{
 }
 
 /* =========================================================
-   ✅ MAIN GRID — map never goes below
+   ✅ MAIN LAYOUT FIX (NO CHUTIYAPA)
+   LEFT fixed | CENTER flexible | MAP fixed + sticky
    ========================================================= */
 .main{
-  display:flex;
+  display:grid;
+  grid-template-columns: 320px minmax(540px, 1fr) 420px;
   gap: var(--gap);
   margin-top: 12px;
-  align-items:stretch;
-  flex-wrap:nowrap;             /* ✅ NO wrap */
+  align-items: stretch;
 }
 
-/* Left block (sidebar + center) */
-.leftBlock{
-  flex: 1 1 auto;
-  min-width: 0;                 /* ✅ prevents overflow pushing map down */
-  display:flex;
-  gap: var(--gap);
-  flex-wrap:nowrap;
-}
-
-/* Right map block */
-.mapPane{
-  flex: 0 0 360px;              /* ✅ fixed width so it never drops */
-  min-width: 340px;
-  max-width: 460px;
-  position: sticky;
-  top: 12px;
-  height: calc(100vh - 24px);
-  min-height: 620px;
-  max-height: 920px;
-}
-
-/* Pane shared */
+/* panes same height; scroll INSIDE, not page */
 .pane{
   border: 1px solid var(--stroke);
   border-radius: var(--radius);
@@ -187,10 +156,13 @@ body{
   box-shadow: var(--shadow);
   backdrop-filter: blur(14px);
   overflow:hidden;
-  min-height: 620px;
   display:flex;
   flex-direction:column;
   min-width: 0;
+
+  min-height: 640px;
+  height: calc(100vh - 24px);
+  max-height: 920px;
 }
 
 .paneHdr{
@@ -202,20 +174,16 @@ body{
 .paneHdr .t{ margin:0; font-size:11px; letter-spacing:.18em; text-transform: uppercase; font-weight: 950; }
 .paneHdr .s{ font-size:10.5px; color:var(--muted); letter-spacing:.10em; text-transform: uppercase; }
 
-/* LEFT sidebar pane */
-.leftPane{
-  flex: 0 0 300px;              /* ✅ fixed sidebar width */
-  max-width: 340px;
+/* ===== LEFT ===== */
+.sideInner{
+  padding: 12px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  min-height:0;
+  overflow:auto; /* ✅ left scroll if needed */
+  -webkit-overflow-scrolling: touch;
 }
-
-/* CENTER pane */
-.centerPane{
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-/* Sidebar inner */
-.sideInner{ padding: 12px; display:flex; flex-direction:column; gap:10px; min-height:0; }
 .sideCard{
   border:1px solid rgba(10,30,60,.16);
   background: rgba(255,255,255,.62);
@@ -223,8 +191,6 @@ body{
   padding: 10px;
   box-shadow: 0 12px 36px rgba(10,30,60,.10);
 }
-
-/* Fields */
 .field label{
   display:block; font-size: 10.5px; color: var(--muted);
   text-transform: uppercase; letter-spacing:.12em; margin:0 0 6px 2px;
@@ -241,7 +207,6 @@ input, select{
 }
 input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 3px rgba(37,99,235,.16); }
 
-/* Buttons */
 .btnRow{ display:flex; gap:8px; margin-top:8px; }
 .btn{
   flex:1; padding: 10px 10px; border-radius: 12px;
@@ -259,7 +224,6 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   box-shadow: 0 10px 24px rgba(10,30,60,.10);
 }
 
-/* Pills */
 .pills{ display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
 .pill{
   border:1px solid rgba(10,30,60,.16);
@@ -274,7 +238,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
 }
 .pill b{ color: rgba(10,30,60,.92); letter-spacing:.06em; }
 
-/* Sidebar list (All packages) */
+/* ===== LEFT: ALL PACKAGES BOX ===== */
 .otherWrap{ flex:1; min-height:0; display:flex; flex-direction:column; gap:10px; }
 .otherHdr{
   border:1px solid rgba(10,30,60,.16);
@@ -300,7 +264,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   -webkit-tap-highlight-color: transparent;
 }
 .otherList{
-  flex:1; min-height:0; overflow:auto;
+  flex:1; min-height:0; overflow:auto;  /* ✅ scroll here */
   -webkit-overflow-scrolling: touch;
   padding: 2px;
   display:flex; flex-direction:column; gap:8px;
@@ -316,7 +280,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   line-height: 1.35;
 }
 
-/* Sidebar package card */
+/* side package card */
 .pkgSide{
   border:1px solid rgba(10,30,60,.16);
   background: rgba(255,255,255,.70);
@@ -377,8 +341,9 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   color: rgba(10,30,60,.92);
 }
 
-/* Center */
+/* ===== CENTER ===== */
 .centerInner{ display:flex; flex-direction:column; min-height:0; flex:1; }
+
 .districtBar{
   display:flex; flex-wrap:nowrap; gap:8px;
   padding:10px 12px;
@@ -408,28 +373,28 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   background: rgba(37,99,235,.14);
 }
 
+/* ✅ center list scroll INSIDE */
 .pkgList{
-  padding: 10px;                 /* ✅ tighter */
-  overflow:auto;                  /* ✅ scroll inside */
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  min-height:0;
-  background: rgba(255,255,255,.52);
   flex:1;
+  min-height:0;
+  overflow:auto;
+  padding: 10px 12px;
+  background: rgba(255,255,255,.52);
+  -webkit-overflow-scrolling: touch;
 }
 
-/* ✅ center grid smaller cards */
+/* ✅ smaller cards grid */
 .pkgGrid{
   display:grid;
-  gap: 10px;                      /* ✅ smaller */
-  grid-template-columns: repeat(3, minmax(210px, 1fr));
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
   align-items: stretch;
 }
 @media (max-width: 1400px){
-  .pkgGrid{ grid-template-columns: repeat(3, minmax(190px, 1fr)); }
+  .main{ grid-template-columns: 300px minmax(480px, 1fr) 380px; }
+  .pkgGrid{ grid-template-columns: repeat(2, minmax(220px, 1fr)); }
 }
-@media (max-width: 1100px){
+@media (max-width: 980px){
   .pkgGrid{ grid-template-columns: repeat(2, minmax(180px, 1fr)); }
 }
 @media (max-width: 520px){
@@ -445,27 +410,25 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   overflow:hidden;
   cursor:pointer;
   transition: transform .12s ease, border-color .12s ease, background .12s ease;
-  box-shadow: var(--shadow2);
+  box-shadow: 0 14px 36px rgba(10,30,60,.10);
   -webkit-tap-highlight-color: transparent;
   height: 100%;
   display:flex;
   flex-direction:column;
   min-width:0;
 }
-
-/* Active expand */
 .pkgW.active .pkgCard{ flex-direction:row; }
 @media (max-width: 980px){
   .pkgW.active .pkgCard{ flex-direction:column; }
 }
 
-.pkgCard{ display:flex; flex-direction:column; min-height: 220px; flex: 1; }
+/* ✅ compact card */
+.pkgCard{ display:flex; flex-direction:column; min-height: 200px; flex: 1; }
 
-/* ✅ Media 70% look in normal state */
 .pkgMedia{
   position:relative;
   flex: 7 0 auto;
-  min-height: 140px;
+  min-height: 120px;
   background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.78), rgba(37,99,235,.12));
   border-bottom: 1px solid rgba(10,30,60,.12);
   overflow:hidden;
@@ -473,27 +436,21 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
 .pkgW.active .pkgMedia{
   border-bottom:none;
   border-right: 1px solid rgba(10,30,60,.12);
-  min-width: 260px;
+  min-width: 280px;
   flex: 0 0 38%;
 }
 @media (max-width: 980px){
-  .pkgW.active .pkgMedia{
-    border-right:none; border-bottom:1px solid rgba(10,30,60,.12);
-    flex: 7 0 auto; min-width:unset;
-  }
+  .pkgW.active .pkgMedia{ border-right:none; border-bottom:1px solid rgba(10,30,60,.12); flex: 7 0 auto; min-width:unset; }
 }
-
 .pkgMedia img{
   width:100%; height:100%;
   object-fit:cover; display:block;
   filter: saturate(1.02) contrast(1.02);
 }
-
-/* ✅ light overlay for readability */
 .pkgMedia::after{
   content:"";
   position:absolute; inset:0;
-  background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.10), rgba(255,255,255,.46));
+  background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.08), rgba(255,255,255,.44));
   pointer-events:none;
 }
 
@@ -526,19 +483,18 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   text-transform: uppercase;
   color: rgba(10,30,60,.72);
   white-space: nowrap;
-  max-width: 62%;
+  max-width: 58%;
   overflow:hidden; text-overflow: ellipsis;
   backdrop-filter: blur(10px);
 }
 
-/* Info */
 .pkgInfo{
   flex: 3 0 auto;
-  padding: 9px 10px 10px;
+  padding: 8px 10px 10px;
   background: rgba(255,255,255,.62);
   display:flex;
   flex-direction:column;
-  gap:8px;
+  gap:6px;
   min-width:0;
   flex:1;
 }
@@ -549,7 +505,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
 }
 .pkgTitle{
   margin:0;
-  font-size: 11.5px;            /* ✅ slightly smaller */
+  font-size: 11px;
   font-weight: 950;
   letter-spacing:.10em;
   text-transform: uppercase;
@@ -570,13 +526,13 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   font-weight: 950;
   white-space: nowrap;
 }
-.pkgMeta{ display:flex; gap:6px; flex-wrap:wrap; }
+.pkgMeta{ display:flex; gap:8px; flex-wrap:wrap; }
 .pkgChip{
   border:1px solid rgba(10,30,60,.16);
   background: rgba(255,255,255,.62);
   border-radius: 999px;
   padding: 5px 8px;
-  font-size: 9.8px;
+  font-size: 9.6px;
   letter-spacing:.10em;
   text-transform: uppercase;
   color: rgba(10,30,60,.72);
@@ -585,7 +541,6 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
 }
 .pkgChip b{ color: rgba(10,30,60,.92); letter-spacing:.06em; }
 
-/* Details */
 .pkgDetails{
   display:none;
   border-top:1px solid rgba(10,30,60,.14);
@@ -594,7 +549,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
 }
 .pkgW.active .pkgDetails{ display:block; }
 
-/* Details content */
+/* ===== DETAILS ===== */
 .detailsGrid{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
 @media (max-width: 520px){ .detailsGrid{ grid-template-columns: 1fr; } }
 
@@ -620,7 +575,6 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
 .mini .v{ margin-top:5px; font-size: 13px; font-weight: 950; letter-spacing:.06em; color: rgba(10,30,60,.94); }
 .mini .v small{ font-size: 10.5px; color: rgba(10,30,60,.62); font-weight: 800; }
 
-/* Action buttons in details */
 .enqRow{ margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; }
 .enqBtn{
   flex:1;
@@ -642,7 +596,6 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
 }
 .enqBtn.disabled{ opacity:.55; pointer-events:none; border-color: rgba(10,30,60,.16); background: rgba(255,255,255,.66); }
 
-/* Day list */
 .daysList{ display:flex; flex-direction:column; gap:9px; margin-top:10px; }
 .dayCard{
   border:1px solid rgba(10,30,60,.16);
@@ -655,7 +608,6 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
 .dayTop{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom: 7px; }
 .dayTop .d{ font-size: 11px; font-weight: 950; letter-spacing:.18em; text-transform: uppercase; }
 
-/* Place buttons */
 .placeBtn{
   display:flex; align-items:center; justify-content:space-between; gap:10px;
   width:100%;
@@ -691,7 +643,6 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   flex:0 0 auto;
 }
 
-/* Nearby cards */
 .nearWrap{
   margin-top:10px;
   border:1px dashed rgba(10,30,60,.18);
@@ -735,8 +686,16 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 
-/* Map */
+/* ===== MAP ===== */
+.mapPane{
+  position: sticky;
+  top: 12px;
+  height: calc(100vh - 24px);
+  min-height: 640px;
+  max-height: 920px;
+}
 #map{ width:100%; flex:1; min-height: 520px; background: rgba(255,255,255,.62); }
+
 .mapTools{
   padding: 10px 12px;
   border-top:1px solid rgba(10,30,60,.14);
@@ -759,7 +718,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Floating WhatsApp */
+/* ===== WHATSAPP FLOAT ===== */
 .waFloat{
   position:fixed; right: 14px; bottom: 14px; z-index: 10000;
   display:flex; align-items:center; gap:10px; padding: 12px 14px;
@@ -782,7 +741,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   cursor:pointer; flex:0 0 auto; user-select:none;
 }
 
-/* Bot toast */
+/* ===== BOT TOAST ===== */
 .botToast{
   position:fixed; left: 14px; bottom: 14px; z-index: 9999;
   border:1px solid rgba(10,30,60,.16);
@@ -798,7 +757,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
 }
 .botToast.show{ display:block; }
 
-/* Place Modal */
+/* ===== PLACE MODAL ===== */
 .placeModal{
   position:fixed; inset:0; z-index: 20000;
   background: rgba(10,30,60,.35);
@@ -875,7 +834,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   color: rgba(10,30,60,.88);
 }
 
-/* Footer */
+/* ===== FOOTER ===== */
 footer{
   margin-top: 12px;
   border:1px solid rgba(10,30,60,.16);
@@ -991,22 +950,17 @@ footer{
   cursor: pointer;
 }
 
-/* =========================================================
-   ✅ RESPONSIVE — stack on small screens
-   ========================================================= */
+/* ===== RESPONSIVE ===== */
 @media (max-width: 1200px){
-  .main{ flex-direction:column; }
-  .leftBlock{ flex-direction:column; }
-  .leftPane{ flex: 1 1 auto; max-width: unset; }
-  .mapPane{ position:relative; top:auto; height:520px; max-height:none; min-width:0; width:100%; flex: 0 0 auto; }
+  .main{ grid-template-columns: 1fr; }
+  .mapPane{ position:relative; top:auto; height:520px; max-height:none; min-height:520px; }
   #map{ min-height: 420px; }
-  .pane{ min-height: unset; }
+  .pane{ height:auto; max-height:none; min-height:unset; }
   .heroBar{ flex-direction: column; align-items: stretch; }
   .heroRight{ justify-content:flex-start; }
   .footerFancyGrid{ grid-template-columns: 1fr; }
   .footerAboutGrid{ grid-template-columns: 1fr; }
 }
-
 @media (max-width: 520px){
   .shell{ padding: 10px 8px 16px; }
   .heroBar{ padding: 10px 10px; }
@@ -1017,7 +971,6 @@ footer{
   .waClose{ display:none; }
   .footTopRow{ flex-direction:column; align-items:flex-start; }
 }
-
 @media (prefers-reduced-motion: reduce){
   .aurora{ animation:none; }
   .pkgW{ transition:none; }
