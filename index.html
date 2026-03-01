@@ -30,22 +30,65 @@
       color:var(--text);
     }
     .wrap{width:min(var(--max),92vw); margin:22px auto 34px; display:flex; flex-direction:column; gap:18px;}
+
     .hero{
       border-radius:var(--r); overflow:hidden; border:1px solid var(--stroke);
       box-shadow:var(--shadow); background:rgba(255,255,255,.35); position:relative;
       min-height:220px;
     }
-    .slides{position:absolute; inset:0;}
-    .slide{position:absolute; inset:0; background-size:cover; background-position:center;
-      opacity:0; transform:scale(1.04); transition:opacity 1200ms ease, transform 1800ms ease;}
-    .slide.active{opacity:1; transform:scale(1.0);}
-    .hero:after{content:""; position:absolute; inset:0;
-      background:linear-gradient(180deg, rgba(255,255,255,.15), rgba(255,255,255,.70));
-      pointer-events:none;}
-    .heroContent{position:relative; padding:16px; min-height:220px; display:flex; flex-direction:column; justify-content:flex-end; gap:10px;}
+
+    /* ✅ One-frame collage (all pics visible together) */
+    .slidesGrid{
+      position:absolute; inset:0;
+      display:grid;
+      gap:8px;
+      padding:10px;
+      background: rgba(255,255,255,.22);
+
+      /* Layout: big left + 4 on right */
+      grid-template-columns: 1.35fr 1fr;
+      grid-template-rows: repeat(3, 1fr);
+    }
+    .slidesGrid .tile{
+      border-radius:18px;
+      background-size:cover;
+      background-position:center;
+      border: 1px solid rgba(215,230,255,.85);
+      box-shadow: 0 10px 22px rgba(12,34,70,.08);
+      position:relative;
+      overflow:hidden;
+    }
+    .slidesGrid .tile::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.22));
+      pointer-events:none;
+    }
+    .slidesGrid .tile:nth-child(1){
+      grid-column: 1 / 2;
+      grid-row: 1 / 4;
+    }
+
+    /* Overlay for readability */
+    .hero:after{
+      content:""; position:absolute; inset:0;
+      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.66));
+      pointer-events:none;
+    }
+
+    .heroContent{
+      position:relative;
+      padding:16px;
+      min-height:220px;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+      gap:10px;
+    }
+
     .brandRow{
       display:flex; align-items:center; gap:12px; width:fit-content; max-width:100%;
-      background:rgba(255,255,255,.75); border:1px solid rgba(215,230,255,.9);
+      background:rgba(255,255,255,.78); border:1px solid rgba(215,230,255,.9);
       border-radius:18px; padding:10px 12px; box-shadow:0 10px 25px rgba(12,34,70,.10);
       backdrop-filter:blur(10px);
     }
@@ -53,6 +96,7 @@
     .logo img{width:100%; height:100%; object-fit:cover; display:block}
     .brandName{font-weight:800; letter-spacing:.12em; text-transform:uppercase; font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
     .tagline{font-size:12px; color:#7B8DA3; letter-spacing:.12em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;}
+
     .card{
       border-radius:calc(var(--r) + 2px); border:1px solid var(--stroke);
       background:var(--card); box-shadow:var(--shadow); overflow:hidden;
@@ -82,6 +126,7 @@
     .btnPrimary{background:linear-gradient(135deg,var(--primary),var(--primary2)); color:#fff; box-shadow:0 10px 22px rgba(47,123,255,.22)}
     .btnGhost{background:#fff; color:#0D1B2A; border:1px solid rgba(210,225,255,.95); box-shadow:0 8px 18px rgba(12,34,70,.08)}
     .note{margin-top:10px; font-size:12px; color:rgba(25,40,65,.72); text-align:center}
+
     footer{
       border-radius:var(--r); border:1px solid rgba(215,230,255,.95);
       background:rgba(255,255,255,.55); box-shadow:0 10px 25px rgba(12,34,70,.10);
@@ -90,19 +135,34 @@
     }
     .pill{font-size:12px; color:#27415c; border:1px solid rgba(210,225,255,.95);
       background:#fff; padding:8px 10px; border-radius:999px; text-decoration:none}
+
     @media (max-width:860px){ .grid{grid-template-columns:1fr;} }
+
+    /* ✅ Mobile collage layout */
+    @media (max-width:820px){
+      .slidesGrid{
+        grid-template-columns: 1fr;
+        grid-template-rows: 1.2fr repeat(4, .8fr);
+      }
+      .slidesGrid .tile:nth-child(1){
+        grid-column: 1 / 2;
+        grid-row: 1 / 2;
+      }
+    }
   </style>
 </head>
 <body>
   <main class="wrap">
     <section class="hero">
-      <div class="slides">
-        <div class="slide active" style="background-image:url('./kunjum.jpg')"></div>
-        <div class="slide" style="background-image:url('./kinnaur-kailash.webp')"></div>
-        <div class="slide" style="background-image:url('./Travelers.jpg')"></div>
-        <div class="slide" style="background-image:url('./n1.jpg')"></div>
-        <div class="slide" style="background-image:url('./activity.jpg')"></div>
-       </div>
+
+      <!-- ✅ All pics in ONE frame -->
+      <div class="slidesGrid">
+        <div class="tile" style="background-image:url('./kunjum.jpg')"></div>
+        <div class="tile" style="background-image:url('./kinnaur-kailash.webp')"></div>
+        <div class="tile" style="background-image:url('./Travelers.jpg')"></div>
+        <div class="tile" style="background-image:url('./n1.jpg')"></div>
+        <div class="tile" style="background-image:url('./activity.jpg')"></div>
+      </div>
 
       <div class="heroContent">
         <div class="brandRow">
@@ -153,13 +213,6 @@
   </main>
 
   <script>
-    // slideshow
-    (function(){
-      const slides = Array.from(document.querySelectorAll('.slide'));
-      let i=0;
-      setInterval(()=>{ slides[i].classList.remove('active'); i=(i+1)%slides.length; slides[i].classList.add('active'); }, 3800);
-    })();
-
     // link to dashboard
     function go(mode){
       localStorage.setItem('travel_origin', mode);     // within / outside
