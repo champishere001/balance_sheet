@@ -2631,13 +2631,12 @@
       shownInter = shownInter.filter(t => endDistrictFromTemplate(t) === ACTIVE_DISTRICT);
     }
 
-    // Local packages
     let locals = ACTIVE_TEMPLATES
-      .filter(t => isLocalComputed(t))
-      .filter(t => matchesStart(t, startUpper))
-      .filter(t => matchesDaysOptional(t, daysF))
-      .filter(t => Number(t.days||0) > 0 && Number(t.days||0) <= 3)
-      .sort((a,b)=>(Number(a.days)||0)-(Number(b.days)||0));
+  .filter(t => isLocalComputed(t))
+  .filter(t => matchesStart(t, startUpper))
+  .filter(t => matchesDaysOptional(t, daysF))
+  .filter(t => Number(t.days||0) > 0)   // ✅ restriction removed
+  .sort((a,b)=>(Number(a.days)||0)-(Number(b.days)||0));
 
     // ✅ IMPORTANT: Do NOT hide inter-district in any mode
     // Mode only affects priority display messaging / ordering
