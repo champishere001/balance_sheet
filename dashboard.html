@@ -4,10 +4,9 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="color-scheme" content="light"/>
-
   <title>Himachal Tour Packages | Himachal Explorer Portal</title>
   <meta name="description" content="Explore Himachal tour packages with live road route maps, day-wise itineraries, places, and instant price estimates." />
-  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet=-1,max-video-preview=-1" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet=-1,max-video-preview:-1" />
   <link rel="canonical" href="https://himachalexplorer.in/" />
   <meta name="theme-color" content="#EAF3FF" />
   <link rel="icon" href="./favicon.ico" />
@@ -15,12 +14,6 @@
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-  <!-- Firebase (Compat) -->
-  <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 
   <style>
     :root{
@@ -66,7 +59,6 @@
       0%,100%{transform:translate3d(0,0,0) scale(1);}
       50%{transform:translate3d(3%,-2%,0) scale(1.06);}
     }
-
     .noise{
       position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.06; mix-blend-mode:multiply;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
@@ -134,7 +126,6 @@
       white-space: nowrap;
       -webkit-tap-highlight-color: transparent;
     }
-    .chip:hover{ background: rgba(255,255,255,.74); }
     .chip.primary{
       border-color: rgba(37,99,235,.40);
       background: rgba(37,99,235,.16);
@@ -280,8 +271,6 @@
       cursor:pointer;
       -webkit-tap-highlight-color: transparent;
     }
-    .pkgMini:hover{ border-color: rgba(37,99,235,.35); background: rgba(255,255,255,.78); }
-
     .miniThumb{
       width:44px; height:44px;
       border-radius: 12px;
@@ -365,61 +354,10 @@
       background: rgba(37,99,235,.14);
     }
 
-    .centreHero{
-      margin: 12px;
-      border:1px solid rgba(10,30,60,.16);
-      border-radius: 18px;
-      overflow:hidden;
-      position:relative;
-      height: clamp(220px, 26vw, 280px);
-      background: rgba(255,255,255,.62);
-      box-shadow: 0 24px 80px rgba(10,30,60,.12);
-    }
-    .centreHero img{
-      width:100%; height:100%; object-fit:cover; display:block;
-      filter:saturate(1.05) contrast(1.02);
-      transition: opacity .5s ease;
-      transform: translateZ(0);
-    }
-    .centreHero:before{
-      content:""; position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,.05), rgba(255,255,255,.30));
-      z-index:2;
-    }
-    .centreHeroContent{
-      position:absolute; inset:0; z-index:3;
-      display:flex; flex-direction:column; justify-content:center; align-items:center;
-      text-align:center; padding: 14px; gap:10px;
-    }
-    .centreHeroContent .h{
-      font-size: clamp(16px, 2.2vw, 22px);
-      font-weight: 950; letter-spacing:.14em; text-transform: uppercase;
-      color: rgba(10,30,60,.94);
-      text-shadow: 0 14px 30px rgba(255,255,255,.55);
-    }
-    .centreHeroContent .p{
-      max-width: 520px; font-size: 12px;
-      color: rgba(10,30,60,.74);
-      letter-spacing:.08em; text-transform: uppercase; line-height: 1.5;
-      text-shadow: 0 14px 30px rgba(255,255,255,.55);
-    }
-    .centreHeroContent .tag{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.62);
-      border-radius: 999px;
-      padding: 8px 10px;
-      font-size: 10.5px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.86);
-      backdrop-filter: blur(12px);
-      box-shadow: 0 10px 22px rgba(10,30,60,.08);
-    }
-
+    /* ✅ Make list not internally scroll; page scroll will handle */
     .pkgList{
       padding: 12px;
-      overflow-y:auto;
-      -webkit-overflow-scrolling: touch;
+      overflow: visible;
       display:flex;
       flex-direction:column;
       gap:10px;
@@ -428,46 +366,27 @@
       flex:1;
     }
 
-    /* ✅ GRID CHANGE: Desktop 3-4, Mobile 2 columns */
+    /* ✅ NEW: Grid 4/3/2 columns */
     .pkgGrid{
-      display:grid !important;
-      gap: 10px;
-      align-items: stretch;
+      display:grid;
+      gap: 12px;
       grid-template-columns: repeat(4, minmax(260px, 1fr));
+      align-items: stretch;
     }
     @media (max-width: 1400px){
-      .pkgGrid{ grid-template-columns: repeat(3, minmax(260px, 1fr)); }
+      .pkgGrid{ grid-template-columns: repeat(3, minmax(250px, 1fr)); }
     }
     @media (max-width: 980px){
-      .pkgGrid{ grid-template-columns: repeat(2, minmax(240px, 1fr)); }
+      .pkgGrid{ grid-template-columns: repeat(2, minmax(220px, 1fr)); }
     }
     @media (max-width: 520px){
-      .pkgGrid{ grid-template-columns: repeat(2, minmax(160px, 1fr)); }
+      .pkgGrid{ grid-template-columns: repeat(2, minmax(160px, 1fr)); gap:10px; }
     }
 
-    /* Skeleton loading */
-    .skGrid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap:10px; }
-    .skCard{
-      border:1px solid rgba(10,30,60,.14);
-      background: rgba(255,255,255,.58);
-      border-radius: 16px;
-      overflow:hidden;
-      box-shadow: 0 14px 36px rgba(10,30,60,.08);
-      position:relative;
-      height: 260px;
+    /* ✅ Selected package becomes full row */
+    .pkgW.active{
+      grid-column: 1 / -1;
     }
-    .skShimmer{
-      position:absolute; inset:0;
-      background: linear-gradient(110deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.52) 35%, rgba(255,255,255,.10) 70%);
-      transform: translateX(-60%);
-      animation: shimmer 1.2s ease-in-out infinite;
-      opacity:.75;
-    }
-    @keyframes shimmer{ 0%{transform:translateX(-60%);} 100%{transform:translateX(60%);} }
-    .skTop{ height: 70%; background: rgba(37,99,235,.08); }
-    .skBottom{ height:30%; padding: 10px; display:flex; flex-direction:column; gap:10px; }
-    .skLine{ height: 10px; border-radius: 999px; background: rgba(10,30,60,.10); }
-    .skLine.w60{ width:60%; } .skLine.w80{ width:80%; } .skLine.w40{ width:40%; }
 
     .pkgW{
       border:1px solid rgba(10,30,60,.16);
@@ -483,16 +402,15 @@
       flex-direction:column;
       min-width:0;
     }
-    .pkgW:hover{ transform: translateY(-1px); border-color: rgba(37,99,235,.30); background: rgba(255,255,255,.76); }
-    .pkgW.active{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 3px rgba(37,99,235,.14), 0 18px 40px rgba(10,30,60,.12); }
 
-    /* Image 70% + details 30% (default tile) */
-    .pkgCard{
-      display:flex;
-      flex-direction:column;
-      min-height: 260px;
-      flex: 1;
+    /* when active, show package header as row (desktop) */
+    .pkgW.active .pkgCard{ flex-direction:row; }
+    @media (max-width: 980px){
+      .pkgW.active .pkgCard{ flex-direction:column; }
     }
+
+    .pkgCard{ display:flex; flex-direction:column; min-height: 260px; flex: 1; }
+
     .pkgMedia{
       position:relative;
       flex: 7 0 auto;
@@ -501,11 +419,20 @@
       border-bottom: 1px solid rgba(10,30,60,.12);
       overflow:hidden;
     }
+    .pkgW.active .pkgMedia{
+      border-bottom:none;
+      border-right: 1px solid rgba(10,30,60,.12);
+      min-width: 280px;
+      flex: 0 0 38%;
+    }
+    @media (max-width: 980px){
+      .pkgW.active .pkgMedia{ border-right:none; border-bottom:1px solid rgba(10,30,60,.12); flex: 7 0 auto; min-width:unset; }
+    }
+
     .pkgMedia img{
       width:100%; height:100%;
       object-fit:cover; display:block;
       filter: saturate(1.02) contrast(1.02);
-      transform: scale(1.001);
     }
     .pkgMedia::after{
       content:"";
@@ -513,6 +440,7 @@
       background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.08), rgba(255,255,255,.44));
       pointer-events:none;
     }
+
     .pkgTagRow{
       position:absolute; left:10px; right:10px; top:10px;
       display:flex; align-items:center; justify-content:space-between;
@@ -532,7 +460,6 @@
     }
     .pkgBadge.purple{ border-color: rgba(37,99,235,.35); background: rgba(37,99,235,.16); color: rgba(10,30,60,.92); }
     .pkgBadge.green{ border-color: rgba(34,197,94,.30); background: rgba(34,197,94,.16); color: rgba(10,30,60,.92); }
-
     .pkgRouteId{
       border:1px solid rgba(10,30,60,.14);
       background: rgba(255,255,255,.70);
@@ -556,6 +483,7 @@
       flex-direction:column;
       gap:8px;
       min-width:0;
+      flex:1;
     }
     .pkgTitleRow{
       display:flex; align-items:flex-start; justify-content:space-between;
@@ -585,10 +513,7 @@
       font-weight: 950;
       white-space: nowrap;
     }
-
-    .pkgMeta{
-      display:flex; gap:8px; flex-wrap:wrap;
-    }
+    .pkgMeta{ display:flex; gap:8px; flex-wrap:wrap; }
     .pkgChip{
       border:1px solid rgba(10,30,60,.16);
       background: rgba(255,255,255,.62);
@@ -612,6 +537,8 @@
     .pkgW.active .pkgDetails{ display:block; }
 
     .detailsGrid{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    @media (max-width: 520px){ .detailsGrid{ grid-template-columns: 1fr; } }
+
     .detailsCard{
       border:1px solid rgba(10,30,60,.16);
       background: rgba(255,255,255,.66);
@@ -653,12 +580,7 @@
       -webkit-tap-highlight-color: transparent;
       min-width: 220px;
     }
-    .enqBtn.disabled{
-      opacity:.55;
-      pointer-events:none;
-      border-color: rgba(10,30,60,.16);
-      background: rgba(255,255,255,.66);
-    }
+    .enqBtn.disabled{ opacity:.55; pointer-events:none; border-color: rgba(10,30,60,.16); background: rgba(255,255,255,.66); }
 
     .daysList{ display:flex; flex-direction:column; gap:9px; margin-top:10px; }
     .dayCard{
@@ -707,6 +629,7 @@
       flex:0 0 auto;
     }
 
+    /* ✅ Nearby cards with photo + name */
     .nearWrap{
       margin-top:10px;
       border:1px dashed rgba(10,30,60,.18);
@@ -722,66 +645,36 @@
       font-size: 10px; letter-spacing:.16em; text-transform: uppercase; color: rgba(10,30,60,.62);
       font-weight: 1000;
     }
-
-    /* ✅ Nearby photo + name cards */
-    .nearGrid{
+    .nearCards{
       display:grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      margin-top: 10px;
+      gap: 10px;
     }
     @media (max-width: 520px){
-      .nearGrid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .nearCards{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     .nearCard{
-      border:1px solid rgba(10,30,60,.14);
+      border:1px solid rgba(10,30,60,.16);
       background: rgba(255,255,255,.72);
       border-radius: 14px;
       overflow:hidden;
-      cursor:pointer;
       box-shadow: 0 10px 22px rgba(10,30,60,.08);
+      cursor:pointer;
     }
-    .nearCard .img{ height: 74px; background: rgba(37,99,235,.08); }
-    .nearCard .img img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .nearCard .tx{
+    .nearImg{
+      height: 84px;
+      background: rgba(255,255,255,.80);
+    }
+    .nearImg img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .nearNm{
       padding: 8px 9px;
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 950;
-      letter-spacing:.08em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.90);
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
-    }
-
-    .infoBar{
-      margin: 12px;
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.66);
-      border-radius: 18px;
-      padding: 12px;
-      box-shadow: 0 14px 36px rgba(10,30,60,.10);
-    }
-    .infoRow{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; }
-    .infoTitle{ font-size: 12px; font-weight: 1000; letter-spacing:.14em; text-transform: uppercase; }
-    .infoMeta{
-      font-size: 11px; color: rgba(10,30,60,.68);
-      letter-spacing:.04em;
-      margin-top: 4px;
-      max-width: 820px;
-    }
-    .infoPills{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
-    .infoPill{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.62);
-      border-radius: 999px;
-      padding: 7px 10px;
-      font-size: 10.5px;
       letter-spacing:.10em;
       text-transform: uppercase;
+      color: rgba(10,30,60,.88);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
-    .infoPill b{ letter-spacing:.06em; }
 
     .mapPane{ position: sticky; top: 12px; height: calc(100vh - 24px); min-height: 620px; max-height: 920px; }
     #map{ width:100%; flex:1; min-height: 520px; background: rgba(255,255,255,.62); }
@@ -808,13 +701,6 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    .routeInlineTools{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top: 8px;
-    }
-
     .waFloat{
       position:fixed; right: 14px; bottom: 14px; z-index: 10000;
       display:flex; align-items:center; gap:10px; padding: 12px 14px;
@@ -824,10 +710,7 @@
       box-shadow: 0 26px 70px rgba(10,30,60,.16);
       color: rgba(10,30,60,.92); text-decoration:none; user-select:none; -webkit-tap-highlight-color: transparent;
     }
-    .waIcon{
-      width:40px; height:40px; border-radius: 999px; display:grid; place-items:center;
-      background: rgba(34,197,94,.14); border:1px solid rgba(34,197,94,.30); flex:0 0 auto;
-    }
+    .waIcon{ width:40px; height:40px; border-radius: 999px; display:grid; place-items:center; background: rgba(34,197,94,.14); border:1px solid rgba(34,197,94,.30); flex:0 0 auto; }
     .waText{ display:flex; flex-direction:column; line-height:1.1; min-width:0; }
     .waText .t1{ font-size: 12px; font-weight: 950; letter-spacing:.10em; text-transform: uppercase; white-space:nowrap; }
     .waText .t2{ margin-top:4px; font-size: 11px; color: rgba(10,30,60,.70); letter-spacing:.04em; white-space:nowrap; }
@@ -962,7 +845,6 @@
       box-shadow: 0 10px 22px rgba(10,30,60,.08);
       -webkit-tap-highlight-color: transparent;
     }
-    .footLinks a:hover{ background: rgba(255,255,255,.78); }
 
     .footerFancyGrid{
       display:grid;
@@ -1048,17 +930,6 @@
       cursor: pointer;
     }
 
-    /* ✅ Selected package becomes a ROW in center */
-    .pkgW.selectedRow{ grid-column: 1 / -1; }
-    .pkgW.selectedRow .pkgCard{ flex-direction: row; min-height: 220px; }
-    .pkgW.selectedRow .pkgMedia{
-      flex: 0 0 38%;
-      min-height: 220px;
-      border-bottom: none;
-      border-right: 1px solid rgba(10,30,60,.12);
-    }
-    .pkgW.selectedRow .pkgInfo{ flex: 1 1 auto; padding: 14px; }
-
     @media (max-width: 1200px){
       .main{ grid-template-columns: 1fr; }
       .mapPane{ position:relative; top:auto; height:520px; max-height:none; }
@@ -1074,24 +945,14 @@
       .heroBar{ padding: 10px 10px; }
       .logo{ width:52px; height:52px; border-radius: 16px; }
       .chip{ padding: 8px 9px; font-size: 10.5px; }
-      .detailsGrid{ grid-template-columns: 1fr; }
       .waText{ display:none; }
       .waFloat{ padding: 10px; }
       .waClose{ display:none; }
       .footTopRow{ flex-direction:column; align-items:flex-start; }
-
-      .pkgW.selectedRow .pkgCard{ flex-direction: column; }
-      .pkgW.selectedRow .pkgMedia{
-        flex: 0 0 auto;
-        border-right: none;
-        border-bottom: 1px solid rgba(10,30,60,.12);
-        min-height: 160px;
-      }
     }
     @media (prefers-reduced-motion: reduce){
       .aurora{ animation:none; }
       .pkgW{ transition:none; }
-      .centreHero img{ transition:none; }
     }
   </style>
 </head>
@@ -1158,7 +1019,7 @@
             <p class="t">Trip Filters</p>
             <div class="s">Start + days + category</div>
           </div>
-          <div class="s" id="leftHint">Quick selection</div>
+          <div class="s" id="leftHint">Auto loaded</div>
         </div>
 
         <div class="sideInner">
@@ -1211,16 +1072,15 @@
             </div>
             <div class="otherList" id="otherPkgList">
               <div class="otherHint">
-                Select a package in the center. <br>
-                After selection, remaining packages will appear here (compact list).
+                Select a package in center grid. <br>
+                After selection, remaining packages shift here.
               </div>
             </div>
           </div>
 
           <div class="sideCard">
             <div class="muted" style="text-transform:none;letter-spacing:.02em;">
-              Tip: Select <b>Start City</b>, optionally <b>Days</b>, then click <b>Show Packages</b>.
-              Pricing is pulled from Firebase per-person and multiplied by Travellers.
+              Tip: Start is auto filled from index. Packages will auto show.
             </div>
           </div>
         </div>
@@ -1231,7 +1091,7 @@
         <div class="paneHdr">
           <div>
             <p class="t">Packages</p>
-            <div class="s" id="centerHint">Grid tiles → click to open itinerary</div>
+            <div class="s" id="centerHint">3–4 columns desktop • 2 columns mobile</div>
           </div>
           <div class="s" id="pkgCount">—</div>
         </div>
@@ -1239,18 +1099,10 @@
         <div class="centerInner">
           <div class="districtBar" id="districtBar"></div>
 
-          <div class="centreHero" id="centreHero">
-            <img id="centreHeroImg" src="./style/images/kinnaur-kailash.webp" alt="Himachal Pradesh" onerror="this.src='./style/images/n1.jpg'">
-            <div class="centreHeroContent">
-              <div class="tag">Himachal Explorer Portal</div>
-              <div class="h">Discover Himachal Pradesh</div>
-              <div class="p">Mountains • Valleys • Temples • Treks • Hidden Places • Road Trips</div>
-              <div class="tag" id="modeTag">Mode: —</div>
-            </div>
-          </div>
+          <!-- ✅ centre hero REMOVED from dashboard -->
 
           <div class="pkgList" id="pkgList">
-            <div class="pill"><b>Choose Start</b> then click <b>Show Packages</b></div>
+            <div class="pill"><b>Loading…</b></div>
           </div>
         </div>
       </div>
@@ -1297,7 +1149,7 @@
               <ul>
                 <li>Route map + stop markers (OSRM)</li>
                 <li>Day-wise itinerary with place popups</li>
-                <li>Pricing from Firebase + rule-based markup</li>
+                <li>Pricing carry-forward from index (no dashboard fetch)</li>
                 <li>Instant WhatsApp booking query</li>
                 <li>District guide integration</li>
               </ul>
@@ -1347,7 +1199,7 @@
   </div><!-- /shell -->
 
   <!-- ✅ DO NOT REMOVE: botToast -->
-  <div class="botToast" id="botToast">👋 Welcome! Choose Start → Show Packages.</div>
+  <div class="botToast" id="botToast">👋 Welcome! Loading…</div>
 
   <!-- ✅ DO NOT REMOVE: Place Modal -->
   <div class="placeModal" id="placeModal" role="dialog" aria-modal="true">
@@ -1363,11 +1215,9 @@
         <div class="placeText">
           <div class="k">Overview</div>
           <div class="v" id="pmDesc">—</div>
-
           <div style="height:10px"></div>
           <div class="k">Details</div>
           <div class="v" id="pmMeta">—</div>
-
           <div class="placeActions" id="pmActions"></div>
         </div>
       </div>
@@ -1376,12 +1226,9 @@
 
   <script>
   /* =========================================================
-     ✅ FINAL DASHBOARD PAGE (Edited)
-     - Desktop: 3-4 packages; Mobile: 2-column grid
-     - On package open: only selected in center (row) and others shift to LEFT sidebar
-     - Fixed: broken getNearbySuggestions + CSS media braces
-     - Added: cost breakdown (base→markup→discount→final) + savings
-     - Added: nearby photo+name cards
+     ✅ DASHBOARD
+     - NO Firebase fetch here
+     - Uses sessionStorage data loaded in index.html
      ========================================================= */
 
   /* ===== TOUR MODE from Landing ===== */
@@ -1392,22 +1239,8 @@
     const modeLS = (localStorage.getItem("travel_origin") || "").toLowerCase();
     const origin = modeQS || modeLS || "within"; // within|outside
     TOUR_MODE = (origin === "outside") ? "outside" : "intercity";
-    const mt = document.getElementById("modeTag");
-    if(mt) mt.textContent = `Mode: ${TOUR_MODE === "outside" ? "Outside Himachal" : "Within Himachal"}`;
     showBot(`✅ Mode: ${TOUR_MODE === "outside" ? "Outside Himachal" : "Within Himachal"} selected`);
   }
-
-  /* ===== Firebase Config ===== */
-  const firebaseConfig = {
-    apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
-    authDomain: "revnue-records.firebaseapp.com",
-    databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "revnue-records",
-    storageBucket: "revnue-records.firebasestorage.app",
-    messagingSenderId: "182348503564",
-    appId: "1:182348503564:web:480085405b09177245ac29",
-    measurementId: "G-MGTDBCG896"
-  };
 
   const NODE_TEMPLATES  = "templates";
   const NODE_PLACES     = "places";
@@ -1446,8 +1279,7 @@
 
   /* ✅ Place images (Firebase first, then /Places fallback) */
   const PLACES_IMG_BASE = "./Places/";
-  const GITHUB_RAW_BASE = "https://raw.githubusercontent.com/champishere001/Himachal_Explorer/main/Places/";
-  const IMG_BASE = PLACES_IMG_BASE;  // change to GITHUB_RAW_BASE if needed
+  const IMG_BASE = PLACES_IMG_BASE;
   const IMG_MAX = 4;
 
   function getPlacePhotos(place, placeId){
@@ -1534,7 +1366,7 @@
   }
   function closePlaceModal(){ $("placeModal")?.classList.remove("show"); }
 
-  /* ===== Helpers for places/templates ===== */
+  /* ===== Helpers ===== */
   function placeIdAny(p, key){ return String(p?.place_id || p?.id || key || "").trim(); }
   function placeNameAny(p, key){ return String(p?.name || p?.["Location Name"] || p?.title || key || "PLACE").trim(); }
   function latAny(p){ return Number(p?.latitude ?? p?.lat ?? p?.Latitude); }
@@ -1603,11 +1435,6 @@
   }
 
   /* ===== Data ===== */
-  let db, analytics;
-  function trackEvent(name, params={}){
-    try{ if(analytics && typeof analytics.logEvent === 'function'){ analytics.logEvent(name, params); } }catch(e){}
-  }
-
   let TEMPLATES = {};
   let PLACES = {};
   let COSTS = {};
@@ -1621,21 +1448,6 @@
   let CURRENT_DAY_INDEX = new Map();
   let CURRENT_ROUTE_KM = 0;
   let CURRENT_ROUTE_HRS = 0;
-  let LOADING = false;
-
-  function renderSkeleton(targetEl){
-    if(!targetEl) return;
-    const wrap = document.createElement('div');
-    wrap.className = 'skGrid';
-    for(let i=0;i<8;i++){
-      const c = document.createElement('div');
-      c.className = 'skCard';
-      c.innerHTML = `<div class="skTop"></div><div class="skBottom"><div class="skLine w80"></div><div class="skLine w60"></div><div class="skLine w40"></div></div><div class="skShimmer"></div>`;
-      wrap.appendChild(c);
-    }
-    targetEl.innerHTML = '';
-    targetEl.appendChild(wrap);
-  }
 
   function buildNameIndex(){
     NAME_TO_ID = new Map();
@@ -1802,8 +1614,8 @@
     return mp;
   }
 
-  /* ✅ FIXED: nearby suggestions (no stray code outside function) */
-  function getNearbySuggestions(anchorPid, limit = 5, maxKm = 18){
+  /* ✅ DO NOT REMOVE: nearby suggestions */
+  function getNearbySuggestions(anchorPid, limit = 6, maxKm = 18){
     const a = PLACES[anchorPid];
     if(!a) return [];
     const distA = districtAny(a);
@@ -1814,7 +1626,6 @@
     const scored = [];
     for(const [pid, p] of Object.entries(PLACES)){
       if(pid === anchorPid) continue;
-
       const lat2 = latAny(p), lng2 = lngAny(p);
       const hasB = isFinite(lat2) && isFinite(lng2);
 
@@ -1829,9 +1640,7 @@
         scored.push({ pid, score: 999, km: 999 });
       }
     }
-
     scored.sort((x,y)=>x.score - y.score);
-
     const out = [];
     const seen = new Set();
     for(const s of scored){
@@ -1843,7 +1652,7 @@
     return out;
   }
 
-  /* ===== Pricing ===== */
+  /* ===== Pricing + discount ===== */
   function getPerPersonPrice(tpl){
     const tier = String($("visitType")?.value || "budget").toLowerCase();
     const pid = String(tpl.package_id || tpl.key || "").trim();
@@ -1883,14 +1692,9 @@
     const pct = Number(markupPct || 0);
     return Math.round(base * (1 + pct/100));
   }
-
-  /* ✅ Added: discount + final price */
-  function computeDiscountPct(tpl, pax){
-    const P = Number(pax||0);
-    if(P >= 8) return 7;
-    if(P >= 6) return 5;
-    if(P >= 4) return 3;
-    return 0;
+  function getDiscountPct(tpl){
+    const d = Number(tpl.discount_pct ?? tpl.discount_percent ?? tpl.discount ?? 0);
+    return (isFinite(d) && d>0) ? clamp(d, 0, 80) : 0;
   }
   function applyDiscount(amount, discountPct){
     const a = Number(amount||0);
@@ -1903,11 +1707,11 @@
   const WHATSAPP_NUMBER = "917018138847";
   const CALL_NUMBER = "+91 70181 38847";
   const EMAIL_ID = "info@himachalexplorer.in";
-  function buildWhatsAppMessage({tpl, startName, endKey, pax, tier, km, total, perPerson, markupPct}){
+
+  function buildWhatsAppMessage({tpl, startName, endKey, pax, tier, km, total, perPerson, markupPct, discountPct}){
     const days = Number(tpl?.days || 0) || 0;
     const code = String(tpl?.route_id || "—");
     const route = String(tpl?.route_path || "").trim();
-    const includes = String(tpl?.includes || tpl?.inclusions || "").trim();
     const lines = [
       "Hi Chandan, I want to finalize this package:",
       "",
@@ -1919,37 +1723,15 @@
       `Pax: ${pax}`,
       `Route KM (est.): ${isFinite(km)?Number(km).toFixed(1):"—"}`,
       `Markup: ${isFinite(markupPct)?Number(markupPct).toFixed(1)+"%":"—"}`,
+      `Discount: ${isFinite(discountPct)?Number(discountPct).toFixed(1)+"%":"0%"}`,
       `Per Person (final): ${isFinite(perPerson)?rupees(perPerson):"—"}`,
       `Total (final): ${isFinite(total)?rupees(total):"—"}`,
       `Code: ${code}`,
       route ? `Route: ${route}` : "",
-      includes ? `Includes: ${includes}` : "",
       "",
       "Please confirm final price and availability."
     ].filter(Boolean);
     return lines.join("\n");
-  }
-
-  function setCentreHeroVisible(on){
-    const hero = $("centreHero");
-    if(!hero) return;
-    hero.style.display = on ? "block" : "none";
-  }
-
-  /* ===== Centre hero slideshow ===== */
-  const CENTRE_HERO_IMAGES = ["./style/images/kinnaur-kailash.webp","./style/images/n1.jpg","./style/images/temple.jpg","./style/images/trek.jpeg"];
-  let heroIdx = 0;
-  function startCentreHero(){
-    const img = $("centreHeroImg");
-    if(!img) return;
-    setInterval(()=>{
-      heroIdx = (heroIdx + 1) % CENTRE_HERO_IMAGES.length;
-      img.style.opacity = 0;
-      setTimeout(()=>{
-        img.src = CENTRE_HERO_IMAGES[heroIdx];
-        img.style.opacity = 1;
-      }, 250);
-    }, 4200);
   }
 
   /* ===== OSRM route drawing ===== */
@@ -2054,14 +1836,15 @@
     const markupPct = computeMarkupPct(tpl, pax);
     const perPersonAfterMarkup = applyMarkup(perPersonBase, markupPct);
 
-    const discountPct = computeDiscountPct(tpl, pax);
+    const discountPct = getDiscountPct(tpl);
     const perPersonFinal = applyDiscount(perPersonAfterMarkup, discountPct);
-
     const totalFinal = isFinite(perPersonFinal) ? (perPersonFinal * pax) : NaN;
-    const totalNoDiscount = isFinite(perPersonAfterMarkup) ? (perPersonAfterMarkup * pax) : NaN;
-    const savings = (isFinite(totalNoDiscount) && isFinite(totalFinal)) ? (totalNoDiscount - totalFinal) : NaN;
+
+    const markupAmt = (isFinite(perPersonBase) && isFinite(perPersonAfterMarkup)) ? (perPersonAfterMarkup - perPersonBase) : NaN;
+    const discountAmt = (isFinite(perPersonAfterMarkup) && isFinite(perPersonFinal)) ? (perPersonAfterMarkup - perPersonFinal) : NaN;
 
     const waBtnId = `wa_inline_${tpl.key}`;
+
     detailsEl.innerHTML = `
       <div class="detailsCard">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap">
@@ -2085,12 +1868,10 @@
         </div>
 
         <div class="detailsGrid" style="margin-top:10px;">
-          <div class="mini"><div class="k">Base PP</div><div class="v">${isFinite(perPersonBase)?rupees(perPersonBase):"—"} <small>Firebase</small></div></div>
-          <div class="mini"><div class="k">Markup</div><div class="v">${isFinite(markupPct)?Number(markupPct).toFixed(1)+"%":"—"} <small>rule</small></div></div>
-          <div class="mini"><div class="k">After Markup</div><div class="v">${isFinite(perPersonAfterMarkup)?rupees(perPersonAfterMarkup):"—"} <small>PP</small></div></div>
-          <div class="mini"><div class="k">Discount</div><div class="v">${Number(discountPct||0).toFixed(0)}% <small>pax-based</small></div></div>
+          <div class="mini"><div class="k">Base / Person</div><div class="v">${isFinite(perPersonBase)?rupees(perPersonBase):"—"} <small>Firebase</small></div></div>
+          <div class="mini"><div class="k">Markup</div><div class="v">${isFinite(markupPct)?Number(markupPct).toFixed(1)+"%":"—"} <small>${isFinite(markupAmt)?("+"+rupees(markupAmt)):""}</small></div></div>
+          <div class="mini"><div class="k">Discount</div><div class="v">${discountPct ? (Number(discountPct).toFixed(1)+"%") : "0%"} <small>${isFinite(discountAmt)?("-"+rupees(discountAmt)):""}</small></div></div>
           <div class="mini"><div class="k">Travellers</div><div class="v">${escapeHtml(String(pax))} <small>selected</small></div></div>
-          <div class="mini"><div class="k">You Save</div><div class="v">${isFinite(savings)&&savings>0?rupees(savings):"—"} <small>total</small></div></div>
           <div class="mini"><div class="k">Route</div><div class="v">${(isFinite(km)&&km>0)?Number(km).toFixed(1):"—"} <small>KM</small></div></div>
           <div class="mini"><div class="k">Time</div><div class="v">${(isFinite(CURRENT_ROUTE_HRS)&&CURRENT_ROUTE_HRS>0)?(Number(CURRENT_ROUTE_HRS).toFixed(1)):"—"} <small>hrs est.</small></div></div>
         </div>
@@ -2102,9 +1883,9 @@
         </div>
 
         <div class="muted" style="margin-top:10px;text-transform:none;letter-spacing:.02em;">
-          Road route controls (works on mobile + desktop):
+          Road route controls:
         </div>
-        <div class="routeInlineTools">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
           <div class="toolBtn" data-act="stops">Show Stops</div>
           <div class="toolBtn" data-act="startend">Start/End Only</div>
           <div class="toolBtn" data-act="fit">Fit Route</div>
@@ -2115,35 +1896,31 @@
       <div class="daysList" id="days_${tpl.key}" style="margin-top:10px;"></div>
     `;
 
-    const toolWrap = detailsEl.querySelector(".routeInlineTools");
-    if(toolWrap){
-      toolWrap.querySelectorAll(".toolBtn").forEach(btn=>{
-        btn.onclick = async (e)=>{
-          e.preventDefault(); e.stopPropagation();
-          const act = btn.getAttribute("data-act");
-          if(act === "stops"){ $("showAllStopsBtn").click(); }
-          else if(act === "startend"){ $("showStartEndBtn").click(); }
-          else if(act === "fit"){ $("fitMapBtn").click(); }
-          else if(act === "tiles"){ $("toggleTilesBtn").click(); }
-        };
-      });
-    }
+    // inline tools wiring
+    const toolWrap = detailsEl.querySelectorAll(".toolBtn[data-act]");
+    toolWrap.forEach(btn=>{
+      btn.onclick = (e)=>{
+        e.preventDefault(); e.stopPropagation();
+        const act = btn.getAttribute("data-act");
+        if(act === "stops"){ $("showAllStopsBtn").click(); }
+        else if(act === "startend"){ $("showStartEndBtn").click(); }
+        else if(act === "fit"){ $("fitMapBtn").click(); }
+        else if(act === "tiles"){ $("toggleTilesBtn").click(); }
+      };
+    });
 
     const startName = normalizeStartInput() || (tpl.start_point || tpl.start || startUpper || "");
-    const msg = buildWhatsAppMessage({ tpl, startName, endKey, pax, tier, km, total: totalFinal, perPerson: perPersonFinal, markupPct });
+    const msg = buildWhatsAppMessage({
+      tpl, startName, endKey, pax, tier, km,
+      total: totalFinal, perPerson: perPersonFinal,
+      markupPct, discountPct
+    });
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
     const waEl = document.getElementById(waBtnId);
     if(isFinite(perPersonFinal)){
       waEl.classList.remove("disabled");
       waEl.href = url;
     }
-    if(waEl){
-      waEl.onclick = (e)=>{ e.stopPropagation(); trackEvent('enquiry_whatsapp', { package_key: String(tpl.key||''), route_id: String(tpl.route_id||''), start: String(startName||''), end: String(endKey||''), pax: Number(pax||0) }); };
-    }
-    const callEl = document.getElementById(`call_${tpl.key}`);
-    if(callEl){ callEl.onclick = (e)=>{ e.stopPropagation(); trackEvent('enquiry_call', { package_key: String(tpl.key||''), route_id: String(tpl.route_id||'') }); }; }
-    const mailEl = document.getElementById(`mail_${tpl.key}`);
-    if(mailEl){ mailEl.onclick = (e)=>{ e.stopPropagation(); trackEvent('enquiry_email', { package_key: String(tpl.key||''), route_id: String(tpl.route_id||'') }); }; }
 
     const daysWrap = document.getElementById(`days_${tpl.key}`);
     const blocks = buildDayWise(tpl);
@@ -2187,6 +1964,7 @@
         cont.appendChild(line);
       });
 
+      // ✅ Nearby cards with photo + name
       const anchorPid = block.ids[0];
       const near = getNearbySuggestions(anchorPid, 6, 18);
       const nearWrap = document.createElement("div");
@@ -2198,26 +1976,23 @@
             <div class="k">Nearby Suggestions</div>
             <div class="muted" style="text-transform:none;letter-spacing:.02em;">tap to open</div>
           </div>
-          <div class="nearGrid"></div>
+          <div class="nearCards"></div>
         `;
-        const grid = nearWrap.querySelector(".nearGrid");
+        const cards = nearWrap.querySelector(".nearCards");
 
         near.forEach(npid=>{
           const p = PLACES[npid] || {};
           const name = placeNameAny(p, npid);
           const photos = getPlacePhotos(p, npid);
-          const imgSrc = photos[0] || "";
+          const imgUrl = photos[0] || "./style/images/n1.jpg";
 
-          const card = document.createElement("div");
-          card.className = "nearCard";
-          card.innerHTML = `
-            <div class="img">
-              ${imgSrc ? `<img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(name)}" onerror="this.remove()">` : ``}
-            </div>
-            <div class="tx">${escapeHtml(name)}</div>
+          const c = document.createElement("div");
+          c.className = "nearCard";
+          c.innerHTML = `
+            <div class="nearImg"><img src="${escapeHtml(imgUrl)}" alt="" onerror="this.src='./style/images/n1.jpg'"></div>
+            <div class="nearNm">${escapeHtml(name)}</div>
           `;
-
-          card.onclick = (e)=>{
+          c.onclick = (e)=>{
             e.stopPropagation();
             const lat = latAny(p), lng = lngAny(p);
             if(isFinite(lat) && isFinite(lng)){
@@ -2226,15 +2001,15 @@
             }
             openPlaceModal({ place: p, dayNum: block.day, orderNum: 0, placeId: npid });
           };
-
-          grid.appendChild(card);
+          cards.appendChild(c);
         });
       }else{
         nearWrap.innerHTML = `
           <div class="nearTop"><div class="k">Nearby Suggestions</div></div>
-          <div class="muted" style="text-transform:none;letter-spacing:.02em;">No nearby suggestions available for this stop.</div>
+          <div class="muted" style="text-transform:none;letter-spacing:.02em;">No nearby suggestions available.</div>
         `;
       }
+
       dayCard.appendChild(nearWrap);
       daysWrap.appendChild(dayCard);
     });
@@ -2253,7 +2028,7 @@
       return `<div class="distItem ${active}" data-d="${escapeHtml(d)}">${escapeHtml(label)} (${count})</div>`;
     }).join("");
     bar.querySelectorAll(".distItem").forEach(el=>{
-      el.onclick = ()=>{ ACTIVE_DISTRICT = el.dataset.d || "ALL"; trackEvent('filter_district', { district: ACTIVE_DISTRICT }); renderPanels(); };
+      el.onclick = ()=>{ ACTIVE_DISTRICT = el.dataset.d || "ALL"; renderPanels(); };
     });
   }
 
@@ -2261,17 +2036,18 @@
     const endKey = endKeyFromRoutePath(tpl);
     const local = isLocalComputed(tpl);
 
-    const perPersonBase = getPerPersonPrice(tpl);
     const pax = getSelectedPax();
-    const markupPct = computeMarkupPct(tpl, pax);
-    const perPersonAfterMarkup = applyMarkup(perPersonBase, markupPct);
-    const discountPct = computeDiscountPct(tpl, pax);
-    const perPersonFinal = applyDiscount(perPersonAfterMarkup, discountPct);
+    const base = getPerPersonPrice(tpl);
+    const mp = computeMarkupPct(tpl, pax);
+    const afterMarkup = applyMarkup(base, mp);
+    const disc = getDiscountPct(tpl);
+    const perPerson = applyDiscount(afterMarkup, disc);
 
+    // thumb from first stop
     const firstStop = (stopsFromTemplate(tpl)[0] || "");
     const p = PLACES[firstStop] || {};
     const photos = getPlacePhotos(p, firstStop);
-    const thumb = photos[0] || "";
+    const thumb = photos[0] || "./style/images/n1.jpg";
 
     const badgeClass = local ? "green" : "purple";
     const badgeText = local ? "LOCAL" : "INTER";
@@ -2283,7 +2059,7 @@
     el.innerHTML = `
       <div class="pkgCard">
         <div class="pkgMedia">
-          ${thumb ? `<img src="${escapeHtml(thumb)}" alt="${escapeHtml(endKey)}" onerror="this.remove()">` : ``}
+          <img src="${escapeHtml(thumb)}" alt="${escapeHtml(endKey)}" onerror="this.src='./style/images/n1.jpg'">
           <div class="pkgTagRow">
             <div class="pkgRouteId">${escapeHtml(String(tpl.route_id || tpl.package_id || "PACKAGE").toUpperCase())}</div>
             <div class="pkgBadge ${badgeClass}">${badgeText}</div>
@@ -2299,7 +2075,7 @@
           <div class="pkgMeta">
             <div class="pkgChip">Days <b>${escapeHtml(String(tpl.days||"—"))}</b></div>
             <div class="pkgChip">Start <b>${escapeHtml(startUpper)}</b></div>
-            <div class="pkgChip">PP <b>${isFinite(perPersonFinal)?rupees(perPersonFinal):"—"}</b></div>
+            <div class="pkgChip">PP <b>${isFinite(perPerson)?rupees(perPerson):"—"}</b></div>
           </div>
         </div>
       </div>
@@ -2311,7 +2087,7 @@
     return el;
   }
 
-  function renderOtherPackages(list, startUpper){
+  function renderOtherPackages(list){
     const box = $("otherPkgList");
     if(!box) return;
     box.innerHTML = "";
@@ -2322,17 +2098,17 @@
     list.forEach(tpl=>{
       const endKey = endKeyFromRoutePath(tpl);
       const local = isLocalComputed(tpl);
+
+      const fs = (stopsFromTemplate(tpl)[0] || "");
+      const pp = PLACES[fs] || {};
+      const ph = getPlacePhotos(pp, fs);
+      const th = ph[0] || "";
+
       const el = document.createElement("div");
       el.className = "pkgMini";
       el.innerHTML = `
         <div class="miniThumb">
-          ${(() => {
-            const fs = (stopsFromTemplate(tpl)[0] || "");
-            const pp = PLACES[fs] || {};
-            const ph = getPlacePhotos(pp, fs);
-            const th = ph[0] || "";
-            return th ? `<img src="${escapeHtml(th)}" alt="" onerror="this.remove()">` : `<div class="ini">${escapeHtml(endKey).slice(0,2)}</div>`;
-          })()}
+          ${th ? `<img src="${escapeHtml(th)}" alt="" onerror="this.remove()">` : `<div class="ini">${escapeHtml(endKey).slice(0,2)}</div>`}
         </div>
         <div class="l">
           <div class="t1">${escapeHtml(String(endKey).toUpperCase())}</div>
@@ -2366,7 +2142,6 @@
     `;
   }
 
-  /* ✅ Alteration: when selected, show only selected in center and move rest to left sidebar */
   function renderPanels(){
     const startUpper = normalizeStartInput();
     const listEl = $("pkgList");
@@ -2374,9 +2149,8 @@
     if(!startUpper){
       $("pkgCount").textContent = "—";
       $("districtBar").innerHTML = "";
-      listEl.innerHTML = `<div class="pill"><b>Choose Start</b> then click <b>Show Packages</b></div>`;
-      setCentreHeroVisible(true);
-      renderOtherPackages([], "");
+      listEl.innerHTML = `<div class="pill"><b>Select Start</b> (from index) or choose here.</div>`;
+      renderOtherPackages([]);
       return;
     }
 
@@ -2387,9 +2161,9 @@
       const aLocal = isLocalComputed(a) ? 1 : 0;
       const bLocal = isLocalComputed(b) ? 1 : 0;
       if(TOUR_MODE === "outside"){
-        if(aLocal !== bLocal) return aLocal - bLocal;
+        if(aLocal !== bLocal) return aLocal - bLocal; // inter first
       }else{
-        if(aLocal !== bLocal) return bLocal - aLocal;
+        if(aLocal !== bLocal) return bLocal - aLocal; // local first
       }
       return String(a.route_id||"").localeCompare(String(b.route_id||""));
     });
@@ -2404,34 +2178,19 @@
 
     $("pkgCount").textContent = `${filtered.length}`;
 
-    const selectedTpl = CURRENT_TEMPLATE_KEY
-      ? filtered.find(t=>t.key === CURRENT_TEMPLATE_KEY)
-      : null;
-
-    setCentreHeroVisible(!selectedTpl);
-
     listEl.innerHTML = "";
-    if(LOADING){ renderSkeleton(listEl); return; }
-
     const grid = document.createElement("div");
     grid.className = "pkgGrid";
-
-    if(selectedTpl){
-      const card = renderPackageCard(selectedTpl, startUpper);
-      card.classList.add("selectedRow");
-      grid.appendChild(card);
-
-      const others = filtered.filter(t=>t.key !== CURRENT_TEMPLATE_KEY);
-      renderOtherPackages(others, startUpper);
-    }else{
-      filtered.forEach(tpl=>{
-        grid.appendChild(renderPackageCard(tpl, startUpper));
-      });
-      renderOtherPackages(filtered, startUpper);
-    }
-
+    filtered.forEach(tpl=>{
+      grid.appendChild(renderPackageCard(tpl, startUpper));
+    });
     listEl.appendChild(grid);
+
     highlightActiveCard();
+
+    // Other packages exclude selected
+    const others = filtered.filter(t=>t.key !== CURRENT_TEMPLATE_KEY);
+    renderOtherPackages(others);
   }
 
   async function toggleOpenTemplate(key, pushHistory = true){
@@ -2439,10 +2198,8 @@
     if(!startUpper) return;
 
     if(CURRENT_TEMPLATE_KEY === key){
-      trackEvent('package_close', { package_key: String(key||'') });
       CURRENT_TEMPLATE_KEY = "";
       clearMap();
-      setCentreHeroVisible(true);
       renderPanels();
       if(pushHistory) historyPush("close");
       return;
@@ -2451,15 +2208,12 @@
     CURRENT_TEMPLATE_KEY = key;
 
     const tpl = ACTIVE_TEMPLATES.find(t=>t.key===key);
-    trackEvent('package_open', { package_key: String(key||''), route_id: String(tpl?.route_id||''), days: Number(tpl?.days||0) });
     if(!tpl) return;
 
-    setCentreHeroVisible(false);
     renderPanels();
     highlightActiveCard();
 
     const card = document.querySelector(`.pkgW[data-key="${CSS.escape(key)}"]`);
-    if(card) card.classList.add("selectedRow"); /* keep row style */
     const detailsEl = card ? card.querySelector(".pkgDetails") : null;
 
     const endKey = endKeyFromRoutePath(tpl);
@@ -2501,8 +2255,6 @@
     $("paxSel").value = s.pax ?? "2";
     ACTIVE_DISTRICT = s.activeDistrict ?? "ALL";
     TOUR_MODE = s.tourMode ?? TOUR_MODE;
-    const mt = $("modeTag");
-    if(mt) mt.textContent = `Mode: ${TOUR_MODE === "outside" ? "Outside Himachal" : "Within Himachal"}`;
   }
   function historyReplace(tag){ history.replaceState({ tag, ...snapshotState() }, "", location.href); }
   function historyPush(tag){ history.pushState({ tag, ...snapshotState() }, "", location.href); }
@@ -2533,7 +2285,6 @@
       const startNorm = normalizeStartInput() || "";
       if(!startNorm){
         CURRENT_TEMPLATE_KEY = "";
-        setCentreHeroVisible(true);
         $("districtBar").innerHTML = "";
         $("pkgCount").textContent = "—";
         renderPanels();
@@ -2547,7 +2298,6 @@
         try{ await toggleOpenTemplate(st.selectedKey, false); } finally{ IGNORE_POP = false; }
       }else{
         CURRENT_TEMPLATE_KEY = "";
-        setCentreHeroVisible(true);
         renderPanels();
       }
     });
@@ -2556,62 +2306,62 @@
   /* ===== Filtering (Show Packages) ===== */
   function applyFilters(push = true){
     const startUpper = normalizeStartInput();
-    trackEvent('apply_filters', { start: String(startUpper||''), days: String($('daysSel')?.value||''), tier: String($('visitType')?.value||''), pax: Number(getSelectedPax()||0), mode: String(TOUR_MODE||'') });
     renderPills(startUpper);
     renderPanels();
     if(push) historyPush("filters");
   }
 
-  /* ===== Firebase load ===== */
-  async function dbGet(path){
-    const snap = await db.ref(path).get();
-    return snap.exists() ? snap.val() : null;
+  /* ===== Load from sessionStorage (index carry-forward) ===== */
+  function loadFromIndexStorage(){
+    try{
+      const t = sessionStorage.getItem("HX_TEMPLATES");
+      const p = sessionStorage.getItem("HX_PLACES");
+      const c = sessionStorage.getItem("HX_COSTS");
+      if(!t || !p || !c) return false;
+      TEMPLATES = JSON.parse(t) || {};
+      PLACES = JSON.parse(p) || {};
+      COSTS = JSON.parse(c) || {};
+      return true;
+    }catch(e){
+      console.warn(e);
+      return false;
+    }
   }
 
   async function loadAll(){
-    setStatus("Connecting to Firebase…");
-    firebase.initializeApp(firebaseConfig);
-    try{ analytics = firebase.analytics(); }catch(e){}
+    setStatus("Loading from index data…");
+    const ok = loadFromIndexStorage();
 
-    db = firebase.database();
-
-    LOADING = true;
-    try{ const listEl = $("pkgList"); if(listEl) renderSkeleton(listEl); }catch(e){}
-    setStatus("Loading places…");
-    const places = await dbGet(NODE_PLACES) || {};
-    PLACES = places;
+    if(!ok){
+      setStatus("No data found");
+      $("pkgList").innerHTML = `<div class="pill"><b>Data not found.</b> Please open <b>index.html</b> first (it loads Firebase), then enter dashboard.</div>`;
+      showBot("❌ Open index.html first → then dashboard (data carry-forward).");
+      return;
+    }
 
     buildNameIndex();
 
-    setStatus("Loading templates…");
-    const templates = await dbGet(NODE_TEMPLATES) || {};
-    TEMPLATES = templates;
-
-    setStatus("Loading pricing…");
-    const costs = await dbGet(NODE_COSTS) || {};
-    COSTS = costs;
-
-    const arr = Object.entries(TEMPLATES).map(([k,v])=>({ key:k, ...(v||{}) }));
+    const templatesObj = TEMPLATES || {};
+    const arr = Object.entries(templatesObj).map(([k,v])=>({ key:k, ...(v||{}) }));
     ACTIVE_TEMPLATES = arr;
 
     initModeFromLanding();
     buildStartList(arr);
 
+    // Prefill start from querystring (from index)
     try{
       const qs = new URLSearchParams(location.search);
       const startQS = (qs.get("start") || "").trim();
       if(startQS){
-        const v = String(startQS).toUpperCase();
-        $("startInp").value = v;
+        $("startInp").value = String(startQS).toUpperCase();
       }
     }catch(e){}
 
-    LOADING = false;
     setStatus("Ready");
-    showBot("👋 Welcome! Select Start → Show Packages.");
+    showBot("✅ Start loaded. Packages auto showing…");
 
-    if(String($("startInp").value||"").trim()) applyFilters(false);
-    else renderPanels();
+    // ✅ AUTO show packages
+    applyFilters(false);
   }
 
   /* ===== UI Wiring ===== */
@@ -2632,14 +2382,20 @@
       showBot("✅ Filters reset");
     };
 
-    $("startInp").addEventListener("change", ()=>{ renderPills(normalizeStartInput()); });
+    $("startInp").addEventListener("change", ()=>{
+      // when user changes start manually, auto show packages
+      applyFilters(true);
+    });
     $("visitType").addEventListener("change", ()=>{ renderPanels(); historyPush("tier"); });
     $("daysSel").addEventListener("change", ()=>{ renderPanels(); historyPush("days"); });
     $("paxSel").addEventListener("change", ()=>{ renderPanels(); historyPush("pax"); });
 
-    $("refreshBtn").onclick = async ()=>{ showBot("🔄 Refreshing data…"); await loadAll(); };
+    $("refreshBtn").onclick = async ()=>{
+      showBot("🔄 Refreshing from index data…");
+      await loadAll();
+    };
     $("fitMapBtn").onclick = ()=>{ if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] }); };
-    $("clearRouteBtn").onclick = ()=>{ CURRENT_TEMPLATE_KEY=""; clearMap(); setCentreHeroVisible(true); renderPanels(); historyPush("clear"); };
+    $("clearRouteBtn").onclick = ()=>{ CURRENT_TEMPLATE_KEY=""; clearMap(); renderPanels(); historyPush("clear"); };
 
     $("showAllStopsBtn").onclick = async ()=>{
       showMode="all";
@@ -2691,14 +2447,13 @@
     try{
       wireUI();
       initMap();
-      startCentreHero();
-      bootHistory();
+      bootHistory();        // ✅ DO NOT REMOVE
       initModeFromLanding();
       await loadAll();
     }catch(err){
       console.error(err);
       setStatus("Error loading");
-      showBot("❌ Error loading data. Check console + Firebase rules.");
+      showBot("❌ Error. Check console.");
     }
   });
   </script>
