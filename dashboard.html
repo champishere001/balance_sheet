@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="light"/>
   <title>Himachal Tour Packages | Himachal Explorer Portal</title>
   <meta name="description" content="Explore Himachal tour packages with live road route maps, day-wise itineraries, places, and instant price estimates." />
-  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet=-1,max-video-preview:-1" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet=-1,max-video-preview=-1" />
   <link rel="canonical" href="https://himachalexplorer.in/" />
   <meta name="theme-color" content="#EAF3FF" />
   <link rel="icon" href="./favicon.ico" />
@@ -133,9 +133,10 @@
       font-weight: 950;
     }
 
+    /* ✅ UPDATED MAIN GRID: 20% / 58% / 22%  */
     .main{
       display:grid;
-      grid-template-columns: 20% 55% 25%;
+      grid-template-columns: 20% 58% 22%;
       gap: var(--gap);
       margin-top: 12px;
       align-items:start;
@@ -258,70 +259,67 @@
       line-height: 1.35;
     }
 
-    .pkgMini{
+    /* ✅ LEFT SIDEBAR LIST CARD (ALL PACKAGES) */
+    .pkgSide{
       border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.66);
+      background: rgba(255,255,255,.70);
       border-radius: 14px;
-      padding: 9px 10px;
+      padding: 10px;
       box-shadow: 0 10px 20px rgba(10,30,60,.08);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
       cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
       -webkit-tap-highlight-color: transparent;
     }
-    .miniThumb{
-      width:44px; height:44px;
-      border-radius: 12px;
-      overflow:hidden;
-      border:1px solid rgba(10,30,60,.14);
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.78), rgba(37,99,235,.10));
-      display:grid; place-items:center;
-      flex:0 0 auto;
+    .pkgSide.active{
+      border-color: rgba(37,99,235,.40);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.14);
+      background: rgba(37,99,235,.10);
     }
-    .miniThumb img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .miniThumb .ini{ font-weight: 950; letter-spacing:.08em; font-size: 12px; }
-    .pkgMini .l{ min-width:0; }
-    .pkgMini .t1{
-      font-size: 10.8px;
+    .pkgSideTop{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+    }
+    .pkgSideTop .t1{
+      font-size: 10.5px;
       font-weight: 1000;
-      letter-spacing:.10em;
+      letter-spacing:.12em;
       text-transform: uppercase;
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
-    .pkgMini .t2{
-      margin-top:5px;
-      font-size: 10px;
-      color: rgba(10,30,60,.62);
-      letter-spacing:.02em;
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
-    .pkgMini .r{ display:flex; align-items:center; gap:8px; flex:0 0 auto; }
-    .miniBadge{
+    .pkgSideTop .badge{
       border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.72);
+      background: rgba(255,255,255,.76);
       border-radius: 999px;
       padding: 6px 9px;
       font-size: 10px;
-      letter-spacing:.10em;
-      text-transform: uppercase;
-      font-weight: 950;
-      color: rgba(10,30,60,.86);
-      white-space: nowrap;
-    }
-    .miniBadge.blue{ border-color: rgba(37,99,235,.32); background: rgba(37,99,235,.12); }
-    .miniOpen{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.74);
-      border-radius: 12px;
-      padding: 7px 9px;
-      font-size: 10px;
       letter-spacing:.12em;
       text-transform: uppercase;
-      font-weight: 1000;
+      font-weight: 950;
       white-space: nowrap;
-      color: rgba(10,30,60,.90);
+      flex:0 0 auto;
+    }
+    .pkgSideTop .badge.blue{ border-color: rgba(37,99,235,.32); background: rgba(37,99,235,.12); }
+    .pkgSideRow{
+      display:flex; gap:8px; flex-wrap:wrap;
+      font-size: 10px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.72);
+    }
+    .pkgSideRow span{
+      border:1px solid rgba(10,30,60,.14);
+      background: rgba(255,255,255,.66);
+      border-radius: 999px;
+      padding: 6px 8px;
+      white-space: nowrap;
+    }
+    .pkgSidePrice{
+      font-size: 11px;
+      font-weight: 1000;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.92);
     }
 
     .centerInner{ display:flex; flex-direction:column; min-height:0; flex:1; }
@@ -354,7 +352,6 @@
       background: rgba(37,99,235,.14);
     }
 
-    /* ✅ Make list not internally scroll; page scroll will handle */
     .pkgList{
       padding: 12px;
       overflow: visible;
@@ -366,7 +363,6 @@
       flex:1;
     }
 
-    /* ✅ NEW: Grid 4/3/2 columns */
     .pkgGrid{
       display:grid;
       gap: 12px;
@@ -383,10 +379,7 @@
       .pkgGrid{ grid-template-columns: repeat(2, minmax(160px, 1fr)); gap:10px; }
     }
 
-    /* ✅ Selected package becomes full row */
-    .pkgW.active{
-      grid-column: 1 / -1;
-    }
+    .pkgW.active{ grid-column: 1 / -1; }
 
     .pkgW{
       border:1px solid rgba(10,30,60,.16);
@@ -403,7 +396,6 @@
       min-width:0;
     }
 
-    /* when active, show package header as row (desktop) */
     .pkgW.active .pkgCard{ flex-direction:row; }
     @media (max-width: 980px){
       .pkgW.active .pkgCard{ flex-direction:column; }
@@ -629,7 +621,6 @@
       flex:0 0 auto;
     }
 
-    /* ✅ Nearby cards with photo + name */
     .nearWrap{
       margin-top:10px;
       border:1px dashed rgba(10,30,60,.18);
@@ -1065,15 +1056,16 @@
             <div class="pills" id="pills"></div>
           </div>
 
+          <!-- ✅ LEFT SIDEBAR: ALL PACKAGES LIST -->
           <div class="otherWrap">
             <div class="otherHdr">
-              <div class="h">Other Packages</div>
+              <div class="h">All Packages</div>
               <div class="xBtn" id="closeSelectedBtn" title="Close selected package">Close</div>
             </div>
             <div class="otherList" id="otherPkgList">
               <div class="otherHint">
-                Select a package in center grid. <br>
-                After selection, remaining packages shift here.
+                Packages will appear here after selecting Start. <br>
+                Tap any card to open details in center.
               </div>
             </div>
           </div>
@@ -1098,9 +1090,6 @@
 
         <div class="centerInner">
           <div class="districtBar" id="districtBar"></div>
-
-          <!-- ✅ centre hero REMOVED from dashboard -->
-
           <div class="pkgList" id="pkgList">
             <div class="pill"><b>Loading…</b></div>
           </div>
@@ -1255,7 +1244,7 @@
       .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
       .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
   }
-  function normCaps(x){ return String(x||"").trim().toUpperCase().replace(/\s+/g," "); }
+  function normCaps(x){ return String(x||"").trim().toUpperCase().replace(/\\s+/g," "); }
   function rupees(n){ return "₹" + Math.round(Number(n)||0).toLocaleString("en-IN"); }
   function slugifyName(name){
     return String(name||"")
@@ -1614,7 +1603,6 @@
     return mp;
   }
 
-  /* ✅ DO NOT REMOVE: nearby suggestions */
   function getNearbySuggestions(anchorPid, limit = 6, maxKm = 18){
     const a = PLACES[anchorPid];
     if(!a) return [];
@@ -1652,7 +1640,6 @@
     return out;
   }
 
-  /* ===== Pricing + discount ===== */
   function getPerPersonPrice(tpl){
     const tier = String($("visitType")?.value || "budget").toLowerCase();
     const pid = String(tpl.package_id || tpl.key || "").trim();
@@ -1731,10 +1718,9 @@
       "",
       "Please confirm final price and availability."
     ].filter(Boolean);
-    return lines.join("\n");
+    return lines.join("\\n");
   }
 
-  /* ===== OSRM route drawing ===== */
   async function drawRoadRouteFromPlaces(placeIds, dayIndex = new Map()){
     markersLayer.clearLayers();
     if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
@@ -1827,7 +1813,7 @@
     }
   }
 
-  /* ===== Render package details ===== */
+  /* ===== Render package details (unchanged) ===== */
   function renderInlineDetails(detailsEl, tpl, startUpper, endKey, km){
     const pax = getSelectedPax();
     const tier = String($("visitType")?.value || "budget").toUpperCase();
@@ -1878,7 +1864,7 @@
 
         <div class="enqRow">
           <a id="${waBtnId}" class="enqBtn disabled" href="#" target="_blank" rel="noopener">Send Query on WhatsApp</a>
-          <a class="enqBtn" id="call_${tpl.key}" href="tel:${CALL_NUMBER.replace(/\s/g, '')}" style="border-color: rgba(37,99,235,.30);background: rgba(37,99,235,.14);box-shadow: 0 12px 28px rgba(37,99,235,.12);">Call Now</a>
+          <a class="enqBtn" id="call_${tpl.key}" href="tel:${CALL_NUMBER.replace(/\\s/g, '')}" style="border-color: rgba(37,99,235,.30);background: rgba(37,99,235,.14);box-shadow: 0 12px 28px rgba(37,99,235,.12);">Call Now</a>
           <a class="enqBtn" id="mail_${tpl.key}" href="mailto:${EMAIL_ID}?subject=${encodeURIComponent('Himachal Tour Package Enquiry')}" style="border-color: rgba(10,30,60,.16);background: rgba(255,255,255,.66);">Email</a>
         </div>
 
@@ -1896,7 +1882,6 @@
       <div class="daysList" id="days_${tpl.key}" style="margin-top:10px;"></div>
     `;
 
-    // inline tools wiring
     const toolWrap = detailsEl.querySelectorAll(".toolBtn[data-act]");
     toolWrap.forEach(btn=>{
       btn.onclick = (e)=>{
@@ -1964,7 +1949,6 @@
         cont.appendChild(line);
       });
 
-      // ✅ Nearby cards with photo + name
       const anchorPid = block.ids[0];
       const near = getNearbySuggestions(anchorPid, 6, 18);
       const nearWrap = document.createElement("div");
@@ -2015,7 +1999,6 @@
     });
   }
 
-  /* ===== UI rendering ===== */
   function renderDistrictChips(){
     const bar = $("districtBar");
     if(!bar) return;
@@ -2043,7 +2026,6 @@
     const disc = getDiscountPct(tpl);
     const perPerson = applyDiscount(afterMarkup, disc);
 
-    // thumb from first stop
     const firstStop = (stopsFromTemplate(tpl)[0] || "");
     const p = PLACES[firstStop] || {};
     const photos = getPlacePhotos(p, firstStop);
@@ -2087,40 +2069,47 @@
     return el;
   }
 
-  function renderOtherPackages(list){
+  /* ✅ UPDATED: left sidebar now shows ALL packages (not only "others") */
+  function renderAllPackagesSidebar(list, startUpper){
     const box = $("otherPkgList");
     if(!box) return;
+
     box.innerHTML = "";
+
     if(!list.length){
-      box.innerHTML = `<div class="otherHint">No other packages for this filter.</div>`;
+      box.innerHTML = `<div class="otherHint">No packages for this filter.</div>`;
       return;
     }
+
     list.forEach(tpl=>{
       const endKey = endKeyFromRoutePath(tpl);
       const local = isLocalComputed(tpl);
 
-      const fs = (stopsFromTemplate(tpl)[0] || "");
-      const pp = PLACES[fs] || {};
-      const ph = getPlacePhotos(pp, fs);
-      const th = ph[0] || "";
+      const pax = getSelectedPax();
+      const base = getPerPersonPrice(tpl);
+      const mp = computeMarkupPct(tpl, pax);
+      const afterMarkup = applyMarkup(base, mp);
+      const disc = getDiscountPct(tpl);
+      const perPerson = applyDiscount(afterMarkup, disc);
 
-      const el = document.createElement("div");
-      el.className = "pkgMini";
-      el.innerHTML = `
-        <div class="miniThumb">
-          ${th ? `<img src="${escapeHtml(th)}" alt="" onerror="this.remove()">` : `<div class="ini">${escapeHtml(endKey).slice(0,2)}</div>`}
-        </div>
-        <div class="l">
+      const isActive = (tpl.key === CURRENT_TEMPLATE_KEY);
+
+      const card = document.createElement("div");
+      card.className = "pkgSide" + (isActive ? " active" : "");
+      card.innerHTML = `
+        <div class="pkgSideTop">
           <div class="t1">${escapeHtml(String(endKey).toUpperCase())}</div>
-          <div class="t2">${escapeHtml(String(tpl.route_id || tpl.package_id || "").toUpperCase())}</div>
+          <div class="badge ${local ? "" : "blue"}">${local ? "LOCAL" : "INTER"}</div>
         </div>
-        <div class="r">
-          <div class="miniBadge ${local ? "" : "blue"}">${local ? "LOCAL" : "INTER"}</div>
-          <div class="miniOpen">Open</div>
+        <div class="pkgSideRow">
+          <span>Start: <b>${escapeHtml(startUpper)}</b></span>
+          <span>End: <b>${escapeHtml(String(endKey).toUpperCase())}</b></span>
+          <span>Days: <b>${escapeHtml(String(tpl.days||"—"))}</b></span>
         </div>
+        <div class="pkgSidePrice">Per Person: <b>${isFinite(perPerson)?rupees(perPerson):"—"}</b></div>
       `;
-      el.onclick = (e)=>{ e.stopPropagation(); toggleOpenTemplate(tpl.key); };
-      box.appendChild(el);
+      card.onclick = (e)=>{ e.stopPropagation(); toggleOpenTemplate(tpl.key); };
+      box.appendChild(card);
     });
   }
 
@@ -2150,7 +2139,7 @@
       $("pkgCount").textContent = "—";
       $("districtBar").innerHTML = "";
       listEl.innerHTML = `<div class="pill"><b>Select Start</b> (from index) or choose here.</div>`;
-      renderOtherPackages([]);
+      renderAllPackagesSidebar([], "");
       return;
     }
 
@@ -2161,9 +2150,9 @@
       const aLocal = isLocalComputed(a) ? 1 : 0;
       const bLocal = isLocalComputed(b) ? 1 : 0;
       if(TOUR_MODE === "outside"){
-        if(aLocal !== bLocal) return aLocal - bLocal; // inter first
+        if(aLocal !== bLocal) return aLocal - bLocal;
       }else{
-        if(aLocal !== bLocal) return bLocal - aLocal; // local first
+        if(aLocal !== bLocal) return bLocal - aLocal;
       }
       return String(a.route_id||"").localeCompare(String(b.route_id||""));
     });
@@ -2188,9 +2177,8 @@
 
     highlightActiveCard();
 
-    // Other packages exclude selected
-    const others = filtered.filter(t=>t.key !== CURRENT_TEMPLATE_KEY);
-    renderOtherPackages(others);
+    /* ✅ Now left sidebar shows ALL packages (filtered) */
+    renderAllPackagesSidebar(filtered, startUpper);
   }
 
   async function toggleOpenTemplate(key, pushHistory = true){
@@ -2213,7 +2201,7 @@
     renderPanels();
     highlightActiveCard();
 
-    const card = document.querySelector(`.pkgW[data-key="${CSS.escape(key)}"]`);
+    const card = document.querySelector(\`.pkgW[data-key="\${CSS.escape(key)}"]\`);
     const detailsEl = card ? card.querySelector(".pkgDetails") : null;
 
     const endKey = endKeyFromRoutePath(tpl);
@@ -2303,7 +2291,6 @@
     });
   }
 
-  /* ===== Filtering (Show Packages) ===== */
   function applyFilters(push = true){
     const startUpper = normalizeStartInput();
     renderPills(startUpper);
@@ -2311,7 +2298,6 @@
     if(push) historyPush("filters");
   }
 
-  /* ===== Load from sessionStorage (index carry-forward) ===== */
   function loadFromIndexStorage(){
     try{
       const t = sessionStorage.getItem("HX_TEMPLATES");
@@ -2348,7 +2334,6 @@
     initModeFromLanding();
     buildStartList(arr);
 
-    // Prefill start from querystring (from index)
     try{
       const qs = new URLSearchParams(location.search);
       const startQS = (qs.get("start") || "").trim();
@@ -2360,11 +2345,9 @@
     setStatus("Ready");
     showBot("✅ Start loaded. Packages auto showing…");
 
-    // ✅ AUTO show packages
     applyFilters(false);
   }
 
-  /* ===== UI Wiring ===== */
   function wireUI(){
     $("yy").textContent = new Date().getFullYear();
 
@@ -2382,10 +2365,7 @@
       showBot("✅ Filters reset");
     };
 
-    $("startInp").addEventListener("change", ()=>{
-      // when user changes start manually, auto show packages
-      applyFilters(true);
-    });
+    $("startInp").addEventListener("change", ()=> applyFilters(true));
     $("visitType").addEventListener("change", ()=>{ renderPanels(); historyPush("tier"); });
     $("daysSel").addEventListener("change", ()=>{ renderPanels(); historyPush("days"); });
     $("paxSel").addEventListener("change", ()=>{ renderPanels(); historyPush("pax"); });
@@ -2442,12 +2422,11 @@
     $("mintLoginBtn").onclick = ()=> showBot("🔒 Mint Login (hook your auth here)");
   }
 
-  /* ===== Boot ===== */
   document.addEventListener("DOMContentLoaded", async ()=>{
     try{
       wireUI();
       initMap();
-      bootHistory();        // ✅ DO NOT REMOVE
+      bootHistory();
       initModeFromLanding();
       await loadAll();
     }catch(err){
