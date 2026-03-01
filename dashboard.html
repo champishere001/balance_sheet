@@ -427,17 +427,25 @@
       background: rgba(255,255,255,.52);
       flex:1;
     }
+
+    /* ✅ GRID CHANGE: Desktop 3-4, Mobile 2 columns */
     .pkgGrid{
       display:grid !important;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 10px;
       align-items: stretch;
+      grid-template-columns: repeat(4, minmax(260px, 1fr));
+    }
+    @media (max-width: 1400px){
+      .pkgGrid{ grid-template-columns: repeat(3, minmax(260px, 1fr)); }
+    }
+    @media (max-width: 980px){
+      .pkgGrid{ grid-template-columns: repeat(2, minmax(240px, 1fr)); }
     }
     @media (max-width: 520px){
-      .pkgGrid{ grid-template-columns: 1fr; }
+      .pkgGrid{ grid-template-columns: repeat(2, minmax(160px, 1fr)); }
     }
 
-    /* Skeleton loading (FIXED: was broken inside media query) */
+    /* Skeleton loading */
     .skGrid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap:10px; }
     .skCard{
       border:1px solid rgba(10,30,60,.14);
@@ -478,7 +486,13 @@
     .pkgW:hover{ transform: translateY(-1px); border-color: rgba(37,99,235,.30); background: rgba(255,255,255,.76); }
     .pkgW.active{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 3px rgba(37,99,235,.14), 0 18px 40px rgba(10,30,60,.12); }
 
-    .pkgCard{ display:flex; flex-direction:column; min-height: 260px; flex: 1; }
+    /* Image 70% + details 30% (default tile) */
+    .pkgCard{
+      display:flex;
+      flex-direction:column;
+      min-height: 260px;
+      flex: 1;
+    }
     .pkgMedia{
       position:relative;
       flex: 7 0 auto;
@@ -572,7 +586,9 @@
       white-space: nowrap;
     }
 
-    .pkgMeta{ display:flex; gap:8px; flex-wrap:wrap; }
+    .pkgMeta{
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
     .pkgChip{
       border:1px solid rgba(10,30,60,.16);
       background: rgba(255,255,255,.62);
@@ -706,22 +722,66 @@
       font-size: 10px; letter-spacing:.16em; text-transform: uppercase; color: rgba(10,30,60,.62);
       font-weight: 1000;
     }
-    .nearChips{ display:flex; flex-wrap:wrap; gap:8px; }
-    .nearChip{
-      border:1px solid rgba(10,30,60,.16);
+
+    /* ✅ Nearby photo + name cards */
+    .nearGrid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+    @media (max-width: 520px){
+      .nearGrid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    .nearCard{
+      border:1px solid rgba(10,30,60,.14);
       background: rgba(255,255,255,.72);
-      border-radius: 999px;
-      padding: 7px 10px;
-      font-size: 10px;
-      letter-spacing:.08em;
-      text-transform: uppercase;
-      font-weight: 950;
+      border-radius: 14px;
+      overflow:hidden;
       cursor:pointer;
-      white-space: nowrap;
-      -webkit-tap-highlight-color: transparent;
       box-shadow: 0 10px 22px rgba(10,30,60,.08);
     }
-    .nearChip:hover{ background: rgba(255,255,255,.84); border-color: rgba(37,99,235,.30); }
+    .nearCard .img{ height: 74px; background: rgba(37,99,235,.08); }
+    .nearCard .img img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .nearCard .tx{
+      padding: 8px 9px;
+      font-size: 10.5px;
+      font-weight: 950;
+      letter-spacing:.08em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.90);
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+
+    .infoBar{
+      margin: 12px;
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.66);
+      border-radius: 18px;
+      padding: 12px;
+      box-shadow: 0 14px 36px rgba(10,30,60,.10);
+    }
+    .infoRow{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; }
+    .infoTitle{ font-size: 12px; font-weight: 1000; letter-spacing:.14em; text-transform: uppercase; }
+    .infoMeta{
+      font-size: 11px; color: rgba(10,30,60,.68);
+      letter-spacing:.04em;
+      margin-top: 4px;
+      max-width: 820px;
+    }
+    .infoPills{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .infoPill{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.62);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 10.5px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+    }
+    .infoPill b{ letter-spacing:.06em; }
 
     .mapPane{ position: sticky; top: 12px; height: calc(100vh - 24px); min-height: 620px; max-height: 920px; }
     #map{ width:100%; flex:1; min-height: 520px; background: rgba(255,255,255,.62); }
@@ -748,7 +808,12 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    .routeInlineTools{ display:flex; gap:8px; flex-wrap:wrap; margin-top: 8px; }
+    .routeInlineTools{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top: 8px;
+    }
 
     .waFloat{
       position:fixed; right: 14px; bottom: 14px; z-index: 10000;
@@ -983,6 +1048,17 @@
       cursor: pointer;
     }
 
+    /* ✅ Selected package becomes a ROW in center */
+    .pkgW.selectedRow{ grid-column: 1 / -1; }
+    .pkgW.selectedRow .pkgCard{ flex-direction: row; min-height: 220px; }
+    .pkgW.selectedRow .pkgMedia{
+      flex: 0 0 38%;
+      min-height: 220px;
+      border-bottom: none;
+      border-right: 1px solid rgba(10,30,60,.12);
+    }
+    .pkgW.selectedRow .pkgInfo{ flex: 1 1 auto; padding: 14px; }
+
     @media (max-width: 1200px){
       .main{ grid-template-columns: 1fr; }
       .mapPane{ position:relative; top:auto; height:520px; max-height:none; }
@@ -1003,6 +1079,14 @@
       .waFloat{ padding: 10px; }
       .waClose{ display:none; }
       .footTopRow{ flex-direction:column; align-items:flex-start; }
+
+      .pkgW.selectedRow .pkgCard{ flex-direction: column; }
+      .pkgW.selectedRow .pkgMedia{
+        flex: 0 0 auto;
+        border-right: none;
+        border-bottom: 1px solid rgba(10,30,60,.12);
+        min-height: 160px;
+      }
     }
     @media (prefers-reduced-motion: reduce){
       .aurora{ animation:none; }
@@ -1292,11 +1376,12 @@
 
   <script>
   /* =========================================================
-     ✅ FINAL DASHBOARD PAGE (FIXED)
-     Fixes applied WITHOUT removing any feature:
-     1) CSS media query closed + skeleton moved out (was breaking CSS)
-     2) Removed stray JS fragment after getNearbySuggestions (was causing syntax error)
-     3) Kept: botToast, placeModal, nearby suggestions, popstate, all tools
+     ✅ FINAL DASHBOARD PAGE (Edited)
+     - Desktop: 3-4 packages; Mobile: 2-column grid
+     - On package open: only selected in center (row) and others shift to LEFT sidebar
+     - Fixed: broken getNearbySuggestions + CSS media braces
+     - Added: cost breakdown (base→markup→discount→final) + savings
+     - Added: nearby photo+name cards
      ========================================================= */
 
   /* ===== TOUR MODE from Landing ===== */
@@ -1717,7 +1802,7 @@
     return mp;
   }
 
-  /* ✅ DO NOT REMOVE: nearby suggestions (FIXED: removed broken leftover code) */
+  /* ✅ FIXED: nearby suggestions (no stray code outside function) */
   function getNearbySuggestions(anchorPid, limit = 5, maxKm = 18){
     const a = PLACES[anchorPid];
     if(!a) return [];
@@ -1733,18 +1818,13 @@
       const lat2 = latAny(p), lng2 = lngAny(p);
       const hasB = isFinite(lat2) && isFinite(lng2);
 
-      // 1) Geo scoring (best)
       if(hasA && hasB){
         const km = haversineKm(lat1, lng1, lat2, lng2);
         if(km > maxKm) continue;
-
-        // prefer same district slightly, but don't block others
         const bonus = (distA && districtAny(p) === distA) ? -0.6 : 0;
         scored.push({ pid, score: km + bonus, km });
         continue;
       }
-
-      // 2) Fallback: same district when geo missing
       if(distA && districtAny(p) === distA){
         scored.push({ pid, score: 999, km: 999 });
       }
@@ -1802,6 +1882,22 @@
     if(!isFinite(base) || base <= 0) return NaN;
     const pct = Number(markupPct || 0);
     return Math.round(base * (1 + pct/100));
+  }
+
+  /* ✅ Added: discount + final price */
+  function computeDiscountPct(tpl, pax){
+    const P = Number(pax||0);
+    if(P >= 8) return 7;
+    if(P >= 6) return 5;
+    if(P >= 4) return 3;
+    return 0;
+  }
+  function applyDiscount(amount, discountPct){
+    const a = Number(amount||0);
+    const d = Number(discountPct||0);
+    if(!isFinite(a) || a<=0) return NaN;
+    if(!isFinite(d) || d<=0) return Math.round(a);
+    return Math.round(a * (1 - d/100));
   }
 
   const WHATSAPP_NUMBER = "917018138847";
@@ -1953,10 +2049,17 @@
   function renderInlineDetails(detailsEl, tpl, startUpper, endKey, km){
     const pax = getSelectedPax();
     const tier = String($("visitType")?.value || "budget").toUpperCase();
+
     const perPersonBase = getPerPersonPrice(tpl);
     const markupPct = computeMarkupPct(tpl, pax);
-    const perPerson = applyMarkup(perPersonBase, markupPct);
-    const total = isFinite(perPerson) ? (perPerson * pax) : NaN;
+    const perPersonAfterMarkup = applyMarkup(perPersonBase, markupPct);
+
+    const discountPct = computeDiscountPct(tpl, pax);
+    const perPersonFinal = applyDiscount(perPersonAfterMarkup, discountPct);
+
+    const totalFinal = isFinite(perPersonFinal) ? (perPersonFinal * pax) : NaN;
+    const totalNoDiscount = isFinite(perPersonAfterMarkup) ? (perPersonAfterMarkup * pax) : NaN;
+    const savings = (isFinite(totalNoDiscount) && isFinite(totalFinal)) ? (totalNoDiscount - totalFinal) : NaN;
 
     const waBtnId = `wa_inline_${tpl.key}`;
     detailsEl.innerHTML = `
@@ -1970,20 +2073,24 @@
           </div>
 
           <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
-            <div class="mini" style="min-width:160px">
+            <div class="mini" style="min-width:170px">
               <div class="k">Total (final)</div>
-              <div class="v">${isFinite(total)?rupees(total):"—"} <small>(${escapeHtml(tier)})</small></div>
+              <div class="v">${isFinite(totalFinal)?rupees(totalFinal):"—"} <small>(${escapeHtml(tier)})</small></div>
             </div>
-            <div class="mini" style="min-width:160px">
-              <div class="k">Per Person</div>
-              <div class="v">${isFinite(perPerson)?rupees(perPerson):"—"} <small>incl. markup</small></div>
+            <div class="mini" style="min-width:170px">
+              <div class="k">Per Person (final)</div>
+              <div class="v">${isFinite(perPersonFinal)?rupees(perPersonFinal):"—"} <small>after discount</small></div>
             </div>
           </div>
         </div>
 
         <div class="detailsGrid" style="margin-top:10px;">
-          <div class="mini"><div class="k">Markup</div><div class="v">${isFinite(markupPct)?Number(markupPct).toFixed(1)+"%":"—"} <small>rule-based</small></div></div>
+          <div class="mini"><div class="k">Base PP</div><div class="v">${isFinite(perPersonBase)?rupees(perPersonBase):"—"} <small>Firebase</small></div></div>
+          <div class="mini"><div class="k">Markup</div><div class="v">${isFinite(markupPct)?Number(markupPct).toFixed(1)+"%":"—"} <small>rule</small></div></div>
+          <div class="mini"><div class="k">After Markup</div><div class="v">${isFinite(perPersonAfterMarkup)?rupees(perPersonAfterMarkup):"—"} <small>PP</small></div></div>
+          <div class="mini"><div class="k">Discount</div><div class="v">${Number(discountPct||0).toFixed(0)}% <small>pax-based</small></div></div>
           <div class="mini"><div class="k">Travellers</div><div class="v">${escapeHtml(String(pax))} <small>selected</small></div></div>
+          <div class="mini"><div class="k">You Save</div><div class="v">${isFinite(savings)&&savings>0?rupees(savings):"—"} <small>total</small></div></div>
           <div class="mini"><div class="k">Route</div><div class="v">${(isFinite(km)&&km>0)?Number(km).toFixed(1):"—"} <small>KM</small></div></div>
           <div class="mini"><div class="k">Time</div><div class="v">${(isFinite(CURRENT_ROUTE_HRS)&&CURRENT_ROUTE_HRS>0)?(Number(CURRENT_ROUTE_HRS).toFixed(1)):"—"} <small>hrs est.</small></div></div>
         </div>
@@ -2023,10 +2130,10 @@
     }
 
     const startName = normalizeStartInput() || (tpl.start_point || tpl.start || startUpper || "");
-    const msg = buildWhatsAppMessage({ tpl, startName, endKey, pax, tier, km, total, perPerson, markupPct });
+    const msg = buildWhatsAppMessage({ tpl, startName, endKey, pax, tier, km, total: totalFinal, perPerson: perPersonFinal, markupPct });
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
     const waEl = document.getElementById(waBtnId);
-    if(isFinite(perPerson)){
+    if(isFinite(perPersonFinal)){
       waEl.classList.remove("disabled");
       waEl.href = url;
     }
@@ -2084,22 +2191,33 @@
       const near = getNearbySuggestions(anchorPid, 6, 18);
       const nearWrap = document.createElement("div");
       nearWrap.className = "nearWrap";
+
       if(near.length){
         nearWrap.innerHTML = `
           <div class="nearTop">
             <div class="k">Nearby Suggestions</div>
             <div class="muted" style="text-transform:none;letter-spacing:.02em;">tap to open</div>
           </div>
-          <div class="nearChips"></div>
+          <div class="nearGrid"></div>
         `;
-        const chips = nearWrap.querySelector(".nearChips");
+        const grid = nearWrap.querySelector(".nearGrid");
+
         near.forEach(npid=>{
           const p = PLACES[npid] || {};
           const name = placeNameAny(p, npid);
-          const chip = document.createElement("div");
-          chip.className = "nearChip";
-          chip.textContent = name;
-          chip.onclick = (e)=>{
+          const photos = getPlacePhotos(p, npid);
+          const imgSrc = photos[0] || "";
+
+          const card = document.createElement("div");
+          card.className = "nearCard";
+          card.innerHTML = `
+            <div class="img">
+              ${imgSrc ? `<img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(name)}" onerror="this.remove()">` : ``}
+            </div>
+            <div class="tx">${escapeHtml(name)}</div>
+          `;
+
+          card.onclick = (e)=>{
             e.stopPropagation();
             const lat = latAny(p), lng = lngAny(p);
             if(isFinite(lat) && isFinite(lng)){
@@ -2108,7 +2226,8 @@
             }
             openPlaceModal({ place: p, dayNum: block.day, orderNum: 0, placeId: npid });
           };
-          chips.appendChild(chip);
+
+          grid.appendChild(card);
         });
       }else{
         nearWrap.innerHTML = `
@@ -2136,6 +2255,60 @@
     bar.querySelectorAll(".distItem").forEach(el=>{
       el.onclick = ()=>{ ACTIVE_DISTRICT = el.dataset.d || "ALL"; trackEvent('filter_district', { district: ACTIVE_DISTRICT }); renderPanels(); };
     });
+  }
+
+  function renderPackageCard(tpl, startUpper){
+    const endKey = endKeyFromRoutePath(tpl);
+    const local = isLocalComputed(tpl);
+
+    const perPersonBase = getPerPersonPrice(tpl);
+    const pax = getSelectedPax();
+    const markupPct = computeMarkupPct(tpl, pax);
+    const perPersonAfterMarkup = applyMarkup(perPersonBase, markupPct);
+    const discountPct = computeDiscountPct(tpl, pax);
+    const perPersonFinal = applyDiscount(perPersonAfterMarkup, discountPct);
+
+    const firstStop = (stopsFromTemplate(tpl)[0] || "");
+    const p = PLACES[firstStop] || {};
+    const photos = getPlacePhotos(p, firstStop);
+    const thumb = photos[0] || "";
+
+    const badgeClass = local ? "green" : "purple";
+    const badgeText = local ? "LOCAL" : "INTER";
+
+    const el = document.createElement("div");
+    el.className = "pkgW";
+    el.dataset.key = tpl.key;
+
+    el.innerHTML = `
+      <div class="pkgCard">
+        <div class="pkgMedia">
+          ${thumb ? `<img src="${escapeHtml(thumb)}" alt="${escapeHtml(endKey)}" onerror="this.remove()">` : ``}
+          <div class="pkgTagRow">
+            <div class="pkgRouteId">${escapeHtml(String(tpl.route_id || tpl.package_id || "PACKAGE").toUpperCase())}</div>
+            <div class="pkgBadge ${badgeClass}">${badgeText}</div>
+          </div>
+        </div>
+
+        <div class="pkgInfo">
+          <div class="pkgTitleRow">
+            <h4 class="pkgTitle">${escapeHtml(String(endKey).toUpperCase())}</h4>
+            <div class="pkgOpen">${CURRENT_TEMPLATE_KEY===tpl.key ? "Close" : "Open"}</div>
+          </div>
+
+          <div class="pkgMeta">
+            <div class="pkgChip">Days <b>${escapeHtml(String(tpl.days||"—"))}</b></div>
+            <div class="pkgChip">Start <b>${escapeHtml(startUpper)}</b></div>
+            <div class="pkgChip">PP <b>${isFinite(perPersonFinal)?rupees(perPersonFinal):"—"}</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pkgDetails"></div>
+    `;
+
+    el.onclick = (e)=>{ e.stopPropagation(); toggleOpenTemplate(tpl.key); };
+    return el;
   }
 
   function renderOtherPackages(list, startUpper){
@@ -2193,57 +2366,7 @@
     `;
   }
 
-  function renderPackageCard(tpl, startUpper){
-    const endKey = endKeyFromRoutePath(tpl);
-    const local = isLocalComputed(tpl);
-    const perPersonBase = getPerPersonPrice(tpl);
-    const pax = getSelectedPax();
-    const markupPct = computeMarkupPct(tpl, pax);
-    const perPerson = applyMarkup(perPersonBase, markupPct);
-
-    const firstStop = (stopsFromTemplate(tpl)[0] || "");
-    const p = PLACES[firstStop] || {};
-    const photos = getPlacePhotos(p, firstStop);
-    const thumb = photos[0] || "";
-
-    const badgeClass = local ? "green" : "purple";
-    const badgeText = local ? "LOCAL" : "INTER";
-
-    const el = document.createElement("div");
-    el.className = "pkgW";
-    el.dataset.key = tpl.key;
-
-    el.innerHTML = `
-      <div class="pkgCard">
-        <div class="pkgMedia">
-          ${thumb ? `<img src="${escapeHtml(thumb)}" alt="${escapeHtml(endKey)}" onerror="this.remove()">` : ``}
-          <div class="pkgTagRow">
-            <div class="pkgRouteId">${escapeHtml(String(tpl.route_id || tpl.package_id || "PACKAGE").toUpperCase())}</div>
-            <div class="pkgBadge ${badgeClass}">${badgeText}</div>
-          </div>
-        </div>
-
-        <div class="pkgInfo">
-          <div class="pkgTitleRow">
-            <h4 class="pkgTitle">${escapeHtml(String(endKey).toUpperCase())}</h4>
-            <div class="pkgOpen">${CURRENT_TEMPLATE_KEY===tpl.key ? "Close" : "Open"}</div>
-          </div>
-
-          <div class="pkgMeta">
-            <div class="pkgChip">Days <b>${escapeHtml(String(tpl.days||"—"))}</b></div>
-            <div class="pkgChip">Start <b>${escapeHtml(startUpper)}</b></div>
-            <div class="pkgChip">PP <b>${isFinite(perPerson)?rupees(perPerson):"—"}</b></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="pkgDetails"></div>
-    `;
-
-    el.onclick = (e)=>{ e.stopPropagation(); toggleOpenTemplate(tpl.key); };
-    return el;
-  }
-
+  /* ✅ Alteration: when selected, show only selected in center and move rest to left sidebar */
   function renderPanels(){
     const startUpper = normalizeStartInput();
     const listEl = $("pkgList");
@@ -2264,9 +2387,9 @@
       const aLocal = isLocalComputed(a) ? 1 : 0;
       const bLocal = isLocalComputed(b) ? 1 : 0;
       if(TOUR_MODE === "outside"){
-        if(aLocal !== bLocal) return aLocal - bLocal; // inter first
+        if(aLocal !== bLocal) return aLocal - bLocal;
       }else{
-        if(aLocal !== bLocal) return bLocal - aLocal; // local first
+        if(aLocal !== bLocal) return bLocal - aLocal;
       }
       return String(a.route_id||"").localeCompare(String(b.route_id||""));
     });
@@ -2280,20 +2403,35 @@
       : list.filter(t=>endDistrictFromTemplate(t) === ACTIVE_DISTRICT);
 
     $("pkgCount").textContent = `${filtered.length}`;
-    setCentreHeroVisible(!CURRENT_TEMPLATE_KEY);
+
+    const selectedTpl = CURRENT_TEMPLATE_KEY
+      ? filtered.find(t=>t.key === CURRENT_TEMPLATE_KEY)
+      : null;
+
+    setCentreHeroVisible(!selectedTpl);
 
     listEl.innerHTML = "";
     if(LOADING){ renderSkeleton(listEl); return; }
 
     const grid = document.createElement("div");
     grid.className = "pkgGrid";
-    filtered.forEach(tpl=> grid.appendChild(renderPackageCard(tpl, startUpper)));
+
+    if(selectedTpl){
+      const card = renderPackageCard(selectedTpl, startUpper);
+      card.classList.add("selectedRow");
+      grid.appendChild(card);
+
+      const others = filtered.filter(t=>t.key !== CURRENT_TEMPLATE_KEY);
+      renderOtherPackages(others, startUpper);
+    }else{
+      filtered.forEach(tpl=>{
+        grid.appendChild(renderPackageCard(tpl, startUpper));
+      });
+      renderOtherPackages(filtered, startUpper);
+    }
+
     listEl.appendChild(grid);
-
     highlightActiveCard();
-
-    const others = filtered.filter(t=>t.key !== CURRENT_TEMPLATE_KEY);
-    renderOtherPackages(others, startUpper);
   }
 
   async function toggleOpenTemplate(key, pushHistory = true){
@@ -2321,6 +2459,7 @@
     highlightActiveCard();
 
     const card = document.querySelector(`.pkgW[data-key="${CSS.escape(key)}"]`);
+    if(card) card.classList.add("selectedRow"); /* keep row style */
     const detailsEl = card ? card.querySelector(".pkgDetails") : null;
 
     const endKey = endKeyFromRoutePath(tpl);
@@ -2431,7 +2570,7 @@
 
   async function loadAll(){
     setStatus("Connecting to Firebase…");
-    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    firebase.initializeApp(firebaseConfig);
     try{ analytics = firebase.analytics(); }catch(e){}
 
     db = firebase.database();
@@ -2521,10 +2660,10 @@
     $("toggleTilesBtn").onclick = ()=>{
       tilesDark = !tilesDark;
       if(tilesDark){
-        if(map.hasLayer(tile)) map.removeLayer(tile);
+        map.removeLayer(tile);
         tileDark.addTo(map);
       }else{
-        if(map.hasLayer(tileDark)) map.removeLayer(tileDark);
+        map.removeLayer(tileDark);
         tile.addTo(map);
       }
       showBot(`🗺️ Tiles: ${tilesDark ? "Dark" : "Light"}`);
@@ -2553,8 +2692,8 @@
       wireUI();
       initMap();
       startCentreHero();
-      bootHistory();         // ✅ DO NOT REMOVE
-      initModeFromLanding(); // keeps mode tag updated quickly
+      bootHistory();
+      initModeFromLanding();
       await loadAll();
     }catch(err){
       console.error(err);
