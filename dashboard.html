@@ -435,8 +435,9 @@
     }
     @media (max-width: 520px){
       .pkgGrid{ grid-template-columns: 1fr; }
+    }
 
-    /* Skeleton loading */
+    /* Skeleton loading (FIXED: was broken inside media query) */
     .skGrid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap:10px; }
     .skCard{
       border:1px solid rgba(10,30,60,.14);
@@ -459,9 +460,7 @@
     .skBottom{ height:30%; padding: 10px; display:flex; flex-direction:column; gap:10px; }
     .skLine{ height: 10px; border-radius: 999px; background: rgba(10,30,60,.10); }
     .skLine.w60{ width:60%; } .skLine.w80{ width:80%; } .skLine.w40{ width:40%; }
-    }
 
-    
     .pkgW{
       border:1px solid rgba(10,30,60,.16);
       background: rgba(255,255,255,.66);
@@ -479,16 +478,10 @@
     .pkgW:hover{ transform: translateY(-1px); border-color: rgba(37,99,235,.30); background: rgba(255,255,255,.76); }
     .pkgW.active{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 3px rgba(37,99,235,.14), 0 18px 40px rgba(10,30,60,.12); }
 
-    /* Image 70% + details 30% (responsive tile) */
-    .pkgCard{
-      display:flex;
-      flex-direction:column;
-      min-height: 260px;
-      flex: 1;
-    }
+    .pkgCard{ display:flex; flex-direction:column; min-height: 260px; flex: 1; }
     .pkgMedia{
       position:relative;
-      flex: 7 0 auto;         /* 70% */
+      flex: 7 0 auto;
       min-height: 170px;
       background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.78), rgba(37,99,235,.12));
       border-bottom: 1px solid rgba(10,30,60,.12);
@@ -542,7 +535,7 @@
     }
 
     .pkgInfo{
-      flex: 3 0 auto;         /* 30% */
+      flex: 3 0 auto;
       padding: 10px 10px 12px;
       background: rgba(255,255,255,.62);
       display:flex;
@@ -579,9 +572,7 @@
       white-space: nowrap;
     }
 
-    .pkgMeta{
-      display:flex; gap:8px; flex-wrap:wrap;
-    }
+    .pkgMeta{ display:flex; gap:8px; flex-wrap:wrap; }
     .pkgChip{
       border:1px solid rgba(10,30,60,.16);
       background: rgba(255,255,255,.62);
@@ -732,34 +723,6 @@
     }
     .nearChip:hover{ background: rgba(255,255,255,.84); border-color: rgba(37,99,235,.30); }
 
-    .infoBar{
-      margin: 12px;
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.66);
-      border-radius: 18px;
-      padding: 12px;
-      box-shadow: 0 14px 36px rgba(10,30,60,.10);
-    }
-    .infoRow{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; }
-    .infoTitle{ font-size: 12px; font-weight: 1000; letter-spacing:.14em; text-transform: uppercase; }
-    .infoMeta{
-      font-size: 11px; color: rgba(10,30,60,.68);
-      letter-spacing:.04em;
-      margin-top: 4px;
-      max-width: 820px;
-    }
-    .infoPills{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
-    .infoPill{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.62);
-      border-radius: 999px;
-      padding: 7px 10px;
-      font-size: 10.5px;
-      letter-spacing:.10em;
-      text-transform: uppercase;
-    }
-    .infoPill b{ letter-spacing:.06em; }
-
     .mapPane{ position: sticky; top: 12px; height: calc(100vh - 24px); min-height: 620px; max-height: 920px; }
     #map{ width:100%; flex:1; min-height: 520px; background: rgba(255,255,255,.62); }
 
@@ -785,13 +748,8 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    .routeInlineTools{ display:flex; gap:8px; flex-wrap:wrap; margin-top: 8px; }
 
-    .routeInlineTools{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top: 8px;
-    }
     .waFloat{
       position:fixed; right: 14px; bottom: 14px; z-index: 10000;
       display:flex; align-items:center; gap:10px; padding: 12px 14px;
@@ -1040,7 +998,6 @@
       .heroBar{ padding: 10px 10px; }
       .logo{ width:52px; height:52px; border-radius: 16px; }
       .chip{ padding: 8px 9px; font-size: 10.5px; }
-      .pkgThumb{ width:78px; height:78px; }
       .detailsGrid{ grid-template-columns: 1fr; }
       .waText{ display:none; }
       .waFloat{ padding: 10px; }
@@ -1335,9 +1292,11 @@
 
   <script>
   /* =========================================================
-     ✅ FINAL DASHBOARD PAGE
-     - Linked from landing via: dashboard.html?mode=within|outside
-     - Keeps: botToast, placeModal, nearby suggestions, popstate
+     ✅ FINAL DASHBOARD PAGE (FIXED)
+     Fixes applied WITHOUT removing any feature:
+     1) CSS media query closed + skeleton moved out (was breaking CSS)
+     2) Removed stray JS fragment after getNearbySuggestions (was causing syntax error)
+     3) Kept: botToast, placeModal, nearby suggestions, popstate, all tools
      ========================================================= */
 
   /* ===== TOUR MODE from Landing ===== */
@@ -1578,6 +1537,7 @@
   let CURRENT_ROUTE_KM = 0;
   let CURRENT_ROUTE_HRS = 0;
   let LOADING = false;
+
   function renderSkeleton(targetEl){
     if(!targetEl) return;
     const wrap = document.createElement('div');
@@ -1591,7 +1551,6 @@
     targetEl.innerHTML = '';
     targetEl.appendChild(wrap);
   }
-
 
   function buildNameIndex(){
     NAME_TO_ID = new Map();
@@ -1626,7 +1585,6 @@
 
     const arr = Array.from(counts.entries()).map(([k,v])=>({ key:k, ...v }));
     arr.sort((a,b)=>{
-      // within HP -> local first, outside -> inter first
       const aPri = (TOUR_MODE==="outside") ? a.inter : a.local;
       const bPri = (TOUR_MODE==="outside") ? b.inter : b.local;
       if(bPri !== aPri) return bPri - aPri;
@@ -1759,55 +1717,50 @@
     return mp;
   }
 
-  
-/* ✅ DO NOT REMOVE: nearby suggestions */
-function getNearbySuggestions(anchorPid, limit = 5, maxKm = 18){
-  const a = PLACES[anchorPid];
-  if(!a) return [];
-  const distA = districtAny(a);
+  /* ✅ DO NOT REMOVE: nearby suggestions (FIXED: removed broken leftover code) */
+  function getNearbySuggestions(anchorPid, limit = 5, maxKm = 18){
+    const a = PLACES[anchorPid];
+    if(!a) return [];
+    const distA = districtAny(a);
 
-  const lat1 = latAny(a), lng1 = lngAny(a);
-  const hasA = isFinite(lat1) && isFinite(lng1);
+    const lat1 = latAny(a), lng1 = lngAny(a);
+    const hasA = isFinite(lat1) && isFinite(lng1);
 
-  const scored = [];
-  for(const [pid, p] of Object.entries(PLACES)){
-    if(pid === anchorPid) continue;
+    const scored = [];
+    for(const [pid, p] of Object.entries(PLACES)){
+      if(pid === anchorPid) continue;
 
-    const lat2 = latAny(p), lng2 = lngAny(p);
-    const hasB = isFinite(lat2) && isFinite(lng2);
+      const lat2 = latAny(p), lng2 = lngAny(p);
+      const hasB = isFinite(lat2) && isFinite(lng2);
 
-    // 1) Geo scoring (best)
-    if(hasA && hasB){
-      const km = haversineKm(lat1, lng1, lat2, lng2);
-      if(km > maxKm) continue;
+      // 1) Geo scoring (best)
+      if(hasA && hasB){
+        const km = haversineKm(lat1, lng1, lat2, lng2);
+        if(km > maxKm) continue;
 
-      // prefer same district slightly, but don't block others
-      const bonus = (distA && districtAny(p) === distA) ? -0.6 : 0;
-      scored.push({ pid, score: km + bonus, km });
-      continue;
+        // prefer same district slightly, but don't block others
+        const bonus = (distA && districtAny(p) === distA) ? -0.6 : 0;
+        scored.push({ pid, score: km + bonus, km });
+        continue;
+      }
+
+      // 2) Fallback: same district when geo missing
+      if(distA && districtAny(p) === distA){
+        scored.push({ pid, score: 999, km: 999 });
+      }
     }
 
-    // 2) Fallback: same district when geo missing
-    if(distA && districtAny(p) === distA){
-      scored.push({ pid, score: 999, km: 999 });
+    scored.sort((x,y)=>x.score - y.score);
+
+    const out = [];
+    const seen = new Set();
+    for(const s of scored){
+      if(seen.has(s.pid)) continue;
+      seen.add(s.pid);
+      out.push(s.pid);
+      if(out.length >= limit) break;
     }
-  }
-
-  scored.sort((x,y)=>x.score - y.score);
-
-  const out = [];
-  const seen = new Set();
-  for(const s of scored){
-    if(seen.has(s.pid)) continue;
-    seen.add(s.pid);
-    out.push(s.pid);
-    if(out.length >= limit) break;
-  }
-
-  return out;
-}
-    scored.sort((x,y)=>x.km - y.km);
-    return scored.slice(0, limit).map(x=>x.pid);
+    return out;
   }
 
   /* ===== Pricing ===== */
@@ -2085,7 +2038,6 @@ function getNearbySuggestions(anchorPid, limit = 5, maxKm = 18){
     const mailEl = document.getElementById(`mail_${tpl.key}`);
     if(mailEl){ mailEl.onclick = (e)=>{ e.stopPropagation(); trackEvent('enquiry_email', { package_key: String(tpl.key||''), route_id: String(tpl.route_id||'') }); }; }
 
-
     const daysWrap = document.getElementById(`days_${tpl.key}`);
     const blocks = buildDayWise(tpl);
 
@@ -2186,66 +2138,6 @@ function getNearbySuggestions(anchorPid, limit = 5, maxKm = 18){
     });
   }
 
-  function templateTitle(t){
-    const endKey = endKeyFromRoutePath(t);
-    const days = Number(t.days||0) || 0;
-    const local = isLocalComputed(t);
-    return `${endKey} • ${days}D • ${local ? "LOCAL" : "INTER"}`;
-  }
-
-  function renderPackageCard(tpl, startUpper){
-    const endKey = endKeyFromRoutePath(tpl);
-    const local = isLocalComputed(tpl);
-    const perPersonBase = getPerPersonPrice(tpl);
-    const pax = getSelectedPax();
-    const markupPct = computeMarkupPct(tpl, pax);
-    const perPerson = applyMarkup(perPersonBase, markupPct);
-
-    // thumb: use first place photo of first stop if available
-    const firstStop = (stopsFromTemplate(tpl)[0] || "");
-    const p = PLACES[firstStop] || {};
-    const photos = getPlacePhotos(p, firstStop);
-    const thumb = photos[0] || "";
-
-    const badgeClass = local ? "green" : "purple";
-    const badgeText = local ? "LOCAL" : "INTER";
-
-    const el = document.createElement("div");
-    el.className = "pkgW";
-    el.dataset.key = tpl.key;
-
-    el.innerHTML = `
-      <div class="pkgCard">
-        <div class="pkgMedia">
-          ${thumb ? `<img src="${escapeHtml(thumb)}" alt="${escapeHtml(endKey)}" onerror="this.remove()">`
-                 : ``}
-          <div class="pkgTagRow">
-            <div class="pkgRouteId">${escapeHtml(String(tpl.route_id || tpl.package_id || "PACKAGE").toUpperCase())}</div>
-            <div class="pkgBadge ${badgeClass}">${badgeText}</div>
-          </div>
-        </div>
-
-        <div class="pkgInfo">
-          <div class="pkgTitleRow">
-            <h4 class="pkgTitle">${escapeHtml(String(endKey).toUpperCase())}</h4>
-            <div class="pkgOpen">${CURRENT_TEMPLATE_KEY===tpl.key ? "Close" : "Open"}</div>
-          </div>
-
-          <div class="pkgMeta">
-            <div class="pkgChip">Days <b>${escapeHtml(String(tpl.days||"—"))}</b></div>
-            <div class="pkgChip">Start <b>${escapeHtml(startUpper)}</b></div>
-            <div class="pkgChip">PP <b>${isFinite(perPerson)?rupees(perPerson):"—"}</b></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="pkgDetails"></div>
-    `;
-
-    el.onclick = (e)=>{ e.stopPropagation(); toggleOpenTemplate(tpl.key); };
-    return el;
-  }
-
   function renderOtherPackages(list, startUpper){
     const box = $("otherPkgList");
     if(!box) return;
@@ -2301,6 +2193,57 @@ function getNearbySuggestions(anchorPid, limit = 5, maxKm = 18){
     `;
   }
 
+  function renderPackageCard(tpl, startUpper){
+    const endKey = endKeyFromRoutePath(tpl);
+    const local = isLocalComputed(tpl);
+    const perPersonBase = getPerPersonPrice(tpl);
+    const pax = getSelectedPax();
+    const markupPct = computeMarkupPct(tpl, pax);
+    const perPerson = applyMarkup(perPersonBase, markupPct);
+
+    const firstStop = (stopsFromTemplate(tpl)[0] || "");
+    const p = PLACES[firstStop] || {};
+    const photos = getPlacePhotos(p, firstStop);
+    const thumb = photos[0] || "";
+
+    const badgeClass = local ? "green" : "purple";
+    const badgeText = local ? "LOCAL" : "INTER";
+
+    const el = document.createElement("div");
+    el.className = "pkgW";
+    el.dataset.key = tpl.key;
+
+    el.innerHTML = `
+      <div class="pkgCard">
+        <div class="pkgMedia">
+          ${thumb ? `<img src="${escapeHtml(thumb)}" alt="${escapeHtml(endKey)}" onerror="this.remove()">` : ``}
+          <div class="pkgTagRow">
+            <div class="pkgRouteId">${escapeHtml(String(tpl.route_id || tpl.package_id || "PACKAGE").toUpperCase())}</div>
+            <div class="pkgBadge ${badgeClass}">${badgeText}</div>
+          </div>
+        </div>
+
+        <div class="pkgInfo">
+          <div class="pkgTitleRow">
+            <h4 class="pkgTitle">${escapeHtml(String(endKey).toUpperCase())}</h4>
+            <div class="pkgOpen">${CURRENT_TEMPLATE_KEY===tpl.key ? "Close" : "Open"}</div>
+          </div>
+
+          <div class="pkgMeta">
+            <div class="pkgChip">Days <b>${escapeHtml(String(tpl.days||"—"))}</b></div>
+            <div class="pkgChip">Start <b>${escapeHtml(startUpper)}</b></div>
+            <div class="pkgChip">PP <b>${isFinite(perPerson)?rupees(perPerson):"—"}</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pkgDetails"></div>
+    `;
+
+    el.onclick = (e)=>{ e.stopPropagation(); toggleOpenTemplate(tpl.key); };
+    return el;
+  }
+
   function renderPanels(){
     const startUpper = normalizeStartInput();
     const listEl = $("pkgList");
@@ -2317,16 +2260,13 @@ function getNearbySuggestions(anchorPid, limit = 5, maxKm = 18){
     const daysFilter = $("daysSel").value || "";
     let list = ACTIVE_TEMPLATES.filter(t=>matchesStart(t, startUpper) && matchesDaysOptional(t, daysFilter));
 
-    // Mode priority ordering
     list.sort((a,b)=>{
       const aLocal = isLocalComputed(a) ? 1 : 0;
       const bLocal = isLocalComputed(b) ? 1 : 0;
       if(TOUR_MODE === "outside"){
-        // inter first
-        if(aLocal !== bLocal) return aLocal - bLocal;
+        if(aLocal !== bLocal) return aLocal - bLocal; // inter first
       }else{
-        // local first
-        if(aLocal !== bLocal) return bLocal - aLocal;
+        if(aLocal !== bLocal) return bLocal - aLocal; // local first
       }
       return String(a.route_id||"").localeCompare(String(b.route_id||""));
     });
@@ -2340,22 +2280,18 @@ function getNearbySuggestions(anchorPid, limit = 5, maxKm = 18){
       : list.filter(t=>endDistrictFromTemplate(t) === ACTIVE_DISTRICT);
 
     $("pkgCount").textContent = `${filtered.length}`;
-
     setCentreHeroVisible(!CURRENT_TEMPLATE_KEY);
 
     listEl.innerHTML = "";
     if(LOADING){ renderSkeleton(listEl); return; }
+
     const grid = document.createElement("div");
     grid.className = "pkgGrid";
-    filtered.forEach(tpl=>{
-      grid.appendChild(renderPackageCard(tpl, startUpper));
-    });
+    filtered.forEach(tpl=> grid.appendChild(renderPackageCard(tpl, startUpper)));
     listEl.appendChild(grid);
 
-    // If a template selected, keep it active in UI
     highlightActiveCard();
 
-    // Other packages list: exclude selected
     const others = filtered.filter(t=>t.key !== CURRENT_TEMPLATE_KEY);
     renderOtherPackages(others, startUpper);
   }
@@ -2384,13 +2320,11 @@ function getNearbySuggestions(anchorPid, limit = 5, maxKm = 18){
     renderPanels();
     highlightActiveCard();
 
-    // Render details into active card
     const card = document.querySelector(`.pkgW[data-key="${CSS.escape(key)}"]`);
     const detailsEl = card ? card.querySelector(".pkgDetails") : null;
 
     const endKey = endKeyFromRoutePath(tpl);
 
-    // Build day index for markers
     CURRENT_DAY_INDEX = makeDayIndexFromTemplate(tpl);
     const placeIds = routeIdsFromTemplateIncludingStart(tpl);
 
@@ -2497,13 +2431,12 @@ function getNearbySuggestions(anchorPid, limit = 5, maxKm = 18){
 
   async function loadAll(){
     setStatus("Connecting to Firebase…");
-    firebase.initializeApp(firebaseConfig);
+    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     try{ analytics = firebase.analytics(); }catch(e){}
 
     db = firebase.database();
 
     LOADING = true;
-    // show skeleton while Firebase loads
     try{ const listEl = $("pkgList"); if(listEl) renderSkeleton(listEl); }catch(e){}
     setStatus("Loading places…");
     const places = await dbGet(NODE_PLACES) || {};
@@ -2519,16 +2452,12 @@ function getNearbySuggestions(anchorPid, limit = 5, maxKm = 18){
     const costs = await dbGet(NODE_COSTS) || {};
     COSTS = costs;
 
-    // Normalize templates into array with key
     const arr = Object.entries(TEMPLATES).map(([k,v])=>({ key:k, ...(v||{}) }));
     ACTIVE_TEMPLATES = arr;
 
-    // Build starts
     initModeFromLanding();
     buildStartList(arr);
 
-
-    // Prefill Start from landing (index) if provided
     try{
       const qs = new URLSearchParams(location.search);
       const startQS = (qs.get("start") || "").trim();
@@ -2542,7 +2471,6 @@ function getNearbySuggestions(anchorPid, limit = 5, maxKm = 18){
     setStatus("Ready");
     showBot("👋 Welcome! Select Start → Show Packages.");
 
-    // default render
     if(String($("startInp").value||"").trim()) applyFilters(false);
     else renderPanels();
   }
@@ -2565,7 +2493,7 @@ function getNearbySuggestions(anchorPid, limit = 5, maxKm = 18){
       showBot("✅ Filters reset");
     };
 
-    $("startInp").addEventListener("change", ()=>{ /* normalize view only */ renderPills(normalizeStartInput()); });
+    $("startInp").addEventListener("change", ()=>{ renderPills(normalizeStartInput()); });
     $("visitType").addEventListener("change", ()=>{ renderPanels(); historyPush("tier"); });
     $("daysSel").addEventListener("change", ()=>{ renderPanels(); historyPush("days"); });
     $("paxSel").addEventListener("change", ()=>{ renderPanels(); historyPush("pax"); });
@@ -2593,10 +2521,10 @@ function getNearbySuggestions(anchorPid, limit = 5, maxKm = 18){
     $("toggleTilesBtn").onclick = ()=>{
       tilesDark = !tilesDark;
       if(tilesDark){
-        map.removeLayer(tile);
+        if(map.hasLayer(tile)) map.removeLayer(tile);
         tileDark.addTo(map);
       }else{
-        map.removeLayer(tileDark);
+        if(map.hasLayer(tileDark)) map.removeLayer(tileDark);
         tile.addTo(map);
       }
       showBot(`🗺️ Tiles: ${tilesDark ? "Dark" : "Light"}`);
@@ -2616,7 +2544,6 @@ function getNearbySuggestions(anchorPid, limit = 5, maxKm = 18){
       showBot("✅ WhatsApp button hidden");
     };
 
-    // mint login placeholder
     $("mintLoginBtn").onclick = ()=> showBot("🔒 Mint Login (hook your auth here)");
   }
 
@@ -2626,8 +2553,8 @@ function getNearbySuggestions(anchorPid, limit = 5, maxKm = 18){
       wireUI();
       initMap();
       startCentreHero();
-      bootHistory();        // ✅ DO NOT REMOVE
-      initModeFromLanding(); // ensures mode tag updates quickly
+      bootHistory();         // ✅ DO NOT REMOVE
+      initModeFromLanding(); // keeps mode tag updated quickly
       await loadAll();
     }catch(err){
       console.error(err);
