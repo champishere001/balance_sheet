@@ -1072,7 +1072,7 @@
 
           <div class="sideCard">
             <div class="muted" style="text-transform:none;letter-spacing:.02em;">
-              Tip: Start is auto filled from index. Packages will auto show.
+              Tip: Start can be selected here, or passed from index.
             </div>
           </div>
         </div>
@@ -1138,7 +1138,7 @@
               <ul>
                 <li>Route map + stop markers (OSRM)</li>
                 <li>Day-wise itinerary with place popups</li>
-                <li>Pricing carry-forward from index (no dashboard fetch)</li>
+                <li>Pricing from Firebase (dashboard loads directly)</li>
                 <li>Instant WhatsApp booking query</li>
                 <li>District guide integration</li>
               </ul>
@@ -1213,11 +1213,59 @@
     </div>
   </div>
 
+  <!-- =========================================================
+       ✅ FIREBASE LOADER (MODULE) — Dashboard fetches directly
+       It saves into sessionStorage keys:
+       HX_TEMPLATES, HX_PLACES, HX_COSTS
+       ========================================================= -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+    import { getDatabase, ref, child, get } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
+      authDomain: "revnue-records.firebaseapp.com",
+      databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "revnue-records",
+      storageBucket: "revnue-records.firebasestorage.app",
+      messagingSenderId: "182348503564",
+      appId: "1:182348503564:web:480085405b09177245ac29",
+      measurementId: "G-MGTDBCG896"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    async function fetchNode(path){
+      const snap = await get(child(ref(db), path));
+      return snap.exists() ? snap.val() : {};
+    }
+
+    // Expose to non-module script
+    window.hxFetchFirebaseAndCache = async function(){
+      const NODE_TEMPLATES  = "templates";
+      const NODE_PLACES     = "places";
+      const NODE_COSTS      = "package_cost_breakdown";
+
+      const [templates, places, costs] = await Promise.all([
+        fetchNode(NODE_TEMPLATES),
+        fetchNode(NODE_PLACES),
+        fetchNode(NODE_COSTS)
+      ]);
+
+      sessionStorage.setItem("HX_TEMPLATES", JSON.stringify(templates || {}));
+      sessionStorage.setItem("HX_PLACES", JSON.stringify(places || {}));
+      sessionStorage.setItem("HX_COSTS", JSON.stringify(costs || {}));
+
+      return { templates, places, costs };
+    };
+  </script>
+
   <script>
   /* =========================================================
      ✅ DASHBOARD
-     - NO Firebase fetch here
-     - Uses sessionStorage data loaded in index.html
+     - NOW: fetches Firebase directly if sessionStorage missing
+     - STILL supports carry-forward from index (sessionStorage)
      ========================================================= */
 
   /* ===== TOUR MODE from Landing ===== */
@@ -1244,7 +1292,7 @@
       .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
       .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
   }
-  function normCaps(x){ return String(x||"").trim().toUpperCase().replace(/\\s+/g," "); }
+  function normCaps(x){ return String(x||"").trim().toUpperCase().replace(/\s+/g," "); }
   function rupees(n){ return "₹" + Math.round(Number(n)||0).toLocaleString("en-IN"); }
   function slugifyName(name){
     return String(name||"")
@@ -1718,7 +1766,7 @@
       "",
       "Please confirm final price and availability."
     ].filter(Boolean);
-    return lines.join("\\n");
+    return lines.join("\n");
   }
 
   async function drawRoadRouteFromPlaces(placeIds, dayIndex = new Map()){
@@ -1813,7 +1861,7 @@
     }
   }
 
-  /* ===== Render package details (unchanged) ===== */
+  /* ===== Render package details ===== */
   function renderInlineDetails(detailsEl, tpl, startUpper, endKey, km){
     const pax = getSelectedPax();
     const tier = String($("visitType")?.value || "budget").toUpperCase();
@@ -1864,7 +1912,7 @@
 
         <div class="enqRow">
           <a id="${waBtnId}" class="enqBtn disabled" href="#" target="_blank" rel="noopener">Send Query on WhatsApp</a>
-          <a class="enqBtn" id="call_${tpl.key}" href="tel:${CALL_NUMBER.replace(/\\s/g, '')}" style="border-color: rgba(37,99,235,.30);background: rgba(37,99,235,.14);box-shadow: 0 12px 28px rgba(37,99,235,.12);">Call Now</a>
+          <a class="enqBtn" id="call_${tpl.key}" href="tel:${CALL_NUMBER.replace(/\s/g, '')}" style="border-color: rgba(37,99,235,.30);background: rgba(37,99,235,.14);box-shadow: 0 12px 28px rgba(37,99,235,.12);">Call Now</a>
           <a class="enqBtn" id="mail_${tpl.key}" href="mailto:${EMAIL_ID}?subject=${encodeURIComponent('Himachal Tour Package Enquiry')}" style="border-color: rgba(10,30,60,.16);background: rgba(255,255,255,.66);">Email</a>
         </div>
 
@@ -2069,7 +2117,6 @@
     return el;
   }
 
-  /* ✅ UPDATED: left sidebar now shows ALL packages (not only "others") */
   function renderAllPackagesSidebar(list, startUpper){
     const box = $("otherPkgList");
     if(!box) return;
@@ -2138,7 +2185,7 @@
     if(!startUpper){
       $("pkgCount").textContent = "—";
       $("districtBar").innerHTML = "";
-      listEl.innerHTML = `<div class="pill"><b>Select Start</b> (from index) or choose here.</div>`;
+      listEl.innerHTML = `<div class="pill"><b>Select Start</b> (choose here or pass from index).</div>`;
       renderAllPackagesSidebar([], "");
       return;
     }
@@ -2176,8 +2223,6 @@
     listEl.appendChild(grid);
 
     highlightActiveCard();
-
-    /* ✅ Now left sidebar shows ALL packages (filtered) */
     renderAllPackagesSidebar(filtered, startUpper);
   }
 
@@ -2201,7 +2246,7 @@
     renderPanels();
     highlightActiveCard();
 
-    const card = document.querySelector(\`.pkgW[data-key="\${CSS.escape(key)}"]\`);
+    const card = document.querySelector(`.pkgW[data-key="${CSS.escape(key)}"]`);
     const detailsEl = card ? card.querySelector(".pkgDetails") : null;
 
     const endKey = endKeyFromRoutePath(tpl);
@@ -2314,14 +2359,36 @@
     }
   }
 
+  // ✅ UPDATED: Dashboard fetches Firebase if sessionStorage missing
   async function loadAll(){
-    setStatus("Loading from index data…");
-    const ok = loadFromIndexStorage();
+    setStatus("Loading data…");
+
+    // 1) Try cache first
+    let ok = loadFromIndexStorage();
+
+    // 2) If cache missing → fetch Firebase directly (module exposes this fn)
+    if(!ok){
+      try{
+        setStatus("Fetching from Firebase…");
+        if(typeof window.hxFetchFirebaseAndCache === "function"){
+          await window.hxFetchFirebaseAndCache();
+          ok = loadFromIndexStorage();
+        }
+      }catch(e){
+        console.error("Firebase fetch failed:", e);
+        ok = false;
+      }
+    }
 
     if(!ok){
-      setStatus("No data found");
-      $("pkgList").innerHTML = `<div class="pill"><b>Data not found.</b> Please open <b>index.html</b> first (it loads Firebase), then enter dashboard.</div>`;
-      showBot("❌ Open index.html first → then dashboard (data carry-forward).");
+      setStatus("Data not found");
+      $("pkgList").innerHTML = `
+        <div class="pill">
+          <b>Data not found.</b><br>
+          Firebase blocked OR rules issue.<br>
+          Open DevTools console for exact error.
+        </div>`;
+      showBot("❌ Firebase not loading. Check DB rules.");
       return;
     }
 
@@ -2343,7 +2410,7 @@
     }catch(e){}
 
     setStatus("Ready");
-    showBot("✅ Start loaded. Packages auto showing…");
+    showBot("✅ Data loaded successfully");
 
     applyFilters(false);
   }
@@ -2371,7 +2438,13 @@
     $("paxSel").addEventListener("change", ()=>{ renderPanels(); historyPush("pax"); });
 
     $("refreshBtn").onclick = async ()=>{
-      showBot("🔄 Refreshing from index data…");
+      showBot("🔄 Refreshing from Firebase…");
+      // Force refetch: clear cache then fetch
+      try{
+        sessionStorage.removeItem("HX_TEMPLATES");
+        sessionStorage.removeItem("HX_PLACES");
+        sessionStorage.removeItem("HX_COSTS");
+      }catch(e){}
       await loadAll();
     };
     $("fitMapBtn").onclick = ()=>{ if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] }); };
