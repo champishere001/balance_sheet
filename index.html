@@ -1207,6 +1207,75 @@
       .entryBtns{ grid-template-columns: 1fr; }
     }
 
+    /* ===== Split Entry Layout (NEW) ===== */
+    .entrySplit{ padding: 22px; }
+    .entrySplitHead{ margin-bottom: 12px; }
+    .entrySplitGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 16px;
+    }
+    .entryPane{
+      border: 1px solid rgba(10,30,60,.14);
+      background: rgba(255,255,255,.85);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 24px 60px rgba(10,30,60,.10);
+      display:flex;
+      flex-direction:column;
+      gap: 14px;
+      min-height: 240px;
+    }
+    .entryPanePrimary{
+      border-color: rgba(37,99,235,.35);
+      background: linear-gradient(135deg, rgba(37,99,235,.15), rgba(255,255,255,.9));
+      box-shadow: 0 28px 70px rgba(37,99,235,.18);
+    }
+    .entryPaneTitle{
+      font-weight: 1000;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-size: 13px;
+      color: rgba(10,30,60,.94);
+    }
+    .entryPaneSub{
+      font-size: 13px;
+      color: rgba(10,30,60,.65);
+      line-height: 1.35;
+    }
+    .entryPaneList{
+      margin: 0;
+      padding-left: 18px;
+      display:grid;
+      gap: 6px;
+      font-size: 13px;
+      line-height: 1.45;
+      color: rgba(10,30,60,.78);
+    }
+    .entryPaneBtn{
+      margin-top: auto;
+      border-radius: 18px;
+      padding: 14px;
+      border: 1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.9);
+      cursor: pointer;
+      font-weight: 1000;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-size: 11px;
+      transition: .2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .entryPaneBtn.primary{
+      border-color: rgba(37,99,235,.4);
+      background: linear-gradient(135deg, rgba(37,99,235,.95), rgba(14,165,233,.75));
+      color: white;
+    }
+    @media (max-width: 650px){
+      .entrySplitGrid{ grid-template-columns: 1fr; }
+    }
+
     /* RESPONSIVE */
     @media (max-width: 1200px){
       .main{ grid-template-columns: 1fr; }
@@ -1241,41 +1310,71 @@
 
 <body>
 
-  <!-- ENTRY STEP -->
+  <!-- ENTRY STEP (SPLIT) -->
   <div id="entryStep">
-    <div class="entryCard">
-      <div class="entryBrand">
+    <div class="entryCard entrySplit">
+
+      <div class="entrySplitHead">
         <div class="entryBrandLeft">
           <div class="entryLogo">
-            <img src="./logo.png" alt="Himachal Explorer Logo" onerror="this.remove(); this.parentNode.textContent='HP';">
+            <img src="./logo.png" alt="Himachal Explorer Logo"
+                 onerror="this.remove(); this.parentNode.textContent='HP';">
           </div>
           <div class="entryName">
             <div class="t1">Himachal Explorer</div>
-            <div class="t2">Choose your travel mode</div>
+            <div class="t2">Choose your travel origin</div>
           </div>
         </div>
       </div>
 
-      <p class="entryP">
-        Select how you are planning your trip. “Within HP” highlights local short tours first,
-        but you will still see inter-district packages too.
-      </p>
+      <div class="entrySplitGrid">
 
-      <div class="entryBtns">
-        <button id="btnInterCity" class="entryChoice primary" type="button">
-          <div class="h">Within Himachal (Local priority)</div>
-          <div class="d">Show local short tours first + inter-district packages also visible</div>
-        </button>
+        <!-- WITHIN HP -->
+        <section class="entryPane entryPanePrimary">
+          <div class="entryPaneTop">
+            <div class="entryPaneTitle">Within Himachal</div>
+            <div class="entryPaneSub">
+              Local tours first. Inter-district packages also available.
+            </div>
+          </div>
 
-        <button id="btnOutsideHP" class="entryChoice" type="button">
-          <div class="h">Coming From Outside HP</div>
-          <div class="d">Inter-district tours prioritized (great for first-time visitors)</div>
-        </button>
+          <ul class="entryPaneList">
+            <li>Short weekend tours priority</li>
+            <li>Nearby places suggestion enabled</li>
+            <li>Best for Himachal residents</li>
+          </ul>
+
+          <button id="btnInterCity" class="entryPaneBtn primary" type="button">
+            Enter Dashboard →
+          </button>
+        </section>
+
+        <!-- OUTSIDE HP -->
+        <section class="entryPane">
+          <div class="entryPaneTop">
+            <div class="entryPaneTitle">Outside Himachal</div>
+            <div class="entryPaneSub">
+              Inter-district tours prioritized. Locals still visible.
+            </div>
+          </div>
+
+          <ul class="entryPaneList">
+            <li>Delhi / Chandigarh pickup friendly</li>
+            <li>Longer circuits priority</li>
+            <li>Ideal for first-time visitors</li>
+          </ul>
+
+          <button id="btnOutsideHP" class="entryPaneBtn" type="button">
+            Enter Dashboard →
+          </button>
+        </section>
+
       </div>
 
       <div class="entryHint">
-        Tip: After selecting a mode, type your <b>Start City</b> and click <b>Show Packages</b>.
+        After entering dashboard → Select <b>Start City</b> → Click <b>Show Packages</b>.
       </div>
+
     </div>
   </div>
 
@@ -1559,6 +1658,7 @@
      TOUR MODE (ENTRY STEP) + PRIORITY
      =============================== */
   let TOUR_MODE = null; // "outside" | "intercity"
+
   function initEntryStep(){
     const entry = document.getElementById("entryStep");
     const btnOutside = document.getElementById("btnOutsideHP");
@@ -1567,16 +1667,18 @@
     btnInter.addEventListener("click", ()=>{
       TOUR_MODE = "intercity";
       entry.style.display = "none";
+      window.scrollTo({ top: 0, behavior: "smooth" });
       history.pushState({ step:"tourMode", mode:"intercity" }, "", location.href);
-      showBot("✅ Mode: Within HP (local tours prioritized, inter-district still visible)");
+      showBot("✅ Mode: Within Himachal selected");
       if(document.getElementById("pills")?.children?.length) applyFilters();
     });
 
     btnOutside.addEventListener("click", ()=>{
       TOUR_MODE = "outside";
       entry.style.display = "none";
+      window.scrollTo({ top: 0, behavior: "smooth" });
       history.pushState({ step:"tourMode", mode:"outside" }, "", location.href);
-      showBot("✅ Mode: Outside HP (inter-district tours prioritized, locals still visible)");
+      showBot("✅ Mode: Outside Himachal selected");
       if(document.getElementById("pills")?.children?.length) applyFilters();
     });
 
@@ -2588,9 +2690,9 @@
         <div class="h1">${escapeHtml(startUpper)} • ${escapeHtml(daysF || "ANY")} DAYS</div>
         <div class="h2">${
           TOUR_MODE === "intercity"
-            ? "Within HP selected: local packages shown first, inter-district still included."
+            ? "Within Himachal selected: local packages shown first, inter-district still included."
             : (TOUR_MODE === "outside"
-              ? "Outside HP selected: inter-district packages shown first, locals still included."
+              ? "Outside Himachal selected: inter-district packages shown first, locals still included."
               : "Click any tile → details + schedule.")
         }</div>
       `;
