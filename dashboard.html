@@ -337,27 +337,6 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   overflow-x:auto; -webkit-overflow-scrolling: touch;
   background: rgba(255,255,255,.62);
 }
-.distItem{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.66);
-  color: rgba(10,30,60,.86);
-  border-radius: 999px;
-  padding:8px 10px;
-  font-size: 10.5px;
-  letter-spacing:.10em;
-  text-transform: uppercase;
-  cursor:pointer;
-  user-select:none;
-  flex:0 0 auto;
-  white-space:nowrap;
-  box-shadow: 0 10px 22px rgba(10,30,60,.08);
-  -webkit-tap-highlight-color: transparent;
-}
-.distItem.active{
-  border-color: rgba(37,99,235,.40);
-  box-shadow: 0 0 0 3px rgba(37,99,235,.14);
-  background: rgba(37,99,235,.14);
-}
 .pkgList{
   flex:1;
   min-height:0;
@@ -367,150 +346,85 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   -webkit-overflow-scrolling: touch;
 }
 
-/* ========= MAGIC 2026 BENTO GRID ========= */
-.pkgGrid{
+/* ✅ BAR TYPE LIST (MAX INFO) */
+.barList{ display:flex; flex-direction:column; gap:10px; }
+.pkgBar{
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.72);
+  border-radius: 18px;
+  overflow:hidden;
+  box-shadow: 0 14px 36px rgba(10,30,60,.10);
+  cursor:pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+}
+.pkgBar:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 26px 80px rgba(10,30,60,.14);
+  border-color: rgba(37,99,235,.26);
+}
+.pkgBarTop{
   display:grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 12px;
+  grid-template-columns: 160px 1fr;
+  gap:12px;
+  padding: 10px;
   align-items: stretch;
 }
-@media (max-width: 1400px){ .pkgGrid{ grid-template-columns: repeat(10, 1fr);} }
-@media (max-width: 980px){ .pkgGrid{ grid-template-columns: repeat(6, 1fr);} }
-@media (max-width: 520px){ .pkgGrid{ grid-template-columns: repeat(6, 1fr);} }
-
-.pkgW{
-  grid-column: span 4;
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.66);
-  border-radius: 20px;
-  overflow:hidden;
-  cursor:pointer;
-  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
-  box-shadow: 0 14px 36px rgba(10,30,60,.10);
-  -webkit-tap-highlight-color: transparent;
-  height: 100%;
-  display:flex;
-  flex-direction:column;
-  min-width:0;
-  position:relative;
-  transform: translateZ(0);
-}
-@media (max-width: 1400px){ .pkgW{ grid-column: span 5;} }
-@media (max-width: 980px){ .pkgW{ grid-column: span 3;} }
-@media (max-width: 520px){ .pkgW{ grid-column: span 3;} }
-
-.pkgW:hover{
-  transform: translateY(-4px);
-  box-shadow: 0 26px 80px rgba(10,30,60,.18);
-  border-color: rgba(37,99,235,.28);
-}
-.pkgW::before{
-  content:"";
-  position:absolute; inset:-2px;
-  border-radius: 22px;
-  background:
-    radial-gradient(800px 320px at 20% 10%, rgba(37,99,235,.18), transparent 55%),
-    radial-gradient(600px 260px at 80% 25%, rgba(14,165,233,.14), transparent 60%),
-    linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,0));
-  opacity:0;
-  transition: opacity .2s ease;
-  pointer-events:none;
-}
-.pkgW:hover::before{ opacity:1; }
-
-.pkgW.active{ grid-column: 1 / -1; }
-.pkgCard{ display:flex; flex-direction:column; min-height: 230px; flex: 1; }
-
-.pkgMedia{
-  position:relative;
-  background: rgba(255,255,255,.66);
-  border-bottom: 1px solid rgba(10,30,60,.12);
-  overflow:hidden;
-}
-.pkgCollage{
-  height: 190px;
-  padding: 10px;
-  display:grid;
-  grid-template-columns: 1.25fr .75fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 8px;
-}
-.pkgW.active .pkgCollage{ height: 280px; }
 @media (max-width: 980px){
-  .pkgCollage{ height: 175px; }
-  .pkgW.active .pkgCollage{ height: 240px; }
+  .pkgBarTop{ grid-template-columns: 140px 1fr; }
 }
-.collageCell{
+@media (max-width: 520px){
+  .pkgBarTop{ grid-template-columns: 120px 1fr; }
+}
+.barThumb{
   border-radius: 16px;
   overflow:hidden;
   border:1px solid rgba(10,30,60,.14);
-  background: rgba(255,255,255,.72);
+  background: rgba(255,255,255,.82);
+  position:relative;
+  min-height: 110px;
 }
-.collageCell img{
-  width:100%; height:100%;
-  object-fit: cover;
-  display:block;
-  filter: saturate(1.06) contrast(1.04);
-}
-.collageBig{ grid-row: 1 / -1; }
-
-.magicOverlayTop{
-  position:absolute; left:18px; right:18px; top:18px;
-  display:flex; justify-content:space-between; align-items:center; gap:10px;
+.barThumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.badgeRow{
+  position:absolute; left:10px; top:10px; right:10px;
+  display:flex; justify-content:space-between; align-items:center; gap:8px;
   pointer-events:none;
 }
-.magicOverlayBottom{
-  position:absolute; left:18px; right:18px; bottom:18px;
-  display:flex; flex-wrap:wrap; gap:8px;
-  pointer-events:none;
-}
-.magicChip{
-  border:1px solid rgba(10,30,60,.14);
-  background: rgba(255,255,255,.80);
+.bChip{
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.84);
   border-radius: 999px;
-  padding: 6px 10px;
+  padding: 6px 9px;
   font-size: 10px;
   letter-spacing:.12em;
   text-transform: uppercase;
   font-weight: 950;
-  backdrop-filter: blur(14px);
-  box-shadow: 0 12px 24px rgba(10,30,60,.10);
+  backdrop-filter: blur(12px);
   white-space: nowrap;
 }
-.magicChip.blue{
-  border-color: rgba(37,99,235,.34);
-  background: rgba(37,99,235,.16);
-}
+.bChip.blue{ border-color: rgba(37,99,235,.34); background: rgba(37,99,235,.16); }
 
-.pkgInfo{
-  flex: 1 0 auto;
-  padding: 10px 12px 12px;
-  background: rgba(255,255,255,.62);
+.barInfo{
+  min-width:0;
   display:flex;
   flex-direction:column;
   gap:8px;
-  min-width:0;
+  padding-right: 6px;
 }
-.pkgTitleRow{
-  display:flex; align-items:flex-start; justify-content:space-between;
-  gap:10px;
-  min-width:0;
+.barTitleRow{
+  display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
 }
-.pkgTitle{
+.barTitle{
   margin:0;
-  font-size: 11.5px;
-  font-weight: 950;
+  font-size: 12px;
+  font-weight: 1000;
   letter-spacing:.12em;
   text-transform: uppercase;
-  color: rgba(10,30,60,.94);
-  white-space: nowrap; overflow:hidden; text-overflow: ellipsis;
-  min-width:0;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
-.pkgOpen{
-  flex:0 0 auto;
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.74);
-  color: rgba(10,30,60,.92);
+.openTag{
+  border:1px solid rgba(10,30,60,.14);
+  background: rgba(255,255,255,.80);
   border-radius: 999px;
   padding: 7px 10px;
   font-size: 10px;
@@ -518,77 +432,64 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   text-transform: uppercase;
   font-weight: 950;
   white-space: nowrap;
+  flex:0 0 auto;
 }
-.pkgMeta{ display:flex; gap:7px; flex-wrap:wrap; }
-.pkgChip{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.62);
-  border-radius: 999px;
-  padding: 6px 9px;
-  font-size: 9.8px;
-  letter-spacing:.10em;
-  text-transform: uppercase;
-  color: rgba(10,30,60,.72);
-  display:inline-flex; gap:6px; align-items:center;
-  white-space: nowrap;
+.metaRow{
+  display:flex; flex-wrap:wrap; gap:8px;
 }
-.pkgChip b{ color: rgba(10,30,60,.92); letter-spacing:.06em; }
-
-/* Expandable details */
-.pkgDetails{
-  display:block;
-  max-height: 0;
-  overflow:hidden;
-  padding: 0 12px;
-  border-top:1px solid rgba(10,30,60,.14);
-  background: rgba(255,255,255,.56);
-  transition: max-height .28s ease, padding .18s ease;
-}
-.pkgW.active .pkgDetails{
-  max-height: 900px;
-  padding: 12px;
-}
-.detailGrid{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-@media (max-width: 980px){ .detailGrid{ grid-template-columns: 1fr; } }
-
-.detailBox{
+.mChip{
   border:1px solid rgba(10,30,60,.14);
   background: rgba(255,255,255,.72);
-  border-radius: 16px;
-  padding: 10px;
-  box-shadow: 0 14px 30px rgba(10,30,60,.08);
-}
-.detailTitle{
-  margin: 0 0 8px;
-  font-size: 10.5px;
-  font-weight: 1000;
-  letter-spacing:.14em;
+  border-radius: 999px;
+  padding: 6px 9px;
+  font-size: 10px;
+  letter-spacing:.10em;
   text-transform: uppercase;
+  color: rgba(10,30,60,.74);
+  white-space: nowrap;
 }
-.timeline{ display:flex; flex-direction:column; gap:8px; }
-.dayRow{
-  display:flex; gap:10px;
-  border:1px solid rgba(10,30,60,.12);
-  background: rgba(255,255,255,.76);
-  border-radius: 14px;
-  padding: 8px 10px;
+.mChip b{ color: rgba(10,30,60,.92); letter-spacing:.06em; }
+
+.barMini{
+  font-size: 11px;
+  color: rgba(10,30,60,.74);
+  line-height: 1.28;
 }
-.dayDot{
-  width: 26px; height:26px; border-radius:999px;
-  border:1px solid rgba(37,99,235,.30);
-  background: rgba(37,99,235,.14);
-  display:grid; place-items:center;
-  font-size: 10px; font-weight: 1000;
+.barMini b{ color: rgba(10,30,60,.92); }
+
+.pkgSolo{
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.74);
+  border-radius: 18px;
+  overflow:hidden;
+  box-shadow: 0 14px 36px rgba(10,30,60,.10);
 }
-.dayText{ min-width:0; }
-.dayText .t{ font-size: 11px; font-weight: 950; letter-spacing:.06em; }
-.dayText .s{ margin-top:3px; font-size: 10.5px; color: rgba(10,30,60,.72); line-height:1.25; }
-.detailBtns{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
-.smallBtn{
+.soloHead{
+  padding: 10px 12px;
+  border-bottom:1px solid rgba(10,30,60,.12);
+  display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+  background: rgba(255,255,255,.70);
+}
+.soloHead .ttl{
+  min-width:0;
+}
+.soloHead h2{
+  margin:0;
+  font-size: 13px;
+  font-weight: 1000;
+  letter-spacing:.12em;
+  text-transform: uppercase;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.soloHead .sub{
+  margin-top:6px;
+  font-size: 11px;
+  color: rgba(10,30,60,.72);
+  letter-spacing:.06em;
+  line-height: 1.25;
+}
+.soloActions{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+.sBtn{
   border:1px solid rgba(10,30,60,.16);
   background: rgba(255,255,255,.82);
   border-radius: 999px;
@@ -601,19 +502,107 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   box-shadow: 0 10px 22px rgba(10,30,60,.08);
   -webkit-tap-highlight-color: transparent;
 }
-.smallBtn.primary{
+.sBtn.primary{
   border-color: rgba(37,99,235,.34);
   background: rgba(37,99,235,.16);
 }
+.soloBody{
+  padding: 12px;
+  display:grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 12px;
+}
+@media (max-width: 980px){ .soloBody{ grid-template-columns: 1fr; } }
+.soloGallery{
+  border:1px solid rgba(10,30,60,.14);
+  border-radius: 16px;
+  overflow:hidden;
+  background: rgba(255,255,255,.72);
+}
+.soloGalleryGrid{
+  display:grid;
+  grid-template-columns: 1.2fr .8fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+  padding: 10px;
+}
+.soloCell{
+  border:1px solid rgba(10,30,60,.14);
+  background: rgba(255,255,255,.82);
+  border-radius: 14px;
+  overflow:hidden;
+  min-height: 150px;
+}
+.soloCell img{ width:100%; height:100%; object-fit:cover; display:block; }
+.soloBig{ grid-row: 1 / -1; min-height: 308px; }
+@media (max-width: 520px){
+  .soloGalleryGrid{ grid-template-columns: 1fr; grid-template-rows: auto; }
+  .soloBig{ grid-row:auto; min-height: 200px; }
+  .soloCell{ min-height: 150px; }
+}
+
+.soloPanel{
+  border:1px solid rgba(10,30,60,.14);
+  border-radius: 16px;
+  background: rgba(255,255,255,.72);
+  padding: 12px;
+  min-width:0;
+}
+.pTitle{
+  margin:0 0 10px;
+  font-size: 11px;
+  font-weight: 1000;
+  letter-spacing:.14em;
+  text-transform: uppercase;
+}
+.timeline{ display:flex; flex-direction:column; gap:8px; }
+.dayRow{
+  display:flex; gap:10px;
+  border:1px solid rgba(10,30,60,.12);
+  background: rgba(255,255,255,.82);
+  border-radius: 14px;
+  padding: 8px 10px;
+}
+.dayDot{
+  width: 26px; height:26px; border-radius:999px;
+  border:1px solid rgba(37,99,235,.30);
+  background: rgba(37,99,235,.14);
+  display:grid; place-items:center;
+  font-size: 10px; font-weight: 1000;
+  flex:0 0 auto;
+}
+.dayText{ min-width:0; }
+.dayText .t{ font-size: 11px; font-weight: 950; letter-spacing:.06em; }
+.dayText .s{ margin-top:3px; font-size: 10.5px; color: rgba(10,30,60,.72); line-height:1.25; }
 .costLine{
   display:flex; align-items:center; justify-content:space-between; gap:10px;
   border:1px solid rgba(10,30,60,.12);
-  background: rgba(255,255,255,.76);
+  background: rgba(255,255,255,.82);
   border-radius: 14px;
   padding: 8px 10px;
   font-size: 11px;
 }
-.mutedMini{ color: rgba(10,30,60,.70); font-size: 10.5px; line-height:1.25; }
+.mutedMini{ color: rgba(10,30,60,.70); font-size: 10.5px; line-height:1.25; margin-top:8px; }
+.soloBottom{
+  padding: 12px;
+  border-top:1px solid rgba(10,30,60,.12);
+  background: rgba(255,255,255,.70);
+}
+.bigWA{
+  width:100%;
+  border:1px solid rgba(37,99,235,.30);
+  background: linear-gradient(135deg, rgba(37,99,235,.92), rgba(14,165,233,.72));
+  color:#fff;
+  border-radius: 16px;
+  padding: 14px 14px;
+  font-size: 12px;
+  letter-spacing:.12em;
+  text-transform: uppercase;
+  font-weight: 1000;
+  cursor:pointer;
+  box-shadow: 0 16px 40px rgba(37,99,235,.18);
+  -webkit-tap-highlight-color: transparent;
+}
 
 /* MAP RIGHT */
 .mapPane{
@@ -655,7 +644,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   -webkit-tap-highlight-color: transparent;
 }
 
-/* WHATSAPP */
+/* WHATSAPP FLOAT */
 .waFloat{
   position:fixed; right: 14px; bottom: 14px; z-index: 10000;
   display:flex; align-items:center; gap:10px; padding: 12px 14px;
@@ -694,7 +683,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
 }
 .botToast.show{ display:block; }
 
-/* PLACE MODAL */
+/* PLACE MODAL (kept) */
 .placeModal{
   position:fixed; inset:0; z-index: 20000;
   background: rgba(10,30,60,.35);
@@ -756,7 +745,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   min-width:0;
 }
 
-/* FOOTER minimal (kept) */
+/* FOOTER (your existing) */
 footer{
   margin-top: 12px;
   border:1px solid rgba(10,30,60,.16);
@@ -866,7 +855,6 @@ footer{
 }
 @media (prefers-reduced-motion: reduce){
   .aurora{ animation:none; }
-  .pkgW{ transition:none; }
 }
   </style>
 </head>
@@ -981,13 +969,13 @@ footer{
 
           <div class="otherWrap">
             <div class="otherHdr">
-              <div class="h">All Packages</div>
+              <div class="h">Other Packages</div>
               <div class="xBtn" id="closeSelectedBtn" title="Close selected package">Close</div>
             </div>
             <div class="otherList" id="otherPkgList">
               <div class="otherHint">
-                Packages will appear here after selecting Start. <br>
-                Tap any card to open details in center.
+                Select any package — it will open in center. <br>
+                Only 1 package stays in center, rest come here.
               </div>
             </div>
           </div>
@@ -1005,7 +993,7 @@ footer{
         <div class="paneHdr">
           <div>
             <p class="t">Packages</p>
-            <div class="s" id="centerHint">Bento grid • 3 tiles desktop • 2 tiles mobile</div>
+            <div class="s" id="centerHint">Bar type • max info • open one package</div>
           </div>
           <div class="s" id="pkgCount">—</div>
         </div>
@@ -1167,7 +1155,7 @@ footer{
 
   <script>
   /* =========================
-     DASHBOARD + MAGIC DISPLAY ✅
+     BAR LIST + SINGLE PACKAGE VIEW ✅
      ========================= */
 
   let TOUR_MODE = null; // "outside" | "intercity"
@@ -1198,6 +1186,7 @@ footer{
       .replace(/-+/g,"-")
       .replace(/^-|-$/g,"");
   }
+
   function showBot(msg){
     const el = $("botToast");
     if(!el) return;
@@ -1212,9 +1201,7 @@ footer{
 
   /* MAP */
   let map, tile, tileDark, markersLayer;
-  let tilesDark = false;  // ✅ FIXED: declared
-  let routeLine = null;   // for future OSRM polyline
-
+  let tilesDark = false;
   function invalidateMapSoon(){
     try{
       setTimeout(()=>{ map && map.invalidateSize && map.invalidateSize(true); }, 60);
@@ -1231,31 +1218,14 @@ footer{
     window.addEventListener("resize", invalidateMapSoon, { passive:true });
   }
 
-  function clearMap(){
-    try{
-      markersLayer && markersLayer.clearLayers();
-      if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
-      $("kmBadge").textContent = "—";
-    }catch(e){}
-  }
-  function fitMapToLayers(){
-    try{
-      const group = L.featureGroup([]);
-      if(routeLine) group.addLayer(routeLine);
-      markersLayer && markersLayer.eachLayer(l=> group.addLayer(l));
-      if(group.getLayers().length){
-        map.fitBounds(group.getBounds().pad(0.2));
-      }
-    }catch(e){}
-  }
-
   /* DATA */
   let TEMPLATES = {};
   let PLACES = {};
   let COSTS = {};
   let ACTIVE_TEMPLATES = [];
   let STARTS = [];
-  let CURRENT_TEMPLATE_KEY = "";
+  let CURRENT_TEMPLATE_KEY = "";    // selected package
+  let CURRENT_FILTERED = [];        // current list after filters
 
   function isLocalComputed(tpl){
     const routeId = String(tpl.route_id || "").toUpperCase().trim();
@@ -1269,8 +1239,7 @@ footer{
     templates.forEach(t=>{
       const s = String(t.start_point || t.start || t.start_city || "").trim();
       if(!s) return;
-      const key = s.toUpperCase();
-      counts.set(key, true);
+      counts.set(s.toUpperCase(), true);
     });
     STARTS = Array.from(counts.keys()).sort((a,b)=>a.localeCompare(b));
     const dl = $("startList");
@@ -1338,7 +1307,6 @@ footer{
     initModeFromLanding();
     buildStartList(arr);
 
-    // prefill start from URL
     const qs = new URLSearchParams(location.search);
     const startQS = (qs.get("start") || "").trim();
     if(startQS) $("startInp").value = String(startQS).toUpperCase();
@@ -1346,28 +1314,25 @@ footer{
     setStatus("Ready");
     showBot("✅ Data loaded successfully");
 
-    // ✅ AUTO RENDER
     applyAndRender();
   }
 
+  /* ======= TEMPLATE READERS ======= */
+  function getTplKey(t){ return String(t.key || t.package_id || slugifyName(getTplName(t))); }
   function getTplName(t){
     return String(t.package_name || t.name || t.title || t.route_name || t.key || "PACKAGE").trim();
   }
-  function getTplDays(t){
-    return Number(t.days || t.duration_days || t.trip_days || t.total_days || 0) || 0;
+  function getTplDays(t){ return Number(t.days || t.duration_days || t.trip_days || t.total_days || 0) || 0; }
+  function getTplStart(t){ return String(t.start_point || t.start || t.start_city || "").trim().toUpperCase(); }
+  function getTplDistrict(t){ return String(t.district || t.region || t.route_district || "—").trim().toUpperCase(); }
+  function getTplCategory(t){
+    const v = String(t.category || t.package_category || t.type || "").trim();
+    return v ? v.toUpperCase() : "BUDGET";
   }
-  function getTplStart(t){
-    return String(t.start_point || t.start || t.start_city || "").trim().toUpperCase();
-  }
-  function getTplDistrict(t){
-    return String(t.district || t.region || t.route_district || "—").trim().toUpperCase();
-  }
-
-  /* ===== MAGIC HELPERS ===== */
+  function getTplRouteId(t){ return String(t.route_id || t.routeId || "").trim().toUpperCase(); }
   function getTplImages3(t){
     const arr = [];
     const imgs = Array.isArray(t.images) ? t.images : null;
-
     if(imgs && imgs.length){
       imgs.forEach(x=>{ if(x && String(x).trim()) arr.push(String(x).trim()); });
     }else{
@@ -1382,46 +1347,52 @@ footer{
     return arr.slice(0,3);
   }
 
-  function buildItinPreview(t){
+  function getCostForPackage(t){
+    const keyA = String(t.package_id || t.key || "").trim();
+    const keyB = String(getTplKey(t)).trim();
+    const c = COSTS?.[keyA] || COSTS?.[keyA.toLowerCase()] || COSTS?.[keyB] || COSTS?.[keyB.toLowerCase()] || null;
+    return c || null;
+  }
+  function pickTotal(costObj){
+    if(!costObj) return "";
+    return costObj.total || costObj.grand_total || costObj.total_price || costObj.totalAmount || costObj.amount || "";
+  }
+  function costLines(costObj){
+    if(!costObj) return [];
+    const lines = [];
+    const maybe = [
+      ["Hotel", costObj.hotel || costObj.hotels || costObj.hotel_cost],
+      ["Cab", costObj.cab || costObj.transport || costObj.cab_cost],
+      ["Meals", costObj.meals || costObj.food],
+      ["Guide", costObj.guide],
+      ["Activities", costObj.activities],
+      ["Total", pickTotal(costObj)]
+    ];
+    maybe.forEach(([k,v])=>{
+      if(v !== undefined && v !== null && String(v).trim() !== "") lines.push([k, String(v)]);
+    });
+    return lines.slice(0,6);
+  }
+
+  function itinPreview(t){
     const days = getTplDays(t) || 0;
     const itin = t.itinerary || t.day_wise || t.dayWise || null;
-
     if(Array.isArray(itin) && itin.length){
-      const top = itin.slice(0, Math.min(3, itin.length)).map((d,i)=>{
+      return itin.slice(0, Math.min(5, itin.length)).map((d,i)=>{
         const ttl = d.title || d.heading || `Day ${d.day || (i+1)}`;
-        const stops = Array.isArray(d.stops) ? d.stops.slice(0,3).join(" • ") : (d.stops || d.desc || "");
+        const stops = Array.isArray(d.stops) ? d.stops.join(" • ") : (d.stops || d.desc || "");
         return { day: (d.day || (i+1)), title: String(ttl), sub: String(stops || "Route + sightseeing") };
       });
-      return { daysTotal:days, rows: top };
     }
-
-    const guess = Math.min(3, Math.max(1, days || 3));
-    const rows = Array.from({length: guess}).map((_,i)=>({
+    const guess = Math.min(5, Math.max(1, days || 5));
+    return Array.from({length: guess}).map((_,i)=>({
       day: i+1,
       title: `Day ${i+1} Plan`,
-      sub: "Stops + sightseeing (connect places for real)"
+      sub: "Day-wise locations (connect itinerary data)"
     }));
-    return { daysTotal:days, rows };
   }
 
-  function buildCostPreview(costKey){
-    const c = COSTS?.[costKey] || COSTS?.[String(costKey).toLowerCase()] || null;
-    if(!c) return null;
-
-    const total = c.total || c.grand_total || c.total_price || c.totalAmount || "";
-    const hotel = c.hotel || c.hotels || c.hotel_cost || "";
-    const cab = c.cab || c.transport || c.cab_cost || "";
-    const meals = c.meals || c.food || "";
-
-    const lines = [];
-    if(hotel) lines.push(["Hotel", hotel]);
-    if(cab) lines.push(["Cab", cab]);
-    if(meals) lines.push(["Meals", meals]);
-    if(total) lines.push(["Total", total]);
-
-    return lines.length ? lines.slice(0,4) : null;
-  }
-
+  /* ======= FILTER + RENDER ======= */
   function applyAndRender(){
     if(!ACTIVE_TEMPLATES?.length){
       $("pkgList").innerHTML = `<div class="pill"><b>No templates loaded</b></div>`;
@@ -1432,43 +1403,32 @@ footer{
     const daysWant = Number($("daysSel").value || 0);
     const cat = safeLower($("visitType").value);
 
-    // mode filter
     let base = ACTIVE_TEMPLATES.filter(t=>{
       const isLocal = isLocalComputed(t);
       return (TOUR_MODE === "outside") ? !isLocal : isLocal;
     });
 
-    // start
-    if(start){
-      base = base.filter(t => getTplStart(t) === start);
-    }
+    if(start) base = base.filter(t => getTplStart(t) === start);
+    if(daysWant) base = base.filter(t => getTplDays(t) === daysWant);
 
-    // days
-    if(daysWant){
-      base = base.filter(t => getTplDays(t) === daysWant);
-    }
-
-    // category (optional)
     base = base.filter(t=>{
       const c = safeLower(t.category || t.package_category || t.type || "");
       if(!c) return true;
       return c === cat;
     });
 
+    CURRENT_FILTERED = base;
+
+    // if selected package no longer in filtered list, clear selection
+    if(CURRENT_TEMPLATE_KEY && !base.some(t => getTplKey(t) === CURRENT_TEMPLATE_KEY)){
+      CURRENT_TEMPLATE_KEY = "";
+    }
+
     $("pkgCount").textContent = `${base.length} packages`;
     setStatus(base.length ? "Ready" : "No packages match filters");
 
     renderCenter(base);
     renderSidebar(base);
-
-    // keep selection if still exists
-    if(CURRENT_TEMPLATE_KEY){
-      const exists = base.some(t => (t.key || slugifyName(getTplName(t))) === CURRENT_TEMPLATE_KEY);
-      if(!exists){
-        CURRENT_TEMPLATE_KEY = "";
-      }
-      syncSelectionUI();
-    }
   }
 
   function renderCenter(list){
@@ -1477,125 +1437,153 @@ footer{
       return;
     }
 
+    // ✅ If selected -> show ONLY ONE package in center (with itinerary + costing + WA button)
+    if(CURRENT_TEMPLATE_KEY){
+      const t = list.find(x => getTplKey(x) === CURRENT_TEMPLATE_KEY);
+      if(!t){
+        $("pkgList").innerHTML = `<div class="pill"><b>No selected package</b></div>`;
+        return;
+      }
+
+      const title = escapeHtml(getTplName(t));
+      const start = escapeHtml(getTplStart(t));
+      const dist  = escapeHtml(getTplDistrict(t));
+      const days  = getTplDays(t);
+      const nights = days ? Math.max(0, days-1) : 0;
+      const cat   = escapeHtml(getTplCategory(t));
+      const rid   = escapeHtml(getTplRouteId(t) || "—");
+      const modeLabel = escapeHtml(TOUR_MODE === "outside" ? "INTERCITY" : "LOCAL");
+      const imgs = getTplImages3(t);
+      const cObj = getCostForPackage(t);
+      const total = escapeHtml(pickTotal(cObj) || "—");
+      const lines = costLines(cObj);
+      const itin = itinPreview(t);
+
+      $("pkgList").innerHTML = `
+        <div class="pkgSolo">
+          <div class="soloHead">
+            <div class="ttl">
+              <h2>${title}</h2>
+              <div class="sub">
+                <b>${modeLabel}</b> • <b>${cat}</b> • <b>${days || "—"}</b> Days / <b>${nights}</b> Nights
+                <br>
+                Start: <b>${start || "—"}</b> • District: <b>${dist || "—"}</b> • Route ID: <b>${rid}</b>
+                <br>
+                Estimated Total: <b>${total}</b>
+              </div>
+            </div>
+
+            <div class="soloActions">
+              <button class="sBtn" type="button" onclick="window.__backToList()">All Packages</button>
+              <button class="sBtn primary" type="button" onclick="window.__askWhatsApp('${escapeHtml(getTplKey(t))}')">WhatsApp</button>
+            </div>
+          </div>
+
+          <div class="soloBody">
+            <div class="soloGallery">
+              <div class="soloGalleryGrid">
+                <div class="soloCell soloBig">
+                  <img src="${escapeHtml(imgs[0] || './style/n1.jpg')}" alt="${title}" onerror="this.src='./style/n1.jpg'">
+                </div>
+                <div class="soloCell">
+                  <img src="${escapeHtml(imgs[1] || imgs[0] || './style/n1.jpg')}" alt="${title}" onerror="this.src='./style/n1.jpg'">
+                </div>
+                <div class="soloCell">
+                  <img src="${escapeHtml(imgs[2] || imgs[0] || './style/n1.jpg')}" alt="${title}" onerror="this.src='./style/n1.jpg'">
+                </div>
+              </div>
+            </div>
+
+            <div class="soloPanel">
+              <div class="pTitle">Day-wise Itinerary</div>
+              <div class="timeline">
+                ${itin.map(r=>`
+                  <div class="dayRow">
+                    <div class="dayDot">${r.day}</div>
+                    <div class="dayText">
+                      <div class="t">${escapeHtml(r.title)}</div>
+                      <div class="s">${escapeHtml(r.sub)}</div>
+                    </div>
+                  </div>
+                `).join("")}
+                <div class="mutedMini">Tip: connect full itinerary + place popups from Firebase itinerary data.</div>
+              </div>
+
+              <div style="height:12px"></div>
+
+              <div class="pTitle">Cost Breakdown</div>
+              ${
+                lines.length ? `
+                  ${lines.map(([k,v])=>`
+                    <div class="costLine"><span>${escapeHtml(k)}</span><b>${escapeHtml(v)}</b></div>
+                  `).join("")}
+                  <div class="mutedMini">Data: <b>package_cost_breakdown</b> (Firebase)</div>
+                ` : `
+                  <div class="mutedMini">Costing not available for this package. Add in <b>package_cost_breakdown</b>.</div>
+                `
+              }
+            </div>
+          </div>
+
+          <div class="soloBottom">
+            <button class="bigWA" type="button" onclick="window.__askWhatsApp('${escapeHtml(getTplKey(t))}')">
+              Query this package on WhatsApp
+            </button>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    // ✅ No selection -> show BAR LIST with MAX INFO
     $("pkgList").innerHTML = `
-      <div class="pkgGrid">
+      <div class="barList">
         ${list.map(t=>{
-          const key   = t.key || slugifyName(getTplName(t));
+          const key = getTplKey(t);
           const title = escapeHtml(getTplName(t));
-          const days  = getTplDays(t);
           const start = escapeHtml(getTplStart(t));
           const dist  = escapeHtml(getTplDistrict(t));
-
+          const days  = getTplDays(t);
+          const nights = days ? Math.max(0, days-1) : 0;
+          const cat   = escapeHtml(getTplCategory(t));
+          const rid   = escapeHtml(getTplRouteId(t) || "—");
+          const modeLabel = escapeHtml(TOUR_MODE === "outside" ? "INTERCITY" : "LOCAL");
           const imgs = getTplImages3(t);
-          const cat  = escapeHtml(String(t.category || t.package_category || t.type || "BUDGET").toUpperCase());
-          const nights = (days && days>0) ? (days-1) : 0;
-          const badgeText = escapeHtml(TOUR_MODE === "outside" ? "INTERCITY" : "LOCAL");
-
-          const costKey = String(t.package_id || t.key || "").trim();
-          const costPreview = buildCostPreview(costKey);
-          const itin = buildItinPreview(t);
-
-          const activeClass = (CURRENT_TEMPLATE_KEY === key) ? "active" : "";
+          const cObj = getCostForPackage(t);
+          const total = escapeHtml(pickTotal(cObj) || "—");
 
           return `
-            <div class="pkgW ${activeClass}" data-key="${escapeHtml(key)}">
-              <div class="pkgCard" onclick="window.__openPkg('${escapeHtml(key)}', event)">
-                <div class="pkgMedia">
-                  <div class="pkgCollage">
-                    <div class="collageCell collageBig">
-                      <img src="${escapeHtml(imgs[0] || './style/n1.jpg')}" alt="${title}" onerror="this.src='./style/n1.jpg'">
-                    </div>
-                    <div class="collageCell">
-                      <img src="${escapeHtml(imgs[1] || imgs[0] || './style/n1.jpg')}" alt="${title}" onerror="this.src='./style/n1.jpg'">
-                    </div>
-                    <div class="collageCell">
-                      <img src="${escapeHtml(imgs[2] || imgs[0] || './style/n1.jpg')}" alt="${title}" onerror="this.src='./style/n1.jpg'">
-                    </div>
-                  </div>
-
-                  <div class="magicOverlayTop">
-                    <div class="magicChip blue">${badgeText}</div>
-                    <div class="magicChip">${dist}</div>
-                  </div>
-
-                  <div class="magicOverlayBottom">
-                    <div class="magicChip">${cat}</div>
-                    <div class="magicChip"><b>${days || "—"}</b> Days</div>
-                    <div class="magicChip"><b>${nights}</b> Nights</div>
-                    <div class="magicChip">${start || "—"} Start</div>
+            <div class="pkgBar" onclick="window.__openPkg('${escapeHtml(key)}')">
+              <div class="pkgBarTop">
+                <div class="barThumb">
+                  <img src="${escapeHtml(imgs[0] || './style/n1.jpg')}" alt="${title}" onerror="this.src='./style/n1.jpg'">
+                  <div class="badgeRow">
+                    <div class="bChip blue">${modeLabel}</div>
+                    <div class="bChip">${cat}</div>
                   </div>
                 </div>
 
-                <div class="pkgInfo">
-                  <div class="pkgTitleRow">
-                    <h3 class="pkgTitle">${title}</h3>
-                    <div class="pkgOpen">OPEN</div>
+                <div class="barInfo">
+                  <div class="barTitleRow">
+                    <h3 class="barTitle">${title}</h3>
+                    <div class="openTag">OPEN</div>
                   </div>
 
-                  <div class="pkgMeta">
-                    <div class="pkgChip"><b>${days || "—"}</b> Days</div>
-                    <div class="pkgChip"><b>${start || "—"}</b> Start</div>
-                    <div class="pkgChip"><b>${dist || "—"}</b> District</div>
+                  <div class="metaRow">
+                    <div class="mChip"><b>${days || "—"}</b> Days</div>
+                    <div class="mChip"><b>${nights}</b> Nights</div>
+                    <div class="mChip">Start: <b>${start || "—"}</b></div>
+                    <div class="mChip">District: <b>${dist || "—"}</b></div>
+                    <div class="mChip">Route: <b>${rid}</b></div>
+                    <div class="mChip">Total: <b>${total}</b></div>
+                  </div>
+
+                  <div class="barMini">
+                    <b>Tap</b> to open full itinerary + costing below.
+                    WhatsApp query button will appear at bottom of the opened package.
                   </div>
                 </div>
               </div>
-
-              <div class="pkgDetails">
-                <div class="detailGrid">
-                  <div class="detailBox">
-                    <div class="detailTitle">Day-wise Preview</div>
-                    <div class="timeline">
-                      ${itin.rows.map(r=>`
-                        <div class="dayRow">
-                          <div class="dayDot">${r.day}</div>
-                          <div class="dayText">
-                            <div class="t">${escapeHtml(r.title)}</div>
-                            <div class="s">${escapeHtml(r.sub)}</div>
-                          </div>
-                        </div>
-                      `).join("")}
-                      <div class="mutedMini">Tap “View Full Itinerary” to show complete day-wise locations + place popups.</div>
-                    </div>
-
-                    <div class="detailBtns">
-                      <button class="smallBtn primary" type="button"
-                        onclick="window.__viewRoute('${escapeHtml(key)}'); event.stopPropagation();">
-                        View Route
-                      </button>
-                      <button class="smallBtn" type="button"
-                        onclick="window.__viewFullItinerary('${escapeHtml(key)}'); event.stopPropagation();">
-                        View Full Itinerary
-                      </button>
-                    </div>
-                  </div>
-
-                  <div class="detailBox">
-                    <div class="detailTitle">Cost Preview</div>
-                    ${
-                      costPreview ? `
-                        ${costPreview.map(([k,v])=>`
-                          <div class="costLine"><span>${escapeHtml(k)}</span><b>${escapeHtml(v)}</b></div>
-                        `).join("")}
-                        <div class="mutedMini" style="margin-top:8px;">(Auto from Firebase: package_cost_breakdown)</div>
-                      ` : `
-                        <div class="mutedMini">Costing not linked for this package yet. Add data in <b>package_cost_breakdown</b> for instant preview.</div>
-                      `
-                    }
-
-                    <div class="detailBtns">
-                      <button class="smallBtn" type="button"
-                        onclick="window.__askWhatsApp('${escapeHtml(title)}'); event.stopPropagation();">
-                        WhatsApp Quote
-                      </button>
-                      <button class="smallBtn" type="button"
-                        onclick="window.__copyPackage('${escapeHtml(title)}'); event.stopPropagation();">
-                        Copy Package
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
             </div>
           `;
         }).join("")}
@@ -1603,6 +1591,7 @@ footer{
     `;
   }
 
+  // ✅ Sidebar shows all other packages as tiles when one is selected, else shows same list too
   function renderSidebar(list){
     const wrap = $("otherPkgList");
     if(!list.length){
@@ -1610,16 +1599,22 @@ footer{
       return;
     }
 
-    wrap.innerHTML = list.map(t=>{
-      const key = t.key || slugifyName(getTplName(t));
+    const others = CURRENT_TEMPLATE_KEY
+      ? list.filter(t => getTplKey(t) !== CURRENT_TEMPLATE_KEY)
+      : list;
+
+    wrap.innerHTML = others.map(t=>{
+      const key = getTplKey(t);
       const title = escapeHtml(getTplName(t));
       const days = getTplDays(t);
       const start = escapeHtml(getTplStart(t));
       const dist = escapeHtml(getTplDistrict(t));
+      const cObj = getCostForPackage(t);
+      const total = escapeHtml(pickTotal(cObj) || "—");
       const active = (CURRENT_TEMPLATE_KEY === key) ? "active" : "";
 
       return `
-        <div class="pkgSide ${active}" data-key="${escapeHtml(key)}" onclick="window.__openPkg('${escapeHtml(key)}', event)">
+        <div class="pkgSide ${active}" onclick="window.__openPkg('${escapeHtml(key)}')">
           <div class="pkgSideTop">
             <div class="t1">${title}</div>
             <div class="badge blue">${days || "—"}D</div>
@@ -1627,60 +1622,63 @@ footer{
           <div class="pkgSideRow">
             <span>${start || "—"}</span>
             <span>${dist || "—"}</span>
+            <span>Total: ${total}</span>
           </div>
-          <div class="pkgSidePrice">${escapeHtml(TOUR_MODE === "outside" ? "Intercity" : "Local")} package</div>
+          <div class="pkgSidePrice">Tap to open</div>
         </div>
       `;
     }).join("");
-  }
-
-  function syncSelectionUI(){
-    document.querySelectorAll(".pkgW").forEach(el=>{
-      el.classList.toggle("active", el.dataset.key === CURRENT_TEMPLATE_KEY);
-    });
-    document.querySelectorAll(".pkgSide").forEach(el=>{
-      el.classList.toggle("active", el.dataset.key === CURRENT_TEMPLATE_KEY);
-    });
-  }
-
-  window.__openPkg = function(key, ev){
-    if(ev){ ev.preventDefault(); ev.stopPropagation(); }
-    const wasSame = (CURRENT_TEMPLATE_KEY === key);
-    CURRENT_TEMPLATE_KEY = wasSame ? "" : key;
-    syncSelectionUI();
 
     if(CURRENT_TEMPLATE_KEY){
-      const el = document.querySelector(`.pkgW[data-key="${CSS.escape(CURRENT_TEMPLATE_KEY)}"]`);
-      if(el) el.scrollIntoView({ behavior:"smooth", block:"start" });
+      wrap.insertAdjacentHTML("afterbegin", `
+        <div class="otherHint" style="border-style:solid;">
+          <b>Selected package is open in center.</b><br>
+          These are the remaining packages.
+        </div>
+      `);
     }
+  }
+
+  /* ======= ACTIONS ======= */
+  window.__openPkg = function(key){
+    CURRENT_TEMPLATE_KEY = key;
+    renderCenter(CURRENT_FILTERED);
+    renderSidebar(CURRENT_FILTERED);
+    showBot("✅ Package opened in center (only one visible)");
   };
 
-  window.__askWhatsApp = function(pkgTitle){
-    const msg = encodeURIComponent(`Hi Chandan, I want price quote for: ${pkgTitle}`);
+  window.__backToList = function(){
+    CURRENT_TEMPLATE_KEY = "";
+    renderCenter(CURRENT_FILTERED);
+    renderSidebar(CURRENT_FILTERED);
+    showBot("📦 Showing all packages (bar list)");
+  };
+
+  window.__askWhatsApp = function(pkgKey){
+    const t = (CURRENT_FILTERED || []).find(x => getTplKey(x) === pkgKey) || null;
+    const title = t ? getTplName(t) : pkgKey;
+    const start = t ? getTplStart(t) : "";
+    const days  = t ? getTplDays(t) : "";
+    const dist  = t ? getTplDistrict(t) : "";
+    const cat   = t ? getTplCategory(t) : "";
+    const cObj  = t ? getCostForPackage(t) : null;
+    const total = pickTotal(cObj) || "";
+
+    const msg = encodeURIComponent(
+      `Hi Chandan, I want to query this package:\n` +
+      `Package: ${title}\n` +
+      (cat ? `Category: ${cat}\n` : "") +
+      (start ? `Start: ${start}\n` : "") +
+      (dist ? `District: ${dist}\n` : "") +
+      (days ? `Days: ${days}\n` : "") +
+      (total ? `Estimated Total: ${total}\n` : "") +
+      `Please share best quote + hotel options.`
+    );
+
     window.open(`https://wa.me/917018138847?text=${msg}`, "_blank", "noopener");
   };
 
-  window.__copyPackage = async function(pkgTitle){
-    try{
-      await navigator.clipboard.writeText(pkgTitle);
-      showBot("✅ Package copied");
-    }catch(e){
-      showBot("⚠️ Copy failed");
-    }
-  };
-
-  // stubs: connect to OSRM polyline + itinerary page
-  window.__viewRoute = function(key){
-    showBot("🗺️ Route: connect OSRM draw + pins for this package");
-    // You can call your OSRM route draw here using template data (stops coords).
-    invalidateMapSoon();
-  };
-
-  window.__viewFullItinerary = function(key){
-    showBot("📅 Full Itinerary: show complete day-wise locations + place popups");
-    // Open a panel/page, or expand within same card using your template itinerary data.
-  };
-
+  /* ======= UI WIRING ======= */
   function wireUI(){
     $("yy").textContent = new Date().getFullYear();
 
@@ -1716,7 +1714,9 @@ footer{
 
     $("closeSelectedBtn").onclick = ()=>{
       CURRENT_TEMPLATE_KEY = "";
-      syncSelectionUI();
+      renderCenter(CURRENT_FILTERED);
+      renderSidebar(CURRENT_FILTERED);
+      showBot("✅ Closed selected package");
     };
 
     $("toggleTilesBtn").onclick = ()=>{
@@ -1731,12 +1731,11 @@ footer{
       invalidateMapSoon();
     };
 
-    $("fitMapBtn").onclick = ()=> fitMapToLayers();
-    $("clearRouteBtn").onclick = ()=> { clearMap(); showBot("🧹 Map cleared"); };
+    $("topLink").onclick = (e)=>{ e.preventDefault(); window.scrollTo({ top:0, behavior:"smooth" }); };
 
-    $("showAllStopsBtn").onclick = ()=> showBot("📍 Stops: connect day-wise pins from itinerary");
-    $("showStartEndBtn").onclick = ()=> showBot("🏁 Start/End: connect start & last stop markers");
-
+    // optional (kept)
+    $("fitMapBtn").onclick = ()=> showBot("🗺️ Fit route: connect OSRM polyline logic here");
+    $("clearRouteBtn").onclick = ()=> showBot("🧹 Clear: connect route clear logic here");
     $("refreshBtn").onclick = async ()=>{
       showBot("🔄 Refreshing…");
       sessionStorage.removeItem("HX_TEMPLATES");
@@ -1744,8 +1743,8 @@ footer{
       sessionStorage.removeItem("HX_COSTS");
       await loadAll();
     };
-
-    $("topLink").onclick = (e)=>{ e.preventDefault(); window.scrollTo({ top:0, behavior:"smooth" }); };
+    $("showAllStopsBtn").onclick = ()=> showBot("📍 Stops: connect day-wise pins from itinerary");
+    $("showStartEndBtn").onclick = ()=> showBot("🏁 Start/End: connect start & last stop markers");
   }
 
   document.addEventListener("DOMContentLoaded", async ()=>{
