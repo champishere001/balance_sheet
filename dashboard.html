@@ -171,6 +171,7 @@
       border-bottom:1px solid rgba(10,30,60,.14);
       display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
       background: rgba(255,255,255,.62);
+      flex: 0 0 auto;
     }
     .paneHdr .t{ margin:0; font-size:11px; letter-spacing:.18em; text-transform: uppercase; font-weight: 950; }
     .paneHdr .s{ font-size:10.5px; color:var(--muted); letter-spacing:.10em; text-transform: uppercase; }
@@ -181,8 +182,11 @@
       display:flex;
       flex-direction:column;
       gap:10px;
-      min-height:0;
-      overflow:auto;
+
+      /* ✅ FIX: make sidebar body take remaining height so pkg list can scroll */
+      flex: 1;
+      min-height: 0;
+      overflow: hidden; /* prevent double scroll; pkgList will scroll */
       -webkit-overflow-scrolling: touch;
     }
     .sideCard{
@@ -191,6 +195,7 @@
       border-radius: 14px;
       padding: 10px;
       box-shadow: 0 12px 36px rgba(10,30,60,.10);
+      flex: 0 0 auto;
     }
     .field label{
       display:block; font-size: 10.5px; color: var(--muted);
@@ -271,6 +276,7 @@
       padding: 10px;
       display:flex; align-items:center; justify-content:space-between; gap:10px;
       box-shadow: 0 10px 24px rgba(10,30,60,.10);
+      flex: 0 0 auto;
     }
     .listHdr .h{ font-size: 11px; font-weight: 950; letter-spacing:.14em; text-transform: uppercase; }
     .listHdr .xBtn{
@@ -288,7 +294,8 @@
     }
 
     .pkgList{
-      flex:1; min-height:0; overflow:auto;
+      flex:1; min-height:0;
+      overflow:auto;                 /* ✅ scroll packages here */
       -webkit-overflow-scrolling: touch;
       padding: 2px;
       display:flex; flex-direction:column; gap:10px;
@@ -495,7 +502,25 @@
     .thumb.on{ box-shadow: 0 0 0 3px rgba(37,99,235,.14); opacity:1; }
     .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
 
-    /* Pricing block (big) */
+    /* ✅ Major Places row (clickable names from DB) */
+    .majorRow{
+      margin-top:10px;
+      border:1px solid rgba(10,30,60,.12);
+      background: rgba(255,255,255,.66);
+      border-radius: 14px;
+      padding: 10px;
+      box-shadow: 0 10px 18px rgba(10,30,60,.08);
+    }
+    .majorRow .ttl{
+      font-size: 10px;
+      letter-spacing:.16em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.62);
+      font-weight:1100;
+      margin-bottom:8px;
+    }
+
+    /* Pricing block */
     .pricing{
       padding: 12px;
       border-bottom:1px solid rgba(10,30,60,.12);
@@ -735,6 +760,9 @@
       display:flex;
       flex-direction:column;
       gap:10px;
+
+      /* ✅ same nested-scroll stability */
+      flex: 1;
       min-height:0;
       overflow:auto;
       -webkit-overflow-scrolling: touch;
@@ -793,6 +821,7 @@
       padding-bottom: 8px;
       border-bottom:1px solid rgba(10,30,60,.12);
       margin-bottom:10px;
+      flex: 0 0 auto;
     }
     .mapHdr .ttl{
       font-size: 11px;
@@ -1092,7 +1121,7 @@
               <datalist id="startList"></datalist>
             </div>
 
-            <!-- ✅ ADDED: District Console (from index param district) -->
+            <!-- District Console -->
             <div class="field" id="districtWrap" style="margin-top:10px; display:none;">
               <label>District Console</label>
               <select id="districtSel">
@@ -1135,11 +1164,9 @@
               <label>Season</label>
               <select id="seasonSel">
                 <option value="">ANY</option>
-                <!-- ✅ added to support index params -->
                 <option value="regular">REGULAR</option>
                 <option value="peak">PEAK</option>
                 <option value="off">OFF SEASON</option>
-                <!-- existing -->
                 <option value="summer">SUMMER</option>
                 <option value="winter">WINTER</option>
                 <option value="monsoon">MONSOON</option>
@@ -1288,7 +1315,7 @@
     </div>
   </div>
 
-  <!-- ONE MODULE: Firebase + App (fixed + index→dashboard param sync) -->
+  <!-- ONE MODULE: Firebase + App -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
@@ -1321,62 +1348,52 @@
         .filter(Boolean);
     }
 
-    /* ===== URL params from index.html =====
-       index passes: origin,start,pax,season,tier,district,days,hotel
-    */
+    /* ===== URL params from index.html ===== */
     const URLP = new URLSearchParams(location.search);
     const PARAMS = {
-      origin: (URLP.get("origin") || "").trim().toLowerCase(),  // in/out
+      origin: (URLP.get("origin") || "").trim().toLowerCase(),
       start: safeUpper(URLP.get("start") || ""),
       pax: (URLP.get("pax") || "").trim(),
-      season: (URLP.get("season") || "").trim().toLowerCase(),  // regular/peak/off OR summer/winter/monsoon
-      tier: (URLP.get("tier") || "").trim().toLowerCase(),      // budget/premium/luxury
+      season: (URLP.get("season") || "").trim().toLowerCase(),
+      tier: (URLP.get("tier") || "").trim().toLowerCase(),
       district: safeUpper(URLP.get("district") || ""),
       days: (URLP.get("days") || "").trim(),
       hotel: (URLP.get("hotel") || "").trim()
     };
 
     function applyQueryParamsToUI(){
-      // Start
       if(PARAMS.start) $("startInp").value = PARAMS.start;
 
-      // Pax
       if(PARAMS.pax){
         const opt = Array.from($("paxSel").options).find(o=> String(o.value) === String(PARAMS.pax));
         if(opt) $("paxSel").value = opt.value;
       }
 
-      // Days
       if(PARAMS.days){
         const opt = Array.from($("daysSel").options).find(o=> String(o.value) === String(PARAMS.days));
         if(opt) $("daysSel").value = opt.value;
       }
 
-      // Hotel
       if(PARAMS.hotel){
         const opt = Array.from($("hotelSel").options).find(o=> String(o.value) === String(PARAMS.hotel));
         if(opt) $("hotelSel").value = opt.value;
       }
 
-      // Tier
       if(PARAMS.tier && ["budget","premium","luxury"].includes(PARAMS.tier)){
         $("visitType").value = PARAMS.tier;
       }
 
-      // Season (supports both old & new)
       if(PARAMS.season){
         const opt = Array.from($("seasonSel").options).find(o=> String(o.value).toLowerCase() === PARAMS.season);
         if(opt) $("seasonSel").value = opt.value;
       }
 
-      // District console only if origin=in and we have districts
       const showDistrict = (PARAMS.origin === "in");
       $("districtWrap").style.display = showDistrict ? "" : "none";
       if(showDistrict && PARAMS.district){
-        $("districtSel").value = PARAMS.district; // option may exist after fillDistricts()
+        $("districtSel").value = PARAMS.district;
       }
 
-      // Status line
       const chips = [];
       if(PARAMS.origin) chips.push(PARAMS.origin === "in" ? "INSIDE HP" : "OUTSIDE HP");
       if(PARAMS.start) chips.push(PARAMS.start);
@@ -1411,10 +1428,9 @@
       return snap.exists() ? snap.val() : {};
     }
 
-    /* ===== Cache with TTL (market-ready) ===== */
+    /* ===== Cache with TTL ===== */
     const CACHE_KEY = "HX_CACHE_V2";
     const CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6 hours
-
     function loadFromCache(){
       try{
         const raw = sessionStorage.getItem(CACHE_KEY);
@@ -1426,9 +1442,7 @@
       }catch(e){ return null; }
     }
     function saveToCache(data){
-      try{
-        sessionStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), data }));
-      }catch(e){}
+      try{ sessionStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), data })); }catch(e){}
     }
 
     async function fetchAllFirebase(){
@@ -1436,7 +1450,7 @@
         fetchNode("templates"),
         fetchNode("places"),
         fetchNode("package_cost_breakdown"),
-        fetchNode("package_discounts") // OPTIONAL node (recommended)
+        fetchNode("package_discounts")
       ]);
       const data = { templates: templates||{}, places: places||{}, costs: costs||{}, discounts: discounts||{} };
       saveToCache(data);
@@ -1453,9 +1467,7 @@
     let ACTIVE_KEYS = [];
     let CURRENT_KEY = "";
     let shownSuggestions = new Set();
-
-    /* compare */
-    const COMPARE = new Set(); // keys
+    const COMPARE = new Set();
 
     /* ===== Normalize ===== */
     function normalizeCostsKeys(){
@@ -1485,7 +1497,6 @@
       if(!sel) return;
       sel.innerHTML = `<option value="">ANY</option>` + list.map(d=>`<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join("");
 
-      // apply param after options exist
       if(PARAMS.origin==="in"){
         $("districtWrap").style.display = "";
         if(PARAMS.district && list.includes(PARAMS.district)){
@@ -1537,19 +1548,113 @@
       return Array.from(new Set(out));
     }
 
+    /* ✅ OPTION A DONE: pick MAJOR places from places DB and use their photos for package pics */
+    function isMajorPlace(p){
+      const cat = String(p?.category || "").toLowerCase();
+      const seg = String(p?.segment || "").toLowerCase();
+      const imp = String(p?.importance || p?.priority || "").toLowerCase();
+      return (
+        cat.includes("major") ||
+        seg.includes("highlight") ||
+        seg.includes("major") ||
+        imp.includes("major") ||
+        imp.includes("high")
+      );
+    }
+
+    function getAllItineraryPlaceIds(tpl){
+      const days = Number(tpl.days || 0) || 0;
+      const ids = [];
+      for(let d=1; d<=Math.max(1, days); d++){
+        splitCSV(tpl[`day${d}_place_ids`] || "").forEach(pid => ids.push(pid));
+      }
+      return ids.filter(Boolean);
+    }
+
+    function scorePlace(pid, idx, tpl){
+      const p = PLACES?.[pid];
+      if(!p) return -9999;
+
+      let s = 0;
+
+      // major boost
+      if(isMajorPlace(p)) s += 50;
+
+      // early itinerary boost (first stops are usually more “headline”)
+      if(idx === 0) s += 18;
+      if(idx === 1) s += 12;
+      if(idx === 2) s += 8;
+
+      // photos boost
+      const photos = getPlacePhotos(p, pid);
+      s += Math.min(photos.length, 4) * 3;
+
+      // district match boost (if package has district)
+      const td = safeUpper(tpl?.district || "");
+      const pd = districtAny(p);
+      if(td && pd && td === pd) s += 6;
+
+      return s;
+    }
+
+    function getMajorPlaceIdsFromTpl(tpl, limit=8){
+      const all = getAllItineraryPlaceIds(tpl);
+      const uniq = Array.from(new Set(all));
+      const ranked = uniq
+        .map((pid, i)=>({ pid, score: scorePlace(pid, i, tpl) }))
+        .filter(x=>x.score > -9990)
+        .sort((a,b)=> b.score - a.score);
+
+      return ranked.slice(0, limit).map(x=>x.pid);
+    }
+
     function getPackagePhotos(tpl){
       const out = [];
-      const direct = [tpl.cover, tpl.photo, tpl.image].map(x=>String(x||"").trim()).filter(Boolean);
-      direct.forEach(x=> out.push(x));
-      const d1 = splitCSV(tpl.day1_place_ids || "");
-      d1.slice(0,3).forEach(pid=>{
-        if(PLACES[pid]){
-          const photos = getPlacePhotos(PLACES[pid], pid);
-          photos.slice(0,2).forEach(p=> out.push(p));
-        }
+      const used = new Set();
+
+      // if template has direct cover/image, keep it as top priority
+      [tpl.cover, tpl.photo, tpl.image].map(x=>String(x||"").trim()).filter(Boolean).forEach(x=>{
+        if(!used.has(x)){ used.add(x); out.push(x); }
       });
-      out.push("./style/n1.jpg");
-      return Array.from(new Set(out)).slice(0, 8);
+
+      // major places photos
+      const majorIds = getMajorPlaceIdsFromTpl(tpl, 10);
+      for(const pid of majorIds){
+        const p = PLACES?.[pid];
+        if(!p) continue;
+        const photos = getPlacePhotos(p, pid);
+        for(const ph of photos){
+          if(!ph || used.has(ph)) continue;
+          used.add(ph);
+          out.push(ph);
+          if(out.length >= 10) break;
+        }
+        if(out.length >= 10) break;
+      }
+
+      if(!out.length) out.push("./style/n1.jpg");
+      return out.slice(0, 10);
+    }
+
+    function renderMajorPlacesHTML(tpl){
+      const ids = getMajorPlaceIdsFromTpl(tpl, 8)
+        .filter(pid => PLACES?.[pid])
+        .slice(0, 6);
+
+      if(!ids.length) return "";
+
+      const chips = ids.map(pid=>{
+        const p = PLACES[pid] || {};
+        const nm = placeNameAny(p, pid);
+        return `<div class="stopChip" data-major="${escapeHtml(pid)}">${escapeHtml(nm)}</div>`;
+      }).join("");
+
+      return `
+        <div class="majorRow">
+          <div class="ttl">Major Places (from database)</div>
+          <div class="stopChips">${chips}</div>
+        </div>
+      `;
     }
 
     /* ===== Pricing: COSTS FIRST ===== */
@@ -1577,8 +1682,6 @@
       if(tier==="premium") return p || b || l || 0;
       return b || p || l || 0;
     }
-
-    /* Discount: MARKET READY (NO random). Use Firebase node package_discounts/{packageId} */
     function getDiscountPercentForKey(tpl, fallbackKey){
       const pid = (getTplKey(tpl) || String(fallbackKey||"").trim().toLowerCase());
       const row = DISCOUNTS?.[pid];
@@ -1668,7 +1771,7 @@
 
     function getBudgetMax(){
       const v = Number($("budgetRange")?.value || 0);
-      return (isFinite(v) && v>0) ? v : 0; // 0 = any
+      return (isFinite(v) && v>0) ? v : 0;
     }
 
     function pillBudget(){
@@ -1677,7 +1780,7 @@
     }
 
     /* ===== Market filtering ===== */
-    const quickTags = new Set(); // active quick tags
+    const quickTags = new Set();
     function tplMatchesQuickTags(tpl){
       if(!quickTags.size) return true;
       const hay = [
@@ -1721,7 +1824,6 @@
         if(districtPick){
           const d = safeUpper(t.district || "");
           if(d && d !== districtPick) return false;
-          // if template missing district, don't hard reject
         }
         if(days){
           if(String(t.days||"") !== days) return false;
@@ -1738,13 +1840,11 @@
           if(hs && hs !== hotelReq) return false;
         }
 
-        // ✅ season: support both "regular/peak/off" (from index) and "summer/winter/monsoon"
         if(seasonReq){
           const s = String(t.best_season||"").toLowerCase();
           if(s){
             if(seasonReq === "regular" || seasonReq === "peak" || seasonReq === "off"){
-              // if template has season text, allow, but do not hard filter (market-safe)
-              // keep as soft filter: if template includes the word, prefer it; otherwise allow.
+              // soft
             }else{
               if(!s.includes(seasonReq)) return false;
             }
@@ -1760,7 +1860,6 @@
         return true;
       });
 
-      // ✅ soft preference for regular/peak/off if user selected it (no hard reject)
       if(seasonReq === "regular" || seasonReq === "peak" || seasonReq === "off"){
         const boostWords = seasonReq === "peak" ? ["peak","summer"] : seasonReq === "off" ? ["off","monsoon","winter"] : ["regular","all"];
         filtered.sort((a,b)=>{
@@ -1808,7 +1907,7 @@
         const district = String(t.district||"").toUpperCase();
         const drive = String(t.drive_level||"").toUpperCase();
         const start = safeUpper(t.start_point || t.start || "");
-        const photos = getPackagePhotos(t);
+        const photos = getPackagePhotos(t); // ✅ now from major places DB
         const base = pickBasePrice(t, tier, key);
         const off = getDiscountPercentForKey(t, key);
         const show = off ? Math.round(base * (1 - off/100)) : base;
@@ -1917,7 +2016,7 @@
       const name = placeNameAny(place, placeId);
       const dist = districtAny(place) || "—";
 
-      ttl.textContent = `${name} • Day ${dayNum}${orderNum ? " • Stop " + orderNum : ""}`;
+      ttl.textContent = `${name}${dayNum ? " • Day " + dayNum : ""}${orderNum ? " • Stop " + orderNum : ""}`;
 
       const photos = getPlacePhotos(place, placeId);
       let idx = 0;
@@ -2163,7 +2262,7 @@
       const inclusions = String(tpl.inclusions || "").trim();
       const exclusions = String(tpl.exclusions || "").trim();
 
-      const photos = getPackagePhotos(tpl);
+      const photos = getPackagePhotos(tpl); // ✅ now from major places DB
       const mainPhoto = photos[0] || "./style/n1.jpg";
 
       const msg = encodeURIComponent(`Hi Chandan, I want to book: ${title} | ${days} days | ${tier.toUpperCase()} | Pax: ${pax}`);
@@ -2193,6 +2292,9 @@
               ${end ? `<b>End:</b> ${escapeHtml(end)}&nbsp;&nbsp;` : ""}
               ${routePath ? `<br><b>Route:</b> ${escapeHtml(routePath)}` : ""}
             </div>
+
+            <!-- ✅ Major places (names from DB, clickable) -->
+            ${renderMajorPlacesHTML(tpl)}
           </div>
 
           <div class="carousel">
@@ -2284,6 +2386,7 @@
         </div>
       `;
 
+      // carousel thumbs
       const carMain = document.getElementById("carMain");
       document.querySelectorAll(".thumb[data-src]").forEach(t=>{
         t.addEventListener("click", ()=>{
@@ -2291,6 +2394,17 @@
           t.classList.add("on");
           const src = t.getAttribute("data-src") || "./style/n1.jpg";
           carMain.src = src;
+        });
+      });
+
+      // ✅ major place chips open modal (names from DB)
+      host.querySelectorAll(".stopChip[data-major]").forEach(ch=>{
+        ch.addEventListener("click", ()=>{
+          const pid = ch.getAttribute("data-major");
+          const p = PLACES?.[pid] || {};
+          openPlaceModal({ place:p, dayNum:"", orderNum:"", placeId:pid });
+          const lat = latAny(p), lng = lngAny(p);
+          if(isFinite(lat) && isFinite(lng)) map.setView([lat,lng], 12, {animate:true});
         });
       });
 
@@ -2390,13 +2504,12 @@
       normalizeDiscountKeys();
 
       buildStartList();
-      fillDistricts();          // ✅ district console options
-      applyQueryParamsToUI();   // ✅ apply index params BEFORE first render
+      fillDistricts();
+      applyQueryParamsToUI();
 
       pillBudget();
       renderLeftList();
 
-      // after first render, auto-focus selected package view
       showBot("Data loaded");
     }
 
