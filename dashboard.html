@@ -171,7 +171,6 @@
       border-bottom:1px solid rgba(10,30,60,.14);
       display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
       background: rgba(255,255,255,.62);
-      flex: 0 0 auto;
     }
     .paneHdr .t{ margin:0; font-size:11px; letter-spacing:.18em; text-transform: uppercase; font-weight: 950; }
     .paneHdr .s{ font-size:10.5px; color:var(--muted); letter-spacing:.10em; text-transform: uppercase; }
@@ -182,11 +181,7 @@
       display:flex;
       flex-direction:column;
       gap:10px;
-
-      /* ✅ FIX: make sidebar body take remaining height so pkg list can scroll */
-      flex: 1;
-      min-height: 0;
-      overflow: hidden; /* prevent double scroll; pkgList will scroll */
+      min-height:0;
       -webkit-overflow-scrolling: touch;
     }
     .sideCard{
@@ -195,7 +190,6 @@
       border-radius: 14px;
       padding: 10px;
       box-shadow: 0 12px 36px rgba(10,30,60,.10);
-      flex: 0 0 auto;
     }
     .field label{
       display:block; font-size: 10.5px; color: var(--muted);
@@ -269,37 +263,6 @@
       text-align:center;
     }
 
-    .listHdr{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.62);
-      border-radius: 14px;
-      padding: 10px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      box-shadow: 0 10px 24px rgba(10,30,60,.10);
-      flex: 0 0 auto;
-    }
-    .listHdr .h{ font-size: 11px; font-weight: 950; letter-spacing:.14em; text-transform: uppercase; }
-    .listHdr .xBtn{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.66);
-      color: rgba(10,30,60,.86);
-      border-radius: 12px;
-      padding: 7px 10px;
-      font-size: 10px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      cursor:pointer;
-      user-select:none;
-      white-space: nowrap;
-    }
-
-    .pkgList{
-      flex:1; min-height:0;
-      overflow:auto;                 /* ✅ scroll packages here */
-      -webkit-overflow-scrolling: touch;
-      padding: 2px;
-      display:flex; flex-direction:column; gap:10px;
-    }
     .hint{
       border:1px dashed rgba(10,30,60,.20);
       background: rgba(255,255,255,.58);
@@ -502,25 +465,7 @@
     .thumb.on{ box-shadow: 0 0 0 3px rgba(37,99,235,.14); opacity:1; }
     .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
 
-    /* ✅ Major Places row (clickable names from DB) */
-    .majorRow{
-      margin-top:10px;
-      border:1px solid rgba(10,30,60,.12);
-      background: rgba(255,255,255,.66);
-      border-radius: 14px;
-      padding: 10px;
-      box-shadow: 0 10px 18px rgba(10,30,60,.08);
-    }
-    .majorRow .ttl{
-      font-size: 10px;
-      letter-spacing:.16em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.62);
-      font-weight:1100;
-      margin-bottom:8px;
-    }
-
-    /* Pricing block */
+    /* Pricing block (big) */
     .pricing{
       padding: 12px;
       border-bottom:1px solid rgba(10,30,60,.12);
@@ -760,9 +705,6 @@
       display:flex;
       flex-direction:column;
       gap:10px;
-
-      /* ✅ same nested-scroll stability */
-      flex: 1;
       min-height:0;
       overflow:auto;
       -webkit-overflow-scrolling: touch;
@@ -821,7 +763,6 @@
       padding-bottom: 8px;
       border-bottom:1px solid rgba(10,30,60,.12);
       margin-bottom:10px;
-      flex: 0 0 auto;
     }
     .mapHdr .ttl{
       font-size: 11px;
@@ -1026,6 +967,100 @@
     .compareBar .actions{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
     .compareBar .actions .toolBtn{ padding: 10px 12px; }
 
+    /* ===== LEFT: FIXED FILTERS + COLLAPSIBLE PACKAGES DRAWER ===== */
+    .leftPane .sideInner{
+      flex: 1;
+      overflow: hidden; /* ✅ fixed top, drawer scrolls */
+      min-height: 0;
+    }
+
+    .pkgDrawer{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.62);
+      border-radius: 14px;
+      box-shadow: 0 10px 24px rgba(10,30,60,.10);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      min-height: 64px;
+    }
+    .pkgDrawerHdr{
+      padding: 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .pkgDrawerHdr .left{ min-width:0; }
+    .pkgDrawerHdr .h{
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing:.14em;
+      text-transform: uppercase;
+    }
+    .pkgDrawerHdr .s{
+      margin-top:5px;
+      font-size: 10px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.62);
+    }
+    .pkgDrawerHdr .right{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex:0 0 auto;
+    }
+    .drawerBtn{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.66);
+      color: rgba(10,30,60,.86);
+      border-radius: 12px;
+      padding: 7px 10px;
+      font-size: 10px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      cursor:pointer;
+      white-space: nowrap;
+    }
+    .xBtn{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.66);
+      color: rgba(10,30,60,.86);
+      border-radius: 12px;
+      padding: 7px 10px;
+      font-size: 10px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      cursor:pointer;
+      user-select:none;
+      white-space: nowrap;
+    }
+
+    .pkgDrawerBody{
+      border-top:1px solid rgba(10,30,60,.14);
+      min-height: 0;
+      overflow: hidden;
+    }
+    .pkgDrawer[data-open="true"] .pkgDrawerBody{
+      height: clamp(220px, 42vh, 520px); /* ✅ drawer height */
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .pkgDrawer[data-open="false"] .pkgDrawerBody{
+      height: 0;
+      overflow: hidden;
+    }
+
+    .pkgDrawerBody .pkgList{
+      padding: 10px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
     /* ===== RESPONSIVE ===== */
     @media (max-width: 1100px){
       .main{
@@ -1041,6 +1076,11 @@
       .centerScroll{ padding-bottom: 18px; }
       .mapWrap{ min-height: 420px; }
       #map{ min-height: 360px; }
+
+      /* mobile drawer smaller */
+      .pkgDrawer[data-open="true"] .pkgDrawerBody{
+        height: clamp(200px, 36vh, 420px);
+      }
     }
     @media (max-width: 520px){
       .shell{ padding: 10px 8px 16px; }
@@ -1100,6 +1140,7 @@
         </div>
 
         <div class="sideInner">
+          <!-- ✅ Fixed bar: Filters -->
           <div class="sideCard">
             <div class="field">
               <label>Search Package / Place</label>
@@ -1121,7 +1162,7 @@
               <datalist id="startList"></datalist>
             </div>
 
-            <!-- District Console -->
+            <!-- ✅ District Console -->
             <div class="field" id="districtWrap" style="margin-top:10px; display:none;">
               <label>District Console</label>
               <select id="districtSel">
@@ -1196,13 +1237,25 @@
             </div>
           </div>
 
-          <div class="listHdr">
-            <div class="h">Packages</div>
-            <div class="xBtn" id="closeSelectedBtn">Close</div>
-          </div>
+          <!-- ✅ Collapsible bar: Other packages -->
+          <div class="pkgDrawer" id="pkgDrawer" data-open="true">
+            <div class="pkgDrawerHdr" id="pkgDrawerHdr">
+              <div class="left">
+                <div class="h">Other Packages</div>
+                <div class="s" id="pkgCountMini">—</div>
+              </div>
 
-          <div class="pkgList" id="pkgList">
-            <div class="hint">Packages will appear here after data load. Tap to open in center.</div>
+              <div class="right">
+                <button class="xBtn" id="closeSelectedBtn" type="button">Close</button>
+                <button class="drawerBtn" id="drawerToggleBtn" type="button">Collapse</button>
+              </div>
+            </div>
+
+            <div class="pkgDrawerBody" id="pkgDrawerBody">
+              <div class="pkgList" id="pkgList">
+                <div class="hint">Packages will appear here after data load. Tap to open in center.</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1315,12 +1368,26 @@
     </div>
   </div>
 
-  <!-- ONE MODULE: Firebase + App -->
+  <!-- ONE MODULE: Firebase + App (fixed + index→dashboard param sync) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
 
     const $ = (id)=>document.getElementById(id);
+
+    /* ===== Drawer helpers (NEW) ===== */
+    function setDrawer(open){
+      const d = $("pkgDrawer");
+      if(!d) return;
+      d.dataset.open = open ? "true" : "false";
+      const btn = $("drawerToggleBtn");
+      if(btn) btn.textContent = open ? "Collapse" : "Expand";
+    }
+    function toggleDrawer(){
+      const d = $("pkgDrawer");
+      if(!d) return;
+      setDrawer(d.dataset.open !== "true");
+    }
 
     /* ===== Toast + status ===== */
     function showBot(msg){
@@ -1430,7 +1497,8 @@
 
     /* ===== Cache with TTL ===== */
     const CACHE_KEY = "HX_CACHE_V2";
-    const CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6 hours
+    const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
+
     function loadFromCache(){
       try{
         const raw = sessionStorage.getItem(CACHE_KEY);
@@ -1442,7 +1510,9 @@
       }catch(e){ return null; }
     }
     function saveToCache(data){
-      try{ sessionStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), data })); }catch(e){}
+      try{
+        sessionStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), data }));
+      }catch(e){}
     }
 
     async function fetchAllFirebase(){
@@ -1467,6 +1537,8 @@
     let ACTIVE_KEYS = [];
     let CURRENT_KEY = "";
     let shownSuggestions = new Set();
+
+    /* compare */
     const COMPARE = new Set();
 
     /* ===== Normalize ===== */
@@ -1548,113 +1620,34 @@
       return Array.from(new Set(out));
     }
 
-    /* ✅ OPTION A DONE: pick MAJOR places from places DB and use their photos for package pics */
-    function isMajorPlace(p){
-      const cat = String(p?.category || "").toLowerCase();
-      const seg = String(p?.segment || "").toLowerCase();
-      const imp = String(p?.importance || p?.priority || "").toLowerCase();
-      return (
-        cat.includes("major") ||
-        seg.includes("highlight") ||
-        seg.includes("major") ||
-        imp.includes("major") ||
-        imp.includes("high")
-      );
-    }
-
-    function getAllItineraryPlaceIds(tpl){
-      const days = Number(tpl.days || 0) || 0;
-      const ids = [];
-      for(let d=1; d<=Math.max(1, days); d++){
-        splitCSV(tpl[`day${d}_place_ids`] || "").forEach(pid => ids.push(pid));
-      }
-      return ids.filter(Boolean);
-    }
-
-    function scorePlace(pid, idx, tpl){
-      const p = PLACES?.[pid];
-      if(!p) return -9999;
-
-      let s = 0;
-
-      // major boost
-      if(isMajorPlace(p)) s += 50;
-
-      // early itinerary boost (first stops are usually more “headline”)
-      if(idx === 0) s += 18;
-      if(idx === 1) s += 12;
-      if(idx === 2) s += 8;
-
-      // photos boost
-      const photos = getPlacePhotos(p, pid);
-      s += Math.min(photos.length, 4) * 3;
-
-      // district match boost (if package has district)
-      const td = safeUpper(tpl?.district || "");
-      const pd = districtAny(p);
-      if(td && pd && td === pd) s += 6;
-
-      return s;
-    }
-
-    function getMajorPlaceIdsFromTpl(tpl, limit=8){
-      const all = getAllItineraryPlaceIds(tpl);
-      const uniq = Array.from(new Set(all));
-      const ranked = uniq
-        .map((pid, i)=>({ pid, score: scorePlace(pid, i, tpl) }))
-        .filter(x=>x.score > -9990)
-        .sort((a,b)=> b.score - a.score);
-
-      return ranked.slice(0, limit).map(x=>x.pid);
-    }
-
+    /* ✅ Package pics from MAJOR places (Option A)
+       - cover/photo/image (if given)
+       - then day1 + day2 place photos (major places)
+       - then fallback
+    */
     function getPackagePhotos(tpl){
       const out = [];
-      const used = new Set();
 
-      // if template has direct cover/image, keep it as top priority
-      [tpl.cover, tpl.photo, tpl.image].map(x=>String(x||"").trim()).filter(Boolean).forEach(x=>{
-        if(!used.has(x)){ used.add(x); out.push(x); }
+      // direct images (if set in template)
+      [tpl.cover, tpl.photo, tpl.image].map(x=>String(x||"").trim()).filter(Boolean).forEach(x=> out.push(x));
+
+      // pick major places from itinerary (day1 then day2)
+      const d1 = splitCSV(tpl.day1_place_ids || "");
+      const d2 = splitCSV(tpl.day2_place_ids || "");
+
+      const major = [...d1.slice(0,4), ...d2.slice(0,3)].filter(Boolean);
+
+      major.forEach(pid=>{
+        const p = PLACES[pid];
+        if(!p) return;
+        const photos = getPlacePhotos(p, pid);
+        photos.slice(0,2).forEach(ph=> out.push(ph));
       });
 
-      // major places photos
-      const majorIds = getMajorPlaceIdsFromTpl(tpl, 10);
-      for(const pid of majorIds){
-        const p = PLACES?.[pid];
-        if(!p) continue;
-        const photos = getPlacePhotos(p, pid);
-        for(const ph of photos){
-          if(!ph || used.has(ph)) continue;
-          used.add(ph);
-          out.push(ph);
-          if(out.length >= 10) break;
-        }
-        if(out.length >= 10) break;
-      }
+      // fallback
+      out.push("./style/n1.jpg");
 
-      if(!out.length) out.push("./style/n1.jpg");
-      return out.slice(0, 10);
-    }
-
-    function renderMajorPlacesHTML(tpl){
-      const ids = getMajorPlaceIdsFromTpl(tpl, 8)
-        .filter(pid => PLACES?.[pid])
-        .slice(0, 6);
-
-      if(!ids.length) return "";
-
-      const chips = ids.map(pid=>{
-        const p = PLACES[pid] || {};
-        const nm = placeNameAny(p, pid);
-        return `<div class="stopChip" data-major="${escapeHtml(pid)}">${escapeHtml(nm)}</div>`;
-      }).join("");
-
-      return `
-        <div class="majorRow">
-          <div class="ttl">Major Places (from database)</div>
-          <div class="stopChips">${chips}</div>
-        </div>
-      `;
+      return Array.from(new Set(out)).slice(0, 10);
     }
 
     /* ===== Pricing: COSTS FIRST ===== */
@@ -1682,6 +1675,7 @@
       if(tier==="premium") return p || b || l || 0;
       return b || p || l || 0;
     }
+
     function getDiscountPercentForKey(tpl, fallbackKey){
       const pid = (getTplKey(tpl) || String(fallbackKey||"").trim().toLowerCase());
       const row = DISCOUNTS?.[pid];
@@ -1844,7 +1838,7 @@
           const s = String(t.best_season||"").toLowerCase();
           if(s){
             if(seasonReq === "regular" || seasonReq === "peak" || seasonReq === "off"){
-              // soft
+              // soft filter only
             }else{
               if(!s.includes(seasonReq)) return false;
             }
@@ -1885,6 +1879,8 @@
     function renderLeftList(){
       ACTIVE_KEYS = filterKeys();
       $("pkgCount").textContent = `${ACTIVE_KEYS.length} packages`;
+      const mini = $("pkgCountMini");
+      if(mini) mini.textContent = `${ACTIVE_KEYS.length} found`;
 
       const host = $("pkgList");
       host.innerHTML = "";
@@ -1907,7 +1903,8 @@
         const district = String(t.district||"").toUpperCase();
         const drive = String(t.drive_level||"").toUpperCase();
         const start = safeUpper(t.start_point || t.start || "");
-        const photos = getPackagePhotos(t); // ✅ now from major places DB
+        const photos = getPackagePhotos(t);
+
         const base = pickBasePrice(t, tier, key);
         const off = getDiscountPercentForKey(t, key);
         const show = off ? Math.round(base * (1 - off/100)) : base;
@@ -1948,11 +1945,13 @@
           </div>
         `;
 
+        // ✅ click package => open center + auto-collapse drawer
         card.addEventListener("click", (e)=>{
           const target = e.target;
           if(target && target.tagName === "INPUT") return;
 
           CURRENT_KEY = key;
+          setDrawer(false);       // ✅ auto-collapse
           renderLeftList();
           renderSelected();
         });
@@ -2016,7 +2015,7 @@
       const name = placeNameAny(place, placeId);
       const dist = districtAny(place) || "—";
 
-      ttl.textContent = `${name}${dayNum ? " • Day " + dayNum : ""}${orderNum ? " • Stop " + orderNum : ""}`;
+      ttl.textContent = `${name} • Day ${dayNum}${orderNum ? " • Stop " + orderNum : ""}`;
 
       const photos = getPlacePhotos(place, placeId);
       let idx = 0;
@@ -2262,7 +2261,7 @@
       const inclusions = String(tpl.inclusions || "").trim();
       const exclusions = String(tpl.exclusions || "").trim();
 
-      const photos = getPackagePhotos(tpl); // ✅ now from major places DB
+      const photos = getPackagePhotos(tpl);
       const mainPhoto = photos[0] || "./style/n1.jpg";
 
       const msg = encodeURIComponent(`Hi Chandan, I want to book: ${title} | ${days} days | ${tier.toUpperCase()} | Pax: ${pax}`);
@@ -2292,9 +2291,6 @@
               ${end ? `<b>End:</b> ${escapeHtml(end)}&nbsp;&nbsp;` : ""}
               ${routePath ? `<br><b>Route:</b> ${escapeHtml(routePath)}` : ""}
             </div>
-
-            <!-- ✅ Major places (names from DB, clickable) -->
-            ${renderMajorPlacesHTML(tpl)}
           </div>
 
           <div class="carousel">
@@ -2386,7 +2382,6 @@
         </div>
       `;
 
-      // carousel thumbs
       const carMain = document.getElementById("carMain");
       document.querySelectorAll(".thumb[data-src]").forEach(t=>{
         t.addEventListener("click", ()=>{
@@ -2394,17 +2389,6 @@
           t.classList.add("on");
           const src = t.getAttribute("data-src") || "./style/n1.jpg";
           carMain.src = src;
-        });
-      });
-
-      // ✅ major place chips open modal (names from DB)
-      host.querySelectorAll(".stopChip[data-major]").forEach(ch=>{
-        ch.addEventListener("click", ()=>{
-          const pid = ch.getAttribute("data-major");
-          const p = PLACES?.[pid] || {};
-          openPlaceModal({ place:p, dayNum:"", orderNum:"", placeId:pid });
-          const lat = latAny(p), lng = lngAny(p);
-          if(isFinite(lat) && isFinite(lng)) map.setView([lat,lng], 12, {animate:true});
         });
       });
 
@@ -2508,6 +2492,8 @@
       applyQueryParamsToUI();
 
       pillBudget();
+
+      setDrawer(true);     // ✅ open drawer on first load
       renderLeftList();
 
       showBot("Data loaded");
@@ -2515,6 +2501,11 @@
 
     /* ===== Wire UI ===== */
     function wireUI(){
+      // Drawer toggle
+      $("drawerToggleBtn").onclick = (e)=>{ e.stopPropagation(); toggleDrawer(); };
+      $("pkgDrawerHdr").onclick = ()=> toggleDrawer();
+      setDrawer(true);
+
       $("pmClose").onclick = closePlaceModal;
       $("placeModal").addEventListener("click", (e)=>{
         if(e.target === $("placeModal")) closePlaceModal();
@@ -2553,6 +2544,7 @@
         quickTags.clear();
         document.querySelectorAll(".qchip").forEach(c=>c.classList.remove("on"));
         CURRENT_KEY = "";
+        setDrawer(true);       // ✅ open drawer to show list
         renderLeftList();
         showBot("Filters reset");
         setStatus("Ready");
@@ -2560,6 +2552,7 @@
 
       $("genBtn").onclick = ()=>{
         CURRENT_KEY = "";
+        setDrawer(true);       // ✅ open drawer when filtering
         renderLeftList();
         showBot("Filtered packages updated");
       };
@@ -2588,8 +2581,10 @@
         }
       };
 
-      $("closeSelectedBtn").onclick = ()=>{
+      $("closeSelectedBtn").onclick = (e)=>{
+        e.stopPropagation();   // ✅ don't toggle drawer
         CURRENT_KEY = "";
+        setDrawer(true);
         renderLeftList();
         showBot("Closed");
       };
@@ -2602,6 +2597,7 @@
       ["searchInp","startInp"].forEach(id=>{
         $(id).addEventListener("input", ()=>{
           CURRENT_KEY = "";
+          setDrawer(true);
           renderLeftList();
         });
       });
@@ -2610,12 +2606,18 @@
         const el = $(id);
         if(!el) return;
         el.addEventListener("change", ()=>{
+          CURRENT_KEY = "";
+          setDrawer(true);
           renderLeftList();
         });
       });
 
       $("budgetRange").addEventListener("input", ()=> pillBudget() );
-      $("budgetRange").addEventListener("change", ()=> renderLeftList() );
+      $("budgetRange").addEventListener("change", ()=>{
+        CURRENT_KEY = "";
+        setDrawer(true);
+        renderLeftList();
+      });
 
       document.querySelectorAll(".qchip[data-tag]").forEach(ch=>{
         ch.addEventListener("click", ()=>{
@@ -2629,6 +2631,7 @@
             ch.classList.add("on");
           }
           CURRENT_KEY = "";
+          setDrawer(true);
           renderLeftList();
         });
       });
