@@ -30,10 +30,8 @@
   --shellW: min(94vw, 1700px);
   --heroH: clamp(220px, 26vw, 320px);
 }
-
 *{ box-sizing:border-box; }
 html, body{ height:100%; }
-
 body{
   margin:0; color:var(--text);
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -46,7 +44,6 @@ body{
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
 }
-
 .aurora{
   position:fixed; inset:-30%;
   background:
@@ -65,7 +62,6 @@ body{
   position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.06; mix-blend-mode:multiply;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
 }
-
 .shell{ width: var(--shellW); margin: 0 auto; padding: 12px 10px 18px; }
 
 /* ===== HERO ===== */
@@ -114,7 +110,6 @@ body{
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 .heroRight{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:flex-end; flex:0 0 auto; }
-
 .chip{
   border:1px solid rgba(10,30,60,.18);
   background: rgba(255,255,255,.62);
@@ -138,7 +133,7 @@ body{
 }
 
 /* =========================================================
-   ✅ MAIN LAYOUT (LEFT 22% | CENTER 53% | RIGHT 25%)
+   MAIN LAYOUT (LEFT 22% | CENTER 53% | RIGHT 25%)
    ========================================================= */
 .main{
   display:grid;
@@ -148,8 +143,6 @@ body{
   align-items: stretch;
   min-width:0;
 }
-
-/* panes same height; scroll INSIDE, not page */
 .pane{
   border: 1px solid var(--stroke);
   border-radius: var(--radius);
@@ -160,14 +153,11 @@ body{
   display:flex;
   flex-direction:column;
   min-width: 0;
-
   min-height: 0;
-
   height: calc(100vh - 24px);
   min-height: 640px;
   max-height: 920px;
 }
-
 .paneHdr{
   padding: 10px 12px;
   border-bottom:1px solid rgba(10,30,60,.14);
@@ -226,7 +216,6 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   color: rgba(10,30,60,.86);
   box-shadow: 0 10px 24px rgba(10,30,60,.10);
 }
-
 .pills{ display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
 .pill{
   border:1px solid rgba(10,30,60,.16);
@@ -241,7 +230,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
 }
 .pill b{ color: rgba(10,30,60,.92); letter-spacing:.06em; }
 
-/* ===== LEFT: ALL PACKAGES BOX ===== */
+/* LEFT: ALL PACKAGES BOX */
 .otherWrap{ flex:1; min-height:0; display:flex; flex-direction:column; gap:10px; }
 .otherHdr{
   border:1px solid rgba(10,30,60,.16);
@@ -346,7 +335,6 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
 
 /* ===== CENTER ===== */
 .centerInner{ display:flex; flex-direction:column; min-height:0; flex:1; }
-
 .districtBar{
   display:flex; flex-wrap:nowrap; gap:8px;
   padding:10px 12px;
@@ -375,7 +363,6 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   box-shadow: 0 0 0 3px rgba(37,99,235,.14);
   background: rgba(37,99,235,.14);
 }
-
 .pkgList{
   flex:1;
   min-height:0;
@@ -385,307 +372,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   -webkit-overflow-scrolling: touch;
 }
 
-.pkgGrid{
-  display:grid;
-  gap: 10px;
-  grid-template-columns: repeat(3, minmax(220px, 1fr));
-  align-items: stretch;
-}
-@media (max-width: 1400px){
-  .pkgGrid{ grid-template-columns: repeat(2, minmax(220px, 1fr)); }
-}
-@media (max-width: 980px){
-  .pkgGrid{ grid-template-columns: repeat(2, minmax(180px, 1fr)); }
-}
-@media (max-width: 520px){
-  .pkgGrid{ grid-template-columns: repeat(2, minmax(160px, 1fr)); gap:10px; }
-}
-
-.pkgW.active{ grid-column: 1 / -1; }
-
-.pkgW{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.66);
-  border-radius: 16px;
-  overflow:hidden;
-  cursor:pointer;
-  transition: transform .12s ease, border-color .12s ease, background .12s ease;
-  box-shadow: 0 14px 36px rgba(10,30,60,.10);
-  -webkit-tap-highlight-color: transparent;
-  height: 100%;
-  display:flex;
-  flex-direction:column;
-  min-width:0;
-}
-.pkgW.active .pkgCard{ flex-direction:row; }
-@media (max-width: 980px){
-  .pkgW.active .pkgCard{ flex-direction:column; }
-}
-
-.pkgCard{ display:flex; flex-direction:column; min-height: 200px; flex: 1; }
-
-.pkgMedia{
-  position:relative;
-  flex: 7 0 auto;
-  min-height: 120px;
-  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.78), rgba(37,99,235,.12));
-  border-bottom: 1px solid rgba(10,30,60,.12);
-  overflow:hidden;
-}
-.pkgW.active .pkgMedia{
-  border-bottom:none;
-  border-right: 1px solid rgba(10,30,60,.12);
-  min-width: 280px;
-  flex: 0 0 38%;
-}
-@media (max-width: 980px){
-  .pkgW.active .pkgMedia{ border-right:none; border-bottom:1px solid rgba(10,30,60,.12); flex: 7 0 auto; min-width:unset; }
-}
-.pkgMedia img{
-  width:100%; height:100%;
-  object-fit:cover; display:block;
-  filter: saturate(1.02) contrast(1.02);
-}
-.pkgMedia::after{
-  content:"";
-  position:absolute; inset:0;
-  background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.08), rgba(255,255,255,.44));
-  pointer-events:none;
-}
-
-.pkgTagRow{
-  position:absolute; left:10px; right:10px; top:10px;
-  display:flex; align-items:center; justify-content:space-between;
-  gap:10px;
-}
-.pkgBadge{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.74);
-  border-radius: 999px;
-  padding: 6px 9px;
-  font-size: 10px;
-  letter-spacing:.12em;
-  text-transform: uppercase;
-  color: rgba(10,30,60,.86);
-  white-space: nowrap;
-  backdrop-filter: blur(10px);
-}
-.pkgBadge.purple{ border-color: rgba(37,99,235,.35); background: rgba(37,99,235,.16); color: rgba(10,30,60,.92); }
-.pkgBadge.green{ border-color: rgba(34,197,94,.30); background: rgba(34,197,94,.16); color: rgba(10,30,60,.92); }
-.pkgRouteId{
-  border:1px solid rgba(10,30,60,.14);
-  background: rgba(255,255,255,.70);
-  border-radius: 999px;
-  padding: 6px 9px;
-  font-size: 10px;
-  letter-spacing:.10em;
-  text-transform: uppercase;
-  color: rgba(10,30,60,.72);
-  white-space: nowrap;
-  max-width: 58%;
-  overflow:hidden; text-overflow: ellipsis;
-  backdrop-filter: blur(10px);
-}
-
-.pkgInfo{
-  flex: 3 0 auto;
-  padding: 8px 10px 10px;
-  background: rgba(255,255,255,.62);
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  min-width:0;
-  flex:1;
-}
-.pkgTitleRow{
-  display:flex; align-items:flex-start; justify-content:space-between;
-  gap:10px;
-  min-width:0;
-}
-.pkgTitle{
-  margin:0;
-  font-size: 11px;
-  font-weight: 950;
-  letter-spacing:.10em;
-  text-transform: uppercase;
-  color: rgba(10,30,60,.94);
-  white-space: nowrap; overflow:hidden; text-overflow: ellipsis;
-  min-width:0;
-}
-.pkgOpen{
-  flex:0 0 auto;
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.74);
-  color: rgba(10,30,60,.92);
-  border-radius: 12px;
-  padding: 7px 10px;
-  font-size: 10px;
-  letter-spacing:.12em;
-  text-transform: uppercase;
-  font-weight: 950;
-  white-space: nowrap;
-}
-.pkgMeta{ display:flex; gap:8px; flex-wrap:wrap; }
-.pkgChip{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.62);
-  border-radius: 999px;
-  padding: 5px 8px;
-  font-size: 9.6px;
-  letter-spacing:.10em;
-  text-transform: uppercase;
-  color: rgba(10,30,60,.72);
-  display:inline-flex; gap:6px; align-items:center;
-  white-space: nowrap;
-}
-.pkgChip b{ color: rgba(10,30,60,.92); letter-spacing:.06em; }
-
-.pkgDetails{
-  display:none;
-  border-top:1px solid rgba(10,30,60,.14);
-  background: rgba(255,255,255,.56);
-  padding: 12px;
-}
-.pkgW.active .pkgDetails{ display:block; }
-
-/* ===== DETAILS ===== */
-.detailsGrid{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
-@media (max-width: 520px){ .detailsGrid{ grid-template-columns: 1fr; } }
-
-.detailsCard{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.66);
-  border-radius: 14px;
-  padding: 10px;
-  box-shadow: 0 12px 34px rgba(10,30,60,.10);
-  min-width:0;
-}
-.bigTitle{ margin:0; font-size: 12px; letter-spacing:.18em; text-transform: uppercase; color: rgba(10,30,60,.94); }
-.muted{ color: var(--muted); font-size: 10.8px; letter-spacing:.08em; text-transform: uppercase; line-height:1.35; }
-.mini{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.66);
-  border-radius: 14px;
-  padding: 9px;
-  box-shadow: 0 10px 22px rgba(10,30,60,.08);
-  min-width:0;
-}
-.mini .k{ font-size: 10px; letter-spacing:.16em; text-transform: uppercase; color: rgba(10,30,60,.60); }
-.mini .v{ margin-top:5px; font-size: 13px; font-weight: 950; letter-spacing:.06em; color: rgba(10,30,60,.94); }
-.mini .v small{ font-size: 10.5px; color: rgba(10,30,60,.62); font-weight: 800; }
-
-.enqRow{ margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; }
-.enqBtn{
-  flex:1;
-  border:1px solid rgba(34,197,94,.30);
-  background: rgba(34,197,94,.14);
-  color: rgba(10,30,60,.92);
-  border-radius: 14px;
-  padding: 10px 10px;
-  text-decoration:none;
-  text-transform: uppercase;
-  letter-spacing:.10em;
-  font-weight: 950;
-  font-size: 11px;
-  display:flex; align-items:center; justify-content:center; gap:10px;
-  user-select:none;
-  box-shadow: 0 12px 28px rgba(34,197,94,.14);
-  -webkit-tap-highlight-color: transparent;
-  min-width: 220px;
-}
-.enqBtn.disabled{ opacity:.55; pointer-events:none; border-color: rgba(10,30,60,.16); background: rgba(255,255,255,.66); }
-
-.daysList{ display:flex; flex-direction:column; gap:9px; margin-top:10px; }
-.dayCard{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.66);
-  border-radius: 14px;
-  padding: 10px;
-  box-shadow: 0 10px 22px rgba(10,30,60,.08);
-  min-width:0;
-}
-.dayTop{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom: 7px; }
-.dayTop .d{ font-size: 11px; font-weight: 950; letter-spacing:.18em; text-transform: uppercase; }
-
-.placeBtn{
-  display:flex; align-items:center; justify-content:space-between; gap:10px;
-  width:100%;
-  border:1px solid rgba(10,30,60,.14);
-  background: rgba(255,255,255,.66);
-  border-radius: 14px;
-  padding: 10px;
-  cursor:pointer;
-  box-shadow: 0 10px 20px rgba(10,30,60,.08);
-  -webkit-tap-highlight-color: transparent;
-  margin-top: 7px;
-}
-.placeBtn .left{ min-width:0; }
-.placeBtn .nm{
-  font-size: 11px; font-weight: 950; letter-spacing:.10em; text-transform: uppercase;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-}
-.placeBtn .sm{
-  margin-top:4px; font-size: 10px; color: rgba(10,30,60,.62);
-  letter-spacing:.08em; text-transform: uppercase;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-}
-.placeBtn .tag{
-  border:1px solid rgba(37,99,235,.30);
-  background: rgba(37,99,235,.12);
-  border-radius: 999px;
-  padding: 6px 9px;
-  font-size: 10px;
-  letter-spacing:.12em;
-  text-transform: uppercase;
-  font-weight: 950;
-  white-space: nowrap;
-  flex:0 0 auto;
-}
-
-.nearWrap{
-  margin-top:10px;
-  border:1px dashed rgba(10,30,60,.18);
-  background: rgba(255,255,255,.58);
-  border-radius: 14px;
-  padding: 10px;
-}
-.nearTop{
-  display:flex; align-items:center; justify-content:space-between; gap:10px;
-  margin-bottom:8px;
-}
-.nearTop .k{
-  font-size: 10px; letter-spacing:.16em; text-transform: uppercase; color: rgba(10,30,60,.62);
-  font-weight: 1000;
-}
-.nearCards{
-  display:grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-@media (max-width: 520px){
-  .nearCards{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-.nearCard{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.72);
-  border-radius: 14px;
-  overflow:hidden;
-  box-shadow: 0 10px 22px rgba(10,30,60,.08);
-  cursor:pointer;
-}
-.nearImg{ height: 84px; background: rgba(255,255,255,.80); }
-.nearImg img{ width:100%; height:100%; object-fit:cover; display:block; }
-.nearNm{
-  padding: 8px 9px;
-  font-size: 10px;
-  font-weight: 950;
-  letter-spacing:.10em;
-  text-transform: uppercase;
-  color: rgba(10,30,60,.88);
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-}
-
-/* ===== MAP (RIGHT 25% + STICKY) ===== */
+/* ===== MAP ===== */
 .mapPane{
   position: sticky;
   top: 12px;
@@ -703,7 +390,6 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   background: rgba(255,255,255,.62);
   border-radius: 14px;
 }
-
 .mapTools{
   padding: 10px 12px;
   border-top:1px solid rgba(10,30,60,.14);
@@ -958,6 +644,247 @@ footer{
   cursor: pointer;
 }
 
+/* =======================
+   NEW: Full selected package display (center)
+   ======================= */
+.centerFocus{
+  padding: 12px;
+  overflow:auto;
+  min-height:0;
+}
+.focusHero{
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.70);
+  border-radius: 18px;
+  overflow:hidden;
+  box-shadow: 0 14px 36px rgba(10,30,60,.10);
+}
+.focusHeroImg{
+  width:100%;
+  height: 240px;
+  object-fit: cover;
+  display:block;
+}
+.focusHeroBar{
+  padding: 12px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:flex-start;
+  justify-content:space-between;
+  background: rgba(255,255,255,.70);
+  border-top:1px solid rgba(10,30,60,.12);
+}
+.focusTitle{
+  margin:0;
+  font-size: 14px;
+  font-weight: 1000;
+  letter-spacing:.12em;
+  text-transform: uppercase;
+  color: rgba(10,30,60,.94);
+}
+.focusSub{
+  margin:6px 0 0;
+  font-size: 11px;
+  color: rgba(10,30,60,.62);
+  letter-spacing:.08em;
+  text-transform: uppercase;
+}
+.focusBadges{ display:flex; gap:8px; flex-wrap:wrap; }
+
+.pkgBadge{
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.74);
+  border-radius: 999px;
+  padding: 6px 9px;
+  font-size: 10px;
+  letter-spacing:.12em;
+  text-transform: uppercase;
+  color: rgba(10,30,60,.86);
+  white-space: nowrap;
+  backdrop-filter: blur(10px);
+}
+.pkgBadge.purple{ border-color: rgba(37,99,235,.35); background: rgba(37,99,235,.16); color: rgba(10,30,60,.92); }
+.pkgBadge.green{ border-color: rgba(34,197,94,.30); background: rgba(34,197,94,.16); color: rgba(10,30,60,.92); }
+
+.priceBox{
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.78);
+  border-radius: 14px;
+  padding: 10px 12px;
+  min-width: 240px;
+  box-shadow: 0 10px 22px rgba(10,30,60,.08);
+}
+.priceRow{ display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; }
+.priceOld{
+  font-size: 12px;
+  color: rgba(10,30,60,.55);
+  text-decoration: line-through;
+  font-weight: 900;
+  letter-spacing:.08em;
+}
+.priceNew{
+  font-size: 18px;
+  font-weight: 1100;
+  letter-spacing:.06em;
+  color: rgba(10,30,60,.94);
+}
+.discPill{
+  border:1px solid rgba(34,197,94,.30);
+  background: rgba(34,197,94,.14);
+  border-radius: 999px;
+  padding: 6px 9px;
+  font-size: 10px;
+  font-weight: 1000;
+  letter-spacing:.12em;
+  text-transform: uppercase;
+  white-space:nowrap;
+}
+.costGrid{
+  margin-top: 12px;
+  display:grid;
+  gap:10px;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+}
+@media (max-width: 980px){ .costGrid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+.costCard{
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.66);
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: 0 10px 22px rgba(10,30,60,.08);
+}
+.costCard .k{
+  font-size:10px; letter-spacing:.16em; text-transform: uppercase; color: rgba(10,30,60,.60);
+}
+.costCard .v{
+  margin-top:6px;
+  font-size: 14px;
+  font-weight: 1000;
+  letter-spacing:.06em;
+  color: rgba(10,30,60,.94);
+}
+.dayBlock{
+  margin-top: 12px;
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.66);
+  border-radius: 16px;
+  overflow:hidden;
+  box-shadow: 0 12px 28px rgba(10,30,60,.08);
+}
+.dayHdr{
+  padding: 10px 12px;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  border-bottom:1px solid rgba(10,30,60,.12);
+  background: rgba(255,255,255,.72);
+}
+.dayHdr .d{
+  font-size: 11px;
+  font-weight: 1000;
+  letter-spacing:.16em;
+  text-transform: uppercase;
+}
+.dayHdr .r{
+  font-size: 10.5px;
+  color: rgba(10,30,60,.62);
+  letter-spacing:.08em;
+  text-transform: uppercase;
+  white-space:nowrap;
+}
+.dayBody{ padding: 10px 12px; }
+.placeRow{ display:flex; gap:10px; flex-wrap:wrap; }
+.placeMini{
+  border:1px solid rgba(10,30,60,.14);
+  background: rgba(255,255,255,.72);
+  border-radius: 999px;
+  padding: 8px 10px;
+  font-size: 10.5px;
+  letter-spacing:.10em;
+  text-transform: uppercase;
+  cursor:pointer;
+  box-shadow: 0 10px 20px rgba(10,30,60,.06);
+  -webkit-tap-highlight-color: transparent;
+}
+.nearSection{
+  margin-top: 12px;
+  border:1px dashed rgba(10,30,60,.18);
+  background: rgba(255,255,255,.58);
+  border-radius: 16px;
+  padding: 12px;
+}
+.nearTop{
+  display:flex; justify-content:space-between; align-items:center; gap:10px;
+  margin-bottom:10px;
+}
+.nearTop .k{
+  font-size: 11px;
+  font-weight: 1000;
+  letter-spacing:.16em;
+  text-transform: uppercase;
+  color: rgba(10,30,60,.62);
+}
+.nearGrid{
+  display:grid;
+  gap: 12px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+@media (max-width: 980px){ .nearGrid{ grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 520px){ .nearGrid{ grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.nearCircle{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  cursor:pointer;
+  text-align:center;
+  -webkit-tap-highlight-color: transparent;
+}
+.nearCircle .img{
+  width: 62px;
+  height: 62px;
+  border-radius: 999px;
+  overflow:hidden;
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.80);
+  box-shadow: 0 12px 26px rgba(10,30,60,.10);
+}
+.nearCircle img{ width:100%; height:100%; object-fit:cover; display:block; }
+.nearCircle .nm{
+  font-size: 10px;
+  font-weight: 1000;
+  letter-spacing:.10em;
+  text-transform: uppercase;
+  color: rgba(10,30,60,.84);
+  line-height:1.2;
+  max-width: 110px;
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space:nowrap;
+}
+.enqRow{ margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; }
+.enqBtn{
+  flex:1;
+  border:1px solid rgba(34,197,94,.30);
+  background: rgba(34,197,94,.14);
+  color: rgba(10,30,60,.92);
+  border-radius: 14px;
+  padding: 10px 10px;
+  text-decoration:none;
+  text-transform: uppercase;
+  letter-spacing:.10em;
+  font-weight: 950;
+  font-size: 11px;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  user-select:none;
+  box-shadow: 0 12px 28px rgba(34,197,94,.14);
+  -webkit-tap-highlight-color: transparent;
+  min-width: 220px;
+}
+.enqBtn.disabled{ opacity:.55; pointer-events:none; border-color: rgba(10,30,60,.16); background: rgba(255,255,255,.66); }
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1200px){
   .main{ grid-template-columns: 1fr; }
@@ -981,7 +908,6 @@ footer{
 }
 @media (prefers-reduced-motion: reduce){
   .aurora{ animation:none; }
-  .pkgW{ transition:none; }
 }
   </style>
 </head>
@@ -1016,14 +942,12 @@ footer{
     <!-- HERO -->
     <div class="hero">
       <div class="heroMedia">
-        <!-- ✅ FIX: your image is in /style folder (not /style/images) -->
         <img src="./style/vivek-kumar-7k1IKQZikSc-unsplash.jpg" alt="Himachal Explorer" onerror="this.style.display='none';">
       </div>
 
       <div class="heroBar">
         <div class="heroBrand">
           <div class="logo">
-            <!-- ✅ FIX: logo is in /style folder (not /style/images) -->
             <img src="./style/logo.png" alt="Himachal Explorer Logo" onerror="this.remove(); this.parentNode.textContent='HP';">
           </div>
           <div class="brandText">
@@ -1064,6 +988,7 @@ footer{
             <div class="field" style="margin-top:10px;">
               <label>Package Category</label>
               <select id="visitType">
+                <option value="">ANY</option>
                 <option value="budget">BUDGET</option>
                 <option value="premium">PREMIUM</option>
                 <option value="luxury">LUXURY</option>
@@ -1122,8 +1047,8 @@ footer{
       <div class="pane">
         <div class="paneHdr">
           <div>
-            <p class="t">Packages</p>
-            <div class="s" id="centerHint">3–4 columns desktop • 2 columns mobile</div>
+            <p class="t">Selected Package</p>
+            <div class="s" id="centerHint">Full details open here</div>
           </div>
           <div class="s" id="pkgCount">—</div>
         </div>
@@ -1253,24 +1178,9 @@ footer{
     </div>
   </div>
 
-  <!-- ✅ IMPORTANT: If opened as file:// Firebase won’t load -->
-  <script>
-    if (location.protocol === "file:") {
-      document.body.innerHTML = `
-        <div style="padding:18px;font-family:system-ui">
-          <h2>Open via GitHub Pages</h2>
-          <p>Firebase data will not load from <b>file://</b>.</p>
-          <p>Open this page from GitHub Pages URL (example):</p>
-          <code>https://champishere001.github.io/Himachal_Explorer/dashboard.html</code>
-        </div>`;
-      throw new Error("Opened via file://, Firebase blocked");
-    }
-  </script>
-
   <!-- =========================================================
-       FIREBASE LOADER (MODULE)
-       Saves into sessionStorage:
-       HX_TEMPLATES, HX_PLACES, HX_COSTS
+       FIREBASE LOADER (MODULE) — Dashboard fetches directly
+       Saves: HX_TEMPLATES, HX_PLACES, HX_COSTS
        ========================================================= -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
@@ -1296,10 +1206,14 @@ footer{
     }
 
     window.hxFetchFirebaseAndCache = async function(){
+      const NODE_TEMPLATES  = "templates";
+      const NODE_PLACES     = "places";
+      const NODE_COSTS      = "package_cost_breakdown";
+
       const [templates, places, costs] = await Promise.all([
-        fetchNode("templates"),
-        fetchNode("places"),
-        fetchNode("package_cost_breakdown")
+        fetchNode(NODE_TEMPLATES),
+        fetchNode(NODE_PLACES),
+        fetchNode(NODE_COSTS)
       ]);
 
       sessionStorage.setItem("HX_TEMPLATES", JSON.stringify(templates || {}));
@@ -1312,9 +1226,14 @@ footer{
 
   <script>
   /* =========================================================
-     DASHBOARD SCRIPT
+     DASHBOARD (FULL)
+     - Left = all packages list
+     - Center = selected package full details
+     - Right = OSRM route + markers
+     - Smart discount 10-20%
      ========================================================= */
 
+  /* ===== Mode from landing ===== */
   let TOUR_MODE = null; // "outside" | "intercity"
   function initModeFromLanding(){
     const qs = new URLSearchParams(location.search);
@@ -1328,12 +1247,12 @@ footer{
   const $ = (id)=>document.getElementById(id);
 
   function setStatus(msg){ $("statusLine").textContent = msg; }
+  function safeLower(x){ return String(x ?? "").trim().toLowerCase(); }
   function escapeHtml(str){
     return String(str ?? "")
       .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
       .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
   }
-  function normCaps(x){ return String(x||"").trim().toUpperCase().replace(/\s+/g," "); }
   function rupees(n){ return "₹" + Math.round(Number(n)||0).toLocaleString("en-IN"); }
   function slugifyName(name){
     return String(name||"")
@@ -1345,6 +1264,7 @@ footer{
       .replace(/^-|-$/g,"");
   }
 
+  /* botToast */
   function showBot(msg){
     const el = $("botToast");
     if(!el) return;
@@ -1354,9 +1274,15 @@ footer{
     showBot._t = setTimeout(()=> el.classList.remove("show"), 3600);
   }
 
-  /* ✅ Place images base (your /Places folder) */
+  /* ===== Place images ===== */
   const IMG_BASE = "./Places/";
   const IMG_MAX = 4;
+
+  function placeIdAny(p, key){ return String(p?.place_id || p?.id || key || "").trim(); }
+  function placeNameAny(p, key){ return String(p?.name || p?.["Location Name"] || p?.title || key || "PLACE").trim(); }
+  function latAny(p){ return Number(p?.latitude ?? p?.lat ?? p?.Latitude); }
+  function lngAny(p){ return Number(p?.longitude ?? p?.lng ?? p?.Longitude); }
+  function districtAny(p){ return String(p?.district || p?.District || "").trim().toUpperCase(); }
 
   function getPlacePhotos(place, placeId){
     const out = [];
@@ -1376,6 +1302,7 @@ footer{
     return Array.from(new Set(out));
   }
 
+  /* Place Modal */
   function openPlaceModal({ place, dayNum, orderNum, placeId }){
     const modal = $("placeModal");
     const ttl = $("pmTitle");
@@ -1402,7 +1329,7 @@ footer{
         img.style.display = "none";
       }
     };
-    img.src = photos[0] || "./style/n1.jpg"; // ✅ FIX (your n1.jpg is in /style)
+    img.src = photos[0] || "./style/n1.jpg";
 
     const short =
       String(place?.history_tagline || place?.what_you_find || place?.description || "")
@@ -1424,6 +1351,7 @@ footer{
     actions.innerHTML = `
       ${gmaps ? `<a href="${gmaps}" target="_blank" rel="noopener">Open in Maps</a>` : ""}
       <a href="#" id="pmNextPhoto">Next Photo</a>
+      ${gmaps ? `<a href="#" id="pmFocusMap">Focus Map</a>` : ""}
     `;
 
     const next = document.getElementById("pmNextPhoto");
@@ -1436,17 +1364,21 @@ footer{
         img.src = photos[idx];
       };
     }
+    const focus = document.getElementById("pmFocusMap");
+    if(focus && gmaps){
+      focus.onclick = (e)=>{
+        e.preventDefault();
+        if(isFinite(lat) && isFinite(lng) && map){
+          map.setView([lat,lng], 13, { animate:true });
+        }
+      };
+    }
 
     modal.classList.add("show");
   }
   function closePlaceModal(){ $("placeModal")?.classList.remove("show"); }
 
-  function placeIdAny(p, key){ return String(p?.place_id || p?.id || key || "").trim(); }
-  function placeNameAny(p, key){ return String(p?.name || p?.["Location Name"] || p?.title || key || "PLACE").trim(); }
-  function latAny(p){ return Number(p?.latitude ?? p?.lat ?? p?.Latitude); }
-  function lngAny(p){ return Number(p?.longitude ?? p?.lng ?? p?.Longitude); }
-  function districtAny(p){ return String(p?.district || p?.District || "").trim().toUpperCase(); }
-
+  /* ===== Geo ===== */
   function haversineKm(lat1, lon1, lat2, lon2){
     const toRad = (d)=> (d*Math.PI)/180;
     const R = 6371;
@@ -1457,6 +1389,7 @@ footer{
     return 2*R*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   }
 
+  /* ===== Local/intercity classification (your old logic kept) ===== */
   function isLocalComputed(tpl){
     const routeId = String(tpl.route_id || "").toUpperCase().trim();
     const regionStyle = String(tpl.region_style || "").toLowerCase().trim();
@@ -1464,9 +1397,9 @@ footer{
     return regionStyle === "local" || routeId.endsWith("-LCL") || pkgId.includes("-local");
   }
 
-  /* ===== Map ===== */
+  /* ===== MAP ===== */
   let map, tile, tileDark, markersLayer, routeLine;
-  let showMode = "all";
+  let showMode = "all"; // all | startend
   let tilesDark = false;
 
   function invalidateMapSoon(){
@@ -1479,7 +1412,6 @@ footer{
     map = L.map('map', { zoomControl:true }).setView([31.1048, 77.1734], 8);
     tile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
     tile.addTo(map);
-
     tileDark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 18 });
 
     markersLayer = L.layerGroup().addTo(map);
@@ -1492,36 +1424,24 @@ footer{
     $("kmBadge").textContent = "—";
     invalidateMapSoon();
   }
-  function dayIconHTML(day, order){
-    return `
-      <div style="
-        width:34px;height:34px;border-radius:999px;
-        display:grid;place-items:center;
-        border:1px solid rgba(10,30,60,.22);
-        background: rgba(255,255,255,.92);
-        box-shadow: 0 10px 22px rgba(10,30,60,.14);
-        font-family: ui-sans-serif,system-ui;">
-        <div style="text-align:center;line-height:1;">
-          <div style="font-size:10px;font-weight:950;letter-spacing:.10em;">D${day}</div>
-          <div style="font-size:11px;font-weight:1000;">${order}</div>
-        </div>
-      </div>`;
+  function fitMapToRoute(){
+    if(routeLine){
+      map.fitBounds(routeLine.getBounds(), { padding:[18,18] });
+    }else{
+      map.setView([31.1048, 77.1734], 8);
+    }
   }
 
-  /* ===== Data ===== */
+  /* ===== DATA ===== */
   let TEMPLATES = {};
   let PLACES = {};
   let COSTS = {};
-  let NAME_TO_ID = new Map();
   let STARTS = [];
   let ACTIVE_TEMPLATES = [];
-  let INTER_ALL = [];
-  let DISTRICT_KEYS = [];
+  let FILTERED = [];
   let ACTIVE_DISTRICT = "ALL";
   let CURRENT_TEMPLATE_KEY = "";
-  let CURRENT_DAY_INDEX = new Map();
-  let CURRENT_ROUTE_KM = 0;
-  let CURRENT_ROUTE_HRS = 0;
+  let NAME_TO_ID = new Map();
 
   function buildNameIndex(){
     NAME_TO_ID = new Map();
@@ -1579,7 +1499,7 @@ footer{
     if(exact) return exact;
     const partial = STARTS.find(s => s.startsWith(typed));
     if(partial) return partial;
-    return "";
+    return typed; // allow user custom too
   }
 
   function getSelectedPax(){
@@ -1587,797 +1507,602 @@ footer{
     return (isFinite(v) && v > 0) ? v : 2;
   }
 
-  function stopsFromTemplate(tpl){
-    const days = Number(tpl.days || 1);
-    const out = [];
-    const seen = new Set();
+  /* ===== SMART DISCOUNT (10-20%) ===== */
+  function hashStr(s){
+    s = String(s||"");
+    let h = 2166136261;
+    for(let i=0;i<s.length;i++){
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return (h >>> 0);
+  }
+  function smartDiscountPercent(t, baseTotal){
+    const key = String(t.package_id || t.id || t.key || "");
+    let pct = 10 + (hashStr(key) % 11); // 10..20
 
-    for(let d=1; d<=Math.min(12, Math.max(1, days)); d++){
-      const k = `day${d}_place_ids`;
-      const raw = String(tpl[k] || "").trim();
-      if(!raw) continue;
-      raw.split(",").map(x=>x.trim()).filter(Boolean).forEach(pid=>{
-        if(seen.has(pid)) return;
-        seen.add(pid);
-        out.push(pid);
+    const cat = String(t.category || t.package_category || t.type || "").toLowerCase();
+    if(cat.includes("lux")) pct = Math.min(pct, 14);
+    if(cat.includes("prem")) pct = Math.min(pct, 17);
+    if(cat.includes("budget")) pct = Math.max(pct, 14);
+
+    if(Number(baseTotal) > 90000) pct = Math.min(pct, 15);
+    if(Number(baseTotal) < 25000) pct = Math.max(pct, 16);
+
+    return Math.max(10, Math.min(20, pct));
+  }
+
+  /* ===== COSTS ===== */
+  function getCostObj(t){
+    const id = String(t.package_id || t.id || "").trim();
+    const key = String(t.key || "").trim();
+    return (COSTS && (COSTS[id] || COSTS[key])) || null;
+  }
+  function getTotalCost(costObj){
+    return Number(costObj?.total || costObj?.grand_total || costObj?.total_cost || 0) || 0;
+  }
+  function pickCostParts(costObj){
+    const cab = Number(costObj?.cab || costObj?.transport || costObj?.vehicle || 0) || 0;
+    const hotels = Number(costObj?.hotel || costObj?.hotels || costObj?.stay || 0) || 0;
+    const food = Number(costObj?.food || costObj?.meals || 0) || 0;
+    const act = Number(costObj?.activities || costObj?.activity || 0) || 0;
+    return { cab, hotels, food, act };
+  }
+
+  /* ===== TEMPLATE FIELDS ===== */
+  function getTplName(t){
+    return String(t.package_name || t.name || t.title || t.route_name || t.key || "PACKAGE").trim();
+  }
+  function getTplStart(t){
+    return String(t.start_point || t.start || t.start_city || "").trim().toUpperCase();
+  }
+  function getTplDays(t){
+    return Number(t.days || t.duration_days || t.trip_days || t.total_days || 0) || 0;
+  }
+  function getTplDistrict(t){
+    return String(t.district || t.region || t.route_district || "—").trim().toUpperCase();
+  }
+  function getTplCategory(t){
+    return String(t.category || t.package_category || t.type || "").trim().toLowerCase();
+  }
+  function getTplImg(t){
+    return String(t.cover || t.image || t.banner || "").trim();
+  }
+
+  /* ===== ITINERARY EXTRACTOR (handles many shapes) ===== */
+  function extractItinerary(tpl){
+    const out = [];
+
+    const arr =
+      (Array.isArray(tpl.itinerary) && tpl.itinerary) ||
+      (Array.isArray(tpl.days) && tpl.days) ||
+      (Array.isArray(tpl.route) && tpl.route) ||
+      (Array.isArray(tpl.day_wise) && tpl.day_wise) ||
+      null;
+
+    if(arr){
+      arr.forEach((d, idx)=>{
+        const dayNum = Number(d.day || d.day_no || d.dayNumber || (idx+1)) || (idx+1);
+        const title = String(d.title || d.heading || d.summary || d.route || "").trim();
+        const placesArr =
+          (Array.isArray(d.places) && d.places) ||
+          (Array.isArray(d.locations) && d.locations) ||
+          (Array.isArray(d.stops) && d.stops) ||
+          (Array.isArray(d.place_list) && d.place_list) ||
+          [];
+
+        const places = placesArr.map(x=>{
+          const nm = String(x.name || x.title || x.place || x.location || x).trim();
+          const id = String(x.place_id || x.id || x.placeId || "").trim();
+          return { name: nm, id };
+        }).filter(p=>p.name);
+
+        out.push({ day: dayNum, title, places, raw:d });
       });
+      out.sort((a,b)=>a.day-b.day);
+      return out;
     }
-    if(!out.length){
-      const raw = String(tpl.major_place_ids || tpl.place_ids || "").trim();
-      raw.split(",").map(x=>x.trim()).filter(Boolean).forEach(pid=>out.push(pid));
+
+    const obj = tpl.day_wise || tpl.dayWise || tpl.day_plan || null;
+    if(obj && typeof obj === "object"){
+      Object.entries(obj).forEach(([k,v], idx)=>{
+        const dayNum = Number(String(k).replace(/[^\d]/g,"")) || (idx+1);
+        const title = String(k).trim();
+        const places = (Array.isArray(v) ? v : [v]).map(x=>({ name:String(x).trim(), id:"" })).filter(p=>p.name);
+        out.push({ day: dayNum, title, places, raw:v });
+      });
+      out.sort((a,b)=>a.day-b.day);
+      return out;
     }
+
     return out;
   }
 
-  function routeIdsFromTemplateIncludingStart(tpl){
-    const baseStops = stopsFromTemplate(tpl);
-    const startName = String(tpl?.start_point || tpl?.start || "").trim();
-    const startPid = getPlaceIdByNameAny(startName);
-    if(startPid){
-      const filtered = baseStops.filter(x => x !== startPid);
-      return [startPid, ...filtered];
-    }
-    return baseStops;
-  }
-
-  function getEndNameFromRoutePath(tpl){
-    const start = String(tpl.start_point || tpl.start || "").trim().toLowerCase();
-    const rpRaw = String(tpl.route_path || "").trim();
-    if(!rpRaw) return String(tpl.end_point || tpl.end || "").trim() || "UNKNOWN";
-    const tokens = rpRaw.replace(/->/g,"|").replace(/>/g,"|")
-      .split("|").map(x=>String(x||"").trim()).filter(Boolean);
-    if(!tokens.length) return String(tpl.end_point || tpl.end || "").trim() || "UNKNOWN";
-    let end = tokens[tokens.length - 1];
-    if(end && start && end.toLowerCase() === start && tokens.length >= 2) end = tokens[tokens.length - 2];
-    return end || "UNKNOWN";
-  }
-  function endDistrictFromTemplate(tpl){
-    const endName = getEndNameFromRoutePath(tpl);
-    const pid = getPlaceIdByNameAny(endName);
-    if(pid && PLACES[pid]){
-      const d = districtAny(PLACES[pid]);
-      if(d) return d;
-    }
-    const td = String(tpl.district || tpl.end_district || "").trim().toUpperCase();
-    if(td) return td;
-    return normCaps(endName || "UNKNOWN");
-  }
-  function endKeyFromRoutePath(tpl){
-    const endName = getEndNameFromRoutePath(tpl);
-    const pid = getPlaceIdByNameAny(endName);
-    if(pid && PLACES[pid]){
-      const d = districtAny(PLACES[pid]);
-      return d || normCaps(endName);
-    }
-    return normCaps(endName);
-  }
-
-  function matchesStart(tpl, startUpper){
-    return String(tpl.start_point||tpl.start||"").trim().toUpperCase() === startUpper;
-  }
-  function matchesDaysOptional(tpl, daysFilter){
-    if(!daysFilter) return true;
-    return Number(tpl.days||0) === Number(daysFilter);
-  }
-
-  function buildDayWise(tpl){
-    const days = Number(tpl.days || 1);
-    const blocks = [];
-    for(let d=1; d<=Math.min(12, Math.max(1, days)); d++){
-      const k = `day${d}_place_ids`;
-      const raw = String(tpl[k] || "").trim();
-      const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
-      blocks.push({ day:d, ids });
-    }
-    const anyHas = blocks.some(x=>x.ids.length);
-    if(!anyHas){
-      const raw = String(tpl.major_place_ids || tpl.place_ids || "").trim();
-      const ids = raw ? raw.split(",").map(x=>x.trim()).filter(Boolean) : [];
-      return [{ day:1, ids }];
-    }
-    return blocks.filter(x=>x.ids.length);
-  }
-  function makeDayIndexFromTemplate(tpl){
-    const blocks = buildDayWise(tpl);
-    const mp = new Map();
-    blocks.forEach((b)=>{
-      b.ids.forEach((pid, i)=>{
-        mp.set(pid, { day: b.day, order: i+1 });
+  function collectItineraryPlaceIds(itin){
+    const ids = new Set();
+    itin.forEach(d=>{
+      d.places.forEach(p=>{
+        if(p.id) ids.add(p.id);
+        const byName = getPlaceIdByNameAny(p.name);
+        if(byName) ids.add(byName);
       });
     });
-    return mp;
+    return ids;
   }
 
-  function getNearbySuggestions(anchorPid, limit = 6, maxKm = 18){
-    const a = PLACES[anchorPid];
-    if(!a) return [];
-    const distA = districtAny(a);
+  function nearbyPlacesFromItinerary(itin, radiusKm=25, limit=12){
+    const idsInRoute = collectItineraryPlaceIds(itin);
 
-    const lat1 = latAny(a), lng1 = lngAny(a);
-    const hasA = isFinite(lat1) && isFinite(lng1);
+    const anchors = [];
+    idsInRoute.forEach(id=>{
+      const p = PLACES?.[id];
+      if(!p) return;
+      const lat = latAny(p), lng = lngAny(p);
+      if(isFinite(lat) && isFinite(lng)) anchors.push({lat,lng});
+    });
+    if(!anchors.length) return [];
 
     const scored = [];
-    for(const [pid, p] of Object.entries(PLACES)){
-      if(pid === anchorPid) continue;
-      const lat2 = latAny(p), lng2 = lngAny(p);
-      const hasB = isFinite(lat2) && isFinite(lng2);
+    for(const [key, p] of Object.entries(PLACES||{})){
+      if(idsInRoute.has(key)) continue;
+      const lat = latAny(p), lng = lngAny(p);
+      if(!isFinite(lat) || !isFinite(lng)) continue;
 
-      if(hasA && hasB){
-        const km = haversineKm(lat1, lng1, lat2, lng2);
-        if(km > maxKm) continue;
-        const bonus = (distA && districtAny(p) === distA) ? -0.6 : 0;
-        scored.push({ pid, score: km + bonus, km });
-        continue;
+      let best = Infinity;
+      for(const a of anchors){
+        const d = haversineKm(a.lat, a.lng, lat, lng);
+        if(d < best) best = d;
       }
-      if(distA && districtAny(p) === distA){
-        scored.push({ pid, score: 999, km: 999 });
+      if(best <= radiusKm){
+        scored.push({ key, place:p, d: best });
       }
     }
-    scored.sort((x,y)=>x.score - y.score);
-    const out = [];
-    const seen = new Set();
-    for(const s of scored){
-      if(seen.has(s.pid)) continue;
-      seen.add(s.pid);
-      out.push(s.pid);
-      if(out.length >= limit) break;
-    }
-    return out;
+
+    scored.sort((a,b)=>a.d-b.d);
+    return scored.slice(0, limit);
   }
 
-  function getPerPersonPrice(tpl){
-    const tier = String($("visitType")?.value || "budget").toLowerCase();
-    const pid = String(tpl.package_id || tpl.key || "").trim();
-    const node = COSTS?.[pid] || COSTS?.[String(pid).toLowerCase()] || null;
-    const src = node || tpl || {};
-    const b = Number(src.budget_price_per_person ?? src.budget ?? src.budget_pp ?? 0);
-    const p = Number(src.premium_price_per_person ?? src.premium ?? src.premium_pp ?? 0);
-    const l = Number(src.luxury_price_per_person ?? src.luxury ?? src.luxury_pp ?? 0);
-    if(tier === "premium") return isFinite(p) && p>0 ? p : NaN;
-    if(tier === "luxury")  return isFinite(l) && l>0 ? l : NaN;
-    return isFinite(b) && b>0 ? b : NaN;
-  }
-  function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
-  function computeMarkupPct(tpl, pax){
-    const days = Number(tpl?.days || 0) || 0;
-    const local = isLocalComputed(tpl);
-    const lowPax = Number(pax || 0) <= 2;
+  /* ===== District Bar ===== */
+  function buildDistrictBar(list){
+    const bar = $("districtBar");
+    if(!bar) return;
 
-    if(local && days <= 2 && lowPax){
-      let pct = 5 + (days === 2 ? 5 : 2.5);
-      if(Number(pax) === 1) pct += 1.5;
-      return clamp(pct, 5, 10);
-    }
-    if(days >= 6){
-      const pct = 10 + ((clamp(days, 6, 12) - 6) / (12 - 6)) * 5;
-      return clamp(pct, 10, 15);
-    }
-    if(days >= 3){
-      const pct = 8 + ((clamp(days, 3, 5) - 3) / (5 - 3)) * 2;
-      return clamp(pct, 8, 10);
-    }
-    return 6.5;
-  }
-  function applyMarkup(perPersonBase, markupPct){
-    const base = Number(perPersonBase || 0);
-    if(!isFinite(base) || base <= 0) return NaN;
-    const pct = Number(markupPct || 0);
-    return Math.round(base * (1 + pct/100));
-  }
-  function getDiscountPct(tpl){
-    const d = Number(tpl.discount_pct ?? tpl.discount_percent ?? tpl.discount ?? 0);
-    return (isFinite(d) && d>0) ? clamp(d, 0, 80) : 0;
-  }
-  function applyDiscount(amount, discountPct){
-    const a = Number(amount||0);
-    const d = Number(discountPct||0);
-    if(!isFinite(a) || a<=0) return NaN;
-    if(!isFinite(d) || d<=0) return Math.round(a);
-    return Math.round(a * (1 - d/100));
+    const set = new Set();
+    list.forEach(t=>{
+      const d = getTplDistrict(t);
+      if(d && d !== "—") set.add(d);
+    });
+
+    const districts = ["ALL", ...Array.from(set).sort((a,b)=>a.localeCompare(b))];
+    bar.innerHTML = "";
+    districts.forEach(d=>{
+      const el = document.createElement("div");
+      el.className = "distItem" + (d === ACTIVE_DISTRICT ? " active" : "");
+      el.textContent = d;
+      el.onclick = ()=>{
+        ACTIVE_DISTRICT = d;
+        document.querySelectorAll(".distItem").forEach(x=>x.classList.remove("active"));
+        el.classList.add("active");
+        applyFiltersAndRender(true);
+      };
+      bar.appendChild(el);
+    });
   }
 
-  const WHATSAPP_NUMBER = "917018138847";
-  const CALL_NUMBER = "+91 70181 38847";
-  const EMAIL_ID = "info@himachalexplorer.in";
-
-  function buildWhatsAppMessage({tpl, startName, endKey, pax, tier, km, total, perPerson, markupPct, discountPct}){
-    const days = Number(tpl?.days || 0) || 0;
-    const code = String(tpl?.route_id || "—");
-    const route = String(tpl?.route_path || "").trim();
-    const lines = [
-      "Hi Chandan, I want to finalize this package:",
-      "",
-      `Mode: ${TOUR_MODE === "intercity" ? "WITHIN HP" : "OUTSIDE HP"}`,
-      `Start: ${String(startName||"").toUpperCase()}`,
-      `Destination: ${String(endKey||"").toUpperCase()}`,
-      `Days: ${days}`,
-      `Type: ${String(tier||"").toUpperCase()}`,
-      `Pax: ${pax}`,
-      `Route KM (est.): ${isFinite(km)?Number(km).toFixed(1):"—"}`,
-      `Markup: ${isFinite(markupPct)?Number(markupPct).toFixed(1)+"%":"—"}`,
-      `Discount: ${isFinite(discountPct)?Number(discountPct).toFixed(1)+"%":"0%"}`,
-      `Per Person (final): ${isFinite(perPerson)?rupees(perPerson):"—"}`,
-      `Total (final): ${isFinite(total)?rupees(total):"—"}`,
-      `Code: ${code}`,
-      route ? `Route: ${route}` : "",
-      "",
-      "Please confirm final price and availability."
-    ].filter(Boolean);
-    return lines.join("\n");
-  }
-
-  async function drawRoadRouteFromPlaces(placeIds, dayIndex = new Map()){
-    markersLayer.clearLayers();
-    if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
-
-    const pts = [];
-    const validIds = [];
-    for(const pid of placeIds){
-      const p = PLACES[pid] || {};
-      const lat = latAny(p);
-      const lng = lngAny(p);
-      if(isFinite(lat) && isFinite(lng)){
-        pts.push([lng,lat]);
-        validIds.push(pid);
-      }
-    }
-    if(pts.length < 2) return { ok:false, km:0, hrs:0 };
-
-    const maxPts = 25;
-    let used = pts;
-    if(pts.length > maxPts){
-      const step = Math.ceil(pts.length / maxPts);
-      used = pts.filter((_,i)=> i%step===0 || i===pts.length-1);
+  /* ===== Sidebar render (ALL packages go here) ===== */
+  function renderSidebar(list){
+    const wrap = $("otherPkgList");
+    if(!wrap) return;
+    if(!list.length){
+      wrap.innerHTML = `<div class="otherHint">No packages match current filters.</div>`;
+      return;
     }
 
-    try{
-      const url =
-        "https://router.project-osrm.org/route/v1/driving/" +
-        used.map(c=>c.join(",")).join(";") +
-        "?overview=full&geometries=geojson&steps=false";
+    wrap.innerHTML = list.map(t=>{
+      const key = String(t.key || "");
+      const title = escapeHtml(getTplName(t));
+      const days = getTplDays(t);
+      const start = escapeHtml(getTplStart(t));
+      const dist = escapeHtml(getTplDistrict(t));
+      const active = (String(CURRENT_TEMPLATE_KEY) === String(key)) ? "active" : "";
 
-      const res = await fetch(url);
-      const data = await res.json();
-      if(!data.routes?.length) return { ok:false, km:0, hrs:0 };
+      const costObj = getCostObj(t);
+      const baseTotal = getTotalCost(costObj);
+      const discPct = smartDiscountPercent(t, baseTotal);
+      const finalTotal = baseTotal ? Math.round(baseTotal * (1 - discPct/100)) : 0;
 
-      const r = data.routes[0];
-      const latlngs = r.geometry.coordinates.map(c=>[c[1],c[0]]);
-      routeLine = L.polyline(latlngs, { weight: 5, opacity: .95 }).addTo(map);
-      map.fitBounds(routeLine.getBounds(), { padding:[22,22] });
-      invalidateMapSoon();
-
-      const markIds = (showMode==="startend")
-        ? [validIds[0], validIds[validIds.length-1]]
-        : validIds;
-
-      for(const pid of markIds){
-        const p = PLACES[pid] || {};
-        const lat = latAny(p);
-        const lng = lngAny(p);
-        if(!isFinite(lat)||!isFinite(lng)) continue;
-
-        const di = dayIndex.get(pid) || { day: 1, order: 1 };
-        const icon = L.divIcon({
-          className: "",
-          html: dayIconHTML(di.day || 1, di.order || 1),
-          iconSize: [34,34],
-          iconAnchor: [17,17]
-        });
-
-        const m = L.marker([lat,lng], { riseOnHover:true, icon }).addTo(markersLayer);
-
-        const nm = placeNameAny(p, pid);
-        const dist = districtAny(p) || "";
-        const photos = getPlacePhotos(p, pid);
-        const hero = photos[0] || "";
-
-        m.bindPopup(
-          `<div style="font-family:ui-sans-serif,system-ui;letter-spacing:.02em;max-width:280px">
-            ${hero ? `<img src="${escapeHtml(hero)}" onerror="this.remove()"
-              style="width:100%;height:140px;object-fit:cover;border-radius:12px;border:1px solid rgba(10,30,60,.14);margin-bottom:8px" />` : ""}
-            <b style="letter-spacing:.08em;text-transform:uppercase;">${escapeHtml(nm)}</b><br>
-            <span style="opacity:.75">${escapeHtml(dist)}</span><br>
-            <span style="opacity:.65;font-size:12px">${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}</span>
-          </div>`,
-          { maxWidth: 300 }
-        );
-
-        m.on("click", ()=>{
-          const di2 = dayIndex.get(pid) || { day: 1, order: 1 };
-          openPlaceModal({ place:p, dayNum: di2.day || 1, orderNum: di2.order || 1, placeId: pid });
-        });
-      }
-
-      const km = Number(r.distance/1000);
-      const hrs = Number(r.duration/3600);
-      $("kmBadge").textContent = (isFinite(km)?km.toFixed(1):"—") + " KM";
-      return { ok:true, km, hrs };
-    }catch(e){
-      console.error(e);
-      return { ok:false, km:0, hrs:0 };
-    }
-  }
-
-  function renderInlineDetails(detailsEl, tpl, startUpper, endKey, km){
-    const pax = getSelectedPax();
-    const tier = String($("visitType")?.value || "budget").toUpperCase();
-
-    const perPersonBase = getPerPersonPrice(tpl);
-    const markupPct = computeMarkupPct(tpl, pax);
-    const perPersonAfterMarkup = applyMarkup(perPersonBase, markupPct);
-
-    const discountPct = getDiscountPct(tpl);
-    const perPersonFinal = applyDiscount(perPersonAfterMarkup, discountPct);
-    const totalFinal = isFinite(perPersonFinal) ? (perPersonFinal * pax) : NaN;
-
-    const markupAmt = (isFinite(perPersonBase) && isFinite(perPersonAfterMarkup)) ? (perPersonAfterMarkup - perPersonBase) : NaN;
-    const discountAmt = (isFinite(perPersonAfterMarkup) && isFinite(perPersonFinal)) ? (perPersonAfterMarkup - perPersonFinal) : NaN;
-
-    const waBtnId = `wa_inline_${tpl.key}`;
-
-    detailsEl.innerHTML = `
-      <div class="detailsCard">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap">
-          <div style="min-width:220px;flex:1">
-            <h3 class="bigTitle">${escapeHtml(String(startUpper||"START").toUpperCase())} → ${escapeHtml(String(endKey||"").toUpperCase())}</h3>
-            <div class="muted" style="margin-top:6px; text-transform:none; letter-spacing:.02em;">
-              ${escapeHtml(String(tpl.route_path || tpl.route_id || "").trim() || "—")}
-            </div>
+      return `
+        <div class="pkgSide ${active}" data-key="${escapeHtml(key)}">
+          <div class="pkgSideTop">
+            <div class="t1">${title}</div>
+            <div class="badge blue">${days || "—"}D</div>
           </div>
+          <div class="pkgSideRow">
+            <span>${start || "—"}</span>
+            <span>${dist || "—"}</span>
+          </div>
+          <div class="pkgSidePrice">
+            ${baseTotal ? `Now ${rupees(finalTotal)} <span style="opacity:.65;font-weight:900;">(${discPct}% off)</span>` : `Open to view`}
+          </div>
+        </div>
+      `;
+    }).join("");
 
-          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
-            <div class="mini" style="min-width:170px">
-              <div class="k">Total (final)</div>
-              <div class="v">${isFinite(totalFinal)?rupees(totalFinal):"—"} <small>(${escapeHtml(tier)})</small></div>
+    // click wiring
+    wrap.querySelectorAll(".pkgSide").forEach(card=>{
+      card.onclick = ()=>{
+        const key = card.getAttribute("data-key") || "";
+        openPackage(key);
+      };
+    });
+  }
+
+  function setPkgCountText(){
+    $("pkgCount").textContent = `${FILTERED.length || 0} packages`;
+  }
+
+  /* ===== Center render (only selected package) ===== */
+  function renderCenterSelected(){
+    const wrap = $("pkgList");
+    if(!wrap) return;
+
+    if(!CURRENT_TEMPLATE_KEY){
+      wrap.innerHTML = `
+        <div class="centerFocus">
+          <div class="pill"><b>Select a package</b></div>
+          <div class="muted" style="margin-top:10px;text-transform:none;letter-spacing:.02em;">
+            Packages are in left sidebar. Tap any card to open full details here.
+          </div>
+        </div>
+      `;
+      clearMap();
+      return;
+    }
+
+    const sourceList = FILTERED.length ? FILTERED : ACTIVE_TEMPLATES;
+    const t = sourceList.find(x=>String(x.key)===String(CURRENT_TEMPLATE_KEY)) || ACTIVE_TEMPLATES.find(x=>String(x.key)===String(CURRENT_TEMPLATE_KEY));
+    if(!t){
+      CURRENT_TEMPLATE_KEY = "";
+      renderCenterSelected();
+      return;
+    }
+
+    const name = getTplName(t);
+    const start = getTplStart(t);
+    const days = getTplDays(t);
+    const dist = getTplDistrict(t);
+    const img = getTplImg(t) || "./style/n1.jpg";
+    const modeBadge = (TOUR_MODE === "outside") ? "INTERCITY" : "LOCAL";
+
+    const costObj = getCostObj(t);
+    const baseTotal = getTotalCost(costObj);
+    const discPct = smartDiscountPercent(t, baseTotal);
+    const finalTotal = baseTotal ? Math.round(baseTotal * (1 - discPct/100)) : 0;
+    const parts = pickCostParts(costObj || {});
+
+    const itin = extractItinerary(t);
+    const nearby = itin.length ? nearbyPlacesFromItinerary(itin, 25, 12) : [];
+
+    // Build itinerary HTML + clickable buttons -> place modal + map focus
+    const itinHtml = itin.length ? itin.map(d=>{
+      const placesHtml = (d.places && d.places.length) ? d.places.map((p, i)=>{
+        const pid = p.id || getPlaceIdByNameAny(p.name) || "";
+        const label = escapeHtml(p.name);
+        return `<button class="placeMini" type="button" data-pid="${escapeHtml(pid)}" data-d="${d.day}" data-o="${i+1}">${label}</button>`;
+      }).join("") : `<div class="muted" style="text-transform:none;letter-spacing:.02em;">No places listed for this day.</div>`;
+
+      return `
+        <div class="dayBlock">
+          <div class="dayHdr">
+            <div class="d">Day ${d.day}</div>
+            <div class="r">${escapeHtml(d.title || (start ? (start + " route") : "Route"))}</div>
+          </div>
+          <div class="dayBody">
+            <div class="placeRow">${placesHtml}</div>
+          </div>
+        </div>
+      `;
+    }).join("") : `
+      <div class="dayBlock">
+        <div class="dayHdr">
+          <div class="d">Itinerary</div>
+          <div class="r">Not found in template</div>
+        </div>
+        <div class="dayBody">
+          <div class="muted" style="text-transform:none;letter-spacing:.02em;">
+            Add itinerary in template under <b>itinerary / days / route / day_wise</b>.
+          </div>
+        </div>
+      </div>
+    `;
+
+    const nearHtml = nearby.length ? nearby.map(x=>{
+      const p = x.place;
+      const pid = placeIdAny(p, x.key);
+      const nm = escapeHtml(placeNameAny(p, pid));
+      const photos = getPlacePhotos(p, pid);
+      const src = photos[0] || "./style/n1.jpg";
+      return `
+        <div class="nearCircle" data-pid="${escapeHtml(pid)}" title="${nm}">
+          <div class="img">
+            <img src="${escapeHtml(src)}" alt="${nm}" onerror="this.src='./style/n1.jpg'">
+          </div>
+          <div class="nm">${nm}</div>
+        </div>
+      `;
+    }).join("") : `<div class="muted" style="text-transform:none;letter-spacing:.02em;">Nearby suggestions need itinerary places with coordinates in PLACES.</div>`;
+
+    wrap.innerHTML = `
+      <div class="centerFocus">
+        <div class="focusHero">
+          <img class="focusHeroImg" src="${escapeHtml(img)}" alt="${escapeHtml(name)}" onerror="this.src='./style/n1.jpg'">
+          <div class="focusHeroBar">
+            <div style="min-width:260px;">
+              <h2 class="focusTitle">${escapeHtml(name)}</h2>
+              <p class="focusSub">${escapeHtml(modeBadge)} • ${days||"—"} Days • ${escapeHtml(start||"—")} • ${escapeHtml(dist||"—")}</p>
+              <div class="focusBadges">
+                <span class="pkgBadge purple">${escapeHtml(modeBadge)}</span>
+                <span class="pkgBadge">${escapeHtml(dist||"—")}</span>
+                <span class="pkgBadge green">${days||"—"} Days</span>
+              </div>
             </div>
-            <div class="mini" style="min-width:170px">
-              <div class="k">Per Person (final)</div>
-              <div class="v">${isFinite(perPersonFinal)?rupees(perPersonFinal):"—"} <small>after discount</small></div>
+
+            <div class="priceBox">
+              <div class="muted" style="margin-bottom:6px;">Smart Discount Offer</div>
+              ${baseTotal ? `
+                <div class="priceRow">
+                  <div class="priceOld">${rupees(baseTotal)}</div>
+                  <div class="discPill">${discPct}% OFF</div>
+                </div>
+                <div class="priceNew">${rupees(finalTotal)}</div>
+                <div class="muted" style="margin-top:6px;">Final price (from Firebase costing node)</div>
+              ` : `
+                <div class="muted" style="text-transform:none;letter-spacing:.02em;">
+                  Costing not found in <b>package_cost_breakdown</b> for this package.
+                </div>
+              `}
             </div>
           </div>
         </div>
 
-        <div class="detailsGrid" style="margin-top:10px;">
-          <div class="mini"><div class="k">Base / Person</div><div class="v">${isFinite(perPersonBase)?rupees(perPersonBase):"—"} <small>Firebase</small></div></div>
-          <div class="mini"><div class="k">Markup</div><div class="v">${isFinite(markupPct)?Number(markupPct).toFixed(1)+"%":"—"} <small>${isFinite(markupAmt)?("+"+rupees(markupAmt)):""}</small></div></div>
-          <div class="mini"><div class="k">Discount</div><div class="v">${discountPct ? (Number(discountPct).toFixed(1)+"%") : "0%"} <small>${isFinite(discountAmt)?("-"+rupees(discountAmt)):""}</small></div></div>
-          <div class="mini"><div class="k">Travellers</div><div class="v">${escapeHtml(String(pax))} <small>selected</small></div></div>
-          <div class="mini"><div class="k">Route</div><div class="v">${(isFinite(km)&&km>0)?Number(km).toFixed(1):"—"} <small>KM</small></div></div>
-          <div class="mini"><div class="k">Time</div><div class="v">${(isFinite(CURRENT_ROUTE_HRS)&&CURRENT_ROUTE_HRS>0)?(Number(CURRENT_ROUTE_HRS).toFixed(1)):"—"} <small>hrs est.</small></div></div>
+        <div class="costGrid">
+          <div class="costCard"><div class="k">Cab</div><div class="v">${rupees(parts.cab)}</div></div>
+          <div class="costCard"><div class="k">Hotels</div><div class="v">${rupees(parts.hotels)}</div></div>
+          <div class="costCard"><div class="k">Food</div><div class="v">${rupees(parts.food)}</div></div>
+          <div class="costCard"><div class="k">Activities</div><div class="v">${rupees(parts.act)}</div></div>
+        </div>
+
+        ${itinHtml}
+
+        <div class="nearSection">
+          <div class="nearTop">
+            <div class="k">Nearby Places</div>
+            <div class="muted">Auto radius suggestions</div>
+          </div>
+          <div class="nearGrid">${nearHtml}</div>
         </div>
 
         <div class="enqRow">
-          <a id="${waBtnId}" class="enqBtn disabled" href="#" target="_blank" rel="noopener">Send Query on WhatsApp</a>
-          <a class="enqBtn" href="tel:${CALL_NUMBER.replace(/\s/g, '')}" style="border-color: rgba(37,99,235,.30);background: rgba(37,99,235,.14);box-shadow: 0 12px 28px rgba(37,99,235,.12);">Call Now</a>
-          <a class="enqBtn" href="mailto:${EMAIL_ID}?subject=${encodeURIComponent('Himachal Tour Package Enquiry')}" style="border-color: rgba(10,30,60,.16);background: rgba(255,255,255,.66);">Email</a>
-        </div>
-
-        <div class="muted" style="margin-top:10px;text-transform:none;letter-spacing:.02em;">
-          Road route controls:
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-          <div class="toolBtn" data-act="stops">Show Stops</div>
-          <div class="toolBtn" data-act="startend">Start/End Only</div>
-          <div class="toolBtn" data-act="fit">Fit Route</div>
-          <div class="toolBtn" data-act="tiles">Toggle Tiles</div>
+          <a class="enqBtn" target="_blank" rel="noopener"
+             href="https://wa.me/917018138847?text=${encodeURIComponent('Hi Chandan, I want to book: ' + name)}">
+            WhatsApp to Book
+          </a>
         </div>
       </div>
-
-      <div class="daysList" id="days_${tpl.key}" style="margin-top:10px;"></div>
     `;
 
-    detailsEl.querySelectorAll(".toolBtn[data-act]").forEach(btn=>{
-      btn.onclick = (e)=>{
-        e.preventDefault(); e.stopPropagation();
-        const act = btn.getAttribute("data-act");
-        if(act === "stops"){ $("showAllStopsBtn").click(); }
-        else if(act === "startend"){ $("showStartEndBtn").click(); }
-        else if(act === "fit"){ $("fitMapBtn").click(); }
-        else if(act === "tiles"){ $("toggleTilesBtn").click(); }
+    // click wiring for itinerary buttons -> modal
+    wrap.querySelectorAll(".placeMini").forEach(btn=>{
+      btn.onclick = ()=>{
+        const pid = btn.getAttribute("data-pid") || "";
+        const d = Number(btn.getAttribute("data-d") || 1);
+        const o = Number(btn.getAttribute("data-o") || 1);
+        if(pid && PLACES[pid]){
+          openPlaceModal({ place: PLACES[pid], dayNum:d, orderNum:o, placeId: pid });
+          drawRouteForCurrentTemplate(true); // keep route visible
+        }else{
+          showBot("⚠️ Place not found in PLACES node");
+        }
       };
     });
 
-    const startName = normalizeStartInput() || (tpl.start_point || tpl.start || startUpper || "");
-    const msg = buildWhatsAppMessage({
-      tpl, startName, endKey, pax, tier, km,
-      total: totalFinal, perPerson: perPersonFinal,
-      markupPct, discountPct
-    });
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-    const waEl = document.getElementById(waBtnId);
-    if(isFinite(perPersonFinal)){
-      waEl.classList.remove("disabled");
-      waEl.href = url;
-    }
-
-    const daysWrap = document.getElementById(`days_${tpl.key}`);
-    const blocks = buildDayWise(tpl);
-
-    blocks.forEach(block=>{
-      const dayCard = document.createElement("div");
-      dayCard.className = "dayCard";
-      dayCard.innerHTML = `
-        <div class="dayTop">
-          <div class="d">Day ${block.day}</div>
-          <div class="muted" style="text-transform:none;letter-spacing:.02em;">${block.ids.length} places</div>
-        </div>
-        <div class="muted" style="text-transform:none;letter-spacing:.02em;">Places</div>
-        <div class="dayPlaces"></div>
-      `;
-      const cont = dayCard.querySelector(".dayPlaces");
-
-      block.ids.forEach((pid, idx)=>{
-        const p = PLACES[pid] || {};
-        const name = placeNameAny(p, pid);
-        const dist = districtAny(p) || "—";
-
-        const line = document.createElement("div");
-        line.className = "placeBtn";
-        line.innerHTML = `
-          <div class="left">
-            <div class="nm">${escapeHtml(name)}</div>
-            <div class="sm">${escapeHtml(dist)}</div>
-          </div>
-          <div class="tag">Day ${block.day}</div>
-        `;
-        line.onclick = (e)=>{
-          e.stopPropagation();
-          const lat = latAny(p), lng = lngAny(p);
-          if(isFinite(lat) && isFinite(lng)){
-            map.setView([lat,lng], Math.max(map.getZoom(), 12), { animate:true });
-            invalidateMapSoon();
-          }
-          openPlaceModal({ place: p, dayNum: block.day, orderNum: (idx+1), placeId: pid });
-        };
-        cont.appendChild(line);
-      });
-
-      const anchorPid = block.ids[0];
-      const near = getNearbySuggestions(anchorPid, 6, 18);
-      const nearWrap = document.createElement("div");
-      nearWrap.className = "nearWrap";
-
-      if(near.length){
-        nearWrap.innerHTML = `
-          <div class="nearTop">
-            <div class="k">Nearby Suggestions</div>
-            <div class="muted" style="text-transform:none;letter-spacing:.02em;">tap to open</div>
-          </div>
-          <div class="nearCards"></div>
-        `;
-        const cards = nearWrap.querySelector(".nearCards");
-
-        near.forEach(npid=>{
-          const p = PLACES[npid] || {};
-          const name = placeNameAny(p, npid);
-          const photos = getPlacePhotos(p, npid);
-          const imgUrl = photos[0] || "./style/n1.jpg";
-
-          const c = document.createElement("div");
-          c.className = "nearCard";
-          c.innerHTML = `
-            <div class="nearImg"><img src="${escapeHtml(imgUrl)}" alt="" onerror="this.src='./style/n1.jpg'"></div>
-            <div class="nearNm">${escapeHtml(name)}</div>
-          `;
-          c.onclick = (e)=>{
-            e.stopPropagation();
-            const lat = latAny(p), lng = lngAny(p);
-            if(isFinite(lat) && isFinite(lng)){
-              map.setView([lat,lng], Math.max(map.getZoom(), 12), { animate:true });
-              invalidateMapSoon();
-            }
-            openPlaceModal({ place: p, dayNum: block.day, orderNum: 0, placeId: npid });
-          };
-          cards.appendChild(c);
-        });
-      }else{
-        nearWrap.innerHTML = `
-          <div class="nearTop"><div class="k">Nearby Suggestions</div></div>
-          <div class="muted" style="text-transform:none;letter-spacing:.02em;">No nearby suggestions available.</div>
-        `;
-      }
-
-      dayCard.appendChild(nearWrap);
-      daysWrap.appendChild(dayCard);
-    });
-  }
-
-  function renderDistrictChips(){
-    const bar = $("districtBar");
-    if(!bar) return;
-    const chips = ["ALL", ...DISTRICT_KEYS];
-    if(!ACTIVE_DISTRICT || !chips.includes(ACTIVE_DISTRICT)) ACTIVE_DISTRICT = "ALL";
-    bar.innerHTML = chips.map(d=>{
-      const active = (d===ACTIVE_DISTRICT) ? "active" : "";
-      const label = (d==="ALL") ? "ALL DESTINATIONS" : d;
-      const count = (d==="ALL") ? INTER_ALL.length : INTER_ALL.filter(t=>endDistrictFromTemplate(t)===d).length;
-      return `<div class="distItem ${active}" data-d="${escapeHtml(d)}">${escapeHtml(label)} (${count})</div>`;
-    }).join("");
-    bar.querySelectorAll(".distItem").forEach(el=>{
-      el.onclick = ()=>{ ACTIVE_DISTRICT = el.dataset.d || "ALL"; renderPanels(); };
-    });
-  }
-
-  function renderPackageCard(tpl, startUpper){
-    const endKey = endKeyFromRoutePath(tpl);
-    const local = isLocalComputed(tpl);
-
-    const pax = getSelectedPax();
-    const base = getPerPersonPrice(tpl);
-    const mp = computeMarkupPct(tpl, pax);
-    const afterMarkup = applyMarkup(base, mp);
-    const disc = getDiscountPct(tpl);
-    const perPerson = applyDiscount(afterMarkup, disc);
-
-    const firstStop = (stopsFromTemplate(tpl)[0] || "");
-    const p = PLACES[firstStop] || {};
-    const photos = getPlacePhotos(p, firstStop);
-    const thumb = photos[0] || "./style/n1.jpg";
-
-    const badgeClass = local ? "green" : "purple";
-    const badgeText = local ? "LOCAL" : "INTER";
-
-    const el = document.createElement("div");
-    el.className = "pkgW";
-    el.dataset.key = tpl.key;
-
-    el.innerHTML = `
-      <div class="pkgCard">
-        <div class="pkgMedia">
-          <img src="${escapeHtml(thumb)}" alt="${escapeHtml(endKey)}" onerror="this.src='./style/n1.jpg'">
-          <div class="pkgTagRow">
-            <div class="pkgRouteId">${escapeHtml(String(tpl.route_id || tpl.package_id || "PACKAGE").toUpperCase())}</div>
-            <div class="pkgBadge ${badgeClass}">${badgeText}</div>
-          </div>
-        </div>
-
-        <div class="pkgInfo">
-          <div class="pkgTitleRow">
-            <h4 class="pkgTitle">${escapeHtml(String(endKey).toUpperCase())}</h4>
-            <div class="pkgOpen">${CURRENT_TEMPLATE_KEY===tpl.key ? "Close" : "Open"}</div>
-          </div>
-
-          <div class="pkgMeta">
-            <div class="pkgChip">Days <b>${escapeHtml(String(tpl.days||"—"))}</b></div>
-            <div class="pkgChip">Start <b>${escapeHtml(startUpper)}</b></div>
-            <div class="pkgChip">PP <b>${isFinite(perPerson)?rupees(perPerson):"—"}</b></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="pkgDetails"></div>
-    `;
-
-    el.onclick = (e)=>{ e.stopPropagation(); toggleOpenTemplate(tpl.key); };
-    return el;
-  }
-
-  function renderAllPackagesSidebar(list, startUpper){
-    const box = $("otherPkgList");
-    if(!box) return;
-
-    box.innerHTML = "";
-
-    if(!list.length){
-      box.innerHTML = `<div class="otherHint">No packages for this filter.</div>`;
-      return;
-    }
-
-    list.forEach(tpl=>{
-      const endKey = endKeyFromRoutePath(tpl);
-      const local = isLocalComputed(tpl);
-
-      const pax = getSelectedPax();
-      const base = getPerPersonPrice(tpl);
-      const mp = computeMarkupPct(tpl, pax);
-      const afterMarkup = applyMarkup(base, mp);
-      const disc = getDiscountPct(tpl);
-      const perPerson = applyDiscount(afterMarkup, disc);
-
-      const isActive = (tpl.key === CURRENT_TEMPLATE_KEY);
-
-      const card = document.createElement("div");
-      card.className = "pkgSide" + (isActive ? " active" : "");
-      card.innerHTML = `
-        <div class="pkgSideTop">
-          <div class="t1">${escapeHtml(String(endKey).toUpperCase())}</div>
-          <div class="badge ${local ? "" : "blue"}">${local ? "LOCAL" : "INTER"}</div>
-        </div>
-        <div class="pkgSideRow">
-          <span>Start: <b>${escapeHtml(startUpper)}</b></span>
-          <span>End: <b>${escapeHtml(String(endKey).toUpperCase())}</b></span>
-          <span>Days: <b>${escapeHtml(String(tpl.days||"—"))}</b></span>
-        </div>
-        <div class="pkgSidePrice">Per Person: <b>${isFinite(perPerson)?rupees(perPerson):"—"}</b></div>
-      `;
-      card.onclick = (e)=>{ e.stopPropagation(); toggleOpenTemplate(tpl.key); };
-      box.appendChild(card);
-    });
-  }
-
-  function highlightActiveCard(){
-    document.querySelectorAll(".pkgW").forEach(x=>x.classList.toggle("active", x.dataset.key === CURRENT_TEMPLATE_KEY));
-  }
-
-  function renderPills(startUpper){
-    const pills = $("pills");
-    const days = $("daysSel").value || "ANY";
-    const tier = String($("visitType").value || "budget").toUpperCase();
-    const pax = getSelectedPax();
-    pills.innerHTML = `
-      <div class="pill">Mode <b>${escapeHtml(TOUR_MODE === "outside" ? "OUTSIDE HP" : "WITHIN HP")}</b></div>
-      <div class="pill">Start <b>${escapeHtml(startUpper || "—")}</b></div>
-      <div class="pill">Days <b>${escapeHtml(String(days))}</b></div>
-      <div class="pill">Type <b>${escapeHtml(tier)}</b></div>
-      <div class="pill">Pax <b>${escapeHtml(String(pax))}</b></div>
-    `;
-  }
-
-  function renderPanels(){
-    const startUpper = normalizeStartInput();
-    const listEl = $("pkgList");
-
-    if(!startUpper){
-      $("pkgCount").textContent = "—";
-      $("districtBar").innerHTML = "";
-      listEl.innerHTML = `<div class="pill"><b>Select Start</b> (choose here or pass from index).</div>`;
-      renderAllPackagesSidebar([], "");
-      return;
-    }
-
-    const daysFilter = $("daysSel").value || "";
-    let list = ACTIVE_TEMPLATES.filter(t=>matchesStart(t, startUpper) && matchesDaysOptional(t, daysFilter));
-
-    list.sort((a,b)=>{
-      const aLocal = isLocalComputed(a) ? 1 : 0;
-      const bLocal = isLocalComputed(b) ? 1 : 0;
-      if(TOUR_MODE === "outside"){
-        if(aLocal !== bLocal) return aLocal - bLocal;
-      }else{
-        if(aLocal !== bLocal) return bLocal - aLocal;
-      }
-      return String(a.route_id||"").localeCompare(String(b.route_id||""));
+    // click wiring for nearby circles -> modal
+    wrap.querySelectorAll(".nearCircle").forEach(card=>{
+      card.onclick = ()=>{
+        const pid = card.getAttribute("data-pid") || "";
+        if(pid && PLACES[pid]){
+          openPlaceModal({ place: PLACES[pid], dayNum: 0, orderNum: 0, placeId: pid });
+        }
+      };
     });
 
-    INTER_ALL = list.slice();
-    DISTRICT_KEYS = Array.from(new Set(list.map(endDistrictFromTemplate))).filter(Boolean).sort();
-    renderDistrictChips();
-
-    const filtered = (ACTIVE_DISTRICT === "ALL")
-      ? list
-      : list.filter(t=>endDistrictFromTemplate(t) === ACTIVE_DISTRICT);
-
-    $("pkgCount").textContent = `${filtered.length}`;
-
-    listEl.innerHTML = "";
-    const grid = document.createElement("div");
-    grid.className = "pkgGrid";
-    filtered.forEach(tpl=>{
-      grid.appendChild(renderPackageCard(tpl, startUpper));
-    });
-    listEl.appendChild(grid);
-
-    highlightActiveCard();
-    renderAllPackagesSidebar(filtered, startUpper);
+    // draw route + markers
+    drawRouteForCurrentTemplate(true);
   }
 
-  async function toggleOpenTemplate(key, pushHistory = true){
-    const startUpper = normalizeStartInput();
-    if(!startUpper) return;
-
-    if(CURRENT_TEMPLATE_KEY === key){
-      CURRENT_TEMPLATE_KEY = "";
-      clearMap();
-      renderPanels();
-      if(pushHistory) historyPush("close");
-      return;
-    }
-
-    CURRENT_TEMPLATE_KEY = key;
-
-    const tpl = ACTIVE_TEMPLATES.find(t=>t.key===key);
-    if(!tpl) return;
-
-    renderPanels();
-    highlightActiveCard();
-
-    const card = document.querySelector(`.pkgW[data-key="${CSS.escape(key)}"]`);
-    const detailsEl = card ? card.querySelector(".pkgDetails") : null;
-
-    const endKey = endKeyFromRoutePath(tpl);
-
-    CURRENT_DAY_INDEX = makeDayIndexFromTemplate(tpl);
-    const placeIds = routeIdsFromTemplateIncludingStart(tpl);
-
-    const rr = await drawRoadRouteFromPlaces(placeIds, CURRENT_DAY_INDEX);
-    CURRENT_ROUTE_KM = rr?.km || 0;
-    CURRENT_ROUTE_HRS = rr?.hrs || 0;
-
-    if(detailsEl){
-      renderInlineDetails(detailsEl, tpl, startUpper, endKey, CURRENT_ROUTE_KM);
-    }
-
-    if(pushHistory) historyPush("open");
-  }
-
-  /* ===== History ===== */
-  let HISTORY_BOOTED = false;
-  let IGNORE_POP = false;
-
-  function snapshotState(){
+  /* ===== OSRM route line ===== */
+  async function fetchOsrmRoute(coords){
+    // coords = [{lat,lng}, ...]
+    if(coords.length < 2) return null;
+    const pts = coords.map(c=>`${c.lng},${c.lat}`).join(";");
+    const url = `https://router.project-osrm.org/route/v1/driving/${pts}?overview=full&geometries=geojson`;
+    const res = await fetch(url);
+    if(!res.ok) return null;
+    const js = await res.json();
+    const r = js?.routes?.[0];
+    if(!r) return null;
     return {
-      start: String($("startInp")?.value || ""),
-      visitType: String($("visitType")?.value || "budget"),
-      days: String($("daysSel")?.value || ""),
-      pax: String($("paxSel")?.value || "2"),
-      activeDistrict: String(ACTIVE_DISTRICT || "ALL"),
-      selectedKey: String(CURRENT_TEMPLATE_KEY || ""),
-      tourMode: TOUR_MODE
+      km: (r.distance||0)/1000,
+      hrs: (r.duration||0)/3600,
+      geo: r.geometry
     };
   }
-  function applySnapshot(s){
-    if(!s) return;
-    $("startInp").value = s.start ?? "";
-    $("visitType").value = s.visitType ?? "budget";
-    $("daysSel").value = s.days ?? "";
-    $("paxSel").value = s.pax ?? "2";
-    ACTIVE_DISTRICT = s.activeDistrict ?? "ALL";
-    TOUR_MODE = s.tourMode ?? TOUR_MODE;
+
+  function addMarker(lat, lng, label, sub){
+    const m = L.marker([lat,lng]);
+    const html = `<b>${escapeHtml(label||"Stop")}</b><br><span style="opacity:.7">${escapeHtml(sub||"")}</span>`;
+    m.bindPopup(html);
+    markersLayer.addLayer(m);
+    return m;
   }
-  function historyReplace(tag){ history.replaceState({ tag, ...snapshotState() }, "", location.href); }
-  function historyPush(tag){ history.pushState({ tag, ...snapshotState() }, "", location.href); }
 
-  function bootHistory(){
-    if(HISTORY_BOOTED) return;
-    HISTORY_BOOTED = true;
+  async function drawRouteForCurrentTemplate(fit=true){
+    clearMap();
+    const t = (FILTERED.length ? FILTERED : ACTIVE_TEMPLATES).find(x=>String(x.key)===String(CURRENT_TEMPLATE_KEY));
+    if(!t) return;
 
-    historyReplace("boot");
+    const itin = extractItinerary(t);
+    const ids = collectItineraryPlaceIds(itin);
 
-    window.addEventListener("popstate", async (ev)=>{
-      if(IGNORE_POP) return;
-      const st = ev.state;
-
-      if(!st){
-        if(CURRENT_TEMPLATE_KEY){
-          IGNORE_POP = true;
-          try{ await toggleOpenTemplate(CURRENT_TEMPLATE_KEY, false); } finally{ IGNORE_POP = false; }
-        }
-        return;
-      }
-
-      applySnapshot(st);
-      clearMap();
-      CURRENT_ROUTE_KM = 0;
-      CURRENT_ROUTE_HRS = 0;
-
-      const startNorm = normalizeStartInput() || "";
-      if(!startNorm){
-        CURRENT_TEMPLATE_KEY = "";
-        $("districtBar").innerHTML = "";
-        $("pkgCount").textContent = "—";
-        renderPanels();
-        return;
-      }
-
-      applyFilters(false);
-
-      if(st.selectedKey){
-        IGNORE_POP = true;
-        try{ await toggleOpenTemplate(st.selectedKey, false); } finally{ IGNORE_POP = false; }
-      }else{
-        CURRENT_TEMPLATE_KEY = "";
-        renderPanels();
-      }
+    // Build ordered points (by day + order)
+    const points = [];
+    itin.forEach(d=>{
+      d.places.forEach(p=>{
+        const id = p.id || getPlaceIdByNameAny(p.name) || "";
+        const pl = id ? PLACES[id] : null;
+        if(!pl) return;
+        const lat = latAny(pl), lng = lngAny(pl);
+        if(!isFinite(lat) || !isFinite(lng)) return;
+        points.push({ lat, lng, name: placeNameAny(pl, id), id, day: d.day });
+      });
     });
+
+    // Fallback: if itinerary empty, try start_point place from PLACES
+    if(points.length < 2){
+      const startName = getTplStart(t);
+      const startId = getPlaceIdByNameAny(startName);
+      if(startId && PLACES[startId]){
+        const pl = PLACES[startId];
+        const lat = latAny(pl), lng = lngAny(pl);
+        if(isFinite(lat) && isFinite(lng)){
+          addMarker(lat,lng, startName, "Start");
+          map.setView([lat,lng], 9);
+          $("kmBadge").textContent = "—";
+        }
+      }
+      showBot("⚠️ Route needs itinerary places with coordinates");
+      return;
+    }
+
+    // Markers
+    const showAll = (showMode === "all");
+    if(showAll){
+      points.forEach((p, i)=>{
+        addMarker(p.lat, p.lng, p.name, `Day ${p.day} • Stop ${i+1}`);
+      });
+    }else{
+      addMarker(points[0].lat, points[0].lng, points[0].name, "Start");
+      addMarker(points[points.length-1].lat, points[points.length-1].lng, points[points.length-1].name, "End");
+    }
+
+    // OSRM route line
+    try{
+      setStatus("Drawing route…");
+      const osrm = await fetchOsrmRoute(points);
+      if(osrm && osrm.geo){
+        routeLine = L.geoJSON(osrm.geo, { weight: 5, opacity: 0.85 });
+        routeLine.addTo(map);
+        $("kmBadge").textContent = `${osrm.km.toFixed(0)} km • ${osrm.hrs.toFixed(1)} hrs`;
+        if(fit) fitMapToRoute();
+        setStatus("Ready");
+      }else{
+        // If OSRM fails, fallback to straight polyline
+        const ll = points.map(p=>[p.lat,p.lng]);
+        routeLine = L.polyline(ll, { weight: 4, opacity: 0.75 });
+        routeLine.addTo(map);
+        if(fit) fitMapToRoute();
+        $("kmBadge").textContent = "Route line (fallback)";
+        setStatus("Ready");
+      }
+    }catch(e){
+      console.warn(e);
+      const ll = points.map(p=>[p.lat,p.lng]);
+      routeLine = L.polyline(ll, { weight: 4, opacity: 0.75 });
+      routeLine.addTo(map);
+      if(fit) fitMapToRoute();
+      $("kmBadge").textContent = "Route line (fallback)";
+      setStatus("Ready");
+    }
   }
 
-  function applyFilters(push = true){
-    const startUpper = normalizeStartInput();
-    renderPills(startUpper);
-    renderPanels();
-    if(push) historyPush("filters");
+  /* ===== Open package ===== */
+  function openPackage(key){
+    CURRENT_TEMPLATE_KEY = String(key || "");
+    document.querySelectorAll(".pkgSide").forEach(el=>el.classList.remove("active"));
+    const hit = document.querySelector(`.pkgSide[data-key="${CSS.escape(CURRENT_TEMPLATE_KEY)}"]`);
+    if(hit) hit.classList.add("active");
+    renderCenterSelected();
   }
 
+  /* ===== Filters ===== */
+  function applyFiltersAndRender(keepSelection){
+    const start = normalizeStartInput();
+    const daysNeed = String($("daysSel").value || "").trim();
+    const catNeed = String($("visitType").value || "").trim().toLowerCase();
+    const pax = getSelectedPax();
+
+    const base = ACTIVE_TEMPLATES.slice();
+
+    FILTERED = base.filter(t=>{
+      // mode filter (outside vs local) if you want strict:
+      const isLocal = isLocalComputed(t);
+      if(TOUR_MODE === "outside" && isLocal) return false;
+      if(TOUR_MODE !== "outside" && !isLocal) return false;
+
+      // start
+      if(start){
+        const s = getTplStart(t);
+        if(s && s !== start) return false;
+      }
+
+      // days
+      if(daysNeed){
+        const d = getTplDays(t);
+        if(String(d) !== String(daysNeed)) return false;
+      }
+
+      // category
+      if(catNeed){
+        const cat = getTplCategory(t);
+        if(!cat.includes(catNeed)) return false;
+      }
+
+      // district bar
+      if(ACTIVE_DISTRICT && ACTIVE_DISTRICT !== "ALL"){
+        const d = getTplDistrict(t);
+        if(d !== ACTIVE_DISTRICT) return false;
+      }
+
+      // pax currently not used in filtering (pricing is from your cost node anyway)
+      return true;
+    });
+
+    renderSidebar(FILTERED);
+    setPkgCountText();
+    buildDistrictBar(FILTERED.length ? FILTERED : ACTIVE_TEMPLATES);
+
+    // keep selected if exists in filtered; else auto-select first
+    if(keepSelection && CURRENT_TEMPLATE_KEY){
+      const ok = FILTERED.find(x=>String(x.key)===String(CURRENT_TEMPLATE_KEY));
+      if(!ok) CURRENT_TEMPLATE_KEY = "";
+    }
+    if(!CURRENT_TEMPLATE_KEY && FILTERED.length){
+      CURRENT_TEMPLATE_KEY = String(FILTERED[0].key || "");
+    }
+    renderCenterSelected();
+
+    // pills
+    const pills = $("pills");
+    const pillParts = [];
+    if(start) pillParts.push(`<span class="pill"><b>Start</b> ${escapeHtml(start)}</span>`);
+    if(daysNeed) pillParts.push(`<span class="pill"><b>Days</b> ${escapeHtml(daysNeed)}</span>`);
+    if(catNeed) pillParts.push(`<span class="pill"><b>Type</b> ${escapeHtml(catNeed.toUpperCase())}</span>`);
+    pillParts.push(`<span class="pill"><b>Pax</b> ${escapeHtml(String(pax))}</span>`);
+    if(ACTIVE_DISTRICT && ACTIVE_DISTRICT !== "ALL") pillParts.push(`<span class="pill"><b>District</b> ${escapeHtml(ACTIVE_DISTRICT)}</span>`);
+    pills.innerHTML = pillParts.join("") || "";
+  }
+
+  /* ===== Load from storage/Firebase ===== */
   function loadFromIndexStorage(){
     try{
       const t = sessionStorage.getItem("HX_TEMPLATES");
@@ -2396,7 +2121,6 @@ footer{
 
   async function loadAll(){
     setStatus("Loading data…");
-
     let ok = loadFromIndexStorage();
 
     if(!ok){
@@ -2417,11 +2141,10 @@ footer{
       $("pkgList").innerHTML = `
         <div class="pill">
           <b>Data not found.</b><br>
-          1) Open via GitHub Pages (not file:// / github.com viewer)<br>
-          2) Check Firebase DB rules (read access)<br>
-          3) Open Console to see exact error
+          Firebase blocked OR rules issue.<br>
+          Open DevTools console for exact error.
         </div>`;
-      showBot("❌ Firebase not loading. Check DB rules / open via Pages.");
+      showBot("❌ Firebase not loading. Check DB rules.");
       return;
     }
 
@@ -2434,6 +2157,7 @@ footer{
     initModeFromLanding();
     buildStartList(arr);
 
+    // read query start
     try{
       const qs = new URLSearchParams(location.search);
       const startQS = (qs.get("start") || "").trim();
@@ -2445,78 +2169,18 @@ footer{
     setStatus("Ready");
     showBot("✅ Data loaded successfully");
 
-    applyFilters(false);
+    // initial render
+    applyFiltersAndRender(false);
   }
 
+  /* ===== UI wiring ===== */
   function wireUI(){
     $("yy").textContent = new Date().getFullYear();
 
-    $("genBtn").onclick = ()=> applyFilters(true);
-    $("resetBtn").onclick = ()=>{
-      $("startInp").value = "";
-      $("daysSel").value = "";
-      $("visitType").value = "budget";
-      $("paxSel").value = "2";
-      ACTIVE_DISTRICT = "ALL";
-      CURRENT_TEMPLATE_KEY = "";
-      clearMap();
-      renderPanels();
-      historyPush("reset");
-      showBot("✅ Filters reset");
-    };
-
-    $("startInp").addEventListener("change", ()=> applyFilters(true));
-    $("visitType").addEventListener("change", ()=>{ renderPanels(); historyPush("tier"); });
-    $("daysSel").addEventListener("change", ()=>{ renderPanels(); historyPush("days"); });
-    $("paxSel").addEventListener("change", ()=>{ renderPanels(); historyPush("pax"); });
-
-    $("refreshBtn").onclick = async ()=>{
-      showBot("🔄 Refreshing from Firebase…");
-      try{
-        sessionStorage.removeItem("HX_TEMPLATES");
-        sessionStorage.removeItem("HX_PLACES");
-        sessionStorage.removeItem("HX_COSTS");
-      }catch(e){}
-      await loadAll();
-    };
-    $("fitMapBtn").onclick = ()=>{ if(routeLine) map.fitBounds(routeLine.getBounds(), { padding:[22,22] }); };
-    $("clearRouteBtn").onclick = ()=>{ CURRENT_TEMPLATE_KEY=""; clearMap(); renderPanels(); historyPush("clear"); };
-
-    $("showAllStopsBtn").onclick = async ()=>{
-      showMode="all";
-      if(CURRENT_TEMPLATE_KEY){
-        const tpl = ACTIVE_TEMPLATES.find(t=>t.key===CURRENT_TEMPLATE_KEY);
-        if(tpl) await drawRoadRouteFromPlaces(routeIdsFromTemplateIncludingStart(tpl), makeDayIndexFromTemplate(tpl));
-      }
-      showBot("✅ Showing all stops");
-    };
-    $("showStartEndBtn").onclick = async ()=>{
-      showMode="startend";
-      if(CURRENT_TEMPLATE_KEY){
-        const tpl = ACTIVE_TEMPLATES.find(t=>t.key===CURRENT_TEMPLATE_KEY);
-        if(tpl) await drawRoadRouteFromPlaces(routeIdsFromTemplateIncludingStart(tpl), makeDayIndexFromTemplate(tpl));
-      }
-      showBot("✅ Showing start/end only");
-    };
-    $("toggleTilesBtn").onclick = ()=>{
-      tilesDark = !tilesDark;
-      if(tilesDark){
-        map.removeLayer(tile);
-        tileDark.addTo(map);
-      }else{
-        map.removeLayer(tileDark);
-        tile.addTo(map);
-      }
-      showBot(`🗺️ Tiles: ${tilesDark ? "Dark" : "Light"}`);
-    };
-
-    $("closeSelectedBtn").onclick = ()=>{ if(CURRENT_TEMPLATE_KEY) toggleOpenTemplate(CURRENT_TEMPLATE_KEY); };
-
     $("pmClose").onclick = closePlaceModal;
-    $("placeModal").addEventListener("click", (e)=>{ if(e.target === $("placeModal")) closePlaceModal(); });
-
-    $("topLink").onclick = (e)=>{ e.preventDefault(); window.scrollTo({top:0, behavior:"smooth"}); };
-    $("districtSelect").onchange = (e)=>{ const v = e.target.value; if(v) location.href = v; };
+    $("placeModal").addEventListener("click", (e)=>{
+      if(e.target === $("placeModal")) closePlaceModal();
+    });
 
     $("waClose").onclick = (e)=>{
       e.preventDefault(); e.stopPropagation();
@@ -2524,16 +2188,84 @@ footer{
       showBot("✅ WhatsApp button hidden");
     };
 
-    $("mintLoginBtn").onclick = ()=> showBot("🔒 Mint Login (hook your auth here)");
+    $("districtSelect").onchange = (e)=>{
+      const v = e.target.value; if(v) location.href = v;
+    };
+
+    $("topLink").onclick = (e)=>{ e.preventDefault(); window.scrollTo({ top:0, behavior:"smooth" }); };
+
+    $("refreshBtn").onclick = async ()=>{
+      showBot("🔄 Refreshing data…");
+      sessionStorage.removeItem("HX_TEMPLATES");
+      sessionStorage.removeItem("HX_PLACES");
+      sessionStorage.removeItem("HX_COSTS");
+      await loadAll();
+    };
+
+    $("fitMapBtn").onclick = ()=> fitMapToRoute();
+    $("clearRouteBtn").onclick = ()=> clearMap();
+
+    $("showAllStopsBtn").onclick = ()=>{
+      showMode = "all";
+      showBot("✅ Showing all stops");
+      drawRouteForCurrentTemplate(true);
+    };
+    $("showStartEndBtn").onclick = ()=>{
+      showMode = "startend";
+      showBot("✅ Showing start/end only");
+      drawRouteForCurrentTemplate(true);
+    };
+    $("toggleTilesBtn").onclick = ()=>{
+      tilesDark = !tilesDark;
+      if(!map) return;
+      if(tilesDark){
+        if(map.hasLayer(tile)) map.removeLayer(tile);
+        if(!map.hasLayer(tileDark)) map.addLayer(tileDark);
+        showBot("🌙 Dark tiles enabled");
+      }else{
+        if(map.hasLayer(tileDark)) map.removeLayer(tileDark);
+        if(!map.hasLayer(tile)) map.addLayer(tile);
+        showBot("☀️ Light tiles enabled");
+      }
+    };
+
+    $("genBtn").onclick = ()=> applyFiltersAndRender(true);
+    $("resetBtn").onclick = ()=>{
+      $("startInp").value = "";
+      $("visitType").value = "";
+      $("daysSel").value = "";
+      $("paxSel").value = "2";
+      ACTIVE_DISTRICT = "ALL";
+      CURRENT_TEMPLATE_KEY = "";
+      applyFiltersAndRender(false);
+      showBot("✅ Filters reset");
+    };
+
+    $("closeSelectedBtn").onclick = ()=>{
+      CURRENT_TEMPLATE_KEY = "";
+      document.querySelectorAll(".pkgSide").forEach(el=>el.classList.remove("active"));
+      renderCenterSelected();
+      showBot("✅ Closed selected package");
+    };
+
+    // auto-apply on start typing (small delay)
+    let tmr = null;
+    $("startInp").addEventListener("input", ()=>{
+      clearTimeout(tmr);
+      tmr = setTimeout(()=> applyFiltersAndRender(true), 260);
+    });
+    $("visitType").addEventListener("change", ()=> applyFiltersAndRender(true));
+    $("daysSel").addEventListener("change", ()=> applyFiltersAndRender(true));
+    $("paxSel").addEventListener("change", ()=> applyFiltersAndRender(true));
   }
 
   document.addEventListener("DOMContentLoaded", async ()=>{
     try{
       wireUI();
       initMap();
-      bootHistory();
       initModeFromLanding();
       await loadAll();
+      invalidateMapSoon();
     }catch(err){
       console.error(err);
       setStatus("Error loading");
