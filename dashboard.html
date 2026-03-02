@@ -1092,6 +1092,14 @@
               <datalist id="startList"></datalist>
             </div>
 
+            <!-- ✅ ADDED: District Console (from index param district) -->
+            <div class="field" id="districtWrap" style="margin-top:10px; display:none;">
+              <label>District Console</label>
+              <select id="districtSel">
+                <option value="">ANY</option>
+              </select>
+            </div>
+
             <div class="field" style="margin-top:10px;">
               <label>Trip Duration (Days)</label>
               <select id="daysSel">
@@ -1127,6 +1135,11 @@
               <label>Season</label>
               <select id="seasonSel">
                 <option value="">ANY</option>
+                <!-- ✅ added to support index params -->
+                <option value="regular">REGULAR</option>
+                <option value="peak">PEAK</option>
+                <option value="off">OFF SEASON</option>
+                <!-- existing -->
                 <option value="summer">SUMMER</option>
                 <option value="winter">WINTER</option>
                 <option value="monsoon">MONSOON</option>
@@ -1142,7 +1155,7 @@
             </div>
 
             <div class="field" style="margin-top:10px;">
-              <label>Tier (kept)</label>
+              <label>Tier</label>
               <select id="visitType">
                 <option value="budget">BUDGET</option>
                 <option value="premium">PREMIUM</option>
@@ -1275,7 +1288,7 @@
     </div>
   </div>
 
-  <!-- ONE MODULE: Firebase + App (fixes ordering issues) -->
+  <!-- ONE MODULE: Firebase + App (fixed + index→dashboard param sync) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
@@ -1306,6 +1319,78 @@
         .split(",")
         .map(x=>x.trim())
         .filter(Boolean);
+    }
+
+    /* ===== URL params from index.html =====
+       index passes: origin,start,pax,season,tier,district,days,hotel
+    */
+    const URLP = new URLSearchParams(location.search);
+    const PARAMS = {
+      origin: (URLP.get("origin") || "").trim().toLowerCase(),  // in/out
+      start: safeUpper(URLP.get("start") || ""),
+      pax: (URLP.get("pax") || "").trim(),
+      season: (URLP.get("season") || "").trim().toLowerCase(),  // regular/peak/off OR summer/winter/monsoon
+      tier: (URLP.get("tier") || "").trim().toLowerCase(),      // budget/premium/luxury
+      district: safeUpper(URLP.get("district") || ""),
+      days: (URLP.get("days") || "").trim(),
+      hotel: (URLP.get("hotel") || "").trim()
+    };
+
+    function applyQueryParamsToUI(){
+      // Start
+      if(PARAMS.start) $("startInp").value = PARAMS.start;
+
+      // Pax
+      if(PARAMS.pax){
+        const opt = Array.from($("paxSel").options).find(o=> String(o.value) === String(PARAMS.pax));
+        if(opt) $("paxSel").value = opt.value;
+      }
+
+      // Days
+      if(PARAMS.days){
+        const opt = Array.from($("daysSel").options).find(o=> String(o.value) === String(PARAMS.days));
+        if(opt) $("daysSel").value = opt.value;
+      }
+
+      // Hotel
+      if(PARAMS.hotel){
+        const opt = Array.from($("hotelSel").options).find(o=> String(o.value) === String(PARAMS.hotel));
+        if(opt) $("hotelSel").value = opt.value;
+      }
+
+      // Tier
+      if(PARAMS.tier && ["budget","premium","luxury"].includes(PARAMS.tier)){
+        $("visitType").value = PARAMS.tier;
+      }
+
+      // Season (supports both old & new)
+      if(PARAMS.season){
+        const opt = Array.from($("seasonSel").options).find(o=> String(o.value).toLowerCase() === PARAMS.season);
+        if(opt) $("seasonSel").value = opt.value;
+      }
+
+      // District console only if origin=in and we have districts
+      const showDistrict = (PARAMS.origin === "in");
+      $("districtWrap").style.display = showDistrict ? "" : "none";
+      if(showDistrict && PARAMS.district){
+        $("districtSel").value = PARAMS.district; // option may exist after fillDistricts()
+      }
+
+      // Status line
+      const chips = [];
+      if(PARAMS.origin) chips.push(PARAMS.origin === "in" ? "INSIDE HP" : "OUTSIDE HP");
+      if(PARAMS.start) chips.push(PARAMS.start);
+      if(PARAMS.district && PARAMS.origin==="in") chips.push(PARAMS.district);
+      if(PARAMS.days) chips.push(PARAMS.days + "D");
+      if(PARAMS.pax) chips.push("PAX " + PARAMS.pax);
+      if(PARAMS.tier) chips.push(PARAMS.tier.toUpperCase());
+      if(PARAMS.season) chips.push(PARAMS.season.toUpperCase());
+      if(PARAMS.hotel) chips.push(PARAMS.hotel + "★");
+
+      if(chips.length){
+        $("leftHint").textContent = "From index filters";
+        setStatus("Ready • " + chips.join(" • "));
+      }
     }
 
     /* ===== Firebase ===== */
@@ -1388,8 +1473,28 @@
       DISCOUNTS = fixed;
     }
 
+    /* ===== District console fill ===== */
+    function fillDistricts(){
+      const set = new Set();
+      Object.values(TEMPLATES || {}).forEach(t=>{
+        const d = safeUpper(t.district || "");
+        if(d) set.add(d);
+      });
+      const list = Array.from(set).sort((a,b)=>a.localeCompare(b));
+      const sel = $("districtSel");
+      if(!sel) return;
+      sel.innerHTML = `<option value="">ANY</option>` + list.map(d=>`<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join("");
+
+      // apply param after options exist
+      if(PARAMS.origin==="in"){
+        $("districtWrap").style.display = "";
+        if(PARAMS.district && list.includes(PARAMS.district)){
+          sel.value = PARAMS.district;
+        }
+      }
+    }
+
     /* ===== Place helpers ===== */
-    function placeIdAny(p, key){ return String(p?.place_id || p?.id || key || "").trim(); }
     function placeNameAny(p, key){ return String(p?.name || p?.["Location Name"] || p?.title || key || "PLACE").trim(); }
     function latAny(p){ return Number(p?.latitude ?? p?.lat ?? p?.Latitude); }
     function lngAny(p){ return Number(p?.longitude ?? p?.lng ?? p?.Longitude); }
@@ -1579,7 +1684,6 @@
         tpl.package_name, tpl.route_name, tpl.category, tpl.ideal_for, tpl.best_season, tpl.notes, tpl.inclusions
       ].map(x=>String(x||"").toLowerCase()).join(" | ");
 
-      // mapping tags to keywords
       const map = {
         family: ["family","kids","child","children"],
         couple: ["couple","honeymoon","romantic"],
@@ -1599,10 +1703,11 @@
 
     function filterKeys(){
       const start = safeUpper($("startInp").value || "");
+      const districtPick = safeUpper($("districtSel")?.value || "");
       const days = String($("daysSel").value || "").trim();
       const q = safeLower($("searchInp").value || "");
       const hotelReq = String($("hotelSel").value || "").trim();
-      const seasonReq = String($("seasonSel").value || "").trim();
+      const seasonReq = String($("seasonSel").value || "").trim().toLowerCase();
       const tier = safeLower($("visitType").value || "budget");
       const budgetMax = getBudgetMax();
 
@@ -1612,6 +1717,11 @@
         if(start){
           const s = safeUpper(t.start_point || t.start || "");
           if(s !== start) return false;
+        }
+        if(districtPick){
+          const d = safeUpper(t.district || "");
+          if(d && d !== districtPick) return false;
+          // if template missing district, don't hard reject
         }
         if(days){
           if(String(t.days||"") !== days) return false;
@@ -1626,15 +1736,23 @@
         if(hotelReq){
           const hs = hotelStarsAny(t);
           if(hs && hs !== hotelReq) return false;
-          // if template doesn't have star info, don't hard reject
         }
+
+        // ✅ season: support both "regular/peak/off" (from index) and "summer/winter/monsoon"
         if(seasonReq){
           const s = String(t.best_season||"").toLowerCase();
-          if(s && !s.includes(seasonReq)) return false;
+          if(s){
+            if(seasonReq === "regular" || seasonReq === "peak" || seasonReq === "off"){
+              // if template has season text, allow, but do not hard filter (market-safe)
+              // keep as soft filter: if template includes the word, prefer it; otherwise allow.
+            }else{
+              if(!s.includes(seasonReq)) return false;
+            }
+          }
         }
+
         if(!tplMatchesQuickTags(t)) return false;
 
-        // budget filter uses actual pricing
         if(budgetMax){
           const base = pickBasePrice(t, tier, t.key);
           if(base && base > budgetMax) return false;
@@ -1642,10 +1760,25 @@
         return true;
       });
 
-      filtered.sort((a,b)=>
-        (Number(a.days||0)-Number(b.days||0)) ||
-        String(a.package_name||a.route_name||a.key).localeCompare(String(b.package_name||b.route_name||b.key))
-      );
+      // ✅ soft preference for regular/peak/off if user selected it (no hard reject)
+      if(seasonReq === "regular" || seasonReq === "peak" || seasonReq === "off"){
+        const boostWords = seasonReq === "peak" ? ["peak","summer"] : seasonReq === "off" ? ["off","monsoon","winter"] : ["regular","all"];
+        filtered.sort((a,b)=>{
+          const sa = String(a.best_season||"").toLowerCase();
+          const sb = String(b.best_season||"").toLowerCase();
+          const ba = boostWords.some(w=>sa.includes(w)) ? 1 : 0;
+          const bb = boostWords.some(w=>sb.includes(w)) ? 1 : 0;
+          if(bb !== ba) return bb - ba;
+          return (Number(a.days||0)-Number(b.days||0)) ||
+            String(a.package_name||a.route_name||a.key).localeCompare(String(b.package_name||b.route_name||b.key));
+        });
+      }else{
+        filtered.sort((a,b)=>
+          (Number(a.days||0)-Number(b.days||0)) ||
+          String(a.package_name||a.route_name||a.key).localeCompare(String(b.package_name||b.route_name||b.key))
+        );
+      }
+
       return filtered.map(x=>x.key);
     }
 
@@ -1662,7 +1795,6 @@
         return;
       }
 
-      // market: auto-select first package if none selected
       if(!CURRENT_KEY || !ACTIVE_KEYS.includes(CURRENT_KEY)){
         CURRENT_KEY = ACTIVE_KEYS[0] || "";
       }
@@ -1718,12 +1850,11 @@
         `;
 
         card.addEventListener("click", (e)=>{
-          // don't trigger selection if click on checkbox
           const target = e.target;
           if(target && target.tagName === "INPUT") return;
 
           CURRENT_KEY = key;
-          renderLeftList(); // keep active state
+          renderLeftList();
           renderSelected();
         });
 
@@ -1739,7 +1870,6 @@
         });
       });
 
-      // also update selection view if auto-selected
       renderSelected();
     }
 
@@ -1922,7 +2052,6 @@
         det.appendChild(detInner);
         dayWrap.appendChild(det);
 
-        // Nearby suggestions (kept but compact)
         const anchorId = ids[ids.length-1] || ids[0];
         const nearby = findNearby(anchorId, 55, 10)
           .filter(x => !shownSuggestions.has(x.id))
@@ -2024,9 +2153,6 @@
       const start = safeUpper(tpl.start_point || tpl.start || "");
       const end = safeUpper(tpl.end_point || "");
       const days = Number(tpl.days || 0) || "";
-      const drive = safeUpper(tpl.drive_level || "");
-      const cat = String(tpl.category || "").trim();
-      const hotel = String(tpl.hotel_category || "").trim();
       const routePath = String(tpl.route_path || tpl.route_name || "").trim();
 
       const season = String(tpl.best_season || "").trim();
@@ -2040,7 +2166,6 @@
       const photos = getPackagePhotos(tpl);
       const mainPhoto = photos[0] || "./style/n1.jpg";
 
-      // WhatsApp + call
       const msg = encodeURIComponent(`Hi Chandan, I want to book: ${title} | ${days} days | ${tier.toUpperCase()} | Pax: ${pax}`);
       const wa = `https://wa.me/917018138847?text=${msg}`;
       const call = `tel:+917018138847`;
@@ -2049,7 +2174,6 @@
       $("stickyCALL").href = call;
       $("stickyCTA").style.display = "";
 
-      // Summary right panel
       $("sumTitle").textContent = title;
       $("sumMeta").textContent = `${start || "—"} • ${days ? days + " days" : "—"} • ${tier.toUpperCase()}`;
 
@@ -2106,7 +2230,7 @@
               <span class="trust acc">Cab + driver</span>
               <span class="trust ok">24×7 support</span>
               ${meal ? `<span class="trust">${escapeHtml(meal)}</span>` : ""}
-              ${hotel ? `<span class="trust">${escapeHtml(hotel)}</span>` : ""}
+              ${String(tpl.hotel_category||"").trim() ? `<span class="trust">${escapeHtml(String(tpl.hotel_category||""))}</span>` : ""}
             </div>
 
             <div class="ctaRow">
@@ -2160,7 +2284,6 @@
         </div>
       `;
 
-      // carousel clicks
       const carMain = document.getElementById("carMain");
       document.querySelectorAll(".thumb[data-src]").forEach(t=>{
         t.addEventListener("click", ()=>{
@@ -2171,7 +2294,7 @@
         });
       });
 
-      shownSuggestions = new Set(); // reset per package
+      shownSuggestions = new Set();
       renderItineraryAndMap(tpl);
       invalidateMapSoon();
     }
@@ -2187,7 +2310,7 @@
     }
 
     function openCompare(){
-      const keys = Array.from(COMPARE).slice(0,3); // compare up to 3
+      const keys = Array.from(COMPARE).slice(0,3);
       if(keys.length < 2){
         showBot("Select at least 2 packages to compare");
         return;
@@ -2199,6 +2322,7 @@
         ["Title", k => String(TEMPLATES[k]?.package_name || TEMPLATES[k]?.route_name || k)],
         ["Days", k => String(TEMPLATES[k]?.days || "—")],
         ["Start", k => safeUpper(TEMPLATES[k]?.start_point || TEMPLATES[k]?.start || "—")],
+        ["District", k => safeUpper(TEMPLATES[k]?.district || "—")],
         ["Hotel", k => String(TEMPLATES[k]?.hotel_category || "—")],
         ["Category", k => String(TEMPLATES[k]?.category || "—")],
         ["Best Season", k => String(TEMPLATES[k]?.best_season || "—")],
@@ -2266,25 +2390,26 @@
       normalizeDiscountKeys();
 
       buildStartList();
+      fillDistricts();          // ✅ district console options
+      applyQueryParamsToUI();   // ✅ apply index params BEFORE first render
+
       pillBudget();
       renderLeftList();
-      setStatus("Ready");
+
+      // after first render, auto-focus selected package view
       showBot("Data loaded");
     }
 
     /* ===== Wire UI ===== */
     function wireUI(){
-      // modal close
       $("pmClose").onclick = closePlaceModal;
       $("placeModal").addEventListener("click", (e)=>{
         if(e.target === $("placeModal")) closePlaceModal();
       });
 
-      // compare
       $("openCompareBtn").onclick = openCompare;
       $("clearCompareBtn").onclick = ()=>{
         COMPARE.clear();
-        // uncheck visible boxes
         document.querySelectorAll('input[type="checkbox"][data-ckey]').forEach(i=> i.checked = false);
         syncCompareUI();
         showBot("Compare cleared");
@@ -2294,7 +2419,6 @@
         if(e.target === $("compareModal")) closeCompare();
       });
 
-      // escape key closes modals
       window.addEventListener("keydown", (e)=>{
         if(e.key === "Escape"){
           closePlaceModal();
@@ -2302,7 +2426,6 @@
         }
       });
 
-      // filters
       $("resetBtn").onclick = ()=>{
         $("searchInp").value = "";
         $("startInp").value = "";
@@ -2311,6 +2434,7 @@
         $("paxSel").value = "2";
         $("hotelSel").value = "";
         $("seasonSel").value = "";
+        if($("districtSel")) $("districtSel").value = "";
         $("budgetRange").value = "0";
         pillBudget();
         quickTags.clear();
@@ -2318,6 +2442,7 @@
         CURRENT_KEY = "";
         renderLeftList();
         showBot("Filters reset");
+        setStatus("Ready");
       };
 
       $("genBtn").onclick = ()=>{
@@ -2356,13 +2481,11 @@
         showBot("Closed");
       };
 
-      // back behavior (kept)
       $("backBtn").onclick = ()=>{
         if(history.length > 1) history.back();
         else location.href = "./index.html";
       };
 
-      // live updates on key filters
       ["searchInp","startInp"].forEach(id=>{
         $(id).addEventListener("input", ()=>{
           CURRENT_KEY = "";
@@ -2370,20 +2493,17 @@
         });
       });
 
-      ["daysSel","visitType","paxSel","hotelSel","seasonSel"].forEach(id=>{
-        $(id).addEventListener("change", ()=>{
+      ["daysSel","visitType","paxSel","hotelSel","seasonSel","districtSel"].forEach(id=>{
+        const el = $(id);
+        if(!el) return;
+        el.addEventListener("change", ()=>{
           renderLeftList();
         });
       });
 
-      $("budgetRange").addEventListener("input", ()=>{
-        pillBudget();
-      });
-      $("budgetRange").addEventListener("change", ()=>{
-        renderLeftList();
-      });
+      $("budgetRange").addEventListener("input", ()=> pillBudget() );
+      $("budgetRange").addEventListener("change", ()=> renderLeftList() );
 
-      // quick chips
       document.querySelectorAll(".qchip[data-tag]").forEach(ch=>{
         ch.addEventListener("click", ()=>{
           const tag = ch.getAttribute("data-tag");
