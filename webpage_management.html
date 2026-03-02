@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Himachal Project Segment Manager (Cloud Sync)</title>
+  <style>
+    :root{--sidebar-w:240px;--accent:#2563EB;--dark:#0F172A;--border:#E2E8F0;}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;display:flex;height:100vh;background:#F8FAFC;overflow:hidden}
+
+    /* SIDEBAR */
+    .sidebar{width:var(--sidebar-w);background:var(--dark);color:#94A3B8;display:flex;flex-direction:column;border-right:1px solid #1E293B}
+    .sidebar-header{padding:20px;color:#fff;font-weight:800;font-size:14px;letter-spacing:1px;border-bottom:1px solid #1E293B}
+    .file-list{flex:1;padding:12px}
+    .file-tab{padding:12px 15px;border-radius:8px;cursor:pointer;margin-bottom:6px;transition:.2s;font-size:14px;display:flex;align-items:center;gap:8px}
+    .file-tab:hover{background:#1E293B;color:#fff}
+    .file-tab.active{background:var(--accent);color:#fff}
+
+    /* EDITOR */
+    .editor-container{flex:1;display:flex;flex-direction:column}
+    .toolbar{height:60px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:10px}
+    .status-dot{width:8px;height:8px;background:#10B981;border-radius:50%}
+    .pill{font-size:11px;padding:4px 10px;border-radius:999px;border:1px solid var(--border);background:#F8FAFC;color:#475569;white-space:nowrap}
+    textarea{
+      flex:1;width:100%;border:none;padding:22px;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:14px;line-height:1.6;outline:none;background:#fff;resize:none;color:#334155
+    }
+
+    /* CONSOLE */
+    .console{height:150px;background:#1E293B;color:#38BDF8;padding:15px;font-family:ui-monospace,monospace;font-size:12px;overflow-y:auto;border-top:4px solid #334155}
+    .log-err{color:#F87171}
+    .log-warn{color:#FBBF24}
+    .log-ok{color:#34D399}
+
+    /* PREVIEW */
+    #preview-overlay{display:none;position:fixed;inset:0;background:#fff;z-index:2000;flex-direction:column}
+    .preview-nav{height:50px;background:#F1F5F9;display:flex;align-items:center;padding:0 20px;border-bottom:1px solid #CBD5E1;justify-content:space-between}
+
+    /* BUTTONS */
+    button{padding:8px 14px;border-radius:6px;border:1px solid #CBD5E1;cursor:pointer;font-weight:700;font-size:13px;transition:.15s;background:#fff}
+    button:hover{transform:translateY(-1px)}
+    .btn-run{background:#10B981;color:#fff;border:none}
+    .btn-run:hover{background:#059669}
+    .btn-save{background:var(--accent);color:#fff;border:none}
+    .btn-save:hover{filter:brightness(.96)}
+    .btn-ghost{background:#F8FAFC}
+    .btn-danger{background:#EF4444;color:#fff;border:none}
+    .btn-danger:hover{background:#DC2626}
+
+    /* inputs */
+    input[type="text"]{
+      height:34px;border-radius:8px;border:1px solid var(--border);
+      padding:0 10px;font-weight:600;color:#0F172A;background:#fff;min-width:160px
+    }
+    .mini{font-size:10px;opacity:.7}
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="sidebar-header">EXPLORER</div>
+    <div class="file-list">
+      <div class="file-tab active" onclick="switchSegment('html', this)">📄 <span>index.html</span></div>
+      <div class="file-tab" onclick="switchSegment('css', this)">🎨 <span>styles.css</span></div>
+      <div class="file-tab" onclick="switchSegment('js', this)">⚙️ <span>logic.js</span></div>
+    </div>
+    <div style="padding: 16px; font-size: 11px; line-height:1.4; opacity:.85;">
+      <div><b>Memory:</b> Local backup + Firebase Cloud</div>
+      <div class="mini" id="uidLine">UID: —</div>
+      <div class="mini">Project path: users/&lt;uid&gt;/projects/&lt;name&gt;</div>
+    </div>
+  </div>
+
+  <div class="editor-container">
+    <div class="toolbar">
+      <div class="status-dot" title="Editor Ready"></div>
+      <strong id="fileNameDisplay">index.html</strong>
+
+      <span class="pill" id="cloudStatus">Cloud: connecting…</span>
+
+      <div style="flex:1;"></div>
+
+      <label class="pill" style="display:flex;align-items:center;gap:8px;">
+        Project
+        <input id="projectName" type="text" value="mainProject" />
+      </label>
+
+      <button class="btn-ghost" onclick="loadFromCloud(true)">☁ Load</button>
+      <button class="btn-save" onclick="saveProject()">💾 Save</button>
+      <button class="btn-ghost" onclick="downloadProject()">⬇ Download</button>
+      <button class="btn-run" onclick="runProject()">🚀 Run</button>
+      <button class="btn-danger" onclick="resetLocalOnly()">🧹 Reset Local</button>
+    </div>
+
+    <textarea id="codeEditor" spellcheck="false" oninput="dirty=true"></textarea>
+
+    <div class="console" id="debugLog">
+      > Debugger Initialized…<br/>
+      > Local backup enabled.<br/>
+    </div>
+  </div>
+
+  <div id="preview-overlay">
+    <div class="preview-nav">
+      <strong>Project Live View</strong>
+      <button onclick="closePreview()">Close Preview [X]</button>
+    </div>
+    <iframe id="displayFrame" style="width:100%; flex:1; border:none;"></iframe>
+  </div>
+
+  <!-- Firebase (CDN compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+  <script>
+    /***********************
+     * DEFAULT PROJECT
+     ***********************/
+    const DEFAULT_PROJECT = {
+      html: `\n<div class="hero">\n  <h1>Himachal Explorer</h1>\n  <p id="status">Loading data...</p>\n</div>\n<div id="map-box">Map will appear here</div>\n`,
+      css: `/* styles.css */\nbody { background: #EAF3FF; font-family: system-ui, sans-serif; }\n.hero { padding: 40px; text-align: center; background: white; border-radius: 20px; margin: 20px; }\n#map-box{ margin:20px; padding:20px; background:white; border-radius:16px; }\n`,
+      js: `// logic.js\nconsole.log("Himachal App Started");\ndocument.getElementById('status').innerText = "System Active & Running";\n`
+    };
+
+    /***********************
+     * FIREBASE CONFIG (yours)
+     ***********************/
+    const firebaseConfig = {
+      apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
+      authDomain: "revnue-records.firebaseapp.com",
+      databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "revnue-records",
+      storageBucket: "revnue-records.firebasestorage.app",
+      messagingSenderId: "182348503564",
+      appId: "1:182348503564:web:480085405b09177245ac29",
+      measurementId: "G-MGTDBCG896"
+    };
+
+    /***********************
+     * UI refs
+     ***********************/
+    const editor = document.getElementById("codeEditor");
+    const debug = document.getElementById("debugLog");
+    const cloudStatus = document.getElementById("cloudStatus");
+    const fileNameDisplay = document.getElementById("fileNameDisplay");
+    const projectNameInput = document.getElementById("projectName");
+    const uidLine = document.getElementById("uidLine");
+
+    /***********************
+     * State
+     ***********************/
+    let projectData = JSON.parse(localStorage.getItem("Himachal_Segment_Project")) || structuredClone(DEFAULT_PROJECT);
+    let currentActive = "html";
+    let dirty = false;
+
+    // Firebase
+    let db = null;
+    let auth = null;
+    let uid = null;
+    let cloudReady = false;
+
+    // Prevent loop when cloud pushes data and we write back
+    let suppressCloudWrite = false;
+
+    /***********************
+     * Helpers
+     ***********************/
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+    function addLog(msg, type="info"){
+      const time = new Date().toLocaleTimeString();
+      let cls = "";
+      if(type==="error") cls="log-err";
+      else if(type==="warn") cls="log-warn";
+      else if(type==="ok") cls="log-ok";
+      debug.innerHTML += `<div class="${cls}">> [${time}] ${escapeHtml(msg)}</div>`;
+      debug.scrollTop = debug.scrollHeight;
+    }
+    function getCloudPath(){
+      const name = (projectNameInput.value || "mainProject").trim().replace(/[.#$\[\]]/g,"_");
+      return `users/${uid}/projects/${name}`;
+    }
+    function loadCurrentSegment(){
+      editor.value = projectData[currentActive] ?? "";
+      dirty = false;
+    }
+
+    /***********************
+     * Tabs
+     ***********************/
+    function switchSegment(type, el){
+      saveProject(); // keep your behavior (always saves before switch)
+      currentActive = type;
+
+      document.querySelectorAll(".file-tab").forEach(t=>t.classList.remove("active"));
+      if(el) el.classList.add("active");
+
+      fileNameDisplay.innerText = (type==="html" ? "index.html" : type==="css" ? "styles.css" : "logic.js");
+      loadCurrentSegment();
+      addLog(`Switched to ${type}.`, "ok");
+    }
+
+    /***********************
+     * Local + Cloud Save
+     ***********************/
+    function saveProject(){
+      // Update current segment from editor
+      projectData[currentActive] = editor.value;
+
+      // 1) Local backup ALWAYS (no data loss)
+      localStorage.setItem("Himachal_Segment_Project", JSON.stringify(projectData));
+      addLog(`Saved locally: [${currentActive}]`, "ok");
+      dirty = false;
+
+      // 2) Cloud save
+      if(!cloudReady || !db || !uid){
+        cloudStatus.textContent = "Cloud: offline";
+        addLog("Cloud not ready yet (local saved).", "warn");
+        return;
+      }
+      if(suppressCloudWrite) return; // avoid loop
+
+      cloudStatus.textContent = "Cloud: saving…";
+      const payload = {
+        project: projectData,
+        updatedAt: firebase.database.ServerValue.TIMESTAMP
+      };
+
+      db.ref(getCloudPath()).set(payload)
+        .then(()=>{
+          cloudStatus.textContent = "Cloud: saved";
+          addLog("Saved to Firebase (online).", "ok");
+        })
+        .catch(err=>{
+          cloudStatus.textContent = "Cloud: error";
+          addLog("Cloud save error: " + err.message, "error");
+        });
+    }
+
+    /***********************
+     * Cloud Load + Live Sync
+     ***********************/
+    function attachCloudListener(){
+      const path = getCloudPath();
+      addLog("Sync path: " + path, "ok");
+
+      // Live sync: if you open on another device and save there, this device updates automatically
+      db.ref(path).on("value", snap=>{
+        const val = snap.val();
+        if(!val || !val.project) {
+          cloudStatus.textContent = "Cloud: empty";
+          return;
+        }
+
+        // If user is typing, don't overwrite their editor instantly.
+        if(dirty){
+          cloudStatus.textContent = "Cloud: update waiting";
+          addLog("Cloud update received but editor has unsaved changes. Click ☁ Load to pull.", "warn");
+          return;
+        }
+
+        suppressCloudWrite = true;
+        projectData = val.project;
+        localStorage.setItem("Himachal_Segment_Project", JSON.stringify(projectData));
+        loadCurrentSegment();
+        suppressCloudWrite = false;
+
+        cloudStatus.textContent = "Cloud: synced";
+        addLog("Synced latest project from cloud.", "ok");
+      });
+    }
+
+    function loadFromCloud(force=false){
+      if(!cloudReady || !db || !uid){
+        addLog("Cloud not ready.", "error");
+        return;
+      }
+      if(dirty && !force){
+        addLog("You have unsaved changes. Save first or click ☁ Load again (force).", "warn");
+        return;
+      }
+
+      cloudStatus.textContent = "Cloud: loading…";
+      db.ref(getCloudPath()).once("value")
+        .then(snap=>{
+          const val = snap.val();
+          if(!val || !val.project){
+            cloudStatus.textContent = "Cloud: empty";
+            addLog("No cloud project found. Using local/default.", "warn");
+            return;
+          }
+          suppressCloudWrite = true;
+          projectData = val.project;
+          localStorage.setItem("Himachal_Segment_Project", JSON.stringify(projectData));
+          loadCurrentSegment();
+          suppressCloudWrite = false;
+
+          cloudStatus.textContent = "Cloud: loaded";
+          addLog("Loaded project from cloud.", "ok");
+        })
+        .catch(err=>{
+          cloudStatus.textContent = "Cloud: error";
+          addLog("Cloud load error: " + err.message, "error");
+        });
+    }
+
+    /***********************
+     * Download real files
+     ***********************/
+    function downloadProject(){
+      saveProject();
+      const files = {
+        "index.html": projectData.html,
+        "styles.css": projectData.css,
+        "logic.js": projectData.js
+      };
+      Object.entries(files).forEach(([name, content])=>{
+        const blob = new Blob([content], {type:"text/plain;charset=utf-8"});
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(a.href);
+      });
+      addLog("Downloaded 3 files.", "ok");
+    }
+
+    function resetLocalOnly(){
+      if(!confirm("Reset LOCAL project to defaults? (Cloud stays safe)")) return;
+      projectData = structuredClone(DEFAULT_PROJECT);
+      currentActive = "html";
+      localStorage.setItem("Himachal_Segment_Project", JSON.stringify(projectData));
+      document.querySelectorAll(".file-tab").forEach(t=>t.classList.remove("active"));
+      document.querySelectorAll(".file-tab")[0].classList.add("active");
+      fileNameDisplay.innerText = "index.html";
+      loadCurrentSegment();
+      addLog("Local reset done (cloud untouched).", "warn");
+    }
+
+    /***********************
+     * Preview
+     ***********************/
+    function runProject(){
+      saveProject();
+      addLog("Building preview…");
+
+      const overlay = document.getElementById("preview-overlay");
+      const frame = document.getElementById("displayFrame");
+
+      const fullCode = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>${projectData.css || ""}</style>
+</head>
+<body>
+${projectData.html || ""}
+
+<script>
+window.onerror = function(message, source, lineno, colno){
+  window.parent.postMessage({type:'error', msg: message + ' @ ' + lineno + ':' + colno}, '*');
+};
+try {
+  ${projectData.js || ""}
+} catch(err){
+  window.parent.postMessage({type:'error', msg: err.message}, '*');
+}
+<\/script>
+</body>
+</html>`;
+
+      overlay.style.display = "flex";
+      const doc = frame.contentWindow.document;
+      doc.open(); doc.write(fullCode); doc.close();
+      addLog("Preview running.", "ok");
+    }
+
+    function closePreview(){
+      document.getElementById("preview-overlay").style.display = "none";
+    }
+
+    window.addEventListener("message", (e)=>{
+      if(e.data && e.data.type==="error"){
+        addLog("EXECUTION ERROR: " + e.data.msg, "error");
+      }
+    });
+
+    /***********************
+     * Firebase init (Anonymous login)
+     * - Opens on ANY device
+     * - Uses your own uid
+     ***********************/
+    function initFirebase(){
+      try{
+        firebase.initializeApp(firebaseConfig);
+        auth = firebase.auth();
+        db = firebase.database();
+      }catch(err){
+        cloudReady = false;
+        cloudStatus.textContent = "Cloud: disabled";
+        addLog("Firebase init failed: " + err.message, "error");
+        loadCurrentSegment();
+        return;
+      }
+
+      cloudStatus.textContent = "Cloud: signing in…";
+      auth.onAuthStateChanged(user=>{
+        if(user){
+          uid = user.uid;
+          uidLine.textContent = "UID: " + uid;
+          cloudReady = true;
+          cloudStatus.textContent = "Cloud: connected";
+          addLog("Signed in (anonymous).", "ok");
+
+          // Attach live sync for the current project name
+          attachCloudListener();
+          // Pull once on load (if cloud has data)
+          loadFromCloud(true);
+        }else{
+          auth.signInAnonymously()
+            .then(()=>addLog("Anonymous sign-in started…", "ok"))
+            .catch(err=>{
+              cloudReady = false;
+              cloudStatus.textContent = "Cloud: auth error";
+              addLog("Auth error: " + err.message, "error");
+            });
+        }
+      });
+
+      // If user changes project name, reattach listener to new path
+      let lastName = projectNameInput.value.trim();
+      projectNameInput.addEventListener("change", ()=>{
+        const newName = projectNameInput.value.trim() || "mainProject";
+        if(newName === lastName) return;
+        lastName = newName;
+
+        if(cloudReady && db && uid){
+          // detach old listeners and attach new
+          db.ref().off();
+          cloudStatus.textContent = "Cloud: switched";
+          addLog("Project switched: " + newName, "ok");
+          attachCloudListener();
+          loadFromCloud(true);
+        }
+      });
+    }
+
+    /***********************
+     * Init
+     ***********************/
+    function init(){
+      addLog("Loaded from local backup (or defaults).", "ok");
+      loadCurrentSegment();
+      initFirebase();
+    }
+    init();
+  </script>
+
+  <!--
+    ✅ IMPORTANT: Firebase Realtime Database Rules (secure, per-user)
+    Paste this in Firebase Console → Realtime Database → Rules
+
+    {
+      "rules": {
+        "users": {
+          "$uid": {
+            ".read": "auth != null && auth.uid === $uid",
+            ".write": "auth != null && auth.uid === $uid"
+          }
+        }
+      }
+    }
+
+    This makes it:
+    ✅ Saves online
+    ✅ Can open on any device (same browser session creates its own uid; to keep SAME uid across devices, add Email/Phone login later)
+    ✅ No data loss (local backup + cloud)
+    ✅ Sync with Firebase (live listener)
+  -->
+</body>
+</html>
