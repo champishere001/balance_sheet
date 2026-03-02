@@ -26,7 +26,10 @@
       --acc:#2563EB;
       --gap: 12px;
       --shellW: min(94vw, 1700px);
-      --heroH: clamp(200px, 24vw, 300px);
+      --heroH: clamp(180px, 24vw, 280px);
+      --ok:#16a34a;
+      --warn:#f59e0b;
+      --bad:#ef4444;
     }
 
     *{ box-sizing:border-box; }
@@ -136,16 +139,16 @@
     }
 
     /* =========================================================
-       MAIN LAYOUT (LEFT 22% | CENTER 54% | RIGHT 24%)
+       MAIN LAYOUT (Market): LEFT 26% | CENTER 50% | RIGHT 24%
        ========================================================= */
     .main{
       display:grid;
-      grid-template-columns: 22% 54% 24%;
+      grid-template-columns: 26% 50% 24%;
       gap: var(--gap);
       margin-top: 12px;
       align-items: stretch;
       min-width:0;
-      grid-template-areas: "left center map";
+      grid-template-areas: "left center right";
     }
 
     .pane{
@@ -172,8 +175,7 @@
     .paneHdr .t{ margin:0; font-size:11px; letter-spacing:.18em; text-transform: uppercase; font-weight: 950; }
     .paneHdr .s{ font-size:10.5px; color:var(--muted); letter-spacing:.10em; text-transform: uppercase; }
 
-    /* ===== LEFT ===== */
-    .leftPane{ grid-area:left; }
+    /* ===== COMMON CONTROLS ===== */
     .sideInner{
       padding: 12px;
       display:flex;
@@ -222,8 +224,47 @@
       box-shadow: 0 10px 24px rgba(10,30,60,.10);
     }
 
-    .otherWrap{ flex:1; min-height:0; display:flex; flex-direction:column; gap:10px; }
-    .otherHdr{
+    /* ===== LEFT (Market filters + list) ===== */
+    .leftPane{ grid-area:left; }
+    .quickChips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+    .qchip{
+      border:1px solid rgba(10,30,60,.14);
+      background: rgba(255,255,255,.66);
+      border-radius: 999px;
+      padding: 7px 9px;
+      font-size: 10px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      white-space:nowrap;
+    }
+    .qchip.on{
+      border-color: rgba(37,99,235,.45);
+      background: rgba(37,99,235,.12);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+      font-weight: 1000;
+    }
+
+    .rangeRow{ display:flex; gap:10px; align-items:center; }
+    .rangeRow input[type="range"]{ width:100%; }
+    .rangePill{
+      border:1px solid rgba(10,30,60,.14);
+      background: rgba(255,255,255,.70);
+      border-radius: 999px;
+      padding: 7px 9px;
+      font-size: 10px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      font-weight: 1000;
+      color: rgba(10,30,60,.82);
+      min-width: 92px;
+      text-align:center;
+    }
+
+    .listHdr{
       border:1px solid rgba(10,30,60,.16);
       background: rgba(255,255,255,.62);
       border-radius: 14px;
@@ -231,8 +272,8 @@
       display:flex; align-items:center; justify-content:space-between; gap:10px;
       box-shadow: 0 10px 24px rgba(10,30,60,.10);
     }
-    .otherHdr .h{ font-size: 11px; font-weight: 950; letter-spacing:.14em; text-transform: uppercase; }
-    .otherHdr .xBtn{
+    .listHdr .h{ font-size: 11px; font-weight: 950; letter-spacing:.14em; text-transform: uppercase; }
+    .listHdr .xBtn{
       border:1px solid rgba(10,30,60,.16);
       background: rgba(255,255,255,.66);
       color: rgba(10,30,60,.86);
@@ -245,13 +286,14 @@
       user-select:none;
       white-space: nowrap;
     }
-    .otherList{
+
+    .pkgList{
       flex:1; min-height:0; overflow:auto;
       -webkit-overflow-scrolling: touch;
       padding: 2px;
-      display:flex; flex-direction:column; gap:8px;
+      display:flex; flex-direction:column; gap:10px;
     }
-    .otherHint{
+    .hint{
       border:1px dashed rgba(10,30,60,.20);
       background: rgba(255,255,255,.58);
       border-radius: 14px;
@@ -260,52 +302,115 @@
       font-size: 11px;
       line-height: 1.35;
     }
-    .pkgSide{
+
+    /* Product-style package card */
+    .pkgCard{
       border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.70);
-      border-radius: 14px;
-      padding: 10px;
-      box-shadow: 0 10px 20px rgba(10,30,60,.08);
+      background: rgba(255,255,255,.72);
+      border-radius: 16px;
+      box-shadow: 0 12px 28px rgba(10,30,60,.10);
       cursor:pointer;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
+      overflow:hidden;
       -webkit-tap-highlight-color: transparent;
     }
-    .pkgSide.active{
-      border-color: rgba(37,99,235,.40);
-      box-shadow: 0 0 0 3px rgba(37,99,235,.14);
-      background: rgba(37,99,235,.10);
+    .pkgCard.active{
+      border-color: rgba(37,99,235,.45);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12), 0 12px 28px rgba(10,30,60,.10);
+      background: rgba(37,99,235,.08);
     }
-    .pkgSideTop{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
-    .pkgSideTop .t1{
-      font-size: 10.5px;
-      font-weight: 1000;
+    .pkgTop{
+      display:grid;
+      grid-template-columns: 92px 1fr;
+      gap: 10px;
+      padding: 10px;
+      align-items:center;
+    }
+    .pkgThumb{
+      width:92px; height:70px; border-radius: 14px;
+      overflow:hidden;
+      border:1px solid rgba(10,30,60,.12);
+      background: rgba(255,255,255,.70);
+    }
+    .pkgThumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .pkgInfo{ min-width:0; }
+    .pkgTitle{
+      font-size: 11px;
+      font-weight: 1100;
       letter-spacing:.12em;
       text-transform: uppercase;
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      margin:0;
     }
-    .pkgSideRow{
-      display:flex; gap:8px; flex-wrap:wrap;
+    .pkgMeta{
+      margin-top:6px;
+      display:flex; flex-wrap:wrap; gap:6px;
+      font-size: 9.5px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.74);
+    }
+    .pkgMeta span{
+      border:1px solid rgba(10,30,60,.14);
+      background: rgba(255,255,255,.66);
+      border-radius: 999px;
+      padding: 5px 7px;
+      white-space:nowrap;
+    }
+    .pkgBottom{
+      padding: 0 10px 10px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .priceLine{
       font-size: 10px;
       letter-spacing:.10em;
       text-transform: uppercase;
-      color: rgba(10,30,60,.72);
+      color: rgba(10,30,60,.70);
+      line-height: 1.25;
     }
-    .pkgSideRow span{
+    .priceLine b{
+      display:block;
+      font-size: 12px;
+      letter-spacing:.06em;
+      color: rgba(10,30,60,.92);
+      margin-top:2px;
+    }
+    .miniTags{ display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
+    .itag{
       border:1px solid rgba(10,30,60,.14);
       background: rgba(255,255,255,.66);
       border-radius: 999px;
       padding: 6px 8px;
-      white-space: nowrap;
+      font-size: 9.5px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      white-space:nowrap;
+      font-weight: 1000;
     }
+    .itag.ok{ border-color: rgba(22,163,74,.28); background: rgba(22,163,74,.10); }
+    .itag.acc{ border-color: rgba(37,99,235,.28); background: rgba(37,99,235,.10); }
 
-    /* ===== CENTER (Selected package only) ===== */
+    .compareRow{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding: 0 10px 10px;
+    }
+    .chk{
+      display:flex; align-items:center; gap:8px;
+      font-size: 10px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.72);
+      user-select:none;
+    }
+    .chk input{ width:auto; }
+
+    /* ===== CENTER (conversion card) ===== */
     .centerPane{ grid-area:center; }
     .centerScroll{
       flex:1; min-height:0; overflow:auto;
       -webkit-overflow-scrolling: touch;
       background: rgba(255,255,255,.52);
+      position:relative;
+      padding-bottom: 82px; /* space for sticky CTA on mobile */
     }
     .emptyState{
       margin: 12px;
@@ -318,178 +423,207 @@
       line-height: 1.5;
     }
 
-    /* Header full width + photo reduced ~10% */
-    .selHeader{
-      display:grid;
-      grid-template-columns: 44% 56%;
-      gap: 12px;
-      padding: 12px;
-      background: rgba(255,255,255,.66);
-      border-bottom:1px solid rgba(10,30,60,.14);
-    }
-    @media (max-width: 980px){ .selHeader{ grid-template-columns: 1fr; } }
-    .selImg{
-      height: 225px; /* photo reduced */
-      border-radius: 14px;
+    .sellCard{
+      margin: 12px;
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.72);
+      border-radius: 18px;
+      box-shadow: 0 14px 34px rgba(10,30,60,.10);
       overflow:hidden;
-      border:1px solid rgba(10,30,60,.12);
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.78), rgba(37,99,235,.12));
     }
-    .selImg img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .selTitleBox{ min-width:0; display:flex; flex-direction:column; gap:10px; }
-    .selTitle{
+    .sellTop{
+      padding: 12px;
+      border-bottom:1px solid rgba(10,30,60,.12);
+      background: rgba(255,255,255,.72);
+    }
+    .sellTitleRow{
+      display:flex; gap:10px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap;
+    }
+    .sellTitle{
       margin:0;
-      font-size: 12px;
-      font-weight: 1100;
+      font-size: 13px;
+      font-weight: 1200;
       letter-spacing:.14em;
       text-transform: uppercase;
       color: rgba(10,30,60,.94);
+      line-height:1.2;
+      min-width:0;
+      flex: 1 1 220px;
     }
-    .metaChips{ display:flex; flex-wrap:wrap; gap:8px; }
-    .chip2{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.66);
-      border-radius: 999px;
-      padding: 6px 9px;
-      font-size: 10px;
-      letter-spacing:.10em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.78);
-      white-space: nowrap;
-      font-weight: 950;
-    }
-    .metaLine{
-      font-size: 11px;
-      color: rgba(10,30,60,.72);
-      letter-spacing:.06em;
-      line-height:1.45;
-    }
-    .waBig{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      border:1px solid rgba(34,197,94,.30);
-      background: rgba(34,197,94,.14);
-      color: rgba(10,30,60,.92);
-      border-radius: 14px;
-      padding: 10px 10px;
-      text-decoration:none;
-      text-transform: uppercase;
-      letter-spacing:.10em;
-      font-weight: 1100;
-      font-size: 11px;
-      box-shadow: 0 12px 28px rgba(34,197,94,.14);
-      width: fit-content;
-    }
-
-    /* Pricing first */
-    .costBoxFull{
-      border:1px solid rgba(10,30,60,.16);
+    .badgeRow{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+    .badge{
+      border:1px solid rgba(10,30,60,.14);
       background: rgba(255,255,255,.70);
-      border-radius: 16px;
-      padding: 12px;
-      margin: 12px;
-      box-shadow: 0 12px 34px rgba(10,30,60,.10);
-    }
-    .costHead{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin-bottom:10px;
-    }
-    .costTitle{
-      margin:0;
-      font-size: 11px;
-      font-weight: 1100;
-      letter-spacing:.16em;
-      text-transform: uppercase;
-    }
-    .offPill{
-      border:1px solid rgba(34,197,94,.30);
-      background: rgba(34,197,94,.14);
       border-radius: 999px;
       padding: 6px 9px;
       font-size: 10px;
       letter-spacing:.12em;
       text-transform: uppercase;
       font-weight: 1100;
-      white-space: nowrap;
+      white-space:nowrap;
     }
-    .priceRows .priceRow{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      padding: 8px 0;
-      border-top:1px solid rgba(10,30,60,.10);
-    }
-    .priceRows .priceRow:first-child{ border-top:none; padding-top:0; }
-    .k{
-      font-size: 10px;
-      letter-spacing:.14em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.62);
-      font-weight: 900;
-    }
-    .v{
-      font-size: 12px;
-      font-weight: 1100;
-      letter-spacing:.06em;
-      color: rgba(10,30,60,.92);
-      text-align:right;
-    }
-    .strike{ text-decoration: line-through; opacity:.65; margin-right:8px; }
-    .totalRow{
-      margin-top:6px;
-      border-top:1px solid rgba(10,30,60,.14);
-      padding-top:10px;
-    }
-    .totalRow .v{ font-size:16px; }
-    .priceNotes{
-      margin-top:10px;
-      border:1px dashed rgba(10,30,60,.18);
-      background: rgba(255,255,255,.58);
-      border-radius: 14px;
-      padding: 10px;
-      font-size: 11px;
-      line-height: 1.45;
-      color: rgba(10,30,60,.74);
-    }
+    .badge.ok{ border-color: rgba(22,163,74,.28); background: rgba(22,163,74,.10); }
+    .badge.hot{ border-color: rgba(245,158,11,.30); background: rgba(245,158,11,.12); }
 
-    /* Compact itinerary after pricing */
-    .itinCompact{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.70);
-      border-radius: 16px;
+    /* carousel */
+    .carousel{
       padding: 12px;
-      margin: 0 12px 12px;
-      box-shadow: 0 12px 34px rgba(10,30,60,.10);
+      border-bottom:1px solid rgba(10,30,60,.12);
+      background: rgba(255,255,255,.62);
     }
-    .itinHead{
-      display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
-      margin-bottom:10px;
+    .carouselMain{
+      height: 250px;
+      border-radius: 16px;
+      overflow:hidden;
+      border:1px solid rgba(10,30,60,.12);
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.78), rgba(37,99,235,.12));
+      position:relative;
     }
-    .itinHead .t{
-      margin:0;
-      font-size: 11px;
-      font-weight: 1100;
-      letter-spacing:.16em;
-      text-transform: uppercase;
+    .carouselMain img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .carNav{
+      display:flex; gap:8px; margin-top:10px; overflow:auto; padding-bottom:2px;
+      -webkit-overflow-scrolling: touch;
     }
-    .dayCompact{
+    .thumb{
+      width:78px; height:54px; border-radius: 12px; overflow:hidden;
       border:1px solid rgba(10,30,60,.14);
       background: rgba(255,255,255,.66);
+      cursor:pointer;
+      flex:0 0 auto;
+      opacity:.86;
+    }
+    .thumb.on{ box-shadow: 0 0 0 3px rgba(37,99,235,.14); opacity:1; }
+    .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+    /* Pricing block (big) */
+    .pricing{
+      padding: 12px;
+      border-bottom:1px solid rgba(10,30,60,.12);
+      background: rgba(255,255,255,.70);
+    }
+    .priceGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      align-items:start;
+    }
+    .pBox{
+      border:1px solid rgba(10,30,60,.14);
+      background: rgba(255,255,255,.72);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 10px 20px rgba(10,30,60,.08);
+    }
+    .pK{
+      font-size: 10px;
+      letter-spacing:.16em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.62);
+      font-weight: 1100;
+    }
+    .pV{
+      margin-top:6px;
+      font-size: 16px;
+      font-weight: 1300;
+      letter-spacing:.06em;
+      color: rgba(10,30,60,.94);
+      line-height:1.15;
+    }
+    .pSub{
+      margin-top:6px;
+      font-size: 11px;
+      color: rgba(10,30,60,.72);
+      letter-spacing:.06em;
+      line-height:1.35;
+    }
+
+    .trustRow{
+      display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;
+    }
+    .trust{
+      border:1px solid rgba(10,30,60,.14);
+      background: rgba(255,255,255,.68);
+      border-radius: 999px;
+      padding: 7px 9px;
+      font-size: 10px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      font-weight: 1100;
+      white-space:nowrap;
+    }
+    .trust.ok{ border-color: rgba(22,163,74,.28); background: rgba(22,163,74,.10); }
+    .trust.acc{ border-color: rgba(37,99,235,.28); background: rgba(37,99,235,.10); }
+
+    .ctaRow{
+      display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;
+    }
+    .ctaBtn{
+      flex: 1 1 200px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
       border-radius: 14px;
+      padding: 11px 12px;
+      text-decoration:none;
+      text-transform: uppercase;
+      letter-spacing:.10em;
+      font-weight: 1200;
+      font-size: 11px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      border:1px solid rgba(10,30,60,.14);
+      background: rgba(255,255,255,.70);
+      color: rgba(10,30,60,.92);
+      box-shadow: 0 12px 26px rgba(10,30,60,.10);
+    }
+    .ctaBtn.wa{
+      border-color: rgba(34,197,94,.30);
+      background: rgba(34,197,94,.14);
+    }
+    .ctaBtn.call{
+      border-color: rgba(37,99,235,.30);
+      background: rgba(37,99,235,.12);
+    }
+
+    .accordion{
+      padding: 12px;
+      background: rgba(255,255,255,.66);
+    }
+    details.acc{
+      border:1px solid rgba(10,30,60,.14);
+      background: rgba(255,255,255,.72);
+      border-radius: 16px;
+      padding: 10px 12px;
+      box-shadow: 0 10px 20px rgba(10,30,60,.08);
+      margin-bottom:10px;
+      overflow:hidden;
+    }
+    details.acc summary{
+      cursor:pointer;
+      font-size: 11px;
+      letter-spacing:.14em;
+      text-transform: uppercase;
+      font-weight: 1200;
+      color: rgba(10,30,60,.88);
+      user-select:none;
+    }
+    .accBody{ margin-top:10px; }
+
+    .itinDays{ display:flex; flex-direction:column; gap:10px; }
+    .dayCompact{
+      border:1px solid rgba(10,30,60,.14);
+      background: rgba(255,255,255,.70);
+      border-radius: 16px;
       padding: 10px;
-      box-shadow: 0 10px 22px rgba(10,30,60,.08);
-      margin-top:10px;
+      box-shadow: 0 10px 18px rgba(10,30,60,.08);
     }
     .dayTitle{
       display:flex;
       justify-content:space-between;
       gap:10px;
-      font-weight:1100;
+      font-weight:1200;
       font-size:11px;
       letter-spacing:.14em;
       text-transform: uppercase;
@@ -507,16 +641,6 @@
       user-select:none;
       white-space:nowrap;
     }
-    details.dayDetails{ margin-top:8px; }
-    details.dayDetails summary{
-      cursor:pointer;
-      font-size:10px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.72);
-      font-weight: 1000;
-    }
-
     .placeBtn{
       display:flex; align-items:center; justify-content:space-between; gap:10px;
       width:100%;
@@ -552,66 +676,92 @@
       flex:0 0 auto;
     }
 
-    /* Nearby suggestions (circular) */
-    .nearWrap{
-      margin-top:10px;
-      border:1px dashed rgba(10,30,60,.18);
-      background: rgba(255,255,255,.58);
-      border-radius: 14px;
-      padding: 10px;
+    .policyGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
     }
-    .nearTop{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px; }
-    .nearTop .k{
-      font-size: 10px; letter-spacing:.16em; text-transform: uppercase; color: rgba(10,30,60,.62);
-      font-weight: 1100;
-    }
-    .nearCards{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-    .nearCircle{
-      width:74px;
-      cursor:pointer;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-      text-align:center;
-    }
-    .nearCircle .img{
-      width:60px; height:60px; border-radius:999px;
-      overflow:hidden; margin: 0 auto;
-      border:1px solid rgba(10,30,60,.16);
+    @media (max-width: 980px){ .policyGrid{ grid-template-columns: 1fr; } }
+    .pol{
+      border:1px solid rgba(10,30,60,.14);
       background: rgba(255,255,255,.70);
-      box-shadow: 0 10px 22px rgba(10,30,60,.08);
+      border-radius: 16px;
+      padding: 10px;
+      box-shadow: 0 10px 18px rgba(10,30,60,.08);
+      font-size: 11px;
+      line-height: 1.45;
+      color: rgba(10,30,60,.84);
     }
-    .nearCircle img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .nearCircle .nm{
-      margin-top:6px;
-      font-size:10px;
-      font-weight:1100;
-      letter-spacing:.10em;
+    .pol b{
+      display:block;
+      font-size: 10px;
+      letter-spacing:.16em;
       text-transform: uppercase;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      color: rgba(10,30,60,.86);
+      color: rgba(10,30,60,.64);
+      margin-bottom:6px;
     }
 
-    /* ===== MAP (RIGHT 24%) ===== */
-    .mapPane{ grid-area:map; position: sticky; top: 12px; }
+    /* Sticky CTA on mobile */
+    .stickyCTA{
+      position: sticky;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: 12px;
+      margin-top: 0;
+      border-radius: 18px;
+      border:1px solid rgba(10,30,60,.14);
+      background: rgba(255,255,255,.86);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 18px 50px rgba(10,30,60,.16);
+      padding: 10px;
+      display:none;
+      z-index: 5;
+    }
+    .stickyRow{ display:flex; gap:10px; }
+    .stickyRow .ctaBtn{ flex: 1 1 0; padding: 12px 12px; }
+
+    /* ===== RIGHT (summary + map toggle) ===== */
+    .rightPane{ grid-area:right; }
     #map{
       width:100%;
       flex:1;
-      min-height: 520px;
+      min-height: 420px;
       background: rgba(255,255,255,.62);
       border-radius: 14px;
     }
-    .mapTools{
-      padding: 10px 12px;
-      border-top:1px solid rgba(10,30,60,.14);
-      display:flex; gap:8px; flex-wrap:wrap;
-      background: rgba(255,255,255,.62);
+    .rightInner{
+      padding: 12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height:0;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
     }
+    .summaryCard{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.70);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 12px 28px rgba(10,30,60,.10);
+    }
+    .summaryCard .k{
+      font-size: 10px;
+      letter-spacing:.16em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.62);
+      font-weight: 1100;
+    }
+    .summaryCard .v{
+      margin-top:6px;
+      font-size: 12px;
+      letter-spacing:.06em;
+      color: rgba(10,30,60,.88);
+      line-height: 1.4;
+      font-weight: 1100;
+    }
+    .toolRow{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
     .toolBtn{
       border:1px solid rgba(10,30,60,.16);
       background: rgba(255,255,255,.66);
@@ -625,6 +775,42 @@
       display:inline-flex; align-items:center; gap:10px;
       user-select:none; white-space: nowrap;
       box-shadow: 0 10px 20px rgba(10,30,60,.08);
+    }
+
+    .mapWrap{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.66);
+      border-radius: 16px;
+      padding: 10px;
+      box-shadow: 0 12px 28px rgba(10,30,60,.10);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      min-height: 520px;
+    }
+    .mapHdr{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding-bottom: 8px;
+      border-bottom:1px solid rgba(10,30,60,.12);
+      margin-bottom:10px;
+    }
+    .mapHdr .ttl{
+      font-size: 11px;
+      font-weight: 1200;
+      letter-spacing:.16em;
+      text-transform: uppercase;
+    }
+    .pill{
+      border:1px solid rgba(10,30,60,.14);
+      background: rgba(255,255,255,.72);
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 10px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      font-weight: 1100;
+      white-space:nowrap;
+      color: rgba(10,30,60,.84);
     }
 
     /* ===== BOT TOAST ===== */
@@ -720,25 +906,121 @@
       color: rgba(10,30,60,.88);
     }
 
-    /* ===== PHONE COMPATIBILITY (stack + center first) ===== */
+    /* ===== COMPARE MODAL ===== */
+    .compareModal{
+      position:fixed; inset:0; z-index: 22000;
+      background: rgba(10,30,60,.38);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 14px;
+    }
+    .compareModal.show{ display:flex; }
+    .cmpCard{
+      width:min(1100px, 100%);
+      border-radius: 18px;
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.94);
+      box-shadow: 0 30px 90px rgba(10,30,60,.26);
+      overflow:hidden;
+    }
+    .cmpTop{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding: 10px 12px;
+      border-bottom:1px solid rgba(10,30,60,.12);
+      background: rgba(255,255,255,.84);
+    }
+    .cmpTop .ttl{
+      font-size: 12px;
+      font-weight: 1200;
+      letter-spacing:.14em;
+      text-transform: uppercase;
+    }
+    .cmpBody{
+      padding: 12px;
+      overflow:auto;
+      max-height: min(72vh, 720px);
+    }
+    table.cmp{
+      width:100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 12px;
+    }
+    table.cmp th, table.cmp td{
+      border:1px solid rgba(10,30,60,.12);
+      padding: 10px;
+      vertical-align: top;
+      background: rgba(255,255,255,.72);
+    }
+    table.cmp th{
+      background: rgba(37,99,235,.08);
+      font-size: 10px;
+      letter-spacing:.14em;
+      text-transform: uppercase;
+      font-weight: 1200;
+      color: rgba(10,30,60,.84);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    /* Compare bar */
+    .compareBar{
+      position:fixed;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      z-index: 21000;
+      display:none;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.90);
+      border-radius: 16px;
+      padding: 10px 12px;
+      box-shadow: 0 26px 70px rgba(10,30,60,.18);
+      backdrop-filter: blur(12px);
+      max-width: min(980px, calc(100vw - 28px));
+      margin: 0 auto;
+    }
+    .compareBar.show{ display:flex; }
+    .compareBar .txt{
+      font-size: 11px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.78);
+      font-weight: 1100;
+      min-width:0;
+    }
+    .compareBar .actions{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+    .compareBar .actions .toolBtn{ padding: 10px 12px; }
+
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 1100px){
       .main{
         grid-template-columns: 1fr;
         grid-template-areas:
           "center"
           "left"
-          "map";
+          "right";
       }
       .pane{ height:auto; max-height:none; min-height:unset; }
-      .mapPane{ position:relative; top:auto; }
-      #map{ min-height: 420px; }
       .heroRight{ justify-content:flex-start; }
+      .stickyCTA{ display:block; }
+      .centerScroll{ padding-bottom: 18px; }
+      .mapWrap{ min-height: 420px; }
+      #map{ min-height: 360px; }
     }
     @media (max-width: 520px){
       .shell{ padding: 10px 8px 16px; }
       .logo{ width:52px; height:52px; }
       .chip{ padding: 8px 9px; font-size: 10.5px; }
-      .selImg{ height: 205px; }
+      .carouselMain{ height: 220px; }
+      .pkgTop{ grid-template-columns: 86px 1fr; }
+      .pkgThumb{ width:86px; height:66px; }
+      .stickyRow .ctaBtn{ font-size: 10.5px; }
     }
     @media (prefers-reduced-motion: reduce){
       .aurora{ animation:none; }
@@ -782,8 +1064,8 @@
       <div class="pane leftPane">
         <div class="paneHdr">
           <div>
-            <p class="t">Trip Filters</p>
-            <div class="s">Start + days + tier</div>
+            <p class="t">Search & Filters</p>
+            <div class="s">Market style: search + budget</div>
           </div>
           <div class="s" id="leftHint">Auto loaded</div>
         </div>
@@ -791,18 +1073,23 @@
         <div class="sideInner">
           <div class="sideCard">
             <div class="field">
-              <label>Start City / Pickup</label>
-              <input id="startInp" list="startList" placeholder="E.g. SHIMLA / CHANDIGARH / DELHI" autocomplete="off">
-              <datalist id="startList"></datalist>
+              <label>Search Package / Place</label>
+              <input id="searchInp" placeholder="Shimla • Manali • Kasol • Spiti…" autocomplete="off">
+            </div>
+
+            <div class="quickChips" aria-label="Quick filters">
+              <div class="qchip" data-tag="family">Family</div>
+              <div class="qchip" data-tag="couple">Couples</div>
+              <div class="qchip" data-tag="weekend">Weekend</div>
+              <div class="qchip" data-tag="adventure">Adventure</div>
+              <div class="qchip" data-tag="snow">Snow</div>
+              <div class="qchip" data-tag="summer">Summer</div>
             </div>
 
             <div class="field" style="margin-top:10px;">
-              <label>Package Tier</label>
-              <select id="visitType">
-                <option value="budget">BUDGET</option>
-                <option value="premium">PREMIUM</option>
-                <option value="luxury">LUXURY</option>
-              </select>
+              <label>Start City / Pickup</label>
+              <input id="startInp" list="startList" placeholder="E.g. SHIMLA / CHANDIGARH / DELHI" autocomplete="off">
+              <datalist id="startList"></datalist>
             </div>
 
             <div class="field" style="margin-top:10px;">
@@ -816,10 +1103,50 @@
             </div>
 
             <div class="field" style="margin-top:10px;">
+              <label>Budget / Person (Max)</label>
+              <div class="rangeRow">
+                <input id="budgetRange" type="range" min="0" max="30000" step="500" value="0">
+                <div class="rangePill" id="budgetPill">ANY</div>
+              </div>
+              <div style="margin-top:8px; font-size:11px; color:rgba(10,30,60,.70); letter-spacing:.06em;">
+                Uses your <b>cost breakdown</b> node first.
+              </div>
+            </div>
+
+            <div class="field" style="margin-top:10px;">
+              <label>Hotel Category</label>
+              <select id="hotelSel">
+                <option value="">ANY</option>
+                <option value="3">3 STAR</option>
+                <option value="4">4 STAR</option>
+                <option value="5">5 STAR</option>
+              </select>
+            </div>
+
+            <div class="field" style="margin-top:10px;">
+              <label>Season</label>
+              <select id="seasonSel">
+                <option value="">ANY</option>
+                <option value="summer">SUMMER</option>
+                <option value="winter">WINTER</option>
+                <option value="monsoon">MONSOON</option>
+              </select>
+            </div>
+
+            <div class="field" style="margin-top:10px;">
               <label>Travellers (Pax)</label>
               <select id="paxSel">
                 <option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
                 <option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+              </select>
+            </div>
+
+            <div class="field" style="margin-top:10px;">
+              <label>Tier (kept)</label>
+              <select id="visitType">
+                <option value="budget">BUDGET</option>
+                <option value="premium">PREMIUM</option>
+                <option value="luxury">LUXURY</option>
               </select>
             </div>
 
@@ -829,14 +1156,13 @@
             </div>
           </div>
 
-          <div class="otherWrap">
-            <div class="otherHdr">
-              <div class="h">All Packages</div>
-              <div class="xBtn" id="closeSelectedBtn">Close</div>
-            </div>
-            <div class="otherList" id="otherPkgList">
-              <div class="otherHint">Packages will appear here after data load. Tap to open in center.</div>
-            </div>
+          <div class="listHdr">
+            <div class="h">Packages</div>
+            <div class="xBtn" id="closeSelectedBtn">Close</div>
+          </div>
+
+          <div class="pkgList" id="pkgList">
+            <div class="hint">Packages will appear here after data load. Tap to open in center.</div>
           </div>
         </div>
       </div>
@@ -845,30 +1171,61 @@
       <div class="pane centerPane">
         <div class="paneHdr">
           <div>
-            <p class="t">Selected Package</p>
-            <div class="s">Pricing first → itinerary</div>
+            <p class="t">Booking View</p>
+            <div class="s">Price → trust → details</div>
           </div>
           <div class="s" id="pkgCount">—</div>
         </div>
+
         <div class="centerScroll" id="centerScroll">
           <div class="emptyState">Select any package from the left list to view details here.</div>
+        </div>
+
+        <!-- Sticky CTA (mobile) -->
+        <div class="stickyCTA" id="stickyCTA" aria-label="Sticky booking actions">
+          <div class="stickyRow">
+            <a class="ctaBtn wa" id="stickyWA" href="#" target="_blank" rel="noopener">WhatsApp</a>
+            <a class="ctaBtn call" id="stickyCALL" href="#">Call</a>
+          </div>
         </div>
       </div>
 
       <!-- RIGHT -->
-      <div class="pane mapPane">
+      <div class="pane rightPane">
         <div class="paneHdr">
           <div>
-            <p class="t">Live Route Map</p>
-            <div class="s">OSRM road polyline + stop pins</div>
+            <p class="t">Trip Summary</p>
+            <div class="s">Map + route tools</div>
           </div>
           <div class="s" id="kmBadge">—</div>
         </div>
-        <div id="map"></div>
-        <div class="mapTools">
-          <div class="toolBtn" id="showAllStopsBtn">Show Stops</div>
-          <div class="toolBtn" id="showStartEndBtn">Start/End Only</div>
-          <div class="toolBtn" id="toggleTilesBtn">Toggle Tiles</div>
+
+        <div class="rightInner">
+          <div class="summaryCard">
+            <div class="k">Selected</div>
+            <div class="v" id="sumTitle">—</div>
+            <div style="height:8px"></div>
+            <div class="k">Start / Days</div>
+            <div class="v" id="sumMeta">—</div>
+            <div class="toolRow">
+              <div class="toolBtn" id="showAllStopsBtn">Show Stops</div>
+              <div class="toolBtn" id="showStartEndBtn">Start/End Only</div>
+              <div class="toolBtn" id="toggleTilesBtn">Toggle Tiles</div>
+            </div>
+          </div>
+
+          <div class="mapWrap">
+            <div class="mapHdr">
+              <div class="ttl">Live Route Map</div>
+              <div class="pill" id="mapPill">OSRM</div>
+            </div>
+            <div id="map"></div>
+          </div>
+
+          <div class="summaryCard">
+            <div class="k">Support</div>
+            <div class="v">WhatsApp booking + quick reply. <br/>You can add cancellation policy & payment steps here.</div>
+          </div>
         </div>
       </div>
     </div>
@@ -899,48 +1256,33 @@
     </div>
   </div>
 
-  <!-- Firebase Loader -->
+  <!-- Compare bar + modal -->
+  <div class="compareBar" id="compareBar">
+    <div class="txt" id="compareTxt">Compare: 0 selected</div>
+    <div class="actions">
+      <div class="toolBtn" id="openCompareBtn">Compare</div>
+      <div class="toolBtn" id="clearCompareBtn">Clear</div>
+    </div>
+  </div>
+
+  <div class="compareModal" id="compareModal" role="dialog" aria-modal="true">
+    <div class="cmpCard">
+      <div class="cmpTop">
+        <div class="ttl">Package Comparison</div>
+        <button class="placeClose" id="cmpClose" type="button">Close</button>
+      </div>
+      <div class="cmpBody" id="cmpBody"></div>
+    </div>
+  </div>
+
+  <!-- ONE MODULE: Firebase + App (fixes ordering issues) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
-      authDomain: "revnue-records.firebaseapp.com",
-      databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "revnue-records",
-      storageBucket: "revnue-records.firebasestorage.app",
-      messagingSenderId: "182348503564",
-      appId: "1:182348503564:web:480085405b09177245ac29"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    async function fetchNode(path){
-      // NOTE: using ref(db, path) is the correct direct reference
-      const snap = await get(ref(db, path));
-      return snap.exists() ? snap.val() : {};
-    }
-
-    window.hxFetchFirebaseAndCache = async function(){
-      const [templates, places, costs] = await Promise.all([
-        fetchNode("templates"),
-        fetchNode("places"),
-        fetchNode("package_cost_breakdown")
-      ]);
-
-      sessionStorage.setItem("HX_TEMPLATES", JSON.stringify(templates || {}));
-      sessionStorage.setItem("HX_PLACES", JSON.stringify(places || {}));
-      sessionStorage.setItem("HX_COSTS", JSON.stringify(costs || {}));
-      return { templates, places, costs };
-    };
-  </script>
-
-  <script>
     const $ = (id)=>document.getElementById(id);
 
-    /* toast */
+    /* ===== Toast + status ===== */
     function showBot(msg){
       const el = $("botToast");
       el.textContent = msg || "";
@@ -950,7 +1292,7 @@
     }
     function setStatus(msg){ $("statusLine").textContent = msg; }
 
-    /* safe */
+    /* ===== Safe helpers ===== */
     function escapeHtml(str){
       return String(str ?? "")
         .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
@@ -959,7 +1301,6 @@
     function safeUpper(x){ return String(x ?? "").trim().toUpperCase(); }
     function safeLower(x){ return String(x ?? "").trim().toLowerCase(); }
     function rupees(n){ return "₹" + Math.round(Number(n)||0).toLocaleString("en-IN"); }
-
     function splitCSV(s){
       return String(s||"")
         .split(",")
@@ -967,20 +1308,97 @@
         .filter(Boolean);
     }
 
-    /* discount stable 10–20 */
-    function hashToDiscount(key){
-      const s = String(key||"");
-      let h = 0;
-      for(let i=0;i<s.length;i++) h = (h*31 + s.charCodeAt(i)) >>> 0;
-      return 10 + (h % 11); // 10..20
+    /* ===== Firebase ===== */
+    const firebaseConfig = {
+      apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
+      authDomain: "revnue-records.firebaseapp.com",
+      databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "revnue-records",
+      storageBucket: "revnue-records.firebasestorage.app",
+      messagingSenderId: "182348503564",
+      appId: "1:182348503564:web:480085405b09177245ac29"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    async function fetchNode(path){
+      const snap = await get(ref(db, path));
+      return snap.exists() ? snap.val() : {};
     }
 
-    /* places helpers */
+    /* ===== Cache with TTL (market-ready) ===== */
+    const CACHE_KEY = "HX_CACHE_V2";
+    const CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6 hours
+
+    function loadFromCache(){
+      try{
+        const raw = sessionStorage.getItem(CACHE_KEY);
+        if(!raw) return null;
+        const obj = JSON.parse(raw);
+        if(!obj?.savedAt || !obj?.data) return null;
+        if(Date.now() - obj.savedAt > CACHE_TTL_MS) return null;
+        return obj.data;
+      }catch(e){ return null; }
+    }
+    function saveToCache(data){
+      try{
+        sessionStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), data }));
+      }catch(e){}
+    }
+
+    async function fetchAllFirebase(){
+      const [templates, places, costs, discounts] = await Promise.all([
+        fetchNode("templates"),
+        fetchNode("places"),
+        fetchNode("package_cost_breakdown"),
+        fetchNode("package_discounts") // OPTIONAL node (recommended)
+      ]);
+      const data = { templates: templates||{}, places: places||{}, costs: costs||{}, discounts: discounts||{} };
+      saveToCache(data);
+      return data;
+    }
+
+    /* ===== Data ===== */
+    let TEMPLATES = {};
+    let PLACES = {};
+    let COSTS = {};
+    let DISCOUNTS = {};
+
+    let STARTS = [];
+    let ACTIVE_KEYS = [];
+    let CURRENT_KEY = "";
+    let shownSuggestions = new Set();
+
+    /* compare */
+    const COMPARE = new Set(); // keys
+
+    /* ===== Normalize ===== */
+    function normalizeCostsKeys(){
+      const fixed = {};
+      for(const [k,v] of Object.entries(COSTS || {})){
+        fixed[String(k).trim().toLowerCase()] = v;
+      }
+      COSTS = fixed;
+    }
+    function normalizeDiscountKeys(){
+      const fixed = {};
+      for(const [k,v] of Object.entries(DISCOUNTS || {})){
+        fixed[String(k).trim().toLowerCase()] = v;
+      }
+      DISCOUNTS = fixed;
+    }
+
+    /* ===== Place helpers ===== */
     function placeIdAny(p, key){ return String(p?.place_id || p?.id || key || "").trim(); }
     function placeNameAny(p, key){ return String(p?.name || p?.["Location Name"] || p?.title || key || "PLACE").trim(); }
     function latAny(p){ return Number(p?.latitude ?? p?.lat ?? p?.Latitude); }
     function lngAny(p){ return Number(p?.longitude ?? p?.lng ?? p?.Longitude); }
     function districtAny(p){ return String(p?.district || p?.District || "").trim().toUpperCase(); }
+    function hotelStarsAny(tpl){
+      const h = String(tpl?.hotel_category || "").trim();
+      const m = h.match(/(\d)\s*star/i);
+      return m ? m[1] : "";
+    }
 
     function haversineKm(lat1, lon1, lat2, lon2){
       const toRad = (d)=> (d*Math.PI)/180;
@@ -992,7 +1410,7 @@
       return 2*R*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     }
 
-    /* image helpers */
+    /* ===== Images ===== */
     const IMG_BASE = "./Places/";
     const IMG_MAX = 4;
 
@@ -1013,27 +1431,23 @@
       }
       return Array.from(new Set(out));
     }
-    function choosePackageHeroImage(tpl){
-      const direct = String(tpl.cover || tpl.photo || tpl.image || "").trim();
-      if(direct) return direct;
-      const d1 = splitCSV(tpl.day1_place_ids || "")[0];
-      if(d1 && PLACES[d1]){
-        const photos = getPlacePhotos(PLACES[d1], d1);
-        if(photos[0]) return photos[0];
-      }
-      return "./style/n1.jpg";
+
+    function getPackagePhotos(tpl){
+      const out = [];
+      const direct = [tpl.cover, tpl.photo, tpl.image].map(x=>String(x||"").trim()).filter(Boolean);
+      direct.forEach(x=> out.push(x));
+      const d1 = splitCSV(tpl.day1_place_ids || "");
+      d1.slice(0,3).forEach(pid=>{
+        if(PLACES[pid]){
+          const photos = getPlacePhotos(PLACES[pid], pid);
+          photos.slice(0,2).forEach(p=> out.push(p));
+        }
+      });
+      out.push("./style/n1.jpg");
+      return Array.from(new Set(out)).slice(0, 8);
     }
 
-    /* =========================================================
-       PRICING: USE package_cost_breakdown FIRST (NO REMOVALS)
-       ========================================================= */
-    function normalizeCostsKeys(){
-      const fixed = {};
-      for(const [k,v] of Object.entries(COSTS || {})){
-        fixed[String(k).trim().toLowerCase()] = v;
-      }
-      COSTS = fixed;
-    }
+    /* ===== Pricing: COSTS FIRST ===== */
     function getTplKey(tpl){
       return String(tpl?.package_id || tpl?.key || tpl?.id || "").trim().toLowerCase();
     }
@@ -1042,7 +1456,6 @@
       return (pid && COSTS && COSTS[pid]) ? COSTS[pid] : null;
     }
     function pickBasePrice(tpl, tier, fallbackKey){
-      // 1) from COSTS node (preferred)
       const row = getCostRowForTemplate(tpl, fallbackKey);
       if(row){
         const b = Number(row.budget_price_per_person || 0);
@@ -1052,7 +1465,6 @@
         if(tier==="premium") return p || b || l || 0;
         return b || p || l || 0;
       }
-      // 2) fallback: template fields (kept)
       const b = Number(tpl.budget_price_per_person || tpl.budget_price || 0);
       const p = Number(tpl.premium_price_per_person || tpl.premium_price || 0);
       const l = Number(tpl.luxury_price_per_person || tpl.luxury_price || 0);
@@ -1061,7 +1473,15 @@
       return b || p || l || 0;
     }
 
-    /* Map */
+    /* Discount: MARKET READY (NO random). Use Firebase node package_discounts/{packageId} */
+    function getDiscountPercentForKey(tpl, fallbackKey){
+      const pid = (getTplKey(tpl) || String(fallbackKey||"").trim().toLowerCase());
+      const row = DISCOUNTS?.[pid];
+      const d = Number(row?.discount_percent ?? row?.discount ?? 0);
+      return (isFinite(d) && d>0 && d<=70) ? d : 0;
+    }
+
+    /* ===== Map ===== */
     let map, tile, tileDark, markersLayer, routeLine;
     let showMode = "all";
     let tilesDark = false;
@@ -1097,6 +1517,18 @@
       map.fitBounds(group.getBounds().pad(0.18));
     }
 
+    function dedupeLatLngs(latlngs){
+      const out = [];
+      const seen = new Set();
+      for(const [lat,lng] of latlngs){
+        const k = `${Number(lat).toFixed(5)}|${Number(lng).toFixed(5)}`;
+        if(seen.has(k)) continue;
+        seen.add(k);
+        out.push([lat,lng]);
+      }
+      return out;
+    }
+
     async function fetchOSRMRoute(latlngs){
       const pts = latlngs.slice(0, 60).map(([lat,lng])=> `${lng},${lat}`).join(";");
       const url = `https://router.project-osrm.org/route/v1/driving/${pts}?overview=full&geometries=geojson`;
@@ -1106,30 +1538,7 @@
       return json?.routes?.[0] || null;
     }
 
-    /* Data */
-    let TEMPLATES = {};
-    let PLACES = {};
-    let COSTS = {};
-
-    let STARTS = [];
-    let ACTIVE_KEYS = [];
-    let CURRENT_KEY = "";
-    let shownSuggestions = new Set();
-
-    function loadFromCache(){
-      try{
-        const t = sessionStorage.getItem("HX_TEMPLATES");
-        const p = sessionStorage.getItem("HX_PLACES");
-        const c = sessionStorage.getItem("HX_COSTS");
-        if(!t || !p || !c) return false;
-        TEMPLATES = JSON.parse(t) || {};
-        PLACES = JSON.parse(p) || {};
-        COSTS = JSON.parse(c) || {};
-        normalizeCostsKeys(); // IMPORTANT
-        return true;
-      }catch(e){ return false; }
-    }
-
+    /* ===== Start list ===== */
     function buildStartList(){
       const counts = new Map();
       Object.values(TEMPLATES).forEach(t=>{
@@ -1152,9 +1561,51 @@
       return (isFinite(v) && v>0) ? v : 2;
     }
 
+    function getBudgetMax(){
+      const v = Number($("budgetRange")?.value || 0);
+      return (isFinite(v) && v>0) ? v : 0; // 0 = any
+    }
+
+    function pillBudget(){
+      const max = getBudgetMax();
+      $("budgetPill").textContent = max ? `≤ ${rupees(max)}` : "ANY";
+    }
+
+    /* ===== Market filtering ===== */
+    const quickTags = new Set(); // active quick tags
+    function tplMatchesQuickTags(tpl){
+      if(!quickTags.size) return true;
+      const hay = [
+        tpl.package_name, tpl.route_name, tpl.category, tpl.ideal_for, tpl.best_season, tpl.notes, tpl.inclusions
+      ].map(x=>String(x||"").toLowerCase()).join(" | ");
+
+      // mapping tags to keywords
+      const map = {
+        family: ["family","kids","child","children"],
+        couple: ["couple","honeymoon","romantic"],
+        weekend: ["weekend","short","2 day","3 day"],
+        adventure: ["adventure","trek","rafting","paragliding","offbeat"],
+        snow: ["snow","winter","ski","ice"],
+        summer: ["summer"]
+      };
+
+      for(const tag of quickTags){
+        const keys = map[tag] || [tag];
+        const ok = keys.some(k=> hay.includes(k));
+        if(!ok) return false;
+      }
+      return true;
+    }
+
     function filterKeys(){
       const start = safeUpper($("startInp").value || "");
       const days = String($("daysSel").value || "").trim();
+      const q = safeLower($("searchInp").value || "");
+      const hotelReq = String($("hotelSel").value || "").trim();
+      const seasonReq = String($("seasonSel").value || "").trim();
+      const tier = safeLower($("visitType").value || "budget");
+      const budgetMax = getBudgetMax();
+
       const list = Object.entries(TEMPLATES).map(([k,v])=>({ key:k, ...v }));
 
       const filtered = list.filter(t=>{
@@ -1165,24 +1616,58 @@
         if(days){
           if(String(t.days||"") !== days) return false;
         }
+        if(q){
+          const hay = [
+            t.package_name, t.route_name, t.route_path, t.category, t.district,
+            t.ideal_for, t.best_season, t.hotel_category, t.inclusions
+          ].map(x=>String(x||"").toLowerCase()).join(" | ");
+          if(!hay.includes(q)) return false;
+        }
+        if(hotelReq){
+          const hs = hotelStarsAny(t);
+          if(hs && hs !== hotelReq) return false;
+          // if template doesn't have star info, don't hard reject
+        }
+        if(seasonReq){
+          const s = String(t.best_season||"").toLowerCase();
+          if(s && !s.includes(seasonReq)) return false;
+        }
+        if(!tplMatchesQuickTags(t)) return false;
+
+        // budget filter uses actual pricing
+        if(budgetMax){
+          const base = pickBasePrice(t, tier, t.key);
+          if(base && base > budgetMax) return false;
+        }
         return true;
       });
 
-      filtered.sort((a,b)=> (Number(a.days||0)-Number(b.days||0)) || String(a.package_name||a.route_name||a.key).localeCompare(String(b.package_name||b.route_name||b.key)));
+      filtered.sort((a,b)=>
+        (Number(a.days||0)-Number(b.days||0)) ||
+        String(a.package_name||a.route_name||a.key).localeCompare(String(b.package_name||b.route_name||b.key))
+      );
       return filtered.map(x=>x.key);
     }
 
+    /* ===== Render list (product cards) ===== */
     function renderLeftList(){
       ACTIVE_KEYS = filterKeys();
       $("pkgCount").textContent = `${ACTIVE_KEYS.length} packages`;
 
-      const host = $("otherPkgList");
+      const host = $("pkgList");
       host.innerHTML = "";
 
       if(!ACTIVE_KEYS.length){
-        host.innerHTML = `<div class="otherHint">No packages found. Try Reset.</div>`;
+        host.innerHTML = `<div class="hint">No packages found. Try Reset.</div>`;
         return;
       }
+
+      // market: auto-select first package if none selected
+      if(!CURRENT_KEY || !ACTIVE_KEYS.includes(CURRENT_KEY)){
+        CURRENT_KEY = ACTIVE_KEYS[0] || "";
+      }
+
+      const tier = safeLower($("visitType").value || "budget");
 
       ACTIVE_KEYS.forEach(key=>{
         const t = TEMPLATES[key] || {};
@@ -1190,29 +1675,75 @@
         const days = Number(t.days||0) || "";
         const district = String(t.district||"").toUpperCase();
         const drive = String(t.drive_level||"").toUpperCase();
+        const start = safeUpper(t.start_point || t.start || "");
+        const photos = getPackagePhotos(t);
+        const base = pickBasePrice(t, tier, key);
+        const off = getDiscountPercentForKey(t, key);
+        const show = off ? Math.round(base * (1 - off/100)) : base;
 
         const card = document.createElement("div");
-        card.className = "pkgSide" + (key===CURRENT_KEY ? " active" : "");
+        card.className = "pkgCard" + (key===CURRENT_KEY ? " active" : "");
         card.innerHTML = `
-          <div class="pkgSideTop">
-            <div class="t1">${escapeHtml(title)}</div>
+          <div class="pkgTop">
+            <div class="pkgThumb"><img src="${escapeHtml(photos[0]||'./style/n1.jpg')}" onerror="this.src='./style/n1.jpg'"></div>
+            <div class="pkgInfo">
+              <p class="pkgTitle">${escapeHtml(title)}</p>
+              <div class="pkgMeta">
+                ${days ? `<span>${days}D</span>` : ""}
+                ${start ? `<span>${escapeHtml(start)}</span>` : ""}
+                ${district ? `<span>${escapeHtml(district)}</span>` : ""}
+                ${drive ? `<span>${escapeHtml(drive)} Drive</span>` : ""}
+              </div>
+            </div>
           </div>
-          <div class="pkgSideRow">
-            ${days ? `<span>${days}D</span>` : ""}
-            ${district ? `<span>${escapeHtml(district)}</span>` : ""}
-            ${drive ? `<span>${escapeHtml(drive)}</span>` : ""}
+          <div class="pkgBottom">
+            <div class="priceLine">
+              Starting from
+              <b>${rupees(show)} / person</b>
+            </div>
+            <div class="miniTags">
+              <span class="itag ok">Hotel</span>
+              <span class="itag acc">Cab</span>
+            </div>
+          </div>
+          <div class="compareRow">
+            <label class="chk" title="Select for comparison">
+              <input type="checkbox" data-ckey="${escapeHtml(key)}" ${COMPARE.has(key) ? "checked" : ""}/>
+              Compare
+            </label>
+            <div class="pill" style="border-color: rgba(245,158,11,.30); background: rgba(245,158,11,.10);">
+              ${off ? `${off}% off` : "Deal"}
+            </div>
           </div>
         `;
-        card.onclick = ()=>{
+
+        card.addEventListener("click", (e)=>{
+          // don't trigger selection if click on checkbox
+          const target = e.target;
+          if(target && target.tagName === "INPUT") return;
+
           CURRENT_KEY = key;
-          renderLeftList();
+          renderLeftList(); // keep active state
           renderSelected();
-        };
+        });
+
         host.appendChild(card);
       });
+
+      host.querySelectorAll('input[type="checkbox"][data-ckey]').forEach(inp=>{
+        inp.addEventListener("change", ()=>{
+          const k = inp.getAttribute("data-ckey");
+          if(!k) return;
+          if(inp.checked) COMPARE.add(k); else COMPARE.delete(k);
+          syncCompareUI();
+        });
+      });
+
+      // also update selection view if auto-selected
+      renderSelected();
     }
 
-    /* Nearby: unique across all days */
+    /* ===== Nearby suggestions ===== */
     function findNearby(anchorId, maxKm=55, limit=8){
       const anchor = PLACES[anchorId];
       if(!anchor) return [];
@@ -1239,7 +1770,12 @@
       return out.slice(0, limit);
     }
 
-    /* Place modal (no lat/lng display) */
+    /* ===== Place Modal ===== */
+    function lockBody(lock){
+      if(lock) document.body.style.overflow = "hidden";
+      else document.body.style.overflow = "";
+    }
+
     function openPlaceModal({ place, dayNum, orderNum, placeId }){
       const modal = $("placeModal");
       const ttl = $("pmTitle");
@@ -1299,9 +1835,14 @@
       }
 
       modal.classList.add("show");
+      lockBody(true);
     }
-    function closePlaceModal(){ $("placeModal")?.classList.remove("show"); }
+    function closePlaceModal(){
+      $("placeModal")?.classList.remove("show");
+      lockBody(false);
+    }
 
+    /* ===== Itinerary + Map rendering ===== */
     async function renderItineraryAndMap(tpl){
       const days = Number(tpl.days || 0) || 0;
       const container = document.getElementById("itinDays");
@@ -1381,31 +1922,31 @@
         det.appendChild(detInner);
         dayWrap.appendChild(det);
 
+        // Nearby suggestions (kept but compact)
         const anchorId = ids[ids.length-1] || ids[0];
         const nearby = findNearby(anchorId, 55, 10)
           .filter(x => !shownSuggestions.has(x.id))
           .filter(x => !allDayPlaceIds.has(x.id))
-          .slice(0, 4);
+          .slice(0, 3);
 
         nearby.forEach(x=> shownSuggestions.add(x.id));
 
         if(nearby.length){
           const near = document.createElement("div");
-          near.className = "nearWrap";
+          near.style.marginTop = "10px";
           near.innerHTML = `
-            <div class="nearTop"><div class="k">Nearby Suggestions</div></div>
-            <div class="nearCards">
+            <div style="font-size:10px; letter-spacing:.16em; text-transform: uppercase; color: rgba(10,30,60,.62); font-weight:1100; margin-bottom:8px;">
+              Nearby Suggestions
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
               ${nearby.map(x=>`
-                <div class="nearCircle" data-pid="${escapeHtml(x.id)}">
-                  <div class="img"><img src="${escapeHtml(x.img)}" onerror="this.src='./style/n1.jpg'"></div>
-                  <div class="nm">${escapeHtml(x.name)}</div>
-                </div>
+                <div class="stopChip" data-pid="${escapeHtml(x.id)}">${escapeHtml(x.name)}</div>
               `).join("")}
             </div>
           `;
           dayWrap.appendChild(near);
 
-          near.querySelectorAll(".nearCircle").forEach(el=>{
+          near.querySelectorAll(".stopChip[data-pid]").forEach(el=>{
             el.addEventListener("click", ()=>{
               const pid = el.getAttribute("data-pid");
               const p = PLACES[pid] || {};
@@ -1434,9 +1975,11 @@
         invalidateMapSoon();
       }
 
-      if(allStops.length >= 2){
+      const dedupStops = dedupeLatLngs(allStops);
+
+      if(dedupStops.length >= 2){
         try{
-          const route = await fetchOSRMRoute(allStops);
+          const route = await fetchOSRMRoute(dedupStops);
           if(route?.geometry?.coordinates?.length){
             const latlngs = route.geometry.coordinates.map(c=>[c[1], c[0]]);
             routeLine = L.polyline(latlngs, { weight: 4, opacity: 0.85 }).addTo(map);
@@ -1455,11 +1998,16 @@
       $("showStartEndBtn").onclick = ()=>{ showMode = "ends"; applyShowMode(); showBot("Showing start/end only"); };
     }
 
+    /* ===== Selected (Market: selling card + sticky CTA) ===== */
     function renderSelected(){
       const host = $("centerScroll");
+
       if(!CURRENT_KEY){
         host.innerHTML = `<div class="emptyState">Select any package from the left list to view details here.</div>`;
         clearMap();
+        $("sumTitle").textContent = "—";
+        $("sumMeta").textContent = "—";
+        $("stickyCTA").style.display = "none";
         return;
       }
 
@@ -1467,11 +2015,9 @@
       const tier = safeLower($("visitType").value || "budget");
       const pax = getSelectedPax();
 
-      // COSTS-first pricing (key passed as fallback)
       const base = pickBasePrice(tpl, tier, CURRENT_KEY);
-
-      const offPct = hashToDiscount(CURRENT_KEY);
-      const discounted = Math.round(base * (1 - offPct/100));
+      const offPct = getDiscountPercentForKey(tpl, CURRENT_KEY);
+      const discounted = offPct ? Math.round(base * (1 - offPct/100)) : base;
       const total = discounted * pax;
 
       const title = String(tpl.package_name || tpl.route_name || CURRENT_KEY || "PACKAGE");
@@ -1491,145 +2037,302 @@
       const inclusions = String(tpl.inclusions || "").trim();
       const exclusions = String(tpl.exclusions || "").trim();
 
-      const heroImg = choosePackageHeroImage(tpl);
+      const photos = getPackagePhotos(tpl);
+      const mainPhoto = photos[0] || "./style/n1.jpg";
 
+      // WhatsApp + call
       const msg = encodeURIComponent(`Hi Chandan, I want to book: ${title} | ${days} days | ${tier.toUpperCase()} | Pax: ${pax}`);
       const wa = `https://wa.me/917018138847?text=${msg}`;
+      const call = `tel:+917018138847`;
+
+      $("stickyWA").href = wa;
+      $("stickyCALL").href = call;
+      $("stickyCTA").style.display = "";
+
+      // Summary right panel
+      $("sumTitle").textContent = title;
+      $("sumMeta").textContent = `${start || "—"} • ${days ? days + " days" : "—"} • ${tier.toUpperCase()}`;
 
       host.innerHTML = `
-        <div class="selHeader">
-          <div class="selImg">
-            <img src="${escapeHtml(heroImg)}" alt="${escapeHtml(title)}" onerror="this.src='./style/n1.jpg'">
-          </div>
-          <div class="selTitleBox">
-            <h2 class="selTitle">${escapeHtml(title)}</h2>
-            <div class="metaChips">
-              ${days ? `<span class="chip2">${days} Days</span>` : ""}
-              ${cat ? `<span class="chip2">${escapeHtml(cat)}</span>` : ""}
-              ${drive ? `<span class="chip2">${escapeHtml(drive)} Drive</span>` : ""}
-              ${hotel ? `<span class="chip2">${escapeHtml(hotel)}</span>` : ""}
+        <div class="sellCard">
+          <div class="sellTop">
+            <div class="sellTitleRow">
+              <h2 class="sellTitle">${escapeHtml(title)}</h2>
+              <div class="badgeRow">
+                <span class="badge ok">Verified</span>
+                <span class="badge hot">Best Seller</span>
+                ${offPct ? `<span class="badge" style="border-color: rgba(34,197,94,.30); background: rgba(34,197,94,.12);">${offPct}% OFF</span>` : ``}
+              </div>
             </div>
-            <div class="metaLine">
+            <div style="margin-top:8px; font-size:11px; color: rgba(10,30,60,.74); letter-spacing:.06em; line-height:1.45;">
               ${start ? `<b>Start:</b> ${escapeHtml(start)}&nbsp;&nbsp;` : ""}
               ${end ? `<b>End:</b> ${escapeHtml(end)}&nbsp;&nbsp;` : ""}
               ${routePath ? `<br><b>Route:</b> ${escapeHtml(routePath)}` : ""}
             </div>
-            <a class="waBig" href="${wa}" target="_blank" rel="noopener">WhatsApp Booking</a>
-          </div>
-        </div>
-
-        <!-- PRICING FIRST -->
-        <div class="costBoxFull">
-          <div class="costHead">
-            <p class="costTitle">Package Pricing</p>
-            <span class="offPill">${offPct}% Discount</span>
           </div>
 
-          <div class="priceRows">
-            <div class="priceRow">
-              <span class="k">Tier</span>
-              <span class="v">${escapeHtml(tier.toUpperCase())}</span>
+          <div class="carousel">
+            <div class="carouselMain">
+              <img id="carMain" src="${escapeHtml(mainPhoto)}" alt="${escapeHtml(title)}" onerror="this.src='./style/n1.jpg'">
             </div>
-            <div class="priceRow">
-              <span class="k">Travellers</span>
-              <span class="v">${pax}</span>
-            </div>
-            <div class="priceRow">
-              <span class="k">Price / Person</span>
-              <span class="v"><span class="strike">${rupees(base)}</span>${rupees(discounted)}</span>
-            </div>
-            <div class="priceRow totalRow">
-              <span class="k">Total Payable</span>
-              <span class="v">${rupees(total)}</span>
+            <div class="carNav" id="carNav">
+              ${photos.map((p,i)=>`
+                <div class="thumb ${i===0 ? "on" : ""}" data-src="${escapeHtml(p)}">
+                  <img src="${escapeHtml(p)}" onerror="this.src='./style/n1.jpg'">
+                </div>
+              `).join("")}
             </div>
           </div>
 
-          <div class="priceNotes">
-            ${season ? `<div><b>Best Season:</b> ${escapeHtml(season)}</div>` : ""}
-            ${meal ? `<div><b>Meal Plan:</b> ${escapeHtml(meal)}</div>` : ""}
-            ${ideal ? `<div><b>Ideal For:</b> ${escapeHtml(ideal)}</div>` : ""}
-            ${night ? `<div><b>Nights:</b> ${escapeHtml(night)}</div>` : ""}
-            ${notes ? `<div style="margin-top:6px"><b>Notes:</b> ${escapeHtml(notes)}</div>` : ""}
-            ${(inclusions) ? `<div style="margin-top:6px"><b>Includes:</b> ${escapeHtml(inclusions)}</div>` : ""}
-            ${(exclusions) ? `<div><b>Excludes:</b> ${escapeHtml(exclusions)}</div>` : ""}
-          </div>
-        </div>
+          <div class="pricing">
+            <div class="priceGrid">
+              <div class="pBox">
+                <div class="pK">Total Payable</div>
+                <div class="pV">${rupees(total)}</div>
+                <div class="pSub">${pax} travellers • ${tier.toUpperCase()} • ${days ? days + " days" : ""}</div>
+              </div>
 
-        <!-- ITINERARY AFTER PRICING -->
-        <div class="itinCompact">
-          <div class="itinHead">
-            <p class="t">Itinerary</p>
-            <span class="s">Day-wise</span>
+              <div class="pBox">
+                <div class="pK">Price / Person</div>
+                <div class="pV">${rupees(discounted)}</div>
+                <div class="pSub">
+                  ${offPct ? `Was <span style="text-decoration:line-through; opacity:.7;">${rupees(base)}</span> • ${offPct}% discount` : `Best available price`}
+                </div>
+              </div>
+            </div>
+
+            <div class="trustRow">
+              <span class="trust ok">Hotel included</span>
+              <span class="trust acc">Cab + driver</span>
+              <span class="trust ok">24×7 support</span>
+              ${meal ? `<span class="trust">${escapeHtml(meal)}</span>` : ""}
+              ${hotel ? `<span class="trust">${escapeHtml(hotel)}</span>` : ""}
+            </div>
+
+            <div class="ctaRow">
+              <a class="ctaBtn wa" href="${wa}" target="_blank" rel="noopener">WhatsApp Booking</a>
+              <a class="ctaBtn call" href="${call}">Call Now</a>
+            </div>
           </div>
-          <div id="itinDays"></div>
+
+          <div class="accordion">
+            <details class="acc" open>
+              <summary>Itinerary (Day-wise)</summary>
+              <div class="accBody">
+                <div class="itinDays" id="itinDays"></div>
+              </div>
+            </details>
+
+            <details class="acc">
+              <summary>Inclusions & Exclusions</summary>
+              <div class="accBody">
+                <div class="policyGrid">
+                  <div class="pol">
+                    <b>Includes</b>
+                    ${escapeHtml(inclusions || "—")}
+                  </div>
+                  <div class="pol">
+                    <b>Excludes</b>
+                    ${escapeHtml(exclusions || "—")}
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="acc">
+              <summary>Trip Notes & Policies</summary>
+              <div class="accBody">
+                <div class="policyGrid">
+                  <div class="pol">
+                    <b>Best Season</b>
+                    ${escapeHtml(season || "All seasons")}
+                    ${ideal ? `<div style="margin-top:8px"><b style="display:block;margin:0 0 6px;">Ideal For</b>${escapeHtml(ideal)}</div>` : ""}
+                    ${night ? `<div style="margin-top:8px"><b style="display:block;margin:0 0 6px;">Nights</b>${escapeHtml(night)}</div>` : ""}
+                  </div>
+                  <div class="pol">
+                    <b>Important</b>
+                    ${escapeHtml(notes || "Cancellation depends on hotel & season. Confirm on WhatsApp for exact policy.")}
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
         </div>
       `;
+
+      // carousel clicks
+      const carMain = document.getElementById("carMain");
+      document.querySelectorAll(".thumb[data-src]").forEach(t=>{
+        t.addEventListener("click", ()=>{
+          document.querySelectorAll(".thumb").forEach(x=>x.classList.remove("on"));
+          t.classList.add("on");
+          const src = t.getAttribute("data-src") || "./style/n1.jpg";
+          carMain.src = src;
+        });
+      });
 
       shownSuggestions = new Set(); // reset per package
       renderItineraryAndMap(tpl);
       invalidateMapSoon();
     }
 
+    /* ===== Compare UI ===== */
+    function syncCompareUI(){
+      const bar = $("compareBar");
+      const txt = $("compareTxt");
+      const n = COMPARE.size;
+      txt.textContent = `Compare: ${n} selected`;
+      if(n >= 2) bar.classList.add("show");
+      else bar.classList.remove("show");
+    }
+
+    function openCompare(){
+      const keys = Array.from(COMPARE).slice(0,3); // compare up to 3
+      if(keys.length < 2){
+        showBot("Select at least 2 packages to compare");
+        return;
+      }
+      const tier = safeLower($("visitType").value || "budget");
+      const pax = getSelectedPax();
+
+      const rows = [
+        ["Title", k => String(TEMPLATES[k]?.package_name || TEMPLATES[k]?.route_name || k)],
+        ["Days", k => String(TEMPLATES[k]?.days || "—")],
+        ["Start", k => safeUpper(TEMPLATES[k]?.start_point || TEMPLATES[k]?.start || "—")],
+        ["Hotel", k => String(TEMPLATES[k]?.hotel_category || "—")],
+        ["Category", k => String(TEMPLATES[k]?.category || "—")],
+        ["Best Season", k => String(TEMPLATES[k]?.best_season || "—")],
+        ["Price / Person", k => {
+          const tpl = TEMPLATES[k] || {};
+          const base = pickBasePrice(tpl, tier, k);
+          const off = getDiscountPercentForKey(tpl, k);
+          const p = off ? Math.round(base*(1-off/100)) : base;
+          return p ? rupees(p) : "—";
+        }],
+        ["Total (Pax)", k => {
+          const tpl = TEMPLATES[k] || {};
+          const base = pickBasePrice(tpl, tier, k);
+          const off = getDiscountPercentForKey(tpl, k);
+          const p = off ? Math.round(base*(1-off/100)) : base;
+          return p ? rupees(p*pax) : "—";
+        }],
+        ["Top Route", k => String(TEMPLATES[k]?.route_path || TEMPLATES[k]?.route_name || "—")],
+      ];
+
+      const head = keys.map(k=> escapeHtml(String(TEMPLATES[k]?.package_name || TEMPLATES[k]?.route_name || k)));
+      let html = `<table class="cmp"><thead><tr><th>Feature</th>${head.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>`;
+      for(const [label, fn] of rows){
+        html += `<tr><td style="font-size:10px; letter-spacing:.14em; text-transform:uppercase; font-weight:1200; color: rgba(10,30,60,.72);">${escapeHtml(label)}</td>`;
+        keys.forEach(k=>{
+          html += `<td>${escapeHtml(String(fn(k) ?? "—"))}</td>`;
+        });
+        html += `</tr>`;
+      }
+      html += `</tbody></table>`;
+
+      $("cmpBody").innerHTML = html;
+      $("compareModal").classList.add("show");
+      lockBody(true);
+    }
+    function closeCompare(){
+      $("compareModal").classList.remove("show");
+      lockBody(false);
+    }
+
+    /* ===== App load ===== */
     async function loadAll(){
       setStatus("Loading data…");
-      let ok = loadFromCache();
-      if(!ok){
+      let data = loadFromCache();
+
+      if(!data){
         try{
           setStatus("Fetching from Firebase…");
-          if(typeof window.hxFetchFirebaseAndCache === "function"){
-            await window.hxFetchFirebaseAndCache();
-            ok = loadFromCache();
-          }
+          data = await fetchAllFirebase();
         }catch(e){
           console.error(e);
-          ok = false;
+          setStatus("Data not found");
+          showBot("Firebase error: " + (e?.message || e));
+          $("pkgList").innerHTML = `<div class="hint">Data not loading. Open on GitHub Pages / Live Server and check Firebase rules.<br><br><b>Error:</b> ${escapeHtml(e?.message || String(e))}</div>`;
+          return;
         }
       }
 
-      if(!ok){
-        setStatus("Data not found");
-        showBot("Firebase not loading. Use GitHub Pages/Live Server (not file://) + check DB Rules.");
-        $("otherPkgList").innerHTML = `<div class="otherHint">Data not loading. Open on GitHub Pages / Live Server and check Firebase rules.</div>`;
-        return;
-      }
+      TEMPLATES = data.templates || {};
+      PLACES = data.places || {};
+      COSTS = data.costs || {};
+      DISCOUNTS = data.discounts || {};
+
+      normalizeCostsKeys();
+      normalizeDiscountKeys();
 
       buildStartList();
+      pillBudget();
       renderLeftList();
       setStatus("Ready");
       showBot("Data loaded");
     }
 
+    /* ===== Wire UI ===== */
     function wireUI(){
+      // modal close
       $("pmClose").onclick = closePlaceModal;
       $("placeModal").addEventListener("click", (e)=>{
         if(e.target === $("placeModal")) closePlaceModal();
       });
 
+      // compare
+      $("openCompareBtn").onclick = openCompare;
+      $("clearCompareBtn").onclick = ()=>{
+        COMPARE.clear();
+        // uncheck visible boxes
+        document.querySelectorAll('input[type="checkbox"][data-ckey]').forEach(i=> i.checked = false);
+        syncCompareUI();
+        showBot("Compare cleared");
+      };
+      $("cmpClose").onclick = closeCompare;
+      $("compareModal").addEventListener("click", (e)=>{
+        if(e.target === $("compareModal")) closeCompare();
+      });
+
+      // escape key closes modals
+      window.addEventListener("keydown", (e)=>{
+        if(e.key === "Escape"){
+          closePlaceModal();
+          closeCompare();
+        }
+      });
+
+      // filters
       $("resetBtn").onclick = ()=>{
+        $("searchInp").value = "";
         $("startInp").value = "";
         $("daysSel").value = "";
         $("visitType").value = "budget";
         $("paxSel").value = "2";
+        $("hotelSel").value = "";
+        $("seasonSel").value = "";
+        $("budgetRange").value = "0";
+        pillBudget();
+        quickTags.clear();
+        document.querySelectorAll(".qchip").forEach(c=>c.classList.remove("on"));
         CURRENT_KEY = "";
         renderLeftList();
-        renderSelected();
         showBot("Filters reset");
       };
 
       $("genBtn").onclick = ()=>{
         CURRENT_KEY = "";
         renderLeftList();
-        renderSelected();
         showBot("Filtered packages updated");
       };
 
-      $("refreshBtn").onclick = async ()=>{
-        sessionStorage.removeItem("HX_TEMPLATES");
-        sessionStorage.removeItem("HX_PLACES");
-        sessionStorage.removeItem("HX_COSTS");
+      const refresh = async ()=>{
+        sessionStorage.removeItem(CACHE_KEY);
+        setStatus("Refreshing…");
         await loadAll();
         showBot("Refreshed");
       };
+      $("refreshBtn").onclick = refresh;
 
       $("fitMapBtn").onclick = ()=>{ fitToAll(); showBot("Fit route"); };
       $("clearRouteBtn").onclick = ()=>{ clearMap(); showBot("Cleared map"); };
@@ -1650,24 +2353,59 @@
       $("closeSelectedBtn").onclick = ()=>{
         CURRENT_KEY = "";
         renderLeftList();
-        renderSelected();
         showBot("Closed");
       };
 
-      // Back: MUST go previous page (not always to opening page)
+      // back behavior (kept)
       $("backBtn").onclick = ()=>{
         if(history.length > 1) history.back();
         else location.href = "./index.html";
       };
 
-      $("visitType").addEventListener("change", ()=>{ if(CURRENT_KEY) renderSelected(); });
-      $("paxSel").addEventListener("change", ()=>{ if(CURRENT_KEY) renderSelected(); });
+      // live updates on key filters
+      ["searchInp","startInp"].forEach(id=>{
+        $(id).addEventListener("input", ()=>{
+          CURRENT_KEY = "";
+          renderLeftList();
+        });
+      });
+
+      ["daysSel","visitType","paxSel","hotelSel","seasonSel"].forEach(id=>{
+        $(id).addEventListener("change", ()=>{
+          renderLeftList();
+        });
+      });
+
+      $("budgetRange").addEventListener("input", ()=>{
+        pillBudget();
+      });
+      $("budgetRange").addEventListener("change", ()=>{
+        renderLeftList();
+      });
+
+      // quick chips
+      document.querySelectorAll(".qchip[data-tag]").forEach(ch=>{
+        ch.addEventListener("click", ()=>{
+          const tag = ch.getAttribute("data-tag");
+          if(!tag) return;
+          if(quickTags.has(tag)){
+            quickTags.delete(tag);
+            ch.classList.remove("on");
+          }else{
+            quickTags.add(tag);
+            ch.classList.add("on");
+          }
+          CURRENT_KEY = "";
+          renderLeftList();
+        });
+      });
     }
 
     document.addEventListener("DOMContentLoaded", async ()=>{
       wireUI();
       initMap();
       await loadAll();
+      syncCompareUI();
     });
   </script>
 </body>
