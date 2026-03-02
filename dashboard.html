@@ -30,8 +30,10 @@
   --shellW: min(94vw, 1700px);
   --heroH: clamp(220px, 26vw, 320px);
 }
+
 *{ box-sizing:border-box; }
 html, body{ height:100%; }
+
 body{
   margin:0; color:var(--text);
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -44,6 +46,7 @@ body{
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
 }
+
 .aurora{
   position:fixed; inset:-30%;
   background:
@@ -62,6 +65,7 @@ body{
   position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.06; mix-blend-mode:multiply;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
 }
+
 .shell{ width: var(--shellW); margin: 0 auto; padding: 12px 10px 18px; }
 
 /* ===== HERO ===== */
@@ -110,6 +114,7 @@ body{
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 .heroRight{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:flex-end; flex:0 0 auto; }
+
 .chip{
   border:1px solid rgba(10,30,60,.18);
   background: rgba(255,255,255,.62);
@@ -143,6 +148,7 @@ body{
   align-items: stretch;
   min-width:0;
 }
+
 .pane{
   border: 1px solid var(--stroke);
   border-radius: var(--radius);
@@ -158,6 +164,7 @@ body{
   min-height: 640px;
   max-height: 920px;
 }
+
 .paneHdr{
   padding: 10px 12px;
   border-bottom:1px solid rgba(10,30,60,.14);
@@ -216,6 +223,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   color: rgba(10,30,60,.86);
   box-shadow: 0 10px 24px rgba(10,30,60,.10);
 }
+
 .pills{ display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
 .pill{
   border:1px solid rgba(10,30,60,.16);
@@ -230,7 +238,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
 }
 .pill b{ color: rgba(10,30,60,.92); letter-spacing:.06em; }
 
-/* LEFT: ALL PACKAGES BOX */
+/* ===== LEFT: ALL PACKAGES BOX ===== */
 .otherWrap{ flex:1; min-height:0; display:flex; flex-direction:column; gap:10px; }
 .otherHdr{
   border:1px solid rgba(10,30,60,.16);
@@ -272,7 +280,6 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   line-height: 1.35;
 }
 
-/* side package card */
 .pkgSide{
   border:1px solid rgba(10,30,60,.16);
   background: rgba(255,255,255,.70);
@@ -335,6 +342,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
 
 /* ===== CENTER ===== */
 .centerInner{ display:flex; flex-direction:column; min-height:0; flex:1; }
+
 .districtBar{
   display:flex; flex-wrap:nowrap; gap:8px;
   padding:10px 12px;
@@ -363,6 +371,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   box-shadow: 0 0 0 3px rgba(37,99,235,.14);
   background: rgba(37,99,235,.14);
 }
+
 .pkgList{
   flex:1;
   min-height:0;
@@ -372,7 +381,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   -webkit-overflow-scrolling: touch;
 }
 
-/* ===== MAP ===== */
+/* ===== RIGHT MAP ===== */
 .mapPane{
   position: sticky;
   top: 12px;
@@ -528,6 +537,233 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   color: rgba(10,30,60,.88);
 }
 
+/* ===== Selected package FULL center view ===== */
+.centerFocus{
+  padding: 12px;
+  display:flex;
+  flex-direction:column;
+  gap: 12px;
+}
+
+.focusHero{
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.70);
+  border-radius: 16px;
+  overflow:hidden;
+  box-shadow: 0 14px 36px rgba(10,30,60,.10);
+}
+.focusHeroImg{
+  width:100%;
+  height: 220px;
+  object-fit:cover;
+  display:block;
+}
+.focusHeroBar{
+  display:flex;
+  gap:12px;
+  padding: 12px;
+  align-items:stretch;
+  flex-wrap:wrap;
+  background: rgba(255,255,255,.62);
+  border-top:1px solid rgba(10,30,60,.12);
+}
+.focusTitle{
+  margin:0;
+  font-size: 14px;
+  font-weight: 1000;
+  letter-spacing:.10em;
+  text-transform: uppercase;
+  color: rgba(10,30,60,.94);
+}
+.focusSub{
+  margin:6px 0 0;
+  font-size: 11px;
+  color: rgba(10,30,60,.68);
+  letter-spacing:.04em;
+}
+.focusBadges{ margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; }
+
+.pkgBadge{
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.74);
+  border-radius: 999px;
+  padding: 6px 9px;
+  font-size: 10px;
+  letter-spacing:.12em;
+  text-transform: uppercase;
+  color: rgba(10,30,60,.86);
+  white-space: nowrap;
+  backdrop-filter: blur(10px);
+}
+.pkgBadge.purple{ border-color: rgba(37,99,235,.35); background: rgba(37,99,235,.16); color: rgba(10,30,60,.92); }
+.pkgBadge.green{ border-color: rgba(34,197,94,.30); background: rgba(34,197,94,.16); color: rgba(10,30,60,.92); }
+
+.priceBox{
+  margin-left:auto;
+  min-width: 260px;
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.66);
+  border-radius: 14px;
+  padding: 10px 12px;
+  box-shadow: 0 10px 22px rgba(10,30,60,.08);
+}
+.tierTabs{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
+.tierBtn{
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.70);
+  border-radius: 999px;
+  padding: 7px 10px;
+  font-size: 10px;
+  letter-spacing:.12em;
+  text-transform: uppercase;
+  cursor:pointer;
+  font-weight: 950;
+}
+.tierBtn.active{
+  border-color: rgba(37,99,235,.40);
+  background: rgba(37,99,235,.14);
+}
+.priceRow{ display:flex; gap:10px; align-items:center; justify-content:space-between; }
+.priceOld{
+  font-size: 12px;
+  color: rgba(10,30,60,.55);
+  text-decoration: line-through;
+  font-weight: 900;
+  letter-spacing:.06em;
+}
+.discPill{
+  border:1px solid rgba(34,197,94,.30);
+  background: rgba(34,197,94,.14);
+  border-radius: 999px;
+  padding: 6px 9px;
+  font-size: 10px;
+  font-weight: 1000;
+  letter-spacing:.12em;
+  text-transform: uppercase;
+}
+.priceNew{
+  margin-top:8px;
+  font-size: 18px;
+  font-weight: 1000;
+  letter-spacing:.04em;
+  color: rgba(10,30,60,.94);
+}
+.priceSmall{ margin-top:6px; font-size: 11px; color: rgba(10,30,60,.68); }
+
+.itinWrap{
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.62);
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 12px 34px rgba(10,30,60,.10);
+}
+.bigTitle{ margin:0; font-size: 12px; letter-spacing:.18em; text-transform: uppercase; color: rgba(10,30,60,.94); }
+.muted{ color: var(--muted); font-size: 10.8px; letter-spacing:.08em; text-transform: uppercase; line-height:1.35; }
+
+.itinDays{ display:flex; flex-direction:column; gap:10px; margin-top:10px; }
+.itDay{
+  border:1px solid rgba(10,30,60,.14);
+  background: rgba(255,255,255,.72);
+  border-radius: 14px;
+  padding: 10px;
+}
+.itTop{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  margin-bottom:8px;
+}
+.itTop .d{
+  font-size: 11px;
+  font-weight: 1000;
+  letter-spacing:.16em;
+  text-transform: uppercase;
+}
+.placeRow{ display:flex; flex-wrap:wrap; gap:8px; }
+.placeMini{
+  border:1px solid rgba(10,30,60,.14);
+  background: rgba(255,255,255,.70);
+  border-radius: 999px;
+  padding: 7px 10px;
+  font-size: 10px;
+  letter-spacing:.10em;
+  text-transform: uppercase;
+  cursor:pointer;
+}
+
+.nearSection{
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.62);
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 12px 34px rgba(10,30,60,.10);
+}
+.nearGrid{
+  margin-top:10px;
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.nearCircle{
+  width: 92px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  cursor:pointer;
+}
+.nearCircle .img{
+  width: 78px; height: 78px;
+  border-radius: 999px;
+  overflow:hidden;
+  border:1px solid rgba(10,30,60,.16);
+  box-shadow: 0 10px 22px rgba(10,30,60,.10);
+  background: rgba(255,255,255,.76);
+}
+.nearCircle img{ width:100%; height:100%; object-fit:cover; display:block; }
+.nearCircle .nm{
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing:.10em;
+  text-transform: uppercase;
+  text-align:center;
+  color: rgba(10,30,60,.86);
+  width: 100%;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.infoGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 900px){ .infoGrid{ grid-template-columns: 1fr; } }
+.infoCard{
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.66);
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 12px 34px rgba(10,30,60,.10);
+}
+.infoCard h3{
+  margin:0 0 10px;
+  font-size: 11px;
+  font-weight: 1000;
+  letter-spacing:.16em;
+  text-transform: uppercase;
+}
+.bullets{
+  margin:0;
+  padding-left: 16px;
+  display:grid;
+  gap: 6px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: rgba(10,30,60,.80);
+}
+.kv{ display:grid; gap:7px; font-size: 11px; color: rgba(10,30,60,.82); }
+.kv b{ letter-spacing:.06em; }
+
 /* ===== FOOTER ===== */
 footer{
   margin-top: 12px;
@@ -643,247 +879,6 @@ footer{
   box-shadow: 0 10px 22px rgba(10,30,60,.08);
   cursor: pointer;
 }
-
-/* =======================
-   NEW: Full selected package display (center)
-   ======================= */
-.centerFocus{
-  padding: 12px;
-  overflow:auto;
-  min-height:0;
-}
-.focusHero{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.70);
-  border-radius: 18px;
-  overflow:hidden;
-  box-shadow: 0 14px 36px rgba(10,30,60,.10);
-}
-.focusHeroImg{
-  width:100%;
-  height: 240px;
-  object-fit: cover;
-  display:block;
-}
-.focusHeroBar{
-  padding: 12px;
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  align-items:flex-start;
-  justify-content:space-between;
-  background: rgba(255,255,255,.70);
-  border-top:1px solid rgba(10,30,60,.12);
-}
-.focusTitle{
-  margin:0;
-  font-size: 14px;
-  font-weight: 1000;
-  letter-spacing:.12em;
-  text-transform: uppercase;
-  color: rgba(10,30,60,.94);
-}
-.focusSub{
-  margin:6px 0 0;
-  font-size: 11px;
-  color: rgba(10,30,60,.62);
-  letter-spacing:.08em;
-  text-transform: uppercase;
-}
-.focusBadges{ display:flex; gap:8px; flex-wrap:wrap; }
-
-.pkgBadge{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.74);
-  border-radius: 999px;
-  padding: 6px 9px;
-  font-size: 10px;
-  letter-spacing:.12em;
-  text-transform: uppercase;
-  color: rgba(10,30,60,.86);
-  white-space: nowrap;
-  backdrop-filter: blur(10px);
-}
-.pkgBadge.purple{ border-color: rgba(37,99,235,.35); background: rgba(37,99,235,.16); color: rgba(10,30,60,.92); }
-.pkgBadge.green{ border-color: rgba(34,197,94,.30); background: rgba(34,197,94,.16); color: rgba(10,30,60,.92); }
-
-.priceBox{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.78);
-  border-radius: 14px;
-  padding: 10px 12px;
-  min-width: 240px;
-  box-shadow: 0 10px 22px rgba(10,30,60,.08);
-}
-.priceRow{ display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; }
-.priceOld{
-  font-size: 12px;
-  color: rgba(10,30,60,.55);
-  text-decoration: line-through;
-  font-weight: 900;
-  letter-spacing:.08em;
-}
-.priceNew{
-  font-size: 18px;
-  font-weight: 1100;
-  letter-spacing:.06em;
-  color: rgba(10,30,60,.94);
-}
-.discPill{
-  border:1px solid rgba(34,197,94,.30);
-  background: rgba(34,197,94,.14);
-  border-radius: 999px;
-  padding: 6px 9px;
-  font-size: 10px;
-  font-weight: 1000;
-  letter-spacing:.12em;
-  text-transform: uppercase;
-  white-space:nowrap;
-}
-.costGrid{
-  margin-top: 12px;
-  display:grid;
-  gap:10px;
-  grid-template-columns: repeat(4, minmax(0,1fr));
-}
-@media (max-width: 980px){ .costGrid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
-.costCard{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.66);
-  border-radius: 14px;
-  padding: 10px;
-  box-shadow: 0 10px 22px rgba(10,30,60,.08);
-}
-.costCard .k{
-  font-size:10px; letter-spacing:.16em; text-transform: uppercase; color: rgba(10,30,60,.60);
-}
-.costCard .v{
-  margin-top:6px;
-  font-size: 14px;
-  font-weight: 1000;
-  letter-spacing:.06em;
-  color: rgba(10,30,60,.94);
-}
-.dayBlock{
-  margin-top: 12px;
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.66);
-  border-radius: 16px;
-  overflow:hidden;
-  box-shadow: 0 12px 28px rgba(10,30,60,.08);
-}
-.dayHdr{
-  padding: 10px 12px;
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  align-items:center;
-  border-bottom:1px solid rgba(10,30,60,.12);
-  background: rgba(255,255,255,.72);
-}
-.dayHdr .d{
-  font-size: 11px;
-  font-weight: 1000;
-  letter-spacing:.16em;
-  text-transform: uppercase;
-}
-.dayHdr .r{
-  font-size: 10.5px;
-  color: rgba(10,30,60,.62);
-  letter-spacing:.08em;
-  text-transform: uppercase;
-  white-space:nowrap;
-}
-.dayBody{ padding: 10px 12px; }
-.placeRow{ display:flex; gap:10px; flex-wrap:wrap; }
-.placeMini{
-  border:1px solid rgba(10,30,60,.14);
-  background: rgba(255,255,255,.72);
-  border-radius: 999px;
-  padding: 8px 10px;
-  font-size: 10.5px;
-  letter-spacing:.10em;
-  text-transform: uppercase;
-  cursor:pointer;
-  box-shadow: 0 10px 20px rgba(10,30,60,.06);
-  -webkit-tap-highlight-color: transparent;
-}
-.nearSection{
-  margin-top: 12px;
-  border:1px dashed rgba(10,30,60,.18);
-  background: rgba(255,255,255,.58);
-  border-radius: 16px;
-  padding: 12px;
-}
-.nearTop{
-  display:flex; justify-content:space-between; align-items:center; gap:10px;
-  margin-bottom:10px;
-}
-.nearTop .k{
-  font-size: 11px;
-  font-weight: 1000;
-  letter-spacing:.16em;
-  text-transform: uppercase;
-  color: rgba(10,30,60,.62);
-}
-.nearGrid{
-  display:grid;
-  gap: 12px;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-}
-@media (max-width: 980px){ .nearGrid{ grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-@media (max-width: 520px){ .nearGrid{ grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-.nearCircle{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:8px;
-  cursor:pointer;
-  text-align:center;
-  -webkit-tap-highlight-color: transparent;
-}
-.nearCircle .img{
-  width: 62px;
-  height: 62px;
-  border-radius: 999px;
-  overflow:hidden;
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.80);
-  box-shadow: 0 12px 26px rgba(10,30,60,.10);
-}
-.nearCircle img{ width:100%; height:100%; object-fit:cover; display:block; }
-.nearCircle .nm{
-  font-size: 10px;
-  font-weight: 1000;
-  letter-spacing:.10em;
-  text-transform: uppercase;
-  color: rgba(10,30,60,.84);
-  line-height:1.2;
-  max-width: 110px;
-  overflow:hidden;
-  text-overflow: ellipsis;
-  white-space:nowrap;
-}
-.enqRow{ margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; }
-.enqBtn{
-  flex:1;
-  border:1px solid rgba(34,197,94,.30);
-  background: rgba(34,197,94,.14);
-  color: rgba(10,30,60,.92);
-  border-radius: 14px;
-  padding: 10px 10px;
-  text-decoration:none;
-  text-transform: uppercase;
-  letter-spacing:.10em;
-  font-weight: 950;
-  font-size: 11px;
-  display:flex; align-items:center; justify-content:center; gap:10px;
-  user-select:none;
-  box-shadow: 0 12px 28px rgba(34,197,94,.14);
-  -webkit-tap-highlight-color: transparent;
-  min-width: 220px;
-}
-.enqBtn.disabled{ opacity:.55; pointer-events:none; border-color: rgba(10,30,60,.16); background: rgba(255,255,255,.66); }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1200px){
@@ -1001,7 +996,7 @@ footer{
                 <option value="">ANY</option>
                 <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
                 <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
-                <option>11</option><option>12</option>
+                <option>11</option><option>12</option><option>13</option><option>14</option>
               </select>
             </div>
 
@@ -1021,7 +1016,6 @@ footer{
             <div class="pills" id="pills"></div>
           </div>
 
-          <!-- LEFT SIDEBAR: ALL PACKAGES LIST -->
           <div class="otherWrap">
             <div class="otherHdr">
               <div class="h">All Packages</div>
@@ -1048,7 +1042,7 @@ footer{
         <div class="paneHdr">
           <div>
             <p class="t">Selected Package</p>
-            <div class="s" id="centerHint">Full details open here</div>
+            <div class="s" id="centerHint">Click a package from left</div>
           </div>
           <div class="s" id="pkgCount">—</div>
         </div>
@@ -1066,7 +1060,7 @@ footer{
         <div class="paneHdr">
           <div>
             <p class="t">Live Route Map</p>
-            <div class="s">OSRM road polyline + day-wise pins</div>
+            <div class="s">Pins from places lat/lng</div>
           </div>
           <div class="s" id="kmBadge">—</div>
         </div>
@@ -1101,11 +1095,11 @@ footer{
                 About Website <span class="tag">Live Portal</span>
               </div>
               <ul>
-                <li>Route map + stop markers (OSRM)</li>
+                <li>Left sidebar packages • center full details</li>
                 <li>Day-wise itinerary with place popups</li>
-                <li>Pricing from Firebase (dashboard loads directly)</li>
-                <li>Instant WhatsApp booking query</li>
-                <li>District guide integration</li>
+                <li>Smart discount 10–20% per package</li>
+                <li>Firebase + local images fallback</li>
+                <li>Map pins + Google directions</li>
               </ul>
             </div>
 
@@ -1152,7 +1146,6 @@ footer{
     </footer>
   </div><!-- /shell -->
 
-  <!-- botToast -->
   <div class="botToast" id="botToast">👋 Welcome! Loading…</div>
 
   <!-- Place Modal -->
@@ -1178,10 +1171,7 @@ footer{
     </div>
   </div>
 
-  <!-- =========================================================
-       FIREBASE LOADER (MODULE) — Dashboard fetches directly
-       Saves: HX_TEMPLATES, HX_PLACES, HX_COSTS
-       ========================================================= -->
+  <!-- Firebase loader -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
     import { getDatabase, ref, child, get } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
@@ -1226,23 +1216,12 @@ footer{
 
   <script>
   /* =========================================================
-     DASHBOARD (FULL)
-     - Left = all packages list
-     - Center = selected package full details
-     - Right = OSRM route + markers
-     - Smart discount 10-20%
+     DASHBOARD FINAL
+     - Left: all packages list
+     - Center: selected package FULL details
+     - Photos: supports (photo_1=1) flags + local fallback
+     - Discount: stable 10–20% per package_id
      ========================================================= */
-
-  /* ===== Mode from landing ===== */
-  let TOUR_MODE = null; // "outside" | "intercity"
-  function initModeFromLanding(){
-    const qs = new URLSearchParams(location.search);
-    const modeQS = (qs.get("mode") || "").toLowerCase();
-    const modeLS = (localStorage.getItem("travel_origin") || "").toLowerCase();
-    const origin = modeQS || modeLS || "within"; // within|outside
-    TOUR_MODE = (origin === "outside") ? "outside" : "intercity";
-    showBot(`✅ Mode: ${TOUR_MODE === "outside" ? "Outside Himachal" : "Within Himachal"} selected`);
-  }
 
   const $ = (id)=>document.getElementById(id);
 
@@ -1254,17 +1233,9 @@ footer{
       .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
   }
   function rupees(n){ return "₹" + Math.round(Number(n)||0).toLocaleString("en-IN"); }
-  function slugifyName(name){
-    return String(name||"")
-      .trim().toLowerCase()
-      .replace(/&/g," and ")
-      .replace(/['"]/g,"")
-      .replace(/[^a-z0-9]+/g,"-")
-      .replace(/-+/g,"-")
-      .replace(/^-|-$/g,"");
-  }
+  function splitCSV(s){ return String(s||"").split(",").map(x=>x.trim()).filter(Boolean); }
+  function titleFromId(id){ return String(id||"").replace(/[-_]+/g," ").trim().toUpperCase(); }
 
-  /* botToast */
   function showBot(msg){
     const el = $("botToast");
     if(!el) return;
@@ -1274,35 +1245,49 @@ footer{
     showBot._t = setTimeout(()=> el.classList.remove("show"), 3600);
   }
 
-  /* ===== Place images ===== */
+  /* ========= Images logic (FIXED for photo_1: 1 flags) ========= */
   const IMG_BASE = "./Places/";
-  const IMG_MAX = 4;
-
-  function placeIdAny(p, key){ return String(p?.place_id || p?.id || key || "").trim(); }
-  function placeNameAny(p, key){ return String(p?.name || p?.["Location Name"] || p?.title || key || "PLACE").trim(); }
-  function latAny(p){ return Number(p?.latitude ?? p?.lat ?? p?.Latitude); }
-  function lngAny(p){ return Number(p?.longitude ?? p?.lng ?? p?.Longitude); }
-  function districtAny(p){ return String(p?.district || p?.District || "").trim().toUpperCase(); }
-
   function getPlacePhotos(place, placeId){
-    const out = [];
-    ["photo_1","photo_2","photo_3","image","img","cover"].forEach(k=>{
-      const v = String(place?.[k] || "").trim();
-      if(v) out.push(v);
-    });
     const pid = String(placeId || place?.place_id || place?.id || "").trim();
+    const out = [];
+
+    // future: if you store real URLs
+    ["photo_url","photo","image","img","cover","photo_1_url","photo_2_url","photo_3_url","photo_4_url"].forEach(k=>{
+      const v = place?.[k];
+      if(typeof v === "string" && v.trim()) out.push(v.trim());
+    });
+
+    // current: flags photo_1/photo_2/... = 1
+    const flags = ["photo_1","photo_2","photo_3","photo_4"];
+    flags.forEach((k, idx)=>{
+      const v = place?.[k];
+      if((v === 1 || v === true || v === "1") && pid){
+        out.push(`${IMG_BASE}${pid}_${idx+1}.jpg`);
+        out.push(`${IMG_BASE}${pid}_${idx+1}.jpeg`);
+        out.push(`${IMG_BASE}${pid}_${idx+1}.png`);
+        out.push(`${IMG_BASE}${pid}_${idx+1}.webp`);
+      }
+    });
+
+    // final fallback guesses
     if(pid){
-      for(let i=1; i<=IMG_MAX; i++){
+      for(let i=1;i<=4;i++){
         out.push(`${IMG_BASE}${pid}_${i}.jpg`);
         out.push(`${IMG_BASE}${pid}_${i}.jpeg`);
         out.push(`${IMG_BASE}${pid}_${i}.png`);
         out.push(`${IMG_BASE}${pid}_${i}.webp`);
       }
     }
+
     return Array.from(new Set(out));
   }
 
-  /* Place Modal */
+  function placeLabel(pid){
+    const p = PLACES?.[pid];
+    return p?.name ? String(p.name).toUpperCase() : titleFromId(pid);
+  }
+
+  /* ========= Place modal ========= */
   function openPlaceModal({ place, dayNum, orderNum, placeId }){
     const modal = $("placeModal");
     const ttl = $("pmTitle");
@@ -1311,11 +1296,16 @@ footer{
     const meta = $("pmMeta");
     const actions = $("pmActions");
 
-    const name = placeNameAny(place, placeId);
-    const dist = districtAny(place) || "—";
-    const lat = latAny(place), lng = lngAny(place);
+    const name = String(place?.name || placeLabel(placeId) || "PLACE").trim();
+    const dist = String(place?.district || "—").trim();
+    const reg  = String(place?.region || "—").trim();
+    const cat  = String(place?.category || "—").trim();
+    const seg  = String(place?.segment || "—").trim();
 
-    ttl.textContent = `${name} • Day ${dayNum}${orderNum ? " • Stop " + orderNum : ""}`;
+    const lat = Number(place?.latitude ?? place?.lat);
+    const lng = Number(place?.longitude ?? place?.lng);
+
+    ttl.textContent = `${name} ${dayNum ? "• Day " + dayNum : ""}${orderNum ? " • Stop " + orderNum : ""}`;
 
     const photos = getPlacePhotos(place, placeId);
     let idx = 0;
@@ -1332,16 +1322,21 @@ footer{
     img.src = photos[0] || "./style/n1.jpg";
 
     const short =
-      String(place?.history_tagline || place?.what_you_find || place?.description || "")
-      .trim() || "Beautiful spot in Himachal Pradesh. Tap directions to navigate.";
+      String(place?.history_tagline || "").trim() ||
+      String(place?.what_you_find || "").trim() ||
+      String(place?.description || "").trim() ||
+      "Beautiful spot in Himachal Pradesh.";
 
     desc.textContent = short;
 
+    const finds = String(place?.what_you_find || "").trim();
     meta.innerHTML = `
       <div><b>District:</b> ${escapeHtml(dist)}</div>
+      <div><b>Region:</b> ${escapeHtml(reg)}</div>
+      <div><b>Category:</b> ${escapeHtml(cat)}</div>
+      <div><b>Segment:</b> ${escapeHtml(seg)}</div>
       <div><b>Coordinates:</b> ${isFinite(lat)&&isFinite(lng) ? `${lat.toFixed(5)}, ${lng.toFixed(5)}` : "—"}</div>
-      <div><b>Category:</b> ${escapeHtml(String(place?.category || "—"))}</div>
-      <div><b>Segment:</b> ${escapeHtml(String(place?.segment || "—"))}</div>
+      ${finds ? `<div style="margin-top:8px"><b>What you find:</b><br>${escapeHtml(finds).replace(/\n/g,"<br>")}</div>` : ""}
     `;
 
     const gmaps = (isFinite(lat) && isFinite(lng))
@@ -1351,7 +1346,6 @@ footer{
     actions.innerHTML = `
       ${gmaps ? `<a href="${gmaps}" target="_blank" rel="noopener">Open in Maps</a>` : ""}
       <a href="#" id="pmNextPhoto">Next Photo</a>
-      ${gmaps ? `<a href="#" id="pmFocusMap">Focus Map</a>` : ""}
     `;
 
     const next = document.getElementById("pmNextPhoto");
@@ -1364,42 +1358,34 @@ footer{
         img.src = photos[idx];
       };
     }
-    const focus = document.getElementById("pmFocusMap");
-    if(focus && gmaps){
-      focus.onclick = (e)=>{
-        e.preventDefault();
-        if(isFinite(lat) && isFinite(lng) && map){
-          map.setView([lat,lng], 13, { animate:true });
-        }
-      };
-    }
 
     modal.classList.add("show");
   }
   function closePlaceModal(){ $("placeModal")?.classList.remove("show"); }
 
-  /* ===== Geo ===== */
-  function haversineKm(lat1, lon1, lat2, lon2){
-    const toRad = (d)=> (d*Math.PI)/180;
-    const R = 6371;
-    const dLat = toRad(lat2-lat1);
-    const dLon = toRad(lon2-lon1);
-    const a = Math.sin(dLat/2)**2 +
-      Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
-    return 2*R*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  /* ========= Stable discount 10..20 ========= */
+  function hashStr(s){
+    s = String(s||"");
+    let h = 2166136261;
+    for(let i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return (h >>> 0);
+  }
+  function smartDiscountPercent(packageId){
+    return 10 + (hashStr(packageId) % 11); // 10..20
+  }
+  function getTierPrice(pkg, tier){
+    // support both structures:
+    // 1) pkg.budget_price_per_person
+    // 2) pkg.prices.budget_price_per_person etc.
+    const src = pkg || {};
+    const v1 = src[`${tier}_price_per_person`];
+    if(v1 != null) return Number(v1||0);
+    const v2 = src?.prices?.[`${tier}_price_per_person`];
+    return Number(v2||0);
   }
 
-  /* ===== Local/intercity classification (your old logic kept) ===== */
-  function isLocalComputed(tpl){
-    const routeId = String(tpl.route_id || "").toUpperCase().trim();
-    const regionStyle = String(tpl.region_style || "").toLowerCase().trim();
-    const pkgId = String(tpl.package_id || tpl.key || "").toLowerCase();
-    return regionStyle === "local" || routeId.endsWith("-LCL") || pkgId.includes("-local");
-  }
-
-  /* ===== MAP ===== */
+  /* ========= Map ========= */
   let map, tile, tileDark, markersLayer, routeLine;
-  let showMode = "all"; // all | startend
   let tilesDark = false;
 
   function invalidateMapSoon(){
@@ -1413,7 +1399,6 @@ footer{
     tile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
     tile.addTo(map);
     tileDark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 18 });
-
     markersLayer = L.layerGroup().addTo(map);
     invalidateMapSoon();
     window.addEventListener("resize", invalidateMapSoon, { passive:true });
@@ -1424,685 +1409,28 @@ footer{
     $("kmBadge").textContent = "—";
     invalidateMapSoon();
   }
-  function fitMapToRoute(){
-    if(routeLine){
-      map.fitBounds(routeLine.getBounds(), { padding:[18,18] });
-    }else{
-      map.setView([31.1048, 77.1734], 8);
-    }
+  function focusPlaceOnMap(placeId, zoom=12){
+    const p = PLACES?.[placeId];
+    if(!p) return;
+    const lat = Number(p.latitude), lng = Number(p.longitude);
+    if(!isFinite(lat) || !isFinite(lng)) return;
+
+    const m = L.marker([lat,lng]).addTo(markersLayer);
+    m.bindPopup(`<b>${escapeHtml(p.name || placeId)}</b><br>${escapeHtml(p.district || "")}`).openPopup();
+    map.setView([lat,lng], zoom);
   }
 
-  /* ===== DATA ===== */
+  /* ========= Data ========= */
   let TEMPLATES = {};
   let PLACES = {};
   let COSTS = {};
-  let STARTS = [];
   let ACTIVE_TEMPLATES = [];
-  let FILTERED = [];
+  let STARTS = [];
+  let ACTIVE_START = "";
   let ACTIVE_DISTRICT = "ALL";
-  let CURRENT_TEMPLATE_KEY = "";
-  let NAME_TO_ID = new Map();
+  let SELECTED = null;
+  let ACTIVE_TIER = "budget";
 
-  function buildNameIndex(){
-    NAME_TO_ID = new Map();
-    for(const [key, p] of Object.entries(PLACES||{})){
-      const id = placeIdAny(p, key);
-      const nm = placeNameAny(p, id);
-      if(id) NAME_TO_ID.set(String(id).toLowerCase(), id);
-      if(nm) NAME_TO_ID.set(String(nm).toLowerCase(), id);
-    }
-  }
-  function getPlaceIdByNameAny(name){
-    const nm = String(name || "").trim();
-    if(!nm) return "";
-    const direct = NAME_TO_ID.get(nm.toLowerCase());
-    if(direct && PLACES[direct]) return direct;
-    const slug = slugifyName(nm);
-    if(slug && PLACES[slug]) return slug;
-    return "";
-  }
-
-  function buildStartList(templates){
-    const counts = new Map();
-    templates.forEach(t=>{
-      const s = String(t.start_point || t.start || "").trim();
-      if(!s) return;
-      const key = s.toUpperCase();
-      const cur = counts.get(key) || { local:0, inter:0 };
-      if(isLocalComputed(t)) cur.local += 1;
-      else cur.inter += 1;
-      counts.set(key, cur);
-    });
-
-    const arr = Array.from(counts.entries()).map(([k,v])=>({ key:k, ...v }));
-    arr.sort((a,b)=>{
-      const aPri = (TOUR_MODE==="outside") ? a.inter : a.local;
-      const bPri = (TOUR_MODE==="outside") ? b.inter : b.local;
-      if(bPri !== aPri) return bPri - aPri;
-      return a.key.localeCompare(b.key);
-    });
-
-    STARTS = arr.map(x=>x.key);
-    const dl = $("startList");
-    dl.innerHTML = "";
-    arr.forEach(x=>{
-      const opt = document.createElement("option");
-      opt.value = x.key;
-      dl.appendChild(opt);
-    });
-  }
-
-  function normalizeStartInput(){
-    const typed = String($("startInp").value || "").trim().toUpperCase();
-    if(!typed) return "";
-    const exact = STARTS.find(s => s === typed);
-    if(exact) return exact;
-    const partial = STARTS.find(s => s.startsWith(typed));
-    if(partial) return partial;
-    return typed; // allow user custom too
-  }
-
-  function getSelectedPax(){
-    const v = Number($("paxSel")?.value || 2);
-    return (isFinite(v) && v > 0) ? v : 2;
-  }
-
-  /* ===== SMART DISCOUNT (10-20%) ===== */
-  function hashStr(s){
-    s = String(s||"");
-    let h = 2166136261;
-    for(let i=0;i<s.length;i++){
-      h ^= s.charCodeAt(i);
-      h = Math.imul(h, 16777619);
-    }
-    return (h >>> 0);
-  }
-  function smartDiscountPercent(t, baseTotal){
-    const key = String(t.package_id || t.id || t.key || "");
-    let pct = 10 + (hashStr(key) % 11); // 10..20
-
-    const cat = String(t.category || t.package_category || t.type || "").toLowerCase();
-    if(cat.includes("lux")) pct = Math.min(pct, 14);
-    if(cat.includes("prem")) pct = Math.min(pct, 17);
-    if(cat.includes("budget")) pct = Math.max(pct, 14);
-
-    if(Number(baseTotal) > 90000) pct = Math.min(pct, 15);
-    if(Number(baseTotal) < 25000) pct = Math.max(pct, 16);
-
-    return Math.max(10, Math.min(20, pct));
-  }
-
-  /* ===== COSTS ===== */
-  function getCostObj(t){
-    const id = String(t.package_id || t.id || "").trim();
-    const key = String(t.key || "").trim();
-    return (COSTS && (COSTS[id] || COSTS[key])) || null;
-  }
-  function getTotalCost(costObj){
-    return Number(costObj?.total || costObj?.grand_total || costObj?.total_cost || 0) || 0;
-  }
-  function pickCostParts(costObj){
-    const cab = Number(costObj?.cab || costObj?.transport || costObj?.vehicle || 0) || 0;
-    const hotels = Number(costObj?.hotel || costObj?.hotels || costObj?.stay || 0) || 0;
-    const food = Number(costObj?.food || costObj?.meals || 0) || 0;
-    const act = Number(costObj?.activities || costObj?.activity || 0) || 0;
-    return { cab, hotels, food, act };
-  }
-
-  /* ===== TEMPLATE FIELDS ===== */
-  function getTplName(t){
-    return String(t.package_name || t.name || t.title || t.route_name || t.key || "PACKAGE").trim();
-  }
-  function getTplStart(t){
-    return String(t.start_point || t.start || t.start_city || "").trim().toUpperCase();
-  }
-  function getTplDays(t){
-    return Number(t.days || t.duration_days || t.trip_days || t.total_days || 0) || 0;
-  }
-  function getTplDistrict(t){
-    return String(t.district || t.region || t.route_district || "—").trim().toUpperCase();
-  }
-  function getTplCategory(t){
-    return String(t.category || t.package_category || t.type || "").trim().toLowerCase();
-  }
-  function getTplImg(t){
-    return String(t.cover || t.image || t.banner || "").trim();
-  }
-
-  /* ===== ITINERARY EXTRACTOR (handles many shapes) ===== */
-  function extractItinerary(tpl){
-    const out = [];
-
-    const arr =
-      (Array.isArray(tpl.itinerary) && tpl.itinerary) ||
-      (Array.isArray(tpl.days) && tpl.days) ||
-      (Array.isArray(tpl.route) && tpl.route) ||
-      (Array.isArray(tpl.day_wise) && tpl.day_wise) ||
-      null;
-
-    if(arr){
-      arr.forEach((d, idx)=>{
-        const dayNum = Number(d.day || d.day_no || d.dayNumber || (idx+1)) || (idx+1);
-        const title = String(d.title || d.heading || d.summary || d.route || "").trim();
-        const placesArr =
-          (Array.isArray(d.places) && d.places) ||
-          (Array.isArray(d.locations) && d.locations) ||
-          (Array.isArray(d.stops) && d.stops) ||
-          (Array.isArray(d.place_list) && d.place_list) ||
-          [];
-
-        const places = placesArr.map(x=>{
-          const nm = String(x.name || x.title || x.place || x.location || x).trim();
-          const id = String(x.place_id || x.id || x.placeId || "").trim();
-          return { name: nm, id };
-        }).filter(p=>p.name);
-
-        out.push({ day: dayNum, title, places, raw:d });
-      });
-      out.sort((a,b)=>a.day-b.day);
-      return out;
-    }
-
-    const obj = tpl.day_wise || tpl.dayWise || tpl.day_plan || null;
-    if(obj && typeof obj === "object"){
-      Object.entries(obj).forEach(([k,v], idx)=>{
-        const dayNum = Number(String(k).replace(/[^\d]/g,"")) || (idx+1);
-        const title = String(k).trim();
-        const places = (Array.isArray(v) ? v : [v]).map(x=>({ name:String(x).trim(), id:"" })).filter(p=>p.name);
-        out.push({ day: dayNum, title, places, raw:v });
-      });
-      out.sort((a,b)=>a.day-b.day);
-      return out;
-    }
-
-    return out;
-  }
-
-  function collectItineraryPlaceIds(itin){
-    const ids = new Set();
-    itin.forEach(d=>{
-      d.places.forEach(p=>{
-        if(p.id) ids.add(p.id);
-        const byName = getPlaceIdByNameAny(p.name);
-        if(byName) ids.add(byName);
-      });
-    });
-    return ids;
-  }
-
-  function nearbyPlacesFromItinerary(itin, radiusKm=25, limit=12){
-    const idsInRoute = collectItineraryPlaceIds(itin);
-
-    const anchors = [];
-    idsInRoute.forEach(id=>{
-      const p = PLACES?.[id];
-      if(!p) return;
-      const lat = latAny(p), lng = lngAny(p);
-      if(isFinite(lat) && isFinite(lng)) anchors.push({lat,lng});
-    });
-    if(!anchors.length) return [];
-
-    const scored = [];
-    for(const [key, p] of Object.entries(PLACES||{})){
-      if(idsInRoute.has(key)) continue;
-      const lat = latAny(p), lng = lngAny(p);
-      if(!isFinite(lat) || !isFinite(lng)) continue;
-
-      let best = Infinity;
-      for(const a of anchors){
-        const d = haversineKm(a.lat, a.lng, lat, lng);
-        if(d < best) best = d;
-      }
-      if(best <= radiusKm){
-        scored.push({ key, place:p, d: best });
-      }
-    }
-
-    scored.sort((a,b)=>a.d-b.d);
-    return scored.slice(0, limit);
-  }
-
-  /* ===== District Bar ===== */
-  function buildDistrictBar(list){
-    const bar = $("districtBar");
-    if(!bar) return;
-
-    const set = new Set();
-    list.forEach(t=>{
-      const d = getTplDistrict(t);
-      if(d && d !== "—") set.add(d);
-    });
-
-    const districts = ["ALL", ...Array.from(set).sort((a,b)=>a.localeCompare(b))];
-    bar.innerHTML = "";
-    districts.forEach(d=>{
-      const el = document.createElement("div");
-      el.className = "distItem" + (d === ACTIVE_DISTRICT ? " active" : "");
-      el.textContent = d;
-      el.onclick = ()=>{
-        ACTIVE_DISTRICT = d;
-        document.querySelectorAll(".distItem").forEach(x=>x.classList.remove("active"));
-        el.classList.add("active");
-        applyFiltersAndRender(true);
-      };
-      bar.appendChild(el);
-    });
-  }
-
-  /* ===== Sidebar render (ALL packages go here) ===== */
-  function renderSidebar(list){
-    const wrap = $("otherPkgList");
-    if(!wrap) return;
-    if(!list.length){
-      wrap.innerHTML = `<div class="otherHint">No packages match current filters.</div>`;
-      return;
-    }
-
-    wrap.innerHTML = list.map(t=>{
-      const key = String(t.key || "");
-      const title = escapeHtml(getTplName(t));
-      const days = getTplDays(t);
-      const start = escapeHtml(getTplStart(t));
-      const dist = escapeHtml(getTplDistrict(t));
-      const active = (String(CURRENT_TEMPLATE_KEY) === String(key)) ? "active" : "";
-
-      const costObj = getCostObj(t);
-      const baseTotal = getTotalCost(costObj);
-      const discPct = smartDiscountPercent(t, baseTotal);
-      const finalTotal = baseTotal ? Math.round(baseTotal * (1 - discPct/100)) : 0;
-
-      return `
-        <div class="pkgSide ${active}" data-key="${escapeHtml(key)}">
-          <div class="pkgSideTop">
-            <div class="t1">${title}</div>
-            <div class="badge blue">${days || "—"}D</div>
-          </div>
-          <div class="pkgSideRow">
-            <span>${start || "—"}</span>
-            <span>${dist || "—"}</span>
-          </div>
-          <div class="pkgSidePrice">
-            ${baseTotal ? `Now ${rupees(finalTotal)} <span style="opacity:.65;font-weight:900;">(${discPct}% off)</span>` : `Open to view`}
-          </div>
-        </div>
-      `;
-    }).join("");
-
-    // click wiring
-    wrap.querySelectorAll(".pkgSide").forEach(card=>{
-      card.onclick = ()=>{
-        const key = card.getAttribute("data-key") || "";
-        openPackage(key);
-      };
-    });
-  }
-
-  function setPkgCountText(){
-    $("pkgCount").textContent = `${FILTERED.length || 0} packages`;
-  }
-
-  /* ===== Center render (only selected package) ===== */
-  function renderCenterSelected(){
-    const wrap = $("pkgList");
-    if(!wrap) return;
-
-    if(!CURRENT_TEMPLATE_KEY){
-      wrap.innerHTML = `
-        <div class="centerFocus">
-          <div class="pill"><b>Select a package</b></div>
-          <div class="muted" style="margin-top:10px;text-transform:none;letter-spacing:.02em;">
-            Packages are in left sidebar. Tap any card to open full details here.
-          </div>
-        </div>
-      `;
-      clearMap();
-      return;
-    }
-
-    const sourceList = FILTERED.length ? FILTERED : ACTIVE_TEMPLATES;
-    const t = sourceList.find(x=>String(x.key)===String(CURRENT_TEMPLATE_KEY)) || ACTIVE_TEMPLATES.find(x=>String(x.key)===String(CURRENT_TEMPLATE_KEY));
-    if(!t){
-      CURRENT_TEMPLATE_KEY = "";
-      renderCenterSelected();
-      return;
-    }
-
-    const name = getTplName(t);
-    const start = getTplStart(t);
-    const days = getTplDays(t);
-    const dist = getTplDistrict(t);
-    const img = getTplImg(t) || "./style/n1.jpg";
-    const modeBadge = (TOUR_MODE === "outside") ? "INTERCITY" : "LOCAL";
-
-    const costObj = getCostObj(t);
-    const baseTotal = getTotalCost(costObj);
-    const discPct = smartDiscountPercent(t, baseTotal);
-    const finalTotal = baseTotal ? Math.round(baseTotal * (1 - discPct/100)) : 0;
-    const parts = pickCostParts(costObj || {});
-
-    const itin = extractItinerary(t);
-    const nearby = itin.length ? nearbyPlacesFromItinerary(itin, 25, 12) : [];
-
-    // Build itinerary HTML + clickable buttons -> place modal + map focus
-    const itinHtml = itin.length ? itin.map(d=>{
-      const placesHtml = (d.places && d.places.length) ? d.places.map((p, i)=>{
-        const pid = p.id || getPlaceIdByNameAny(p.name) || "";
-        const label = escapeHtml(p.name);
-        return `<button class="placeMini" type="button" data-pid="${escapeHtml(pid)}" data-d="${d.day}" data-o="${i+1}">${label}</button>`;
-      }).join("") : `<div class="muted" style="text-transform:none;letter-spacing:.02em;">No places listed for this day.</div>`;
-
-      return `
-        <div class="dayBlock">
-          <div class="dayHdr">
-            <div class="d">Day ${d.day}</div>
-            <div class="r">${escapeHtml(d.title || (start ? (start + " route") : "Route"))}</div>
-          </div>
-          <div class="dayBody">
-            <div class="placeRow">${placesHtml}</div>
-          </div>
-        </div>
-      `;
-    }).join("") : `
-      <div class="dayBlock">
-        <div class="dayHdr">
-          <div class="d">Itinerary</div>
-          <div class="r">Not found in template</div>
-        </div>
-        <div class="dayBody">
-          <div class="muted" style="text-transform:none;letter-spacing:.02em;">
-            Add itinerary in template under <b>itinerary / days / route / day_wise</b>.
-          </div>
-        </div>
-      </div>
-    `;
-
-    const nearHtml = nearby.length ? nearby.map(x=>{
-      const p = x.place;
-      const pid = placeIdAny(p, x.key);
-      const nm = escapeHtml(placeNameAny(p, pid));
-      const photos = getPlacePhotos(p, pid);
-      const src = photos[0] || "./style/n1.jpg";
-      return `
-        <div class="nearCircle" data-pid="${escapeHtml(pid)}" title="${nm}">
-          <div class="img">
-            <img src="${escapeHtml(src)}" alt="${nm}" onerror="this.src='./style/n1.jpg'">
-          </div>
-          <div class="nm">${nm}</div>
-        </div>
-      `;
-    }).join("") : `<div class="muted" style="text-transform:none;letter-spacing:.02em;">Nearby suggestions need itinerary places with coordinates in PLACES.</div>`;
-
-    wrap.innerHTML = `
-      <div class="centerFocus">
-        <div class="focusHero">
-          <img class="focusHeroImg" src="${escapeHtml(img)}" alt="${escapeHtml(name)}" onerror="this.src='./style/n1.jpg'">
-          <div class="focusHeroBar">
-            <div style="min-width:260px;">
-              <h2 class="focusTitle">${escapeHtml(name)}</h2>
-              <p class="focusSub">${escapeHtml(modeBadge)} • ${days||"—"} Days • ${escapeHtml(start||"—")} • ${escapeHtml(dist||"—")}</p>
-              <div class="focusBadges">
-                <span class="pkgBadge purple">${escapeHtml(modeBadge)}</span>
-                <span class="pkgBadge">${escapeHtml(dist||"—")}</span>
-                <span class="pkgBadge green">${days||"—"} Days</span>
-              </div>
-            </div>
-
-            <div class="priceBox">
-              <div class="muted" style="margin-bottom:6px;">Smart Discount Offer</div>
-              ${baseTotal ? `
-                <div class="priceRow">
-                  <div class="priceOld">${rupees(baseTotal)}</div>
-                  <div class="discPill">${discPct}% OFF</div>
-                </div>
-                <div class="priceNew">${rupees(finalTotal)}</div>
-                <div class="muted" style="margin-top:6px;">Final price (from Firebase costing node)</div>
-              ` : `
-                <div class="muted" style="text-transform:none;letter-spacing:.02em;">
-                  Costing not found in <b>package_cost_breakdown</b> for this package.
-                </div>
-              `}
-            </div>
-          </div>
-        </div>
-
-        <div class="costGrid">
-          <div class="costCard"><div class="k">Cab</div><div class="v">${rupees(parts.cab)}</div></div>
-          <div class="costCard"><div class="k">Hotels</div><div class="v">${rupees(parts.hotels)}</div></div>
-          <div class="costCard"><div class="k">Food</div><div class="v">${rupees(parts.food)}</div></div>
-          <div class="costCard"><div class="k">Activities</div><div class="v">${rupees(parts.act)}</div></div>
-        </div>
-
-        ${itinHtml}
-
-        <div class="nearSection">
-          <div class="nearTop">
-            <div class="k">Nearby Places</div>
-            <div class="muted">Auto radius suggestions</div>
-          </div>
-          <div class="nearGrid">${nearHtml}</div>
-        </div>
-
-        <div class="enqRow">
-          <a class="enqBtn" target="_blank" rel="noopener"
-             href="https://wa.me/917018138847?text=${encodeURIComponent('Hi Chandan, I want to book: ' + name)}">
-            WhatsApp to Book
-          </a>
-        </div>
-      </div>
-    `;
-
-    // click wiring for itinerary buttons -> modal
-    wrap.querySelectorAll(".placeMini").forEach(btn=>{
-      btn.onclick = ()=>{
-        const pid = btn.getAttribute("data-pid") || "";
-        const d = Number(btn.getAttribute("data-d") || 1);
-        const o = Number(btn.getAttribute("data-o") || 1);
-        if(pid && PLACES[pid]){
-          openPlaceModal({ place: PLACES[pid], dayNum:d, orderNum:o, placeId: pid });
-          drawRouteForCurrentTemplate(true); // keep route visible
-        }else{
-          showBot("⚠️ Place not found in PLACES node");
-        }
-      };
-    });
-
-    // click wiring for nearby circles -> modal
-    wrap.querySelectorAll(".nearCircle").forEach(card=>{
-      card.onclick = ()=>{
-        const pid = card.getAttribute("data-pid") || "";
-        if(pid && PLACES[pid]){
-          openPlaceModal({ place: PLACES[pid], dayNum: 0, orderNum: 0, placeId: pid });
-        }
-      };
-    });
-
-    // draw route + markers
-    drawRouteForCurrentTemplate(true);
-  }
-
-  /* ===== OSRM route line ===== */
-  async function fetchOsrmRoute(coords){
-    // coords = [{lat,lng}, ...]
-    if(coords.length < 2) return null;
-    const pts = coords.map(c=>`${c.lng},${c.lat}`).join(";");
-    const url = `https://router.project-osrm.org/route/v1/driving/${pts}?overview=full&geometries=geojson`;
-    const res = await fetch(url);
-    if(!res.ok) return null;
-    const js = await res.json();
-    const r = js?.routes?.[0];
-    if(!r) return null;
-    return {
-      km: (r.distance||0)/1000,
-      hrs: (r.duration||0)/3600,
-      geo: r.geometry
-    };
-  }
-
-  function addMarker(lat, lng, label, sub){
-    const m = L.marker([lat,lng]);
-    const html = `<b>${escapeHtml(label||"Stop")}</b><br><span style="opacity:.7">${escapeHtml(sub||"")}</span>`;
-    m.bindPopup(html);
-    markersLayer.addLayer(m);
-    return m;
-  }
-
-  async function drawRouteForCurrentTemplate(fit=true){
-    clearMap();
-    const t = (FILTERED.length ? FILTERED : ACTIVE_TEMPLATES).find(x=>String(x.key)===String(CURRENT_TEMPLATE_KEY));
-    if(!t) return;
-
-    const itin = extractItinerary(t);
-    const ids = collectItineraryPlaceIds(itin);
-
-    // Build ordered points (by day + order)
-    const points = [];
-    itin.forEach(d=>{
-      d.places.forEach(p=>{
-        const id = p.id || getPlaceIdByNameAny(p.name) || "";
-        const pl = id ? PLACES[id] : null;
-        if(!pl) return;
-        const lat = latAny(pl), lng = lngAny(pl);
-        if(!isFinite(lat) || !isFinite(lng)) return;
-        points.push({ lat, lng, name: placeNameAny(pl, id), id, day: d.day });
-      });
-    });
-
-    // Fallback: if itinerary empty, try start_point place from PLACES
-    if(points.length < 2){
-      const startName = getTplStart(t);
-      const startId = getPlaceIdByNameAny(startName);
-      if(startId && PLACES[startId]){
-        const pl = PLACES[startId];
-        const lat = latAny(pl), lng = lngAny(pl);
-        if(isFinite(lat) && isFinite(lng)){
-          addMarker(lat,lng, startName, "Start");
-          map.setView([lat,lng], 9);
-          $("kmBadge").textContent = "—";
-        }
-      }
-      showBot("⚠️ Route needs itinerary places with coordinates");
-      return;
-    }
-
-    // Markers
-    const showAll = (showMode === "all");
-    if(showAll){
-      points.forEach((p, i)=>{
-        addMarker(p.lat, p.lng, p.name, `Day ${p.day} • Stop ${i+1}`);
-      });
-    }else{
-      addMarker(points[0].lat, points[0].lng, points[0].name, "Start");
-      addMarker(points[points.length-1].lat, points[points.length-1].lng, points[points.length-1].name, "End");
-    }
-
-    // OSRM route line
-    try{
-      setStatus("Drawing route…");
-      const osrm = await fetchOsrmRoute(points);
-      if(osrm && osrm.geo){
-        routeLine = L.geoJSON(osrm.geo, { weight: 5, opacity: 0.85 });
-        routeLine.addTo(map);
-        $("kmBadge").textContent = `${osrm.km.toFixed(0)} km • ${osrm.hrs.toFixed(1)} hrs`;
-        if(fit) fitMapToRoute();
-        setStatus("Ready");
-      }else{
-        // If OSRM fails, fallback to straight polyline
-        const ll = points.map(p=>[p.lat,p.lng]);
-        routeLine = L.polyline(ll, { weight: 4, opacity: 0.75 });
-        routeLine.addTo(map);
-        if(fit) fitMapToRoute();
-        $("kmBadge").textContent = "Route line (fallback)";
-        setStatus("Ready");
-      }
-    }catch(e){
-      console.warn(e);
-      const ll = points.map(p=>[p.lat,p.lng]);
-      routeLine = L.polyline(ll, { weight: 4, opacity: 0.75 });
-      routeLine.addTo(map);
-      if(fit) fitMapToRoute();
-      $("kmBadge").textContent = "Route line (fallback)";
-      setStatus("Ready");
-    }
-  }
-
-  /* ===== Open package ===== */
-  function openPackage(key){
-    CURRENT_TEMPLATE_KEY = String(key || "");
-    document.querySelectorAll(".pkgSide").forEach(el=>el.classList.remove("active"));
-    const hit = document.querySelector(`.pkgSide[data-key="${CSS.escape(CURRENT_TEMPLATE_KEY)}"]`);
-    if(hit) hit.classList.add("active");
-    renderCenterSelected();
-  }
-
-  /* ===== Filters ===== */
-  function applyFiltersAndRender(keepSelection){
-    const start = normalizeStartInput();
-    const daysNeed = String($("daysSel").value || "").trim();
-    const catNeed = String($("visitType").value || "").trim().toLowerCase();
-    const pax = getSelectedPax();
-
-    const base = ACTIVE_TEMPLATES.slice();
-
-    FILTERED = base.filter(t=>{
-      // mode filter (outside vs local) if you want strict:
-      const isLocal = isLocalComputed(t);
-      if(TOUR_MODE === "outside" && isLocal) return false;
-      if(TOUR_MODE !== "outside" && !isLocal) return false;
-
-      // start
-      if(start){
-        const s = getTplStart(t);
-        if(s && s !== start) return false;
-      }
-
-      // days
-      if(daysNeed){
-        const d = getTplDays(t);
-        if(String(d) !== String(daysNeed)) return false;
-      }
-
-      // category
-      if(catNeed){
-        const cat = getTplCategory(t);
-        if(!cat.includes(catNeed)) return false;
-      }
-
-      // district bar
-      if(ACTIVE_DISTRICT && ACTIVE_DISTRICT !== "ALL"){
-        const d = getTplDistrict(t);
-        if(d !== ACTIVE_DISTRICT) return false;
-      }
-
-      // pax currently not used in filtering (pricing is from your cost node anyway)
-      return true;
-    });
-
-    renderSidebar(FILTERED);
-    setPkgCountText();
-    buildDistrictBar(FILTERED.length ? FILTERED : ACTIVE_TEMPLATES);
-
-    // keep selected if exists in filtered; else auto-select first
-    if(keepSelection && CURRENT_TEMPLATE_KEY){
-      const ok = FILTERED.find(x=>String(x.key)===String(CURRENT_TEMPLATE_KEY));
-      if(!ok) CURRENT_TEMPLATE_KEY = "";
-    }
-    if(!CURRENT_TEMPLATE_KEY && FILTERED.length){
-      CURRENT_TEMPLATE_KEY = String(FILTERED[0].key || "");
-    }
-    renderCenterSelected();
-
-    // pills
-    const pills = $("pills");
-    const pillParts = [];
-    if(start) pillParts.push(`<span class="pill"><b>Start</b> ${escapeHtml(start)}</span>`);
-    if(daysNeed) pillParts.push(`<span class="pill"><b>Days</b> ${escapeHtml(daysNeed)}</span>`);
-    if(catNeed) pillParts.push(`<span class="pill"><b>Type</b> ${escapeHtml(catNeed.toUpperCase())}</span>`);
-    pillParts.push(`<span class="pill"><b>Pax</b> ${escapeHtml(String(pax))}</span>`);
-    if(ACTIVE_DISTRICT && ACTIVE_DISTRICT !== "ALL") pillParts.push(`<span class="pill"><b>District</b> ${escapeHtml(ACTIVE_DISTRICT)}</span>`);
-    pills.innerHTML = pillParts.join("") || "";
-  }
-
-  /* ===== Load from storage/Firebase ===== */
   function loadFromIndexStorage(){
     try{
       const t = sessionStorage.getItem("HX_TEMPLATES");
@@ -2117,6 +1445,360 @@ footer{
       console.warn(e);
       return false;
     }
+  }
+
+  function normalizeTemplates(obj){
+    return Object.entries(obj||{}).map(([k,v])=>({ key:k, ...(v||{}) }));
+  }
+
+  function buildStartList(arr){
+    const set = new Set();
+    arr.forEach(t=>{
+      const s = String(t.start_point || t.start || "").trim();
+      if(s) set.add(s.toUpperCase());
+    });
+    STARTS = Array.from(set).sort((a,b)=>a.localeCompare(b));
+    const dl = $("startList");
+    dl.innerHTML = "";
+    STARTS.forEach(s=>{
+      const opt = document.createElement("option");
+      opt.value = s;
+      dl.appendChild(opt);
+    });
+  }
+
+  function buildDistrictBar(arr){
+    const set = new Set(["ALL"]);
+    arr.forEach(t=>{
+      const d = String(t.district || "").trim();
+      if(d) set.add(d.toUpperCase());
+    });
+    const list = Array.from(set);
+    const bar = $("districtBar");
+    bar.innerHTML = "";
+    list.forEach(d=>{
+      const el = document.createElement("div");
+      el.className = "distItem" + (d===ACTIVE_DISTRICT ? " active" : "");
+      el.textContent = d;
+      el.onclick = ()=>{
+        ACTIVE_DISTRICT = d;
+        buildDistrictBar(arr);
+        renderSidebar();
+      };
+      bar.appendChild(el);
+    });
+  }
+
+  function normalizeStartInput(){
+    const typed = String($("startInp").value || "").trim().toUpperCase();
+    if(!typed) return "";
+    const exact = STARTS.find(s => s === typed);
+    if(exact) return exact;
+    const partial = STARTS.find(s => s.startsWith(typed));
+    if(partial) return partial;
+    return typed;
+  }
+
+  function renderSidebarCard(pkg){
+    const days = Number(pkg.days || 0) || "";
+    const price = getTierPrice(pkg, "budget");
+    const rp = String(pkg.route_path || "").replaceAll(">", "→");
+    return `
+      <div class="pkgSide" data-id="${escapeHtml(pkg.package_id || pkg.key || "")}">
+        <div class="pkgSideTop">
+          <div class="t1">${escapeHtml(pkg.package_name || pkg.route_name || pkg.package_id || pkg.key || "PACKAGE")}</div>
+          <div class="badge blue">${days ? `${days}D` : "PKG"}</div>
+        </div>
+        <div class="pkgSideRow">
+          <span>${escapeHtml(String(pkg.district||"").toUpperCase() || "—")}</span>
+          <span>Drive: ${escapeHtml(String(pkg.drive_level||"—").toUpperCase())}</span>
+        </div>
+        ${rp ? `<div class="pkgSideRow"><span>${escapeHtml(rp)}</span></div>` : ""}
+        <div class="pkgSidePrice">Starting ${rupees(price)} /person</div>
+      </div>
+    `;
+  }
+
+  function applyFilters(arr){
+    const start = normalizeStartInput();
+    const daysSel = String($("daysSel").value || "").trim();
+    const tierSel = String($("visitType").value || "").trim(); // ANY/budget/premium/luxury
+    ACTIVE_START = start;
+
+    let out = arr.slice();
+
+    if(start){
+      out = out.filter(t => String(t.start_point || t.start || "").trim().toUpperCase() === start);
+    }
+    if(ACTIVE_DISTRICT && ACTIVE_DISTRICT !== "ALL"){
+      out = out.filter(t => String(t.district||"").trim().toUpperCase() === ACTIVE_DISTRICT);
+    }
+    if(daysSel){
+      out = out.filter(t => String(t.days||"").trim() === daysSel);
+    }
+    // tierSel doesn't filter packages; it changes selected tier display (optional)
+    if(tierSel){
+      ACTIVE_TIER = tierSel;
+    }
+
+    return out;
+  }
+
+  function renderSidebar(){
+    const list = $("otherPkgList");
+    const filtered = applyFilters(ACTIVE_TEMPLATES);
+
+    $("pkgCount").textContent = `${filtered.length} packages`;
+
+    if(!filtered.length){
+      list.innerHTML = `<div class="otherHint">No packages match filters. Try changing Start / District / Days.</div>`;
+      return;
+    }
+
+    list.innerHTML = filtered.map(renderSidebarCard).join("");
+
+    list.querySelectorAll(".pkgSide").forEach(el=>{
+      el.onclick = ()=>{
+        const id = el.getAttribute("data-id");
+        const pkg = filtered.find(x => String(x.package_id || x.key || "") === id) || filtered[0];
+        openPackage(pkg);
+
+        list.querySelectorAll(".pkgSide").forEach(x=>x.classList.remove("active"));
+        el.classList.add("active");
+      };
+    });
+  }
+
+  function renderDayBlock(dayNo, ids){
+    const list = (ids||[]).filter(Boolean);
+    return `
+      <div class="itDay">
+        <div class="itTop">
+          <div class="d">Day ${dayNo}</div>
+          <div class="muted">${list.length ? `${list.length} stops` : "—"}</div>
+        </div>
+        <div class="placeRow">
+          ${list.length ? list.map(pid => `
+            <button class="placeMini" type="button" data-place="${escapeHtml(pid)}">${escapeHtml(placeLabel(pid))}</button>
+          `).join("") : `<div class="muted" style="text-transform:none;letter-spacing:.02em;">Not set</div>`}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderSelectedPackage(pkg, tier="budget"){
+    const disc = smartDiscountPercent(pkg.package_id || pkg.key || "");
+    const base = getTierPrice(pkg, tier);
+    const finalP = Math.round(base * (1 - disc/100));
+
+    const day1 = splitCSV(pkg.day1_place_ids);
+    const day2 = splitCSV(pkg.day2_place_ids);
+    const day3 = splitCSV(pkg.day3_place_ids);
+
+    // show up to pkg.days if exists
+    const daysN = Number(pkg.days || 0) || 0;
+    const dayIds = {1:day1,2:day2,3:day3};
+
+    const major = splitCSV(pkg.major_place_ids);
+    const ideal = splitCSV(pkg.ideal_for);
+    const season = splitCSV(pkg.best_season);
+    const incl = splitCSV(pkg.inclusions);
+    const excl = splitCSV(pkg.exclusions);
+
+    const circles = Array.from(new Set([...major, ...day1, ...day2, ...day3])).slice(0, 12);
+
+    // hero image: first circle place photo if exists
+    let heroImg = "./style/n1.jpg";
+    if(circles.length){
+      const p0 = PLACES?.[circles[0]];
+      const photos = getPlacePhotos(p0, circles[0]);
+      heroImg = photos[0] || heroImg;
+    }
+
+    const rp = String(pkg.route_path || "").replaceAll(">", "→");
+
+    return `
+      <div class="centerFocus">
+        <div class="focusHero">
+          <img class="focusHeroImg" src="${escapeHtml(heroImg)}" alt="" onerror="this.src='./style/n1.jpg'">
+          <div class="focusHeroBar">
+            <div style="min-width:280px;flex:1;">
+              <h2 class="focusTitle">${escapeHtml(pkg.package_name || pkg.route_name || pkg.package_id || pkg.key || "PACKAGE")}</h2>
+              <p class="focusSub">
+                ${escapeHtml(pkg.route_name || "")}
+                ${rp ? " • " + escapeHtml(rp) : ""}
+              </p>
+
+              <div class="focusBadges">
+                ${pkg.hotel_category ? `<span class="pkgBadge purple">${escapeHtml(pkg.hotel_category)}</span>` : ""}
+                ${pkg.category ? `<span class="pkgBadge">${escapeHtml(pkg.category)}</span>` : ""}
+                ${pkg.district ? `<span class="pkgBadge">${escapeHtml(String(pkg.district).toUpperCase())}</span>` : ""}
+                ${pkg.days ? `<span class="pkgBadge green">${escapeHtml(String(pkg.days))} Days</span>` : ""}
+                ${pkg.drive_level ? `<span class="pkgBadge">Drive: ${escapeHtml(String(pkg.drive_level).toUpperCase())}</span>` : ""}
+              </div>
+
+              <div style="margin-top:10px" class="muted">
+                ${ideal.length ? `Ideal for: <b>${escapeHtml(ideal.map(x=>x.toUpperCase()).join(", "))}</b><br>` : ""}
+                ${season.length ? `Best season: <b>${escapeHtml(season.map(x=>x.toUpperCase()).join(", "))}</b><br>` : ""}
+                ${pkg.night_plan ? `Nights: <b>${escapeHtml(pkg.night_plan)}</b> • ` : ""}
+                ${pkg.meal_plan ? `Meal: <b>${escapeHtml(pkg.meal_plan)}</b>` : ""}
+              </div>
+            </div>
+
+            <div class="priceBox" id="priceBox">
+              <div class="tierTabs">
+                <button class="tierBtn ${tier==="budget"?"active":""}" data-tier="budget" type="button">Budget</button>
+                <button class="tierBtn ${tier==="premium"?"active":""}" data-tier="premium" type="button">Premium</button>
+                <button class="tierBtn ${tier==="luxury"?"active":""}" data-tier="luxury" type="button">Luxury</button>
+              </div>
+              <div class="priceRow">
+                <div class="priceOld">${rupees(base)}</div>
+                <div class="discPill">${disc}% OFF</div>
+              </div>
+              <div class="priceNew">${rupees(finalP)}</div>
+              <div class="priceSmall">Per person • taxes extra if applicable</div>
+              <div class="priceSmall" style="margin-top:8px;">
+                <b>End:</b> ${escapeHtml(pkg.end_point || "—")}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="itinWrap">
+          <div class="bigTitle">Day-wise itinerary</div>
+          <div class="itinDays">
+            ${renderDayBlock(1, dayIds[1])}
+            ${daysN >= 2 ? renderDayBlock(2, dayIds[2]) : ""}
+            ${daysN >= 3 ? renderDayBlock(3, dayIds[3]) : ""}
+            ${daysN >= 4 ? `<div class="itDay"><div class="muted" style="text-transform:none;letter-spacing:.02em;">Add day4_place_ids in data for full itinerary.</div></div>` : ""}
+          </div>
+          ${pkg.important_notes ? `<div class="muted" style="margin-top:10px;text-transform:none;letter-spacing:.02em;">${escapeHtml(pkg.important_notes)}</div>` : ""}
+        </div>
+
+        <div class="nearSection">
+          <div class="bigTitle">Nearby / major places</div>
+          <div class="nearGrid">
+            ${circles.length ? circles.map(pid => {
+              const place = PLACES?.[pid] || { place_id: pid, name: titleFromId(pid) };
+              const photos = getPlacePhotos(place, pid);
+              const img = photos[0] || "./style/n1.jpg";
+              return `
+                <div class="nearCircle" data-place="${escapeHtml(pid)}">
+                  <div class="img"><img src="${escapeHtml(img)}" onerror="this.src='./style/n1.jpg'"></div>
+                  <div class="nm">${escapeHtml(place.name ? String(place.name).toUpperCase() : titleFromId(pid))}</div>
+                </div>`;
+            }).join("") : `<div class="muted" style="text-transform:none;letter-spacing:.02em;">No places set</div>`}
+          </div>
+        </div>
+
+        <div class="infoGrid">
+          <div class="infoCard">
+            <h3>Inclusions</h3>
+            <ul class="bullets">
+              ${(incl.length ? incl : ["—"]).map(x=>`<li>${escapeHtml(x)}</li>`).join("")}
+            </ul>
+          </div>
+
+          <div class="infoCard">
+            <h3>Exclusions</h3>
+            <ul class="bullets">
+              ${(excl.length ? excl : ["—"]).map(x=>`<li>${escapeHtml(x)}</li>`).join("")}
+            </ul>
+          </div>
+
+          <div class="infoCard">
+            <h3>Cancellation policy</h3>
+            <div class="kv">
+              <div>${escapeHtml(pkg.cancellation_policy || "—")}</div>
+            </div>
+          </div>
+
+          <div class="infoCard">
+            <h3>Notes</h3>
+            <div class="kv">
+              <div><b>Package:</b> ${escapeHtml(pkg.notes || "—")}</div>
+              <div><b>Route:</b> ${escapeHtml(rp || "—")}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function wireSelectedInteractions(){
+    // tier switch
+    document.querySelectorAll("#priceBox .tierBtn").forEach(btn=>{
+      btn.onclick = ()=>{
+        ACTIVE_TIER = btn.dataset.tier;
+        if(SELECTED){
+          $("pkgList").innerHTML = renderSelectedPackage(SELECTED, ACTIVE_TIER);
+          wireSelectedInteractions();
+        }
+      };
+    });
+
+    // place buttons + circles
+    document.querySelectorAll("[data-place]").forEach(el=>{
+      el.onclick = ()=>{
+        const pid = el.dataset.place;
+        const place = PLACES?.[pid] || { place_id: pid, name: titleFromId(pid) };
+        openPlaceModal({ place, dayNum: 0, orderNum: 0, placeId: pid });
+
+        // map pin
+        focusPlaceOnMap(pid, 12);
+      };
+    });
+  }
+
+  function openPackage(pkg){
+    SELECTED = pkg;
+
+    // clear map and show primary place pins
+    clearMap();
+
+    $("pkgList").innerHTML = renderSelectedPackage(pkg, ACTIVE_TIER);
+    wireSelectedInteractions();
+
+    // Auto-pin all itinerary places (if coords exist)
+    const allIds = [
+      ...splitCSV(pkg.day1_place_ids),
+      ...splitCSV(pkg.day2_place_ids),
+      ...splitCSV(pkg.day3_place_ids),
+      ...splitCSV(pkg.major_place_ids)
+    ];
+    const uniq = Array.from(new Set(allIds)).filter(Boolean);
+
+    uniq.forEach(pid=>{
+      const p = PLACES?.[pid];
+      if(!p) return;
+      const lat = Number(p.latitude), lng = Number(p.longitude);
+      if(!isFinite(lat) || !isFinite(lng)) return;
+      const m = L.marker([lat,lng]).addTo(markersLayer);
+      m.bindPopup(`<b>${escapeHtml(p.name || pid)}</b><br>${escapeHtml(p.district || "")}`);
+    });
+
+    if(uniq.length){
+      const pts = [];
+      uniq.forEach(pid=>{
+        const p = PLACES?.[pid];
+        const lat = Number(p?.latitude), lng = Number(p?.longitude);
+        if(isFinite(lat) && isFinite(lng)) pts.push([lat,lng]);
+      });
+      if(pts.length){
+        const bounds = L.latLngBounds(pts);
+        map.fitBounds(bounds.pad(0.2));
+      }
+    }else{
+      // fallback to end_point lat/lng if present in template
+      const lat = Number(pkg.latitude), lng = Number(pkg.longitude);
+      if(isFinite(lat) && isFinite(lng)){
+        L.marker([lat,lng]).addTo(markersLayer)
+          .bindPopup(`<b>${escapeHtml(pkg.end_point || "END")}</b>`).openPopup();
+        map.setView([lat,lng], 10);
+      }
+    }
+
+    showBot("✅ Package opened in center");
   }
 
   async function loadAll(){
@@ -2142,38 +1824,33 @@ footer{
         <div class="pill">
           <b>Data not found.</b><br>
           Firebase blocked OR rules issue.<br>
-          Open DevTools console for exact error.
+          Open console for exact error.
         </div>`;
       showBot("❌ Firebase not loading. Check DB rules.");
       return;
     }
 
-    buildNameIndex();
-
-    const templatesObj = TEMPLATES || {};
-    const arr = Object.entries(templatesObj).map(([k,v])=>({ key:k, ...(v||{}) }));
+    const arr = normalizeTemplates(TEMPLATES);
     ACTIVE_TEMPLATES = arr;
 
-    initModeFromLanding();
     buildStartList(arr);
+    buildDistrictBar(arr);
 
-    // read query start
+    // start prefill from query
     try{
       const qs = new URLSearchParams(location.search);
       const startQS = (qs.get("start") || "").trim();
-      if(startQS){
-        $("startInp").value = String(startQS).toUpperCase();
-      }
+      if(startQS) $("startInp").value = String(startQS).toUpperCase();
     }catch(e){}
 
     setStatus("Ready");
     showBot("✅ Data loaded successfully");
 
     // initial render
-    applyFiltersAndRender(false);
+    $("pkgList").innerHTML = `<div class="otherHint">Select a package from left sidebar to open full details here.</div>`;
+    renderSidebar();
   }
 
-  /* ===== UI wiring ===== */
   function wireUI(){
     $("yy").textContent = new Date().getFullYear();
 
@@ -2192,80 +1869,126 @@ footer{
       const v = e.target.value; if(v) location.href = v;
     };
 
-    $("topLink").onclick = (e)=>{ e.preventDefault(); window.scrollTo({ top:0, behavior:"smooth" }); };
+    $("topLink").onclick = (e)=>{ e.preventDefault(); window.scrollTo({top:0,behavior:"smooth"}); };
 
-    $("refreshBtn").onclick = async ()=>{
-      showBot("🔄 Refreshing data…");
-      sessionStorage.removeItem("HX_TEMPLATES");
-      sessionStorage.removeItem("HX_PLACES");
-      sessionStorage.removeItem("HX_COSTS");
-      await loadAll();
-    };
-
-    $("fitMapBtn").onclick = ()=> fitMapToRoute();
-    $("clearRouteBtn").onclick = ()=> clearMap();
-
-    $("showAllStopsBtn").onclick = ()=>{
-      showMode = "all";
-      showBot("✅ Showing all stops");
-      drawRouteForCurrentTemplate(true);
-    };
-    $("showStartEndBtn").onclick = ()=>{
-      showMode = "startend";
-      showBot("✅ Showing start/end only");
-      drawRouteForCurrentTemplate(true);
-    };
-    $("toggleTilesBtn").onclick = ()=>{
-      tilesDark = !tilesDark;
-      if(!map) return;
-      if(tilesDark){
-        if(map.hasLayer(tile)) map.removeLayer(tile);
-        if(!map.hasLayer(tileDark)) map.addLayer(tileDark);
-        showBot("🌙 Dark tiles enabled");
+    $("genBtn").onclick = ()=>{
+      renderSidebar();
+      // auto-open first filtered
+      const filtered = applyFilters(ACTIVE_TEMPLATES);
+      if(filtered.length){
+        const first = filtered[0];
+        openPackage(first);
+        // highlight first
+        const list = $("otherPkgList");
+        list.querySelectorAll(".pkgSide").forEach(x=>x.classList.remove("active"));
+        const el = list.querySelector(`.pkgSide[data-id="${CSS.escape(String(first.package_id || first.key || ""))}"]`);
+        if(el) el.classList.add("active");
       }else{
-        if(map.hasLayer(tileDark)) map.removeLayer(tileDark);
-        if(!map.hasLayer(tile)) map.addLayer(tile);
-        showBot("☀️ Light tiles enabled");
+        clearMap();
+        $("pkgList").innerHTML = `<div class="otherHint">No package found for current filters.</div>`;
       }
     };
 
-    $("genBtn").onclick = ()=> applyFiltersAndRender(true);
     $("resetBtn").onclick = ()=>{
       $("startInp").value = "";
       $("visitType").value = "";
       $("daysSel").value = "";
       $("paxSel").value = "2";
       ACTIVE_DISTRICT = "ALL";
-      CURRENT_TEMPLATE_KEY = "";
-      applyFiltersAndRender(false);
+      buildDistrictBar(ACTIVE_TEMPLATES);
+      renderSidebar();
+      $("pkgList").innerHTML = `<div class="otherHint">Filters reset. Select a package from left.</div>`;
+      clearMap();
       showBot("✅ Filters reset");
     };
 
     $("closeSelectedBtn").onclick = ()=>{
-      CURRENT_TEMPLATE_KEY = "";
-      document.querySelectorAll(".pkgSide").forEach(el=>el.classList.remove("active"));
-      renderCenterSelected();
+      SELECTED = null;
+      $("pkgList").innerHTML = `<div class="otherHint">Select a package from left sidebar to open full details here.</div>`;
+      $("otherPkgList").querySelectorAll(".pkgSide").forEach(x=>x.classList.remove("active"));
+      clearMap();
       showBot("✅ Closed selected package");
     };
 
-    // auto-apply on start typing (small delay)
-    let tmr = null;
-    $("startInp").addEventListener("input", ()=>{
-      clearTimeout(tmr);
-      tmr = setTimeout(()=> applyFiltersAndRender(true), 260);
-    });
-    $("visitType").addEventListener("change", ()=> applyFiltersAndRender(true));
-    $("daysSel").addEventListener("change", ()=> applyFiltersAndRender(true));
-    $("paxSel").addEventListener("change", ()=> applyFiltersAndRender(true));
+    $("refreshBtn").onclick = async ()=>{
+      try{
+        showBot("🔄 Refreshing data…");
+        setStatus("Refreshing…");
+        if(typeof window.hxFetchFirebaseAndCache === "function"){
+          await window.hxFetchFirebaseAndCache();
+        }
+        loadFromIndexStorage();
+        ACTIVE_TEMPLATES = normalizeTemplates(TEMPLATES);
+        buildStartList(ACTIVE_TEMPLATES);
+        buildDistrictBar(ACTIVE_TEMPLATES);
+        renderSidebar();
+        setStatus("Ready");
+        showBot("✅ Refreshed");
+      }catch(e){
+        console.error(e);
+        showBot("❌ Refresh failed (check console)");
+        setStatus("Refresh error");
+      }
+    };
+
+    $("clearRouteBtn").onclick = ()=>{ clearMap(); showBot("✅ Map cleared"); };
+
+    $("fitMapBtn").onclick = ()=>{
+      try{
+        // fit current markers
+        const pts = [];
+        markersLayer.eachLayer(l=>{
+          const ll = l.getLatLng && l.getLatLng();
+          if(ll) pts.push([ll.lat, ll.lng]);
+        });
+        if(pts.length){
+          map.fitBounds(L.latLngBounds(pts).pad(0.2));
+          showBot("✅ Fit map to pins");
+        }else{
+          showBot("ℹ️ No pins to fit");
+        }
+      }catch(e){ console.warn(e); }
+    };
+
+    $("toggleTilesBtn").onclick = ()=>{
+      tilesDark = !tilesDark;
+      if(tilesDark){
+        map.removeLayer(tile);
+        tileDark.addTo(map);
+      }else{
+        map.removeLayer(tileDark);
+        tile.addTo(map);
+      }
+      showBot("✅ Tiles toggled");
+    };
+
+    $("showAllStopsBtn").onclick = ()=>{
+      if(!SELECTED) return showBot("ℹ️ Select a package first");
+      clearMap();
+      openPackage(SELECTED);
+      showBot("✅ Showing all stops");
+    };
+
+    $("showStartEndBtn").onclick = ()=>{
+      if(!SELECTED) return showBot("ℹ️ Select a package first");
+      clearMap();
+
+      const lat = Number(SELECTED.latitude), lng = Number(SELECTED.longitude);
+      if(isFinite(lat) && isFinite(lng)){
+        L.marker([lat,lng]).addTo(markersLayer).bindPopup(`<b>${escapeHtml(SELECTED.end_point || "END")}</b>`).openPopup();
+        map.setView([lat,lng], 10);
+        showBot("✅ Showing end point");
+      }else{
+        showBot("ℹ️ End coordinates not set in template");
+      }
+    };
   }
 
   document.addEventListener("DOMContentLoaded", async ()=>{
     try{
       wireUI();
       initMap();
-      initModeFromLanding();
       await loadAll();
-      invalidateMapSoon();
     }catch(err){
       console.error(err);
       setStatus("Error loading");
