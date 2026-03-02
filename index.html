@@ -9,13 +9,18 @@
 :root{
   --primary:#1E88FF;
   --primary2:#0C6BFF;
+  --bg:#f4f8ff;
+  --text:#0D1B2A;
+  --card:#ffffff;
+  --stroke: rgba(13,27,42,.14);
+  --shadow: 0 18px 45px rgba(0,0,0,.15);
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
 body{
-  font-family:system-ui,Segoe UI,Roboto;
-  background:#f4f8ff;
-  color:#0D1B2A;
+  font-family:system-ui,Segoe UI,Roboto,Arial;
+  background:var(--bg);
+  color:var(--text);
 }
 
 /* ================= HEADER ================= */
@@ -29,22 +34,24 @@ body{
   padding:18px 40px;
   color:#fff;
 }
-.logoWrap{
-  display:flex;align-items:center;gap:12px;
-}
+.logoWrap{display:flex;align-items:center;gap:12px;min-width:0}
 .logo{
-  width:44px;height:44px;
-  border-radius:12px;
+  width:44px;height:44px;border-radius:12px;
   background:rgba(255,255,255,.2);
   display:grid;place-items:center;
-  font-weight:bold;
+  font-weight:900;letter-spacing:.06em;
 }
+.navBtns{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .navBtn{
-  padding:8px 18px;
-  border-radius:30px;
-  border:1px solid rgba(255,255,255,.4);
-  background:rgba(255,255,255,.2);
+  padding:9px 16px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.42);
+  background:rgba(255,255,255,.18);
   cursor:pointer;
+  color:#fff;
+  font-weight:700;
+  letter-spacing:.06em;
+  -webkit-tap-highlight-color:transparent;
 }
 
 /* ================= HERO ================= */
@@ -58,60 +65,67 @@ body{
   display:flex;
   height:100%;
   transition:transform .6s ease;
+  will-change: transform;
 }
-.hero-slide{
-  min-width:100%;
-  height:100%;
-}
-.hero-slide img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
+.hero-slide{min-width:100%;height:100%;}
+.hero-slide img{width:100%;height:100%;object-fit:cover;display:block;}
 .hero-overlay{
-  position:absolute;
-  inset:0;
-  background:linear-gradient(90deg,rgba(0,0,0,.65),rgba(0,0,0,.2));
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(0,0,0,.66),rgba(0,0,0,.24));
 }
 .hero-content{
   position:absolute;
   bottom:140px;
   left:70px;
-  max-width:650px;
+  max-width:680px;
   color:#fff;
+}
+.hero-pill{
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.25);
+  padding:7px 12px;border-radius:999px;
+  display:inline-flex;gap:10px;align-items:center;
+  font-size:12px;letter-spacing:.14em;text-transform:uppercase;
 }
 .hero-content h1{
   font-size:42px;
-  margin:15px 0;
+  margin:14px 0 10px;
+  line-height:1.08;
 }
 .hero-content p{
   font-size:18px;
-  opacity:.9;
+  opacity:.92;
+  line-height:1.45;
 }
 .hero-btn{
-  margin-top:25px;
+  margin-top:22px;
   padding:14px 22px;
-  border-radius:12px;
+  border-radius:14px;
   border:none;
   background:linear-gradient(135deg,var(--primary),var(--primary2));
   color:#fff;
-  font-weight:700;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
   cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
 }
+.hero-btn:active{transform:translateY(1px);}
 
 /* arrows */
 .arrow{
-  position:absolute;
-  top:50%;
+  position:absolute;top:50%;
   transform:translateY(-50%);
   font-size:40px;
   color:#fff;
-  background:rgba(0,0,0,.3);
-  width:50px;height:50px;
+  background:rgba(0,0,0,.28);
+  width:52px;height:52px;
   display:grid;place-items:center;
   border-radius:50%;
   cursor:pointer;
   z-index:5;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
 }
 .arrow.left{left:20px}
 .arrow.right{right:20px}
@@ -120,92 +134,177 @@ body{
 .start-section{
   position:relative;
   z-index:50;
-  background:#fff;
+  background:var(--card);
   margin-top:-90px;
   border-radius:22px;
-  box-shadow:0 18px 45px rgba(0,0,0,.15);
-  padding:32px;
+  box-shadow:var(--shadow);
+  padding:26px 26px 24px;
   width:92%;
-  max-width:1100px;
+  max-width:1120px;
   margin-left:auto;
   margin-right:auto;
+  border:1px solid var(--stroke);
+}
+
+.start-head{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
+  margin-bottom:14px;
+  flex-wrap:wrap;
+}
+.start-head h2{
+  font-size:18px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.start-sub{
+  font-size:12px;
+  letter-spacing:.10em;
+  text-transform:uppercase;
+  opacity:.7;
 }
 
 .start-row{
   display:grid;
   grid-template-columns: repeat(4, 1fr);
-  gap:15px;
+  gap:12px;
+  margin-top:10px;
 }
-
+.field label{
+  display:block;
+  font-size:11px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  opacity:.72;
+  margin:0 0 6px 2px;
+}
 .field select{
   width:100%;
-  padding:12px;
-  border-radius:12px;
-  border:1px solid #ddd;
+  padding:12px 12px;
+  border-radius:14px;
+  border:1px solid rgba(13,27,42,.16);
+  background:rgba(255,255,255,.96);
   font-size:14px;
+  outline:none;
+}
+.field select:focus{
+  border-color: rgba(30,136,255,.55);
+  box-shadow: 0 0 0 3px rgba(30,136,255,.16);
+}
+
+.inline-row{
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+  margin-top:14px;
+}
+.note{
+  flex:1 1 260px;
+  background:rgba(30,136,255,.08);
+  border:1px solid rgba(30,136,255,.18);
+  padding:10px 12px;
+  border-radius:14px;
+  font-size:12px;
+  line-height:1.35;
+  opacity:.9;
+}
+.smallBtn{
+  padding:11px 14px;
+  border-radius:14px;
+  border:1px solid rgba(13,27,42,.16);
+  background:rgba(255,255,255,.9);
+  cursor:pointer;
+  font-weight:800;
+  letter-spacing:.10em;
+  text-transform:uppercase;
 }
 
 .continueBtn{
-  margin-top:25px;
+  margin-top:16px;
   width:100%;
   padding:15px;
-  border-radius:14px;
+  border-radius:16px;
   border:none;
   background:linear-gradient(135deg,#274c77,#1E88FF);
   color:#fff;
-  font-weight:bold;
-  font-size:16px;
+  font-weight:950;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  font-size:14px;
   cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.continueBtn:active{transform:translateY(1px);}
+
+.err{
+  display:none;
+  margin-top:12px;
+  padding:10px 12px;
+  border-radius:14px;
+  background: rgba(239,68,68,.10);
+  border:1px solid rgba(239,68,68,.22);
+  color: rgba(127,29,29,.92);
+  font-size:12px;
+  line-height:1.35;
 }
 
 /* ================= HOW ================= */
 .how{
-  padding:80px 20px;
+  padding:70px 20px 20px;
   text-align:center;
+}
+.how h2{
+  font-size:22px;
+  letter-spacing:.06em;
 }
 .how-grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:25px;
-  margin-top:35px;
+  gap:18px;
+  margin-top:28px;
+  max-width:1100px;
+  margin-left:auto;margin-right:auto;
 }
 .how-card{
   background:#fff;
-  padding:30px;
+  padding:26px;
   border-radius:20px;
   box-shadow:0 10px 20px rgba(0,0,0,.08);
+  border:1px solid rgba(13,27,42,.12);
+  text-align:left;
+}
+.how-card h3{
+  font-size:14px;
+  letter-spacing:.10em;
+  text-transform:uppercase;
+}
+.how-card p{
+  margin-top:10px;
+  font-size:13px;
+  opacity:.8;
+  line-height:1.45;
 }
 
 /* ================= FOOTER ================= */
 footer{
   background:#0D1B2A;
   color:#fff;
-  padding:40px;
+  padding:38px 18px;
   text-align:center;
-  margin-top:60px;
+  margin-top:50px;
+  opacity:.96;
 }
+footer small{opacity:.75}
 
 /* ================= RESPONSIVE ================= */
 @media(max-width:980px){
-  .start-row{
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .start-row{grid-template-columns: repeat(2, 1fr);}
+  .topbar{padding:16px 18px;}
+  .hero-content{left:28px;right:28px;}
 }
 @media(max-width:520px){
-  .start-row{
-    grid-template-columns: 1fr;
-  }
-  .hero-content{
-    left:25px;
-    right:25px;
-    bottom:120px;
-  }
-  .hero-content h1{
-    font-size:28px;
-  }
-  .start-section{
-    margin-top:-60px;
-  }
+  .start-row{grid-template-columns: 1fr;}
+  .hero-content{left:20px;right:20px;bottom:120px;}
+  .hero-content h1{font-size:28px;}
+  .start-section{margin-top:-60px;padding:20px;}
+  .arrow{display:none;}
 }
 </style>
 </head>
@@ -215,31 +314,37 @@ footer{
 <header class="topbar">
   <div class="logoWrap">
     <div class="logo">HE</div>
-    <div>
-      <div><b>Himachal Explorer</b></div>
-      <small>Packages • Routes • History</small>
+    <div style="min-width:0">
+      <div style="font-weight:900;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Himachal Explorer</div>
+      <small style="opacity:.9">Packages • Routes • History</small>
     </div>
   </div>
-  <div class="navBtn">Dashboard</div>
+  <div class="navBtns">
+    <button class="navBtn" id="dashBtn" type="button">Dashboard</button>
+    <button class="navBtn" id="refreshBtn" type="button">Refresh</button>
+  </div>
 </header>
 
 <section class="hero">
   <div class="hero-track" id="slider">
-    <div class="hero-slide"><img src="style/1hero.jpg"></div>
-    <div class="hero-slide"><img src="style/201-himalaya.jpg"></div>
-    <div class="hero-slide"><img src="style/kinnaur-kailash.webp"></div>
-    <div class="hero-slide"><img src="style/kunjum.jpg"></div>
+    <!-- FIXED: use ./style/... (consistent with your dashboard paths) -->
+    <div class="hero-slide"><img src="./style/1hero.jpg" alt="Himachal" onerror="this.src='./style/n1.jpg'"></div>
+    <div class="hero-slide"><img src="./style/201-himalaya.jpg" alt="Himalaya" onerror="this.src='./style/n1.jpg'"></div>
+    <div class="hero-slide"><img src="./style/kinnaur-kailash.webp" alt="Kinnaur" onerror="this.src='./style/n1.jpg'"></div>
+    <div class="hero-slide"><img src="./style/kunjum.jpg" alt="Kunzum" onerror="this.src='./style/n1.jpg'"></div>
   </div>
 
   <div class="hero-overlay"></div>
 
   <div class="hero-content">
-    <div style="background:rgba(255,255,255,.2);padding:6px 12px;border-radius:20px;display:inline-block;">
-      Himachal Tourism Portal
+    <div class="hero-pill">
+      <span>Himachal Tourism Portal</span>
+      <span style="opacity:.8">•</span>
+      <span id="dataState">Loading data…</span>
     </div>
     <h1>Plan your Himachal trip like never before</h1>
-    <p>Choose your start city and get smart packages with itinerary, map popups, history and photos.</p>
-    <button class="hero-btn" onclick="scrollToStart()">Choose Start Location ▶</button>
+    <p>Choose your start city and instantly get smart packages with itinerary, map popups, history and photos.</p>
+    <button class="hero-btn" onclick="scrollToStart()">Choose Start Location</button>
   </div>
 
   <div class="arrow left" onclick="prevSlide()">‹</div>
@@ -247,33 +352,96 @@ footer{
 </section>
 
 <section class="start-section" id="start">
+  <div class="start-head">
+    <h2>Start Planning</h2>
+    <div class="start-sub" id="pkgMeta">—</div>
+  </div>
+
   <div class="start-row">
     <div class="field">
+      <label>Origin</label>
       <select id="origin">
         <option value="in">Inside Himachal</option>
         <option value="out">Outside Himachal</option>
       </select>
     </div>
+
     <div class="field">
+      <label>Start City</label>
       <select id="startCity"></select>
     </div>
-    <div class="field">
-      <select id="travellers">
-        <option value="2">2 Travellers</option>
-        <option value="4">4 Travellers</option>
-        <option value="6">6 Travellers</option>
+
+    <!-- Added (requested earlier): District console dropdown -->
+    <div class="field" id="districtField">
+      <label>District Console</label>
+      <select id="districtSel">
+        <option value="">All Districts</option>
       </select>
     </div>
+
     <div class="field">
+      <label>Travellers</label>
+      <select id="travellers">
+        <option value="1">1 Traveller</option>
+        <option value="2" selected>2 Travellers</option>
+        <option value="4">4 Travellers</option>
+        <option value="6">6 Travellers</option>
+        <option value="8">8 Travellers</option>
+        <option value="10">10 Travellers</option>
+        <option value="12">12 Travellers</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Season</label>
       <select id="season">
-        <option value="regular">Regular</option>
+        <option value="regular" selected>Regular</option>
         <option value="peak">Peak</option>
         <option value="off">Off Season</option>
       </select>
     </div>
+
+    <div class="field">
+      <label>Tier</label>
+      <select id="tier">
+        <option value="budget" selected>Budget</option>
+        <option value="premium">Premium</option>
+        <option value="luxury">Luxury</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Days</label>
+      <select id="days">
+        <option value="">Any</option>
+        <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+        <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+        <option>11</option><option>12</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Hotel Category</label>
+      <select id="hotel">
+        <option value="">Any</option>
+        <option value="3">3 Star</option>
+        <option value="4">4 Star</option>
+        <option value="5">5 Star</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="inline-row">
+    <div class="note">
+      ✅ Uses your Firebase <b>templates</b> node to build start cities automatically.<br>
+      ✅ Passes filters to dashboard via URL (origin/start/pax/season/tier/district/days/hotel).
+    </div>
+    <button class="smallBtn" id="previewBtn" type="button">Preview</button>
   </div>
 
   <button class="continueBtn" onclick="goDashboard()">Continue to Packages →</button>
+
+  <div class="err" id="errBox"></div>
 </section>
 
 <section class="how">
@@ -281,63 +449,293 @@ footer{
   <div class="how-grid">
     <div class="how-card">
       <h3>Smart Packages</h3>
-      <p>Auto-filtered trips from your start city.</p>
+      <p>Auto-filtered trips from your start city and district console selection.</p>
     </div>
     <div class="how-card">
       <h3>Live Route Map</h3>
-      <p>Interactive map with history and highlights.</p>
+      <p>Interactive route map with clickable popups (history + highlights + photos).</p>
     </div>
     <div class="how-card">
       <h3>Cost Breakdown</h3>
-      <p>Calculated estimates from your database.</p>
+      <p>Calculated estimates from your database, tier-based pricing and pax totals.</p>
     </div>
   </div>
 </section>
 
 <footer>
   Contact Us • info@himachalexplorer.com <br>
-  © Himachal Explorer
+  <small>© Himachal Explorer</small>
 </footer>
 
 <script>
-// SLIDER
+/* SLIDER */
 let index=0;
 const slider=document.getElementById("slider");
+const SLIDES=4;
 function showSlide(){ slider.style.transform=`translateX(-${index*100}%)`; }
-function nextSlide(){ index=(index+1)%4; showSlide(); }
-function prevSlide(){ index=(index-1+4)%4; showSlide(); }
+function nextSlide(){ index=(index+1)%SLIDES; showSlide(); }
+function prevSlide(){ index=(index-1+SLIDES)%SLIDES; showSlide(); }
 setInterval(nextSlide,4000);
-
-// DROPDOWN
-const inside=["Shimla","Manali","Kullu","Dharamshala","Mandi"];
-const outside=["Delhi","Chandigarh","Jaipur","Dehradun"];
-
-function loadCities(){
-  const type=document.getElementById("origin").value;
-  const select=document.getElementById("startCity");
-  select.innerHTML="";
-  const list=type==="in"?inside:outside;
-  list.forEach(city=>{
-    const opt=document.createElement("option");
-    opt.value=city;
-    opt.textContent=city;
-    select.appendChild(opt);
-  });
-}
-document.getElementById("origin").addEventListener("change",loadCities);
-loadCities();
-
-function goDashboard(){
-  const origin=document.getElementById("origin").value;
-  const start=document.getElementById("startCity").value;
-  const pax=document.getElementById("travellers").value;
-  const season=document.getElementById("season").value;
-  window.location.href=`dashboard.html?origin=${origin}&start=${start}&pax=${pax}&season=${season}`;
-}
 
 function scrollToStart(){
   document.getElementById("start").scrollIntoView({behavior:"smooth"});
 }
+
+/* UI helpers */
+const $ = (id)=>document.getElementById(id);
+function setErr(msg){
+  const box = $("errBox");
+  if(!msg){ box.style.display="none"; box.textContent=""; return; }
+  box.style.display="block";
+  box.textContent = msg;
+}
+function escapeQ(v){ return encodeURIComponent(String(v ?? "")); }
+</script>
+
+<!-- Firebase + dynamic start city + district console -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
+    authDomain: "revnue-records.firebaseapp.com",
+    databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "revnue-records",
+    storageBucket: "revnue-records.firebasestorage.app",
+    messagingSenderId: "182348503564",
+    appId: "1:182348503564:web:480085405b09177245ac29"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const CACHE_KEY = "HX_INDEX_CACHE_V1";
+  const TTL = 6 * 60 * 60 * 1000;
+
+  function loadCache(){
+    try{
+      const raw = sessionStorage.getItem(CACHE_KEY);
+      if(!raw) return null;
+      const obj = JSON.parse(raw);
+      if(!obj?.savedAt || !obj?.templates) return null;
+      if(Date.now() - obj.savedAt > TTL) return null;
+      return obj;
+    }catch(e){ return null; }
+  }
+  function saveCache(templates){
+    try{
+      sessionStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), templates }));
+    }catch(e){}
+  }
+
+  function safeUpper(x){ return String(x ?? "").trim().toUpperCase(); }
+  function safeStr(x){ return String(x ?? "").trim(); }
+
+  let TEMPLATES = {};
+
+  async function fetchTemplates(){
+    const snap = await get(ref(db, "templates"));
+    return snap.exists() ? (snap.val() || {}) : {};
+  }
+
+  function computeStartCities(origin){
+    // origin=in -> prefer HP starts from templates where start is in Himachal
+    // origin=out -> prefer outside starts from templates
+    // If you later add a field like origin_type in template, we’ll use it automatically.
+    const counts = new Map();
+
+    Object.values(TEMPLATES).forEach(t=>{
+      const start = safeUpper(t.start_point || t.start || "");
+      if(!start) return;
+
+      // Heuristic split (you can replace by explicit field later)
+      const hpStarts = new Set(["SHIMLA","MANALI","KULLU","DHARAMSHALA","MANDI","SOLAN","KANGRA","CHAMBA","BILASPUR","HAMIRPUR","UNA","KINNAUR","LAHAUL","SPITI","KASOL","DALHOUSIE","KHAJJIAR","NARKANDA","KUFri".toUpperCase()]);
+      const isHP = hpStarts.has(start);
+
+      if(origin === "in" && !isHP) return;
+      if(origin === "out" && isHP) return;
+
+      counts.set(start, (counts.get(start)||0) + 1);
+    });
+
+    const list = Array.from(counts.keys()).sort((a,b)=> (counts.get(b)-counts.get(a)) || a.localeCompare(b));
+    return list;
+  }
+
+  function computeDistricts(){
+    const set = new Set();
+    Object.values(TEMPLATES).forEach(t=>{
+      const d = safeUpper(t.district || "");
+      if(d) set.add(d);
+    });
+    return Array.from(set).sort((a,b)=> a.localeCompare(b));
+  }
+
+  function fillSelect(sel, values, fallbackLabel){
+    sel.innerHTML = "";
+    if(!values.length && fallbackLabel){
+      const opt = document.createElement("option");
+      opt.value = "";
+      opt.textContent = fallbackLabel;
+      sel.appendChild(opt);
+      return;
+    }
+    values.forEach(v=>{
+      const opt = document.createElement("option");
+      opt.value = v;
+      opt.textContent = v;
+      sel.appendChild(opt);
+    });
+  }
+
+  function syncOriginUI(){
+    const origin = $("origin").value;
+    // District console only for inside HP (as per your earlier requirement)
+    $("districtField").style.display = (origin === "in") ? "" : "none";
+  }
+
+  function syncCities(){
+    const origin = $("origin").value;
+    const list = computeStartCities(origin);
+
+    // fallback lists if templates are empty / rules block
+    const insideFallback = ["SHIMLA","MANALI","KULLU","DHARAMSHALA","MANDI"];
+    const outsideFallback = ["DELHI","CHANDIGARH","JAIPUR","DEHRADUN"];
+
+    fillSelect($("startCity"), list.length ? list : (origin==="in" ? insideFallback : outsideFallback), origin==="in" ? "Select Start" : "Select Start");
+    $("pkgMeta").textContent = list.length ? `${list.length} start cities from database` : "Using fallback start list";
+  }
+
+  function syncDistricts(){
+    const districts = computeDistricts();
+    const sel = $("districtSel");
+    sel.innerHTML = `<option value="">All Districts</option>`;
+    districts.forEach(d=>{
+      const opt = document.createElement("option");
+      opt.value = d;
+      opt.textContent = d;
+      sel.appendChild(opt);
+    });
+  }
+
+  function readParams(){
+    const p = new URLSearchParams(location.search);
+    const origin = p.get("origin");
+    const start = p.get("start");
+    const pax = p.get("pax");
+    const season = p.get("season");
+    const tier = p.get("tier");
+    const district = p.get("district");
+    const days = p.get("days");
+    const hotel = p.get("hotel");
+
+    if(origin) $("origin").value = origin;
+    syncOriginUI();
+    syncCities();
+    if(start) $("startCity").value = safeUpper(start);
+
+    if(pax) $("travellers").value = pax;
+    if(season) $("season").value = season;
+    if(tier) $("tier").value = tier;
+    if(days) $("days").value = days;
+    if(hotel) $("hotel").value = hotel;
+
+    // district only if origin=in
+    if(district && $("origin").value==="in") $("districtSel").value = safeUpper(district);
+  }
+
+  async function init(){
+    setErr("");
+
+    $("dataState").textContent = "Loading data…";
+
+    // cache first
+    const cached = loadCache();
+    if(cached?.templates){
+      TEMPLATES = cached.templates || {};
+      $("dataState").textContent = "Database ready";
+    }else{
+      try{
+        TEMPLATES = await fetchTemplates();
+        saveCache(TEMPLATES);
+        $("dataState").textContent = "Database ready";
+      }catch(e){
+        console.error(e);
+        $("dataState").textContent = "Fallback mode";
+        setErr("Firebase templates not loading. This page will still work with fallback start list. Check Firebase rules or network.");
+        TEMPLATES = {};
+      }
+    }
+
+    syncDistricts();
+    syncOriginUI();
+    syncCities();
+    readParams();
+  }
+
+  /* Buttons */
+  $("dashBtn").onclick = ()=> goDashboard();
+  $("refreshBtn").onclick = ()=>{
+    sessionStorage.removeItem(CACHE_KEY);
+    location.reload();
+  };
+
+  $("previewBtn").onclick = ()=>{
+    const origin = $("origin").value;
+    const start = $("startCity").value;
+    const pax = $("travellers").value;
+    const season = $("season").value;
+    const tier = $("tier").value;
+    const district = $("districtSel").value || "";
+    const days = $("days").value || "";
+    const hotel = $("hotel").value || "";
+
+    const s = `Preview → origin=${origin}, start=${start}, pax=${pax}, season=${season}, tier=${tier}` +
+              (district ? `, district=${district}` : "") +
+              (days ? `, days=${days}` : "") +
+              (hotel ? `, hotel=${hotel} star` : "");
+    alert(s);
+  };
+
+  $("origin").addEventListener("change", ()=>{
+    syncOriginUI();
+    syncCities();
+  });
+
+  /* Make goDashboard accessible for non-module script */
+  window.goDashboard = function goDashboard(){
+    setErr("");
+
+    const origin = $("origin").value;
+    const start = safeUpper($("startCity").value);
+    const pax = $("travellers").value;
+    const season = $("season").value;
+    const tier = $("tier").value;
+    const district = safeUpper($("districtSel").value || "");
+    const days = $("days").value || "";
+    const hotel = $("hotel").value || "";
+
+    if(!start){
+      setErr("Please select a start city.");
+      document.getElementById("startCity").focus();
+      return;
+    }
+
+    const params = new URLSearchParams();
+    params.set("origin", origin);
+    params.set("start", start);
+    params.set("pax", pax);
+    params.set("season", season);
+    params.set("tier", tier);
+    if(origin === "in" && district) params.set("district", district);
+    if(days) params.set("days", days);
+    if(hotel) params.set("hotel", hotel);
+
+    location.href = `dashboard.html?${params.toString()}`;
+  };
+
+  await init();
 </script>
 
 </body>
