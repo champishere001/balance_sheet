@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="color-scheme" content="light"/>
-  <title>Himachal Tour Packages | Himachal Explorer Portal</title>
+  <title>Himachal Tour Packages | Dashboard</title>
   <meta name="description" content="Explore Himachal tour packages with live road route maps, day-wise itineraries, places, and instant price estimates." />
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet=-1,max-video-preview=-1" />
   <link rel="canonical" href="https://himachalexplorer.in/" />
@@ -33,7 +33,6 @@
 
 *{ box-sizing:border-box; }
 html, body{ height:100%; }
-
 body{
   margin:0; color:var(--text);
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -46,7 +45,6 @@ body{
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
 }
-
 .aurora{
   position:fixed; inset:-30%;
   background:
@@ -65,7 +63,6 @@ body{
   position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.06; mix-blend-mode:multiply;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
 }
-
 .shell{ width: var(--shellW); margin: 0 auto; padding: 12px 10px 18px; }
 
 /* ===== HERO ===== */
@@ -138,17 +135,18 @@ body{
 }
 
 /* =========================================================
-   MAIN LAYOUT (LEFT 22% | CENTER 53% | RIGHT 25%)
+   MAIN LAYOUT (LEFT 22% | CENTER 54% | RIGHT 24%)
    ========================================================= */
 .main{
   display:grid;
-  grid-template-columns: 22% 53% 25%;
+  grid-template-columns: 22% 54% 24%;
   gap: var(--gap);
   margin-top: 12px;
   align-items: stretch;
   min-width:0;
 }
 
+/* panes same height; scroll INSIDE */
 .pane{
   border: 1px solid var(--stroke);
   border-radius: var(--radius);
@@ -238,7 +236,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
 }
 .pill b{ color: rgba(10,30,60,.92); letter-spacing:.06em; }
 
-/* ===== LEFT: ALL PACKAGES BOX ===== */
+/* ===== LEFT: ALL PACKAGES LIST ===== */
 .otherWrap{ flex:1; min-height:0; display:flex; flex-direction:column; gap:10px; }
 .otherHdr{
   border:1px solid rgba(10,30,60,.16);
@@ -280,6 +278,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   line-height: 1.35;
 }
 
+/* side package card */
 .pkgSide{
   border:1px solid rgba(10,30,60,.16);
   background: rgba(255,255,255,.70);
@@ -340,48 +339,256 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   color: rgba(10,30,60,.92);
 }
 
-/* ===== CENTER ===== */
+/* ===== CENTER: SELECTED ONLY ===== */
 .centerInner{ display:flex; flex-direction:column; min-height:0; flex:1; }
-
-.districtBar{
-  display:flex; flex-wrap:nowrap; gap:8px;
-  padding:10px 12px;
-  border-bottom:1px solid rgba(10,30,60,.14);
-  overflow-x:auto; -webkit-overflow-scrolling: touch;
-  background: rgba(255,255,255,.62);
-}
-.distItem{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.66);
-  color: rgba(10,30,60,.86);
-  border-radius: 999px;
-  padding:8px 10px;
-  font-size: 10.5px;
-  letter-spacing:.10em;
-  text-transform: uppercase;
-  cursor:pointer;
-  user-select:none;
-  flex:0 0 auto;
-  white-space:nowrap;
-  box-shadow: 0 10px 22px rgba(10,30,60,.08);
-  -webkit-tap-highlight-color: transparent;
-}
-.distItem.active{
-  border-color: rgba(37,99,235,.40);
-  box-shadow: 0 0 0 3px rgba(37,99,235,.14);
-  background: rgba(37,99,235,.14);
-}
-
-.pkgList{
-  flex:1;
-  min-height:0;
-  overflow:auto;
-  padding: 10px 12px;
+.centerScroll{
+  flex:1; min-height:0; overflow:auto;
+  padding: 12px;
   background: rgba(255,255,255,.52);
   -webkit-overflow-scrolling: touch;
 }
 
-/* ===== RIGHT MAP ===== */
+/* Selected package hero card */
+.selWrap{
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.66);
+  border-radius: 18px;
+  overflow:hidden;
+  box-shadow: 0 14px 36px rgba(10,30,60,.10);
+}
+.selTop{
+  display:flex;
+  gap:12px;
+  padding:12px;
+  border-bottom:1px solid rgba(10,30,60,.14);
+  background: rgba(255,255,255,.66);
+}
+.selMedia{
+  width: 38%;
+  min-width: 280px;
+  border-radius: 16px;
+  overflow:hidden;
+  border:1px solid rgba(10,30,60,.14);
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.78), rgba(37,99,235,.12));
+}
+.selMedia img{ width:100%; height:220px; object-fit:cover; display:block; }
+.selInfo{ flex:1; min-width:0; display:flex; flex-direction:column; gap:8px; }
+.selTitleRow{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+.selTitle{
+  margin:0;
+  font-size: 12px;
+  font-weight: 1000;
+  letter-spacing:.14em;
+  text-transform: uppercase;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.selBadges{ display:flex; gap:8px; flex-wrap:wrap; }
+.badgePill{
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.72);
+  border-radius: 999px;
+  padding: 7px 10px;
+  font-size: 10px;
+  letter-spacing:.12em;
+  text-transform: uppercase;
+  color: rgba(10,30,60,.82);
+  font-weight: 950;
+}
+.badgePill.blue{ border-color: rgba(37,99,235,.30); background: rgba(37,99,235,.12); }
+.badgePill.green{ border-color: rgba(34,197,94,.30); background: rgba(34,197,94,.14); }
+.badgePill.orange{ border-color: rgba(245,158,11,.28); background: rgba(245,158,11,.14); }
+
+.routeLine{
+  font-size: 11px;
+  color: rgba(10,30,60,.80);
+  letter-spacing:.03em;
+  line-height: 1.45;
+}
+
+.detailsGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+  padding: 12px;
+  background: rgba(255,255,255,.56);
+}
+@media (max-width: 980px){
+  .selTop{ flex-direction:column; }
+  .selMedia{ width:100%; min-width:unset; }
+  .detailsGrid{ grid-template-columns: 1fr; }
+}
+
+.detailsCard{
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.66);
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: 0 12px 34px rgba(10,30,60,.10);
+  min-width:0;
+}
+.bigTitle{ margin:0; font-size: 12px; letter-spacing:.18em; text-transform: uppercase; color: rgba(10,30,60,.94); }
+.muted{ color: var(--muted); font-size: 10.8px; letter-spacing:.08em; text-transform: uppercase; line-height:1.35; }
+
+.priceRow{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.tierBtn{
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.74);
+  border-radius: 999px;
+  padding: 7px 10px;
+  font-size: 10px;
+  letter-spacing:.12em;
+  text-transform: uppercase;
+  font-weight: 1000;
+  cursor:pointer;
+}
+.tierBtn.active{
+  border-color: rgba(37,99,235,.40);
+  background: rgba(37,99,235,.14);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.14);
+}
+.priceOld{
+  text-decoration: line-through;
+  color: rgba(10,30,60,.60);
+  font-weight: 900;
+  letter-spacing:.06em;
+}
+.priceNew{
+  margin-top:6px;
+  font-size: 18px;
+  font-weight: 1100;
+  letter-spacing:.06em;
+}
+.priceSmall{
+  margin-top:6px;
+  font-size: 11px;
+  color: rgba(10,30,60,.72);
+  letter-spacing:.02em;
+  text-transform:none;
+}
+.discPill{
+  border:1px solid rgba(34,197,94,.30);
+  background: rgba(34,197,94,.14);
+  border-radius: 999px;
+  padding: 6px 9px;
+  font-size: 10px;
+  letter-spacing:.12em;
+  text-transform: uppercase;
+  font-weight: 1100;
+}
+.enqRow{ margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; }
+.enqBtn{
+  flex:1;
+  border:1px solid rgba(34,197,94,.30);
+  background: rgba(34,197,94,.14);
+  color: rgba(10,30,60,.92);
+  border-radius: 14px;
+  padding: 10px 10px;
+  text-decoration:none;
+  text-transform: uppercase;
+  letter-spacing:.10em;
+  font-weight: 950;
+  font-size: 11px;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  user-select:none;
+  box-shadow: 0 12px 28px rgba(34,197,94,.14);
+  -webkit-tap-highlight-color: transparent;
+  min-width: 220px;
+}
+
+/* Itinerary */
+.itinDays{ display:flex; flex-direction:column; gap:10px; margin-top:10px; }
+.itDay{
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.66);
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: 0 10px 22px rgba(10,30,60,.08);
+}
+.itDayTop{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
+.itDayTop .d{ font-size: 11px; font-weight: 1000; letter-spacing:.18em; text-transform: uppercase; }
+.placeBtn{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  width:100%;
+  border:1px solid rgba(10,30,60,.14);
+  background: rgba(255,255,255,.66);
+  border-radius: 14px;
+  padding: 10px;
+  cursor:pointer;
+  box-shadow: 0 10px 20px rgba(10,30,60,.08);
+  -webkit-tap-highlight-color: transparent;
+  margin-top: 7px;
+}
+.placeBtn .left{ min-width:0; }
+.placeBtn .nm{
+  font-size: 11px; font-weight: 950; letter-spacing:.10em; text-transform: uppercase;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.placeBtn .sm{
+  margin-top:4px; font-size: 10px; color: rgba(10,30,60,.62);
+  letter-spacing:.08em; text-transform: uppercase;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.placeBtn .tag{
+  border:1px solid rgba(37,99,235,.30);
+  background: rgba(37,99,235,.12);
+  border-radius: 999px;
+  padding: 6px 9px;
+  font-size: 10px;
+  letter-spacing:.12em;
+  text-transform: uppercase;
+  font-weight: 950;
+  white-space: nowrap;
+  flex:0 0 auto;
+}
+
+/* Nearby (circular images + name under) */
+.nearWrap{
+  margin-top:10px;
+  border:1px dashed rgba(10,30,60,.18);
+  background: rgba(255,255,255,.58);
+  border-radius: 14px;
+  padding: 10px;
+}
+.nearTop{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  margin-bottom:10px;
+}
+.nearTop .k{
+  font-size: 10px; letter-spacing:.16em; text-transform: uppercase; color: rgba(10,30,60,.62);
+  font-weight: 1000;
+}
+.nearCircles{
+  display:grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 520px){
+  .nearCircles{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.nearItem{
+  display:flex; flex-direction:column; align-items:center; gap:7px;
+  cursor:pointer; user-select:none;
+}
+.nearCircle{
+  width: 64px; height: 64px; border-radius: 999px;
+  overflow:hidden;
+  border:1px solid rgba(10,30,60,.16);
+  background: rgba(255,255,255,.76);
+  box-shadow: 0 10px 22px rgba(10,30,60,.10);
+}
+.nearCircle img{ width:100%; height:100%; object-fit:cover; display:block; }
+.nearName{
+  width:100%;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing:.08em;
+  text-transform: uppercase;
+  color: rgba(10,30,60,.86);
+  text-align:center;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+
+/* ===== MAP (RIGHT 24% + STICKY) ===== */
 .mapPane{
   position: sticky;
   top: 12px;
@@ -537,234 +744,7 @@ input:focus, select:focus{ border-color: rgba(37,99,235,.55); box-shadow: 0 0 0 
   color: rgba(10,30,60,.88);
 }
 
-/* ===== Selected package FULL center view ===== */
-.centerFocus{
-  padding: 12px;
-  display:flex;
-  flex-direction:column;
-  gap: 12px;
-}
-
-.focusHero{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.70);
-  border-radius: 16px;
-  overflow:hidden;
-  box-shadow: 0 14px 36px rgba(10,30,60,.10);
-}
-.focusHeroImg{
-  width:100%;
-  height: 220px;
-  object-fit:cover;
-  display:block;
-}
-.focusHeroBar{
-  display:flex;
-  gap:12px;
-  padding: 12px;
-  align-items:stretch;
-  flex-wrap:wrap;
-  background: rgba(255,255,255,.62);
-  border-top:1px solid rgba(10,30,60,.12);
-}
-.focusTitle{
-  margin:0;
-  font-size: 14px;
-  font-weight: 1000;
-  letter-spacing:.10em;
-  text-transform: uppercase;
-  color: rgba(10,30,60,.94);
-}
-.focusSub{
-  margin:6px 0 0;
-  font-size: 11px;
-  color: rgba(10,30,60,.68);
-  letter-spacing:.04em;
-}
-.focusBadges{ margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; }
-
-.pkgBadge{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.74);
-  border-radius: 999px;
-  padding: 6px 9px;
-  font-size: 10px;
-  letter-spacing:.12em;
-  text-transform: uppercase;
-  color: rgba(10,30,60,.86);
-  white-space: nowrap;
-  backdrop-filter: blur(10px);
-}
-.pkgBadge.purple{ border-color: rgba(37,99,235,.35); background: rgba(37,99,235,.16); color: rgba(10,30,60,.92); }
-.pkgBadge.green{ border-color: rgba(34,197,94,.30); background: rgba(34,197,94,.16); color: rgba(10,30,60,.92); }
-
-.priceBox{
-  margin-left:auto;
-  min-width: 260px;
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.66);
-  border-radius: 14px;
-  padding: 10px 12px;
-  box-shadow: 0 10px 22px rgba(10,30,60,.08);
-}
-.tierTabs{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
-.tierBtn{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.70);
-  border-radius: 999px;
-  padding: 7px 10px;
-  font-size: 10px;
-  letter-spacing:.12em;
-  text-transform: uppercase;
-  cursor:pointer;
-  font-weight: 950;
-}
-.tierBtn.active{
-  border-color: rgba(37,99,235,.40);
-  background: rgba(37,99,235,.14);
-}
-.priceRow{ display:flex; gap:10px; align-items:center; justify-content:space-between; }
-.priceOld{
-  font-size: 12px;
-  color: rgba(10,30,60,.55);
-  text-decoration: line-through;
-  font-weight: 900;
-  letter-spacing:.06em;
-}
-.discPill{
-  border:1px solid rgba(34,197,94,.30);
-  background: rgba(34,197,94,.14);
-  border-radius: 999px;
-  padding: 6px 9px;
-  font-size: 10px;
-  font-weight: 1000;
-  letter-spacing:.12em;
-  text-transform: uppercase;
-}
-.priceNew{
-  margin-top:8px;
-  font-size: 18px;
-  font-weight: 1000;
-  letter-spacing:.04em;
-  color: rgba(10,30,60,.94);
-}
-.priceSmall{ margin-top:6px; font-size: 11px; color: rgba(10,30,60,.68); }
-
-.itinWrap{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.62);
-  border-radius: 16px;
-  padding: 12px;
-  box-shadow: 0 12px 34px rgba(10,30,60,.10);
-}
-.bigTitle{ margin:0; font-size: 12px; letter-spacing:.18em; text-transform: uppercase; color: rgba(10,30,60,.94); }
-.muted{ color: var(--muted); font-size: 10.8px; letter-spacing:.08em; text-transform: uppercase; line-height:1.35; }
-
-.itinDays{ display:flex; flex-direction:column; gap:10px; margin-top:10px; }
-.itDay{
-  border:1px solid rgba(10,30,60,.14);
-  background: rgba(255,255,255,.72);
-  border-radius: 14px;
-  padding: 10px;
-}
-.itTop{
-  display:flex; align-items:center; justify-content:space-between; gap:10px;
-  margin-bottom:8px;
-}
-.itTop .d{
-  font-size: 11px;
-  font-weight: 1000;
-  letter-spacing:.16em;
-  text-transform: uppercase;
-}
-.placeRow{ display:flex; flex-wrap:wrap; gap:8px; }
-.placeMini{
-  border:1px solid rgba(10,30,60,.14);
-  background: rgba(255,255,255,.70);
-  border-radius: 999px;
-  padding: 7px 10px;
-  font-size: 10px;
-  letter-spacing:.10em;
-  text-transform: uppercase;
-  cursor:pointer;
-}
-
-.nearSection{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.62);
-  border-radius: 16px;
-  padding: 12px;
-  box-shadow: 0 12px 34px rgba(10,30,60,.10);
-}
-.nearGrid{
-  margin-top:10px;
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-}
-.nearCircle{
-  width: 92px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:8px;
-  cursor:pointer;
-}
-.nearCircle .img{
-  width: 78px; height: 78px;
-  border-radius: 999px;
-  overflow:hidden;
-  border:1px solid rgba(10,30,60,.16);
-  box-shadow: 0 10px 22px rgba(10,30,60,.10);
-  background: rgba(255,255,255,.76);
-}
-.nearCircle img{ width:100%; height:100%; object-fit:cover; display:block; }
-.nearCircle .nm{
-  font-size: 10px;
-  font-weight: 950;
-  letter-spacing:.10em;
-  text-transform: uppercase;
-  text-align:center;
-  color: rgba(10,30,60,.86);
-  width: 100%;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.infoGrid{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-@media (max-width: 900px){ .infoGrid{ grid-template-columns: 1fr; } }
-.infoCard{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.66);
-  border-radius: 16px;
-  padding: 12px;
-  box-shadow: 0 12px 34px rgba(10,30,60,.10);
-}
-.infoCard h3{
-  margin:0 0 10px;
-  font-size: 11px;
-  font-weight: 1000;
-  letter-spacing:.16em;
-  text-transform: uppercase;
-}
-.bullets{
-  margin:0;
-  padding-left: 16px;
-  display:grid;
-  gap: 6px;
-  font-size: 11px;
-  line-height: 1.6;
-  color: rgba(10,30,60,.80);
-}
-.kv{ display:grid; gap:7px; font-size: 11px; color: rgba(10,30,60,.82); }
-.kv b{ letter-spacing:.06em; }
-
-/* ===== FOOTER ===== */
+/* ===== FOOTER (minimal) ===== */
 footer{
   margin-top: 12px;
   border:1px solid rgba(10,30,60,.16);
@@ -774,8 +754,7 @@ footer{
   backdrop-filter: blur(14px);
   overflow:hidden;
 }
-.footInner{ padding: 14px 16px; display:flex; flex-direction:column; gap:12px; }
-.footTopRow{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+.footInner{ padding: 14px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
 .footLeft{
   font-size: 11px;
   letter-spacing:.10em;
@@ -796,89 +775,6 @@ footer{
   box-shadow: 0 10px 22px rgba(10,30,60,.08);
   -webkit-tap-highlight-color: transparent;
 }
-.footerFancyGrid{
-  display:grid;
-  grid-template-columns: 1fr 24%;
-  gap: 14px;
-  border-top: 1px solid rgba(10,30,60,.12);
-  padding-top: 12px;
-  align-items: stretch;
-}
-.footerAboutGrid{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  min-width:0;
-}
-.footerBox{
-  border:1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.66);
-  border-radius: 16px;
-  padding: 12px;
-  box-shadow: 0 14px 36px rgba(10,30,60,.10);
-  min-width:0;
-}
-.footerTitle{
-  font-size: 11px;
-  font-weight: 1000;
-  letter-spacing:.14em;
-  text-transform: uppercase;
-  margin: 0 0 10px;
-  color: rgba(10,30,60,.92);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  flex-wrap:wrap;
-}
-.footerTitle .tag{
-  border:1px solid rgba(37,99,235,.30);
-  background: rgba(37,99,235,.10);
-  color: rgba(10,30,60,.90);
-  border-radius: 999px;
-  padding: 6px 9px;
-  font-size: 10px;
-  letter-spacing:.12em;
-  text-transform: uppercase;
-  font-weight: 950;
-  white-space: nowrap;
-}
-.footerBox ul{
-  margin:0;
-  padding-left: 16px;
-  display:grid;
-  gap: 6px;
-  color: rgba(10,30,60,.78);
-  font-size: 11px;
-  line-height: 1.6;
-}
-.footerDistrictBox{
-  border:1px solid rgba(10,30,60,.16);
-  background: linear-gradient(180deg, rgba(255,255,255,.68), rgba(255,255,255,.56));
-  border-radius: 16px;
-  padding: 12px;
-  box-shadow: 0 14px 36px rgba(10,30,60,.10);
-  min-width:0;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  gap:10px;
-}
-.footerDistrictBox .help{ color: rgba(10,30,60,.68); font-size: 11px; letter-spacing:.02em; line-height: 1.45; }
-.footerDistrictBox select{
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(10,30,60,.16);
-  background: rgba(255,255,255,.66);
-  color: rgba(10,30,60,.90);
-  font-size: 11px;
-  letter-spacing:.08em;
-  text-transform: uppercase;
-  font-weight: 900;
-  box-shadow: 0 10px 22px rgba(10,30,60,.08);
-  cursor: pointer;
-}
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1200px){
@@ -888,8 +784,6 @@ footer{
   .pane{ height:auto; max-height:none; min-height:unset; }
   .heroBar{ flex-direction: column; align-items: stretch; }
   .heroRight{ justify-content:flex-start; }
-  .footerFancyGrid{ grid-template-columns: 1fr; }
-  .footerAboutGrid{ grid-template-columns: 1fr; }
 }
 @media (max-width: 520px){
   .shell{ padding: 10px 8px 16px; }
@@ -899,7 +793,6 @@ footer{
   .waText{ display:none; }
   .waFloat{ padding: 10px; }
   .waClose{ display:none; }
-  .footTopRow{ flex-direction:column; align-items:flex-start; }
 }
 @media (prefers-reduced-motion: reduce){
   .aurora{ animation:none; }
@@ -967,7 +860,7 @@ footer{
         <div class="paneHdr">
           <div>
             <p class="t">Trip Filters</p>
-            <div class="s">Start + days + category</div>
+            <div class="s">Start + days + tier</div>
           </div>
           <div class="s" id="leftHint">Auto loaded</div>
         </div>
@@ -981,9 +874,8 @@ footer{
             </div>
 
             <div class="field" style="margin-top:10px;">
-              <label>Package Category</label>
+              <label>Tier</label>
               <select id="visitType">
-                <option value="">ANY</option>
                 <option value="budget">BUDGET</option>
                 <option value="premium">PREMIUM</option>
                 <option value="luxury">LUXURY</option>
@@ -996,7 +888,7 @@ footer{
                 <option value="">ANY</option>
                 <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
                 <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
-                <option>11</option><option>12</option><option>13</option><option>14</option>
+                <option>11</option><option>12</option>
               </select>
             </div>
 
@@ -1009,13 +901,14 @@ footer{
             </div>
 
             <div class="btnRow">
-              <button class="btn secondary" id="resetBtn" type="button">Reset Filters</button>
+              <button class="btn secondary" id="resetBtn" type="button">Reset</button>
               <button class="btn" id="genBtn" type="button">Show Packages</button>
             </div>
 
             <div class="pills" id="pills"></div>
           </div>
 
+          <!-- ✅ LEFT: All packages list (ONLY list, center shows only selected) -->
           <div class="otherWrap">
             <div class="otherHdr">
               <div class="h">All Packages</div>
@@ -1023,15 +916,15 @@ footer{
             </div>
             <div class="otherList" id="otherPkgList">
               <div class="otherHint">
-                Packages will appear here after selecting Start. <br>
-                Tap any card to open details in center.
+                Select Start and tap <b>Show Packages</b>.<br>
+                Then tap any package card to open it in the center.
               </div>
             </div>
           </div>
 
           <div class="sideCard">
             <div class="muted" style="text-transform:none;letter-spacing:.02em;">
-              Tip: Start can be selected here, or passed from index.
+              Tip: Start can be passed from index using <b>?start=SHIMLA</b>.
             </div>
           </div>
         </div>
@@ -1042,15 +935,17 @@ footer{
         <div class="paneHdr">
           <div>
             <p class="t">Selected Package</p>
-            <div class="s" id="centerHint">Click a package from left</div>
+            <div class="s" id="centerHint">One package only • full details</div>
           </div>
           <div class="s" id="pkgCount">—</div>
         </div>
 
         <div class="centerInner">
-          <div class="districtBar" id="districtBar"></div>
-          <div class="pkgList" id="pkgList">
-            <div class="pill"><b>Loading…</b></div>
+          <div class="centerScroll" id="centerScroll">
+            <div class="otherHint">
+              No package selected yet.<br>
+              Choose a package from left list to see full details here.
+            </div>
           </div>
         </div>
       </div>
@@ -1060,7 +955,7 @@ footer{
         <div class="paneHdr">
           <div>
             <p class="t">Live Route Map</p>
-            <div class="s">Pins from places lat/lng</div>
+            <div class="s">OSRM road polyline + stop pins</div>
           </div>
           <div class="s" id="kmBadge">—</div>
         </div>
@@ -1075,77 +970,20 @@ footer{
       </div>
     </div>
 
-    <!-- FOOTER -->
     <footer>
       <div class="footInner">
-        <div class="footTopRow">
-          <div class="footLeft">© <span id="yy"></span> Himachal Explorer Portal</div>
-          <div class="footLinks">
-            <a href="#" id="topLink">Top</a>
-            <a href="./index.html">Change Mode</a>
-            <a href="https://wa.me/917018138847?text=Hi%20Chandan%2C%20I%20want%20to%20book%20a%20Himachal%20tour%20package."
-               target="_blank" rel="noopener">WhatsApp</a>
-          </div>
-        </div>
-
-        <div class="footerFancyGrid">
-          <div class="footerAboutGrid">
-            <div class="footerBox">
-              <div class="footerTitle">
-                About Website <span class="tag">Live Portal</span>
-              </div>
-              <ul>
-                <li>Left sidebar packages • center full details</li>
-                <li>Day-wise itinerary with place popups</li>
-                <li>Smart discount 10–20% per package</li>
-                <li>Firebase + local images fallback</li>
-                <li>Map pins + Google directions</li>
-              </ul>
-            </div>
-
-            <div class="footerBox">
-              <div class="footerTitle">
-                About Us <span class="tag">Quality</span>
-              </div>
-              <ul>
-                <li>Comfort-focused travel planning</li>
-                <li>Verified hotel coordination</li>
-                <li>Family & elder-friendly route design</li>
-                <li>Clear communication & honest pricing</li>
-                <li>We are new — but quality is non-negotiable</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="footerDistrictBox">
-            <div>
-              <div class="footerTitle">
-                Explore District <span class="tag">Guides</span>
-              </div>
-              <div class="help">Pick a district to open its guide page.</div>
-            </div>
-
-            <select id="districtSelect">
-              <option value="">Select District</option>
-              <option value="./districts/bilaspur.html">Bilaspur</option>
-              <option value="./districts/chamba.html">Chamba</option>
-              <option value="./districts/hamirpur.html">Hamirpur</option>
-              <option value="./districts/kangra.html">Kangra</option>
-              <option value="./districts/kinnaur.html">Kinnaur</option>
-              <option value="./districts/kullu.html">Kullu</option>
-              <option value="./districts/lahaul-spiti.html">Lahaul & Spiti</option>
-              <option value="./districts/mandi.html">Mandi</option>
-              <option value="./districts/shimla.html">Shimla</option>
-              <option value="./districts/sirmaur.html">Sirmaur</option>
-              <option value="./districts/solan.html">Solan</option>
-              <option value="./districts/una.html">Una</option>
-            </select>
-          </div>
+        <div class="footLeft">© <span id="yy"></span> Himachal Explorer Portal</div>
+        <div class="footLinks">
+          <a href="#" id="topLink">Top</a>
+          <a href="./index.html">Change Mode</a>
+          <a href="https://wa.me/917018138847?text=Hi%20Chandan%2C%20I%20want%20to%20book%20a%20Himachal%20tour%20package."
+             target="_blank" rel="noopener">WhatsApp</a>
         </div>
       </div>
     </footer>
   </div><!-- /shell -->
 
+  <!-- botToast -->
   <div class="botToast" id="botToast">👋 Welcome! Loading…</div>
 
   <!-- Place Modal -->
@@ -1171,7 +1009,11 @@ footer{
     </div>
   </div>
 
-  <!-- Firebase loader -->
+  <!-- =========================================================
+       FIREBASE LOADER (MODULE)
+       Saves:
+       HX_TEMPLATES, HX_PLACES, HX_COSTS
+       ========================================================= -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
     import { getDatabase, ref, child, get } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
@@ -1216,11 +1058,13 @@ footer{
 
   <script>
   /* =========================================================
-     DASHBOARD FINAL
-     - Left: all packages list
-     - Center: selected package FULL details
-     - Photos: supports (photo_1=1) flags + local fallback
-     - Discount: stable 10–20% per package_id
+     DASHBOARD (Selected package only in center)
+     - Packages list ALWAYS on left under filters
+     - Center shows ONLY selected package details
+     - Prices from template (budget/premium/luxury per person)
+     - Discount smart 10–20% deterministic by package_id
+     - Itinerary shown only if available
+     - Map right (24%) OSRM route + pins
      ========================================================= */
 
   const $ = (id)=>document.getElementById(id);
@@ -1233,9 +1077,23 @@ footer{
       .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
   }
   function rupees(n){ return "₹" + Math.round(Number(n)||0).toLocaleString("en-IN"); }
-  function splitCSV(s){ return String(s||"").split(",").map(x=>x.trim()).filter(Boolean); }
-  function titleFromId(id){ return String(id||"").replace(/[-_]+/g," ").trim().toUpperCase(); }
+  function slugifyName(name){
+    return String(name||"")
+      .trim().toLowerCase()
+      .replace(/&/g," and ")
+      .replace(/['"]/g,"")
+      .replace(/[^a-z0-9]+/g,"-")
+      .replace(/-+/g,"-")
+      .replace(/^-|-$/g,"");
+  }
+  function splitCSV(x){
+    return String(x||"")
+      .split(",")
+      .map(s=>String(s).trim())
+      .filter(Boolean);
+  }
 
+  /* Toast */
   function showBot(msg){
     const el = $("botToast");
     if(!el) return;
@@ -1245,49 +1103,30 @@ footer{
     showBot._t = setTimeout(()=> el.classList.remove("show"), 3600);
   }
 
-  /* ========= Images logic (FIXED for photo_1: 1 flags) ========= */
+  /* ===== Images ===== */
   const IMG_BASE = "./Places/";
+  const IMG_MAX = 4;
+
   function getPlacePhotos(place, placeId){
-    const pid = String(placeId || place?.place_id || place?.id || "").trim();
     const out = [];
-
-    // future: if you store real URLs
-    ["photo_url","photo","image","img","cover","photo_1_url","photo_2_url","photo_3_url","photo_4_url"].forEach(k=>{
-      const v = place?.[k];
-      if(typeof v === "string" && v.trim()) out.push(v.trim());
+    ["photo_1","photo_2","photo_3","photo_4","image","img","cover","photo_url"].forEach(k=>{
+      const v = String(place?.[k] || "").trim();
+      // If photo_1 is number flag (1), ignore
+      if(v && !/^\d+$/.test(v)) out.push(v);
     });
-
-    // current: flags photo_1/photo_2/... = 1
-    const flags = ["photo_1","photo_2","photo_3","photo_4"];
-    flags.forEach((k, idx)=>{
-      const v = place?.[k];
-      if((v === 1 || v === true || v === "1") && pid){
-        out.push(`${IMG_BASE}${pid}_${idx+1}.jpg`);
-        out.push(`${IMG_BASE}${pid}_${idx+1}.jpeg`);
-        out.push(`${IMG_BASE}${pid}_${idx+1}.png`);
-        out.push(`${IMG_BASE}${pid}_${idx+1}.webp`);
-      }
-    });
-
-    // final fallback guesses
+    const pid = String(placeId || place?.place_id || place?.id || "").trim();
     if(pid){
-      for(let i=1;i<=4;i++){
+      for(let i=1; i<=IMG_MAX; i++){
         out.push(`${IMG_BASE}${pid}_${i}.jpg`);
         out.push(`${IMG_BASE}${pid}_${i}.jpeg`);
         out.push(`${IMG_BASE}${pid}_${i}.png`);
         out.push(`${IMG_BASE}${pid}_${i}.webp`);
       }
     }
-
     return Array.from(new Set(out));
   }
 
-  function placeLabel(pid){
-    const p = PLACES?.[pid];
-    return p?.name ? String(p.name).toUpperCase() : titleFromId(pid);
-  }
-
-  /* ========= Place modal ========= */
+  /* Place modal */
   function openPlaceModal({ place, dayNum, orderNum, placeId }){
     const modal = $("placeModal");
     const ttl = $("pmTitle");
@@ -1296,16 +1135,11 @@ footer{
     const meta = $("pmMeta");
     const actions = $("pmActions");
 
-    const name = String(place?.name || placeLabel(placeId) || "PLACE").trim();
-    const dist = String(place?.district || "—").trim();
-    const reg  = String(place?.region || "—").trim();
-    const cat  = String(place?.category || "—").trim();
-    const seg  = String(place?.segment || "—").trim();
+    const name = placeNameAny(place, placeId);
+    const dist = districtAny(place) || "—";
+    const lat = latAny(place), lng = lngAny(place);
 
-    const lat = Number(place?.latitude ?? place?.lat);
-    const lng = Number(place?.longitude ?? place?.lng);
-
-    ttl.textContent = `${name} ${dayNum ? "• Day " + dayNum : ""}${orderNum ? " • Stop " + orderNum : ""}`;
+    ttl.textContent = `${name} • Day ${dayNum}${orderNum ? " • Stop " + orderNum : ""}`;
 
     const photos = getPlacePhotos(place, placeId);
     let idx = 0;
@@ -1322,21 +1156,17 @@ footer{
     img.src = photos[0] || "./style/n1.jpg";
 
     const short =
-      String(place?.history_tagline || "").trim() ||
-      String(place?.what_you_find || "").trim() ||
-      String(place?.description || "").trim() ||
-      "Beautiful spot in Himachal Pradesh.";
+      String(place?.history_tagline || place?.what_you_find || place?.description || "")
+      .trim() || "Beautiful spot in Himachal Pradesh. Tap directions to navigate.";
 
     desc.textContent = short;
 
-    const finds = String(place?.what_you_find || "").trim();
     meta.innerHTML = `
       <div><b>District:</b> ${escapeHtml(dist)}</div>
-      <div><b>Region:</b> ${escapeHtml(reg)}</div>
-      <div><b>Category:</b> ${escapeHtml(cat)}</div>
-      <div><b>Segment:</b> ${escapeHtml(seg)}</div>
       <div><b>Coordinates:</b> ${isFinite(lat)&&isFinite(lng) ? `${lat.toFixed(5)}, ${lng.toFixed(5)}` : "—"}</div>
-      ${finds ? `<div style="margin-top:8px"><b>What you find:</b><br>${escapeHtml(finds).replace(/\n/g,"<br>")}</div>` : ""}
+      <div><b>Category:</b> ${escapeHtml(String(place?.category || "—"))}</div>
+      <div><b>Segment:</b> ${escapeHtml(String(place?.segment || "—"))}</div>
+      <div><b>Region:</b> ${escapeHtml(String(place?.region || "—"))}</div>
     `;
 
     const gmaps = (isFinite(lat) && isFinite(lng))
@@ -1363,29 +1193,48 @@ footer{
   }
   function closePlaceModal(){ $("placeModal")?.classList.remove("show"); }
 
-  /* ========= Stable discount 10..20 ========= */
-  function hashStr(s){
-    s = String(s||"");
-    let h = 2166136261;
-    for(let i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
-    return (h >>> 0);
-  }
-  function smartDiscountPercent(packageId){
-    return 10 + (hashStr(packageId) % 11); // 10..20
-  }
-  function getTierPrice(pkg, tier){
-    // support both structures:
-    // 1) pkg.budget_price_per_person
-    // 2) pkg.prices.budget_price_per_person etc.
-    const src = pkg || {};
-    const v1 = src[`${tier}_price_per_person`];
-    if(v1 != null) return Number(v1||0);
-    const v2 = src?.prices?.[`${tier}_price_per_person`];
-    return Number(v2||0);
+  /* Helpers */
+  function placeIdAny(p, key){ return String(p?.place_id || p?.id || key || "").trim(); }
+  function placeNameAny(p, key){ return String(p?.name || p?.["Location Name"] || p?.title || key || "PLACE").trim(); }
+  function latAny(p){ return Number(p?.latitude ?? p?.lat ?? p?.Latitude); }
+  function lngAny(p){ return Number(p?.longitude ?? p?.lng ?? p?.Longitude); }
+  function districtAny(p){ return String(p?.district || p?.District || "").trim().toUpperCase(); }
+  function regionAny(p){ return String(p?.region || "").trim(); }
+
+  function haversineKm(lat1, lon1, lat2, lon2){
+    const toRad = (d)=> (d*Math.PI)/180;
+    const R = 6371;
+    const dLat = toRad(lat2-lat1);
+    const dLon = toRad(lon2-lon1);
+    const a = Math.sin(dLat/2)**2 +
+      Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+    return 2*R*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   }
 
-  /* ========= Map ========= */
+  /* Pricing from template */
+  function getTierPrice(pkg, tier){
+    const k = `${tier}_price_per_person`;
+    const n = Number(pkg?.[k]);
+    return isFinite(n) ? n : 0;
+  }
+  function hashCode(str){
+    const s = String(str||"");
+    let h = 0;
+    for(let i=0;i<s.length;i++){
+      h = (h<<5) - h + s.charCodeAt(i);
+      h |= 0;
+    }
+    return Math.abs(h);
+  }
+  function smartDiscountPercent(packageId){
+    // deterministic 10–20
+    const h = hashCode(packageId);
+    return 10 + (h % 11); // 10..20
+  }
+
+  /* ===== Map ===== */
   let map, tile, tileDark, markersLayer, routeLine;
+  let showMode = "all";
   let tilesDark = false;
 
   function invalidateMapSoon(){
@@ -1409,28 +1258,138 @@ footer{
     $("kmBadge").textContent = "—";
     invalidateMapSoon();
   }
-  function focusPlaceOnMap(placeId, zoom=12){
-    const p = PLACES?.[placeId];
-    if(!p) return;
-    const lat = Number(p.latitude), lng = Number(p.longitude);
-    if(!isFinite(lat) || !isFinite(lng)) return;
 
-    const m = L.marker([lat,lng]).addTo(markersLayer);
-    m.bindPopup(`<b>${escapeHtml(p.name || placeId)}</b><br>${escapeHtml(p.district || "")}`).openPopup();
-    map.setView([lat,lng], zoom);
+  async function drawOSRMRoute(latlngs){
+    // latlngs: [{lat,lng,name,placeId,placeObj, day, order}]
+    if(!latlngs || latlngs.length < 2) return { km:0, hrs:0 };
+
+    // OSRM expects lng,lat
+    const coords = latlngs.map(p => `${p.lng},${p.lat}`).join(";");
+    const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson&steps=false`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+    if(!data || data.code !== "Ok" || !data.routes || !data.routes[0]) return { km:0, hrs:0 };
+
+    const r = data.routes[0];
+    const km = (r.distance || 0) / 1000;
+    const hrs = (r.duration || 0) / 3600;
+
+    // Draw line
+    if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
+    routeLine = L.geoJSON(r.geometry, { weight: 5, opacity: 0.9 }).addTo(map);
+
+    // Fit
+    try{
+      const b = routeLine.getBounds();
+      map.fitBounds(b.pad(0.15));
+    }catch(e){}
+
+    return { km, hrs };
   }
 
-  /* ========= Data ========= */
+  function markerPopupHTML(p){
+    const place = p.placeObj || {};
+    const photos = getPlacePhotos(place, p.placeId);
+    const img = photos[0] || "./style/n1.jpg";
+    const short = String(place?.history_tagline || place?.what_you_find || "").trim();
+    return `
+      <div style="min-width:220px;max-width:260px">
+        <div style="border-radius:12px;overflow:hidden;border:1px solid rgba(10,30,60,.14);margin-bottom:8px">
+          <img src="${img}" style="width:100%;height:110px;object-fit:cover;display:block" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-weight:1000;letter-spacing:.10em;text-transform:uppercase;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(p.name)}</div>
+        <div style="margin-top:4px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(10,30,60,.65)">${escapeHtml(p.tag || "")}</div>
+        ${short ? `<div style="margin-top:6px;font-size:11px;color:rgba(10,30,60,.80);line-height:1.35">${escapeHtml(short).slice(0,140)}${short.length>140?"…":""}</div>` : ""}
+      </div>
+    `;
+  }
+
+  function addMarkers(latlngs){
+    markersLayer.clearLayers();
+    const pts = (showMode === "se") ? [latlngs[0], latlngs[latlngs.length-1]] : latlngs;
+
+    pts.forEach((p, idx)=>{
+      const m = L.marker([p.lat, p.lng]).addTo(markersLayer);
+      m.bindPopup(markerPopupHTML(p), { maxWidth: 280 });
+
+      m.on("click", ()=>{
+        openPlaceModal({ place: p.placeObj, dayNum: p.day || 1, orderNum: p.order || (idx+1), placeId: p.placeId });
+      });
+    });
+  }
+
+  /* ===== Data ===== */
   let TEMPLATES = {};
   let PLACES = {};
   let COSTS = {};
-  let ACTIVE_TEMPLATES = [];
-  let STARTS = [];
-  let ACTIVE_START = "";
-  let ACTIVE_DISTRICT = "ALL";
-  let SELECTED = null;
-  let ACTIVE_TIER = "budget";
 
+  let NAME_TO_ID = new Map();
+  let STARTS = [];
+  let ALL_TEMPL_ARR = [];
+  let FILTERED_ARR = [];
+
+  let CURRENT_KEY = "";
+  let CURRENT_TIER = "budget";
+
+  function buildNameIndex(){
+    NAME_TO_ID = new Map();
+    for(const [key, p] of Object.entries(PLACES||{})){
+      const id = placeIdAny(p, key);
+      const nm = placeNameAny(p, id);
+      if(id) NAME_TO_ID.set(String(id).toLowerCase(), id);
+      if(nm) NAME_TO_ID.set(String(nm).toLowerCase(), id);
+      const slug = slugifyName(nm);
+      if(slug && id) NAME_TO_ID.set(slug, id);
+    }
+  }
+  function getPlaceIdByNameAny(name){
+    const nm = String(name || "").trim();
+    if(!nm) return "";
+    const direct = NAME_TO_ID.get(nm.toLowerCase());
+    if(direct && PLACES[direct]) return direct;
+    const slug = slugifyName(nm);
+    if(slug && PLACES[slug]) return slug;
+    return "";
+  }
+
+  function buildStartList(templates){
+    const counts = new Map();
+    templates.forEach(t=>{
+      const s = String(t.start_point || t.start || "").trim();
+      if(!s) return;
+      const key = s.toUpperCase();
+      counts.set(key, (counts.get(key) || 0) + 1);
+    });
+    const arr = Array.from(counts.entries()).map(([k,v])=>({ key:k, n:v }));
+    arr.sort((a,b)=> b.n - a.n || a.key.localeCompare(b.key));
+    STARTS = arr.map(x=>x.key);
+
+    const dl = $("startList");
+    dl.innerHTML = "";
+    arr.forEach(x=>{
+      const opt = document.createElement("option");
+      opt.value = x.key;
+      dl.appendChild(opt);
+    });
+  }
+
+  function normalizeStartInput(){
+    const typed = String($("startInp").value || "").trim().toUpperCase();
+    if(!typed) return "";
+    const exact = STARTS.find(s => s === typed);
+    if(exact) return exact;
+    const partial = STARTS.find(s => s.startsWith(typed));
+    if(partial) return partial;
+    return typed; // allow custom
+  }
+
+  function getSelectedPax(){
+    const v = Number($("paxSel")?.value || 2);
+    return (isFinite(v) && v > 0) ? v : 2;
+  }
+
+  /* Session storage support */
   function loadFromIndexStorage(){
     try{
       const t = sessionStorage.getItem("HX_TEMPLATES");
@@ -1445,360 +1404,6 @@ footer{
       console.warn(e);
       return false;
     }
-  }
-
-  function normalizeTemplates(obj){
-    return Object.entries(obj||{}).map(([k,v])=>({ key:k, ...(v||{}) }));
-  }
-
-  function buildStartList(arr){
-    const set = new Set();
-    arr.forEach(t=>{
-      const s = String(t.start_point || t.start || "").trim();
-      if(s) set.add(s.toUpperCase());
-    });
-    STARTS = Array.from(set).sort((a,b)=>a.localeCompare(b));
-    const dl = $("startList");
-    dl.innerHTML = "";
-    STARTS.forEach(s=>{
-      const opt = document.createElement("option");
-      opt.value = s;
-      dl.appendChild(opt);
-    });
-  }
-
-  function buildDistrictBar(arr){
-    const set = new Set(["ALL"]);
-    arr.forEach(t=>{
-      const d = String(t.district || "").trim();
-      if(d) set.add(d.toUpperCase());
-    });
-    const list = Array.from(set);
-    const bar = $("districtBar");
-    bar.innerHTML = "";
-    list.forEach(d=>{
-      const el = document.createElement("div");
-      el.className = "distItem" + (d===ACTIVE_DISTRICT ? " active" : "");
-      el.textContent = d;
-      el.onclick = ()=>{
-        ACTIVE_DISTRICT = d;
-        buildDistrictBar(arr);
-        renderSidebar();
-      };
-      bar.appendChild(el);
-    });
-  }
-
-  function normalizeStartInput(){
-    const typed = String($("startInp").value || "").trim().toUpperCase();
-    if(!typed) return "";
-    const exact = STARTS.find(s => s === typed);
-    if(exact) return exact;
-    const partial = STARTS.find(s => s.startsWith(typed));
-    if(partial) return partial;
-    return typed;
-  }
-
-  function renderSidebarCard(pkg){
-    const days = Number(pkg.days || 0) || "";
-    const price = getTierPrice(pkg, "budget");
-    const rp = String(pkg.route_path || "").replaceAll(">", "→");
-    return `
-      <div class="pkgSide" data-id="${escapeHtml(pkg.package_id || pkg.key || "")}">
-        <div class="pkgSideTop">
-          <div class="t1">${escapeHtml(pkg.package_name || pkg.route_name || pkg.package_id || pkg.key || "PACKAGE")}</div>
-          <div class="badge blue">${days ? `${days}D` : "PKG"}</div>
-        </div>
-        <div class="pkgSideRow">
-          <span>${escapeHtml(String(pkg.district||"").toUpperCase() || "—")}</span>
-          <span>Drive: ${escapeHtml(String(pkg.drive_level||"—").toUpperCase())}</span>
-        </div>
-        ${rp ? `<div class="pkgSideRow"><span>${escapeHtml(rp)}</span></div>` : ""}
-        <div class="pkgSidePrice">Starting ${rupees(price)} /person</div>
-      </div>
-    `;
-  }
-
-  function applyFilters(arr){
-    const start = normalizeStartInput();
-    const daysSel = String($("daysSel").value || "").trim();
-    const tierSel = String($("visitType").value || "").trim(); // ANY/budget/premium/luxury
-    ACTIVE_START = start;
-
-    let out = arr.slice();
-
-    if(start){
-      out = out.filter(t => String(t.start_point || t.start || "").trim().toUpperCase() === start);
-    }
-    if(ACTIVE_DISTRICT && ACTIVE_DISTRICT !== "ALL"){
-      out = out.filter(t => String(t.district||"").trim().toUpperCase() === ACTIVE_DISTRICT);
-    }
-    if(daysSel){
-      out = out.filter(t => String(t.days||"").trim() === daysSel);
-    }
-    // tierSel doesn't filter packages; it changes selected tier display (optional)
-    if(tierSel){
-      ACTIVE_TIER = tierSel;
-    }
-
-    return out;
-  }
-
-  function renderSidebar(){
-    const list = $("otherPkgList");
-    const filtered = applyFilters(ACTIVE_TEMPLATES);
-
-    $("pkgCount").textContent = `${filtered.length} packages`;
-
-    if(!filtered.length){
-      list.innerHTML = `<div class="otherHint">No packages match filters. Try changing Start / District / Days.</div>`;
-      return;
-    }
-
-    list.innerHTML = filtered.map(renderSidebarCard).join("");
-
-    list.querySelectorAll(".pkgSide").forEach(el=>{
-      el.onclick = ()=>{
-        const id = el.getAttribute("data-id");
-        const pkg = filtered.find(x => String(x.package_id || x.key || "") === id) || filtered[0];
-        openPackage(pkg);
-
-        list.querySelectorAll(".pkgSide").forEach(x=>x.classList.remove("active"));
-        el.classList.add("active");
-      };
-    });
-  }
-
-  function renderDayBlock(dayNo, ids){
-    const list = (ids||[]).filter(Boolean);
-    return `
-      <div class="itDay">
-        <div class="itTop">
-          <div class="d">Day ${dayNo}</div>
-          <div class="muted">${list.length ? `${list.length} stops` : "—"}</div>
-        </div>
-        <div class="placeRow">
-          ${list.length ? list.map(pid => `
-            <button class="placeMini" type="button" data-place="${escapeHtml(pid)}">${escapeHtml(placeLabel(pid))}</button>
-          `).join("") : `<div class="muted" style="text-transform:none;letter-spacing:.02em;">Not set</div>`}
-        </div>
-      </div>
-    `;
-  }
-
-  function renderSelectedPackage(pkg, tier="budget"){
-    const disc = smartDiscountPercent(pkg.package_id || pkg.key || "");
-    const base = getTierPrice(pkg, tier);
-    const finalP = Math.round(base * (1 - disc/100));
-
-    const day1 = splitCSV(pkg.day1_place_ids);
-    const day2 = splitCSV(pkg.day2_place_ids);
-    const day3 = splitCSV(pkg.day3_place_ids);
-
-    // show up to pkg.days if exists
-    const daysN = Number(pkg.days || 0) || 0;
-    const dayIds = {1:day1,2:day2,3:day3};
-
-    const major = splitCSV(pkg.major_place_ids);
-    const ideal = splitCSV(pkg.ideal_for);
-    const season = splitCSV(pkg.best_season);
-    const incl = splitCSV(pkg.inclusions);
-    const excl = splitCSV(pkg.exclusions);
-
-    const circles = Array.from(new Set([...major, ...day1, ...day2, ...day3])).slice(0, 12);
-
-    // hero image: first circle place photo if exists
-    let heroImg = "./style/n1.jpg";
-    if(circles.length){
-      const p0 = PLACES?.[circles[0]];
-      const photos = getPlacePhotos(p0, circles[0]);
-      heroImg = photos[0] || heroImg;
-    }
-
-    const rp = String(pkg.route_path || "").replaceAll(">", "→");
-
-    return `
-      <div class="centerFocus">
-        <div class="focusHero">
-          <img class="focusHeroImg" src="${escapeHtml(heroImg)}" alt="" onerror="this.src='./style/n1.jpg'">
-          <div class="focusHeroBar">
-            <div style="min-width:280px;flex:1;">
-              <h2 class="focusTitle">${escapeHtml(pkg.package_name || pkg.route_name || pkg.package_id || pkg.key || "PACKAGE")}</h2>
-              <p class="focusSub">
-                ${escapeHtml(pkg.route_name || "")}
-                ${rp ? " • " + escapeHtml(rp) : ""}
-              </p>
-
-              <div class="focusBadges">
-                ${pkg.hotel_category ? `<span class="pkgBadge purple">${escapeHtml(pkg.hotel_category)}</span>` : ""}
-                ${pkg.category ? `<span class="pkgBadge">${escapeHtml(pkg.category)}</span>` : ""}
-                ${pkg.district ? `<span class="pkgBadge">${escapeHtml(String(pkg.district).toUpperCase())}</span>` : ""}
-                ${pkg.days ? `<span class="pkgBadge green">${escapeHtml(String(pkg.days))} Days</span>` : ""}
-                ${pkg.drive_level ? `<span class="pkgBadge">Drive: ${escapeHtml(String(pkg.drive_level).toUpperCase())}</span>` : ""}
-              </div>
-
-              <div style="margin-top:10px" class="muted">
-                ${ideal.length ? `Ideal for: <b>${escapeHtml(ideal.map(x=>x.toUpperCase()).join(", "))}</b><br>` : ""}
-                ${season.length ? `Best season: <b>${escapeHtml(season.map(x=>x.toUpperCase()).join(", "))}</b><br>` : ""}
-                ${pkg.night_plan ? `Nights: <b>${escapeHtml(pkg.night_plan)}</b> • ` : ""}
-                ${pkg.meal_plan ? `Meal: <b>${escapeHtml(pkg.meal_plan)}</b>` : ""}
-              </div>
-            </div>
-
-            <div class="priceBox" id="priceBox">
-              <div class="tierTabs">
-                <button class="tierBtn ${tier==="budget"?"active":""}" data-tier="budget" type="button">Budget</button>
-                <button class="tierBtn ${tier==="premium"?"active":""}" data-tier="premium" type="button">Premium</button>
-                <button class="tierBtn ${tier==="luxury"?"active":""}" data-tier="luxury" type="button">Luxury</button>
-              </div>
-              <div class="priceRow">
-                <div class="priceOld">${rupees(base)}</div>
-                <div class="discPill">${disc}% OFF</div>
-              </div>
-              <div class="priceNew">${rupees(finalP)}</div>
-              <div class="priceSmall">Per person • taxes extra if applicable</div>
-              <div class="priceSmall" style="margin-top:8px;">
-                <b>End:</b> ${escapeHtml(pkg.end_point || "—")}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="itinWrap">
-          <div class="bigTitle">Day-wise itinerary</div>
-          <div class="itinDays">
-            ${renderDayBlock(1, dayIds[1])}
-            ${daysN >= 2 ? renderDayBlock(2, dayIds[2]) : ""}
-            ${daysN >= 3 ? renderDayBlock(3, dayIds[3]) : ""}
-            ${daysN >= 4 ? `<div class="itDay"><div class="muted" style="text-transform:none;letter-spacing:.02em;">Add day4_place_ids in data for full itinerary.</div></div>` : ""}
-          </div>
-          ${pkg.important_notes ? `<div class="muted" style="margin-top:10px;text-transform:none;letter-spacing:.02em;">${escapeHtml(pkg.important_notes)}</div>` : ""}
-        </div>
-
-        <div class="nearSection">
-          <div class="bigTitle">Nearby / major places</div>
-          <div class="nearGrid">
-            ${circles.length ? circles.map(pid => {
-              const place = PLACES?.[pid] || { place_id: pid, name: titleFromId(pid) };
-              const photos = getPlacePhotos(place, pid);
-              const img = photos[0] || "./style/n1.jpg";
-              return `
-                <div class="nearCircle" data-place="${escapeHtml(pid)}">
-                  <div class="img"><img src="${escapeHtml(img)}" onerror="this.src='./style/n1.jpg'"></div>
-                  <div class="nm">${escapeHtml(place.name ? String(place.name).toUpperCase() : titleFromId(pid))}</div>
-                </div>`;
-            }).join("") : `<div class="muted" style="text-transform:none;letter-spacing:.02em;">No places set</div>`}
-          </div>
-        </div>
-
-        <div class="infoGrid">
-          <div class="infoCard">
-            <h3>Inclusions</h3>
-            <ul class="bullets">
-              ${(incl.length ? incl : ["—"]).map(x=>`<li>${escapeHtml(x)}</li>`).join("")}
-            </ul>
-          </div>
-
-          <div class="infoCard">
-            <h3>Exclusions</h3>
-            <ul class="bullets">
-              ${(excl.length ? excl : ["—"]).map(x=>`<li>${escapeHtml(x)}</li>`).join("")}
-            </ul>
-          </div>
-
-          <div class="infoCard">
-            <h3>Cancellation policy</h3>
-            <div class="kv">
-              <div>${escapeHtml(pkg.cancellation_policy || "—")}</div>
-            </div>
-          </div>
-
-          <div class="infoCard">
-            <h3>Notes</h3>
-            <div class="kv">
-              <div><b>Package:</b> ${escapeHtml(pkg.notes || "—")}</div>
-              <div><b>Route:</b> ${escapeHtml(rp || "—")}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  function wireSelectedInteractions(){
-    // tier switch
-    document.querySelectorAll("#priceBox .tierBtn").forEach(btn=>{
-      btn.onclick = ()=>{
-        ACTIVE_TIER = btn.dataset.tier;
-        if(SELECTED){
-          $("pkgList").innerHTML = renderSelectedPackage(SELECTED, ACTIVE_TIER);
-          wireSelectedInteractions();
-        }
-      };
-    });
-
-    // place buttons + circles
-    document.querySelectorAll("[data-place]").forEach(el=>{
-      el.onclick = ()=>{
-        const pid = el.dataset.place;
-        const place = PLACES?.[pid] || { place_id: pid, name: titleFromId(pid) };
-        openPlaceModal({ place, dayNum: 0, orderNum: 0, placeId: pid });
-
-        // map pin
-        focusPlaceOnMap(pid, 12);
-      };
-    });
-  }
-
-  function openPackage(pkg){
-    SELECTED = pkg;
-
-    // clear map and show primary place pins
-    clearMap();
-
-    $("pkgList").innerHTML = renderSelectedPackage(pkg, ACTIVE_TIER);
-    wireSelectedInteractions();
-
-    // Auto-pin all itinerary places (if coords exist)
-    const allIds = [
-      ...splitCSV(pkg.day1_place_ids),
-      ...splitCSV(pkg.day2_place_ids),
-      ...splitCSV(pkg.day3_place_ids),
-      ...splitCSV(pkg.major_place_ids)
-    ];
-    const uniq = Array.from(new Set(allIds)).filter(Boolean);
-
-    uniq.forEach(pid=>{
-      const p = PLACES?.[pid];
-      if(!p) return;
-      const lat = Number(p.latitude), lng = Number(p.longitude);
-      if(!isFinite(lat) || !isFinite(lng)) return;
-      const m = L.marker([lat,lng]).addTo(markersLayer);
-      m.bindPopup(`<b>${escapeHtml(p.name || pid)}</b><br>${escapeHtml(p.district || "")}`);
-    });
-
-    if(uniq.length){
-      const pts = [];
-      uniq.forEach(pid=>{
-        const p = PLACES?.[pid];
-        const lat = Number(p?.latitude), lng = Number(p?.longitude);
-        if(isFinite(lat) && isFinite(lng)) pts.push([lat,lng]);
-      });
-      if(pts.length){
-        const bounds = L.latLngBounds(pts);
-        map.fitBounds(bounds.pad(0.2));
-      }
-    }else{
-      // fallback to end_point lat/lng if present in template
-      const lat = Number(pkg.latitude), lng = Number(pkg.longitude);
-      if(isFinite(lat) && isFinite(lng)){
-        L.marker([lat,lng]).addTo(markersLayer)
-          .bindPopup(`<b>${escapeHtml(pkg.end_point || "END")}</b>`).openPopup();
-        map.setView([lat,lng], 10);
-      }
-    }
-
-    showBot("✅ Package opened in center");
   }
 
   async function loadAll(){
@@ -1820,37 +1425,516 @@ footer{
 
     if(!ok){
       setStatus("Data not found");
-      $("pkgList").innerHTML = `
-        <div class="pill">
+      $("centerScroll").innerHTML = `
+        <div class="otherHint">
           <b>Data not found.</b><br>
-          Firebase blocked OR rules issue.<br>
-          Open console for exact error.
+          Firebase blocked or rules issue.<br>
+          Open DevTools console for exact error.
         </div>`;
       showBot("❌ Firebase not loading. Check DB rules.");
       return;
     }
 
-    const arr = normalizeTemplates(TEMPLATES);
-    ACTIVE_TEMPLATES = arr;
+    buildNameIndex();
 
-    buildStartList(arr);
-    buildDistrictBar(arr);
+    ALL_TEMPL_ARR = Object.entries(TEMPLATES||{}).map(([k,v])=>({ key:k, ...(v||{}) }));
+    buildStartList(ALL_TEMPL_ARR);
 
-    // start prefill from query
+    // Pre-fill start from query
     try{
       const qs = new URLSearchParams(location.search);
       const startQS = (qs.get("start") || "").trim();
       if(startQS) $("startInp").value = String(startQS).toUpperCase();
     }catch(e){}
 
-    setStatus("Ready");
-    showBot("✅ Data loaded successfully");
+    // Default show packages if start exists
+    const start = normalizeStartInput();
+    if(start){
+      applyFiltersAndRender();
+    }
 
-    // initial render
-    $("pkgList").innerHTML = `<div class="otherHint">Select a package from left sidebar to open full details here.</div>`;
-    renderSidebar();
+    setStatus("Ready");
+    showBot("✅ Data loaded");
   }
 
+  /* Filtering */
+  function applyFiltersAndRender(){
+    const start = normalizeStartInput();
+    const days = String($("daysSel").value || "").trim();
+    CURRENT_TIER = String($("visitType").value || "budget").toLowerCase();
+
+    // Pills
+    const pills = [];
+    if(start) pills.push(`<span class="pill"><b>Start</b> ${escapeHtml(start)}</span>`);
+    if(days) pills.push(`<span class="pill"><b>Days</b> ${escapeHtml(days)}</span>`);
+    pills.push(`<span class="pill"><b>Tier</b> ${escapeHtml(CURRENT_TIER)}</span>`);
+    $("pills").innerHTML = pills.join("");
+
+    // Filter
+    FILTERED_ARR = ALL_TEMPL_ARR.filter(t=>{
+      const sp = String(t.start_point || t.start || "").trim().toUpperCase();
+      const d = String(t.days || "").trim();
+      if(start && sp && sp !== start) return false;
+      if(days && d && d !== days) return false;
+      return true;
+    });
+
+    // Sort by price (selected tier) ascending
+    FILTERED_ARR.sort((a,b)=>{
+      const pa = getTierPrice(a, CURRENT_TIER);
+      const pb = getTierPrice(b, CURRENT_TIER);
+      if(pa !== pb) return pa - pb;
+      return String(a.package_name||a.route_name||a.key).localeCompare(String(b.package_name||b.route_name||b.key));
+    });
+
+    $("pkgCount").textContent = `${FILTERED_ARR.length} found`;
+
+    // Render left list
+    renderLeftPackageList();
+
+    // Auto select first if none selected or not in filtered
+    if(!CURRENT_KEY || !FILTERED_ARR.find(x=>x.key === CURRENT_KEY)){
+      if(FILTERED_ARR[0]){
+        selectPackage(FILTERED_ARR[0].key);
+      }else{
+        CURRENT_KEY = "";
+        $("centerScroll").innerHTML = `
+          <div class="otherHint">
+            No packages found for these filters.<br>
+            Try changing Start/Days.
+          </div>`;
+        clearMap();
+      }
+    }else{
+      // Re-render selected with new tier
+      renderSelected(CURRENT_KEY);
+    }
+  }
+
+  function renderLeftPackageList(){
+    const list = $("otherPkgList");
+    if(!FILTERED_ARR.length){
+      list.innerHTML = `
+        <div class="otherHint">
+          No packages yet for selected filters.
+        </div>`;
+      return;
+    }
+
+    const pax = getSelectedPax();
+    const tier = CURRENT_TIER;
+
+    list.innerHTML = FILTERED_ARR.map(t=>{
+      const name = String(t.package_name || t.route_name || t.key || "PACKAGE");
+      const district = String(t.district || "").toUpperCase();
+      const days = Number(t.days || 0) || 0;
+      const drive = String(t.drive_level || "").toUpperCase();
+      const base = getTierPrice(t, tier);
+      const disc = smartDiscountPercent(t.package_id || t.key);
+      const finalP = Math.round(base * (1 - disc/100));
+      const total = finalP * pax;
+
+      return `
+        <div class="pkgSide ${t.key===CURRENT_KEY?"active":""}" data-key="${escapeHtml(t.key)}">
+          <div class="pkgSideTop">
+            <div class="t1" title="${escapeHtml(name)}">${escapeHtml(name)}</div>
+            <div class="badge blue">${disc}% OFF</div>
+          </div>
+          <div class="pkgSideRow">
+            ${district ? `<span>${escapeHtml(district)}</span>` : ""}
+            ${days ? `<span>${days}D</span>` : ""}
+            ${drive ? `<span>${escapeHtml(drive)}</span>` : ""}
+          </div>
+          <div class="pkgSidePrice">
+            ${rupees(finalP)} / person • ${rupees(total)} for ${pax} pax
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    // Click handler
+    Array.from(list.querySelectorAll(".pkgSide")).forEach(el=>{
+      el.addEventListener("click", ()=>{
+        const k = el.getAttribute("data-key");
+        if(k) selectPackage(k);
+      }, { passive:true });
+    });
+  }
+
+  /* Selected package */
+  function getDayPlaceIds(pkg, dayNo){
+    return splitCSV(pkg?.[`day${dayNo}_place_ids`]);
+  }
+
+  function getStopsFromItinerary(pkg){
+    const daysN = Number(pkg.days || 0) || 0;
+    const out = [];
+    let order = 0;
+    for(let d=1; d<=Math.max(daysN, 1); d++){
+      const ids = getDayPlaceIds(pkg, d);
+      ids.forEach(id=>{
+        const pid = String(id||"").trim();
+        const place = PLACES[pid] || PLACES[getPlaceIdByNameAny(pid)] || null;
+        const lat = latAny(place), lng = lngAny(place);
+        if(isFinite(lat) && isFinite(lng)){
+          order += 1;
+          out.push({ lat, lng, name: placeNameAny(place, pid), placeId: pid, placeObj: place, day: d, order });
+        }
+      });
+    }
+    return out;
+  }
+
+  function pickCoverPhotoFromPackage(pkg){
+    // Try: major_place_ids first
+    const majors = splitCSV(pkg.major_place_ids);
+    const first = majors[0] || getDayPlaceIds(pkg, 1)[0] || "";
+    const pid = first ? String(first).trim() : "";
+    const place = PLACES[pid] || PLACES[getPlaceIdByNameAny(pid)] || null;
+    const photos = getPlacePhotos(place, pid);
+    return photos[0] || "./style/n1.jpg";
+  }
+
+  function renderDayBlock(dayNo, placeIds){
+    const buttons = placeIds.map((pid, idx)=>{
+      const place = PLACES[pid] || PLACES[getPlaceIdByNameAny(pid)] || {};
+      const nm = placeNameAny(place, pid);
+      const reg = regionAny(place) || String(place?.segment || "").trim();
+      const tag = districtAny(place) || String(place?.category || "").toUpperCase();
+      return `
+        <button class="placeBtn" type="button"
+          data-place="${escapeHtml(pid)}"
+          data-day="${dayNo}"
+          data-order="${idx+1}"
+        >
+          <div class="left">
+            <div class="nm">${escapeHtml(nm)}</div>
+            <div class="sm">${escapeHtml(reg || "Himachal Pradesh")}</div>
+          </div>
+          <div class="tag">${escapeHtml(tag || "STOP")}</div>
+        </button>
+      `;
+    }).join("");
+
+    return `
+      <div class="itDay">
+        <div class="itDayTop">
+          <div class="d">Day ${dayNo}</div>
+          <div class="muted">${placeIds.length} stops</div>
+        </div>
+        ${buttons}
+        <div class="nearWrap" id="nearWrap_${dayNo}">
+          <div class="nearTop">
+            <div class="k">Nearby places</div>
+            <div class="muted" style="text-transform:uppercase">Tap to open</div>
+          </div>
+          <div class="nearCircles" id="nearCircles_${dayNo}"></div>
+        </div>
+      </div>
+    `;
+  }
+
+  function computeNearbyForDay(dayNo, dayPlaceIds){
+    // choose first stop as anchor if possible
+    const anchorId = dayPlaceIds[0] || "";
+    const anchorPlace = PLACES[anchorId] || PLACES[getPlaceIdByNameAny(anchorId)] || null;
+    const al = latAny(anchorPlace), ag = lngAny(anchorPlace);
+    if(!isFinite(al) || !isFinite(ag)) return [];
+
+    const daySet = new Set(dayPlaceIds.map(x=>String(x)));
+    const district = districtAny(anchorPlace);
+    const region = regionAny(anchorPlace);
+
+    const candidates = [];
+    for(const [pid, p] of Object.entries(PLACES||{})){
+      if(daySet.has(pid)) continue;
+      const lat = latAny(p), lng = lngAny(p);
+      if(!isFinite(lat) || !isFinite(lng)) continue;
+
+      // prefer same district/region first
+      const distOk = district && districtAny(p) === district;
+      const regOk = region && regionAny(p) === region;
+
+      const km = haversineKm(al, ag, lat, lng);
+      // keep within 50km
+      if(km > 50) continue;
+
+      candidates.push({
+        pid,
+        place: p,
+        score: (distOk ? -20 : 0) + (regOk ? -10 : 0) + km
+      });
+    }
+
+    candidates.sort((a,b)=> a.score - b.score);
+    return candidates.slice(0, 8);
+  }
+
+  function renderNearbyIntoDay(dayNo, pkg){
+    const ids = getDayPlaceIds(pkg, dayNo);
+    const out = computeNearbyForDay(dayNo, ids);
+    const box = document.getElementById(`nearCircles_${dayNo}`);
+    if(!box) return;
+
+    if(!out.length){
+      box.innerHTML = `<div class="muted" style="grid-column:1/-1;text-transform:none;letter-spacing:.02em;">No nearby places found for this day yet.</div>`;
+      return;
+    }
+
+    box.innerHTML = out.map(o=>{
+      const photos = getPlacePhotos(o.place, o.pid);
+      const img = photos[0] || "./style/n1.jpg";
+      const nm = placeNameAny(o.place, o.pid);
+      return `
+        <div class="nearItem" data-place="${escapeHtml(o.pid)}" data-day="${dayNo}" data-order="0">
+          <div class="nearCircle">
+            <img src="${img}" alt="${escapeHtml(nm)}" onerror="this.src='./style/n1.jpg'">
+          </div>
+          <div class="nearName" title="${escapeHtml(nm)}">${escapeHtml(nm)}</div>
+        </div>
+      `;
+    }).join("");
+
+    Array.from(box.querySelectorAll(".nearItem")).forEach(el=>{
+      el.addEventListener("click", ()=>{
+        const pid = el.getAttribute("data-place");
+        const day = Number(el.getAttribute("data-day") || dayNo);
+        const place = PLACES[pid] || PLACES[getPlaceIdByNameAny(pid)] || {};
+        openPlaceModal({ place, dayNum: day, orderNum: 0, placeId: pid });
+      }, { passive:true });
+    });
+  }
+
+  function renderCostBreakdown(pkgKey){
+    // COSTS node optional. If exists, show a simple table-like list.
+    const node = COSTS?.[pkgKey] || COSTS?.[String(pkgKey||"")] || null;
+    if(!node) return "";
+
+    const entries = Object.entries(node || {});
+    if(!entries.length) return "";
+
+    const rows = entries.slice(0, 18).map(([k,v])=>{
+      const label = String(k||"").replace(/_/g," ").toUpperCase();
+      const valNum = Number(v);
+      const val = isFinite(valNum) ? rupees(valNum) : escapeHtml(String(v));
+      return `<div class="priceRow" style="margin-top:6px"><div class="muted" style="text-transform:uppercase">${escapeHtml(label)}</div><div style="font-weight:1000">${val}</div></div>`;
+    }).join("");
+
+    return `
+      <div style="height:10px"></div>
+      <div class="muted" style="text-transform:uppercase">Costing (if available)</div>
+      ${rows}
+    `;
+  }
+
+  async function renderSelected(key){
+    const pkg = ALL_TEMPL_ARR.find(x=>x.key===key);
+    if(!pkg){
+      $("centerScroll").innerHTML = `<div class="otherHint">Package not found.</div>`;
+      return;
+    }
+
+    const tier = CURRENT_TIER;
+    const pax = getSelectedPax();
+
+    const name = String(pkg.package_name || pkg.route_name || pkg.key || "PACKAGE");
+    const district = String(pkg.district || "").toUpperCase();
+    const daysN = Number(pkg.days || 0) || 0;
+    const drive = String(pkg.drive_level || "").toUpperCase();
+    const routeId = String(pkg.route_id || "").toUpperCase().trim();
+    const routePath = String(pkg.route_path || pkg.route_name || "").trim();
+
+    const b = getTierPrice(pkg, "budget");
+    const p = getTierPrice(pkg, "premium");
+    const l = getTierPrice(pkg, "luxury");
+
+    const disc = smartDiscountPercent(pkg.package_id || pkg.key);
+    const base = getTierPrice(pkg, tier);
+    const finalPer = Math.round(base * (1 - disc/100));
+    const total = finalPer * pax;
+
+    const cover = pickCoverPhotoFromPackage(pkg);
+
+    // Itinerary HTML
+    let itinHTML = "";
+    for(let d=1; d<=Math.max(daysN, 1); d++){
+      const ids = getDayPlaceIds(pkg, d);
+      if(ids.length){
+        itinHTML += renderDayBlock(d, ids);
+      }
+    }
+    if(!itinHTML){
+      itinHTML = `<div class="itDay"><div class="muted" style="text-transform:none;letter-spacing:.02em;">Itinerary not available for this package yet.</div></div>`;
+    }
+
+    $("centerScroll").innerHTML = `
+      <div class="selWrap">
+        <div class="selTop">
+          <div class="selMedia">
+            <img src="${cover}" alt="${escapeHtml(name)}" onerror="this.src='./style/n1.jpg'">
+          </div>
+          <div class="selInfo">
+            <div class="selTitleRow">
+              <h3 class="selTitle" title="${escapeHtml(name)}">${escapeHtml(name)}</h3>
+            </div>
+
+            <div class="selBadges">
+              ${district ? `<span class="badgePill blue">${escapeHtml(district)}</span>` : ""}
+              ${daysN ? `<span class="badgePill green">${daysN} DAYS</span>` : ""}
+              ${drive ? `<span class="badgePill orange">${escapeHtml(drive)} DRIVE</span>` : ""}
+              ${routeId ? `<span class="badgePill">${escapeHtml(routeId)}</span>` : ""}
+            </div>
+
+            ${routePath ? `<div class="routeLine"><b>Route:</b> ${escapeHtml(routePath)}</div>` : ""}
+
+            <div class="enqRow">
+              <a class="enqBtn"
+                 href="https://wa.me/917018138847?text=${encodeURIComponent(`Hi Chandan, I want to book: ${name}. Tier: ${tier.toUpperCase()}, Pax: ${pax}. Price per person: ₹${finalPer} (after ${disc}% off). Start: ${pkg.start_point || pkg.start || ""}.`)}"
+                 target="_blank" rel="noopener">
+                WhatsApp Booking
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="detailsGrid">
+          <div class="detailsCard">
+            <div class="bigTitle">Pricing (from template)</div>
+
+            <div style="height:10px"></div>
+
+            <div class="priceRow">
+              <button class="tierBtn ${tier==='budget'?'active':''}" data-tier="budget" type="button">Budget</button>
+              <div style="font-weight:1000;letter-spacing:.06em">${rupees(b||0)}</div>
+            </div>
+
+            <div class="priceRow" style="margin-top:6px">
+              <button class="tierBtn ${tier==='premium'?'active':''}" data-tier="premium" type="button">Premium</button>
+              <div style="font-weight:1000;letter-spacing:.06em">${rupees(p||0)}</div>
+            </div>
+
+            <div class="priceRow" style="margin-top:6px">
+              <button class="tierBtn ${tier==='luxury'?'active':''}" data-tier="luxury" type="button">Luxury</button>
+              <div style="font-weight:1000;letter-spacing:.06em">${rupees(l||0)}</div>
+            </div>
+
+            <div style="height:10px"></div>
+
+            <div class="priceRow">
+              <div class="priceOld">${rupees(base)}</div>
+              <div class="discPill">${disc}% OFF</div>
+            </div>
+
+            <div class="priceNew">${rupees(finalPer)} <span style="font-size:12px;font-weight:950;letter-spacing:.10em;text-transform:uppercase;color:rgba(10,30,60,.70)">/ person</span></div>
+            <div class="priceSmall">Total for ${pax} pax: <b>${rupees(total)}</b></div>
+
+            ${renderCostBreakdown(pkg.key)}
+
+            <div class="priceSmall" style="margin-top:10px">
+              Discount is auto-decided (10–20%) per package for smart offers.
+            </div>
+          </div>
+
+          <div class="detailsCard">
+            <div class="bigTitle">Itinerary</div>
+            <div class="muted" style="margin-top:6px">${daysN ? `${daysN} days` : "—"} • Tap places to open details</div>
+
+            <div class="itinDays">
+              ${itinHTML}
+            </div>
+
+            ${pkg.important_notes ? `<div class="priceSmall" style="margin-top:10px"><b>Note:</b> ${escapeHtml(pkg.important_notes)}</div>` : ""}
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Wire tier buttons
+    Array.from(document.querySelectorAll(".tierBtn")).forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const t = btn.getAttribute("data-tier");
+        if(!t) return;
+        $("visitType").value = t;
+        CURRENT_TIER = t;
+        applyFiltersAndRender(); // updates left list + re-render selected
+      }, { passive:true });
+    });
+
+    // Wire place buttons
+    Array.from(document.querySelectorAll(".placeBtn")).forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const pid = btn.getAttribute("data-place") || "";
+        const day = Number(btn.getAttribute("data-day") || 1);
+        const ord = Number(btn.getAttribute("data-order") || 1);
+        const place = PLACES[pid] || PLACES[getPlaceIdByNameAny(pid)] || {};
+        openPlaceModal({ place, dayNum: day, orderNum: ord, placeId: pid });
+      }, { passive:true });
+    });
+
+    // Render nearby circles for each day that exists
+    for(let d=1; d<=Math.max(daysN, 1); d++){
+      const ids = getDayPlaceIds(pkg, d);
+      if(ids.length) renderNearbyIntoDay(d, pkg);
+    }
+
+    // Map route + pins
+    await updateMapForPackage(pkg);
+
+    // Update left highlight
+    renderLeftPackageList();
+  }
+
+  async function updateMapForPackage(pkg){
+    clearMap();
+
+    // Prefer itinerary stops
+    const stops = getStopsFromItinerary(pkg);
+
+    // If no itinerary stops, fallback to start/end coords if present in template
+    let latlngs = stops;
+
+    if(!latlngs.length){
+      const lat = Number(pkg.latitude), lng = Number(pkg.longitude);
+      if(isFinite(lat) && isFinite(lng)){
+        latlngs = [{ lat, lng, name: pkg.end_point || pkg.district || "STOP", placeId:"", placeObj:null, day:1, order:1 }];
+      }
+    }
+
+    if(latlngs.length){
+      addMarkers(latlngs);
+
+      // Draw route only if 2+ points
+      let km = 0, hrs = 0;
+      if(latlngs.length >= 2){
+        try{
+          const out = await drawOSRMRoute(latlngs);
+          km = out.km || 0;
+          hrs = out.hrs || 0;
+        }catch(e){
+          console.warn("OSRM failed", e);
+        }
+      }else{
+        // Fit single marker
+        try{ map.setView([latlngs[0].lat, latlngs[0].lng], 11); }catch(e){}
+      }
+
+      const kmTxt = km ? `${km.toFixed(0)} km` : "—";
+      const hrTxt = hrs ? `${hrs.toFixed(1)} hrs` : "";
+      $("kmBadge").textContent = hrTxt ? `${kmTxt} • ${hrTxt}` : kmTxt;
+      invalidateMapSoon();
+    }else{
+      $("kmBadge").textContent = "—";
+      invalidateMapSoon();
+    }
+  }
+
+  function selectPackage(key){
+    CURRENT_KEY = key;
+    showBot("✅ Package selected");
+    renderSelected(key);
+  }
+
+  /* UI wiring */
   function wireUI(){
     $("yy").textContent = new Date().getFullYear();
 
@@ -1865,122 +1949,90 @@ footer{
       showBot("✅ WhatsApp button hidden");
     };
 
-    $("districtSelect").onchange = (e)=>{
-      const v = e.target.value; if(v) location.href = v;
-    };
-
-    $("topLink").onclick = (e)=>{ e.preventDefault(); window.scrollTo({top:0,behavior:"smooth"}); };
-
-    $("genBtn").onclick = ()=>{
-      renderSidebar();
-      // auto-open first filtered
-      const filtered = applyFilters(ACTIVE_TEMPLATES);
-      if(filtered.length){
-        const first = filtered[0];
-        openPackage(first);
-        // highlight first
-        const list = $("otherPkgList");
-        list.querySelectorAll(".pkgSide").forEach(x=>x.classList.remove("active"));
-        const el = list.querySelector(`.pkgSide[data-id="${CSS.escape(String(first.package_id || first.key || ""))}"]`);
-        if(el) el.classList.add("active");
-      }else{
-        clearMap();
-        $("pkgList").innerHTML = `<div class="otherHint">No package found for current filters.</div>`;
-      }
-    };
-
-    $("resetBtn").onclick = ()=>{
-      $("startInp").value = "";
-      $("visitType").value = "";
-      $("daysSel").value = "";
-      $("paxSel").value = "2";
-      ACTIVE_DISTRICT = "ALL";
-      buildDistrictBar(ACTIVE_TEMPLATES);
-      renderSidebar();
-      $("pkgList").innerHTML = `<div class="otherHint">Filters reset. Select a package from left.</div>`;
-      clearMap();
-      showBot("✅ Filters reset");
-    };
-
-    $("closeSelectedBtn").onclick = ()=>{
-      SELECTED = null;
-      $("pkgList").innerHTML = `<div class="otherHint">Select a package from left sidebar to open full details here.</div>`;
-      $("otherPkgList").querySelectorAll(".pkgSide").forEach(x=>x.classList.remove("active"));
-      clearMap();
-      showBot("✅ Closed selected package");
-    };
+    $("topLink").onclick = (e)=>{ e.preventDefault(); window.scrollTo({top:0, behavior:"smooth"}); };
 
     $("refreshBtn").onclick = async ()=>{
+      showBot("🔄 Refreshing data…");
       try{
-        showBot("🔄 Refreshing data…");
-        setStatus("Refreshing…");
-        if(typeof window.hxFetchFirebaseAndCache === "function"){
-          await window.hxFetchFirebaseAndCache();
-        }
-        loadFromIndexStorage();
-        ACTIVE_TEMPLATES = normalizeTemplates(TEMPLATES);
-        buildStartList(ACTIVE_TEMPLATES);
-        buildDistrictBar(ACTIVE_TEMPLATES);
-        renderSidebar();
-        setStatus("Ready");
-        showBot("✅ Refreshed");
-      }catch(e){
-        console.error(e);
-        showBot("❌ Refresh failed (check console)");
-        setStatus("Refresh error");
-      }
+        sessionStorage.removeItem("HX_TEMPLATES");
+        sessionStorage.removeItem("HX_PLACES");
+        sessionStorage.removeItem("HX_COSTS");
+      }catch(e){}
+      await loadAll();
+      applyFiltersAndRender();
     };
-
-    $("clearRouteBtn").onclick = ()=>{ clearMap(); showBot("✅ Map cleared"); };
 
     $("fitMapBtn").onclick = ()=>{
       try{
-        // fit current markers
-        const pts = [];
-        markersLayer.eachLayer(l=>{
-          const ll = l.getLatLng && l.getLatLng();
-          if(ll) pts.push([ll.lat, ll.lng]);
-        });
-        if(pts.length){
-          map.fitBounds(L.latLngBounds(pts).pad(0.2));
-          showBot("✅ Fit map to pins");
+        if(routeLine){
+          map.fitBounds(routeLine.getBounds().pad(0.15));
         }else{
-          showBot("ℹ️ No pins to fit");
+          map.setView([31.1048, 77.1734], 8);
         }
-      }catch(e){ console.warn(e); }
+      }catch(e){}
+    };
+
+    $("clearRouteBtn").onclick = ()=>{
+      clearMap();
+      showBot("🧹 Map cleared");
     };
 
     $("toggleTilesBtn").onclick = ()=>{
       tilesDark = !tilesDark;
-      if(tilesDark){
-        map.removeLayer(tile);
-        tileDark.addTo(map);
-      }else{
-        map.removeLayer(tileDark);
-        tile.addTo(map);
-      }
-      showBot("✅ Tiles toggled");
+      try{
+        if(tilesDark){
+          map.removeLayer(tile);
+          tileDark.addTo(map);
+        }else{
+          map.removeLayer(tileDark);
+          tile.addTo(map);
+        }
+      }catch(e){}
     };
 
     $("showAllStopsBtn").onclick = ()=>{
-      if(!SELECTED) return showBot("ℹ️ Select a package first");
-      clearMap();
-      openPackage(SELECTED);
-      showBot("✅ Showing all stops");
+      showMode = "all";
+      if(CURRENT_KEY){
+        const pkg = ALL_TEMPL_ARR.find(x=>x.key===CURRENT_KEY);
+        if(pkg) updateMapForPackage(pkg);
+      }
     };
 
     $("showStartEndBtn").onclick = ()=>{
-      if(!SELECTED) return showBot("ℹ️ Select a package first");
-      clearMap();
-
-      const lat = Number(SELECTED.latitude), lng = Number(SELECTED.longitude);
-      if(isFinite(lat) && isFinite(lng)){
-        L.marker([lat,lng]).addTo(markersLayer).bindPopup(`<b>${escapeHtml(SELECTED.end_point || "END")}</b>`).openPopup();
-        map.setView([lat,lng], 10);
-        showBot("✅ Showing end point");
-      }else{
-        showBot("ℹ️ End coordinates not set in template");
+      showMode = "se";
+      if(CURRENT_KEY){
+        const pkg = ALL_TEMPL_ARR.find(x=>x.key===CURRENT_KEY);
+        if(pkg) updateMapForPackage(pkg);
       }
+    };
+
+    $("genBtn").onclick = ()=>{
+      applyFiltersAndRender();
+      showBot("✅ Packages loaded in left list");
+    };
+
+    $("resetBtn").onclick = ()=>{
+      $("daysSel").value = "";
+      $("visitType").value = "budget";
+      CURRENT_TIER = "budget";
+      applyFiltersAndRender();
+      showBot("✅ Filters reset");
+    };
+
+    $("paxSel").onchange = ()=>{
+      // update list + selected totals
+      applyFiltersAndRender();
+    };
+
+    $("closeSelectedBtn").onclick = ()=>{
+      CURRENT_KEY = "";
+      $("centerScroll").innerHTML = `
+        <div class="otherHint">
+          Package closed.<br>
+          Select another package from left list.
+        </div>`;
+      clearMap();
+      renderLeftPackageList();
     };
   }
 
