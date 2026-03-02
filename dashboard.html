@@ -1077,6 +1077,15 @@
               <input id="searchInp" placeholder="Shimla • Manali • Kasol • Spiti…" autocomplete="off">
             </div>
 
+            <div class="quickChips" aria-label="Quick filters">
+              <div class="qchip" data-tag="family">Family</div>
+              <div class="qchip" data-tag="couple">Couples</div>
+              <div class="qchip" data-tag="weekend">Weekend</div>
+              <div class="qchip" data-tag="adventure">Adventure</div>
+              <div class="qchip" data-tag="snow">Snow</div>
+              <div class="qchip" data-tag="summer">Summer</div>
+            </div>
+
             <div class="field" style="margin-top:10px;">
               <label>Start City / Pickup</label>
               <input id="startInp" list="startList" placeholder="E.g. SHIMLA / CHANDIGARH / DELHI" autocomplete="off">
@@ -1666,6 +1675,15 @@
       const max = getBudgetMax();
       $("budgetPill").textContent = max ? `≤ ${rupees(max)}` : "ANY";
     }
+
+    /* ===== Market filtering ===== */
+    const quickTags = new Set(); // active quick tags
+    function tplMatchesQuickTags(tpl){
+      if(!quickTags.size) return true;
+      const hay = [
+        tpl.package_name, tpl.route_name, tpl.category, tpl.ideal_for, tpl.best_season, tpl.notes, tpl.inclusions
+      ].map(x=>String(x||"").toLowerCase()).join(" | ");
+
       const map = {
         family: ["family","kids","child","children"],
         couple: ["couple","honeymoon","romantic"],
@@ -1732,6 +1750,8 @@
             }
           }
         }
+
+        if(!tplMatchesQuickTags(t)) return false;
 
         if(budgetMax){
           const base = pickBasePrice(t, tier, t.key);
@@ -2263,6 +2283,17 @@
           </div>
         </div>
       `;
+
+      const carMain = document.getElementById("carMain");
+      document.querySelectorAll(".thumb[data-src]").forEach(t=>{
+        t.addEventListener("click", ()=>{
+          document.querySelectorAll(".thumb").forEach(x=>x.classList.remove("on"));
+          t.classList.add("on");
+          const src = t.getAttribute("data-src") || "./style/n1.jpg";
+          carMain.src = src;
+        });
+      });
+
       shownSuggestions = new Set();
       renderItineraryAndMap(tpl);
       invalidateMapSoon();
@@ -2406,7 +2437,8 @@
         if($("districtSel")) $("districtSel").value = "";
         $("budgetRange").value = "0";
         pillBudget();
-        
+        quickTags.clear();
+        document.querySelectorAll(".qchip").forEach(c=>c.classList.remove("on"));
         CURRENT_KEY = "";
         renderLeftList();
         showBot("Filters reset");
