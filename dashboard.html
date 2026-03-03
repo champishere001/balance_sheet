@@ -351,29 +351,74 @@
       border-bottom:1px solid rgba(10,30,60,.12);
       background: rgba(255,255,255,.62);
     }
-    .carouselMain{
-      height: 250px;
-      border-radius: 16px;
+
+    /* ===== Slideshow (NEW) ===== */
+    .slider{
+      position:relative;
+      border-radius:16px;
       overflow:hidden;
       border:1px solid rgba(10,30,60,.12);
       background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.78), rgba(37,99,235,.12));
-      position:relative;
     }
-    .carouselMain img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .carNav{
-      display:flex; gap:8px; margin-top:10px; overflow:auto; padding-bottom:2px;
-      -webkit-overflow-scrolling: touch;
+    .slides{
+      display:flex;
+      transition:transform .4s ease;
+      will-change: transform;
     }
-    .thumb{
-      width:78px; height:54px; border-radius: 12px; overflow:hidden;
-      border:1px solid rgba(10,30,60,.14);
-      background: rgba(255,255,255,.66);
+    .slide{
+      min-width:100%;
+      height:250px;
+    }
+    .slide img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .sNav{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      width:44px;height:44px;
+      border-radius:50%;
+      border:none;
+      background:rgba(255,255,255,.85);
+      font-size:22px;
       cursor:pointer;
-      flex:0 0 auto;
-      opacity:.86;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      display:grid;
+      place-items:center;
+      box-shadow: 0 10px 22px rgba(10,30,60,.14);
     }
-    .thumb.on{ box-shadow: 0 0 0 3px rgba(37,99,235,.14); opacity:1; }
-    .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .sNav.prev{ left:10px }
+    .sNav.next{ right:10px }
+    .sNav:active{ transform: translateY(-50%) scale(.98); }
+
+    .sDots{
+      position:absolute;
+      bottom:12px;
+      width:100%;
+      display:flex;
+      justify-content:center;
+      gap:6px;
+      padding: 0 10px;
+      pointer-events:auto;
+    }
+    .sDot{
+      width:8px;height:8px;
+      border-radius:50%;
+      background:#fff;
+      opacity:.6;
+      cursor:pointer;
+      transition: all .18s ease;
+    }
+    .sDot.active{
+      width:20px;
+      border-radius:10px;
+      opacity:1;
+    }
 
     /* Pricing block (big) */
     .pricing{
@@ -1004,8 +1049,7 @@
         font-size: 11.5px;
       }
 
-      .carouselMain{ height: 210px; }
-      .thumb{ width: 84px; height: 58px; }
+      .slide{ height:210px; } /* slideshow height mobile */
 
       .priceGrid{ grid-template-columns: 1fr; }
       .pV{ font-size: 18px; }
@@ -1041,14 +1085,16 @@
     @media (max-width: 420px){
       .heroRight{ gap:6px; }
       .chip{ padding: 9px 10px; font-size: 10.5px; }
-      .carouselMain{ height: 190px; }
+      .slide{ height:190px; }
       .moreTile{ width: 210px; }
       #map{ min-height: 300px; }
+      .sNav{ width:40px; height:40px; }
     }
 
     @media (prefers-reduced-motion: reduce){
       .aurora{ animation:none; }
       .sheet{ transition:none; }
+      .slides{ transition:none; }
     }
   </style>
 </head>
@@ -2186,8 +2232,6 @@
       const exclusions = String(tpl.exclusions || "").trim();
 
       const photos = getPackagePhotos(tpl);
-      const mainPhoto = photos[0] || "./style/n1.jpg";
-
       const msg = encodeURIComponent(`Hi Chandan, I want to book: ${title} | ${days} days | ${tier.toUpperCase()} | Pax: ${pax}`);
       const wa = `https://wa.me/917018138847?text=${msg}`;
       const call = `tel:+917018138847`;
@@ -2217,16 +2261,23 @@
             </div>
           </div>
 
+          <!-- ✅ Slideshow (NEW) -->
           <div class="carousel">
-            <div class="carouselMain">
-              <img id="carMain" src="${escapeHtml(mainPhoto)}" alt="${escapeHtml(title)}" onerror="this.src='./style/n1.jpg'">
-            </div>
-            <div class="carNav" id="carNav">
-              ${photos.map((p,i)=>`
-                <div class="thumb ${i===0 ? "on" : ""}" data-src="${escapeHtml(p)}">
-                  <img src="${escapeHtml(p)}" onerror="this.src='./style/n1.jpg'">
-                </div>
-              `).join("")}
+            <div class="slider" id="pkgSlider">
+              <div class="slides" id="pkgSlides">
+                ${photos.map(p => `
+                  <div class="slide">
+                    <img src="${escapeHtml(p)}" alt="${escapeHtml(title)}" onerror="this.src='./style/n1.jpg'">
+                  </div>
+                `).join("")}
+              </div>
+
+              <button class="sNav prev" id="sPrev" type="button" aria-label="Previous photo">‹</button>
+              <button class="sNav next" id="sNext" type="button" aria-label="Next photo">›</button>
+
+              <div class="sDots" id="sDots" aria-label="Photo dots">
+                ${photos.map((_,i)=>`<div class="sDot ${i===0?'active':''}" data-i="${i}" role="button" tabindex="0"></div>`).join("")}
+              </div>
             </div>
           </div>
 
@@ -2308,16 +2359,77 @@
         ${renderMorePackagesRow()}
       `;
 
-      // carousel thumb click
-      const carMain = document.getElementById("carMain");
-      document.querySelectorAll(".thumb[data-src]").forEach(t=>{
-        t.addEventListener("click", ()=>{
-          document.querySelectorAll(".thumb").forEach(x=>x.classList.remove("on"));
-          t.classList.add("on");
-          const src = t.getAttribute("data-src") || "./style/n1.jpg";
-          carMain.src = src;
+      /* ✅ Slideshow Logic (NEW) */
+      (function initSlideshow(){
+        const slider = document.getElementById("pkgSlider");
+        const slides = document.getElementById("pkgSlides");
+        const dots = Array.from(document.querySelectorAll(".sDot"));
+        const totalSlides = slides?.children?.length || 0;
+        if(!slider || !slides || totalSlides <= 1) return;
+
+        let slideIndex = 0;
+        let autoTimer = null;
+
+        function updateSlide(){
+          slides.style.transform = `translateX(-${slideIndex * 100}%)`;
+          dots.forEach((d,i)=> d.classList.toggle("active", i===slideIndex));
+        }
+        function nextSlide(){
+          slideIndex = (slideIndex + 1) % totalSlides;
+          updateSlide();
+        }
+        function prevSlide(){
+          slideIndex = (slideIndex - 1 + totalSlides) % totalSlides;
+          updateSlide();
+        }
+
+        const nextBtn = document.getElementById("sNext");
+        const prevBtn = document.getElementById("sPrev");
+        if(nextBtn) nextBtn.onclick = nextSlide;
+        if(prevBtn) prevBtn.onclick = prevSlide;
+
+        dots.forEach(d=>{
+          d.onclick = ()=>{
+            slideIndex = Number(d.dataset.i || 0);
+            updateSlide();
+          };
+          d.onkeydown = (e)=>{
+            if(e.key === "Enter" || e.key === " "){
+              e.preventDefault();
+              slideIndex = Number(d.dataset.i || 0);
+              updateSlide();
+            }
+          };
         });
-      });
+
+        function startAuto(){
+          stopAuto();
+          autoTimer = setInterval(nextSlide, 4000);
+        }
+        function stopAuto(){
+          if(autoTimer) clearInterval(autoTimer);
+          autoTimer = null;
+        }
+
+        // Pause on hover (desktop)
+        slider.addEventListener("mouseenter", stopAuto);
+        slider.addEventListener("mouseleave", startAuto);
+
+        // Swipe support
+        let startX = 0;
+        slider.addEventListener("touchstart", e=>{
+          startX = e.touches[0].clientX;
+        }, { passive:true });
+
+        slider.addEventListener("touchend", e=>{
+          const diff = e.changedTouches[0].clientX - startX;
+          if(diff > 50) prevSlide();
+          if(diff < -50) nextSlide();
+        }, { passive:true });
+
+        updateSlide();
+        startAuto();
+      })();
 
       // More packages: click -> replace main
       const moreList = document.getElementById("moreList");
@@ -2410,22 +2522,16 @@
       if(!leftPane || !leftHost || !sheetHost || !openBtn) return;
 
       if(MQ_MOBILE.matches){
-        // show Filters button
         openBtn.style.display = "";
-        // move left pane into sheet body (if not already)
         if(!sheetHost.contains(leftPane)){
           sheetHost.appendChild(leftPane);
         }
-        // ensure it is visible inside sheet
         leftPane.style.display = "";
-        // hide from normal layout (CSS already hides .leftPane at mobile)
       }else{
         openBtn.style.display = "none";
-        // move back to left host
         if(!leftHost.contains(leftPane)){
           leftHost.appendChild(leftPane);
         }
-        // close sheet if open
         if(sheetOpen) closeSheet();
       }
     }
@@ -2447,7 +2553,6 @@
       $("openFiltersBtn").onclick = ()=> openSheet();
       $("sheetCloseBtn").onclick = ()=> closeSheet();
       $("sheetApplyBtn").onclick = ()=>{
-        // apply -> update list and close
         CURRENT_KEY = "";
         computePackages();
         renderSelected();
@@ -2458,7 +2563,6 @@
         if(e.target === $("sheetOverlay")) closeSheet();
       });
 
-      // keep placement synced
       MQ_MOBILE.addEventListener("change", syncLeftPanePlacement);
       window.addEventListener("resize", syncLeftPanePlacement, { passive:true });
 
@@ -2487,8 +2591,6 @@
         computePackages();
         renderSelected();
         showBot("Filtered packages updated");
-
-        // on mobile, close sheet after Show
         if(MQ_MOBILE.matches) closeSheet();
       };
 
@@ -2563,7 +2665,6 @@
         });
       });
 
-      // initial placement
       syncLeftPanePlacement();
     }
 
