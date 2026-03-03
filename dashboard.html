@@ -182,6 +182,7 @@
       flex-direction:column;
       gap:10px;
       min-height:0;
+      overflow:auto; /* ✅ left is scrollable for long filters */
       -webkit-overflow-scrolling: touch;
     }
     .sideCard{
@@ -223,7 +224,7 @@
       box-shadow: 0 10px 24px rgba(10,30,60,.10);
     }
 
-    /* ===== LEFT (Market filters + list) ===== */
+    /* ===== LEFT (only filters) ===== */
     .leftPane{ grid-area:left; }
     .quickChips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
     .qchip{
@@ -273,107 +274,7 @@
       line-height: 1.35;
     }
 
-    /* Product-style package card */
-    .pkgCard{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.72);
-      border-radius: 16px;
-      box-shadow: 0 12px 28px rgba(10,30,60,.10);
-      cursor:pointer;
-      overflow:hidden;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .pkgCard.active{
-      border-color: rgba(37,99,235,.45);
-      box-shadow: 0 0 0 3px rgba(37,99,235,.12), 0 12px 28px rgba(10,30,60,.10);
-      background: rgba(37,99,235,.08);
-    }
-    .pkgTop{
-      display:grid;
-      grid-template-columns: 92px 1fr;
-      gap: 10px;
-      padding: 10px;
-      align-items:center;
-    }
-    .pkgThumb{
-      width:92px; height:70px; border-radius: 14px;
-      overflow:hidden;
-      border:1px solid rgba(10,30,60,.12);
-      background: rgba(255,255,255,.70);
-    }
-    .pkgThumb img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .pkgInfo{ min-width:0; }
-    .pkgTitle{
-      font-size: 11px;
-      font-weight: 1100;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-      margin:0;
-    }
-    .pkgMeta{
-      margin-top:6px;
-      display:flex; flex-wrap:wrap; gap:6px;
-      font-size: 9.5px;
-      letter-spacing:.10em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.74);
-    }
-    .pkgMeta span{
-      border:1px solid rgba(10,30,60,.14);
-      background: rgba(255,255,255,.66);
-      border-radius: 999px;
-      padding: 5px 7px;
-      white-space:nowrap;
-    }
-    .pkgBottom{
-      padding: 0 10px 10px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-    }
-    .priceLine{
-      font-size: 10px;
-      letter-spacing:.10em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.70);
-      line-height: 1.25;
-    }
-    .priceLine b{
-      display:block;
-      font-size: 12px;
-      letter-spacing:.06em;
-      color: rgba(10,30,60,.92);
-      margin-top:2px;
-    }
-    .miniTags{ display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
-    .itag{
-      border:1px solid rgba(10,30,60,.14);
-      background: rgba(255,255,255,.66);
-      border-radius: 999px;
-      padding: 6px 8px;
-      font-size: 9.5px;
-      letter-spacing:.10em;
-      text-transform: uppercase;
-      white-space:nowrap;
-      font-weight: 1000;
-    }
-    .itag.ok{ border-color: rgba(22,163,74,.28); background: rgba(22,163,74,.10); }
-    .itag.acc{ border-color: rgba(37,99,235,.28); background: rgba(37,99,235,.10); }
-
-    .compareRow{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding: 0 10px 10px;
-    }
-    .chk{
-      display:flex; align-items:center; gap:8px;
-      font-size: 10px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.72);
-      user-select:none;
-    }
-    .chk input{ width:auto; }
-
-    /* ===== CENTER (conversion card) ===== */
+    /* ===== CENTER ===== */
     .centerPane{ grid-area:center; }
     .centerScroll{
       flex:1; min-height:0; overflow:auto;
@@ -691,7 +592,101 @@
     .stickyRow{ display:flex; gap:10px; }
     .stickyRow .ctaBtn{ flex: 1 1 0; padding: 12px 12px; }
 
-    /* ===== RIGHT (summary + map toggle) ===== */
+    /* ===== CENTER: More Packages Row (NEW) ===== */
+    .moreRow{
+      margin: 12px;
+      border:1px solid rgba(10,30,60,.14);
+      background: rgba(255,255,255,.66);
+      border-radius: 18px;
+      box-shadow: 0 12px 28px rgba(10,30,60,.10);
+      overflow:hidden;
+    }
+    .moreHdr{
+      padding: 10px 12px;
+      border-bottom:1px solid rgba(10,30,60,.12);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      background: rgba(255,255,255,.72);
+    }
+    .moreHdr .t{
+      font-size: 11px;
+      font-weight: 1200;
+      letter-spacing:.16em;
+      text-transform: uppercase;
+    }
+    .moreHdr .s{
+      font-size: 10px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.62);
+    }
+    .moreList{
+      display:flex;
+      gap:10px;
+      padding: 12px;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .moreTile{
+      flex:0 0 auto;
+      width: 210px;
+      border:1px solid rgba(10,30,60,.14);
+      background: rgba(255,255,255,.72);
+      border-radius: 16px;
+      box-shadow: 0 10px 20px rgba(10,30,60,.08);
+      cursor:pointer;
+      overflow:hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .moreTile.active{
+      border-color: rgba(37,99,235,.45);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12), 0 10px 20px rgba(10,30,60,.08);
+      background: rgba(37,99,235,.08);
+    }
+    .moreImg{
+      height: 110px;
+      background: rgba(255,255,255,.66);
+      border-bottom:1px solid rgba(10,30,60,.12);
+    }
+    .moreImg img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .moreBody{ padding: 10px; }
+    .moreTitle{
+      font-size: 10.5px;
+      font-weight: 1200;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .moreMeta{
+      margin-top:6px;
+      font-size: 9.5px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.62);
+      display:flex; gap:6px; flex-wrap:wrap;
+    }
+    .moreMeta span{
+      border:1px solid rgba(10,30,60,.12);
+      background: rgba(255,255,255,.66);
+      border-radius: 999px;
+      padding: 5px 7px;
+      white-space:nowrap;
+    }
+    .morePrice{
+      margin-top:8px;
+      font-size: 10px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.66);
+    }
+    .morePrice b{
+      display:block;
+      margin-top:2px;
+      font-size: 12px;
+      letter-spacing:.06em;
+      color: rgba(10,30,60,.92);
+    }
+
+    /* ===== RIGHT ===== */
     .rightPane{ grid-area:right; }
     #map{
       width:100%;
@@ -745,6 +740,7 @@
       display:inline-flex; align-items:center; gap:10px;
       user-select:none; white-space: nowrap;
       box-shadow: 0 10px 20px rgba(10,30,60,.08);
+      -webkit-tap-highlight-color: transparent;
     }
 
     .mapWrap{
@@ -876,191 +872,6 @@
       color: rgba(10,30,60,.88);
     }
 
-    /* ===== COMPARE MODAL ===== */
-    .compareModal{
-      position:fixed; inset:0; z-index: 22000;
-      background: rgba(10,30,60,.38);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding: 14px;
-    }
-    .compareModal.show{ display:flex; }
-    .cmpCard{
-      width:min(1100px, 100%);
-      border-radius: 18px;
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.94);
-      box-shadow: 0 30px 90px rgba(10,30,60,.26);
-      overflow:hidden;
-    }
-    .cmpTop{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding: 10px 12px;
-      border-bottom:1px solid rgba(10,30,60,.12);
-      background: rgba(255,255,255,.84);
-    }
-    .cmpTop .ttl{
-      font-size: 12px;
-      font-weight: 1200;
-      letter-spacing:.14em;
-      text-transform: uppercase;
-    }
-    .cmpBody{
-      padding: 12px;
-      overflow:auto;
-      max-height: min(72vh, 720px);
-    }
-    table.cmp{
-      width:100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      font-size: 12px;
-    }
-    table.cmp th, table.cmp td{
-      border:1px solid rgba(10,30,60,.12);
-      padding: 10px;
-      vertical-align: top;
-      background: rgba(255,255,255,.72);
-    }
-    table.cmp th{
-      background: rgba(37,99,235,.08);
-      font-size: 10px;
-      letter-spacing:.14em;
-      text-transform: uppercase;
-      font-weight: 1200;
-      color: rgba(10,30,60,.84);
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
-
-    /* Compare bar */
-    .compareBar{
-      position:fixed;
-      left: 14px;
-      right: 14px;
-      bottom: 14px;
-      z-index: 21000;
-      display:none;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.90);
-      border-radius: 16px;
-      padding: 10px 12px;
-      box-shadow: 0 26px 70px rgba(10,30,60,.18);
-      backdrop-filter: blur(12px);
-      max-width: min(980px, calc(100vw - 28px));
-      margin: 0 auto;
-    }
-    .compareBar.show{ display:flex; }
-    .compareBar .txt{
-      font-size: 11px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.78);
-      font-weight: 1100;
-      min-width:0;
-    }
-    .compareBar .actions{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
-    .compareBar .actions .toolBtn{ padding: 10px 12px; }
-
-    /* ===== LEFT: FIXED FILTERS + COLLAPSIBLE PACKAGES DRAWER ===== */
-    .leftPane .sideInner{
-      flex: 1;
-      overflow: hidden; /* ✅ fixed top, drawer scrolls */
-      min-height: 0;
-    }
-
-    .pkgDrawer{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.62);
-      border-radius: 14px;
-      box-shadow: 0 10px 24px rgba(10,30,60,.10);
-      overflow:hidden;
-      display:flex;
-      flex-direction:column;
-      min-height: 64px;
-    }
-    .pkgDrawerHdr{
-      padding: 10px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      cursor:pointer;
-      user-select:none;
-    }
-    .pkgDrawerHdr .left{ min-width:0; }
-    .pkgDrawerHdr .h{
-      font-size: 11px;
-      font-weight: 950;
-      letter-spacing:.14em;
-      text-transform: uppercase;
-    }
-    .pkgDrawerHdr .s{
-      margin-top:5px;
-      font-size: 10px;
-      letter-spacing:.10em;
-      text-transform: uppercase;
-      color: rgba(10,30,60,.62);
-    }
-    .pkgDrawerHdr .right{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      flex:0 0 auto;
-    }
-    .drawerBtn{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.66);
-      color: rgba(10,30,60,.86);
-      border-radius: 12px;
-      padding: 7px 10px;
-      font-size: 10px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      cursor:pointer;
-      white-space: nowrap;
-    }
-    .xBtn{
-      border:1px solid rgba(10,30,60,.16);
-      background: rgba(255,255,255,.66);
-      color: rgba(10,30,60,.86);
-      border-radius: 12px;
-      padding: 7px 10px;
-      font-size: 10px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      cursor:pointer;
-      user-select:none;
-      white-space: nowrap;
-    }
-
-    .pkgDrawerBody{
-      border-top:1px solid rgba(10,30,60,.14);
-      min-height: 0;
-      overflow: hidden;
-    }
-    .pkgDrawer[data-open="true"] .pkgDrawerBody{
-      height: clamp(220px, 42vh, 520px); /* ✅ drawer height */
-      overflow: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    .pkgDrawer[data-open="false"] .pkgDrawerBody{
-      height: 0;
-      overflow: hidden;
-    }
-
-    .pkgDrawerBody .pkgList{
-      padding: 10px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-
     /* ===== RESPONSIVE ===== */
     @media (max-width: 1100px){
       .main{
@@ -1076,20 +887,14 @@
       .centerScroll{ padding-bottom: 18px; }
       .mapWrap{ min-height: 420px; }
       #map{ min-height: 360px; }
-
-      /* mobile drawer smaller */
-      .pkgDrawer[data-open="true"] .pkgDrawerBody{
-        height: clamp(200px, 36vh, 420px);
-      }
     }
     @media (max-width: 520px){
       .shell{ padding: 10px 8px 16px; }
       .logo{ width:52px; height:52px; }
       .chip{ padding: 8px 9px; font-size: 10.5px; }
       .carouselMain{ height: 220px; }
-      .pkgTop{ grid-template-columns: 86px 1fr; }
-      .pkgThumb{ width:86px; height:66px; }
       .stickyRow .ctaBtn{ font-size: 10.5px; }
+      .moreTile{ width: 190px; }
     }
     @media (prefers-reduced-motion: reduce){
       .aurora{ animation:none; }
@@ -1129,7 +934,7 @@
 
     <!-- MAIN -->
     <div class="main">
-      <!-- LEFT -->
+      <!-- LEFT (filters only) -->
       <div class="pane leftPane">
         <div class="paneHdr">
           <div>
@@ -1140,7 +945,6 @@
         </div>
 
         <div class="sideInner">
-          <!-- ✅ Fixed bar: Filters -->
           <div class="sideCard">
             <div class="field">
               <label>Search Package / Place</label>
@@ -1162,7 +966,7 @@
               <datalist id="startList"></datalist>
             </div>
 
-            <!-- ✅ District Console -->
+            <!-- District Console -->
             <div class="field" id="districtWrap" style="margin-top:10px; display:none;">
               <label>District Console</label>
               <select id="districtSel">
@@ -1235,26 +1039,9 @@
               <button class="btn secondary" id="resetBtn" type="button">Reset</button>
               <button class="btn" id="genBtn" type="button">Show</button>
             </div>
-          </div>
 
-          <!-- ✅ Collapsible bar: Other packages -->
-          <div class="pkgDrawer" id="pkgDrawer" data-open="true">
-            <div class="pkgDrawerHdr" id="pkgDrawerHdr">
-              <div class="left">
-                <div class="h">Other Packages</div>
-                <div class="s" id="pkgCountMini">—</div>
-              </div>
-
-              <div class="right">
-                <button class="xBtn" id="closeSelectedBtn" type="button">Close</button>
-                <button class="drawerBtn" id="drawerToggleBtn" type="button">Collapse</button>
-              </div>
-            </div>
-
-            <div class="pkgDrawerBody" id="pkgDrawerBody">
-              <div class="pkgList" id="pkgList">
-                <div class="hint">Packages will appear here after data load. Tap to open in center.</div>
-              </div>
+            <div class="hint" style="margin-top:10px;">
+              Packages are shown in the center under the main package (More Packages row).
             </div>
           </div>
         </div>
@@ -1265,13 +1052,13 @@
         <div class="paneHdr">
           <div>
             <p class="t">Booking View</p>
-            <div class="s">Price → trust → details</div>
+            <div class="s">Main package + More Packages</div>
           </div>
           <div class="s" id="pkgCount">—</div>
         </div>
 
         <div class="centerScroll" id="centerScroll">
-          <div class="emptyState">Select any package from the left list to view details here.</div>
+          <div class="emptyState">Loading packages…</div>
         </div>
 
         <!-- Sticky CTA (mobile) -->
@@ -1349,45 +1136,12 @@
     </div>
   </div>
 
-  <!-- Compare bar + modal -->
-  <div class="compareBar" id="compareBar">
-    <div class="txt" id="compareTxt">Compare: 0 selected</div>
-    <div class="actions">
-      <div class="toolBtn" id="openCompareBtn">Compare</div>
-      <div class="toolBtn" id="clearCompareBtn">Clear</div>
-    </div>
-  </div>
-
-  <div class="compareModal" id="compareModal" role="dialog" aria-modal="true">
-    <div class="cmpCard">
-      <div class="cmpTop">
-        <div class="ttl">Package Comparison</div>
-        <button class="placeClose" id="cmpClose" type="button">Close</button>
-      </div>
-      <div class="cmpBody" id="cmpBody"></div>
-    </div>
-  </div>
-
-  <!-- ONE MODULE: Firebase + App (fixed + index→dashboard param sync) -->
+  <!-- ONE MODULE: Firebase + App (index→dashboard param sync) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
 
     const $ = (id)=>document.getElementById(id);
-
-    /* ===== Drawer helpers (NEW) ===== */
-    function setDrawer(open){
-      const d = $("pkgDrawer");
-      if(!d) return;
-      d.dataset.open = open ? "true" : "false";
-      const btn = $("drawerToggleBtn");
-      if(btn) btn.textContent = open ? "Collapse" : "Expand";
-    }
-    function toggleDrawer(){
-      const d = $("pkgDrawer");
-      if(!d) return;
-      setDrawer(d.dataset.open !== "true");
-    }
 
     /* ===== Toast + status ===== */
     function showBot(msg){
@@ -1496,7 +1250,7 @@
     }
 
     /* ===== Cache with TTL ===== */
-    const CACHE_KEY = "HX_CACHE_V2";
+    const CACHE_KEY = "HX_CACHE_V3_CENTERROW";
     const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 
     function loadFromCache(){
@@ -1537,9 +1291,6 @@
     let ACTIVE_KEYS = [];
     let CURRENT_KEY = "";
     let shownSuggestions = new Set();
-
-    /* compare */
-    const COMPARE = new Set();
 
     /* ===== Normalize ===== */
     function normalizeCostsKeys(){
@@ -1620,21 +1371,12 @@
       return Array.from(new Set(out));
     }
 
-    /* ✅ Package pics from MAJOR places (Option A)
-       - cover/photo/image (if given)
-       - then day1 + day2 place photos (major places)
-       - then fallback
-    */
+    /* Option A: Package pics from major places */
     function getPackagePhotos(tpl){
       const out = [];
-
-      // direct images (if set in template)
       [tpl.cover, tpl.photo, tpl.image].map(x=>String(x||"").trim()).filter(Boolean).forEach(x=> out.push(x));
-
-      // pick major places from itinerary (day1 then day2)
       const d1 = splitCSV(tpl.day1_place_ids || "");
       const d2 = splitCSV(tpl.day2_place_ids || "");
-
       const major = [...d1.slice(0,4), ...d2.slice(0,3)].filter(Boolean);
 
       major.forEach(pid=>{
@@ -1644,9 +1386,7 @@
         photos.slice(0,2).forEach(ph=> out.push(ph));
       });
 
-      // fallback
       out.push("./style/n1.jpg");
-
       return Array.from(new Set(out)).slice(0, 10);
     }
 
@@ -1854,121 +1594,25 @@
         return true;
       });
 
-      if(seasonReq === "regular" || seasonReq === "peak" || seasonReq === "off"){
-        const boostWords = seasonReq === "peak" ? ["peak","summer"] : seasonReq === "off" ? ["off","monsoon","winter"] : ["regular","all"];
-        filtered.sort((a,b)=>{
-          const sa = String(a.best_season||"").toLowerCase();
-          const sb = String(b.best_season||"").toLowerCase();
-          const ba = boostWords.some(w=>sa.includes(w)) ? 1 : 0;
-          const bb = boostWords.some(w=>sb.includes(w)) ? 1 : 0;
-          if(bb !== ba) return bb - ba;
-          return (Number(a.days||0)-Number(b.days||0)) ||
-            String(a.package_name||a.route_name||a.key).localeCompare(String(b.package_name||b.route_name||b.key));
-        });
-      }else{
-        filtered.sort((a,b)=>
-          (Number(a.days||0)-Number(b.days||0)) ||
-          String(a.package_name||a.route_name||a.key).localeCompare(String(b.package_name||b.route_name||b.key))
-        );
-      }
+      filtered.sort((a,b)=>
+        (Number(a.days||0)-Number(b.days||0)) ||
+        String(a.package_name||a.route_name||a.key).localeCompare(String(b.package_name||b.route_name||b.key))
+      );
 
       return filtered.map(x=>x.key);
     }
 
-    /* ===== Render list (product cards) ===== */
-    function renderLeftList(){
+    /* ===== Compute packages + auto-pick main ===== */
+    function computePackages(){
       ACTIVE_KEYS = filterKeys();
       $("pkgCount").textContent = `${ACTIVE_KEYS.length} packages`;
-      const mini = $("pkgCountMini");
-      if(mini) mini.textContent = `${ACTIVE_KEYS.length} found`;
-
-      const host = $("pkgList");
-      host.innerHTML = "";
-
       if(!ACTIVE_KEYS.length){
-        host.innerHTML = `<div class="hint">No packages found. Try Reset.</div>`;
-        return;
+        CURRENT_KEY = "";
+      }else{
+        if(!CURRENT_KEY || !ACTIVE_KEYS.includes(CURRENT_KEY)){
+          CURRENT_KEY = ACTIVE_KEYS[0];
+        }
       }
-
-      if(!CURRENT_KEY || !ACTIVE_KEYS.includes(CURRENT_KEY)){
-        CURRENT_KEY = ACTIVE_KEYS[0] || "";
-      }
-
-      const tier = safeLower($("visitType").value || "budget");
-
-      ACTIVE_KEYS.forEach(key=>{
-        const t = TEMPLATES[key] || {};
-        const title = String(t.package_name || t.route_name || key || "PACKAGE");
-        const days = Number(t.days||0) || "";
-        const district = String(t.district||"").toUpperCase();
-        const drive = String(t.drive_level||"").toUpperCase();
-        const start = safeUpper(t.start_point || t.start || "");
-        const photos = getPackagePhotos(t);
-
-        const base = pickBasePrice(t, tier, key);
-        const off = getDiscountPercentForKey(t, key);
-        const show = off ? Math.round(base * (1 - off/100)) : base;
-
-        const card = document.createElement("div");
-        card.className = "pkgCard" + (key===CURRENT_KEY ? " active" : "");
-        card.innerHTML = `
-          <div class="pkgTop">
-            <div class="pkgThumb"><img src="${escapeHtml(photos[0]||'./style/n1.jpg')}" onerror="this.src='./style/n1.jpg'"></div>
-            <div class="pkgInfo">
-              <p class="pkgTitle">${escapeHtml(title)}</p>
-              <div class="pkgMeta">
-                ${days ? `<span>${days}D</span>` : ""}
-                ${start ? `<span>${escapeHtml(start)}</span>` : ""}
-                ${district ? `<span>${escapeHtml(district)}</span>` : ""}
-                ${drive ? `<span>${escapeHtml(drive)} Drive</span>` : ""}
-              </div>
-            </div>
-          </div>
-          <div class="pkgBottom">
-            <div class="priceLine">
-              Starting from
-              <b>${rupees(show)} / person</b>
-            </div>
-            <div class="miniTags">
-              <span class="itag ok">Hotel</span>
-              <span class="itag acc">Cab</span>
-            </div>
-          </div>
-          <div class="compareRow">
-            <label class="chk" title="Select for comparison">
-              <input type="checkbox" data-ckey="${escapeHtml(key)}" ${COMPARE.has(key) ? "checked" : ""}/>
-              Compare
-            </label>
-            <div class="pill" style="border-color: rgba(245,158,11,.30); background: rgba(245,158,11,.10);">
-              ${off ? `${off}% off` : "Deal"}
-            </div>
-          </div>
-        `;
-
-        // ✅ click package => open center + auto-collapse drawer
-        card.addEventListener("click", (e)=>{
-          const target = e.target;
-          if(target && target.tagName === "INPUT") return;
-
-          CURRENT_KEY = key;
-          setDrawer(false);       // ✅ auto-collapse
-          renderLeftList();
-          renderSelected();
-        });
-
-        host.appendChild(card);
-      });
-
-      host.querySelectorAll('input[type="checkbox"][data-ckey]').forEach(inp=>{
-        inp.addEventListener("change", ()=>{
-          const k = inp.getAttribute("data-ckey");
-          if(!k) return;
-          if(inp.checked) COMPARE.add(k); else COMPARE.delete(k);
-          syncCompareUI();
-        });
-      });
-
-      renderSelected();
     }
 
     /* ===== Nearby suggestions ===== */
@@ -2225,12 +1869,59 @@
       $("showStartEndBtn").onclick = ()=>{ showMode = "ends"; applyShowMode(); showBot("Showing start/end only"); };
     }
 
-    /* ===== Selected (Market: selling card + sticky CTA) ===== */
+    /* ===== CENTER: More packages row renderer (NEW) ===== */
+    function renderMorePackagesRow(){
+      const tier = safeLower($("visitType").value || "budget");
+      const keys = (ACTIVE_KEYS || []).filter(k => k !== CURRENT_KEY).slice(0, 12);
+      if(!keys.length) return "";
+
+      return `
+        <div class="moreRow">
+          <div class="moreHdr">
+            <div class="t">More Packages</div>
+            <div class="s">Tap to replace main package</div>
+          </div>
+          <div class="moreList" id="moreList">
+            ${keys.map(k=>{
+              const t = TEMPLATES[k] || {};
+              const title = String(t.package_name || t.route_name || k);
+              const days = Number(t.days||0) || "";
+              const start = safeUpper(t.start_point || t.start || "");
+              const district = safeUpper(t.district || "");
+              const photos = getPackagePhotos(t);
+
+              const base = pickBasePrice(t, tier, k);
+              const off = getDiscountPercentForKey(t, k);
+              const show = off ? Math.round(base * (1 - off/100)) : base;
+
+              return `
+                <div class="moreTile ${k===CURRENT_KEY ? "active" : ""}" data-k="${escapeHtml(k)}" title="Open">
+                  <div class="moreImg">
+                    <img src="${escapeHtml(photos[0]||'./style/n1.jpg')}" onerror="this.src='./style/n1.jpg'">
+                  </div>
+                  <div class="moreBody">
+                    <div class="moreTitle">${escapeHtml(title)}</div>
+                    <div class="moreMeta">
+                      ${days ? `<span>${days}D</span>` : ""}
+                      ${start ? `<span>${escapeHtml(start)}</span>` : ""}
+                      ${district ? `<span>${escapeHtml(district)}</span>` : ""}
+                    </div>
+                    <div class="morePrice">Starting <b>${rupees(show)} / person</b></div>
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    /* ===== Selected (Main package) ===== */
     function renderSelected(){
       const host = $("centerScroll");
 
       if(!CURRENT_KEY){
-        host.innerHTML = `<div class="emptyState">Select any package from the left list to view details here.</div>`;
+        host.innerHTML = `<div class="emptyState">No packages found. Change filters or press Reset.</div>`;
         clearMap();
         $("sumTitle").textContent = "—";
         $("sumMeta").textContent = "—";
@@ -2380,8 +2071,11 @@
             </details>
           </div>
         </div>
+
+        ${renderMorePackagesRow()}
       `;
 
+      // carousel thumb click
       const carMain = document.getElementById("carMain");
       document.querySelectorAll(".thumb[data-src]").forEach(t=>{
         t.addEventListener("click", ()=>{
@@ -2392,73 +2086,23 @@
         });
       });
 
+      // ✅ More packages: click -> replace main
+      const moreList = document.getElementById("moreList");
+      if(moreList){
+        moreList.querySelectorAll(".moreTile[data-k]").forEach(tile=>{
+          tile.addEventListener("click", ()=>{
+            const k = tile.getAttribute("data-k");
+            if(!k) return;
+            CURRENT_KEY = k;
+            renderSelected();
+            $("centerScroll").scrollTo({ top: 0, behavior: "smooth" });
+          });
+        });
+      }
+
       shownSuggestions = new Set();
       renderItineraryAndMap(tpl);
       invalidateMapSoon();
-    }
-
-    /* ===== Compare UI ===== */
-    function syncCompareUI(){
-      const bar = $("compareBar");
-      const txt = $("compareTxt");
-      const n = COMPARE.size;
-      txt.textContent = `Compare: ${n} selected`;
-      if(n >= 2) bar.classList.add("show");
-      else bar.classList.remove("show");
-    }
-
-    function openCompare(){
-      const keys = Array.from(COMPARE).slice(0,3);
-      if(keys.length < 2){
-        showBot("Select at least 2 packages to compare");
-        return;
-      }
-      const tier = safeLower($("visitType").value || "budget");
-      const pax = getSelectedPax();
-
-      const rows = [
-        ["Title", k => String(TEMPLATES[k]?.package_name || TEMPLATES[k]?.route_name || k)],
-        ["Days", k => String(TEMPLATES[k]?.days || "—")],
-        ["Start", k => safeUpper(TEMPLATES[k]?.start_point || TEMPLATES[k]?.start || "—")],
-        ["District", k => safeUpper(TEMPLATES[k]?.district || "—")],
-        ["Hotel", k => String(TEMPLATES[k]?.hotel_category || "—")],
-        ["Category", k => String(TEMPLATES[k]?.category || "—")],
-        ["Best Season", k => String(TEMPLATES[k]?.best_season || "—")],
-        ["Price / Person", k => {
-          const tpl = TEMPLATES[k] || {};
-          const base = pickBasePrice(tpl, tier, k);
-          const off = getDiscountPercentForKey(tpl, k);
-          const p = off ? Math.round(base*(1-off/100)) : base;
-          return p ? rupees(p) : "—";
-        }],
-        ["Total (Pax)", k => {
-          const tpl = TEMPLATES[k] || {};
-          const base = pickBasePrice(tpl, tier, k);
-          const off = getDiscountPercentForKey(tpl, k);
-          const p = off ? Math.round(base*(1-off/100)) : base;
-          return p ? rupees(p*pax) : "—";
-        }],
-        ["Top Route", k => String(TEMPLATES[k]?.route_path || TEMPLATES[k]?.route_name || "—")],
-      ];
-
-      const head = keys.map(k=> escapeHtml(String(TEMPLATES[k]?.package_name || TEMPLATES[k]?.route_name || k)));
-      let html = `<table class="cmp"><thead><tr><th>Feature</th>${head.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>`;
-      for(const [label, fn] of rows){
-        html += `<tr><td style="font-size:10px; letter-spacing:.14em; text-transform:uppercase; font-weight:1200; color: rgba(10,30,60,.72);">${escapeHtml(label)}</td>`;
-        keys.forEach(k=>{
-          html += `<td>${escapeHtml(String(fn(k) ?? "—"))}</td>`;
-        });
-        html += `</tr>`;
-      }
-      html += `</tbody></table>`;
-
-      $("cmpBody").innerHTML = html;
-      $("compareModal").classList.add("show");
-      lockBody(true);
-    }
-    function closeCompare(){
-      $("compareModal").classList.remove("show");
-      lockBody(false);
     }
 
     /* ===== App load ===== */
@@ -2474,7 +2118,7 @@
           console.error(e);
           setStatus("Data not found");
           showBot("Firebase error: " + (e?.message || e));
-          $("pkgList").innerHTML = `<div class="hint">Data not loading. Open on GitHub Pages / Live Server and check Firebase rules.<br><br><b>Error:</b> ${escapeHtml(e?.message || String(e))}</div>`;
+          $("centerScroll").innerHTML = `<div class="emptyState">Data not loading. Check Firebase rules / hosting.<br><br><b>Error:</b> ${escapeHtml(e?.message || String(e))}</div>`;
           return;
         }
       }
@@ -2490,44 +2134,24 @@
       buildStartList();
       fillDistricts();
       applyQueryParamsToUI();
-
       pillBudget();
 
-      setDrawer(true);     // ✅ open drawer on first load
-      renderLeftList();
+      computePackages();
+      renderSelected();
 
       showBot("Data loaded");
+      setStatus("Ready");
     }
 
     /* ===== Wire UI ===== */
     function wireUI(){
-      // Drawer toggle
-      $("drawerToggleBtn").onclick = (e)=>{ e.stopPropagation(); toggleDrawer(); };
-      $("pkgDrawerHdr").onclick = ()=> toggleDrawer();
-      setDrawer(true);
-
       $("pmClose").onclick = closePlaceModal;
       $("placeModal").addEventListener("click", (e)=>{
         if(e.target === $("placeModal")) closePlaceModal();
       });
 
-      $("openCompareBtn").onclick = openCompare;
-      $("clearCompareBtn").onclick = ()=>{
-        COMPARE.clear();
-        document.querySelectorAll('input[type="checkbox"][data-ckey]').forEach(i=> i.checked = false);
-        syncCompareUI();
-        showBot("Compare cleared");
-      };
-      $("cmpClose").onclick = closeCompare;
-      $("compareModal").addEventListener("click", (e)=>{
-        if(e.target === $("compareModal")) closeCompare();
-      });
-
       window.addEventListener("keydown", (e)=>{
-        if(e.key === "Escape"){
-          closePlaceModal();
-          closeCompare();
-        }
+        if(e.key === "Escape") closePlaceModal();
       });
 
       $("resetBtn").onclick = ()=>{
@@ -2544,16 +2168,16 @@
         quickTags.clear();
         document.querySelectorAll(".qchip").forEach(c=>c.classList.remove("on"));
         CURRENT_KEY = "";
-        setDrawer(true);       // ✅ open drawer to show list
-        renderLeftList();
+        computePackages();
+        renderSelected();
         showBot("Filters reset");
         setStatus("Ready");
       };
 
       $("genBtn").onclick = ()=>{
         CURRENT_KEY = "";
-        setDrawer(true);       // ✅ open drawer when filtering
-        renderLeftList();
+        computePackages();
+        renderSelected();
         showBot("Filtered packages updated");
       };
 
@@ -2581,14 +2205,6 @@
         }
       };
 
-      $("closeSelectedBtn").onclick = (e)=>{
-        e.stopPropagation();   // ✅ don't toggle drawer
-        CURRENT_KEY = "";
-        setDrawer(true);
-        renderLeftList();
-        showBot("Closed");
-      };
-
       $("backBtn").onclick = ()=>{
         if(history.length > 1) history.back();
         else location.href = "./index.html";
@@ -2597,8 +2213,8 @@
       ["searchInp","startInp"].forEach(id=>{
         $(id).addEventListener("input", ()=>{
           CURRENT_KEY = "";
-          setDrawer(true);
-          renderLeftList();
+          computePackages();
+          renderSelected();
         });
       });
 
@@ -2607,16 +2223,16 @@
         if(!el) return;
         el.addEventListener("change", ()=>{
           CURRENT_KEY = "";
-          setDrawer(true);
-          renderLeftList();
+          computePackages();
+          renderSelected();
         });
       });
 
       $("budgetRange").addEventListener("input", ()=> pillBudget() );
       $("budgetRange").addEventListener("change", ()=>{
         CURRENT_KEY = "";
-        setDrawer(true);
-        renderLeftList();
+        computePackages();
+        renderSelected();
       });
 
       document.querySelectorAll(".qchip[data-tag]").forEach(ch=>{
@@ -2631,8 +2247,8 @@
             ch.classList.add("on");
           }
           CURRENT_KEY = "";
-          setDrawer(true);
-          renderLeftList();
+          computePackages();
+          renderSelected();
         });
       });
     }
@@ -2641,7 +2257,6 @@
       wireUI();
       initMap();
       await loadAll();
-      syncCompareUI();
     });
   </script>
 </body>
