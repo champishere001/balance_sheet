@@ -15,7 +15,6 @@
   --stroke: rgba(13,27,42,.14);
   --shadow: 0 18px 45px rgba(0,0,0,.15);
 }
-
 *{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:system-ui,Segoe UI,Roboto,Arial;
@@ -191,6 +190,66 @@ body{
   box-shadow: 0 0 0 3px rgba(30,136,255,.16);
 }
 
+/* ✅ District console "proper manner" (card + links) */
+.districtCard{
+  grid-column: 1 / -1;
+  border:1px solid rgba(13,27,42,.14);
+  background: rgba(30,136,255,.06);
+  border-radius:18px;
+  padding:12px;
+}
+.districtTop{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:10px;
+}
+.districtTop .ttl{
+  font-size:12px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:900;
+}
+.districtTop .sub{
+  font-size:11px;
+  letter-spacing:.10em;
+  text-transform:uppercase;
+  opacity:.75;
+}
+.districtGrid{
+  display:grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap:12px;
+  align-items:start;
+}
+.districtLinks{
+  display:flex;flex-wrap:wrap;gap:8px;
+}
+.dLink{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:9px 12px;
+  border-radius:999px;
+  border:1px solid rgba(13,27,42,.14);
+  background:rgba(255,255,255,.86);
+  color:var(--text);
+  text-decoration:none;
+  font-weight:850;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  font-size:11px;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.dLink:hover{ box-shadow:0 10px 18px rgba(0,0,0,.08); }
+.dLink.active{
+  border-color: rgba(30,136,255,.45);
+  background: rgba(30,136,255,.14);
+}
+@media(max-width:980px){
+  .districtGrid{ grid-template-columns: 1fr; }
+}
+
 .inline-row{
   display:flex;gap:10px;flex-wrap:wrap;align-items:center;
   margin-top:14px;
@@ -327,7 +386,6 @@ footer small{opacity:.75}
 
 <section class="hero">
   <div class="hero-track" id="slider">
-    <!-- FIXED: use ./style/... (consistent with your dashboard paths) -->
     <div class="hero-slide"><img src="./style/1hero.jpg" alt="Himachal" onerror="this.src='./style/n1.jpg'"></div>
     <div class="hero-slide"><img src="./style/201-himalaya.jpg" alt="Himalaya" onerror="this.src='./style/n1.jpg'"></div>
     <div class="hero-slide"><img src="./style/kinnaur-kailash.webp" alt="Kinnaur" onerror="this.src='./style/n1.jpg'"></div>
@@ -369,14 +427,6 @@ footer small{opacity:.75}
     <div class="field">
       <label>Start City</label>
       <select id="startCity"></select>
-    </div>
-
-    <!-- Added (requested earlier): District console dropdown -->
-    <div class="field" id="districtField">
-      <label>District Console</label>
-      <select id="districtSel">
-        <option value="">All Districts</option>
-      </select>
     </div>
 
     <div class="field">
@@ -429,12 +479,47 @@ footer small{opacity:.75}
         <option value="5">5 Star</option>
       </select>
     </div>
+
+    <!-- ✅ Proper District Console (card style + your 12 district pages links) -->
+    <div class="districtCard" id="districtCard">
+      <div class="districtTop">
+        <div>
+          <div class="ttl">District Console</div>
+          <div class="sub">Choose a district OR open its district page</div>
+        </div>
+        <div class="sub" id="districtMeta">—</div>
+      </div>
+
+      <div class="districtGrid">
+        <div class="field" style="margin:0">
+          <label>District (for filtering packages)</label>
+          <select id="districtSel">
+            <option value="">All Districts</option>
+          </select>
+        </div>
+
+        <div>
+          <div class="field" style="margin:0">
+            <label>Open District Page</label>
+            <div class="districtLinks" id="districtLinks">
+              <!-- Filled by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:10px;font-size:12px;opacity:.85;line-height:1.4">
+        ✅ When <b>Inside Himachal</b> is selected, district console stays visible. <br>
+        ✅ When you pick any district, the button below will open dashboard filtered for that district.
+      </div>
+    </div>
   </div>
 
   <div class="inline-row">
     <div class="note">
       ✅ Uses your Firebase <b>templates</b> node to build start cities automatically.<br>
-      ✅ Passes filters to dashboard via URL (origin/start/pax/season/tier/district/days/hotel).
+      ✅ Passes filters to dashboard via URL (origin/start/pax/season/tier/district/days/hotel).<br>
+      ✅ District links open your 12 district pages.
     </div>
     <button class="smallBtn" id="previewBtn" type="button">Preview</button>
   </div>
@@ -489,10 +574,9 @@ function setErr(msg){
   box.style.display="block";
   box.textContent = msg;
 }
-function escapeQ(v){ return encodeURIComponent(String(v ?? "")); }
 </script>
 
-<!-- Firebase + dynamic start city + district console -->
+<!-- Firebase + dynamic start city + district console + district page links -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
   import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
@@ -507,10 +591,25 @@ function escapeQ(v){ return encodeURIComponent(String(v ?? "")); }
     appId: "1:182348503564:web:480085405b09177245ac29"
   };
 
+  const DISTRICT_PAGES = [
+    { id:"bilaspur", label:"BILASPUR", file:"bilaspur.html" },
+    { id:"chamba", label:"CHAMBA", file:"chamba.html" },
+    { id:"hamirpur", label:"HAMIRPUR", file:"hamirpur.html" },
+    { id:"kangra", label:"KANGRA", file:"kangra.html" },
+    { id:"kinnaur", label:"KINNAUR", file:"kinnaur.html" },
+    { id:"kullu", label:"KULLU", file:"kullu.html" },
+    { id:"lahaul_spiti", label:"LAHAUL & SPITI", file:"lahaul-spiti.html" },
+    { id:"mandi", label:"MANDI", file:"mandi.html" },
+    { id:"shimla", label:"SHIMLA", file:"shimla.html" },
+    { id:"sirmaur", label:"SIRMAUR", file:"sirmaur.html" },
+    { id:"solan", label:"SOLAN", file:"solan.html" },
+    { id:"una", label:"UNA", file:"una.html" }
+  ];
+
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  const CACHE_KEY = "HX_INDEX_CACHE_V1";
+  const CACHE_KEY = "HX_INDEX_CACHE_V2";
   const TTL = 6 * 60 * 60 * 1000;
 
   function loadCache(){
@@ -524,13 +623,10 @@ function escapeQ(v){ return encodeURIComponent(String(v ?? "")); }
     }catch(e){ return null; }
   }
   function saveCache(templates){
-    try{
-      sessionStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), templates }));
-    }catch(e){}
+    try{ sessionStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), templates })); }catch(e){}
   }
 
   function safeUpper(x){ return String(x ?? "").trim().toUpperCase(); }
-  function safeStr(x){ return String(x ?? "").trim(); }
 
   let TEMPLATES = {};
 
@@ -540,17 +636,16 @@ function escapeQ(v){ return encodeURIComponent(String(v ?? "")); }
   }
 
   function computeStartCities(origin){
-    // origin=in -> prefer HP starts from templates where start is in Himachal
-    // origin=out -> prefer outside starts from templates
-    // If you later add a field like origin_type in template, we’ll use it automatically.
     const counts = new Map();
 
     Object.values(TEMPLATES).forEach(t=>{
       const start = safeUpper(t.start_point || t.start || "");
       if(!start) return;
 
-      // Heuristic split (you can replace by explicit field later)
-      const hpStarts = new Set(["SHIMLA","MANALI","KULLU","DHARAMSHALA","MANDI","SOLAN","KANGRA","CHAMBA","BILASPUR","HAMIRPUR","UNA","KINNAUR","LAHAUL","SPITI","KASOL","DALHOUSIE","KHAJJIAR","NARKANDA","KUFri".toUpperCase()]);
+      const hpStarts = new Set([
+        "SHIMLA","MANALI","KULLU","DHARAMSHALA","MANDI","SOLAN","KANGRA","CHAMBA","BILASPUR","HAMIRPUR","UNA",
+        "KINNAUR","LAHAUL","SPITI","KASOL","DALHOUSIE","KHAJJIAR","NARKANDA","KUFRI"
+      ]);
       const isHP = hpStarts.has(start);
 
       if(origin === "in" && !isHP) return;
@@ -559,8 +654,7 @@ function escapeQ(v){ return encodeURIComponent(String(v ?? "")); }
       counts.set(start, (counts.get(start)||0) + 1);
     });
 
-    const list = Array.from(counts.keys()).sort((a,b)=> (counts.get(b)-counts.get(a)) || a.localeCompare(b));
-    return list;
+    return Array.from(counts.keys()).sort((a,b)=> (counts.get(b)-counts.get(a)) || a.localeCompare(b));
   }
 
   function computeDistricts(){
@@ -572,15 +666,8 @@ function escapeQ(v){ return encodeURIComponent(String(v ?? "")); }
     return Array.from(set).sort((a,b)=> a.localeCompare(b));
   }
 
-  function fillSelect(sel, values, fallbackLabel){
+  function fillSelect(sel, values){
     sel.innerHTML = "";
-    if(!values.length && fallbackLabel){
-      const opt = document.createElement("option");
-      opt.value = "";
-      opt.textContent = fallbackLabel;
-      sel.appendChild(opt);
-      return;
-    }
     values.forEach(v=>{
       const opt = document.createElement("option");
       opt.value = v;
@@ -590,32 +677,56 @@ function escapeQ(v){ return encodeURIComponent(String(v ?? "")); }
   }
 
   function syncOriginUI(){
-    const origin = $("origin").value;
-    // District console only for inside HP (as per your earlier requirement)
-    $("districtField").style.display = (origin === "in") ? "" : "none";
+    const origin = document.getElementById("origin").value;
+    // show district console only for inside HP (requested behavior)
+    document.getElementById("districtCard").style.display = (origin === "in") ? "" : "none";
   }
 
   function syncCities(){
-    const origin = $("origin").value;
+    const origin = document.getElementById("origin").value;
     const list = computeStartCities(origin);
 
-    // fallback lists if templates are empty / rules block
     const insideFallback = ["SHIMLA","MANALI","KULLU","DHARAMSHALA","MANDI"];
     const outsideFallback = ["DELHI","CHANDIGARH","JAIPUR","DEHRADUN"];
 
-    fillSelect($("startCity"), list.length ? list : (origin==="in" ? insideFallback : outsideFallback), origin==="in" ? "Select Start" : "Select Start");
-    $("pkgMeta").textContent = list.length ? `${list.length} start cities from database` : "Using fallback start list";
+    const startSel = document.getElementById("startCity");
+    fillSelect(startSel, list.length ? list : (origin==="in" ? insideFallback : outsideFallback));
+    document.getElementById("pkgMeta").textContent = list.length ? `${list.length} start cities from database` : "Using fallback start list";
   }
 
   function syncDistricts(){
     const districts = computeDistricts();
-    const sel = $("districtSel");
+    const sel = document.getElementById("districtSel");
     sel.innerHTML = `<option value="">All Districts</option>`;
     districts.forEach(d=>{
       const opt = document.createElement("option");
       opt.value = d;
       opt.textContent = d;
       sel.appendChild(opt);
+    });
+    document.getElementById("districtMeta").textContent = districts.length ? `${districts.length} districts loaded` : "Districts not found";
+  }
+
+  function buildDistrictLinks(){
+    const host = document.getElementById("districtLinks");
+    host.innerHTML = "";
+    DISTRICT_PAGES.forEach(d=>{
+      const a = document.createElement("a");
+      a.className = "dLink";
+      a.href = `./${d.file}`;
+      a.textContent = d.label;
+      a.title = `Open ${d.label} district page`;
+
+      // click = open district page
+      host.appendChild(a);
+    });
+  }
+
+  function markActiveDistrictLink(valueUpper){
+    const host = document.getElementById("districtLinks");
+    host.querySelectorAll(".dLink").forEach((a)=>{
+      const txt = (a.textContent || "").trim().toUpperCase();
+      a.classList.toggle("active", valueUpper && txt === valueUpper);
     });
   }
 
@@ -630,66 +741,77 @@ function escapeQ(v){ return encodeURIComponent(String(v ?? "")); }
     const days = p.get("days");
     const hotel = p.get("hotel");
 
-    if(origin) $("origin").value = origin;
+    if(origin) document.getElementById("origin").value = origin;
     syncOriginUI();
     syncCities();
-    if(start) $("startCity").value = safeUpper(start);
+    if(start) document.getElementById("startCity").value = safeUpper(start);
 
-    if(pax) $("travellers").value = pax;
-    if(season) $("season").value = season;
-    if(tier) $("tier").value = tier;
-    if(days) $("days").value = days;
-    if(hotel) $("hotel").value = hotel;
+    if(pax) document.getElementById("travellers").value = pax;
+    if(season) document.getElementById("season").value = season;
+    if(tier) document.getElementById("tier").value = tier;
+    if(days) document.getElementById("days").value = days;
+    if(hotel) document.getElementById("hotel").value = hotel;
 
-    // district only if origin=in
-    if(district && $("origin").value==="in") $("districtSel").value = safeUpper(district);
+    if(district && document.getElementById("origin").value==="in"){
+      const up = safeUpper(district);
+      document.getElementById("districtSel").value = up;
+      markActiveDistrictLink(up);
+    }
   }
 
+  function setDataState(txt){ document.getElementById("dataState").textContent = txt; }
+
   async function init(){
-    setErr("");
+    document.getElementById("errBox").style.display="none";
 
-    $("dataState").textContent = "Loading data…";
+    setDataState("Loading data…");
 
-    // cache first
     const cached = loadCache();
     if(cached?.templates){
       TEMPLATES = cached.templates || {};
-      $("dataState").textContent = "Database ready";
+      setDataState("Database ready");
     }else{
       try{
         TEMPLATES = await fetchTemplates();
         saveCache(TEMPLATES);
-        $("dataState").textContent = "Database ready";
+        setDataState("Database ready");
       }catch(e){
         console.error(e);
-        $("dataState").textContent = "Fallback mode";
-        setErr("Firebase templates not loading. This page will still work with fallback start list. Check Firebase rules or network.");
+        setDataState("Fallback mode");
+        document.getElementById("errBox").style.display="block";
+        document.getElementById("errBox").textContent = "Firebase templates not loading. This page will still work with fallback lists. Check Firebase rules or network.";
         TEMPLATES = {};
       }
     }
 
+    buildDistrictLinks();
     syncDistricts();
     syncOriginUI();
     syncCities();
     readParams();
+
+    // keep district links highlighted when dropdown changes
+    document.getElementById("districtSel").addEventListener("change", ()=>{
+      markActiveDistrictLink(safeUpper(document.getElementById("districtSel").value || ""));
+    });
   }
 
   /* Buttons */
-  $("dashBtn").onclick = ()=> goDashboard();
-  $("refreshBtn").onclick = ()=>{
+  document.getElementById("dashBtn").onclick = ()=> window.goDashboard();
+  document.getElementById("refreshBtn").onclick = ()=>{
     sessionStorage.removeItem(CACHE_KEY);
     location.reload();
   };
 
-  $("previewBtn").onclick = ()=>{
-    const origin = $("origin").value;
-    const start = $("startCity").value;
-    const pax = $("travellers").value;
-    const season = $("season").value;
-    const tier = $("tier").value;
-    const district = $("districtSel").value || "";
-    const days = $("days").value || "";
-    const hotel = $("hotel").value || "";
+  document.getElementById("previewBtn").onclick = ()=>{
+    const origin = document.getElementById("origin").value;
+    const start = document.getElementById("startCity").value;
+    const pax = document.getElementById("travellers").value;
+    const season = document.getElementById("season").value;
+    const tier = document.getElementById("tier").value;
+    const district = document.getElementById("districtSel").value || "";
+    const days = document.getElementById("days").value || "";
+    const hotel = document.getElementById("hotel").value || "";
 
     const s = `Preview → origin=${origin}, start=${start}, pax=${pax}, season=${season}, tier=${tier}` +
               (district ? `, district=${district}` : "") +
@@ -698,26 +820,29 @@ function escapeQ(v){ return encodeURIComponent(String(v ?? "")); }
     alert(s);
   };
 
-  $("origin").addEventListener("change", ()=>{
+  document.getElementById("origin").addEventListener("change", ()=>{
     syncOriginUI();
     syncCities();
   });
 
-  /* Make goDashboard accessible for non-module script */
+  /* Dashboard navigation */
   window.goDashboard = function goDashboard(){
-    setErr("");
+    const box = document.getElementById("errBox");
+    box.style.display="none";
+    box.textContent="";
 
-    const origin = $("origin").value;
-    const start = safeUpper($("startCity").value);
-    const pax = $("travellers").value;
-    const season = $("season").value;
-    const tier = $("tier").value;
-    const district = safeUpper($("districtSel").value || "");
-    const days = $("days").value || "";
-    const hotel = $("hotel").value || "";
+    const origin = document.getElementById("origin").value;
+    const start = safeUpper(document.getElementById("startCity").value);
+    const pax = document.getElementById("travellers").value;
+    const season = document.getElementById("season").value;
+    const tier = document.getElementById("tier").value;
+    const district = safeUpper(document.getElementById("districtSel").value || "");
+    const days = document.getElementById("days").value || "";
+    const hotel = document.getElementById("hotel").value || "";
 
     if(!start){
-      setErr("Please select a start city.");
+      box.style.display="block";
+      box.textContent = "Please select a start city.";
       document.getElementById("startCity").focus();
       return;
     }
