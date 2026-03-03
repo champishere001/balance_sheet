@@ -30,6 +30,9 @@
       --ok:#16a34a;
       --warn:#f59e0b;
       --bad:#ef4444;
+
+      --sheetRadius: 22px;
+      --sheetMaxH: 86vh;
     }
 
     *{ box-sizing:border-box; }
@@ -137,6 +140,12 @@
       color: rgba(10,30,60,.92);
       font-weight: 950;
     }
+    .chip.accent{
+      border-color: rgba(37,99,235,.45);
+      background: rgba(37,99,235,.12);
+      color: rgba(10,30,60,.92);
+      font-weight: 1000;
+    }
 
     /* =========================================================
        MAIN LAYOUT (Market): LEFT 26% | CENTER 50% | RIGHT 24%
@@ -182,7 +191,7 @@
       flex-direction:column;
       gap:10px;
       min-height:0;
-      overflow:auto; /* ✅ left is scrollable for long filters */
+      overflow:auto;
       -webkit-overflow-scrolling: touch;
     }
     .sideCard{
@@ -281,7 +290,7 @@
       -webkit-overflow-scrolling: touch;
       background: rgba(255,255,255,.52);
       position:relative;
-      padding-bottom: 82px; /* space for sticky CTA on mobile */
+      padding-bottom: 82px;
     }
     .emptyState{
       margin: 12px;
@@ -592,7 +601,7 @@
     .stickyRow{ display:flex; gap:10px; }
     .stickyRow .ctaBtn{ flex: 1 1 0; padding: 12px 12px; }
 
-    /* ===== CENTER: More Packages Row (NEW) ===== */
+    /* ===== CENTER: More Packages Row ===== */
     .moreRow{
       margin: 12px;
       border:1px solid rgba(10,30,60,.14);
@@ -872,7 +881,78 @@
       color: rgba(10,30,60,.88);
     }
 
+    /* ===== Bottom Sheet (Mobile Filters) ===== */
+    .sheetOverlay{
+      position:fixed; inset:0; z-index: 30000;
+      background: rgba(10,30,60,.35);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding: 10px;
+    }
+    .sheetOverlay.show{ display:flex; }
+
+    .sheet{
+      width: min(980px, 100%);
+      max-height: var(--sheetMaxH);
+      border-radius: var(--sheetRadius);
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 30px 90px rgba(10,30,60,.28);
+      overflow:hidden;
+      transform: translateY(14px);
+      opacity: 0;
+      transition: transform .18s ease, opacity .18s ease;
+    }
+    .sheetOverlay.show .sheet{
+      transform: translateY(0px);
+      opacity: 1;
+    }
+    .sheetTop{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding: 10px 12px;
+      border-bottom:1px solid rgba(10,30,60,.12);
+      background: rgba(255,255,255,.86);
+    }
+    .sheetTop .ttl{
+      font-size: 11px;
+      font-weight: 1200;
+      letter-spacing:.16em;
+      text-transform: uppercase;
+      color: rgba(10,30,60,.92);
+    }
+    .sheetTop .actions{ display:flex; gap:8px; align-items:center; }
+    .sheetBtn{
+      border:1px solid rgba(10,30,60,.16);
+      background: rgba(255,255,255,.72);
+      color: rgba(10,30,60,.86);
+      border-radius: 999px;
+      padding: 9px 11px;
+      font-size: 10.5px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 10px 20px rgba(10,30,60,.08);
+    }
+    .sheetBody{
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      max-height: calc(var(--sheetMaxH) - 54px);
+      padding: 0;
+    }
+    .sheetGrab{
+      width: 52px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(10,30,60,.20);
+      margin: 10px auto 0;
+    }
+
     /* ===== RESPONSIVE ===== */
+
+    /* Tablet: stack center / left / right */
     @media (max-width: 1100px){
       .main{
         grid-template-columns: 1fr;
@@ -888,16 +968,87 @@
       .mapWrap{ min-height: 420px; }
       #map{ min-height: 360px; }
     }
-    @media (max-width: 520px){
-      .shell{ padding: 10px 8px 16px; }
-      .logo{ width:52px; height:52px; }
-      .chip{ padding: 8px 9px; font-size: 10.5px; }
-      .carouselMain{ height: 220px; }
-      .stickyRow .ctaBtn{ font-size: 10.5px; }
-      .moreTile{ width: 190px; }
+
+    /* Mobile: use Bottom Sheet for filters (hide left from main flow) */
+    @media (max-width: 820px){
+      :root{ --gap: 10px; }
+
+      .heroMedia{ height: clamp(140px, 34vw, 200px); }
+      .heroBar{ padding: 10px 12px; }
+      .chip{ padding: 10px 12px; font-size: 11px; }
+
+      /* main becomes Center then Right, filters via sheet */
+      .main{
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "center"
+          "right";
+      }
+      /* left pane hidden from layout (moved into sheet via JS) */
+      .leftPane{ display:none; }
+
+      .pane{
+        height: auto !important;
+        min-height: unset !important;
+        max-height: none !important;
+      }
+
+      input, select{
+        padding: 12px 12px;
+        border-radius: 14px;
+        font-size: 14px;
+      }
+      .btn{
+        padding: 12px 12px;
+        border-radius: 14px;
+        font-size: 11.5px;
+      }
+
+      .carouselMain{ height: 210px; }
+      .thumb{ width: 84px; height: 58px; }
+
+      .priceGrid{ grid-template-columns: 1fr; }
+      .pV{ font-size: 18px; }
+
+      .placeBtn{ padding: 12px; border-radius: 16px; }
+      .placeBtn .nm{ font-size: 12px; }
+      .placeBtn .tag{ padding: 7px 10px; }
+
+      .moreTile{ width: 230px; border-radius: 18px; }
+      .moreImg{ height: 120px; }
+
+      .rightInner{ padding: 10px; gap:10px; }
+      .mapWrap{ min-height: unset; padding: 10px; border-radius: 18px; }
+      #map{ min-height: 320px; border-radius: 16px; }
+
+      .placeCard{ width: 100%; border-radius: 18px; }
+      .placeBody{ grid-template-columns: 1fr; }
+      .placeGallery img{ height: 260px; }
+
+      .stickyCTA{
+        display: block !important;
+        margin: 10px;
+        padding: 10px;
+        border-radius: 18px;
+      }
+      .stickyRow .ctaBtn{
+        padding: 14px 12px;
+        font-size: 11px;
+        border-radius: 16px;
+      }
     }
+
+    @media (max-width: 420px){
+      .heroRight{ gap:6px; }
+      .chip{ padding: 9px 10px; font-size: 10.5px; }
+      .carouselMain{ height: 190px; }
+      .moreTile{ width: 210px; }
+      #map{ min-height: 300px; }
+    }
+
     @media (prefers-reduced-motion: reduce){
       .aurora{ animation:none; }
+      .sheet{ transition:none; }
     }
   </style>
 </head>
@@ -924,6 +1075,9 @@
         </div>
 
         <div class="heroRight">
+          <!-- Mobile Filters Button -->
+          <div class="chip accent" id="openFiltersBtn" style="display:none;">Filters</div>
+
           <div class="chip primary" id="backBtn">Back</div>
           <div class="chip" id="refreshBtn">Refresh</div>
           <div class="chip" id="fitMapBtn">Fit Route</div>
@@ -933,115 +1087,118 @@
     </div>
 
     <!-- MAIN -->
-    <div class="main">
-      <!-- LEFT (filters only) -->
-      <div class="pane leftPane">
-        <div class="paneHdr">
-          <div>
-            <p class="t">Search & Filters</p>
-            <div class="s">Market style: search + budget</div>
+    <div class="main" id="mainGrid">
+      <!-- LEFT host (desktop/tablet) -->
+      <div id="leftHost">
+        <!-- LEFT (filters only) -->
+        <div class="pane leftPane" id="leftPane">
+          <div class="paneHdr">
+            <div>
+              <p class="t">Search & Filters</p>
+              <div class="s">Market style: search + budget</div>
+            </div>
+            <div class="s" id="leftHint">Auto loaded</div>
           </div>
-          <div class="s" id="leftHint">Auto loaded</div>
-        </div>
 
-        <div class="sideInner">
-          <div class="sideCard">
-            <div class="field">
-              <label>Search Package / Place</label>
-              <input id="searchInp" placeholder="Shimla • Manali • Kasol • Spiti…" autocomplete="off">
-            </div>
-
-            <div class="quickChips" aria-label="Quick filters">
-              <div class="qchip" data-tag="family">Family</div>
-              <div class="qchip" data-tag="couple">Couples</div>
-              <div class="qchip" data-tag="weekend">Weekend</div>
-              <div class="qchip" data-tag="adventure">Adventure</div>
-              <div class="qchip" data-tag="snow">Snow</div>
-              <div class="qchip" data-tag="summer">Summer</div>
-            </div>
-
-            <div class="field" style="margin-top:10px;">
-              <label>Start City / Pickup</label>
-              <input id="startInp" list="startList" placeholder="E.g. SHIMLA / CHANDIGARH / DELHI" autocomplete="off">
-              <datalist id="startList"></datalist>
-            </div>
-
-            <!-- District Console -->
-            <div class="field" id="districtWrap" style="margin-top:10px; display:none;">
-              <label>District Console</label>
-              <select id="districtSel">
-                <option value="">ANY</option>
-              </select>
-            </div>
-
-            <div class="field" style="margin-top:10px;">
-              <label>Trip Duration (Days)</label>
-              <select id="daysSel">
-                <option value="">ANY</option>
-                <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-                <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
-                <option>11</option><option>12</option>
-              </select>
-            </div>
-
-            <div class="field" style="margin-top:10px;">
-              <label>Budget / Person (Max)</label>
-              <div class="rangeRow">
-                <input id="budgetRange" type="range" min="0" max="30000" step="500" value="0">
-                <div class="rangePill" id="budgetPill">ANY</div>
+          <div class="sideInner">
+            <div class="sideCard">
+              <div class="field">
+                <label>Search Package / Place</label>
+                <input id="searchInp" placeholder="Shimla • Manali • Kasol • Spiti…" autocomplete="off">
               </div>
-              <div style="margin-top:8px; font-size:11px; color:rgba(10,30,60,.70); letter-spacing:.06em;">
-                Uses your <b>cost breakdown</b> node first.
+
+              <div class="quickChips" aria-label="Quick filters">
+                <div class="qchip" data-tag="family">Family</div>
+                <div class="qchip" data-tag="couple">Couples</div>
+                <div class="qchip" data-tag="weekend">Weekend</div>
+                <div class="qchip" data-tag="adventure">Adventure</div>
+                <div class="qchip" data-tag="snow">Snow</div>
+                <div class="qchip" data-tag="summer">Summer</div>
               </div>
-            </div>
 
-            <div class="field" style="margin-top:10px;">
-              <label>Hotel Category</label>
-              <select id="hotelSel">
-                <option value="">ANY</option>
-                <option value="3">3 STAR</option>
-                <option value="4">4 STAR</option>
-                <option value="5">5 STAR</option>
-              </select>
-            </div>
+              <div class="field" style="margin-top:10px;">
+                <label>Start City / Pickup</label>
+                <input id="startInp" list="startList" placeholder="E.g. SHIMLA / CHANDIGARH / DELHI" autocomplete="off">
+                <datalist id="startList"></datalist>
+              </div>
 
-            <div class="field" style="margin-top:10px;">
-              <label>Season</label>
-              <select id="seasonSel">
-                <option value="">ANY</option>
-                <option value="regular">REGULAR</option>
-                <option value="peak">PEAK</option>
-                <option value="off">OFF SEASON</option>
-                <option value="summer">SUMMER</option>
-                <option value="winter">WINTER</option>
-                <option value="monsoon">MONSOON</option>
-              </select>
-            </div>
+              <!-- District Console -->
+              <div class="field" id="districtWrap" style="margin-top:10px; display:none;">
+                <label>District Console</label>
+                <select id="districtSel">
+                  <option value="">ANY</option>
+                </select>
+              </div>
 
-            <div class="field" style="margin-top:10px;">
-              <label>Travellers (Pax)</label>
-              <select id="paxSel">
-                <option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
-                <option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
-              </select>
-            </div>
+              <div class="field" style="margin-top:10px;">
+                <label>Trip Duration (Days)</label>
+                <select id="daysSel">
+                  <option value="">ANY</option>
+                  <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+                  <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+                  <option>11</option><option>12</option>
+                </select>
+              </div>
 
-            <div class="field" style="margin-top:10px;">
-              <label>Tier</label>
-              <select id="visitType">
-                <option value="budget">BUDGET</option>
-                <option value="premium">PREMIUM</option>
-                <option value="luxury">LUXURY</option>
-              </select>
-            </div>
+              <div class="field" style="margin-top:10px;">
+                <label>Budget / Person (Max)</label>
+                <div class="rangeRow">
+                  <input id="budgetRange" type="range" min="0" max="30000" step="500" value="0">
+                  <div class="rangePill" id="budgetPill">ANY</div>
+                </div>
+                <div style="margin-top:8px; font-size:11px; color:rgba(10,30,60,.70); letter-spacing:.06em;">
+                  Uses your <b>cost breakdown</b> node first.
+                </div>
+              </div>
 
-            <div class="btnRow">
-              <button class="btn secondary" id="resetBtn" type="button">Reset</button>
-              <button class="btn" id="genBtn" type="button">Show</button>
-            </div>
+              <div class="field" style="margin-top:10px;">
+                <label>Hotel Category</label>
+                <select id="hotelSel">
+                  <option value="">ANY</option>
+                  <option value="3">3 STAR</option>
+                  <option value="4">4 STAR</option>
+                  <option value="5">5 STAR</option>
+                </select>
+              </div>
 
-            <div class="hint" style="margin-top:10px;">
-              Packages are shown in the center under the main package (More Packages row).
+              <div class="field" style="margin-top:10px;">
+                <label>Season</label>
+                <select id="seasonSel">
+                  <option value="">ANY</option>
+                  <option value="regular">REGULAR</option>
+                  <option value="peak">PEAK</option>
+                  <option value="off">OFF SEASON</option>
+                  <option value="summer">SUMMER</option>
+                  <option value="winter">WINTER</option>
+                  <option value="monsoon">MONSOON</option>
+                </select>
+              </div>
+
+              <div class="field" style="margin-top:10px;">
+                <label>Travellers (Pax)</label>
+                <select id="paxSel">
+                  <option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+                  <option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+                </select>
+              </div>
+
+              <div class="field" style="margin-top:10px;">
+                <label>Tier</label>
+                <select id="visitType">
+                  <option value="budget">BUDGET</option>
+                  <option value="premium">PREMIUM</option>
+                  <option value="luxury">LUXURY</option>
+                </select>
+              </div>
+
+              <div class="btnRow">
+                <button class="btn secondary" id="resetBtn" type="button">Reset</button>
+                <button class="btn" id="genBtn" type="button">Show</button>
+              </div>
+
+              <div class="hint" style="margin-top:10px;">
+                Packages are shown in the center under the main package (More Packages row).
+              </div>
             </div>
           </div>
         </div>
@@ -1136,7 +1293,22 @@
     </div>
   </div>
 
-  <!-- ONE MODULE: Firebase + App (index→dashboard param sync) -->
+  <!-- Mobile Filters Bottom Sheet -->
+  <div class="sheetOverlay" id="sheetOverlay" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-label="Filters">
+      <div class="sheetGrab"></div>
+      <div class="sheetTop">
+        <div class="ttl">Filters</div>
+        <div class="actions">
+          <button class="sheetBtn" id="sheetApplyBtn" type="button">Apply</button>
+          <button class="sheetBtn" id="sheetCloseBtn" type="button">Close</button>
+        </div>
+      </div>
+      <div class="sheetBody" id="sheetHost"></div>
+    </div>
+  </div>
+
+  <!-- ONE MODULE: Firebase + App -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
@@ -1371,10 +1543,36 @@
       return Array.from(new Set(out));
     }
 
-    /* Option A: Package pics from major places */
+    /* ✅ Main photo = last stop of itinerary */
+    function getLastPlaceIdFromTemplate(tpl){
+      const days = Number(tpl?.days || 0) || 0;
+      for(let d = Math.max(1, days); d >= 1; d--){
+        const ids = splitCSV(tpl[`day${d}_place_ids`] || "");
+        if(ids.length) return ids[ids.length - 1];
+      }
+      const ids = splitCSV(tpl?.day1_place_ids || "");
+      return ids.length ? ids[ids.length - 1] : "";
+    }
+
+    function getPackageMainPhotoFromLastStop(tpl){
+      const pid = getLastPlaceIdFromTemplate(tpl);
+      if(pid && PLACES?.[pid]){
+        const photos = getPlacePhotos(PLACES[pid], pid);
+        return photos[0] || "./style/n1.jpg";
+      }
+      const fallback = String(tpl?.cover || tpl?.photo || tpl?.image || "").trim() || "./style/n1.jpg";
+      return fallback;
+    }
+
+    /* ✅ Package photos: FIRST is last-stop main photo */
     function getPackagePhotos(tpl){
       const out = [];
+
+      const main = getPackageMainPhotoFromLastStop(tpl);
+      if(main) out.push(main);
+
       [tpl.cover, tpl.photo, tpl.image].map(x=>String(x||"").trim()).filter(Boolean).forEach(x=> out.push(x));
+
       const d1 = splitCSV(tpl.day1_place_ids || "");
       const d2 = splitCSV(tpl.day2_place_ids || "");
       const major = [...d1.slice(0,4), ...d2.slice(0,3)].filter(Boolean);
@@ -1416,11 +1614,45 @@
       return b || p || l || 0;
     }
 
+    /* ✅ Discount logic: Firebase first, else 5–20% deterministic by key */
+    const DISC_MIN = 5, DISC_MAX = 20;
+    function hashStrToInt(s){
+      s = String(s || "");
+      let h = 2166136261;
+      for(let i=0; i<s.length; i++){
+        h ^= s.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return (h >>> 0);
+    }
+    function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+    function keyLogicDiscountPercent(tpl, fallbackKey){
+      const pid = (getTplKey(tpl) || String(fallbackKey||"").trim().toLowerCase());
+      if(!pid) return 0;
+
+      const base = DISC_MIN + (hashStrToInt(pid) % (DISC_MAX - DISC_MIN + 1)); // 5..20
+      let extra = 0;
+
+      const days = Number(tpl?.days || 0) || 0;
+      if(days >= 7) extra += 2;
+      if(days >= 10) extra += 1;
+
+      const s = String(tpl?.best_season || "").toLowerCase();
+      if(s.includes("off") || s.includes("monsoon")) extra += 2;
+
+      const tier = safeLower($("visitType")?.value || "budget");
+      if(tier === "luxury") extra -= 2;
+
+      return clamp(base + extra, DISC_MIN, DISC_MAX);
+    }
+
     function getDiscountPercentForKey(tpl, fallbackKey){
       const pid = (getTplKey(tpl) || String(fallbackKey||"").trim().toLowerCase());
       const row = DISCOUNTS?.[pid];
       const d = Number(row?.discount_percent ?? row?.discount ?? 0);
-      return (isFinite(d) && d>0 && d<=70) ? d : 0;
+      if(isFinite(d) && d >= 1 && d <= 70) return d;
+      return keyLogicDiscountPercent(tpl, fallbackKey);
     }
 
     /* ===== Map ===== */
@@ -1869,7 +2101,7 @@
       $("showStartEndBtn").onclick = ()=>{ showMode = "ends"; applyShowMode(); showBot("Showing start/end only"); };
     }
 
-    /* ===== CENTER: More packages row renderer (NEW) ===== */
+    /* ===== CENTER: More packages row renderer ===== */
     function renderMorePackagesRow(){
       const tier = safeLower($("visitType").value || "budget");
       const keys = (ACTIVE_KEYS || []).filter(k => k !== CURRENT_KEY).slice(0, 12);
@@ -1905,6 +2137,7 @@
                       ${days ? `<span>${days}D</span>` : ""}
                       ${start ? `<span>${escapeHtml(start)}</span>` : ""}
                       ${district ? `<span>${escapeHtml(district)}</span>` : ""}
+                      ${off ? `<span>${off}% OFF</span>` : ""}
                     </div>
                     <div class="morePrice">Starting <b>${rupees(show)} / person</b></div>
                   </div>
@@ -2086,7 +2319,7 @@
         });
       });
 
-      // ✅ More packages: click -> replace main
+      // More packages: click -> replace main
       const moreList = document.getElementById("moreList");
       if(moreList){
         moreList.querySelectorAll(".moreTile[data-k]").forEach(tile=>{
@@ -2095,6 +2328,12 @@
             if(!k) return;
             CURRENT_KEY = k;
             renderSelected();
+
+            // mobile: collapse details so user sees price fast
+            if(window.matchMedia("(max-width: 820px)").matches){
+              document.querySelectorAll("details.acc[open]").forEach(d => d.removeAttribute("open"));
+            }
+
             $("centerScroll").scrollTo({ top: 0, behavior: "smooth" });
           });
         });
@@ -2143,16 +2382,85 @@
       setStatus("Ready");
     }
 
+    /* ===== Mobile Filter Sheet (move left pane into sheet on mobile) ===== */
+    const MQ_MOBILE = window.matchMedia("(max-width: 820px)");
+    let sheetOpen = false;
+
+    function openSheet(){
+      const ov = $("sheetOverlay");
+      ov.classList.add("show");
+      ov.setAttribute("aria-hidden","false");
+      lockBody(true);
+      sheetOpen = true;
+    }
+    function closeSheet(){
+      const ov = $("sheetOverlay");
+      ov.classList.remove("show");
+      ov.setAttribute("aria-hidden","true");
+      lockBody(false);
+      sheetOpen = false;
+    }
+
+    function syncLeftPanePlacement(){
+      const leftPane = $("leftPane");
+      const leftHost = $("leftHost");
+      const sheetHost = $("sheetHost");
+      const openBtn = $("openFiltersBtn");
+
+      if(!leftPane || !leftHost || !sheetHost || !openBtn) return;
+
+      if(MQ_MOBILE.matches){
+        // show Filters button
+        openBtn.style.display = "";
+        // move left pane into sheet body (if not already)
+        if(!sheetHost.contains(leftPane)){
+          sheetHost.appendChild(leftPane);
+        }
+        // ensure it is visible inside sheet
+        leftPane.style.display = "";
+        // hide from normal layout (CSS already hides .leftPane at mobile)
+      }else{
+        openBtn.style.display = "none";
+        // move back to left host
+        if(!leftHost.contains(leftPane)){
+          leftHost.appendChild(leftPane);
+        }
+        // close sheet if open
+        if(sheetOpen) closeSheet();
+      }
+    }
+
     /* ===== Wire UI ===== */
     function wireUI(){
       $("pmClose").onclick = closePlaceModal;
       $("placeModal").addEventListener("click", (e)=>{
         if(e.target === $("placeModal")) closePlaceModal();
       });
-
       window.addEventListener("keydown", (e)=>{
-        if(e.key === "Escape") closePlaceModal();
+        if(e.key === "Escape"){
+          if(sheetOpen) closeSheet();
+          closePlaceModal();
+        }
       });
+
+      // Bottom sheet events
+      $("openFiltersBtn").onclick = ()=> openSheet();
+      $("sheetCloseBtn").onclick = ()=> closeSheet();
+      $("sheetApplyBtn").onclick = ()=>{
+        // apply -> update list and close
+        CURRENT_KEY = "";
+        computePackages();
+        renderSelected();
+        showBot("Filters applied");
+        closeSheet();
+      };
+      $("sheetOverlay").addEventListener("click", (e)=>{
+        if(e.target === $("sheetOverlay")) closeSheet();
+      });
+
+      // keep placement synced
+      MQ_MOBILE.addEventListener("change", syncLeftPanePlacement);
+      window.addEventListener("resize", syncLeftPanePlacement, { passive:true });
 
       $("resetBtn").onclick = ()=>{
         $("searchInp").value = "";
@@ -2179,6 +2487,9 @@
         computePackages();
         renderSelected();
         showBot("Filtered packages updated");
+
+        // on mobile, close sheet after Show
+        if(MQ_MOBILE.matches) closeSheet();
       };
 
       const refresh = async ()=>{
@@ -2251,6 +2562,9 @@
           renderSelected();
         });
       });
+
+      // initial placement
+      syncLeftPanePlacement();
     }
 
     document.addEventListener("DOMContentLoaded", async ()=>{
