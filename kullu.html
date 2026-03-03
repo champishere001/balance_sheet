@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="color-scheme" content="light"/>
+  <title>District | Himachal Explorer</title>
+  <meta name="description" content="Himachal Explorer district guide: overview, attractions, best time, and packages." />
+  <meta name="theme-color" content="#EAF3FF"/>
+  <link rel="icon" href="./favicon.ico"/>
+  <link rel="stylesheet" href="./district.css"/>
+</head>
+
+<body>
+  <div class="aurora"></div>
+  <div class="noise"></div>
+
+  <div class="shell">
+    <div class="hero">
+      <div class="heroMedia">
+        <img id="heroImg" src="./style/n1.jpg" alt="District hero" onerror="this.src='./style/n1.jpg'">
+      </div>
+      <div class="heroBar">
+        <div class="brand">
+          <div class="logo"><img src="./style/logo.png" alt="Logo" onerror="this.remove(); this.parentNode.textContent='HP';"></div>
+          <div style="min-width:0">
+            <h1 class="hTitle" id="dName">District</h1>
+            <div class="hSub" id="dSub">District Guide</div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <div class="chip primary" onclick="location.href='./index.html'">Home</div>
+          <div class="chip" onclick="history.length>1?history.back():location.href='./index.html'">Back</div>
+          <div class="chip" onclick="location.reload()">Refresh</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="cardHdr"><p class="t">About</p></div>
+        <div class="cardBody" id="about">
+          <p class="p">Loading…</p>
+        </div>
+
+        <div class="cardBody">
+          <hr class="sep"/>
+          <p class="p" style="margin-bottom:6px;"><b>Known for</b></p>
+          <div class="list" id="knownFor"></div>
+
+          <hr class="sep"/>
+          <p class="p" style="margin-bottom:6px;"><b>Top attractions</b></p>
+          <div class="list" id="attractions"></div>
+
+          <div class="footerNote">
+            Content is written in a tourism style. You can expand each section using details from
+            “The Wonderland of Himachal Pradesh” (Jagmohan Balokhra) and keep district facts consistent with Wikipedia.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="cardHdr"><p class="t">Quick Facts</p></div>
+        <div class="cardBody">
+          <div class="facts">
+            <div class="fact"><div class="k">Headquarters</div><div class="v" id="factHQ">—</div></div>
+            <div class="fact"><div class="k">Region</div><div class="v" id="factRegion">—</div></div>
+            <div class="fact"><div class="k">Best time</div><div class="v" id="factBest">—</div></div>
+            <div class="fact"><div class="k">Wikipedia</div><div class="v" id="factWiki">—</div></div>
+          </div>
+
+          <hr class="sep"/>
+
+          <div class="list">
+            <span class="tag">Temples</span>
+            <span class="tag">Trekking</span>
+            <span class="tag">Lakes</span>
+            <span class="tag">Culture</span>
+            <span class="tag">Food</span>
+          </div>
+
+          <div class="footerNote">
+            Tip: Replace hero images later (e.g. <code>./style/shimla.jpg</code> etc.).
+            If an image is missing, it will fall back to <code>./style/n1.jpg</code>.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ PACKAGES SECTION (BOTTOM) -->
+    <div class="card" style="margin-top:12px;">
+      <div class="cardHdr">
+        <p class="t">Packages in this District</p>
+      </div>
+      <div class="cardBody" id="districtPackages">
+        <p class="p">Loading packages…</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="./district.js"></script>
+
+  <script>
+    // ✅ CHANGE ONLY THIS in each district page:
+    const DISTRICT_ID = "shimla"; // bilaspur | chamba | hamirpur | kangra | kinnaur | kullu | lahaul_spiti | mandi | shimla | sirmaur | solan | una
+    window.addEventListener("DOMContentLoaded", ()=> window.renderDistrict(DISTRICT_ID));
+  </script>
+
+  <!-- ✅ Firebase: Load templates and render packages -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
+      authDomain: "revnue-records.firebaseapp.com",
+      databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "revnue-records",
+      storageBucket: "revnue-records.firebasestorage.app",
+      messagingSenderId: "182348503564",
+      appId: "1:182348503564:web:480085405b09177245ac29"
+    };
+
+    async function fetchNode(db, path){
+      const snap = await get(ref(db, path));
+      return snap.exists() ? snap.val() : {};
+    }
+
+    try{
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+
+      const templates = await fetchNode(db, "templates");
+
+      // district name is exposed by renderDistrict
+      const districtName = window.__DISTRICT_NAME__ || "";
+      window.renderDistrictPackages(templates, districtName);
+    }catch(e){
+      const host = document.getElementById("districtPackages");
+      if(host) host.innerHTML = `<p class="p">Packages not loading. Check Firebase rules.<br><b>Error:</b> ${String(e?.message||e)}</p>`;
+      console.error(e);
+    }
+  </script>
+</body>
+              </html>
