@@ -1,147 +1,1177 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-  <meta name="color-scheme" content="light"/>
-  <title>District | Himachal Explorer</title>
-  <meta name="description" content="Himachal Explorer district guide: overview, attractions, best time, and packages." />
-  <meta name="theme-color" content="#EAF3FF"/>
-  <link rel="icon" href="./favicon.ico"/>
-  <link rel="stylesheet" href="./district.css"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Himachal Explorer | Map + Packages</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Leaflet + MarkerCluster -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+
+  <style>
+    :root{
+      /* Light brownish theme */
+      --bg:#fbf7f1;
+      --panel:#fffaf2;
+      --card:#ffffff;
+      --stroke: rgba(92, 62, 40, .16);
+      --stroke2: rgba(92, 62, 40, .22);
+
+      --text:#1f2937;
+      --muted:#6b7280;
+
+      --brand:#8a5a3c;        /* brown */
+      --brand2:#c98b62;       /* light brown */
+      --cream:#fff1df;
+
+      --shadow: 0 18px 55px rgba(31,41,55,.12);
+      --shadow2: 0 10px 35px rgba(31,41,55,.10);
+      --r:18px;
+
+      --leftW:22%;
+      --mapW:45%;
+      --rightW:33%;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:"Plus Jakarta Sans",system-ui,Segoe UI,Roboto,Arial,sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-y:auto;          /* ✅ vertical scroll */
+      overflow-x:hidden;
+    }
+
+    /* ===== LIVE BACKGROUND (from your X-page style) ===== */
+    .bg{
+      position:fixed; inset:0; z-index:-3;
+      background:
+        radial-gradient(1200px 520px at 18% 15%, rgba(201,139,98,.22), transparent 60%),
+        radial-gradient(1000px 560px at 82% 22%, rgba(138,90,60,.16), transparent 60%),
+        radial-gradient(900px 520px at 50% 85%, rgba(92,62,40,.10), transparent 65%),
+        linear-gradient(180deg, #fffaf2, #fbf7f1);
+    }
+    .noise{
+      position:fixed; inset:0; z-index:-2;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+      opacity:.10;
+      mix-blend-mode:multiply;
+      pointer-events:none;
+    }
+    #fx{
+      position:fixed; inset:0; z-index:-1;
+      pointer-events:none;
+      opacity:.55;
+    }
+
+    /* ===== PAGE WRAP ===== */
+    .wrap{
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 18px 14px 64px;
+    }
+
+    /* ===== TOP BAR ===== */
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 12px 14px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.72);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      box-shadow: var(--shadow2);
+      position:sticky;
+      top:10px;
+      z-index:50;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 220px;
+    }
+    .logo{
+      width:38px;height:38px;border-radius:12px;
+      display:grid;place-items:center;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      color:#fff;
+      font-weight:900;
+      box-shadow: 0 10px 25px rgba(138,90,60,.22);
+    }
+    .brand h1{
+      margin:0;
+      font-size:16px;
+      font-weight:900;
+      letter-spacing:.2px;
+      line-height:1.15;
+    }
+    .brand p{
+      margin:2px 0 0;
+      font-size:12px;
+      color: var(--muted);
+      font-weight:700;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .chip{
+      border:1px solid var(--stroke);
+      background: rgba(255,241,223,.70);
+      padding:8px 10px;
+      border-radius: 999px;
+      font-weight:800;
+      font-size:12px;
+      color:#5c3e28;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      box-shadow: 0 10px 22px rgba(31,41,55,.06);
+      user-select:none;
+    }
+    .btn{
+      border:none;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      color:#fff;
+      font-weight:900;
+      padding:9px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      box-shadow: 0 12px 25px rgba(138,90,60,.22);
+    }
+    .btn.secondary{
+      background: #fff;
+      color:#4b5563;
+      border:1px solid var(--stroke2);
+      box-shadow: none;
+    }
+
+    /* ===== HERO (bigger height, 5-6 images) ===== */
+    .hero{
+      margin-top: 14px;
+      border-radius: 20px;
+      border:1px solid var(--stroke);
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      background: #fff;
+    }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:0;
+      min-height: 360px; /* ✅ slightly bigger */
+    }
+    .heroMedia{
+      position:relative;
+      min-height: 360px;
+      background: #ddd;
+    }
+    .slides{
+      position:absolute; inset:0;
+    }
+    .slide{
+      position:absolute; inset:0;
+      background-size:cover;
+      background-position:center;
+      opacity:0;
+      transform: scale(1.02);
+      transition: opacity 900ms ease, transform 1300ms ease;
+      filter: saturate(1.05) contrast(1.02);
+    }
+    .slide.active{ opacity:1; transform: scale(1); }
+    .heroOverlay{
+      position:absolute; inset:0;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.35), transparent 60%),
+        linear-gradient(180deg, transparent 55%, rgba(0,0,0,.30));
+      pointer-events:none;
+    }
+    .heroText{
+      position:absolute;
+      left:18px; bottom:18px; right:18px;
+      color:#fff;
+      z-index:2;
+    }
+    .heroText h2{
+      margin:0 0 8px;
+      font-size:24px;
+      font-weight:900;
+      letter-spacing:.3px;
+      text-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    .heroText p{
+      margin:0;
+      max-width: 680px;
+      font-size:13px;
+      font-weight:700;
+      opacity:.95;
+      line-height:1.5;
+      text-shadow: 0 10px 28px rgba(0,0,0,.35);
+    }
+    .dots{
+      position:absolute;
+      right:14px; bottom:14px;
+      display:flex; gap:6px;
+      z-index:3;
+    }
+    .dot{
+      width:9px;height:9px;border-radius:999px;
+      background: rgba(255,255,255,.45);
+      border:1px solid rgba(255,255,255,.35);
+      cursor:pointer;
+    }
+    .dot.active{ background:#fff; }
+
+    .heroInfo{
+      padding: 18px 18px 16px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      background: linear-gradient(180deg, #fff, #fffaf2);
+    }
+    .heroInfo .kicker{
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
+    .tag{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius: 999px;
+      border:1px solid var(--stroke);
+      background: rgba(255,241,223,.55);
+      font-weight:900;
+      font-size:12px;
+      color:#5c3e28;
+    }
+    .heroInfo .big{
+      margin:0;
+      font-size:14px;
+      font-weight:800;
+      color:#374151;
+      line-height:1.55;
+    }
+    .heroInfo .small{
+      margin:0;
+      font-size:12px;
+      color: var(--muted);
+      font-weight:700;
+      line-height:1.55;
+    }
+
+    /* ===== MAIN 3-COLUMN LAYOUT ===== */
+    .main{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: var(--leftW) var(--mapW) var(--rightW);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .panel{
+      border-radius: 18px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      min-height: 520px;
+    }
+    .panelHead{
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(92,62,40,.12);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      background: linear-gradient(180deg, rgba(255,241,223,.85), rgba(255,255,255,.70));
+    }
+    .panelHead .ttl{
+      font-weight:900;
+      color:#3a2a1e;
+      letter-spacing:.2px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .panelBody{ padding: 12px 12px 14px; }
+
+    /* LEFT: filters + list */
+    .field{
+      display:grid;
+      gap:8px;
+      margin-bottom: 10px;
+    }
+    .field label{
+      font-size:12px;
+      font-weight:900;
+      color:#5c3e28;
+    }
+    input, select{
+      width:100%;
+      padding: 10px 11px;
+      border-radius: 12px;
+      border:1px solid rgba(92,62,40,.20);
+      outline:none;
+      background: rgba(255,255,255,.92);
+      font-weight:800;
+      color:#374151;
+    }
+    input:focus, select:focus{
+      border-color: rgba(138,90,60,.45);
+      box-shadow: 0 0 0 3px rgba(201,139,98,.18);
+    }
+
+    .list{
+      margin-top: 10px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      max-height: calc(100vh - 540px);
+      overflow:auto;
+      padding-right: 4px;
+    }
+    .item{
+      border:1px solid rgba(92,62,40,.18);
+      background: rgba(255,255,255,.90);
+      border-radius: 14px;
+      padding: 10px 10px;
+      cursor:pointer;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .item:hover{ transform: translateY(-1px); box-shadow: 0 12px 26px rgba(31,41,55,.08); }
+    .item .name{ font-weight:900; font-size:13px; color:#1f2937; }
+    .item .meta{ margin-top:3px; font-size:11.5px; font-weight:800; color:#6b7280; }
+
+    /* MAP */
+    #map{
+      width:100%;
+      height: calc(100vh - 470px);
+      min-height: 520px;
+      border-radius: 0;
+    }
+    .mapWrap{
+      padding:0;
+    }
+    .mapBar{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(92,62,40,.12);
+      background: rgba(255,241,223,.55);
+    }
+    .mapBar .pill{
+      padding:8px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(92,62,40,.18);
+      background: rgba(255,255,255,.85);
+      font-weight:900;
+      font-size:12px;
+      color:#5c3e28;
+      user-select:none;
+    }
+
+    /* RIGHT: details + packages */
+    .placeCard{
+      border:1px solid rgba(92,62,40,.18);
+      background: rgba(255,255,255,.92);
+      border-radius: 16px;
+      overflow:hidden;
+      box-shadow: 0 14px 30px rgba(31,41,55,.08);
+    }
+    .placeHero{
+      height: 160px;
+      background: #eee;
+      background-size: cover;
+      background-position:center;
+      position:relative;
+    }
+    .placeHero::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.25));
+    }
+    .placeInfo{
+      padding: 12px 12px 14px;
+    }
+    .placeInfo h3{
+      margin:0 0 6px;
+      font-size:16px;
+      font-weight:900;
+      color:#1f2937;
+    }
+    .kv{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:8px;
+      margin: 10px 0 12px;
+    }
+    .kv .k{
+      border:1px solid rgba(92,62,40,.14);
+      background: rgba(255,241,223,.45);
+      border-radius: 12px;
+      padding: 8px 9px;
+      font-size:11.5px;
+      font-weight:900;
+      color:#5c3e28;
+    }
+    .desc{
+      margin:0;
+      font-size:12.5px;
+      font-weight:700;
+      color:#4b5563;
+      line-height:1.55;
+    }
+    .packList{
+      margin-top: 12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      max-height: calc(100vh - 680px);
+      overflow:auto;
+      padding-right:4px;
+    }
+    .pack{
+      border:1px solid rgba(92,62,40,.18);
+      background: rgba(255,255,255,.92);
+      border-radius: 14px;
+      padding: 10px;
+    }
+    .pack .pt{ font-weight:900; font-size:13px; color:#1f2937; }
+    .pack .pm{ margin-top:4px; font-size:11.5px; font-weight:800; color:#6b7280; }
+    .pack .row{
+      margin-top:8px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .mini{
+      padding:7px 9px;
+      border-radius: 999px;
+      border:1px solid rgba(92,62,40,.16);
+      background: rgba(255,241,223,.55);
+      font-weight:900;
+      font-size:11px;
+      color:#5c3e28;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px){
+      :root{ --leftW: 34%; --mapW: 66%; --rightW: 100%; }
+      .main{ grid-template-columns: 1fr 1fr; }
+      .main .panel.right{ grid-column: 1 / -1; }
+      #map{ height: 520px; }
+    }
+    @media (max-width: 760px){
+      .heroGrid{ grid-template-columns: 1fr; }
+      .heroMedia{ min-height: 340px; }
+      .main{ grid-template-columns: 1fr; }
+      #map{ height: 520px; }
+    }
+
+    /* Leaflet tweaks for readability */
+    .leaflet-control-layers{
+      border-radius: 12px !important;
+      border:1px solid rgba(92,62,40,.18) !important;
+      box-shadow: 0 12px 26px rgba(31,41,55,.10) !important;
+    }
+  </style>
 </head>
 
 <body>
-  <div class="aurora"></div>
+  <div class="bg"></div>
+  <canvas id="fx"></canvas>
   <div class="noise"></div>
 
-  <div class="shell">
-    <div class="hero">
-      <div class="heroMedia">
-        <img id="heroImg" src="./style/n1.jpg" alt="District hero" onerror="this.src='./style/n1.jpg'">
-      </div>
-      <div class="heroBar">
-        <div class="brand">
-          <div class="logo"><img src="./style/logo.png" alt="Logo" onerror="this.remove(); this.parentNode.textContent='HP';"></div>
-          <div style="min-width:0">
-            <h1 class="hTitle" id="dName">District</h1>
-            <div class="hSub" id="dSub">District Guide</div>
-          </div>
-        </div>
+  <div class="wrap">
 
-        <div class="actions">
-          <div class="chip primary" onclick="location.href='./index.html'">Home</div>
-          <div class="chip" onclick="history.length>1?history.back():location.href='./index.html'">Back</div>
-          <div class="chip" onclick="location.reload()">Refresh</div>
+    <!-- ✅ No fixed sidebar (removed) -->
+
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">HE</div>
+        <div>
+          <h1>Himachal Explorer</h1>
+          <p>Clusters + Filters + Place Details + Packages</p>
         </div>
+      </div>
+      <div class="top-actions">
+        <div class="chip">🧩 Cluster Map</div>
+        <div class="chip">🛰️ Satellite Toggle</div>
+        <button class="btn secondary" id="btnRecenter">Recenter</button>
+        <button class="btn" id="btnReload">Reload Data</button>
       </div>
     </div>
 
-    <div class="grid">
-      <div class="card">
-        <div class="cardHdr"><p class="t">About</p></div>
-        <div class="cardBody" id="about">
-          <p class="p">Loading…</p>
+    <!-- HERO (uses your GitHub /style/ images) -->
+    <section class="hero">
+      <div class="heroGrid">
+        <div class="heroMedia">
+          <div class="slides" id="slides"></div>
+          <div class="heroOverlay"></div>
+          <div class="heroText">
+            <h2>Explore places, see clusters, open packages</h2>
+            <p>
+              Select a district/segment, tap a place, and get details + associated packages.
+              Map clusters merge nearby locations and show numbers (your “cool” view).
+            </p>
+          </div>
+          <div class="dots" id="dots"></div>
         </div>
 
-        <div class="cardBody">
-          <hr class="sep"/>
-          <p class="p" style="margin-bottom:6px;"><b>Known for</b></p>
-          <div class="list" id="knownFor"></div>
-
-          <hr class="sep"/>
-          <p class="p" style="margin-bottom:6px;"><b>Top attractions</b></p>
-          <div class="list" id="attractions"></div>
-
-          <div class="footerNote">
-            Content is written in a tourism style. You can expand each section using details from
-            “The Wonderland of Himachal Pradesh” (Jagmohan Balokhra) and keep district facts consistent with Wikipedia.
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="cardHdr"><p class="t">Quick Facts</p></div>
-        <div class="cardBody">
-          <div class="facts">
-            <div class="fact"><div class="k">Headquarters</div><div class="v" id="factHQ">—</div></div>
-            <div class="fact"><div class="k">Region</div><div class="v" id="factRegion">—</div></div>
-            <div class="fact"><div class="k">Best time</div><div class="v" id="factBest">—</div></div>
-            <div class="fact"><div class="k">Wikipedia</div><div class="v" id="factWiki">—</div></div>
+        <div class="heroInfo">
+          <div class="kicker">
+            <div class="tag">✅ Readable UI</div>
+            <div class="tag">🟤 Light Brown Theme</div>
+            <div class="tag">📍 Firebase Places</div>
           </div>
 
-          <hr class="sep"/>
+          <p class="big">
+            This page is vertically scrollable and uses a live animated background like your X-page.
+            Map has cluster numbers + satellite view toggle.
+          </p>
+          <p class="small">
+            Images are loaded from your GitHub folder: <b>/style/</b> (as you showed in screenshot).
+            If any image name changes, update the “heroImages” list in JS.
+          </p>
 
-          <div class="list">
-            <span class="tag">Temples</span>
-            <span class="tag">Trekking</span>
-            <span class="tag">Lakes</span>
-            <span class="tag">Culture</span>
-            <span class="tag">Food</span>
-          </div>
-
-          <div class="footerNote">
-            Tip: Replace hero images later (e.g. <code>./style/shimla.jpg</code> etc.).
-            If an image is missing, it will fall back to <code>./style/n1.jpg</code>.
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">
+            <span class="tag">Left 22%</span>
+            <span class="tag">Map 45%</span>
+            <span class="tag">Right 33%</span>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- ✅ PACKAGES SECTION (BOTTOM) -->
-    <div class="card" style="margin-top:12px;">
-      <div class="cardHdr">
-        <p class="t">Packages in this District</p>
-      </div>
-      <div class="cardBody" id="districtPackages">
-        <p class="p">Loading packages…</p>
-      </div>
-    </div>
+    <!-- MAIN 3 columns -->
+    <section class="main">
 
+      <!-- LEFT: list + filters (22%) -->
+      <div class="panel left">
+        <div class="panelHead">
+          <div class="ttl">🔎 Explore</div>
+          <div style="font-weight:900;color:#6b7280;font-size:12px;" id="countBox">0</div>
+        </div>
+        <div class="panelBody">
+          <div class="field">
+            <label>Search</label>
+            <input id="q" placeholder="Search place name / id..." />
+          </div>
+
+          <div class="field">
+            <label>District</label>
+            <select id="districtSel">
+              <option value="">All districts</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Segment</label>
+            <select id="segmentSel">
+              <option value="">All segments</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Category</label>
+            <select id="categorySel">
+              <option value="">All categories</option>
+            </select>
+          </div>
+
+          <div class="list" id="list"></div>
+        </div>
+      </div>
+
+      <!-- MAP (45%) -->
+      <div class="panel map">
+        <div class="mapBar">
+          <span class="pill">🗺️ Map</span>
+          <span class="pill">Cluster = ON</span>
+          <span class="pill">Satellite = available</span>
+        </div>
+        <div class="mapWrap">
+          <div id="map"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: details + packages (33%) -->
+      <div class="panel right">
+        <div class="panelHead">
+          <div class="ttl">📌 Place Details</div>
+          <div style="font-weight:900;color:#6b7280;font-size:12px;" id="selBox">None</div>
+        </div>
+        <div class="panelBody">
+          <div class="placeCard">
+            <div class="placeHero" id="placeHero"></div>
+            <div class="placeInfo">
+              <h3 id="placeName">Select a place</h3>
+              <p class="desc" id="placeDesc">Tap a marker (or a list item) to see details here.</p>
+
+              <div class="kv">
+                <div class="k" id="kvDistrict">District: —</div>
+                <div class="k" id="kvSegment">Segment: —</div>
+                <div class="k" id="kvRegion">Region: —</div>
+                <div class="k" id="kvLatLng">Lat/Lng: —</div>
+              </div>
+
+              <button class="btn secondary" id="btnFindPackages" style="width:100%;">Find associated packages</button>
+
+              <div class="packList" id="packList" style="margin-top:12px;">
+                <div class="pack">
+                  <div class="pt">Associated packages will appear here</div>
+                  <div class="pm">Click “Find associated packages” after selecting a place.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px; font-size:11.5px; color:#6b7280; font-weight:800; line-height:1.5;">
+            Data source: Firebase RTDB REST (no “import” needed). Works on GitHub Pages.
+          </div>
+        </div>
+      </div>
+
+    </section>
   </div>
 
-  <script src="./district.js"></script>
+  <!-- Scripts -->
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script defer src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
   <script>
-    // ✅ CHANGE ONLY THIS in each district page:
-    const DISTRICT_ID = "shimla"; // bilaspur | chamba | hamirpur | kangra | kinnaur | kullu | lahaul_spiti | mandi | shimla | sirmaur | solan | una
-    window.addEventListener("DOMContentLoaded", ()=> window.renderDistrict(DISTRICT_ID));
-  </script>
+    /* =========================
+       1) HERO SLIDER (GitHub /style/)
+       ========================= */
+    const heroImages = [
+      "style/1hero.jpg",
+      "style/201-himalaya.jpg",
+      "style/Travelers.jpg",
+      "style/activity.jpg",
+      "style/temple.jpg",
+      "style/trek.jpeg"
+      // you can add more:
+      // "style/Kee_monastery.jpg",
+      // "style/kunjum.jpg",
+      // "style/kinnaur-kailash.webp",
+      // "style/n1.jpg"
+    ];
 
-  <!-- ✅ Firebase: Load templates and render packages -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
+    const slidesEl = document.getElementById("slides");
+    const dotsEl = document.getElementById("dots");
+    let heroIndex = 0;
+    let heroTimer = null;
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAKaFrj7JobWLloNQqzvx3SSibyrsiwzug",
-      authDomain: "revnue-records.firebaseapp.com",
-      databaseURL: "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "revnue-records",
-      storageBucket: "revnue-records.firebasestorage.app",
-      messagingSenderId: "182348503564",
-      appId: "1:182348503564:web:480085405b09177245ac29"
-    };
+    function buildHero(){
+      slidesEl.innerHTML = "";
+      dotsEl.innerHTML = "";
+      heroImages.forEach((src, i) => {
+        const s = document.createElement("div");
+        s.className = "slide" + (i===0 ? " active" : "");
+        s.style.backgroundImage = `url('${src}')`;
+        slidesEl.appendChild(s);
 
-    async function fetchNode(db, path){
-      const snap = await get(ref(db, path));
-      return snap.exists() ? snap.val() : {};
+        const d = document.createElement("div");
+        d.className = "dot" + (i===0 ? " active" : "");
+        d.addEventListener("click", () => setHero(i, true));
+        dotsEl.appendChild(d);
+      });
+    }
+    function setHero(i, manual=false){
+      heroIndex = i;
+      const slides = [...document.querySelectorAll(".slide")];
+      const dots = [...document.querySelectorAll(".dot")];
+      slides.forEach((s, idx) => s.classList.toggle("active", idx===heroIndex));
+      dots.forEach((d, idx) => d.classList.toggle("active", idx===heroIndex));
+      if(manual){
+        clearInterval(heroTimer);
+        heroTimer = setInterval(nextHero, 4200);
+      }
+    }
+    function nextHero(){
+      heroIndex = (heroIndex + 1) % heroImages.length;
+      setHero(heroIndex);
+    }
+    buildHero();
+    heroTimer = setInterval(nextHero, 4200);
+
+    /* =========================
+       2) LIVE BACKGROUND CANVAS (from your X-page style)
+       ========================= */
+    const c = document.getElementById('fx');
+    const ctx = c.getContext('2d');
+    let W,H,particles=[];
+    function resize(){
+      W = c.width = window.innerWidth;
+      H = c.height = window.innerHeight;
+      particles = Array.from({length: 70}, () => ({
+        x: Math.random()*W,
+        y: Math.random()*H,
+        r: Math.random()*1.6 + 0.4,
+        vx: (Math.random()*0.6 + 0.2) * (Math.random()<0.5?-1:1),
+        vy: (Math.random()*0.6 + 0.2) * (Math.random()<0.5?-1:1),
+        a: Math.random()*0.25 + 0.10
+      }));
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+
+      for(const p of particles){
+        p.x += p.vx; p.y += p.vy;
+        if(p.x < -20) p.x = W+20;
+        if(p.x > W+20) p.x = -20;
+        if(p.y < -20) p.y = H+20;
+        if(p.y > H+20) p.y = -20;
+
+        ctx.beginPath();
+        ctx.globalAlpha = p.a;
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle = "#8a5a3c";
+        ctx.fill();
+      }
+
+      for(let i=0;i<particles.length;i++){
+        for(let j=i+1;j<particles.length;j++){
+          const a = particles[i], b = particles[j];
+          const dx = a.x-b.x, dy = a.y-b.y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if(dist < 140){
+            ctx.globalAlpha = (1 - dist/140) * 0.10;
+            ctx.strokeStyle = "#c98b62";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(a.x,a.y);
+            ctx.lineTo(b.x,b.y);
+            ctx.stroke();
+          }
+        }
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    /* =========================
+       3) FIREBASE RTDB (REST) - no imports, works on GitHub Pages
+       ========================= */
+    const FIREBASE_DB = "https://revnue-records-default-rtdb.asia-southeast1.firebasedatabase.app";
+
+    async function fbGet(path){
+      const url = `${FIREBASE_DB}/${path}.json`;
+      const res = await fetch(url);
+      if(!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+      return await res.json();
     }
 
-    try{
-      const app = initializeApp(firebaseConfig);
-      const db = getDatabase(app);
+    /* =========================
+       4) MAP with clustering + satellite toggle
+       ========================= */
+    let map, markers, baseStreet, baseSat;
+    let placesArr = [];
+    let selectedPlace = null;
+    let templatesCache = null;
 
-      const templates = await fetchNode(db, "templates");
+    function initMap(){
+      map = L.map("map", { zoomControl:true });
 
-      // district name is exposed by renderDistrict
-      const districtName = window.__DISTRICT_NAME__ || "";
-      window.renderDistrictPackages(templates, districtName);
-    }catch(e){
-      const host = document.getElementById("districtPackages");
-      if(host) host.innerHTML = `<p class="p">Packages not loading. Check Firebase rules.<br><b>Error:</b> ${String(e?.message||e)}</p>`;
-      console.error(e);
+      // Street (OSM)
+      baseStreet = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap"
+      });
+
+      // Satellite (Esri)
+      baseSat = L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        { maxZoom: 19, attribution: "Tiles &copy; Esri" }
+      );
+
+      baseStreet.addTo(map);
+
+      L.control.layers(
+        { "Street": baseStreet, "Satellite": baseSat },
+        null,
+        { collapsed: true }
+      ).addTo(map);
+
+      markers = L.markerClusterGroup({
+        // ✅ merging + number clusters (your “cool” view)
+        spiderfyOnMaxZoom: true,
+        showCoverageOnHover: false,
+        zoomToBoundsOnClick: true,
+        disableClusteringAtZoom: 16,
+        maxClusterRadius: 55
+      });
+
+      map.addLayer(markers);
+
+      // Default view (Himachal)
+      map.setView([31.9, 77.2], 7);
     }
+
+    function makePopupHTML(p){
+      const name = p.name || p.place_id || "Place";
+      const district = p.district || "—";
+      const segment = p.segment || "—";
+      return `
+        <div style="font-family:Plus Jakarta Sans,Arial;min-width:190px">
+          <div style="font-weight:900;color:#1f2937;margin-bottom:4px">${escapeHtml(name)}</div>
+          <div style="font-weight:800;color:#6b7280;font-size:12px">District: ${escapeHtml(district)}</div>
+          <div style="font-weight:800;color:#6b7280;font-size:12px">Segment: ${escapeHtml(segment)}</div>
+          <div style="margin-top:8px;font-weight:900;color:#8a5a3c;font-size:12px">Tap to open details →</div>
+        </div>
+      `;
+    }
+
+    function renderMarkers(list){
+      markers.clearLayers();
+      list.forEach(p => {
+        if(typeof p.latitude !== "number" || typeof p.longitude !== "number") return;
+
+        const m = L.marker([p.latitude, p.longitude]);
+        m.bindPopup(makePopupHTML(p));
+
+        m.on("click", () => selectPlace(p, true));
+        markers.addLayer(m);
+      });
+
+      // fit bounds if list small-ish
+      if(list.length > 0 && list.length < 120){
+        const latlngs = list
+          .filter(p => typeof p.latitude === "number" && typeof p.longitude === "number")
+          .map(p => [p.latitude, p.longitude]);
+        if(latlngs.length){
+          const b = L.latLngBounds(latlngs);
+          map.fitBounds(b.pad(0.18));
+        }
+      }
+    }
+
+    /* =========================
+       5) UI list + filters
+       ========================= */
+    const qEl = document.getElementById("q");
+    const districtSel = document.getElementById("districtSel");
+    const segmentSel = document.getElementById("segmentSel");
+    const categorySel = document.getElementById("categorySel");
+    const listEl = document.getElementById("list");
+    const countBox = document.getElementById("countBox");
+
+    function uniqueSorted(arr){
+      return [...new Set(arr.filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b)));
+    }
+
+    function buildFilters(){
+      const districts = uniqueSorted(placesArr.map(p=>p.district));
+      const segments  = uniqueSorted(placesArr.map(p=>p.segment));
+      const cats      = uniqueSorted(placesArr.map(p=>p.category));
+
+      fillSelect(districtSel, districts, "All districts");
+      fillSelect(segmentSel, segments, "All segments");
+      fillSelect(categorySel, cats, "All categories");
+    }
+
+    function fillSelect(sel, values, firstLabel){
+      sel.innerHTML = "";
+      const op0 = document.createElement("option");
+      op0.value = "";
+      op0.textContent = firstLabel;
+      sel.appendChild(op0);
+      values.forEach(v=>{
+        const op = document.createElement("option");
+        op.value = v;
+        op.textContent = v;
+        sel.appendChild(op);
+      });
+    }
+
+    function applyFilters(){
+      const q = (qEl.value || "").trim().toLowerCase();
+      const d = districtSel.value;
+      const s = segmentSel.value;
+      const c = categorySel.value;
+
+      const filtered = placesArr.filter(p=>{
+        if(d && (p.district||"") !== d) return false;
+        if(s && (p.segment||"") !== s) return false;
+        if(c && (p.category||"") !== c) return false;
+
+        if(q){
+          const hay = `${p.place_id||""} ${p.name||""} ${p.region||""} ${p.district||""} ${p.segment||""}`.toLowerCase();
+          if(!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      renderList(filtered);
+      renderMarkers(filtered);
+      countBox.textContent = `${filtered.length} places`;
+    }
+
+    function renderList(list){
+      listEl.innerHTML = "";
+      const frag = document.createDocumentFragment();
+      list.slice(0, 350).forEach(p=>{
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `
+          <div class="name">${escapeHtml(p.name || p.place_id || "Place")}</div>
+          <div class="meta">${escapeHtml(p.district || "—")} • ${escapeHtml(p.segment || "—")}</div>
+        `;
+        div.addEventListener("click", () => selectPlace(p, true));
+        frag.appendChild(div);
+      });
+      listEl.appendChild(frag);
+
+      if(list.length > 350){
+        const more = document.createElement("div");
+        more.style.cssText = "padding:10px;font-weight:900;color:#6b7280;font-size:12px;";
+        more.textContent = `Showing first 350 of ${list.length}. Use filters to narrow.`;
+        listEl.appendChild(more);
+      }
+    }
+
+    /* =========================
+       6) PLACE DETAILS + PACKAGES (from Firebase templates)
+       ========================= */
+    const selBox = document.getElementById("selBox");
+    const placeHero = document.getElementById("placeHero");
+    const placeName = document.getElementById("placeName");
+    const placeDesc = document.getElementById("placeDesc");
+    const kvDistrict = document.getElementById("kvDistrict");
+    const kvSegment = document.getElementById("kvSegment");
+    const kvRegion = document.getElementById("kvRegion");
+    const kvLatLng = document.getElementById("kvLatLng");
+    const packList = document.getElementById("packList");
+    const btnFindPackages = document.getElementById("btnFindPackages");
+
+    function pickPhoto(p){
+      // Your Firebase places show photo_1/photo_2/photo_3 sometimes empty.
+      // If you store GitHub images by place_id_1.jpg format, we try that:
+      const pid = p.place_id || "";
+      const candidates = [
+        p.photo_1, p.photo_2, p.photo_3,
+        `Places/${pid}_1.jpg`,
+        `Places/${pid}_1.jpeg`,
+        `Places/${pid}_1.webp`,
+        `Places/${pid}_1.png`
+      ].filter(Boolean);
+      return candidates[0] || "style/201-himalaya.jpg";
+    }
+
+    function selectPlace(p, pan){
+      selectedPlace = p;
+      selBox.textContent = p.place_id || p.name || "Selected";
+
+      placeName.textContent = p.name || p.place_id || "Place";
+      kvDistrict.textContent = `District: ${p.district || "—"}`;
+      kvSegment.textContent  = `Segment: ${p.segment || "—"}`;
+      kvRegion.textContent   = `Region: ${p.region || "—"}`;
+      kvLatLng.textContent   = `Lat/Lng: ${fmtNum(p.latitude)}, ${fmtNum(p.longitude)}`;
+
+      const story = (p.story_tagline || "").trim();
+      const find = (p.what_you_find || "").trim();
+      placeDesc.textContent = (story || find)
+        ? `${story}${story && find ? " — " : ""}${find}`
+        : "No description found yet. Add story_tagline / what_you_find in your sheet.";
+
+      placeHero.style.backgroundImage = `url('${pickPhoto(p)}')`;
+
+      // reset packages box
+      packList.innerHTML = `
+        <div class="pack">
+          <div class="pt">Associated packages</div>
+          <div class="pm">Click “Find associated packages” to load packages that contain this place in day_place_ids.</div>
+        </div>
+      `;
+
+      if(pan && typeof p.latitude==="number" && typeof p.longitude==="number"){
+        map.setView([p.latitude, p.longitude], Math.max(map.getZoom(), 12), { animate:true });
+      }
+    }
+
+    async function findPackagesForSelected(){
+      if(!selectedPlace){ return; }
+
+      btnFindPackages.disabled = true;
+      btnFindPackages.textContent = "Searching packages...";
+      try{
+        // cache templates once
+        if(!templatesCache){
+          templatesCache = await fbGet("templates");
+        }
+
+        const pid = selectedPlace.place_id;
+        const matches = [];
+
+        // templatesCache is object: { package_id: { day1_place_ids:"a,b", ... } }
+        for(const [key, t] of Object.entries(templatesCache || {})){
+          if(!t) continue;
+          // check all day*_place_ids fields
+          let hit = false;
+          for(let d=1; d<=12; d++){
+            const field = `day${d}_place_ids`;
+            if(!t[field]) continue;
+            const ids = String(t[field]).split(",").map(x=>x.trim()).filter(Boolean);
+            if(ids.includes(pid)){ hit = true; break; }
+          }
+          if(hit){
+            matches.push({
+              id: t.package_id || key,
+              name: t.package_name || t.route_name || key,
+              days: t.days || "",
+              start: t.start_point || "",
+              end: t.end_point || ""
+            });
+          }
+        }
+
+        packList.innerHTML = "";
+        if(matches.length === 0){
+          packList.innerHTML = `
+            <div class="pack">
+              <div class="pt">No packages found</div>
+              <div class="pm">This place is not present in templates day_place_ids yet.</div>
+            </div>
+          `;
+        } else {
+          matches.slice(0, 80).forEach(m=>{
+            const div = document.createElement("div");
+            div.className = "pack";
+            div.innerHTML = `
+              <div class="pt">${escapeHtml(m.name)}</div>
+              <div class="pm">${escapeHtml(m.id)} • ${escapeHtml(String(m.days||""))} day(s)</div>
+              <div class="row">
+                <span class="mini">Start: ${escapeHtml(m.start||"—")}</span>
+                <span class="mini">End: ${escapeHtml(m.end||"—")}</span>
+              </div>
+            `;
+            packList.appendChild(div);
+          });
+          if(matches.length > 80){
+            const more = document.createElement("div");
+            more.style.cssText="padding:10px;font-weight:900;color:#6b7280;font-size:12px;";
+            more.textContent = `Showing first 80 of ${matches.length}.`;
+            packList.appendChild(more);
+          }
+        }
+      } catch(e){
+        packList.innerHTML = `
+          <div class="pack">
+            <div class="pt">Error loading templates</div>
+            <div class="pm">${escapeHtml(String(e.message || e))}</div>
+          </div>
+        `;
+      } finally {
+        btnFindPackages.disabled = false;
+        btnFindPackages.textContent = "Find associated packages";
+      }
+    }
+
+    btnFindPackages.addEventListener("click", findPackagesForSelected);
+
+    /* =========================
+       7) LOAD DATA (places)
+       ========================= */
+    async function loadPlaces(){
+      document.getElementById("btnReload").disabled = true;
+      document.getElementById("btnReload").textContent = "Loading...";
+      try{
+        const obj = await fbGet("places");
+
+        // Firebase might be: { place_id: {...} }
+        placesArr = Object.values(obj || {}).map(p => ({
+          place_id: p.place_id || "",
+          name: p.name || "",
+          district: p.district || "",
+          region: p.region || "",
+          segment: p.segment || "",
+          category: p.category || "",
+          latitude: toNum(p.latitude),
+          longitude: toNum(p.longitude),
+          story_tagline: p.history_tagline || p.story_tagline || "",
+          what_you_find: p.what_you_find || "",
+          photo_1: p.photo_1 || "",
+          photo_2: p.photo_2 || "",
+          photo_3: p.photo_3 || ""
+        }));
+
+        buildFilters();
+        applyFilters();
+
+      } catch(e){
+        alert("Places load error: " + (e.message || e));
+      } finally {
+        document.getElementById("btnReload").disabled = false;
+        document.getElementById("btnReload").textContent = "Reload Data";
+      }
+    }
+
+    /* =========================
+       8) Helpers + events
+       ========================= */
+    function toNum(v){
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    }
+    function fmtNum(n){
+      return (typeof n==="number" && Number.isFinite(n)) ? n.toFixed(4) : "—";
+    }
+    function escapeHtml(str){
+      return String(str ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    qEl.addEventListener("input", debounce(applyFilters, 150));
+    districtSel.addEventListener("change", applyFilters);
+    segmentSel.addEventListener("change", applyFilters);
+    categorySel.addEventListener("change", applyFilters);
+
+    document.getElementById("btnRecenter").addEventListener("click", ()=>{
+      map.setView([31.9, 77.2], 7, {animate:true});
+    });
+    document.getElementById("btnReload").addEventListener("click", ()=>{
+      templatesCache = null;
+      loadPlaces();
+    });
+
+    function debounce(fn, t){
+      let id=null;
+      return (...args)=>{
+        clearTimeout(id);
+        id=setTimeout(()=>fn(...args), t);
+      };
+    }
+
+    /* =========================
+       9) Boot
+       ========================= */
+    window.addEventListener("load", async ()=>{
+      initMap();
+      await loadPlaces();
+    });
   </script>
 </body>
-              </html>
+</html>
