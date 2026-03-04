@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="color-scheme" content="light"/>
+  <title>Himachal Explorer | District Map + Packages</title>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- MarkerCluster (cool merge + count) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+  <script defer src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+  <style>
+    :root{
+      /* Light brownish theme */
+      --bg0:#FFF7ED;         /* warm beige */
+      --bg1:#F6EBDD;         /* soft sand */
+      --card: rgba(255,255,255,.78);
+      --stroke: rgba(73,44,18,.18);
+      --muted: rgba(73,44,18,.68);
+      --text: rgba(55,33,14,.92);
+      --shadow: 0 18px 60px rgba(73,44,18,.14);
+      --radius: 16px;
+
+      --acc:#8B5A2B;         /* brown accent */
+      --acc2:#C08457;        /* lighter brown */
+      --ok:#16a34a;
+      --warn:#f59e0b;
+
+      --shellW: min(96vw, 1700px);
+      --gap: 12px;
+
+      /* Layout widths */
+      --leftW: 20%;
+      --centerW: 60%;
+      --rightW: 20%;
+
+      /* Hero */
+      --heroH: clamp(220px, 24vw, 320px); /* slightly bigger */
+    }
+
+    *{ box-sizing:border-box; }
+    html, body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color: var(--text);
+      background:
+        radial-gradient(1100px 520px at 20% 0%, rgba(139,90,43,.12), transparent 60%),
+        radial-gradient(900px 520px at 85% 10%, rgba(192,132,87,.12), transparent 62%),
+        radial-gradient(900px 520px at 50% 92%, rgba(139,90,43,.10), transparent 64%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+      overflow-y:auto; /* ✅ vertical scroll fixed */
+      -webkit-text-size-adjust: 100%;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* ===== Live background (from your X page style: particles + links) ===== */
+    #fx{
+      position:fixed; inset:0;
+      z-index:-1;
+      pointer-events:none;
+      opacity:.7;
+    }
+    .noise{
+      position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.08; mix-blend-mode:multiply;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+    }
+
+    .shell{
+      width: var(--shellW);
+      margin: 0 auto;
+      padding: 14px 10px 22px;
+    }
+
+    /* ===== HERO ===== */
+    .hero{
+      border-radius: 22px;
+      border:1px solid var(--stroke);
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      background: rgba(255,255,255,.62);
+      position:relative;
+    }
+    .heroMedia{
+      height: var(--heroH);
+      position:relative;
+      overflow:hidden;
+      background: rgba(255,255,255,.7);
+    }
+    .heroMedia img{
+      width:100%; height:100%;
+      object-fit:cover;
+      display:block;
+      transform: translateZ(0);
+      filter: saturate(1.05) contrast(1.02);
+    }
+    .heroShade{
+      position:absolute; inset:0;
+      background: linear-gradient(90deg, rgba(255,255,255,.30), rgba(255,255,255,.10), rgba(255,255,255,.26));
+      pointer-events:none;
+    }
+    .heroBar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,.78);
+      border-top:1px solid rgba(73,44,18,.14);
+      backdrop-filter: blur(14px);
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px; min-width:0;
+    }
+    .logo{
+      width:54px; height:54px; border-radius:16px;
+      background: rgba(255,255,255,.85);
+      border:1px solid rgba(73,44,18,.18);
+      display:grid; place-items:center;
+      box-shadow: 0 14px 34px rgba(73,44,18,.12);
+      overflow:hidden;
+      flex:0 0 auto;
+    }
+    .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .brandText{ min-width:0; }
+    .heroTitle{
+      margin:0;
+      font-size: clamp(16px, 2.0vw, 22px);
+      font-weight: 950;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      line-height:1.1;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      color: rgba(55,33,14,.96);
+    }
+    .heroSub{
+      margin:7px 0 0;
+      font-size: 12px;
+      letter-spacing:.06em;
+      text-transform: uppercase;
+      color: rgba(73,44,18,.70);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+
+    .heroRight{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .chip{
+      border:1px solid rgba(73,44,18,.18);
+      background: rgba(255,255,255,.78);
+      color: rgba(55,33,14,.85);
+      border-radius: 999px;
+      padding: 9px 11px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing:.10em;
+      display:inline-flex; align-items:center; gap:10px;
+      cursor:pointer; user-select:none;
+      box-shadow: 0 10px 22px rgba(73,44,18,.10);
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+      font-weight: 900;
+    }
+    .chip.primary{
+      border-color: rgba(139,90,43,.40);
+      background: rgba(139,90,43,.14);
+    }
+
+    /* ===== MAIN GRID ===== */
+    .main{
+      display:grid;
+      grid-template-columns: var(--leftW) var(--centerW) var(--rightW);
+      gap: var(--gap);
+      margin-top: 12px;
+      align-items: stretch;
+      min-width:0;
+    }
+
+    .pane{
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,255,255,.72));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+      min-height:0;
+    }
+    .paneHdr{
+      padding: 10px 12px;
+      border-bottom:1px solid rgba(73,44,18,.14);
+      display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
+      background: rgba(255,255,255,.84);
+    }
+    .paneHdr .t{
+      margin:0;
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing:.16em;
+      text-transform: uppercase;
+    }
+    .paneHdr .s{
+      font-size: 10.5px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+
+    /* Height that still scrolls page */
+    .paneBody{
+      padding: 12px;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      min-height: 0;
+      max-height: calc(100vh - 420px); /* ✅ allows overall page scroll + panel scroll */
+    }
+
+    /* ===== LEFT: District list (vertical) ===== */
+    .districtList{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .distBtn{
+      border:1px solid rgba(73,44,18,.16);
+      background: rgba(255,255,255,.84);
+      border-radius: 14px;
+      padding: 10px 10px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      box-shadow: 0 10px 18px rgba(73,44,18,.08);
+      font-weight: 900;
+      letter-spacing:.08em;
+      text-transform: uppercase;
+      font-size: 11px;
+      color: rgba(55,33,14,.92);
+    }
+    .distBtn.active{
+      border-color: rgba(139,90,43,.45);
+      background: rgba(139,90,43,.12);
+      box-shadow: 0 0 0 3px rgba(139,90,43,.12), 0 10px 18px rgba(73,44,18,.08);
+    }
+    .distBadge{
+      border:1px solid rgba(73,44,18,.14);
+      background: rgba(255,255,255,.75);
+      border-radius: 999px;
+      padding: 6px 8px;
+      font-size: 10px;
+      letter-spacing:.10em;
+      color: rgba(73,44,18,.76);
+      font-weight: 950;
+      white-space:nowrap;
+    }
+
+    /* ===== CENTER: Map ===== */
+    #map{
+      width:100%;
+      height: calc(100vh - 420px);
+      min-height: 520px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.7);
+    }
+    .mapWrap{
+      padding: 12px;
+      overflow:hidden;
+    }
+
+    /* ===== RIGHT: Info + package tools ===== */
+    .infoCard{
+      border:1px solid rgba(73,44,18,.16);
+      background: rgba(255,255,255,.84);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 12px 26px rgba(73,44,18,.10);
+      margin-bottom: 12px;
+    }
+    .k{
+      font-size: 10px;
+      letter-spacing:.16em;
+      text-transform: uppercase;
+      color: rgba(73,44,18,.62);
+      font-weight: 950;
+    }
+    .v{
+      margin-top:6px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: rgba(55,33,14,.90);
+      font-weight: 700;
+      white-space: pre-wrap;
+    }
+
+    .field label{
+      display:block;
+      font-size: 10px;
+      letter-spacing:.14em;
+      text-transform: uppercase;
+      color: rgba(73,44,18,.64);
+      font-weight: 950;
+      margin: 0 0 6px 2px;
+    }
+    select, input{
+      width:100%;
+      padding: 11px 11px;
+      border-radius: 14px;
+      border: 1px solid rgba(73,44,18,.18);
+      background: rgba(255,255,255,.92);
+      color: rgba(55,33,14,.92);
+      outline:none;
+      font-size: 13px;
+    }
+    select:focus, input:focus{
+      border-color: rgba(139,90,43,.55);
+      box-shadow: 0 0 0 3px rgba(139,90,43,.14);
+    }
+
+    .btnRow{ display:flex; gap:10px; margin-top:10px; }
+    .btn{
+      flex:1;
+      padding: 11px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(139,90,43,.35);
+      background: linear-gradient(135deg, rgba(139,90,43,.92), rgba(192,132,87,.78));
+      color:#fff;
+      font-weight: 950;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      cursor:pointer;
+      font-size: 11px;
+      box-shadow: 0 14px 28px rgba(139,90,43,.18);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn.secondary{
+      background: rgba(255,255,255,.86);
+      color: rgba(55,33,14,.88);
+      border: 1px solid rgba(73,44,18,.18);
+      box-shadow: 0 10px 18px rgba(73,44,18,.10);
+    }
+
+    .pkgList{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top: 12px;
+    }
+    .pkgTile{
+      border:1px solid rgba(73,44,18,.16);
+      background: rgba(255,255,255,.86);
+      border-radius: 16px;
+      padding: 10px;
+      box-shadow: 0 10px 18px rgba(73,44,18,.08);
+      cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .pkgTile.active{
+      border-color: rgba(139,90,43,.45);
+      box-shadow: 0 0 0 3px rgba(139,90,43,.12), 0 10px 18px rgba(73,44,18,.08);
+      background: rgba(139,90,43,.10);
+    }
+    .pkgTile .nm{
+      font-weight: 950;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      font-size: 11px;
+      color: rgba(55,33,14,.95);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .pkgTile .sm{
+      margin-top:6px;
+      font-size: 10px;
+      letter-spacing:.08em;
+      text-transform: uppercase;
+      color: rgba(73,44,18,.70);
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    .tag{
+      border:1px solid rgba(73,44,18,.14);
+      background: rgba(255,255,255,.78);
+      border-radius: 999px;
+      padding: 5px 7px;
+      font-weight: 900;
+      font-size: 9.5px;
+      white-space:nowrap;
+    }
+    .tag.in{ border-color: rgba(22,163,74,.28); background: rgba(22,163,74,.10); }
+    .tag.out{ border-color: rgba(239,68,68,.26); background: rgba(239,68,68,.10); }
+
+    /* ===== POPUP OVER MAP (itinerary) ===== */
+    .overlay{
+      position:fixed; inset:0;
+      z-index: 20000;
+      background: rgba(55,33,14,.26);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 14px;
+    }
+    .overlay.show{ display:flex; }
+    .modal{
+      width:min(980px, 100%);
+      border-radius: 18px;
+      border:1px solid rgba(73,44,18,.18);
+      background: rgba(255,255,255,.94);
+      box-shadow: 0 30px 90px rgba(73,44,18,.26);
+      overflow:hidden;
+      max-height: 86vh;
+      display:flex;
+      flex-direction:column;
+    }
+    .modalTop{
+      padding: 10px 12px;
+      border-bottom:1px solid rgba(73,44,18,.14);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      background: rgba(255,255,255,.92);
+    }
+    .modalTop .ttl{
+      font-weight: 950;
+      letter-spacing:.14em;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: rgba(55,33,14,.92);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      max-width: calc(100% - 120px);
+    }
+    .closeBtn{
+      border:1px solid rgba(73,44,18,.18);
+      background: rgba(255,255,255,.92);
+      border-radius: 12px;
+      padding: 8px 10px;
+      cursor:pointer;
+      font-size: 11px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      font-weight: 950;
+      color: rgba(55,33,14,.86);
+    }
+    .modalBody{
+      padding: 12px;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .dayBox{
+      border:1px solid rgba(73,44,18,.14);
+      background: rgba(255,255,255,.88);
+      border-radius: 16px;
+      padding: 10px;
+      box-shadow: 0 10px 18px rgba(73,44,18,.08);
+      margin-bottom: 10px;
+    }
+    .dayBox .dttl{
+      display:flex; justify-content:space-between; gap:10px;
+      font-weight: 950;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      font-size: 11px;
+      color: rgba(55,33,14,.92);
+    }
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top: 10px;
+    }
+    .chipP{
+      border:1px solid rgba(73,44,18,.14);
+      background: rgba(255,255,255,.86);
+      border-radius: 999px;
+      padding: 7px 9px;
+      font-size: 10px;
+      letter-spacing:.08em;
+      text-transform: uppercase;
+      font-weight: 900;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      white-space:nowrap;
+    }
+
+    /* ===== Footer contact in hero area ===== */
+    .contactMini{
+      font-size: 11px;
+      letter-spacing:.06em;
+      color: rgba(73,44,18,.78);
+      font-weight: 800;
+      text-transform: uppercase;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .contactMini a{
+      color: rgba(55,33,14,.90);
+      text-decoration:none;
+      border-bottom:1px dashed rgba(139,90,43,.45);
+      padding-bottom:2px;
+    }
+
+    /* ===== Responsive: Mobile like app ===== */
+    @media (max-width: 980px){
+      :root{ --gap: 10px; }
+      .main{
+        grid-template-columns: 1fr;
+      }
+      #map{
+        height: 56vh;
+        min-height: 360px;
+      }
+      .paneBody{
+        max-height: none;
+      }
+      .contactMini{ justify-content:flex-start; }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="fx"></canvas>
+  <div class="noise"></div>
+
+  <div class="shell">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="heroMedia">
+        <img id="heroImg" src="" alt="Hero" />
+        <div class="heroShade"></div>
+      </div>
+      <div class="heroBar">
+        <div class="brand">
+          <div class="logo">
+            <img src="./style/logo.png" alt="Logo" onerror="this.parentNode.textContent='HP'">
+          </div>
+          <div class="brandText">
+            <div class="heroTitle">Himachal Explorer</div>
+            <div class="heroSub" id="statusLine">Loading…</div>
+          </div>
+        </div>
+
+        <div class="heroRight">
+          <div class="contactMini" title="Contact">
+            <span>📞 <a href="tel:+917018138847">7018138847</a></span>
+            <span>✉️ <a href="mailto:chandanpanwar001@gmail.com">chandanpanwar001@gmail.com</a></span>
+          </div>
+          <div class="chip primary" id="fitBtn">Fit</div>
+          <div class="chip" id="clearBtn">Clear</div>
+          <div class="chip" id="refreshBtn">Refresh</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <!-- LEFT: Districts (20%) -->
+      <div class="pane">
+        <div class="paneHdr">
+          <div>
+            <p class="t">Districts</p>
+            <div class="s">Tap to filter</div>
+          </div>
+          <div class="s" id="distCount">—</div>
+        </div>
+        <div class="paneBody">
+          <div class="districtList" id="districtList">
+            <div style="padding:10px; color:rgba(73,44,18,.72); font-weight:800; font-size:12px;">
+              Loading districts…
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CENTER: Map (60%) -->
+      <div class="pane">
+        <div class="paneHdr">
+          <div>
+            <p class="t">Live Map</p>
+            <div class="s">Satellite + cluster</div>
+          </div>
+          <div class="s" id="mapBadge">—</div>
+        </div>
+        <div class="mapWrap">
+          <div id="map"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Info + Packages (20%) -->
+      <div class="pane">
+        <div class="paneHdr">
+          <div>
+            <p class="t">Info & Packages</p>
+            <div class="s">Scrollable</div>
+          </div>
+          <div class="s" id="pkgBadge">—</div>
+        </div>
+
+        <div class="paneBody" id="rightBody">
+
+          <!-- Marker Info -->
+          <div class="infoCard">
+            <div class="k">Selected Location</div>
+            <div class="v" id="infoTitle">—</div>
+            <div style="height:8px"></div>
+
+            <div class="k">History / What you can find</div>
+            <div class="v" id="infoDesc">Tap a marker to view details here.</div>
+          </div>
+
+          <!-- Package controls -->
+          <div class="infoCard">
+            <div class="k">Package Filters</div>
+            <div style="height:10px"></div>
+
+            <div class="field">
+              <label>Start City</label>
+              <select id="startSel">
+                <option value="">ANY</option>
+              </select>
+            </div>
+
+            <div style="height:10px"></div>
+            <div class="field">
+              <label>Days</label>
+              <select id="daysSel">
+                <option value="">ANY</option>
+                <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+                <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+                <option>11</option><option>12</option>
+              </select>
+            </div>
+
+            <div style="height:10px"></div>
+            <div class="field">
+              <label>Persons (Pax)</label>
+              <select id="paxSel">
+                <option>1</option><option selected>2</option><option>3</option><option>4</option>
+                <option>5</option><option>6</option><option>7</option><option>8</option>
+                <option>9</option><option>10</option><option>11</option><option>12</option>
+              </select>
+            </div>
+
+            <div class="btnRow">
+              <button class="btn secondary" id="resetBtn" type="button">Reset</button>
+              <button class="btn" id="applyBtn" type="button">Apply</button>
+            </div>
+          </div>
+
+          <!-- Packages list -->
+          <div class="infoCard">
+            <div class="k">Packages</div>
+            <div class="v" style="margin-top:8px; color:rgba(73,44,18,.74);">
+              Tap a package to highlight “IN PACKAGE” places and open itinerary popup.
+            </div>
+
+            <div class="pkgList" id="pkgList"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Itinerary popup -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <div class="modalTop">
+        <div class="ttl" id="modalTitle">Package Itinerary</div>
+        <button class="closeBtn" id="closeModal" type="button">Close</button>
+      </div>
+      <div class="modalBody" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Firebase + App -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
+
+    const $ = (id)=>document.getElementById(id);
+
+    /* ===== HERO IMAGES (UPDATE THESE PATHS to your GitHub folder) =====
+       You said: “Use this folder from the GitHub to display the images on hero section”
+       ✅ Put your real folder paths here.
+    */
+    const heroImages = [
+      "./style/hero/1.jpg",
+      "./style/hero/2.jpg",
+      "./style/hero/3.jpg",
+      "./style/hero/4.jpg",
+      "./style/hero/5.jpg",
+      "./style/hero/6.jpg"
+    ];
+    let heroIdx = 0;
+    function setHero(){
+      const img = $("heroImg");
+      img.src = heroImages[heroIdx % heroImages.length];
+      img.onerror = ()=>{ img.src = "./style/n1.jpg"; };
+    }
+    setHero();
+    setInterval(()=>{ heroIdx++; setHero(); }, 3800);
+
+    /* ===== Status ===== */
+    function setStatus(msg){ $("statusLine").textContent = msg; }
+
+    function escapeHtml(str){
+      return String(str ?? "")
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+    }
+    function safeUpper(x){ return String(x ?? "").trim().toUpperCase(); }
+
+    function splitCSV(s){
+      return String(s||"")
+        .split(",")
+        .map(x=>x.trim())
+        .filter(Boolean);
+    }
+
+    /* ===== Firebase (REPLACED with your new config) ===== */
+    const firebaseConfig = {
+      apiKey: "AIzaSyBmJDsXvokR8kYs_yoLPau1DqANPBBORJY",
+      authDomain: "garg-enterprise.firebaseapp.com",
+      databaseURL: "https://garg-enterprise-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "garg-enterprise",
+      storageBucket: "garg-enterprise.firebasestorage.app",
+      messagingSenderId: "1097408452571",
+      appId: "1:1097408452571:web:4e6806326b47ebb0b5b9fe",
+      measurementId: "G-S2S0MYT39W"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    async function fetchNode(path){
+      const snap = await get(ref(db, path));
+      return snap.exists() ? snap.val() : {};
+    }
+
+    /* ===== Data nodes (4 dataset) =====
+       templates
+       places
+       package_cost_breakdown
+       package_discounts (ignored for now)
+    */
+    let TEMPLATES = {};
+    let PLACES = {};
+    let COSTS = {};
+    let DISCOUNTS = {};
+
+    /* ===== Map ===== */
+    let map, markersCluster;
+    let markerById = new Map();
+    let selectedDistrict = "";
+    let selectedPackageKey = "";
+    let selectedPackagePlaceSet = new Set();
+
+    function latAny(p){ return Number(p?.latitude ?? p?.lat ?? p?.Latitude); }
+    function lngAny(p){ return Number(p?.longitude ?? p?.lng ?? p?.Longitude); }
+    function placeNameAny(p, key){ return String(p?.name || p?.["Location Name"] || p?.title || key || "PLACE").trim(); }
+
+    const iconIn = L.divIcon({
+      className: "",
+      html: `<div style="width:16px;height:16px;border-radius:50%;
+        background:rgba(139,90,43,.95);
+        border:2px solid rgba(255,255,255,.95);
+        box-shadow:0 10px 18px rgba(62,38,22,.25);
+      "></div>`,
+      iconSize:[16,16],
+      iconAnchor:[8,8]
+    });
+
+    const iconOut = L.divIcon({
+      className: "",
+      html: `<div style="width:14px;height:14px;border-radius:50%;
+        background:rgba(139,90,43,.18);
+        border:2px solid rgba(139,90,43,.35);
+      "></div>`,
+      iconSize:[14,14],
+      iconAnchor:[7,7]
+    });
+
+    function initMap(){
+      map = L.map("map", { zoomControl:true });
+
+      const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 });
+
+      /* Satellite (Google-like) using Esri (works on GitHub pages) */
+      const sat = L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        { maxZoom: 19 }
+      );
+
+      const terrain = L.tileLayer(
+        "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+        { maxZoom: 17 }
+      );
+
+      osm.addTo(map);
+
+      L.control.layers(
+        { "OSM": osm, "Satellite": sat, "Terrain": terrain },
+        {},
+        { collapsed: true }
+      ).addTo(map);
+
+      markersCluster = L.markerClusterGroup({
+        showCoverageOnHover: false,
+        spiderfyDistanceMultiplier: 1.4,
+        maxClusterRadius: 50
+      });
+
+      map.addLayer(markersCluster);
+
+      map.setView([31.1048, 77.1734], 8);
+
+      map.on("click", ()=>{
+        // user clicked empty map; keep info as is
+      });
+    }
+
+    function clearMarkers(){
+      markerById.clear();
+      markersCluster.clearLayers();
+      $("mapBadge").textContent = "—";
+    }
+
+    function setRightInfo(title, desc){
+      $("infoTitle").textContent = title || "—";
+      $("infoDesc").textContent = desc || "—";
+    }
+
+    function placeInfoText(p){
+      const history = String(p?.history_tagline || p?.history || "").trim();
+      const find = String(p?.what_you_find || p?.what_you_can_find || p?.description || "").trim();
+
+      if(history && find) return `${history}\n\nWhat you can find:\n${find}`;
+      if(history) return history;
+      if(find) return find;
+      return "No description added yet for this location.";
+    }
+
+    function markerPopupHtml(pid, p){
+      const nm = placeNameAny(p, pid);
+      const dist = safeUpper(p?.district || p?.District || "");
+      const isIn = selectedPackagePlaceSet.has(pid);
+
+      return `
+        <b>${escapeHtml(nm)}</b><br>
+        ${dist ? escapeHtml(dist) + "<br>" : ""}
+        <span style="display:inline-block;margin-top:6px;padding:4px 8px;border-radius:999px;
+          font-weight:900;letter-spacing:.08em;text-transform:uppercase;font-size:10px;
+          border:1px solid rgba(73,44,18,.14);
+          background:${isIn ? "rgba(22,163,74,.12)" : "rgba(239,68,68,.10)"};
+        ">
+          ${isIn ? "IN PACKAGE" : "NOT IN PACKAGE"}
+        </span>
+      `;
+    }
+
+    function buildMarkers(){
+      clearMarkers();
+
+      let shown = 0;
+      for(const [pid, p] of Object.entries(PLACES || {})){
+        const dist = safeUpper(p?.district || p?.District || "");
+        if(selectedDistrict && dist && dist !== selectedDistrict) continue;
+
+        const lat = latAny(p), lng = lngAny(p);
+        if(!isFinite(lat) || !isFinite(lng)) continue;
+
+        const isIn = selectedPackagePlaceSet.has(pid);
+
+        const m = L.marker([lat, lng], { icon: isIn ? iconIn : iconOut });
+
+        m.bindPopup(markerPopupHtml(pid, p));
+
+        m.on("click", ()=>{
+          const nm = placeNameAny(p, pid);
+          setRightInfo(nm, placeInfoText(p));
+        });
+
+        markerById.set(pid, m);
+        markersCluster.addLayer(m);
+        shown++;
+      }
+
+      $("mapBadge").textContent = `${shown} places`;
+    }
+
+    function fitMap(){
+      const layers = markersCluster.getLayers();
+      if(!layers.length){
+        map.setView([31.1048, 77.1734], 8);
+        return;
+      }
+      const group = L.featureGroup(layers);
+      map.fitBounds(group.getBounds().pad(0.12));
+    }
+
+    /* ===== District List ===== */
+    function renderDistricts(){
+      const counts = new Map();
+
+      for(const p of Object.values(PLACES || {})){
+        const d = safeUpper(p?.district || p?.District || "");
+        if(!d) continue;
+        counts.set(d, (counts.get(d)||0) + 1);
+      }
+
+      const list = Array.from(counts.keys()).sort((a,b)=> counts.get(b)-counts.get(a) || a.localeCompare(b));
+
+      $("distCount").textContent = list.length ? `${list.length}` : "—";
+
+      const host = $("districtList");
+      host.innerHTML = "";
+
+      const anyBtn = document.createElement("div");
+      anyBtn.className = "distBtn" + (!selectedDistrict ? " active" : "");
+      anyBtn.innerHTML = `<span>ANY</span><span class="distBadge">${counts.size ? "ALL" : "—"}</span>`;
+      anyBtn.onclick = ()=>{
+        selectedDistrict = "";
+        host.querySelectorAll(".distBtn").forEach(x=>x.classList.remove("active"));
+        anyBtn.classList.add("active");
+        buildMarkers();
+        fitMap();
+      };
+      host.appendChild(anyBtn);
+
+      list.forEach(d=>{
+        const btn = document.createElement("div");
+        btn.className = "distBtn" + (selectedDistrict === d ? " active" : "");
+        btn.innerHTML = `<span>${escapeHtml(d)}</span><span class="distBadge">${counts.get(d)}</span>`;
+        btn.onclick = ()=>{
+          selectedDistrict = d;
+          host.querySelectorAll(".distBtn").forEach(x=>x.classList.remove("active"));
+          btn.classList.add("active");
+          buildMarkers();
+          fitMap();
+        };
+        host.appendChild(btn);
+      });
+    }
+
+    /* ===== Package filtering ===== */
+    function buildStartDropdown(){
+      const starts = new Map();
+      Object.values(TEMPLATES || {}).forEach(t=>{
+        const s = safeUpper(t.start_point || t.start || "");
+        if(!s) return;
+        starts.set(s, (starts.get(s)||0) + 1);
+      });
+      const list = Array.from(starts.keys()).sort((a,b)=> starts.get(b)-starts.get(a) || a.localeCompare(b));
+      const sel = $("startSel");
+      sel.innerHTML = `<option value="">ANY</option>` + list.map(s=>`<option value="${escapeHtml(s)}">${escapeHtml(s)} (${starts.get(s)})</option>`).join("");
+    }
+
+    function getPackagePlaceSet(tpl){
+      const s = new Set();
+      const days = Number(tpl?.days || 0) || 0;
+      const maxD = Math.max(1, days);
+      for(let d=1; d<=maxD; d++){
+        splitCSV(tpl[`day${d}_place_ids`] || "").forEach(pid => s.add(pid));
+      }
+      return s;
+    }
+
+    function filterPackages(){
+      const start = safeUpper($("startSel").value || "");
+      const days = String($("daysSel").value || "").trim();
+
+      const list = Object.entries(TEMPLATES || {}).map(([k,v])=>({ key:k, ...v }));
+
+      const out = list.filter(t=>{
+        if(start){
+          const s = safeUpper(t.start_point || t.start || "");
+          if(s !== start) return false;
+        }
+        if(days){
+          if(String(t.days || "") !== days) return false;
+        }
+        // district filter optional: when district chosen, show packages of that district
+        if(selectedDistrict){
+          const d = safeUpper(t.district || "");
+          if(d && d !== selectedDistrict) return false;
+        }
+        return true;
+      });
+
+      out.sort((a,b)=>
+        (Number(a.days||0)-Number(b.days||0)) ||
+        String(a.package_name||a.route_name||a.key).localeCompare(String(b.package_name||b.route_name||b.key))
+      );
+
+      return out;
+    }
+
+    function renderPackages(){
+      const pkgs = filterPackages();
+      $("pkgBadge").textContent = pkgs.length ? `${pkgs.length}` : "—";
+
+      const host = $("pkgList");
+      host.innerHTML = "";
+
+      if(!pkgs.length){
+        host.innerHTML = `<div style="padding:10px;color:rgba(73,44,18,.72);font-weight:800;font-size:12px;">
+          No packages match. Change filters.
+        </div>`;
+        return;
+      }
+
+      pkgs.slice(0, 50).forEach(t=>{
+        const key = t.key;
+        const title = String(t.package_name || t.route_name || key || "PACKAGE");
+        const st = safeUpper(t.start_point || t.start || "");
+        const d = safeUpper(t.district || "");
+        const dd = Number(t.days||0) || "";
+
+        const tile = document.createElement("div");
+        tile.className = "pkgTile" + (selectedPackageKey === key ? " active" : "");
+        tile.innerHTML = `
+          <div class="nm">${escapeHtml(title)}</div>
+          <div class="sm">
+            ${dd ? `<span class="tag">${dd}D</span>` : ""}
+            ${st ? `<span class="tag">${escapeHtml(st)}</span>` : ""}
+            ${d ? `<span class="tag">${escapeHtml(d)}</span>` : ""}
+            <span class="tag">Tap to open</span>
+          </div>
+        `;
+
+        tile.onclick = ()=>{
+          selectedPackageKey = key;
+
+          // highlight IN/OUT places
+          selectedPackagePlaceSet = getPackagePlaceSet(t);
+
+          // update tiles selection UI
+          host.querySelectorAll(".pkgTile").forEach(x=>x.classList.remove("active"));
+          tile.classList.add("active");
+
+          // rebuild markers with IN/OUT icons + popup badges
+          buildMarkers();
+
+          // open itinerary popup over map
+          openItinerary(t);
+        };
+
+        host.appendChild(tile);
+      });
+    }
+
+    /* ===== Itinerary Modal ===== */
+    function openItinerary(tpl){
+      const title = String(tpl.package_name || tpl.route_name || tpl.key || "PACKAGE");
+      $("modalTitle").textContent = title;
+
+      const body = $("modalBody");
+      body.innerHTML = "";
+
+      const days = Number(tpl.days || 0) || 0;
+      const maxD = Math.max(1, days);
+
+      for(let d=1; d<=maxD; d++){
+        const ids = splitCSV(tpl[`day${d}_place_ids`] || "");
+        if(!ids.length) continue;
+
+        const box = document.createElement("div");
+        box.className = "dayBox";
+        box.innerHTML = `
+          <div class="dttl"><span>Day ${d}</span><span>${ids.length} stops</span></div>
+          <div class="chips"></div>
+        `;
+
+        const chips = box.querySelector(".chips");
+        ids.forEach(pid=>{
+          const p = PLACES[pid] || {};
+          const nm = placeNameAny(p, pid);
+
+          const ch = document.createElement("div");
+          ch.className = "chipP";
+          ch.textContent = nm;
+          ch.onclick = ()=>{
+            // focus map and show info
+            const lat = latAny(p), lng = lngAny(p);
+            if(isFinite(lat) && isFinite(lng)) map.setView([lat,lng], 12, { animate:true });
+            setRightInfo(nm, placeInfoText(p));
+
+            const m = markerById.get(pid);
+            if(m) m.openPopup();
+          };
+          chips.appendChild(ch);
+        });
+
+        body.appendChild(box);
+      }
+
+      $("overlay").classList.add("show");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeItinerary(){
+      $("overlay").classList.remove("show");
+      document.body.style.overflow = "";
+    }
+
+    /* ===== Buttons ===== */
+    $("closeModal").onclick = closeItinerary;
+    $("overlay").addEventListener("click", (e)=>{
+      if(e.target === $("overlay")) closeItinerary();
+    });
+    window.addEventListener("keydown", (e)=>{
+      if(e.key === "Escape") closeItinerary();
+    });
+
+    $("fitBtn").onclick = ()=> fitMap();
+    $("clearBtn").onclick = ()=>{
+      selectedPackageKey = "";
+      selectedPackagePlaceSet = new Set();
+      buildMarkers();
+      setRightInfo("—", "Tap a marker to view details here.");
+    };
+
+    $("resetBtn").onclick = ()=>{
+      $("startSel").value = "";
+      $("daysSel").value = "";
+      $("paxSel").value = "2";
+      selectedPackageKey = "";
+      selectedPackagePlaceSet = new Set();
+      renderPackages();
+      buildMarkers();
+      fitMap();
+    };
+
+    $("applyBtn").onclick = ()=>{
+      selectedPackageKey = "";
+      selectedPackagePlaceSet = new Set();
+      renderPackages();
+      buildMarkers();
+      fitMap();
+    };
+
+    $("refreshBtn").onclick = async ()=>{
+      setStatus("Refreshing from Firebase…");
+      await loadAll(true);
+      setStatus("Ready");
+    };
+
+    /* ===== Load all ===== */
+    async function loadAll(force=false){
+      try{
+        setStatus("Loading data…");
+
+        const [templates, places, costs, discounts] = await Promise.all([
+          fetchNode("templates"),
+          fetchNode("places"),
+          fetchNode("package_cost_breakdown"),
+          fetchNode("package_discounts")
+        ]);
+
+        TEMPLATES = templates || {};
+        PLACES = places || {};
+        COSTS = costs || {};
+        DISCOUNTS = discounts || {}; // ignored for now
+
+        buildStartDropdown();
+        renderDistricts();
+        renderPackages();
+
+        buildMarkers();
+        fitMap();
+
+        setStatus("Ready • Data loaded");
+      }catch(e){
+        console.error(e);
+        setStatus("Firebase error");
+        setRightInfo("Data not loading", String(e?.message || e));
+      }
+    }
+
+    /* ===== Live background particles (like your X page) ===== */
+    const c = document.getElementById("fx");
+    const ctx = c.getContext("2d");
+    let W,H,particles=[];
+    function resizeFx(){
+      W = c.width = window.innerWidth;
+      H = c.height = window.innerHeight;
+      particles = Array.from({length: 70}, () => ({
+        x: Math.random()*W,
+        y: Math.random()*H,
+        r: Math.random()*1.6 + 0.4,
+        vx: (Math.random()*0.6 + 0.2) * (Math.random()<0.5?-1:1),
+        vy: (Math.random()*0.6 + 0.2) * (Math.random()<0.5?-1:1),
+        a: Math.random()*0.28 + 0.10
+      }));
+    }
+    window.addEventListener("resize", resizeFx, { passive:true });
+    resizeFx();
+
+    function drawFx(){
+      ctx.clearRect(0,0,W,H);
+
+      for(const p of particles){
+        p.x += p.vx; p.y += p.vy;
+        if(p.x < -20) p.x = W+20;
+        if(p.x > W+20) p.x = -20;
+        if(p.y < -20) p.y = H+20;
+        if(p.y > H+20) p.y = -20;
+
+        ctx.beginPath();
+        ctx.globalAlpha = p.a;
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle = "rgba(139,90,43,.95)";
+        ctx.fill();
+      }
+
+      for(let i=0;i<particles.length;i++){
+        for(let j=i+1;j<particles.length;j++){
+          const a = particles[i], b = particles[j];
+          const dx = a.x-b.x, dy = a.y-b.y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if(dist < 140){
+            ctx.globalAlpha = (1 - dist/140) * 0.12;
+            ctx.strokeStyle = "rgba(139,90,43,.85)";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(a.x,a.y);
+            ctx.lineTo(b.x,b.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(drawFx);
+    }
+
+    /* ===== Start ===== */
+    window.addEventListener("DOMContentLoaded", async ()=>{
+      initMap();
+      drawFx();
+      await loadAll();
+    });
+  </script>
+</body>
+</html>
