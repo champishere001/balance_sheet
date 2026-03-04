@@ -18,8 +18,8 @@
   <style>
     :root{
       /* Light brownish theme */
-      --bg0:#FFF7ED;         /* warm beige */
-      --bg1:#F6EBDD;         /* soft sand */
+      --bg0:#FFF7ED;
+      --bg1:#F6EBDD;
       --card: rgba(255,255,255,.78);
       --stroke: rgba(73,44,18,.18);
       --muted: rgba(73,44,18,.68);
@@ -27,21 +27,19 @@
       --shadow: 0 18px 60px rgba(73,44,18,.14);
       --radius: 16px;
 
-      --acc:#8B5A2B;         /* brown accent */
-      --acc2:#C08457;        /* lighter brown */
+      --acc:#8B5A2B;
+      --acc2:#C08457;
       --ok:#16a34a;
       --warn:#f59e0b;
 
       --shellW: min(96vw, 1700px);
       --gap: 12px;
 
-      /* Layout widths */
       --leftW: 20%;
       --centerW: 60%;
       --rightW: 20%;
 
-      /* Hero */
-      --heroH: clamp(220px, 24vw, 320px); /* slightly bigger */
+      --heroH: clamp(220px, 24vw, 320px);
     }
 
     *{ box-sizing:border-box; }
@@ -56,12 +54,12 @@
         radial-gradient(900px 520px at 50% 92%, rgba(139,90,43,.10), transparent 64%),
         linear-gradient(180deg, var(--bg0), var(--bg1));
       overflow-x:hidden;
-      overflow-y:auto; /* ✅ vertical scroll fixed */
+      overflow-y:auto;
       -webkit-text-size-adjust: 100%;
       text-rendering: optimizeLegibility;
     }
 
-    /* ===== Live background (from your X page style: particles + links) ===== */
+    /* ===== Live background ===== */
     #fx{
       position:fixed; inset:0;
       z-index:-1;
@@ -88,6 +86,8 @@
       background: rgba(255,255,255,.62);
       position:relative;
     }
+    .hero.hidden{ display:none !important; } /* ✅ hide when district selected */
+
     .heroMedia{
       height: var(--heroH);
       position:relative;
@@ -221,13 +221,12 @@
       white-space:nowrap;
     }
 
-    /* Height that still scrolls page */
     .paneBody{
       padding: 12px;
       overflow:auto;
       -webkit-overflow-scrolling: touch;
       min-height: 0;
-      max-height: calc(100vh - 420px); /* ✅ allows overall page scroll + panel scroll */
+      max-height: calc(100vh - 420px);
     }
 
     /* ===== LEFT: District list (vertical) ===== */
@@ -497,7 +496,6 @@
       white-space:nowrap;
     }
 
-    /* ===== Footer contact in hero area ===== */
     .contactMini{
       font-size: 11px;
       letter-spacing:.06em;
@@ -517,19 +515,11 @@
       padding-bottom:2px;
     }
 
-    /* ===== Responsive: Mobile like app ===== */
     @media (max-width: 980px){
       :root{ --gap: 10px; }
-      .main{
-        grid-template-columns: 1fr;
-      }
-      #map{
-        height: 56vh;
-        min-height: 360px;
-      }
-      .paneBody{
-        max-height: none;
-      }
+      .main{ grid-template-columns: 1fr; }
+      #map{ height: 56vh; min-height: 360px; }
+      .paneBody{ max-height: none; }
       .contactMini{ justify-content:flex-start; }
     }
   </style>
@@ -542,7 +532,7 @@
   <div class="shell">
 
     <!-- HERO -->
-    <div class="hero">
+    <div class="hero" id="hero">
       <div class="heroMedia">
         <img id="heroImg" src="" alt="Hero" />
         <div class="heroShade"></div>
@@ -573,7 +563,7 @@
     <!-- MAIN -->
     <div class="main">
 
-      <!-- LEFT: Districts (20%) -->
+      <!-- LEFT -->
       <div class="pane">
         <div class="paneHdr">
           <div>
@@ -591,7 +581,7 @@
         </div>
       </div>
 
-      <!-- CENTER: Map (60%) -->
+      <!-- CENTER -->
       <div class="pane">
         <div class="paneHdr">
           <div>
@@ -605,7 +595,7 @@
         </div>
       </div>
 
-      <!-- RIGHT: Info + Packages (20%) -->
+      <!-- RIGHT -->
       <div class="pane">
         <div class="paneHdr">
           <div>
@@ -617,7 +607,6 @@
 
         <div class="paneBody" id="rightBody">
 
-          <!-- Marker Info -->
           <div class="infoCard">
             <div class="k">Selected Location</div>
             <div class="v" id="infoTitle">—</div>
@@ -627,7 +616,6 @@
             <div class="v" id="infoDesc">Tap a marker to view details here.</div>
           </div>
 
-          <!-- Package controls -->
           <div class="infoCard">
             <div class="k">Package Filters</div>
             <div style="height:10px"></div>
@@ -666,7 +654,6 @@
             </div>
           </div>
 
-          <!-- Packages list -->
           <div class="infoCard">
             <div class="k">Packages</div>
             <div class="v" style="margin-top:8px; color:rgba(73,44,18,.74);">
@@ -692,17 +679,13 @@
     </div>
   </div>
 
-  <!-- Firebase + App -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
 
     const $ = (id)=>document.getElementById(id);
 
-    /* ===== HERO IMAGES (UPDATE THESE PATHS to your GitHub folder) =====
-       You said: “Use this folder from the GitHub to display the images on hero section”
-       ✅ Put your real folder paths here.
-    */
+    /* ===== HERO IMAGES ===== */
     const heroImages = [
       "./style/hero/1.jpg",
       "./style/hero/2.jpg",
@@ -720,7 +703,6 @@
     setHero();
     setInterval(()=>{ heroIdx++; setHero(); }, 3800);
 
-    /* ===== Status ===== */
     function setStatus(msg){ $("statusLine").textContent = msg; }
 
     function escapeHtml(str){
@@ -737,7 +719,13 @@
         .filter(Boolean);
     }
 
-    /* ===== Firebase (REPLACED with your new config) ===== */
+    function setHeroVisible(isVisible){
+      const hero = $("hero");
+      if(!hero) return;
+      hero.classList.toggle("hidden", !isVisible);
+    }
+
+    /* ===== Firebase ===== */
     const firebaseConfig = {
       apiKey: "AIzaSyBmJDsXvokR8kYs_yoLPau1DqANPBBORJY",
       authDomain: "garg-enterprise.firebaseapp.com",
@@ -756,12 +744,6 @@
       return snap.exists() ? snap.val() : {};
     }
 
-    /* ===== Data nodes (4 dataset) =====
-       templates
-       places
-       package_cost_breakdown
-       package_discounts (ignored for now)
-    */
     let TEMPLATES = {};
     let PLACES = {};
     let COSTS = {};
@@ -770,9 +752,11 @@
     /* ===== Map ===== */
     let map, markersCluster;
     let markerById = new Map();
+
     let selectedDistrict = "";
     let selectedPackageKey = "";
     let selectedPackagePlaceSet = new Set();
+    let selectedPlaceId = ""; // ✅ NEW: location filter
 
     function latAny(p){ return Number(p?.latitude ?? p?.lat ?? p?.Latitude); }
     function lngAny(p){ return Number(p?.longitude ?? p?.lng ?? p?.Longitude); }
@@ -803,13 +787,10 @@
       map = L.map("map", { zoomControl:true });
 
       const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 });
-
-      /* Satellite (Google-like) using Esri (works on GitHub pages) */
       const sat = L.tileLayer(
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         { maxZoom: 19 }
       );
-
       const terrain = L.tileLayer(
         "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
         { maxZoom: 17 }
@@ -830,12 +811,7 @@
       });
 
       map.addLayer(markersCluster);
-
       map.setView([31.1048, 77.1734], 8);
-
-      map.on("click", ()=>{
-        // user clicked empty map; keep info as is
-      });
     }
 
     function clearMarkers(){
@@ -889,7 +865,6 @@
         if(!isFinite(lat) || !isFinite(lng)) continue;
 
         const isIn = selectedPackagePlaceSet.has(pid);
-
         const m = L.marker([lat, lng], { icon: isIn ? iconIn : iconOut });
 
         m.bindPopup(markerPopupHtml(pid, p));
@@ -897,6 +872,13 @@
         m.on("click", ()=>{
           const nm = placeNameAny(p, pid);
           setRightInfo(nm, placeInfoText(p));
+
+          // ✅ location click -> filter packages that include this place
+          selectedPlaceId = pid;
+          selectedPackageKey = "";
+          selectedPackagePlaceSet = new Set();
+          renderPackages();
+          buildMarkers(); // update IN/OUT after clearing package highlight
         });
 
         markerById.set(pid, m);
@@ -920,7 +902,6 @@
     /* ===== District List ===== */
     function renderDistricts(){
       const counts = new Map();
-
       for(const p of Object.values(PLACES || {})){
         const d = safeUpper(p?.district || p?.District || "");
         if(!d) continue;
@@ -928,7 +909,6 @@
       }
 
       const list = Array.from(counts.keys()).sort((a,b)=> counts.get(b)-counts.get(a) || a.localeCompare(b));
-
       $("distCount").textContent = list.length ? `${list.length}` : "—";
 
       const host = $("districtList");
@@ -939,8 +919,16 @@
       anyBtn.innerHTML = `<span>ANY</span><span class="distBadge">${counts.size ? "ALL" : "—"}</span>`;
       anyBtn.onclick = ()=>{
         selectedDistrict = "";
+        selectedPlaceId = "";
+        selectedPackageKey = "";
+        selectedPackagePlaceSet = new Set();
+
+        setHeroVisible(true); // ✅ hero back
+
         host.querySelectorAll(".distBtn").forEach(x=>x.classList.remove("active"));
         anyBtn.classList.add("active");
+
+        renderPackages();
         buildMarkers();
         fitMap();
       };
@@ -952,8 +940,16 @@
         btn.innerHTML = `<span>${escapeHtml(d)}</span><span class="distBadge">${counts.get(d)}</span>`;
         btn.onclick = ()=>{
           selectedDistrict = d;
+          selectedPlaceId = "";
+          selectedPackageKey = "";
+          selectedPackagePlaceSet = new Set();
+
+          setHeroVisible(false); // ✅ hide hero when district chosen
+
           host.querySelectorAll(".distBtn").forEach(x=>x.classList.remove("active"));
           btn.classList.add("active");
+
+          renderPackages();
           buildMarkers();
           fitMap();
         };
@@ -961,7 +957,7 @@
       });
     }
 
-    /* ===== Package filtering ===== */
+    /* ===== Packages ===== */
     function buildStartDropdown(){
       const starts = new Map();
       Object.values(TEMPLATES || {}).forEach(t=>{
@@ -984,6 +980,16 @@
       return s;
     }
 
+    function packageIncludesPlace(tpl, placeId){
+      const days = Number(tpl?.days || 0) || 0;
+      const maxD = Math.max(1, days);
+      for(let d=1; d<=maxD; d++){
+        const ids = splitCSV(tpl[`day${d}_place_ids`] || "");
+        if(ids.includes(placeId)) return true;
+      }
+      return false;
+    }
+
     function filterPackages(){
       const start = safeUpper($("startSel").value || "");
       const days = String($("daysSel").value || "").trim();
@@ -998,11 +1004,19 @@
         if(days){
           if(String(t.days || "") !== days) return false;
         }
-        // district filter optional: when district chosen, show packages of that district
+
+        // ✅ district filter: show packages ending in that dist
         if(selectedDistrict){
           const d = safeUpper(t.district || "");
-          if(d && d !== selectedDistrict) return false;
+          if(!d) return false;
+          if(d !== selectedDistrict) return false;
         }
+
+        // ✅ location filter: show packages where that place is involved
+        if(selectedPlaceId){
+          if(!packageIncludesPlace(t, selectedPlaceId)) return false;
+        }
+
         return true;
       });
 
@@ -1023,7 +1037,7 @@
 
       if(!pkgs.length){
         host.innerHTML = `<div style="padding:10px;color:rgba(73,44,18,.72);font-weight:800;font-size:12px;">
-          No packages match. Change filters.
+          No packages match. Change filters or clear location/district.
         </div>`;
         return;
       }
@@ -1043,24 +1057,19 @@
             ${dd ? `<span class="tag">${dd}D</span>` : ""}
             ${st ? `<span class="tag">${escapeHtml(st)}</span>` : ""}
             ${d ? `<span class="tag">${escapeHtml(d)}</span>` : ""}
+            ${selectedPlaceId ? `<span class="tag">Location Filter ON</span>` : ""}
             <span class="tag">Tap to open</span>
           </div>
         `;
 
         tile.onclick = ()=>{
           selectedPackageKey = key;
-
-          // highlight IN/OUT places
           selectedPackagePlaceSet = getPackagePlaceSet(t);
 
-          // update tiles selection UI
           host.querySelectorAll(".pkgTile").forEach(x=>x.classList.remove("active"));
           tile.classList.add("active");
 
-          // rebuild markers with IN/OUT icons + popup badges
           buildMarkers();
-
-          // open itinerary popup over map
           openItinerary(t);
         };
 
@@ -1099,7 +1108,6 @@
           ch.className = "chipP";
           ch.textContent = nm;
           ch.onclick = ()=>{
-            // focus map and show info
             const lat = latAny(p), lng = lngAny(p);
             if(isFinite(lat) && isFinite(lng)) map.setView([lat,lng], 12, { animate:true });
             setRightInfo(nm, placeInfoText(p));
@@ -1132,9 +1140,12 @@
     });
 
     $("fitBtn").onclick = ()=> fitMap();
+
     $("clearBtn").onclick = ()=>{
       selectedPackageKey = "";
       selectedPackagePlaceSet = new Set();
+      selectedPlaceId = ""; // ✅ clear location filter too
+      renderPackages();
       buildMarkers();
       setRightInfo("—", "Tap a marker to view details here.");
     };
@@ -1145,6 +1156,7 @@
       $("paxSel").value = "2";
       selectedPackageKey = "";
       selectedPackagePlaceSet = new Set();
+      selectedPlaceId = "";
       renderPackages();
       buildMarkers();
       fitMap();
@@ -1153,6 +1165,7 @@
     $("applyBtn").onclick = ()=>{
       selectedPackageKey = "";
       selectedPackagePlaceSet = new Set();
+      // keep selectedPlaceId (user might want location filter)
       renderPackages();
       buildMarkers();
       fitMap();
@@ -1179,7 +1192,7 @@
         TEMPLATES = templates || {};
         PLACES = places || {};
         COSTS = costs || {};
-        DISCOUNTS = discounts || {}; // ignored for now
+        DISCOUNTS = discounts || {};
 
         buildStartDropdown();
         renderDistricts();
@@ -1196,7 +1209,7 @@
       }
     }
 
-    /* ===== Live background particles (like your X page) ===== */
+    /* ===== Live background particles ===== */
     const c = document.getElementById("fx");
     const ctx = c.getContext("2d");
     let W,H,particles=[];
@@ -1253,7 +1266,6 @@
       requestAnimationFrame(drawFx);
     }
 
-    /* ===== Start ===== */
     window.addEventListener("DOMContentLoaded", async ()=>{
       initMap();
       drawFx();
