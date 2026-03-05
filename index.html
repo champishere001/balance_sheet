@@ -3,240 +3,291 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="theme-color" content="#0C6BFF"/>
+<title>Himachal Explorer | Premium Travel Experience</title>
 
-<title>Himachal Explorer | Explore Himachal Pradesh Tour Packages & District Guide</title>
-
-<meta name="description" content="Explore Himachal Pradesh with Himachal Explorer. Discover districts, tour packages, hotels, trekking routes, temples and travel guides across Shimla, Manali, Kullu, Kangra, Dalhousie and more."/>
-<meta name="keywords" content="Himachal tour packages, Shimla travel, Manali tour, Kullu tourism, Kangra district guide, Dalhousie trip, Himachal hotels booking"/>
-<meta name="author" content="Himachal Explorer"/>
-<meta name="robots" content="index, follow"/>
-<link rel="canonical" href="https://himachalexplorer.in/"/>
-
-<link rel="icon" type="image/png" href="Logo.png"/>
-
-<meta property="og:type" content="website"/>
-<meta property="og:title" content="Himachal Explorer | Official Himachal Travel Guide"/>
-<meta property="og:description" content="Plan your Himachal trip with district wise information, tour packages and interactive map booking."/>
-<meta property="og:url" content="https://himachalexplorer.in/"/>
-<meta property="og:image" content="https://himachalexplorer.in/Logo.png"/>
-
-<meta name="twitter:card" content="summary_large_image"/>
-
-<script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@type": "TravelAgency",
- "name": "Himachal Explorer",
- "url": "https://himachalexplorer.in",
- "logo": "https://himachalexplorer.in/Logo.png",
- "address": {
-   "@type": "PostalAddress",
-   "addressRegion": "Himachal Pradesh",
-   "addressCountry": "India"
- }
-}
-</script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
 
 <style>
-body{
-margin:0;
-font-family:Arial, sans-serif;
-background:#f4f8ff;
-color:#0D1B2A;
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{background:#0c1220;color:#fff;overflow-x:hidden}
+
+/* Floating Glass Navbar */
+nav{
+position:fixed;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+width:90%;
+max-width:1200px;
+padding:15px 30px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(15px);
+border-radius:20px;
+z-index:1000;
+box-shadow:0 10px 40px rgba(0,0,0,0.4);
 }
 
-header{
-position:relative;
+nav img{height:45px}
+nav a{
+color:#fff;
+text-decoration:none;
+margin-left:25px;
+font-weight:500;
+transition:0.3s;
+}
+nav a:hover{color:#00c3ff}
+
+/* Hero Section */
+.hero{
 height:100vh;
-background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),
-url('hero1.jpg') center/cover no-repeat;
+background:url('hero1.jpg') center/cover no-repeat fixed;
 display:flex;
 align-items:center;
 justify-content:center;
 text-align:center;
-color:#fff;
+position:relative;
+}
+
+.hero::after{
+content:'';
+position:absolute;
+inset:0;
+background:linear-gradient(to top,rgba(0,0,0,0.8),rgba(0,0,0,0.3));
 }
 
 .hero-content{
+position:relative;
+z-index:2;
 max-width:900px;
 padding:20px;
+animation:fadeUp 1.5s ease forwards;
 }
 
-.logo{
-width:120px;
+.hero h1{
+font-size:65px;
+font-weight:800;
+background:linear-gradient(90deg,#00c3ff,#ffff1c);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
 margin-bottom:20px;
 }
 
-h1{
-font-size:48px;
-margin:0 0 20px 0;
-}
-
-p{
-font-size:18px;
-margin-bottom:30px;
-}
-
-.buttons{
-display:flex;
-justify-content:center;
-gap:20px;
-flex-wrap:wrap;
+.hero p{
+font-size:20px;
+opacity:0.9;
+margin-bottom:35px;
 }
 
 .btn{
-background:#1E88FF;
-color:#fff;
-padding:12px 25px;
+padding:14px 35px;
+border-radius:50px;
 text-decoration:none;
-border-radius:8px;
-font-weight:bold;
-transition:0.3s;
+font-weight:600;
+margin:10px;
+display:inline-block;
+transition:0.4s;
 }
 
-.btn:hover{
-background:#0C6BFF;
+.btn-primary{
+background:linear-gradient(90deg,#00c3ff,#0072ff);
+color:#fff;
+box-shadow:0 10px 25px rgba(0,115,255,0.4);
+}
+.btn-primary:hover{
+transform:translateY(-4px);
+box-shadow:0 15px 35px rgba(0,115,255,0.6);
 }
 
-section{
-padding:60px 20px;
+.btn-outline{
+border:2px solid #00c3ff;
+color:#00c3ff;
+}
+.btn-outline:hover{
+background:#00c3ff;
+color:#000;
+}
+
+/* District Section */
+.section{
+padding:120px 8%;
+}
+
+.section h2{
+font-size:40px;
+margin-bottom:60px;
 text-align:center;
+font-weight:700;
 }
 
-.section-title{
-font-size:32px;
-margin-bottom:30px;
-}
-
-.districts{
+.grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;
-max-width:1000px;
-margin:auto;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:40px;
 }
 
 .card{
-background:#fff;
-padding:20px;
-border-radius:10px;
-box-shadow:0 5px 15px rgba(0,0,0,0.1);
+height:350px;
+border-radius:20px;
+overflow:hidden;
+position:relative;
+cursor:pointer;
+transition:0.5s;
+}
+
+.card img{
+width:100%;
+height:100%;
+object-fit:cover;
+transition:0.6s;
+}
+
+.card:hover img{
+transform:scale(1.2);
+}
+
+.card::after{
+content:'';
+position:absolute;
+inset:0;
+background:linear-gradient(to top,rgba(0,0,0,0.9),transparent);
+}
+
+.card-content{
+position:absolute;
+bottom:30px;
+left:30px;
+z-index:2;
+}
+
+.card-content h3{
+font-size:28px;
+margin-bottom:10px;
+}
+
+.card-content a{
+color:#00c3ff;
+text-decoration:none;
+font-weight:600;
+}
+
+/* Floating Action Buttons */
+.floating{
+position:fixed;
+bottom:30px;
+right:30px;
+display:flex;
+flex-direction:column;
+gap:15px;
+z-index:999;
+}
+
+.floating a{
+background:linear-gradient(45deg,#ff512f,#dd2476);
+padding:15px 20px;
+border-radius:50px;
+color:#fff;
+text-decoration:none;
+font-weight:600;
+box-shadow:0 10px 25px rgba(0,0,0,0.4);
 transition:0.3s;
 }
 
-.card:hover{
-transform:translateY(-5px);
+.floating a:hover{
+transform:scale(1.1);
 }
 
-.card a{
-text-decoration:none;
-color:#1E88FF;
-font-weight:bold;
-}
-
+/* Footer */
 footer{
-background:#0D1B2A;
-color:#fff;
-padding:20px;
 text-align:center;
+padding:40px;
+background:#060a14;
+margin-top:80px;
+color:#aaa;
+}
+
+/* Animations */
+@keyframes fadeUp{
+from{opacity:0;transform:translateY(40px)}
+to{opacity:1;transform:translateY(0)}
 }
 
 @media(max-width:768px){
-h1{
-font-size:30px;
-}
+.hero h1{font-size:38px}
+nav{flex-direction:column;gap:10px}
 }
 </style>
 </head>
 
 <body>
 
-<header>
+<nav>
+<img src="Logo.png" alt="Himachal Explorer Logo">
+<div>
+<a href="Dashboard.html">Packages</a>
+<a href="Dashboard_map.html">Map</a>
+<a href="#districts">Districts</a>
+</div>
+</nav>
+
+<section class="hero">
 <div class="hero-content">
-<img src="Logo.png" alt="Himachal Explorer Logo" class="logo"/>
-<h1>Explore Himachal Pradesh</h1>
-<p>Discover districts, book tour packages and explore beautiful destinations through interactive map.</p>
-
-<div class="buttons">
-<a href="Dashboard.html" class="btn">View Packages</a>
-<a href="Dashboard_map.html" class="btn">Explore by Map</a>
+<h1>Experience Himachal Like Never Before</h1>
+<p>Luxury. Nature. Adventure. Culture. All in one seamless travel platform.</p>
+<a href="Dashboard.html" class="btn btn-primary">Explore Packages</a>
+<a href="Dashboard_map.html" class="btn btn-outline">Open Live Map</a>
 </div>
-</div>
-</header>
+</section>
 
-<section>
-<h2 class="section-title">Explore Districts</h2>
+<section class="section" id="districts">
+<h2>Discover Districts</h2>
 
-<div class="districts">
+<div class="grid">
 
 <div class="card">
+<img src="shimla.jpg">
+<div class="card-content">
 <h3>Shimla</h3>
-<a href="shimla.html">View Details</a>
+<a href="shimla.html">Explore →</a>
+</div>
 </div>
 
 <div class="card">
+<img src="kullu.jpg">
+<div class="card-content">
 <h3>Kullu</h3>
-<a href="kullu.html">View Details</a>
+<a href="kullu.html">Explore →</a>
+</div>
 </div>
 
 <div class="card">
+<img src="kangra.jpg">
+<div class="card-content">
 <h3>Kangra</h3>
-<a href="kangra.html">View Details</a>
+<a href="kangra.html">Explore →</a>
+</div>
 </div>
 
 <div class="card">
+<img src="chamba.jpg">
+<div class="card-content">
 <h3>Chamba</h3>
-<a href="chamba.html">View Details</a>
+<a href="chamba.html">Explore →</a>
 </div>
-
-<div class="card">
-<h3>Lahaul & Spiti</h3>
-<a href="lahaul-spiti.html">View Details</a>
-</div>
-
-<div class="card">
-<h3>Solan</h3>
-<a href="solan.html">View Details</a>
-</div>
-
-<div class="card">
-<h3>Mandi</h3>
-<a href="mandi.html">View Details</a>
-</div>
-
-<div class="card">
-<h3>Sirmaur</h3>
-<a href="sirmaur.html">View Details</a>
-</div>
-
-<div class="card">
-<h3>Kinnaur</h3>
-<a href="kinnaur.html">View Details</a>
-</div>
-
-<div class="card">
-<h3>Una</h3>
-<a href="una.html">View Details</a>
-</div>
-
-<div class="card">
-<h3>Bilaspur</h3>
-<a href="bilaspur.html">View Details</a>
-</div>
-
-<div class="card">
-<h3>Hamirpur</h3>
-<a href="hamirpur.html">View Details</a>
 </div>
 
 </div>
 </section>
 
+<div class="floating">
+<a href="Dashboard_map.html">🗺 Map</a>
+<a href="Dashboard.html">📦 Packages</a>
+</div>
+
 <footer>
-© 2026 Himachal Explorer | All Rights Reserved  
-<br>
-Official Travel Guide of Himachal Pradesh
+© 2026 Himachal Explorer | Premium Travel Experience
 </footer>
 
 </body>
