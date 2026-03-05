@@ -1,609 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-  <meta name="color-scheme" content="light"/><!-- DISTRICT SECTION -->
-<section class="section">
-  <h2>Explore Districts of Himachal Pradesh</h2>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#0C6BFF"/>
 
-  <div class="grid">
+<title>Himachal Explorer | Explore Himachal Pradesh Tour Packages & District Guide</title>
 
-    <div class="card" onclick="location.href='shimla.html'">
-      <img src="1hero.jpg">
-      <div class="cardContent">
-        <h3>Shimla</h3>
-        <p>The Queen of Hills</p>
-      </div>
-    </div>
+<meta name="description" content="Explore Himachal Pradesh with Himachal Explorer. Discover districts, tour packages, hotels, trekking routes, temples and travel guides across Shimla, Manali, Kullu, Kangra, Dalhousie and more."/>
+<meta name="keywords" content="Himachal tour packages, Shimla travel, Manali tour, Kullu tourism, Kangra district guide, Dalhousie trip, Himachal hotels booking"/>
+<meta name="author" content="Himachal Explorer"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://himachalexplorer.in/"/>
 
-    <div class="card" onclick="location.href='kullu.html'">
-      <img src="trek.jpeg">
-      <div class="cardContent">
-        <h3>Kullu – Manali</h3>
-        <p>Adventure & Snow Paradise</p>
-      </div>
-    </div>
+<link rel="icon" type="image/png" href="Logo.png"/>
 
-    <div class="card" onclick="location.href='kangra.html'">
-      <img src="temple.jpg">
-      <div class="cardContent">
-        <h3>Kangra</h3>
-        <p>Dharamshala & Spiritual Tourism</p>
-      </div>
-    </div>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="Himachal Explorer | Official Himachal Travel Guide"/>
+<meta property="og:description" content="Plan your Himachal trip with district wise information, tour packages and interactive map booking."/>
+<meta property="og:url" content="https://himachalexplorer.in/"/>
+<meta property="og:image" content="https://himachalexplorer.in/Logo.png"/>
 
-    <div class="card" onclick="location.href='lahaul-spiti.html'">
-      <img src="Kee_monastery.jpg">
-      <div class="cardContent">
-        <h3>Lahaul & Spiti</h3>
-        <p>Cold Desert & Monasteries</p>
-      </div>
-    </div>
+<meta name="twitter:card" content="summary_large_image"/>
 
-    <div class="card" onclick="location.href='kinnaur.html'">
-      <img src="kinnaur-kailash.webp">
-      <div class="cardContent">
-        <h3>Kinnaur</h3>
-        <p>Home of Kinner Kailash</p>
-      </div>
-    </div>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "TravelAgency",
+ "name": "Himachal Explorer",
+ "url": "https://himachalexplorer.in",
+ "logo": "https://himachalexplorer.in/Logo.png",
+ "address": {
+   "@type": "PostalAddress",
+   "addressRegion": "Himachal Pradesh",
+   "addressCountry": "India"
+ }
+}
+</script>
 
-    <div class="card" onclick="location.href='chamba.html'">
-      <img src="n1.jpg">
-      <div class="cardContent">
-        <h3>Chamba</h3>
-        <p>Valleys & Ancient Temples</p>
-      </div>
-    </div>
+<style>
+body{
+margin:0;
+font-family:Arial, sans-serif;
+background:#f4f8ff;
+color:#0D1B2A;
+}
 
-    <div class="card" onclick="location.href='mandi.html'">
-      <img src="201-himalaya.jpg">
-      <div class="cardContent">
-        <h3>Mandi</h3>
-        <p>Varanasi of the Hills</p>
-      </div>
-    </div>
+header{
+position:relative;
+height:100vh;
+background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),
+url('hero1.jpg') center/cover no-repeat;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+color:#fff;
+}
 
-    <div class="card" onclick="location.href='bilaspur.html'">
-      <img src="Travelers.jpg">
-      <div class="cardContent">
-        <h3>Bilaspur</h3>
-        <p>Govind Sagar Lake</p>
-      </div>
-    </div>
+.hero-content{
+max-width:900px;
+padding:20px;
+}
 
-    <div class="card" onclick="location.href='hamirpur.html'">
-      <img src="activity.jpg">
-      <div class="cardContent">
-        <h3>Hamirpur</h3>
-        <p>Peaceful & Scenic Region</p>
-      </div>
-    </div>
+.logo{
+width:120px;
+margin-bottom:20px;
+}
 
-    <div class="card" onclick="location.href='una.html'">
-      <img src="Dark.jpg">
-      <div class="cardContent">
-        <h3>Una</h3>
-        <p>Gateway to Himachal</p>
-      </div>
-    </div>
+h1{
+font-size:48px;
+margin:0 0 20px 0;
+}
 
-    <div class="card" onclick="location.href='solan.html'">
-      <img src="kunjum.jpg">
-      <div class="cardContent">
-        <h3>Solan</h3>
-        <p>Mushroom City of India</p>
-      </div>
-    </div>
+p{
+font-size:18px;
+margin-bottom:30px;
+}
 
-    <div class="card" onclick="location.href='sirmaur.html'">
-      <img src="vivek-kumar-7k1IKQZikSc-unsplash.jpg">
-      <div class="cardContent">
-        <h3>Sirmaur</h3>
-        <p>Renuka Lake & Heritage</p>
-      </div>
-    </div>
+.buttons{
+display:flex;
+justify-content:center;
+gap:20px;
+flex-wrap:wrap;
+}
 
-  </div>
-</section>
-  <title>Himachal Explorer | Home</title>
-  <meta name="description" content="Choose packages list-wise or via map, or open district pages from the district console."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+.btn{
+background:#1E88FF;
+color:#fff;
+padding:12px 25px;
+text-decoration:none;
+border-radius:8px;
+font-weight:bold;
+transition:0.3s;
+}
 
-  <style>
-    :root{
-      --bg0:#F6FAFF;
-      --bg1:#EAF3FF;
-      --card: rgba(255,255,255,.72);
-      --stroke: rgba(10,30,60,.14);
-      --text:#0D1B2A;
-      --muted: rgba(13,27,42,.70);
-      --primary:#1E88FF;
-      --primary2:#0C6BFF;
-      --shadow: 0 18px 45px rgba(0,0,0,.14);
-      --radius: 22px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:"Plus Jakarta Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      color:var(--text);
-      background:
-        radial-gradient(1200px 600px at 20% -10%, rgba(30,136,255,.22), transparent 60%),
-        radial-gradient(900px 500px at 100% 10%, rgba(12,107,255,.18), transparent 55%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
-      overflow-x:hidden;
-    }
-    a{color:inherit}
+.btn:hover{
+background:#0C6BFF;
+}
 
-    /* ===== Topbar ===== */
-    .topbar{
-      position:sticky; top:0; z-index:50;
-      backdrop-filter: blur(14px);
-      background: rgba(246,250,255,.78);
-      border-bottom: 1px solid rgba(10,30,60,.08);
-    }
-    .topbarInner{
-      max-width:1200px; margin:0 auto;
-      padding:14px 18px;
-      display:flex; align-items:center; justify-content:space-between; gap:14px;
-    }
-    .brand{display:flex; align-items:center; gap:12px; text-decoration:none}
-    .logo{
-      height:40px;
-      width:auto;
-      border-radius:10px;
-      background:#fff;
-      border:1px solid rgba(10,30,60,.10);
-      padding:4px;
-    }
-    .brandText{line-height:1.05}
-    .brandText b{display:block; font-weight:900; letter-spacing:.2px}
-    .brandText span{display:block; font-size:12px; color:var(--muted); margin-top:2px}
+section{
+padding:60px 20px;
+text-align:center;
+}
 
-    .topActions{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
-    .pill{
-      border:1px solid rgba(10,30,60,.12);
-      background: rgba(255,255,255,.62);
-      padding:9px 12px;
-      border-radius:999px;
-      font-size:13px;
-      color:rgba(13,27,42,.78);
-      display:flex; align-items:center; gap:8px;
-      user-select:none;
-      text-decoration:none;
-      white-space:nowrap;
-    }
-    .dot{
-      width:10px;height:10px;border-radius:50%;
-      background:rgba(46,204,113,.95);
-      box-shadow:0 0 0 5px rgba(46,204,113,.18)
-    }
+.section-title{
+font-size:32px;
+margin-bottom:30px;
+}
 
-    /* ===== Layout ===== */
-    .wrap{max-width:1200px; margin:0 auto; padding:18px}
-    .hero{
-      margin-top:12px;
-      border-radius: calc(var(--radius) + 10px);
-      background: linear-gradient(135deg, rgba(255,255,255,.84), rgba(255,255,255,.55));
-      border:1px solid rgba(10,30,60,.12);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      position:relative;
-      padding:18px;
-    }
-    .hero:before{
-      content:"";
-      position:absolute; inset:-45%;
-      background:
-        radial-gradient(circle at 18% 22%, rgba(30,136,255,.22), transparent 48%),
-        radial-gradient(circle at 78% 30%, rgba(12,107,255,.18), transparent 50%);
-      transform: rotate(-8deg);
-      pointer-events:none;
-    }
-    .hero > *{position:relative; z-index:1}
+.districts{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+max-width:1000px;
+margin:auto;
+}
 
-    .heroGrid{
-      display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap:16px;
-      align-items:stretch;
-    }
+.card{
+background:#fff;
+padding:20px;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+transition:0.3s;
+}
 
-    .hTitle{
-      margin:0;
-      font-size: clamp(26px, 3.4vw, 44px);
-      line-height:1.06;
-      letter-spacing:-.7px;
-      font-weight:900;
-    }
-    .hSub{
-      margin:10px 0 0 0;
-      color:rgba(13,27,42,.78);
-      font-size:15px;
-      max-width:65ch;
-      line-height:1.5;
-    }
+.card:hover{
+transform:translateY(-5px);
+}
 
-    /* ===== Main Actions ===== */
-    .ctaRow{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap:12px;
-    }
-    .ctaCard{
-      border-radius: 18px;
-      border:1px solid rgba(10,30,60,.12);
-      background: rgba(255,255,255,.64);
-      padding:14px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      min-height:150px;
-    }
-    .ctaCard b{font-weight:900}
-    .ctaCard p{
-      margin:0;
-      font-size:12.5px;
-      color:rgba(13,27,42,.72);
-      line-height:1.45;
-    }
+.card a{
+text-decoration:none;
+color:#1E88FF;
+font-weight:bold;
+}
 
-    .btnRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:auto}
-    .btn{
-      appearance:none; border:none; cursor:pointer;
-      border-radius: 14px;
-      padding: 11px 13px;
-      font-weight:900;
-      letter-spacing:.2px;
-      transition: transform .12s ease, box-shadow .12s ease;
-      display:inline-flex; align-items:center; gap:10px;
-      text-decoration:none;
-      user-select:none;
-      white-space:nowrap;
-    }
-    .btn:active{transform:scale(.98)}
-    .btnPrimary{
-      background: linear-gradient(135deg, var(--primary), var(--primary2));
-      color:#fff;
-      box-shadow: 0 16px 30px rgba(30,136,255,.22);
-    }
-    .btnGhost{
-      background: rgba(255,255,255,.78);
-      color: rgba(13,27,42,.92);
-      border:1px solid rgba(10,30,60,.14);
-    }
-    .ico{
-      width:18px;height:18px;border-radius:6px;
-      background: rgba(255,255,255,.22);
-      border:1px solid rgba(255,255,255,.22);
-    }
-    .btnGhost .ico{
-      background: rgba(30,136,255,.14);
-      border:1px solid rgba(30,136,255,.16);
-    }
+footer{
+background:#0D1B2A;
+color:#fff;
+padding:20px;
+text-align:center;
+}
 
-    /* ===== Helper panel ===== */
-    .helper{
-      border-radius: 22px;
-      border:1px solid rgba(10,30,60,.12);
-      background: rgba(255,255,255,.60);
-      padding:14px;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
-    .helper h3{margin:0;font-size:14px;letter-spacing:.2px}
-    .helper ul{margin:0;padding-left:18px;color:rgba(13,27,42,.72);font-size:12.5px;line-height:1.5}
-    .helper li{margin:6px 0}
-    .hint{margin:0;font-size:12px;color:rgba(13,27,42,.70);line-height:1.5}
-
-    .miniSearch{
-      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
-      border:1px solid rgba(10,30,60,.10);
-      background: rgba(255,255,255,.60);
-      border-radius: 16px;
-      padding:10px;
-    }
-    .miniSearch input{
-      flex:1 1 180px;
-      border:none; outline:none;
-      font: inherit;
-      color: rgba(13,27,42,.90);
-      padding:10px 12px;
-      border-radius: 12px;
-      border:1px solid rgba(10,30,60,.12);
-      background: rgba(255,255,255,.75);
-    }
-    .miniSearch button{
-      border:none; cursor:pointer;
-      padding:10px 12px;
-      border-radius: 12px;
-      font-weight:900;
-      background: rgba(30,136,255,.14);
-      border:1px solid rgba(30,136,255,.18);
-      color: rgba(13,27,42,.92);
-    }
-
-    /* ===== District console ===== */
-    .section{
-      margin-top:16px;
-      border-radius: var(--radius);
-      background: rgba(255,255,255,.64);
-      border:1px solid rgba(10,30,60,.12);
-      box-shadow: 0 14px 34px rgba(0,0,0,.10);
-      overflow:hidden;
-    }
-    .sectionHead{
-      padding:16px 16px 12px 16px;
-      border-bottom:1px solid rgba(10,30,60,.08);
-      background: linear-gradient(180deg, rgba(255,255,255,.70), rgba(255,255,255,.45));
-      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
-    }
-    .sectionHead h2{margin:0;font-size:16px;font-weight:900;letter-spacing:.2px}
-    .sectionHead p{margin:6px 0 0 0;font-size:12.5px;color:rgba(13,27,42,.70);line-height:1.45}
-    .sectionBody{padding:14px 16px 16px 16px}
-
-    .districtGrid{
-      display:grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap:10px;
-    }
-    .dBtn{
-      border:1px solid rgba(10,30,60,.14);
-      background: rgba(255,255,255,.82);
-      border-radius: 16px;
-      padding:12px 10px;
-      cursor:pointer;
-      text-align:left;
-      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
-      display:flex; align-items:center; gap:10px;
-      min-height:56px;
-    }
-    .dBtn:hover{
-      transform: translateY(-1px);
-      box-shadow: 0 14px 26px rgba(0,0,0,.10);
-      border-color: rgba(30,136,255,.28);
-    }
-    .badge{
-      width:36px;height:36px;border-radius: 14px;
-      background: linear-gradient(135deg, rgba(30,136,255,.20), rgba(12,107,255,.12));
-      border:1px solid rgba(30,136,255,.20);
-      display:flex; align-items:center; justify-content:center;
-      font-weight:900;
-      color: rgba(13,27,42,.78);
-      flex:0 0 auto;
-    }
-    .dMeta{min-width:0}
-    .dName{font-weight:900;font-size:13px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .dSlug{margin:4px 0 0 0;font-size:11px;color:rgba(13,27,42,.62);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-    .footer{
-      margin:18px 0 28px 0;
-      color:rgba(13,27,42,.60);
-      font-size:12px;
-      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
-      padding: 0 6px;
-    }
-
-    /* Responsive */
-    @media (max-width: 980px){
-      .heroGrid{grid-template-columns: 1fr}
-    }
-    @media (max-width: 720px){
-      .districtGrid{grid-template-columns: repeat(2, minmax(0, 1fr));}
-      .ctaRow{grid-template-columns: 1fr}
-      .wrap{padding:14px}
-      .topbarInner{padding:12px 14px}
-    }
-  </style>
+@media(max-width:768px){
+h1{
+font-size:30px;
+}
+}
+</style>
 </head>
 
 <body>
-  <header class="topbar">
-    <div class="topbarInner">
-      <a class="brand" href="./index.html" aria-label="Home">
-        <img src="Logo.png" alt="Himachal Explorer Logo" class="logo">
-        <div class="brandText">
-          <b>Himachal Explorer</b>
-          <span>Packages • Map • District Pages</span>
-        </div>
-      </a>
 
-      <div class="topActions">
-        <a class="pill" href="./Dashboard.html"><span class="dot" aria-hidden="true"></span> Packages List</a>
-        <a class="pill" href="./Dashboard_map.html">Map Select</a>
-        <a class="pill" href="#districtConsole">District Console</a>
-      </div>
-    </div>
-  </header>
+<header>
+<div class="hero-content">
+<img src="Logo.png" alt="Himachal Explorer Logo" class="logo"/>
+<h1>Explore Himachal Pradesh</h1>
+<p>Discover districts, book tour packages and explore beautiful destinations through interactive map.</p>
 
-  <main class="wrap">
+<div class="buttons">
+<a href="Dashboard.html" class="btn">View Packages</a>
+<a href="Dashboard_map.html" class="btn">Explore by Map</a>
+</div>
+</div>
+</header>
 
-    <!-- HERO -->
-    <section class="hero" aria-label="Start">
-      <div class="heroGrid">
-        <div>
-          <h1 class="hTitle">Start your Himachal trip — without confusion.</h1>
-          <p class="hSub">
-            Choose packages by <b>List Wise (Direct Order)</b> or by <b>Map Selection</b>.
-            Or open any <b>District Page</b> to read complete tourism details district-wise.
-          </p>
+<section>
+<h2 class="section-title">Explore Districts</h2>
 
-          <div class="ctaRow" aria-label="Main actions">
-            <div class="ctaCard">
-              <b>Explore Packages — List Wise</b>
-              <p>Fast browsing in order. Best when you already know what you want.</p>
-              <div class="btnRow">
-                <a class="btn btnPrimary" href="./Dashboard.html">
-                  <span class="ico" aria-hidden="true"></span> Open Dashboard
-                </a>
-                <a class="btn btnGhost" href="#districtConsole">
-                  <span class="ico" aria-hidden="true"></span> Districts
-                </a>
-              </div>
-            </div>
+<div class="districts">
 
-            <div class="ctaCard">
-              <b>Explore Packages — Map Select</b>
-              <p>Pick by location and route. Best for exploring nearby places & districts.</p>
-              <div class="btnRow">
-                <a class="btn btnPrimary" href="./Dashboard_map.html">
-                  <span class="ico" aria-hidden="true"></span> Open Map Dashboard
-                </a>
-                <a class="btn btnGhost" href="#districtConsole">
-                  <span class="ico" aria-hidden="true"></span> Districts
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
+<div class="card">
+<h3>Shimla</h3>
+<a href="shimla.html">View Details</a>
+</div>
 
-        <aside class="helper" aria-label="How to use">
-          <h3>How to use this website</h3>
-          <ul>
-            <li><b>Dashboard.html</b> = list-wise packages.</li>
-            <li><b>Dashboard_map.html</b> = map selection packages.</li>
-            <li><b>District pages</b> = clean reading for tourism details.</li>
-          </ul>
+<div class="card">
+<h3>Kullu</h3>
+<a href="kullu.html">View Details</a>
+</div>
 
-          <p class="hint">Quickly open a district page by typing its name:</p>
-          <div class="miniSearch">
-            <input id="districtSearch" type="text" placeholder="e.g., Kullu, Kangra, Chamba..." autocomplete="off"/>
-            <button id="goDistrict" type="button">Open</button>
-          </div>
+<div class="card">
+<h3>Kangra</h3>
+<a href="kangra.html">View Details</a>
+</div>
 
-          <p class="hint">Tip: Keep this as the only entry page for your visitors.</p>
-        </aside>
-      </div>
-    </section>
+<div class="card">
+<h3>Chamba</h3>
+<a href="chamba.html">View Details</a>
+</div>
 
-    <!-- DISTRICT CONSOLE -->
-    <section class="section" id="districtConsole" aria-label="District console">
-      <div class="sectionHead">
-        <div>
-          <h2>District Console (12 Districts)</h2>
-          <p>Click any district to open its details page. Grid is 4 columns × 3 rows.</p>
-        </div>
-      </div>
+<div class="card">
+<h3>Lahaul & Spiti</h3>
+<a href="lahaul-spiti.html">View Details</a>
+</div>
 
-      <div class="sectionBody">
-        <div class="districtGrid" role="tablist" aria-label="District buttons">
-          <button class="dBtn" data-open="bilaspur.html" role="tab">
-            <div class="badge">BI</div><div class="dMeta"><p class="dName">Bilaspur</p><p class="dSlug">bilaspur.html</p></div>
-          </button>
+<div class="card">
+<h3>Solan</h3>
+<a href="solan.html">View Details</a>
+</div>
 
-          <button class="dBtn" data-open="chamba.html" role="tab">
-            <div class="badge">CH</div><div class="dMeta"><p class="dName">Chamba</p><p class="dSlug">chamba.html</p></div>
-          </button>
+<div class="card">
+<h3>Mandi</h3>
+<a href="mandi.html">View Details</a>
+</div>
 
-          <button class="dBtn" data-open="hamirpur.html" role="tab">
-            <div class="badge">HA</div><div class="dMeta"><p class="dName">Hamirpur</p><p class="dSlug">hamirpur.html</p></div>
-          </button>
+<div class="card">
+<h3>Sirmaur</h3>
+<a href="sirmaur.html">View Details</a>
+</div>
 
-          <button class="dBtn" data-open="kangra.html" role="tab">
-            <div class="badge">KA</div><div class="dMeta"><p class="dName">Kangra</p><p class="dSlug">kangra.html</p></div>
-          </button>
+<div class="card">
+<h3>Kinnaur</h3>
+<a href="kinnaur.html">View Details</a>
+</div>
 
-          <button class="dBtn" data-open="kinnaur.html" role="tab">
-            <div class="badge">KI</div><div class="dMeta"><p class="dName">Kinnaur</p><p class="dSlug">kinnaur.html</p></div>
-          </button>
+<div class="card">
+<h3>Una</h3>
+<a href="una.html">View Details</a>
+</div>
 
-          <button class="dBtn" data-open="kullu.html" role="tab">
-            <div class="badge">KU</div><div class="dMeta"><p class="dName">Kullu</p><p class="dSlug">kullu.html</p></div>
-          </button>
+<div class="card">
+<h3>Bilaspur</h3>
+<a href="bilaspur.html">View Details</a>
+</div>
 
-          <button class="dBtn" data-open="lahaul_spiti.html" role="tab">
-            <div class="badge">LS</div><div class="dMeta"><p class="dName">Lahaul &amp; Spiti</p><p class="dSlug">lahaul_spiti.html</p></div>
-          </button>
+<div class="card">
+<h3>Hamirpur</h3>
+<a href="hamirpur.html">View Details</a>
+</div>
 
-          <button class="dBtn" data-open="mandi.html" role="tab">
-            <div class="badge">MA</div><div class="dMeta"><p class="dName">Mandi</p><p class="dSlug">mandi.html</p></div>
-          </button>
+</div>
+</section>
 
-          <button class="dBtn" data-open="shimla.html" role="tab">
-            <div class="badge">SH</div><div class="dMeta"><p class="dName">Shimla</p><p class="dSlug">shimla.html</p></div>
-          </button>
+<footer>
+© 2026 Himachal Explorer | All Rights Reserved  
+<br>
+Official Travel Guide of Himachal Pradesh
+</footer>
 
-          <button class="dBtn" data-open="sirmaur.html" role="tab">
-            <div class="badge">SI</div><div class="dMeta"><p class="dName">Sirmaur</p><p class="dSlug">sirmaur.html</p></div>
-          </button>
-
-          <button class="dBtn" data-open="solan.html" role="tab">
-            <div class="badge">SO</div><div class="dMeta"><p class="dName">Solan</p><p class="dSlug">solan.html</p></div>
-          </button>
-
-          <button class="dBtn" data-open="una.html" role="tab">
-            <div class="badge">UN</div><div class="dMeta"><p class="dName">Una</p><p class="dSlug">una.html</p></div>
-          </button>
-        </div>
-
-        <p class="hint" style="margin-top:12px;">
-          If your district filenames differ, update the <b>data-open</b> values. Dashboard links are fixed as:
-          <b>Dashboard.html</b> and <b>Dashboard_map.html</b>.
-        </p>
-      </div>
-    </section>
-
-    <div class="footer">
-      <div>© <span id="yr"></span> Himachal Explorer</div>
-      <div style="opacity:.9">Home → Dashboard.html / Dashboard_map.html → District Pages</div>
-    </div>
-  </main>
-
-  <script>
-    // Year
-    document.getElementById("yr").textContent = new Date().getFullYear();
-
-    // District open
-    document.querySelectorAll(".dBtn").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
-        const url = btn.getAttribute("data-open");
-        if(url) window.location.href = url;
-      });
-    });
-
-    // District search (type district name)
-    const input = document.getElementById("districtSearch");
-    const goBtn = document.getElementById("goDistrict");
-
-    const districtMap = {
-      bilaspur: "bilaspur.html",
-      chamba: "chamba.html",
-      hamirpur: "hamirpur.html",
-      kangra: "kangra.html",
-      kinnaur: "kinnaur.html",
-      kullu: "kullu.html",
-      "lahaul": "lahaul_spiti.html",
-      "spiti": "lahaul_spiti.html",
-      "lahaul spiti": "lahaul_spiti.html",
-      "lahaul & spiti": "lahaul_spiti.html",
-      mandi: "mandi.html",
-      shimla: "shimla.html",
-      sirmaur: "sirmaur.html",
-      solan: "solan.html",
-      una: "una.html"
-    };
-
-    function openDistrictByName(){
-      const q = (input.value || "").trim().toLowerCase().replace(/\s+/g, " ");
-      if(!q) return;
-
-      if(districtMap[q]) { window.location.href = districtMap[q]; return; }
-
-      const found = Object.keys(districtMap).find(k => k.includes(q) || q.includes(k));
-      if(found) { window.location.href = districtMap[found]; return; }
-
-      alert("District not found. Try: Shimla, Kullu, Kangra, Chamba...");
-    }
-
-    goBtn.addEventListener("click", openDistrictByName);
-    input.addEventListener("keydown", (e)=>{ if(e.key === "Enter") openDistrictByName(); });
-  </script>
 </body>
 </html>
