@@ -11,7 +11,7 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
 body{background:#0c1220;color:#fff;overflow-x:hidden}
 
-/* Floating Glass Navbar */
+/* Glass Navbar */
 nav{
 position:fixed;
 top:20px;
@@ -40,34 +40,55 @@ transition:0.3s;
 }
 nav a:hover{color:#00c3ff}
 
-/* Hero Section */
+/* HERO SLIDER */
 .hero{
 height:100vh;
-background:url('hero1.jpg') center/cover no-repeat fixed;
-display:flex;
-align-items:center;
-justify-content:center;
-text-align:center;
 position:relative;
+overflow:hidden;
 }
 
-.hero::after{
-content:'';
+.slide{
+position:absolute;
+width:100%;
+height:100%;
+background-size:cover;
+background-position:center;
+animation:slideShow 18s infinite;
+opacity:0;
+}
+
+.slide:nth-child(1){background-image:url('hero1.jpg'); animation-delay:0s;}
+.slide:nth-child(2){background-image:url('hero2.jpg'); animation-delay:6s;}
+.slide:nth-child(3){background-image:url('hero3.jpg'); animation-delay:12s;}
+
+@keyframes slideShow{
+0%{opacity:0;}
+8%{opacity:1;}
+33%{opacity:1;}
+41%{opacity:0;}
+100%{opacity:0;}
+}
+
+.overlay{
 position:absolute;
 inset:0;
 background:linear-gradient(to top,rgba(0,0,0,0.8),rgba(0,0,0,0.3));
+z-index:2;
 }
 
 .hero-content{
-position:relative;
-z-index:2;
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+text-align:center;
+z-index:3;
 max-width:900px;
 padding:20px;
-animation:fadeUp 1.5s ease forwards;
 }
 
 .hero h1{
-font-size:65px;
+font-size:60px;
 font-weight:800;
 background:linear-gradient(90deg,#00c3ff,#ffff1c);
 -webkit-background-clip:text;
@@ -77,8 +98,7 @@ margin-bottom:20px;
 
 .hero p{
 font-size:20px;
-opacity:0.9;
-margin-bottom:35px;
+margin-bottom:30px;
 }
 
 .btn{
@@ -94,12 +114,8 @@ transition:0.4s;
 .btn-primary{
 background:linear-gradient(90deg,#00c3ff,#0072ff);
 color:#fff;
-box-shadow:0 10px 25px rgba(0,115,255,0.4);
 }
-.btn-primary:hover{
-transform:translateY(-4px);
-box-shadow:0 15px 35px rgba(0,115,255,0.6);
-}
+.btn-primary:hover{transform:translateY(-4px)}
 
 .btn-outline{
 border:2px solid #00c3ff;
@@ -110,16 +126,15 @@ background:#00c3ff;
 color:#000;
 }
 
-/* District Section */
+/* District Cards */
 .section{
 padding:120px 8%;
 }
 
 .section h2{
+text-align:center;
 font-size:40px;
 margin-bottom:60px;
-text-align:center;
-font-weight:700;
 }
 
 .grid{
@@ -134,7 +149,6 @@ border-radius:20px;
 overflow:hidden;
 position:relative;
 cursor:pointer;
-transition:0.5s;
 }
 
 .card img{
@@ -144,9 +158,7 @@ object-fit:cover;
 transition:0.6s;
 }
 
-.card:hover img{
-transform:scale(1.2);
-}
+.card:hover img{transform:scale(1.2);}
 
 .card::after{
 content:'';
@@ -173,50 +185,17 @@ text-decoration:none;
 font-weight:600;
 }
 
-/* Floating Action Buttons */
-.floating{
-position:fixed;
-bottom:30px;
-right:30px;
-display:flex;
-flex-direction:column;
-gap:15px;
-z-index:999;
-}
-
-.floating a{
-background:linear-gradient(45deg,#ff512f,#dd2476);
-padding:15px 20px;
-border-radius:50px;
-color:#fff;
-text-decoration:none;
-font-weight:600;
-box-shadow:0 10px 25px rgba(0,0,0,0.4);
-transition:0.3s;
-}
-
-.floating a:hover{
-transform:scale(1.1);
-}
-
 /* Footer */
 footer{
 text-align:center;
 padding:40px;
 background:#060a14;
-margin-top:80px;
 color:#aaa;
-}
-
-/* Animations */
-@keyframes fadeUp{
-from{opacity:0;transform:translateY(40px)}
-to{opacity:1;transform:translateY(0)}
+margin-top:80px;
 }
 
 @media(max-width:768px){
 .hero h1{font-size:38px}
-nav{flex-direction:column;gap:10px}
 }
 </style>
 </head>
@@ -224,7 +203,7 @@ nav{flex-direction:column;gap:10px}
 <body>
 
 <nav>
-<img src="Logo.png" alt="Himachal Explorer Logo">
+<img src="Logo.png">
 <div>
 <a href="Dashboard.html">Packages</a>
 <a href="Dashboard_map.html">Map</a>
@@ -233,9 +212,14 @@ nav{flex-direction:column;gap:10px}
 </nav>
 
 <section class="hero">
+<div class="slide"></div>
+<div class="slide"></div>
+<div class="slide"></div>
+<div class="overlay"></div>
+
 <div class="hero-content">
 <h1>Experience Himachal Like Never Before</h1>
-<p>Luxury. Nature. Adventure. Culture. All in one seamless travel platform.</p>
+<p>Explore the beauty through your own curated travel platform.</p>
 <a href="Dashboard.html" class="btn btn-primary">Explore Packages</a>
 <a href="Dashboard_map.html" class="btn btn-outline">Open Live Map</a>
 </div>
@@ -280,11 +264,6 @@ nav{flex-direction:column;gap:10px}
 
 </div>
 </section>
-
-<div class="floating">
-<a href="Dashboard_map.html">🗺 Map</a>
-<a href="Dashboard.html">📦 Packages</a>
-</div>
 
 <footer>
 © 2026 Himachal Explorer | Premium Travel Experience
