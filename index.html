@@ -21,7 +21,7 @@ color:#fff;
 overflow-x:hidden;
 }
 
-/* NAVBAR */
+/* ================= NAVBAR ================= */
 nav{
 position:fixed;
 top:20px;
@@ -63,7 +63,7 @@ nav a:hover{
 color:#00c3ff;
 }
 
-/* HERO */
+/* ================= HERO ================= */
 .hero{
 height:100vh;
 position:relative;
@@ -76,22 +76,23 @@ width:100%;
 height:100%;
 background-size:cover;
 background-position:center;
+background-repeat:no-repeat;
 opacity:0;
 animation:fade 18s infinite, zoom 18s infinite;
 }
 
 .slide:nth-child(1){
-background-image:url('images/hero/hero1.jpg');
+background-image:url('style/201-himalaya.jpg');
 animation-delay:0s;
 }
 
 .slide:nth-child(2){
-background-image:url('images/hero/hero2.jpg');
+background-image:url('style/Kee_monastery.jpg');
 animation-delay:6s;
 }
 
 .slide:nth-child(3){
-background-image:url('images/hero/hero3.jpg');
+background-image:url('style/kinnaur-kailash.webp');
 animation-delay:12s;
 }
 
@@ -105,7 +106,7 @@ animation-delay:12s;
 
 @keyframes zoom{
 0%{transform:scale(1);}
-50%{transform:scale(1.1);}
+50%{transform:scale(1.08);}
 100%{transform:scale(1);}
 }
 
@@ -142,6 +143,7 @@ margin-bottom:35px;
 opacity:0.9;
 }
 
+/* BUTTONS */
 .btn{
 padding:14px 35px;
 border-radius:50px;
@@ -172,7 +174,7 @@ background:#00c3ff;
 color:#000;
 }
 
-/* DISTRICTS */
+/* ================= DISTRICTS ================= */
 .section{
 padding:120px 8%;
 background:#0f1629;
@@ -235,7 +237,7 @@ text-decoration:none;
 font-weight:600;
 }
 
-/* FOOTER */
+/* ================= FOOTER ================= */
 footer{
 text-align:center;
 padding:40px;
@@ -255,7 +257,7 @@ nav{flex-direction:column;gap:10px;}
 <!-- NAVBAR -->
 <nav>
 <div class="logo-wrap">
-<img src="images/logo.png" alt="Himachal Explorer Logo">
+<img src="style/logo.png" alt="Himachal Explorer Logo">
 <span>Himachal Explorer</span>
 </div>
 <div>
@@ -287,7 +289,7 @@ nav{flex-direction:column;gap:10px;}
 <div class="grid">
 
 <div class="card">
-<img src="images/districts/shimla.jpg" alt="Shimla">
+<img src="style/1hero.jpg" alt="Shimla">
 <div class="card-content">
 <h3>Shimla</h3>
 <a href="shimla.html">Explore →</a>
@@ -295,7 +297,7 @@ nav{flex-direction:column;gap:10px;}
 </div>
 
 <div class="card">
-<img src="images/districts/kullu.jpg" alt="Kullu">
+<img src="style/kunjum.jpg" alt="Kullu">
 <div class="card-content">
 <h3>Kullu</h3>
 <a href="kullu.html">Explore →</a>
@@ -303,7 +305,7 @@ nav{flex-direction:column;gap:10px;}
 </div>
 
 <div class="card">
-<img src="images/districts/kangra.jpg" alt="Kangra">
+<img src="style/trek.jpeg" alt="Kangra">
 <div class="card-content">
 <h3>Kangra</h3>
 <a href="kangra.html">Explore →</a>
@@ -311,7 +313,7 @@ nav{flex-direction:column;gap:10px;}
 </div>
 
 <div class="card">
-<img src="images/districts/chamba.jpg" alt="Chamba">
+<img src="style/temple.jpg" alt="Chamba">
 <div class="card-content">
 <h3>Chamba</h3>
 <a href="chamba.html">Explore →</a>
